@@ -399,7 +399,7 @@ class Message {
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
 
-    return this.client.api.channels(this.channel.id).messages(this.id)
+    return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
       .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
@@ -409,7 +409,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).put()
+    return this.client.api.channels[this.channel.id].pins[this.id].put()
       .then(() => this);
   }
 
@@ -418,7 +418,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+    return this.client.api.channels[this.channel.id].pins[this.id].delete()
       .then(() => this);
   }
 
@@ -431,7 +431,7 @@ class Message {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
+    return this.client.api.channels[this.channel.id].messages[this.id].reactions[emoji]['@me']
       .put()
       .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
@@ -441,7 +441,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
+    return this.client.api.channels[this.channel.id].messages[this.id].reactions.delete()
       .then(() => this);
   }
 
@@ -459,7 +459,7 @@ class Message {
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.client.api.channels(this.channel.id).messages(this.id)
+      return this.client.api.channels[this.channel.id].messages[this.id]
         .delete({ reason })
         .then(() =>
           this.client.actions.MessageDelete.handle({
@@ -502,7 +502,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.api.channels(this.channel.id).messages(this.id).ack
+    return this.client.api.channels[this.channel.id].messages[this.id].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

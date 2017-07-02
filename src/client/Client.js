@@ -1,5 +1,5 @@
 const os = require('os');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -11,7 +11,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const Presence = require('../structures/Presence').Presence;
+const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const User = require('../structures/User');
@@ -49,13 +49,6 @@ class Client extends EventEmitter {
      * @private
      */
     this.rest = new RESTManager(this);
-
-    /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
 
     /**
      * The data manager of the client
@@ -199,6 +192,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?Status}
    * @readonly
@@ -330,7 +332,7 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
+    return this.api.users[id].get().then(data =>
       cache ? this.dataManager.newUser(data) : new User(this, data)
     );
   }
@@ -342,7 +344,7 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.api.invites(code).get({ query: { with_counts: true } })
+    return this.api.invites[code].get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
 
@@ -353,7 +355,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
+    return this.api.webhooks.opts(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -412,7 +414,7 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+    return this.api.oauth2.applications[id].get()
     .then(app => new OAuth2Application(this, app));
   }
 
@@ -447,9 +449,9 @@ class Client extends EventEmitter {
    */
   setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
-      fn();
+      fn(...args);
       this._timeouts.delete(timeout);
-    }, delay, ...args);
+    }, delay);
     this._timeouts.add(timeout);
     return timeout;
   }

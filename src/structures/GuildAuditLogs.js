@@ -2,6 +2,7 @@ const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 
 const Targets = {
+  ALL: 'ALL',
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
@@ -14,6 +15,7 @@ const Targets = {
 };
 
 const Actions = {
+  ALL: null,
   GUILD_UPDATE: 1,
   CHANNEL_CREATE: 10,
   CHANNEL_UPDATE: 11,

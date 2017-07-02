@@ -138,7 +138,7 @@ class OAuth2Application {
    * @returns {OAuth2Application}
    */
   resetSecret() {
-    return this.client.api.oauth2.applications(this.id).reset.post()
+    return this.client.api.oauth2.applications[this.id].reset.post()
       .then(app => new OAuth2Application(this.client, app));
   }
 
@@ -148,7 +148,7 @@ class OAuth2Application {
    * @returns {OAuth2Application}
    */
   resetToken() {
-    return this.client.api.oauth2.applications(this.id).bot().reset.post()
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
       .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
   }
 

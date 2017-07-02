@@ -62,7 +62,7 @@ class Channel {
    *  .catch(console.error); // Log error
    */
   delete() {
-    return this.client.api.channels(this.id).delete().then(() => this);
+    return this.client.api.channels[this.id].delete().then(() => this);
   }
 }
 

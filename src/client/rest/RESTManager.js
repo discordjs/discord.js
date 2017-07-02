@@ -12,8 +12,10 @@ class RESTManager {
     this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+  }
 
-    this.api = mountApi(this);
+  get api() {
+    return mountApi(this);
   }
 
   destroy() {

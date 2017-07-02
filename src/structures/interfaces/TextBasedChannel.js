@@ -141,7 +141,7 @@ class TextBasedChannel {
         return msg;
       });
     }
-    return this.client.api.channels(this.id).messages(messageID).get()
+    return this.client.api.channels[this.id].messages[messageID].get()
     .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -171,7 +171,7 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).messages.get({ query: options })
+    return this.client.api.channels[this.id].messages.get({ query: options })
     .then(data => {
       const messages = new Collection();
       for (const message of data) {
@@ -189,7 +189,7 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).pins.get().then(data => {
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -230,7 +230,7 @@ class TextBasedChannel {
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels(this.id).typing;
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
@@ -353,7 +353,7 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels(this.id).messages()['bulk-delete']
+      return this.client.api.channels[this.id].messages['bulk-delete']
       .post({ data: { messages: messageIDs } })
       .then(() =>
         this.client.actions.MessageDeleteBulk.handle({
@@ -372,7 +372,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
