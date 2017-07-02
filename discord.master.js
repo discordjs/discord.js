@@ -5354,7 +5354,7 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.guilds[this.guild.id].emojis(this.id)
+    return this.client.api.guilds[this.guild.id].emojis[this.id]
       .patch({ data: {
         name: data.name,
         roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
@@ -8635,7 +8635,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels[this.id].permissions(payload.id)
+    return this.client.api.channels[this.id].permissions[payload.id]
       .put({ data: payload, reason })
       .then(() => this);
   }
@@ -9132,7 +9132,7 @@ class OAuth2Application {
    * @returns {OAuth2Application}
    */
   resetSecret() {
-    return this.client.api.oauth2.applications(this.id).reset.post()
+    return this.client.api.oauth2.applications[this.id].reset.post()
       .then(app => new OAuth2Application(this.client, app));
   }
 
@@ -9142,7 +9142,7 @@ class OAuth2Application {
    * @returns {OAuth2Application}
    */
   resetToken() {
-    return this.client.api.oauth2.applications(this.id).bot().reset.post()
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
       .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
   }
 
