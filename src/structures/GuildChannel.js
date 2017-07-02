@@ -188,7 +188,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels[this.id].permissions(payload.id)
+    return this.client.api.channels[this.id].permissions[payload.id]
       .put({ data: payload, reason })
       .then(() => this);
   }
