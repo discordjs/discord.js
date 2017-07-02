@@ -51,26 +51,32 @@ class Permissions {
   /**
    * Adds permissions to this one.
    * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions} This permissions
+   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
    */
   add(...permissions) {
+    let total = 0;
     for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) !== perm) this.bitfield |= perm;
+      if ((this.bitfield & perm) !== perm) total |= perm;
     }
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
+    this.bitfield |= total;
     return this;
   }
 
   /**
    * Removes permissions from this one.
    * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions} This permissions
+   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
    */
   remove(...permissions) {
+    let total = 0;
     for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) === perm) this.bitfield &= ~perm;
+      if ((this.bitfield & perm) === perm) total |= perm;
     }
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
+    this.bitfield &= ~total;
     return this;
   }
 
