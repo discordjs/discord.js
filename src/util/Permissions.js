@@ -90,7 +90,8 @@ class Permissions {
    * Data that can be resolved to give a permission number. This can be:
    * - A string (see {@link Permissions.FLAGS})
    * - A permission number
-   * @typedef {string|number} PermissionResolvable
+   * - An instance of Permissions
+   * @typedef {string|number|Permissions} PermissionResolvable
    */
 
   /**
@@ -100,6 +101,7 @@ class Permissions {
    */
   static resolve(permission) {
     if (typeof permission === 'number' && permission >= 0) return permission;
+    if (permission instanceof Permissions) return permission.bitfield;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') return this.FLAGS[permission];
     throw new RangeError('PERMISSION_INVALID');

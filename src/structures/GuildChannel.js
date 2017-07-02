@@ -76,12 +76,12 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.denied.bitfield : 0)
-      .add(overwrites.everyone ? overwrites.everyone.allowed.bitfield : 0)
-      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied.bitfield) : 0)
-      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed.bitfield) : 0)
-      .remove(overwrites.member ? overwrites.member.denied.bitfield : 0)
-      .add(overwrites.member ? overwrites.member.allowed.bitfield : 0)
+      .remove(overwrites.everyone ? overwrites.everyone.denied : 0)
+      .add(overwrites.everyone ? overwrites.everyone.allowed : 0)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied) : 0)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed) : 0)
+      .remove(overwrites.member ? overwrites.member.denied : 0)
+      .add(overwrites.member ? overwrites.member.allowed : 0)
       .freeze();
   }
 
@@ -155,8 +155,8 @@ class GuildChannel extends Channel {
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      allow.add(prevOverwrite.allowed.bitfield);
-      deny.add(prevOverwrite.denied.bitfield);
+      allow.add(prevOverwrite.allowed);
+      deny.add(prevOverwrite.denied);
     }
 
     for (const perm in options) {
