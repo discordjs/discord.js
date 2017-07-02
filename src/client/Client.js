@@ -414,7 +414,7 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+    return this.api.oauth2.applications[id].get()
     .then(app => new OAuth2Application(this, app));
   }
 
