@@ -131,7 +131,7 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   edit(data, reason) {
-    return this.client.api.channels(this.id).patch({
+    return this.client.api.channels[this.id].patch({
       data: {
         name: (data.name || this.name).trim(),
       },
