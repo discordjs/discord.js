@@ -110,7 +110,7 @@ class Permissions {
     if (permission instanceof Permissions) return permission.bitfield;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') return this.FLAGS[permission];
-    throw new RangeError('PERMISSION_INVALID');
+    throw new RangeError('PERMISSIONS_INVALID');
   }
 }
 
