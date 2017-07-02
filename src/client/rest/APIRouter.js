@@ -1,7 +1,6 @@
 const util = require('util');
 
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
-
 const reflectors = [
   'toString', 'valueOf', 'inspect', 'constructor',
   Symbol.toPrimitive, util.inspect.custom,
