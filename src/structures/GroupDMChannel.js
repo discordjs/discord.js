@@ -162,7 +162,7 @@ class GroupDMChannel extends Channel {
     const data = this.client.user.bot ?
       { nick, access_token: accessToken } :
       { recipient: id };
-    return this.client.api.channels(this.id).recipients(id).put({ data })
+    return this.client.api.channels[this.id].recipients[id].put({ data })
       .then(() => this);
   }
 
@@ -173,7 +173,7 @@ class GroupDMChannel extends Channel {
    */
   removeUser(user) {
     const id = this.client.resolver.resolveUserID(user);
-    return this.client.api.channels(this.id).recipients(id).delete()
+    return this.client.api.channels[this.id].recipients[id].delete()
       .then(() => this);
   }
 

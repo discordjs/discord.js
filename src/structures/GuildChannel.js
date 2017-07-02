@@ -76,20 +76,20 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone.deny;
-      permissions |= overwrites.everyone.allow;
+      permissions &= ~overwrites.everyone._denied;
+      permissions |= overwrites.everyone._allowed;
     }
 
     let allow = 0;
     for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite.deny;
-      allow |= overwrite.allow;
+      permissions &= ~overwrite._denied;
+      allow |= overwrite._allowed;
     }
     permissions |= allow;
 
     if (overwrites.member) {
-      permissions &= ~overwrites.member.deny;
-      permissions |= overwrites.member.allow;
+      permissions &= ~overwrites.member._denied;
+      permissions |= overwrites.member._allowed;
     }
 
     const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
@@ -171,8 +171,8 @@ class GuildChannel extends Channel {
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite.allow;
-      payload.deny = prevOverwrite.deny;
+      payload.allow = prevOverwrite._allowed;
+      payload.deny = prevOverwrite._denied;
     }
 
     for (const perm in options) {
@@ -188,7 +188,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels(this.id).permissions(payload.id)
+    return this.client.api.channels[this.id].permissions[payload.id]
       .put({ data: payload, reason })
       .then(() => this);
   }
@@ -215,7 +215,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.channels(this.id).patch({
+    return this.client.api.channels[this.id].patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic || this.topic,
@@ -287,10 +287,10 @@ class GuildChannel extends Channel {
    * @returns {Promise<Invite>}
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, reason } = {}) {
-    return this.client.api.channels(this.id).invites.post({ data: {
+    return this.client.api.channels[this.id].invites.post({ data: {
       temporary, max_age: maxAge, max_uses: maxUses,
     }, reason })
-    .then(invite => new Invite(this.client, invite));
+      .then(invite => new Invite(this.client, invite));
   }
 
   /**
@@ -301,7 +301,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(name = this.name, withPermissions = true, withTopic = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+    return this.guild.createChannel(name, this.type, { overwrites: withPermissions ? this.permissionOverwrites : [] })
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
@@ -351,7 +351,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error); // Log error
    */
   delete(reason) {
-    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
+    return this.client.api.channels[this.id].delete({ reason }).then(() => this);
   }
 
   /**

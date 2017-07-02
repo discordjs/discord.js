@@ -4,8 +4,9 @@ const Util = require('../../util/Util');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Prism = require('prism-media');
+const { Error } = require('../../errors');
 
 /**
  * Represents a connection to a guild's voice server.
@@ -52,7 +53,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * The current status of the voice connection
-     * @type {number}
+     * @type {VoiceStatus}
      */
     this.status = Constants.VoiceStatus.AUTHENTICATING;
 
@@ -132,6 +133,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
       op: Constants.VoiceOPCodes.SPEAKING,
@@ -245,7 +247,6 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    this.status = Constants.VoiceStatus.DISCONNECTED;
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -256,6 +257,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
+    this.status = Constants.VoiceStatus.DISCONNECTED;
   }
 
   /**
@@ -341,8 +343,8 @@ class VoiceConnection extends EventEmitter {
    */
   connect() {
     if (this.status !== Constants.VoiceStatus.RECONNECTING) {
-      if (this.sockets.ws) throw new Error('There is already an existing WebSocket connection.');
-      if (this.sockets.udp) throw new Error('There is already an existing UDP connection.');
+      if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
+      if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
     }
 
     if (this.sockets.ws) this.sockets.ws.shutdown();

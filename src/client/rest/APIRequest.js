@@ -1,6 +1,6 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
-const Constants = require('../../util/Constants');
+const { Error } = require('../../errors');
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -28,7 +28,7 @@ class APIRequest {
     } else if (this.client.token) {
       return this.client.token;
     }
-    throw new Error(Constants.Errors.NO_TOKEN);
+    throw new Error('TOKEN_MISSING');
   }
 
   gen() {
@@ -42,7 +42,7 @@ class APIRequest {
     const request = snekfetch[this.method](`${API}${this.path}`);
 
     if (this.options.auth !== false) request.set('Authorization', this.getAuth());
-    if (this.options.reason) request.set('X-Audit-Log-Reason', this.options.reason);
+    if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
 
     if (this.options.files) {

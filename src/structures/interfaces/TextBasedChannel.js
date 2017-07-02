@@ -3,6 +3,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -136,11 +137,11 @@ class TextBasedChannel {
       return this.fetchMessages({ limit: 1, around: messageID })
       .then(messages => {
         const msg = messages.get(messageID);
-        if (!msg) throw new Error('Message not found.');
+        if (!msg) throw new Error('MESSAGE_MISSING');
         return msg;
       });
     }
-    return this.client.api.channels(this.id).messages(messageID).get()
+    return this.client.api.channels[this.id].messages[messageID].get()
     .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -170,7 +171,7 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).messages.get({ query: options })
+    return this.client.api.channels[this.id].messages.get({ query: options })
     .then(data => {
       const messages = new Collection();
       for (const message of data) {
@@ -188,7 +189,7 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).pins.get().then(data => {
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -203,7 +204,7 @@ class TextBasedChannel {
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
+   * @returns {Promise<MessageSearchResult>}
    * An array containing arrays of messages. Each inner array is a search context cluster
    * The message which has triggered the result will have the `hit` property set to `true`
    * @example
@@ -211,8 +212,8 @@ class TextBasedChannel {
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   const hit = res.results[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
    * }).catch(console.error);
    */
   search(options = {}) {
@@ -227,9 +228,9 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels(this.id).typing;
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
@@ -352,7 +353,7 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels(this.id).messages()['bulk-delete']
+      return this.client.api.channels[this.id].messages['bulk-delete']
       .post({ data: { messages: messageIDs } })
       .then(() =>
         this.client.actions.MessageDeleteBulk.handle({
@@ -361,7 +362,7 @@ class TextBasedChannel {
         }).messages
       );
     }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
   /**
@@ -371,7 +372,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

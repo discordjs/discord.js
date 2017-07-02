@@ -65,7 +65,7 @@ class SequentialRequestHandler extends RequestHandler {
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else {
-            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.body) : err);
+            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
             resolve(err);
           }
         } else {
