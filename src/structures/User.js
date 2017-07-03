@@ -113,10 +113,6 @@ class User {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
