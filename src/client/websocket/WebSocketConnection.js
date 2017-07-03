@@ -290,7 +290,8 @@ class WebSocketConnection extends EventEmitter {
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(data);
+    this.onPacket(data);
+    this.client.emit('raw', data);
   }
 
   /**
@@ -328,7 +329,6 @@ class WebSocketConnection extends EventEmitter {
       default:
         return this.packetManager.handle(packet);
     }
-    this.client.emit('raw', packet);
   }
 
   /**
