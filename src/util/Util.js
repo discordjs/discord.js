@@ -1,6 +1,7 @@
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
 const ConstantsHttp = Constants.DefaultOptions.http;
+const { RangeError, TypeError } = require('../errors');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -19,7 +20,9 @@ class Util {
   static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
-    if (splitText.length === 1) throw new Error('Message exceeds the max length and contains no split characters.');
+    if (splitText.length === 1) {
+      throw new RangeError('SPLIT_MAX_LEN');
+    }
     const messages = [''];
     let msg = 0;
     for (let i = 0; i < splitText.length; i++) {
@@ -54,7 +57,7 @@ class Util {
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
-      if (!token) throw new Error('A token must be provided.');
+      if (!token) throw new Error('TOKEN_MISSING');
       snekfetch.get(`${ConstantsHttp.host}/api/v${ConstantsHttp.version}${Constants.Endpoints.botGateway}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
@@ -279,9 +282,9 @@ class Util {
     }
 
     if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('Color must be within the range 0 - 16777215 (0xFFFFFF).');
+      throw new RangeError('COLOR_RANGE');
     } else if (color && isNaN(color)) {
-      throw new TypeError('Unable to convert color to a number.');
+      throw new TypeError('COLOR_CONVERT');
     }
 
     return color;

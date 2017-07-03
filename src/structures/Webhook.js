@@ -153,7 +153,7 @@ class Webhook {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.api.webhooks(this.id, this.token).post({
+      )).then(files => this.client.api.webhooks.opts(this.id, this.token).post({
         data: options,
         query: { wait: true },
         files,
@@ -161,14 +161,14 @@ class Webhook {
       }));
     }
 
-    return this.client.api.webhooks(this.id, this.token).post({
+    return this.client.api.webhooks.opts(this.id, this.token).post({
       data: options,
       query: { wait: true },
       auth: false,
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 
@@ -190,14 +190,14 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.api.webhooks(this.id, this.token).slack.post({
+    return this.client.api.webhooks.opts(this.id, this.token).slack.post({
       query: { wait: true },
       auth: false,
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 
@@ -216,7 +216,7 @@ class Webhook {
         return this.edit({ name, avatar: dataURI }, reason);
       });
     }
-    return this.client.api.webhooks(this.id, this.token).patch({
+    return this.client.api.webhooks.opts(this.id, this.token).patch({
       data: { name, avatar },
       reason,
     }).then(data => {
@@ -232,7 +232,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+    return this.client.api.webhooks.opts(this.id, this.token).delete({ reason });
   }
 }
 

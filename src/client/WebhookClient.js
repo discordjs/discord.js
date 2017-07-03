@@ -35,13 +35,6 @@ class WebhookClient extends Webhook {
     this.rest = new RESTManager(this);
 
     /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
-
-    /**
      * The data resolver of the client
      * @type {ClientDataResolver}
      * @private
@@ -64,6 +57,15 @@ class WebhookClient extends Webhook {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)
@@ -72,9 +74,9 @@ class WebhookClient extends Webhook {
    */
   setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
-      fn();
+      fn(...args);
       this._timeouts.delete(timeout);
-    }, delay, ...args);
+    }, delay);
     this._timeouts.add(timeout);
     return timeout;
   }

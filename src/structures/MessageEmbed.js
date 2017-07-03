@@ -1,4 +1,5 @@
 const Util = require('../util/Util');
+const { RangeError } = require('../errors');
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -156,13 +157,11 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   addField(name, value, inline = false) {
-    if (this.fields.length >= 25) throw new RangeError('MessageEmbeds may not exceed 25 fields.');
+    if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     name = Util.resolveString(name);
-    if (name.length > 256) throw new RangeError('MessageEmbed field names may not exceed 256 characters.');
-    if (!/\S/.test(name)) throw new RangeError('MessageEmbed field names may not be empty.');
+    if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (value.length > 1024) throw new RangeError('MessageEmbed field values may not exceed 1024 characters.');
-    if (!/\S/.test(value)) throw new RangeError('MessageEmbed field values may not be empty.');
+    if (!String(name) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
     this.fields.push({ name, value, inline });
     return this;
   }
@@ -183,7 +182,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   attachFile(file) {
-    if (this.file) throw new RangeError('You may not upload more than one file at once.');
+    if (this.file) throw new RangeError('EMBED_FILE_LIMIT');
     this.file = file;
     return this;
   }
@@ -217,7 +216,7 @@ class MessageEmbed {
    */
   setDescription(description) {
     description = Util.resolveString(description);
-    if (description.length > 2048) throw new RangeError('MessageEmbed descriptions may not exceed 2048 characters.');
+    if (description.length > 2048) throw new RangeError('EMBED_DESCRIPTION');
     this.description = description;
     return this;
   }
@@ -230,7 +229,7 @@ class MessageEmbed {
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
-    if (text.length > 2048) throw new RangeError('MessageEmbed footer text may not exceed 2048 characters.');
+    if (text.length > 2048) throw new RangeError('EMBED_FOOTER_TEXT');
     this.footer = { text, iconURL };
     return this;
   }
@@ -272,7 +271,7 @@ class MessageEmbed {
    */
   setTitle(title) {
     title = Util.resolveString(title);
-    if (title.length > 256) throw new RangeError('MessageEmbed titles may not exceed 256 characters.');
+    if (title.length > 256) throw new RangeError('EMBED_TITLE');
     this.title = title;
     return this;
   }

@@ -1,4 +1,5 @@
 exports.Package = require('../../package.json');
+const { Error, RangeError } = require('../errors');
 
 /**
  * Options for a client.
@@ -34,6 +35,7 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
+  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -77,20 +79,6 @@ exports.WSCodes = {
   4011: 'Shard would be on too many guilds if connected',
 };
 
-exports.Errors = {
-  NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
-  NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
-  NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
-  BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
-  TOOK_TOO_LONG: 'Something took too long to do.',
-  NOT_A_PERMISSION: 'Invalid permission string or number.',
-  INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
-  BAD_LOGIN: 'Incorrect login details were provided.',
-  INVALID_SHARD: 'Invalid shard settings were provided.',
-  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
-  INVALID_TOKEN: 'An invalid token was provided.',
-};
-
 const AllowedImageFormats = [
   'webp',
   'png',
@@ -106,6 +94,11 @@ const AllowedImageSizes = [
   2048,
 ];
 
+function checkImage({ size, format }) {
+  if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
+  if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+}
+
 exports.Endpoints = {
   CDN(root) {
     return {
@@ -114,29 +107,26 @@ exports.Endpoints = {
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+        checkImage({ size, format });
         return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      Icon: (guildID, hash, format = 'default', size) => {
-        if (format === 'default') format = 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+      Icon: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
         return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      AppIcon: (clientID, hash, format = 'default', size) => {
-        if (format === 'default') format = 'webp';
-        if (!AllowedImageFormats.includes(format)) throw new Error(`Invalid image format: ${format}`);
-        if (size && !AllowedImageSizes.includes(size)) throw new RangeError(`Invalid size: ${size}`);
+      AppIcon: (clientID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
         return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
-      Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
+      Splash: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
     };
   },
   invite: code => `https://discord.gg/${code}`,
   botGateway: '/gateway/bot',
 };
-
 
 /**
  * The current status of the client. Here are the available statuses:
@@ -517,4 +507,97 @@ exports.Colors = {
   GREYPLE: 0x99AAB5,
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
+};
+
+/**
+ * An error encountered while performing an API request. Here are the potential errors:
+ * - UNKNOWN_ACCOUNT
+ * - UNKNOWN_APPLICATION
+ * - UNKNOWN_CHANNEL
+ * - UNKNOWN_GUILD
+ * - UNKNOWN_INTEGRATION
+ * - UNKNOWN_INVITE
+ * - UNKNOWN_MEMBER
+ * - UNKNOWN_MESSAGE
+ * - UNKNOWN_OVERWRITE
+ * - UNKNOWN_PROVIDER
+ * - UNKNOWN_ROLE
+ * - UNKNOWN_TOKEN
+ * - UNKNOWN_USER
+ * - UNKNOWN_EMOJI
+ * - BOT_PROHIBITED_ENDPOINT
+ * - BOT_ONLY_ENDPOINT
+ * - MAXIMUM_GUILDS
+ * - MAXIMUM_FRIENDS
+ * - MAXIMUM_PINS
+ * - MAXIMUM_ROLES
+ * - MAXIMUM_REACTIONS
+ * - UNAUTHORIZED
+ * - MISSING_ACCESS
+ * - INVALID_ACCOUNT_TYPE
+ * - CANNOT_EXECUTE_ON_DM
+ * - EMBED_DISABLED
+ * - CANNOT_EDIT_MESSAGE_BY_OTHER
+ * - CANNOT_SEND_EMPTY_MESSAGE
+ * - CANNOT_MESSAGE_USER
+ * - CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
+ * - CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
+ * - OAUTH2_APPLICATION_BOT_ABSENT
+ * - MAXIMUM_OAUTH2_APPLICATIONS
+ * - INVALID_OAUTH_STATE
+ * - MISSING_PERMISSIONS
+ * - INVALID_AUTHENTICATION_TOKEN
+ * - NOTE_TOO_LONG
+ * - INVALID_BULK_DELETE_QUANTITY
+ * - CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * - CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * - BULK_DELETE_MESSAGE_TOO_OLD
+ * - INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * - REACTION_BLOCKED
+ * @typedef {string} APIError
+ */
+exports.APIErrors = {
+  UNKNOWN_ACCOUNT: 10001,
+  UNKNOWN_APPLICATION: 10002,
+  UNKNOWN_CHANNEL: 10003,
+  UNKNOWN_GUILD: 10004,
+  UNKNOWN_INTEGRATION: 10005,
+  UNKNOWN_INVITE: 10006,
+  UNKNOWN_MEMBER: 10007,
+  UNKNOWN_MESSAGE: 10008,
+  UNKNOWN_OVERWRITE: 10009,
+  UNKNOWN_PROVIDER: 10010,
+  UNKNOWN_ROLE: 10011,
+  UNKNOWN_TOKEN: 10012,
+  UNKNOWN_USER: 10013,
+  UNKNOWN_EMOJI: 10014,
+  BOT_PROHIBITED_ENDPOINT: 20001,
+  BOT_ONLY_ENDPOINT: 20002,
+  MAXIMUM_GUILDS: 30001,
+  MAXIMUM_FRIENDS: 30002,
+  MAXIMUM_PINS: 30003,
+  MAXIMUM_ROLES: 30005,
+  MAXIMUM_REACTIONS: 30010,
+  UNAUTHORIZED: 40001,
+  MISSING_ACCESS: 50001,
+  INVALID_ACCOUNT_TYPE: 50002,
+  CANNOT_EXECUTE_ON_DM: 50003,
+  EMBED_DISABLED: 50004,
+  CANNOT_EDIT_MESSAGE_BY_OTHER: 50005,
+  CANNOT_SEND_EMPTY_MESSAGE: 50006,
+  CANNOT_MESSAGE_USER: 50007,
+  CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: 50008,
+  CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: 50009,
+  OAUTH2_APPLICATION_BOT_ABSENT: 50010,
+  MAXIMUM_OAUTH2_APPLICATIONS: 50011,
+  INVALID_OAUTH_STATE: 50012,
+  MISSING_PERMISSIONS: 50013,
+  INVALID_AUTHENTICATION_TOKEN: 50014,
+  NOTE_TOO_LONG: 50015,
+  INVALID_BULK_DELETE_QUANTITY: 50016,
+  CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
+  CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
+  BULK_DELETE_MESSAGE_TOO_OLD: 50034,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  REACTION_BLOCKED: 90001,
 };

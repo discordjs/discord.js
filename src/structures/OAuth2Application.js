@@ -119,26 +119,34 @@ class OAuth2Application {
 
   /**
    * A link to the application's icon
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`.
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string} URL to the icon
    */
-  iconURL(format, size) {
+  iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
   }
 
   /**
-   * Reset the app's secret and bot token.
+   * Reset the app's secret.
+   * <warn>This is only available when using a user account.</warn>
    * @returns {OAuth2Application}
    */
-  reset() {
-    return this.rest.api.oauth2.applications(this.id).reset.post()
+  resetSecret() {
+    return this.client.api.oauth2.applications[this.id].reset.post()
       .then(app => new OAuth2Application(this.client, app));
+  }
+
+  /**
+   * Reset the app's bot token.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {OAuth2Application}
+   */
+  resetToken() {
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
+      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**

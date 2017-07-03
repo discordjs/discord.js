@@ -19,6 +19,7 @@ This issue tracker is only for bug reports and enhancement suggestions. You won'
 - Operating system:
 - Priority this issue should have – please be realistic and elaborate if possible:
 
+- [ ] I found this issue while running code on a __user account__
 <!--
 Ideally you would also test whether the issue occurs on the latest master branch commit.
 If you have, please check the following box and insert the hash of the commit you tested:
