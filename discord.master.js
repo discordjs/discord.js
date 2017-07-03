@@ -4498,10 +4498,6 @@ class User {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
@@ -5719,16 +5715,13 @@ class Guild {
 
   /**
    * Gets the URL to this guild's icon
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string}
    */
-  iconURL(format, size) {
+  iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
   }
 
@@ -5743,12 +5736,14 @@ class Guild {
 
   /**
    * The URL to this guild's splash
-   * @type {?string}
-   * @readonly
+   * @param {Object} [options={}] Options for the splash url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
    */
-  get splashURL() {
+  splashURL({ format, size } = {}) {
     if (!this.splash) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -9111,16 +9106,13 @@ class OAuth2Application {
 
   /**
    * A link to the application's icon
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`.
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string} URL to the icon
    */
-  iconURL(format, size) {
+  iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
   }
 
