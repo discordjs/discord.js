@@ -406,7 +406,7 @@ class Guild {
 
   /**
    * Fetch all webhooks for the guild.
-   * @returns {Collection<Snowflake, Webhook>}
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
     return this.client.api.guilds[this.id].webhooks.get().then(data => {
@@ -418,7 +418,7 @@ class Guild {
 
   /**
    * Fetch available voice regions.
-   * @returns {Collection<string, VoiceRegion>}
+   * @returns {Promise<Collection<string, VoiceRegion>>}
    */
   fetchVoiceRegions() {
     return this.client.api.guilds[this.id].regions.get().then(res => {
@@ -539,8 +539,6 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<MessageSearchResult>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
    * @example
    * guild.search({
    *   content: 'discord.js',
