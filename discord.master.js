@@ -553,6 +553,19 @@ exports.UserSettingsMap = {
   },
 };
 
+/**
+ * All flags users can have:
+ * - STAFF
+ * - PARTNER
+ * - HYPESQUAD
+ * @typedef {string} UserFlags
+ */
+exports.UserFlags = {
+  STAFF: 1 << 0,
+  PARTNER: 1 << 1,
+  HYPESQUAD: 1 << 2,
+};
+
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
@@ -4609,7 +4622,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(data));
+    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
@@ -26484,6 +26497,7 @@ module.exports = UserConnection;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
+const { UserFlags } = __webpack_require__(0);
 const UserConnection = __webpack_require__(188);
 
 /**
@@ -26525,7 +26539,14 @@ class UserProfile {
      * If the user has Discord Premium
      * @type {boolean}
      */
-    this.premium = data.premium;
+    this.premium = Boolean(data.premium_since);
+
+    /**
+     * The Bitfield of the users' flags
+     * @type {number}
+     * @private
+     */
+    this._flags = data.user.flags;
 
     /**
      * The date since which the user has had Discord Premium
@@ -26541,6 +26562,19 @@ class UserProfile {
     for (const connection of data.connected_accounts) {
       this.connections.set(connection.id, new UserConnection(this.user, connection));
     }
+  }
+
+  /**
+   * The flags the user has
+   * @type {UserFlags[]}
+   * @readonly
+   */
+  get flags() {
+    const flags = [];
+    for (const [name, flag] of Object.entries(UserFlags)) {
+      if ((this._flags & flag) === flag) flags.push(name);
+    }
+    return flags;
   }
 }
 
