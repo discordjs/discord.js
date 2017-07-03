@@ -177,14 +177,14 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (!token) {
-      this.authenticateFailed('Token not provided from voice server packet.');
+      this.authenticateFailed('VOICE_TOKEN_ABSENT');
       return;
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
 
     if (!endpoint) {
-      this.authenticateFailed('Invalid endpoint received.');
+      this.authenticateFailed('VOICE_INVALID_ENDPOINT');
       return;
     }
 
@@ -203,7 +203,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSessionID(sessionID) {
     if (!sessionID) {
-      this.authenticateFailed('Session ID not supplied.');
+      this.authenticateFailed('VOICE_SESSION_ABSENT');
       return;
     }
 
@@ -277,7 +277,7 @@ class VoiceConnection extends EventEmitter {
   authenticate() {
     this.sendVoiceStateUpdate();
     this.connectTimeout = this.client.setTimeout(
-      () => this.authenticateFailed(new Error('Connection not established within 15 seconds.')), 15000);
+      () => this.authenticateFailed('VOICE_CONNECTION_TIMEOUT'), 15000);
   }
 
   /**
