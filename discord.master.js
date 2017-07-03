@@ -7766,7 +7766,7 @@ class Webhook {
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = __webpack_require__(9);
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 
@@ -7795,7 +7795,7 @@ class Webhook {
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = __webpack_require__(9);
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 
