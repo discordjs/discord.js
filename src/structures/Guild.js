@@ -530,7 +530,7 @@ class Guild {
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('Members didn\'t arrive in time.'));
+        reject(new Error('FETCH_USERS_TIMEOUT'));
       }, 120 * 1000);
     });
   }
