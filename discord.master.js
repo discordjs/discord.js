@@ -17556,7 +17556,9 @@ class WebSocketConnection extends EventEmitter {
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(data);
+    const ret = this.onPacket(data);
+    this.client.emit('raw', data);
+    return ret;
   }
 
   /**
@@ -17577,7 +17579,6 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Received null packet');
       return false;
     }
-    this.client.emit('raw', packet);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
