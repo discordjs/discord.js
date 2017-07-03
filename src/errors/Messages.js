@@ -80,7 +80,7 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 
-  FETCH_USERS_TIMEOUT: 'Members didn\'t arrive in time',
+  FETCH_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
