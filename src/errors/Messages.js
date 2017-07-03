@@ -83,6 +83,8 @@ const Messages = {
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
 
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
+
+  FETCH_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
