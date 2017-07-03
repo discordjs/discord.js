@@ -481,6 +481,19 @@ exports.UserSettingsMap = {
   },
 };
 
+/**
+ * All flags users can have:
+ * - STAFF
+ * - PARTNER
+ * - HYPESQUAD
+ * @typedef {string} UserFlags
+ */
+exports.UserFlags = {
+  STAFF: 1 << 0,
+  PARTNER: 1 << 1,
+  HYPESQUAD: 1 << 2,
+};
+
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
