@@ -26317,6 +26317,10 @@ const Messages = {
   VOICE_STREAM_EXISTS: 'There is already an existing stream for that user.',
   VOICE_JOIN_CHANNEL: (full = false) =>
     `You do not have permission to join this voice channel${full ? '; it is full.' : '.'}`,
+  VOICE_CONNECTION_TIMEOUT: 'Connection not established within 15 seconds.',
+  VOICE_TOKEN_ABSENT: 'Token not provided from voice server packet.',
+  VOICE_SESSION_ABSENT: 'Session ID not supplied.',
+  VOICE_INVALID_ENDPOINT: 'Invalid endpoint received.',
 
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 
