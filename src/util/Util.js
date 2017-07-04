@@ -2,6 +2,7 @@ const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
 const ConstantsHttp = Constants.DefaultOptions.http;
 const { RangeError, TypeError } = require('../errors');
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -128,7 +129,7 @@ class Util {
   static mergeDefault(def, given) {
     if (!given) return def;
     for (const key in def) {
-      if (!{}.hasOwnProperty.call(given, key) && def[key] !== undefined) {
+      if (!has(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
         given[key] = this.mergeDefault(def[key], given[key]);
