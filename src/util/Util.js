@@ -128,7 +128,7 @@ class Util {
   static mergeDefault(def, given) {
     if (!given) return def;
     for (const key in def) {
-      if (!{}.hasOwnProperty.call(given, key)) {
+      if (!{}.hasOwnProperty.call(given, key) && def[key] !== undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
         given[key] = this.mergeDefault(def[key], given[key]);
