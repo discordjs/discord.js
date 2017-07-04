@@ -529,7 +529,7 @@ class Guild {
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('Members didn\'t arrive in time.'));
+        reject(new Error('FETCH_MEMBERS_TIME'));
       }, 120 * 1000);
     });
   }
@@ -803,7 +803,7 @@ class Guild {
   unban(user, reason) {
     const id = this.client.resolver.resolveUserID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
-    return this.client.api.guilds(this.id).bans[id].delete({ reason })
+    return this.client.api.guilds[this.id].bans[id].delete({ reason })
       .then(() => user);
   }
 
@@ -979,7 +979,7 @@ class Guild {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis[emoji.id].delete()
+    return this.client.api.guilds[this.id].emojis[emoji.id].delete()
     .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
