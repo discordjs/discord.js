@@ -67,8 +67,9 @@ exports.DefaultOptions = {
   },
   http: {
     version: 7,
-    host: 'https://discordapp.com',
+    api: 'https://discordapp.com',
     cdn: 'https://cdn.discordapp.com',
+    invite: 'https://discord.gg',
   },
 };
 
@@ -124,7 +125,7 @@ exports.Endpoints = {
       },
     };
   },
-  invite: code => `https://discord.gg/${code}`,
+  invite: (root, code) => `${root}/${code}`,
   botGateway: '/gateway/bot',
 };
 
