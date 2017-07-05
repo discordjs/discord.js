@@ -52,7 +52,11 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
-    // private
+    /**
+     * Cached webhooks
+     * @type {Collection<Snowflake, Webhook>}
+     * @private
+     */
     this.webhooks = new Collection();
     if (data.webhooks) {
       for (const hook of data.webhooks) {
