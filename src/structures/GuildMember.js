@@ -485,12 +485,12 @@ class GuildMember {
    */
   kick(reason) {
     return this.client.api.guilds[this.guild.id].members[this.user.id].delete({ reason })
-    .then(() =>
-      this.client.actions.GuildMemberRemove.handle({
-        guild_id: this.guild.id,
-        user: this.user,
-      }).member
-    );
+      .then(() =>
+        this.client.actions.GuildMemberRemove.handle({
+          guild_id: this.guild.id,
+          user: this.user,
+        }).member
+      );
   }
 
   /**

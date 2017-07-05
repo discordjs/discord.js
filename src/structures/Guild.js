@@ -394,14 +394,14 @@ class Guild {
    */
   fetchInvites() {
     return this.client.api.guilds[this.id].invites.get()
-    .then(inviteItems => {
-      const invites = new Collection();
-      for (const inviteItem of inviteItems) {
-        const invite = new Invite(this.client, inviteItem);
-        invites.set(invite.code, invite);
-      }
-      return invites;
-    });
+      .then(inviteItems => {
+        const invites = new Collection();
+        for (const inviteItem of inviteItems) {
+          const invite = new Invite(this.client, inviteItem);
+          invites.set(invite.code, invite);
+        }
+        return invites;
+      });
   }
 
   /**
@@ -490,10 +490,10 @@ class Guild {
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.api.guilds[this.id].members[user.id].get()
-    .then(data => {
-      if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
-      else return new GuildMember(this, data);
-    });
+      .then(data => {
+        if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
+        else return new GuildMember(this, data);
+      });
   }
 
   /**
@@ -594,7 +594,7 @@ class Guild {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
     return this.client.api.guilds[this.id].patch({ data: _data, reason })
-    .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
+      .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
 
   /**
@@ -739,11 +739,11 @@ class Guild {
    */
   acknowledge() {
     return this.client.api.guilds[this.id].ack
-    .post({ data: { token: this.client.rest._ackToken } })
-    .then(res => {
-      if (res.token) this.client.rest._ackToken = res.token;
-      return this;
-    });
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   /**
@@ -778,15 +778,15 @@ class Guild {
     const id = this.client.resolver.resolveUserID(user);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
     return this.client.api.guilds[this.id].bans[id].put({ query: options })
-    .then(() => {
-      if (user instanceof GuildMember) return user;
-      const _user = this.client.resolver.resolveUser(id);
-      if (_user) {
-        const member = this.client.resolver.resolveGuildMember(this, _user);
-        return member || _user;
-      }
-      return id;
-    });
+      .then(() => {
+        if (user instanceof GuildMember) return user;
+        const _user = this.client.resolver.resolveUser(id);
+        if (_user) {
+          const member = this.client.resolver.resolveGuildMember(this, _user);
+          return member || _user;
+        }
+        return id;
+      });
   }
 
   /**
@@ -965,10 +965,10 @@ class Guild {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     } else {
       return this.client.resolver.resolveBuffer(attachment)
-      .then(data => {
-        const dataURI = this.client.resolver.resolveBase64(data);
-        return this.createEmoji(dataURI, name, roles);
-      });
+        .then(data => {
+          const dataURI = this.client.resolver.resolveBase64(data);
+          return this.createEmoji(dataURI, name, roles);
+        });
     }
   }
 
@@ -980,7 +980,7 @@ class Guild {
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
     return this.client.api.guilds(this.id).emojis[emoji.id].delete()
-    .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   /**
@@ -995,7 +995,7 @@ class Guild {
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
     return this.client.api.users['@me'].guilds[this.id].delete()
-    .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
   /**
@@ -1009,7 +1009,7 @@ class Guild {
    */
   delete() {
     return this.client.api.guilds[this.id].delete()
-    .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
+      .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
   /**
@@ -1167,12 +1167,12 @@ class Guild {
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
     return this.client.api.guilds[this.id].roles.patch({ data: updatedRoles })
-    .then(() =>
-      this.client.actions.GuildRolesPositionUpdate.handle({
-        guild_id: this.id,
-        roles: updatedRoles,
-      }).guild
-    );
+      .then(() =>
+        this.client.actions.GuildRolesPositionUpdate.handle({
+          guild_id: this.id,
+          roles: updatedRoles,
+        }).guild
+      );
   }
 
   /**
@@ -1197,12 +1197,12 @@ class Guild {
 
     updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
     return this.client.api.guilds[this.id].channels.patch({ data: updatedChannels })
-    .then(() =>
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: this.id,
-        roles: updatedChannels,
-      }).guild
-    );
+      .then(() =>
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          roles: updatedChannels,
+        }).guild
+      );
   }
 
   /**
@@ -1229,8 +1229,8 @@ class Guild {
   _sortPositionWithID(collection) {
     return collection.sort((a, b) =>
       a.position !== b.position ?
-      a.position - b.position :
-      Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+        a.position - b.position :
+        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
     );
   }
 }

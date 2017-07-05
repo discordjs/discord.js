@@ -204,7 +204,7 @@ class User {
     return this.client.api.users[this.client.user.id].channels.post({ data: {
       recipient_id: this.id,
     } })
-    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -213,9 +213,8 @@ class User {
    */
   deleteDM() {
     if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels[this.dmChannel.id].delete().then(data =>
-       this.client.actions.ChannelDelete.handle(data).channel
-    );
+    return this.client.api.channels[this.dmChannel.id].delete()
+      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
 
   /**

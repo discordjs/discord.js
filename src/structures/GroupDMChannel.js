@@ -136,7 +136,7 @@ class GroupDMChannel extends Channel {
       { nick, access_token: accessTokenOrUser } :
       { recipient: id };
     return this.client.api.channels[this.id].recipients[id].put({ data })
-    .then(() => this);
+      .then(() => this);
   }
 
   /**

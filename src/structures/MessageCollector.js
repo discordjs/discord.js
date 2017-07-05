@@ -11,7 +11,6 @@ const Collector = require('./interfaces/Collector');
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
-
   /**
    * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
    * @param {CollectorFilter} filter The filter to be applied to this collector
