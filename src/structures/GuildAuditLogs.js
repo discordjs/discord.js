@@ -1,5 +1,6 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Webhook = require('./Webhook');
 
 const Targets = {
   ALL: 'ALL',
@@ -55,7 +56,7 @@ class GuildAuditLogs {
     this.webhooks = new Collection();
     if (data.webhooks) {
       for (const hook of data.webhooks) {
-        this.webhooks.set(webhook.id, new Webhook(guild.client, hook));
+        this.webhooks.set(hook.id, new Webhook(guild.client, hook));
       }
     }
 
