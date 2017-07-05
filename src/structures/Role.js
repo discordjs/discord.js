@@ -120,7 +120,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
@@ -202,7 +202,7 @@ class Role {
   edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions;
-    return this.client.api.guilds(this.guild.id).roles(this.id).patch({
+    return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
         position: typeof data.position !== 'undefined' ? data.position : this.position,
@@ -311,7 +311,7 @@ class Role {
    *  .catch(console.error);
    */
   delete(reason) {
-    return this.client.api.guilds(this.guild.id).roles(this.id).delete({ reason })
+    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
     .then(() =>
       this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
     );

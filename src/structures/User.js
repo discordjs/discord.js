@@ -1,6 +1,6 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
 
@@ -105,17 +105,14 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
-   * for animated avatars or otherwise `webp`
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
-   * @returns {?string} avatarURL
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string}
    */
-  avatarURL(format, size) {
+  avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
     return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
@@ -130,11 +127,14 @@ class User {
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @type {string}
-   * @readonly
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
    */
-  get displayAvatarURL() {
-    return this.avatarURL() || this.defaultAvatarURL;
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
   }
 
   /**
@@ -201,7 +201,7 @@ class User {
    */
   createDM() {
     if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
+    return this.client.api.users[this.client.user.id].channels.post({ data: {
       recipient_id: this.id,
     } })
     .then(data => this.client.actions.ChannelCreate.handle(data).channel);
@@ -213,7 +213,7 @@ class User {
    */
   deleteDM() {
     if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
+    return this.client.api.channels[this.dmChannel.id].delete().then(data =>
        this.client.actions.ChannelDelete.handle(data).channel
     );
   }
@@ -224,7 +224,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
+    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
@@ -234,7 +234,7 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
+    return this.client.api.users['@me'].notes[this.id].put({ data: { note } })
       .then(() => this);
   }
 

@@ -1,7 +1,8 @@
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
+const { Error } = require('../../errors');
 
 /**
  * Represents a UDP client for a Voice Connection.
@@ -89,8 +90,8 @@ class VoiceConnectionUDPClient extends EventEmitter {
    */
   send(packet) {
     return new Promise((resolve, reject) => {
-      if (!this.socket) throw new Error('Tried to send a UDP packet, but there is no socket available.');
-      if (!this.discordAddress || !this.discordPort) throw new Error('Malformed UDP address or port.');
+      if (!this.socket) throw new Error('UDP_SEND_FAIL');
+      if (!this.discordAddress || !this.discordPort) throw new Error('UDP_ADDRESS_MALFORMED');
       this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
         if (error) reject(error); else resolve(packet);
       });

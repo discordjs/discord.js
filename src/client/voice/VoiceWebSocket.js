@@ -1,6 +1,7 @@
 const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
+const { Error } = require('../../errors');
 
 let WebSocket;
 try {
@@ -88,9 +89,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   send(data) {
     return new Promise((resolve, reject) => {
-      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-        throw new Error(`Voice websocket not open to send ${data}.`);
-      }
+      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('WS_NOT_OPEN', data);
       this.ws.send(data, null, error => {
         if (error) reject(error); else resolve(data);
       });

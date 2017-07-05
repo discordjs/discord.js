@@ -1,27 +1,15 @@
+const Util = require('../util/Util');
+const { RangeError } = require('../errors');
+
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
- * <info>This class is only used for *recieved* embeds. If you wish to send one, use the {@link RichEmbed} class.</info>
  */
 class MessageEmbed {
-  constructor(message, data) {
-    /**
-     * The client that instantiated this embed
-     * @name MessageEmbed#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this embed is part of
-     * @type {Message}
-     */
-    this.message = message;
-
+  constructor(data = {}) {
     this.setup(data);
   }
 
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The type of this embed
      * @type {string}
@@ -42,64 +30,105 @@ class MessageEmbed {
 
     /**
      * The URL of this embed
-     * @type {string}
+     * @type {?string}
      */
     this.url = data.url;
 
     /**
      * The color of the embed
-     * @type {number}
+     * @type {?number}
      */
     this.color = data.color;
 
     /**
-     * The fields of this embed
-     * @type {MessageEmbedField[]}
-     */
-    this.fields = [];
-    if (data.fields) for (const field of data.fields) this.fields.push(new MessageEmbedField(this, field));
-
-    /**
      * The timestamp of this embed
-     * @type {number}
+     * @type {?number}
      */
-    this.createdTimestamp = data.timestamp;
+    this.timestamp = new Date(data.timestamp);
 
     /**
-     * The thumbnail of this embed
-     * @type {?MessageEmbedThumbnail}
+     * The fields of this embed
+     * @type {?Object[]}
+     * @property {string} name The name of this field
+     * @property {string} value The value of this field
+     * @property {boolean} inline If this field will be displayed inline
      */
-    this.thumbnail = data.thumbnail ? new MessageEmbedThumbnail(this, data.thumbnail) : null;
+    this.fields = data.fields || [];
 
     /**
-     * The image of this embed
-     * @type {?MessageEmbedImage}
+     * The thumbnail of this embed, if there is one
+     * @type {?Object}
+     * @property {string} url URL for this thumbnail
+     * @property {string} proxyURL ProxyURL for this thumbnail
+     * @property {number} height Height of this thumbnail
+     * @property {number} width Width of this thumbnail
      */
-    this.image = data.image ? new MessageEmbedImage(this, data.image) : null;
+    this.thumbnail = data.thumbnail ? {
+      url: data.thumbnail.url,
+      proxyURL: data.thumbnail.proxy_url,
+      height: data.height,
+      width: data.width,
+    } : null;
 
     /**
-     * The video of this embed
-     * @type {?MessageEmbedVideo}
+     * The image of this embed, if there is one
+     * @type {?Object}
+     * @property {string} url URL for this image
+     * @property {string} proxyURL ProxyURL for this image
+     * @property {number} height Height of this image
+     * @property {number} width Width of this image
      */
-    this.video = data.video ? new MessageEmbedVideo(this, data.video) : null;
+    this.image = data.image ? {
+      url: data.image.url,
+      proxyURL: data.image.proxy_url,
+      height: data.height,
+      width: data.width,
+    } : null;
 
     /**
-     * The author of this embed
-     * @type {?MessageEmbedAuthor}
+     * The video of this embed, if there is one
+     * @type {?Object}
+     * @property {string} url URL of this video
+     * @property {number} height Height of this video
+     * @property {number} width Width of this video
      */
-    this.author = data.author ? new MessageEmbedAuthor(this, data.author) : null;
+    this.video = data.video;
 
     /**
-     * The provider of this embed
-     * @type {?MessageEmbedProvider}
+     * The author of this embed, if there is one
+     * @type {?Object}
+     * @property {string} name The name of this author
+     * @property {string} url URL of this author
+     * @property {string} iconURL URL of the icon for this author
+     * @property {string} proxyIconURL Proxied URL of the icon for this author
      */
-    this.provider = data.provider ? new MessageEmbedProvider(this, data.provider) : null;
+    this.author = data.author ? {
+      name: data.author.name,
+      url: data.author.url,
+      iconURL: data.author.iconURL || data.author.icon_url,
+      proxyIconURL: data.author.proxyIconUrl || data.author.proxy_icon_url,
+    } : null;
+
+    /**
+     * The provider of this embed, if there is one
+     * @type {?Object}
+     * @property {string} name The name of this provider
+     * @property {string} url URL of this provider
+     */
+    this.provider = data.provider;
 
     /**
      * The footer of this embed
-     * @type {?MessageEmbedFooter}
+     * @type {?Object}
+     * @property {string} text The text of this footer
+     * @property {string} iconURL URL of the icon for this footer
+     * @property {string} proxyIconURL Proxied URL of the icon for this footer
      */
-    this.footer = data.footer ? new MessageEmbedFooter(this, data.footer) : null;
+    this.footer = data.footer ? {
+      text: data.footer.text,
+      iconURL: data.footer.iconURL || data.footer.icon_url,
+      proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
+    } : null;
   }
 
   /**
@@ -108,7 +137,7 @@ class MessageEmbed {
    * @readonly
    */
   get createdAt() {
-    return new Date(this.createdTimestamp);
+    return !isNaN(this.timestamp) ? this.timestamp : null;
   }
 
   /**
@@ -117,269 +146,169 @@ class MessageEmbed {
    * @readonly
    */
   get hexColor() {
-    let col = this.color.toString(16);
-    while (col.length < 6) col = `0${col}`;
-    return `#${col}`;
+    return this.color ? `#${this.color.toString(16).padStart(6, '0')}` : null;
+  }
+
+  /**
+   * Adds a field to the embed (max 25).
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {MessageEmbed} This embed
+   */
+  addField(name, value, inline = false) {
+    if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
+    name = Util.resolveString(name);
+    if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
+    value = Util.resolveString(value);
+    if (!String(name) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
+    this.fields.push({ name, value, inline });
+    return this;
+  }
+
+  /**
+   * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {MessageEmbed} This embed
+   */
+  addBlankField(inline = false) {
+    return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
+   * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
+   * setting an embed image or author/footer icons. Only one file may be attached.
+   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @returns {MessageEmbed} This embed
+   */
+  attachFile(file) {
+    if (this.file) throw new RangeError('EMBED_FILE_LIMIT');
+    this.file = file;
+    return this;
+  }
+
+  /**
+   * Sets the author of this embed.
+   * @param {StringResolvable} name The name of the author
+   * @param {string} [iconURL] The icon URL of the author
+   * @param {string} [url] The URL of the author
+   * @returns {MessageEmbed} This embed
+   */
+  setAuthor(name, iconURL, url) {
+    this.author = { name: Util.resolveString(name), iconURL, url };
+    return this;
+  }
+
+  /**
+   * Sets the color of this embed.
+   * @param {ColorResolvable} color The color of the embed
+   * @returns {MessageEmbed} This embed
+   */
+  setColor(color) {
+    this.color = Util.resolveColor(color);
+    return this;
+  }
+
+  /**
+   * Sets the description of this embed.
+   * @param {StringResolvable} description The description
+   * @returns {MessageEmbed} This embed
+   */
+  setDescription(description) {
+    description = Util.resolveString(description);
+    if (description.length > 2048) throw new RangeError('EMBED_DESCRIPTION');
+    this.description = description;
+    return this;
+  }
+
+  /**
+   * Sets the footer of this embed.
+   * @param {StringResolvable} text The text of the footer
+   * @param {string} [iconURL] The icon URL of the footer
+   * @returns {MessageEmbed} This embed
+   */
+  setFooter(text, iconURL) {
+    text = Util.resolveString(text);
+    if (text.length > 2048) throw new RangeError('EMBED_FOOTER_TEXT');
+    this.footer = { text, iconURL };
+    return this;
+  }
+
+  /**
+   * Set the image of this embed.
+   * @param {string} url The URL of the image
+   * @returns {MessageEmbed} This embed
+   */
+  setImage(url) {
+    this.image = { url };
+    return this;
+  }
+
+  /**
+   * Set the thumbnail of this embed.
+   * @param {string} url The URL of the thumbnail
+   * @returns {MessageEmbed} This embed
+   */
+  setThumbnail(url) {
+    this.thumbnail = { url };
+    return this;
+  }
+
+  /**
+   * Sets the timestamp of this embed.
+   * @param {Date} [timestamp=current date] The timestamp
+   * @returns {MessageEmbed} This embed
+   */
+  setTimestamp(timestamp = new Date()) {
+    this.timestamp = timestamp;
+    return this;
+  }
+
+  /**
+   * Sets the title of this embed.
+   * @param {StringResolvable} title The title
+   * @returns {MessageEmbed} This embed
+   */
+  setTitle(title) {
+    title = Util.resolveString(title);
+    if (title.length > 256) throw new RangeError('EMBED_TITLE');
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Sets the URL of this embed.
+   * @param {string} url The URL
+   * @returns {MessageEmbed} This embed
+   */
+  setURL(url) {
+    this.url = url;
+    return this;
+  }
+
+  _apiTransform() {
+    return {
+      title: this.title,
+      type: 'rich',
+      description: this.description,
+      url: this.url,
+      timestamp: this.timestamp,
+      color: this.color,
+      fields: this.fields,
+      file: this.file,
+      thumbnail: this.thumbnail,
+      image: this.image,
+      author: this.author ? {
+        name: this.author.name,
+        url: this.author.url,
+        icon_url: this.author.iconURL,
+      } : null,
+      footer: this.footer ? {
+        text: this.footer.text,
+        icon_url: this.footer.iconURL,
+      } : null,
+    };
   }
 }
-
-/**
- * Represents a thumbnail for a message embed.
- */
-class MessageEmbedThumbnail {
-  constructor(embed, data) {
-    /**
-     * The embed this thumbnail is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The URL for this thumbnail
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL for this thumbnail
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of the thumbnail
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the thumbnail
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents an image for a message embed.
- */
-class MessageEmbedImage {
-  constructor(embed, data) {
-    /**
-     * The embed this image is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The URL for this image
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The Proxy URL for this image
-     * @type {string}
-     */
-    this.proxyURL = data.proxy_url;
-
-    /**
-     * The height of the image
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the image
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents a video for a message embed.
- */
-class MessageEmbedVideo {
-  constructor(embed, data) {
-    /**
-     * The embed this video is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The source URL for this video
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The height of the video
-     * @type {number}
-     */
-    this.height = data.height;
-
-    /**
-     * The width of the video
-     * @type {number}
-     */
-    this.width = data.width;
-  }
-}
-
-/**
- * Represents a provider for a message embed.
- */
-class MessageEmbedProvider {
-  constructor(embed, data) {
-    /**
-     * The embed this provider is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this provider
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The URL of this provider
-     * @type {string}
-     */
-    this.url = data.url;
-  }
-}
-
-/**
- * Represents an author for a message embed.
- */
-class MessageEmbedAuthor {
-  constructor(embed, data) {
-    /**
-     * The embed this author is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this author
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The URL of this author
-     * @type {string}
-     */
-    this.url = data.url;
-
-    /**
-     * The icon URL of this author
-     * @type {string}
-     */
-    this.iconURL = data.icon_url;
-  }
-}
-
-/**
- * Represents a field for a message embed.
- */
-class MessageEmbedField {
-  constructor(embed, data) {
-    /**
-     * The embed this footer is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The name of this field
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The value of this field
-     * @type {string}
-     */
-    this.value = data.value;
-
-    /**
-     * If this field is displayed inline
-     * @type {boolean}
-     */
-    this.inline = data.inline;
-  }
-}
-
-/**
- * Represents the footer of a message embed.
- */
-class MessageEmbedFooter {
-  constructor(embed, data) {
-    /**
-     * The embed this footer is part of
-     * @type {MessageEmbed}
-     */
-    this.embed = embed;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The text in this footer
-     * @type {string}
-     */
-    this.text = data.text;
-
-    /**
-     * The icon URL of this footer
-     * @type {string}
-     */
-    this.iconURL = data.icon_url;
-
-    /**
-     * The proxy icon URL of this footer
-     * @type {string}
-     */
-    this.proxyIconUrl = data.proxy_icon_url;
-  }
-}
-
-MessageEmbed.Thumbnail = MessageEmbedThumbnail;
-MessageEmbed.Image = MessageEmbedImage;
-MessageEmbed.Video = MessageEmbedVideo;
-MessageEmbed.Provider = MessageEmbedProvider;
-MessageEmbed.Author = MessageEmbedAuthor;
-MessageEmbed.Field = MessageEmbedField;
-MessageEmbed.Footer = MessageEmbedFooter;
 
 module.exports = MessageEmbed;

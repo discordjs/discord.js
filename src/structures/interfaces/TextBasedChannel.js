@@ -3,6 +3,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -34,7 +35,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {RichEmbed|Object} [embed] An embed for the message
+   * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -81,11 +82,9 @@ class TextBasedChannel {
 
     if (!options.content) options.content = content;
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
-
-    if (options.file) {
-      if (options.files) options.files.push(options.file);
-      else options.files = [options.file];
+    if (options.embed && options.embed.file) {
+      if (options.files) options.files.push(options.embed.file);
+      else options.files = [options.embed.file];
     }
 
     if (options.files) {
@@ -136,11 +135,11 @@ class TextBasedChannel {
       return this.fetchMessages({ limit: 1, around: messageID })
       .then(messages => {
         const msg = messages.get(messageID);
-        if (!msg) throw new Error('Message not found.');
+        if (!msg) throw new Error('MESSAGE_MISSING');
         return msg;
       });
     }
-    return this.client.api.channels(this.id).messages(messageID).get()
+    return this.client.api.channels[this.id].messages[messageID].get()
     .then(data => {
       const msg = data instanceof Message ? data : new Message(this, data, this.client);
       this._cacheMessage(msg);
@@ -170,7 +169,7 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).messages.get({ query: options })
+    return this.client.api.channels[this.id].messages.get({ query: options })
     .then(data => {
       const messages = new Collection();
       for (const message of data) {
@@ -188,7 +187,7 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).pins.get().then(data => {
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -200,46 +199,17 @@ class TextBasedChannel {
   }
 
   /**
-   * @typedef {Object} MessageSearchOptions
-   * @property {string} [content] Message content
-   * @property {Snowflake} [maxID] Maximum ID for the filter
-   * @property {Snowflake} [minID] Minimum ID for the filter
-   * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
-   * or add `-` to negate (e.g. `-file`)
-   * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
-   * @property {UserResolvable} [author] Author to limit search
-   * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
-   * @property {string} [sortBy='recent'] `recent` or `relevant`
-   * @property {string} [sortOrder='desc'] `asc` or `desc`
-   * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
-   * @property {number} [limit=25] Maximum number of results to get (1 to 25)
-   * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
-   * @property {UserResolvable} [mentions] Mentioned user filter
-   * @property {boolean} [mentionsEveryone] If everyone is mentioned
-   * @property {string} [linkHostname] Filter links by hostname
-   * @property {string} [embedProvider] The name of an embed provider
-   * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
-   * @property {string} [attachmentFilename] The name of an attachment
-   * @property {string} [attachmentExtension] The extension of an attachment
-   * @property {Date} [before] Date to find messages before
-   * @property {Date} [after] Date to find messages before
-   * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
-   */
-
-  /**
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster
-   * The message which has triggered the result will have the `hit` property set to `true`
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * channel.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   const hit = res.results[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
    * }).catch(console.error);
    */
   search(options = {}) {
@@ -254,9 +224,9 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels(this.id).typing;
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
@@ -319,11 +289,11 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createCollector(
+   * const collector = channel.createMessageCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
    * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(filter, options = {}) {
@@ -379,7 +349,7 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels(this.id).messages()['bulk-delete']
+      return this.client.api.channels[this.id].messages['bulk-delete']
       .post({ data: { messages: messageIDs } })
       .then(() =>
         this.client.actions.MessageDeleteBulk.handle({
@@ -388,7 +358,7 @@ class TextBasedChannel {
         }).messages
       );
     }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
   /**
@@ -398,7 +368,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;

@@ -1,7 +1,8 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const secretbox = require('../util/Secretbox');
 const Readable = require('./VoiceReadable');
 const OpusEncoders = require('../opus/OpusEngineList');
+const { Error } = require('../../../errors');
 
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
@@ -122,8 +123,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createOpusStream(user) {
     user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
-    if (!user) throw new Error('Couldn\'t resolve the user to create Opus stream.');
-    if (this.opusStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
+    if (!user) throw new Error('VOICE_USER_MISSING');
+    if (this.opusStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();
     this.opusStreams.set(user.id, stream);
     return stream;
@@ -137,8 +138,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createPCMStream(user) {
     user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
-    if (!user) throw new Error('Couldn\'t resolve the user to create PCM stream.');
-    if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
+    if (!user) throw new Error('VOICE_USER_MISSING');
+    if (this.pcmStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();
     this.pcmStreams.set(user.id, stream);
     return stream;

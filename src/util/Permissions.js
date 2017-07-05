@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { RangeError } = require('../errors');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -95,7 +95,7 @@ class Permissions {
   static resolve(permission) {
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') permission = this.FLAGS[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
+    if (typeof permission !== 'number' || permission < 1) throw new RangeError('PERMISSION_INVALID');
     return permission;
   }
 }
@@ -171,7 +171,7 @@ Permissions.FLAGS = {
  * Bitfield representing every permission combined
  * @type {number}
  */
-Permissions.ALL = Object.keys(Permissions.FLAGS).reduce((all, p) => all | Permissions.FLAGS[p], 0);
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0);
 
 /**
  * Bitfield representing the default permissions for users

@@ -7,6 +7,7 @@ const Util = require('../util/Util');
 const Guild = require('./Guild');
 const Message = require('./Message');
 const GroupDMChannel = require('./GroupDMChannel');
+const { TypeError } = require('../errors');
 
 /**
  * Represents the logged in client's Discord user.
@@ -95,14 +96,15 @@ class ClientUser extends User {
   edit(data, password) {
     const _data = {};
     _data.username = data.username || this.username;
-    _data.avatar = this.client.resolver.resolveBase64(data.avatar) || this.avatar;
+    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
+
     if (!this.bot) {
       _data.email = data.email || this.email;
       _data.password = password;
       if (data.new_password) _data.new_password = data.newPassword;
     }
 
-    return this.client.api.users('@me').patch({ data })
+    return this.client.api.users['@me'].patch({ data })
       .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
@@ -169,7 +171,7 @@ class ClientUser extends User {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.edit({ avatar });
     } else {
-      return this.client.resolver.resolveBuffer(avatar)
+      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
         .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
@@ -205,7 +207,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
+        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
         if (this.bot) {
           status = data.status;
         } else {
@@ -295,7 +297,7 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.api.users('@me').mentions.get({ query: options })
+    return this.client.api.users['@me'].mentions.get({ query: options })
       .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
@@ -310,11 +312,30 @@ class ClientUser extends User {
    */
   createGuild(name, { region, icon = null } = {}) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
-      return this.client.api.guilds.post({ data: { name, region, icon } })
-        .then(data => this.client.dataManager.newGuild(data));
+      return new Promise((resolve, reject) =>
+        this.client.api.guilds.post({ data: { name, region, icon } })
+          .then(data => {
+            if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
+
+            const handleGuild = guild => {
+              if (guild.id === data.id) {
+                this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+                this.client.clearTimeout(timeout);
+                resolve(guild);
+              }
+            };
+            this.client.on(Constants.Events.GUILD_CREATE, handleGuild);
+
+            const timeout = this.client.setTimeout(() => {
+              this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+              resolve(this.client.dataManager.newGuild(data));
+            }, 10000);
+            return undefined;
+          }, reject)
+      );
     } else {
       return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.createGuild(name, region, this.client.resolver.resolveBase64(data) || null));
+        .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
 
@@ -343,7 +364,7 @@ class ClientUser extends User {
         return o;
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
-    return this.client.api.users('@me').channels.post({ data })
+    return this.client.api.users['@me'].channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
 }
