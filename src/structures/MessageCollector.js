@@ -31,19 +31,19 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    /**
-     * The bulk message delete listener.
-     * @type {Function}
-     * @param {Collection<Snowflake, Message>} messages The deleted messages
-     * @private
-     */
-    this._bulkDeleteListener = (messages => {
+    const bulkDeleteListener = (messages => {
       for (const message of messages.values()) this.uncollect(message);
     }).bind(this);
 
     this.client.on('message', this.collect);
     this.client.on('messageDelete', this.uncollect);
-    this.client.on('messageDeleteBulk', this._bulkDeleteListener);
+    this.client.on('messageDeleteBulk', bulkDeleteListener);
+
+    this.once('end', () => {
+      this.client.removeListener('message', this.collect);
+      this.client.removeListener('messageDelete', this.uncollect);
+      this.client.removeListener('messageDeleteBulk', bulkDeleteListener);
+    });
   }
 
   /**
@@ -79,16 +79,6 @@ class MessageCollector extends Collector {
     if (this.options.max && this.collected.size >= this.options.max) return 'limit';
     if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
-  }
-
-  /**
-   * Removes event listeners.
-   * @private
-   */
-  cleanup() {
-    this.client.removeListener('message', this.collect);
-    this.client.removeListener('messageDelete', this.uncollect);
-    this.client.removeListener('messageDeleteBulk', this._bulkDeleteListener);
   }
 }
 

@@ -44,6 +44,12 @@ class ReactionCollector extends Collector {
     this.client.on('messageReactionAdd', this.collect);
     this.client.on('messageReactionRemove', this.uncollect);
     this.client.on('messageReactionRemoveAll', this.empty);
+
+    this.once('end', () => {
+      this.client.removeListener('messageReactionAdd', this.collect);
+      this.client.removeListener('messageReactionRemove', this.uncollect);
+      this.client.removeListener('messageReactionRemoveAll', this.empty);
+    });
   }
 
   /**
@@ -104,16 +110,6 @@ class ReactionCollector extends Collector {
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
-  }
-
-  /**
-   * Remove event listeners.
-   * @private
-   */
-  cleanup() {
-    this.client.removeListener('messageReactionAdd', this.collect);
-    this.client.removeListener('messageReactionRemove', this.uncollect);
-    this.client.removeListener('messageReactionRemoveAll', this.empty);
   }
 
   /**

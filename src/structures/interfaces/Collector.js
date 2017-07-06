@@ -160,7 +160,6 @@ class Collector extends EventEmitter {
 
     if (this._timeout) this.client.clearTimeout(this._timeout);
     this.ended = true;
-    this.cleanup();
 
     /**
      * Emitted when the collector is finished collecting.
@@ -220,12 +219,6 @@ class Collector extends EventEmitter {
    * @abstract
    */
   shouldEnd() {}
-
-  /**
-   * Called when the collector is ending.
-   * @abstract
-   */
-  cleanup() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
 }
 
