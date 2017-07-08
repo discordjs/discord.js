@@ -377,7 +377,7 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, Object>>}
    */
   fetchBans() {
-    return this.client.api.guilds[this.id].bans.get().then(bans =>
+    return this.client.api.guilds(this.id).bans.get().then(bans =>
       bans.reduce((collection, ban) => {
         collection.set(ban.user.id, {
           reason: ban.reason,
@@ -393,7 +393,7 @@ class Guild {
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites() {
-    return this.client.api.guilds[this.id].invites.get()
+    return this.client.api.guilds(this.id).invites.get()
       .then(inviteItems => {
         const invites = new Collection();
         for (const inviteItem of inviteItems) {
@@ -409,7 +409,7 @@ class Guild {
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
-    return this.client.api.guilds[this.id].webhooks.get().then(data => {
+    return this.client.api.guilds(this.id).webhooks.get().then(data => {
       const hooks = new Collection();
       for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
       return hooks;
@@ -421,7 +421,7 @@ class Guild {
    * @returns {Promise<Collection<string, VoiceRegion>>}
    */
   fetchVoiceRegions() {
-    return this.client.api.guilds[this.id].regions.get().then(res => {
+    return this.client.api.guilds(this.id).regions.get().then(res => {
       const regions = new Collection();
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;
@@ -443,7 +443,7 @@ class Guild {
     if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api.guilds[this.id]['audit-logs'].get({ query: {
+    return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
       before: options.before,
       after: options.after,
       limit: options.limit,
@@ -475,7 +475,7 @@ class Guild {
         options.roles = roles.map(role => role.id);
       }
     }
-    return this.client.api.guilds[this.id].members[user.id].put({ data: options })
+    return this.client.api.guilds(this.id).members(user.id).put({ data: options })
       .then(data => this.client.actions.GuildMemberGet.handle(this, data).member);
   }
 
@@ -489,7 +489,7 @@ class Guild {
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.api.guilds[this.id].members[user.id].get()
+    return this.client.api.guilds(this.id).members(user.id).get()
       .then(data => {
         if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
         else return new GuildMember(this, data);
@@ -593,7 +593,7 @@ class Guild {
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
-    return this.client.api.guilds[this.id].patch({ data: _data, reason })
+    return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
 
@@ -738,7 +738,7 @@ class Guild {
    * @returns {Promise<Guild>}
    */
   acknowledge() {
-    return this.client.api.guilds[this.id].ack
+    return this.client.api.guilds(this.id).ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
@@ -777,7 +777,7 @@ class Guild {
     if (options.days) options['delete-message-days'] = options.days;
     const id = this.client.resolver.resolveUserID(user);
     if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
-    return this.client.api.guilds[this.id].bans[id].put({ query: options })
+    return this.client.api.guilds(this.id).bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
         const _user = this.client.resolver.resolveUser(id);
@@ -826,7 +826,7 @@ class Guild {
    */
   pruneMembers({ days = 7, dry = false, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api.guilds[this.id].prune[dry ? 'get' : 'post']({ query: { days }, reason })
+    return this.client.api.guilds(this.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
       .then(data => data.pruned);
   }
 
@@ -861,7 +861,7 @@ class Guild {
         id: overwrite.id,
       }));
     }
-    return this.client.api.guilds[this.id].channels.post({
+    return this.client.api.guilds(this.id).channels.post({
       data: {
         name, type, permission_overwrites: overwrites,
       },
@@ -894,7 +894,7 @@ class Guild {
       };
     }
 
-    return this.client.api.guilds[this.id].channels.patch({ data: {
+    return this.client.api.guilds(this.id).channels.patch({ data: {
       guild_id: this.id,
       channels: channelPositions,
     } }).then(() =>
@@ -932,7 +932,7 @@ class Guild {
     if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds[this.id].roles.post({ data, reason }).then(role =>
+    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
       this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
         role,
@@ -961,7 +961,7 @@ class Guild {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
       if (roles) data.roles = roles.map(r => r.id ? r.id : r);
-      return this.client.api.guilds[this.id].emojis.post({ data })
+      return this.client.api.guilds(this.id).emojis.post({ data })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     } else {
       return this.client.resolver.resolveBuffer(attachment)
@@ -979,7 +979,7 @@ class Guild {
    */
   deleteEmoji(emoji) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis[emoji.id].delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -994,7 +994,7 @@ class Guild {
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
-    return this.client.api.users['@me'].guilds[this.id].delete()
+    return this.client.api.users('@me').guilds(this.id).delete()
       .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
@@ -1008,7 +1008,7 @@ class Guild {
    *  .catch(console.error);
    */
   delete() {
-    return this.client.api.guilds[this.id].delete()
+    return this.client.api.guilds(this.id).delete()
       .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
 
@@ -1166,7 +1166,7 @@ class Guild {
     Util.moveElementInArray(updatedRoles, role, position, relative);
 
     updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds[this.id].roles.patch({ data: updatedRoles })
+    return this.client.api.guilds(this.id).roles.patch({ data: updatedRoles })
       .then(() =>
         this.client.actions.GuildRolesPositionUpdate.handle({
           guild_id: this.id,
@@ -1196,7 +1196,7 @@ class Guild {
     Util.moveElementInArray(updatedChannels, channel, position, relative);
 
     updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds[this.id].channels.patch({ data: updatedChannels })
+    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
       .then(() =>
         this.client.actions.GuildChannelsPositionUpdate.handle({
           guild_id: this.id,
