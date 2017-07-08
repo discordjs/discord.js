@@ -18,7 +18,7 @@ module.exports = {
   SnowflakeUtil: require('./util/Snowflake'),
   Util: Util,
   util: Util,
-  version: require('../package').version,
+  version: require('../package.json').version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
