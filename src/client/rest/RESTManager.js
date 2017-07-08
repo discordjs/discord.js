@@ -34,7 +34,9 @@ class RESTManager {
   }
 
   getRequestHandler() {
-    const handler = handlers[this.client.options.apiRequestMethod];
+    const method = this.client.options.apiRequestMethod;
+    if (typeof method === 'function') return method;
+    const handler = handlers[method];
     if (!handler) throw new Error('RATELIMIT_INVALID_METHOD');
     return handler;
   }
