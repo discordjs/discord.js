@@ -15539,7 +15539,7 @@ module.exports = {
 		"discord.js-docgen": "hydrabolt/discord.js-docgen",
 		"eslint": "^4.0.0",
 		"parallel-webpack": "^2.0.0",
-		"uglifyjs-webpack-plugin": "iCrawl/uglifyjs-webpack-plugin",
+		"uglifyjs-webpack-plugin": "^1.0.0-beta.1",
 		"webpack": "^3.0.0"
 	},
 	"engines": {
@@ -18649,6 +18649,7 @@ class Snekfetch extends Stream.Readable {
     if (opts.headers) options.headers = opts.headers;
 
     this.request = { https, http, file: fileLoader }[options.protocol.replace(':', '')].request(options);
+    this.request.followRedirects = opts.followRedirects;
     if (opts.query) this.query(opts.query);
     if (opts.data) this.send(opts.data);
   }
@@ -18762,7 +18763,7 @@ class Snekfetch extends Stream.Readable {
           this.push(null);
           const concated = Buffer.concat(body);
 
-          if (this._shouldRedirect(response)) {
+          if (this.request.followRedirects !== false && this._shouldRedirect(response)) {
             let method = this.request.method;
             if ([301, 302].includes(response.statusCode)) {
               if (method !== 'HEAD') method = 'GET';
@@ -20847,28 +20848,28 @@ https.request = function (params, cb) {
 /***/ (function(module, exports) {
 
 module.exports = {
-	"_from": "snekfetch@^3.1.0",
-	"_id": "snekfetch@3.2.1",
+	"_from": "snekfetch@^3.2.0",
+	"_id": "snekfetch@3.2.3",
 	"_inBundle": false,
-	"_integrity": "sha512-uV8nw5s4YYCWA6ElCXLFagesXAbhcAIj+vP5nL43XtxKGyJNqmufz16d3aYbrYlXYbky/QG1EZtFrb+RUftIaQ==",
+	"_integrity": "sha512-EN7LirgPd8ewSDa28V/6kiFgspf33E2XO1C3t7cKvtkEFyAhlA8vv3dBy/pd5b3E+JinJkd5wBaw63bC9M/2kQ==",
 	"_location": "/snekfetch",
 	"_phantomChildren": {},
 	"_requested": {
 		"type": "range",
 		"registry": true,
-		"raw": "snekfetch@^3.1.0",
+		"raw": "snekfetch@^3.2.0",
 		"name": "snekfetch",
 		"escapedName": "snekfetch",
-		"rawSpec": "^3.1.0",
+		"rawSpec": "^3.2.0",
 		"saveSpec": null,
-		"fetchSpec": "^3.1.0"
+		"fetchSpec": "^3.2.0"
 	},
 	"_requiredBy": [
 		"/"
 	],
-	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.2.1.tgz",
-	"_shasum": "7e04b85b19b8199e16bbb7cdcbdaa7026f126366",
-	"_spec": "snekfetch@^3.1.0",
+	"_resolved": "https://registry.npmjs.org/snekfetch/-/snekfetch-3.2.3.tgz",
+	"_shasum": "63c6fe27e44f1303c5d95cfb7642f840813cc334",
+	"_spec": "snekfetch@^3.2.0",
 	"_where": "/home/travis/build/hydrabolt/discord.js",
 	"author": {
 		"name": "Gus Caplan",
@@ -20890,7 +20891,7 @@ module.exports = {
 		"type": "git",
 		"url": "git+https://github.com/devsnek/snekfetch.git"
 	},
-	"version": "3.2.1"
+	"version": "3.2.3"
 };
 
 /***/ }),
@@ -22566,7 +22567,7 @@ const Stream = __webpack_require__(34);
 class Stream404 extends Stream.Readable {
   constructor() {
     super();
-    this.stautsCode = 404;
+    this.statusCode = 404;
   }
 
   on(event, handler) {
