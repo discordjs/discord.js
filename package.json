@@ -52,7 +52,7 @@
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
     "eslint": "^4.0.0",
     "parallel-webpack": "^2.0.0",
-    "uglifyjs-webpack-plugin": "iCrawl/uglifyjs-webpack-plugin",
+    "uglifyjs-webpack-plugin": "uglifyjs-webpack-plugin@beta",
     "webpack": "^3.0.0"
   },
   "engines": {
