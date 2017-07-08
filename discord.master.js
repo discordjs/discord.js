@@ -7523,32 +7523,35 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+
+  static applyToClass(structure, full = false, ignore = []) {
+    const props = ['send'];
+    if (full) {
+      props.push(
+        '_cacheMessage',
+        'acknowledge',
+        'fetchMessages',
+        'fetchMessage',
+        'search',
+        'bulkDelete',
+        'startTyping',
+        'stopTyping',
+        'typing',
+        'typingCount',
+        'fetchPinnedMessages',
+        'createMessageCollector',
+        'awaitMessages'
+      );
+    }
+    for (const prop of props) {
+      if (ignore.includes(prop)) continue;
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+    }
+  }
 }
 
-exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send'];
-  if (full) {
-    props.push(
-      '_cacheMessage',
-      'acknowledge',
-      'fetchMessages',
-      'fetchMessage',
-      'search',
-      'bulkDelete',
-      'startTyping',
-      'stopTyping',
-      'typing',
-      'typingCount',
-      'fetchPinnedMessages',
-      'createMessageCollector',
-      'awaitMessages'
-    );
-  }
-  for (const prop of props) {
-    if (ignore.includes(prop)) continue;
-    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-  }
-};
+module.exports = TextBasedChannel;
 
 
 /***/ }),
