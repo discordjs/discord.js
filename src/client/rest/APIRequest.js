@@ -8,18 +8,8 @@ class APIRequest {
     this.client = rest.client;
     this.method = method;
     this.path = path.toString();
-    this.route = this.getRoute(this.path);
+    this.route = options.route;
     this.options = options;
-  }
-
-  getRoute(url) {
-    let route = url.split('?')[0];
-    if (route.includes('/channels/') || route.includes('/guilds/')) {
-      const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
-      const majorID = route.substring(startInd).split('/')[2];
-      route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
-    }
-    return route;
   }
 
   getAuth() {
