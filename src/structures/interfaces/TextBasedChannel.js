@@ -83,7 +83,7 @@ class TextBasedChannel {
     if (!options.content) options.content = content;
 
     if (options.embed && options.embed.files) {
-      if (options.files) options.files = options.files.concat(...options.embed.files);
+      if (options.files) options.files = options.files.concat(options.embed.files);
       else options.files = options.embed.files;
     }
 

@@ -183,7 +183,7 @@ class MessageEmbed {
    */
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
-    else this.files = [files];
+    else this.files = files;
     return this;
   }
 
