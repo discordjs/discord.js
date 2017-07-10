@@ -1,10 +1,12 @@
+const kLRU = Symbol('LRU');
+
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
  * @extends {Map}
  */
 class Collection extends Map {
-  constructor(iterable) {
+  constructor(iterable, options = {}) {
     super(iterable);
 
     /**
@@ -22,17 +24,48 @@ class Collection extends Map {
      * @private
      */
     Object.defineProperty(this, '_keyArray', { value: null, writable: true, configurable: true });
+
+    if (options.lru) {
+      Object.defineProperty(this, kLRU, { value: [] });
+      const lru = this[kLRU];
+      lru.add = (item) => {
+        lru.remove(item);
+        lru.unshift(item);
+        while (lru.length > options.lru) {
+          this.delete(lru[lru.length - 1]);
+        }
+      };
+      lru.remove = (item) => {
+        const index = lru.indexOf(item);
+        if (index > -1) lru.splice(index, 1);
+      };
+    }
+  }
+
+  get(key) {
+    if (this[kLRU]) this[kLRU].add(key);
+    return super.get(key);
+  }
+
+  /**
+   * Same as Collection#get but doesn't update LRU
+   * @returns {*}
+   */
+  peek(key) {
+    return super.get(key);
   }
 
   set(key, val) {
     this._array = null;
     this._keyArray = null;
+    if (this[kLRU]) this[kLRU].add(key);
     return super.set(key, val);
   }
 
   delete(key) {
     this._array = null;
     this._keyArray = null;
+    if (this[kLRU]) this[kLRU].remove(key);
     return super.delete(key);
   }
 
