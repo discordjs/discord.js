@@ -228,7 +228,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by Guild ID
+   * All active voice connections that have been established, mapped by guild ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
