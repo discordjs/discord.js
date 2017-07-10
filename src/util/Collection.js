@@ -31,9 +31,7 @@ class Collection extends Map {
       lru.add = (item) => {
         lru.remove(item);
         lru.unshift(item);
-        while (lru.length > options.lru) {
-          this.delete(lru[lru.length - 1]);
-        }
+        while (lru.length > options.lru) this.delete(lru[lru.length - 1]);
       };
       lru.remove = (item) => {
         const index = lru.indexOf(item);
@@ -42,16 +40,8 @@ class Collection extends Map {
     }
   }
 
-  get(key) {
-    if (this[kLRU]) this[kLRU].add(key);
-    return super.get(key);
-  }
-
-  /**
-   * Same as Collection#get but doesn't update LRU
-   * @returns {*}
-   */
-  peek(key) {
+  get(key, peek = false) {
+    if (!peek && this[kLRU]) this[kLRU].add(key);
     return super.get(key);
   }
 
