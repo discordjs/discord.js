@@ -7,7 +7,6 @@ module.exports = function burst() {
         this.handle();
       }, time || (this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset));
     } else {
-      this.busy = false;
       this.handle();
     }
   });
