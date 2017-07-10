@@ -28,12 +28,12 @@ class Collection extends Map {
     if (options.lru) {
       Object.defineProperty(this, kLRU, { value: [] });
       const lru = this[kLRU];
-      lru.add = (item) => {
+      lru.add = item => {
         lru.remove(item);
         lru.unshift(item);
         while (lru.length > options.lru) this.delete(lru[lru.length - 1]);
       };
-      lru.remove = (item) => {
+      lru.remove = item => {
         const index = lru.indexOf(item);
         if (index > -1) lru.splice(index, 1);
       };
