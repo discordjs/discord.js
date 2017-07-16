@@ -228,7 +228,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by channel ID
+   * All active voice connections that have been established, mapped by guild ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
@@ -415,7 +415,7 @@ class Client extends EventEmitter {
    */
   fetchApplication(id = '@me') {
     return this.api.oauth2.applications[id].get()
-    .then(app => new OAuth2Application(this, app));
+      .then(app => new OAuth2Application(this, app));
   }
 
   /**

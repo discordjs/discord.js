@@ -13,7 +13,6 @@ const Collection = require('../util/Collection');
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
-
   /**
    * @param {Message} message The message upon which to collect reactions
    * @param {CollectorFilter} filter The filter to apply to this collector

@@ -359,6 +359,7 @@ class Message {
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
+   * @property {string} [content] Content to be edited
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
@@ -381,10 +382,13 @@ class Message {
     } else if (!options) {
       options = {};
     }
+    if (typeof options.content !== 'undefined') content = options.content;
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);
 
-    const { embed, code, reply } = options;
+    let { embed, code, reply } = options;
+
+    if (embed) embed = new Embed(embed)._apiTransform();
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
