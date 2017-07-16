@@ -32,7 +32,6 @@ const Messages = {
   EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
   EMBED_FIELD_NAME: 'MessageEmbed field names may not exceed 256 characters or be empty.',
   EMBED_FIELD_VALUE: 'MessageEmbed field values may not exceed 1024 characters or be empty.',
-  EMBED_FILE_LIMIT: 'You may not upload more than one file at once.',
   EMBED_DESCRIPTION: 'MessageEmbed descriptions may not exceed 2048 characters.',
   EMBED_FOOTER_TEXT: 'MessageEmbed footer text may not exceed 2048 characters.',
   EMBED_TITLE: 'MessageEmbed titles may not exceed 256 characters.',
