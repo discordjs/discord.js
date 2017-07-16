@@ -27,7 +27,11 @@ class RequestHandler {
   }
 
   execute(item) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
+      const finish = (timeout) => {
+        if (timeout || this.limited) reject({ timeout, limited: this.limited });
+        else resolve();
+      };
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
           if (res.headers['x-ratelimit-global']) this.globallyLimited = true;
@@ -39,15 +43,15 @@ class RequestHandler {
         if (err) {
           if (err.status === 429) {
             this.queue.unshift(item);
-            resolve(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
+            finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
           } else {
             item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
-            resolve();
+            finish();
           }
         } else {
           const data = res && res.body ? res.body : {};
           item.resolve(data);
-          resolve();
+          finish();
         }
       });
     });
