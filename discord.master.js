@@ -16837,6 +16837,13 @@ class TextChannel extends GuildChannel {
      */
     this.topic = data.topic;
 
+    /**
+     * If the Discord considers this channel NSFW
+     * @type {boolean}
+     * @readonly
+     */
+    this.nsfw = data.nsfw;
+
     this.lastMessageID = data.last_message_id;
   }
 
@@ -16853,15 +16860,6 @@ class TextChannel extends GuildChannel {
       }
     }
     return members;
-  }
-
-  /**
-   * If the Discord considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
   }
 
   /**
