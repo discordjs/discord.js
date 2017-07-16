@@ -1,15 +1,13 @@
 module.exports = function burst() {
   if (this.limited) return;
-  this.execute(this.queue.shift()).then(time => {
-    if (time || this.remaining <= 0) {
+  this.execute(this.queue.shift())
+    .then(this.handle.bind(this))
+    .catch(({ timeout }) => {
       this.client.setTimeout(() => {
         this.reset();
         this.handle();
-      }, time || (this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset));
-    } else {
-      this.handle();
-    }
-  });
+      }, timeout || (this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset));
+    });
   this.remaining--;
   this.handle();
 };
