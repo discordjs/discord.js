@@ -268,8 +268,8 @@ Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.
   'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
 Object.defineProperty(Permissions.prototype, 'member', {
   get: util
-        .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
-        'EvaluatedPermissions#member is deprecated'),
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+      'EvaluatedPermissions#member is deprecated'),
 });
 
 module.exports = Permissions;

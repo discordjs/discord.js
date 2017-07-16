@@ -73,7 +73,7 @@ class TextChannel extends GuildChannel {
         resolve(this.client.rest.methods.createWebhook(this, name, avatar));
       } else {
         this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
+          resolve(this.client.rest.methods.createWebhook(this, name, data))
         );
       }
     });

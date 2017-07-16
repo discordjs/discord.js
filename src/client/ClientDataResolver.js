@@ -212,11 +212,11 @@ class ClientDataResolver {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           snekfetch.get(resource)
-          .end((err, res) => {
-            if (err) return reject(err);
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-            return resolve(res.body);
-          });
+            .end((err, res) => {
+              if (err) return reject(err);
+              if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+              return resolve(res.body);
+            });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {

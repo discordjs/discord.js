@@ -838,7 +838,7 @@ class RESTMethods {
       'put', Endpoints.Message(message).Reaction(emoji).User('@me'), true
     ).then(() =>
       message._addReaction(Util.parseEmoji(emoji), message.client.user)
-      );
+    );
   }
 
   removeMessageReaction(message, emoji, userID) {
