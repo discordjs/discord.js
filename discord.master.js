@@ -7222,9 +7222,9 @@ class TextBasedChannel {
 
     if (!options.content) options.content = content;
 
-    if (options.embed && options.embed.file) {
-      if (options.files) options.files.push(options.embed.file);
-      else options.files = [options.embed.file];
+    if (options.embed && options.embed.files) {
+      if (options.files) options.files = options.files.concat(options.embed.files);
+      else options.files = options.embed.files;
     }
 
     if (options.files) {
@@ -8838,11 +8838,11 @@ class MessageEmbed {
      * The timestamp of this embed
      * @type {?number}
      */
-    this.timestamp = new Date(data.timestamp);
+    this.timestamp = data.timestamp ? new Date(data.timestamp).getTime() : null;
 
     /**
      * The fields of this embed
-     * @type {?Object[]}
+     * @type {Object[]}
      * @property {string} name The name of this field
      * @property {string} value The value of this field
      * @property {boolean} inline If this field will be displayed inline
@@ -8927,11 +8927,11 @@ class MessageEmbed {
 
   /**
    * The date this embed was created
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get createdAt() {
-    return !isNaN(this.timestamp) ? this.timestamp : null;
+    return this.timestamp ? new Date(this.timestamp) : null;
   }
 
   /**
@@ -8972,12 +8972,12 @@ class MessageEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @param {Array<FileOptions|string>} files Files to attach
    * @returns {MessageEmbed} This embed
    */
-  attachFile(file) {
-    if (this.file) throw new RangeError('EMBED_FILE_LIMIT');
-    this.file = file;
+  attachFiles(files) {
+    if (this.files) this.files = this.files.concat(files);
+    else this.files = files;
     return this;
   }
 
@@ -9089,7 +9089,7 @@ class MessageEmbed {
       timestamp: this.timestamp,
       color: this.color,
       fields: this.fields,
-      file: this.file,
+      files: this.files,
       thumbnail: this.thumbnail,
       image: this.image,
       author: this.author ? {
@@ -23194,7 +23194,6 @@ const Messages = {
   EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
   EMBED_FIELD_NAME: 'MessageEmbed field names may not exceed 256 characters or be empty.',
   EMBED_FIELD_VALUE: 'MessageEmbed field values may not exceed 1024 characters or be empty.',
-  EMBED_FILE_LIMIT: 'You may not upload more than one file at once.',
   EMBED_DESCRIPTION: 'MessageEmbed descriptions may not exceed 2048 characters.',
   EMBED_FOOTER_TEXT: 'MessageEmbed footer text may not exceed 2048 characters.',
   EMBED_TITLE: 'MessageEmbed titles may not exceed 256 characters.',
