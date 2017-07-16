@@ -28,7 +28,8 @@ class RequestHandler {
 
   execute(item) {
     return new Promise((resolve, reject) => {
-      const finish = (timeout) => {
+      const finish = timeout => {
+        // eslint-disable-next-line prefer-promise-reject-errors
         if (timeout || this.limited) reject({ timeout, limited: this.limited });
         else resolve();
       };
