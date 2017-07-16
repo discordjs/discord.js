@@ -260,7 +260,7 @@ class MessageEmbed {
    * @returns {MessageEmbed} This embed
    */
   setTimestamp(timestamp = new Date()) {
-    this.timestamp = timestamp;
+    this.timestamp = timestamp.getTime();
     return this;
   }
 
@@ -292,7 +292,7 @@ class MessageEmbed {
       type: 'rich',
       description: this.description,
       url: this.url,
-      timestamp: this.timestamp,
+      timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
       fields: this.fields,
       files: this.files,
