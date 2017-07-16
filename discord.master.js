@@ -12710,7 +12710,7 @@ class GroupDMChannel extends Channel {
     this.name = data.name;
 
     /**
-     * A hash of the Group DM icon.
+     * A hash of this Group DM icon
      * @type {string}
      */
     this.icon = data.icon;
@@ -12788,17 +12788,55 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Add a user to the DM
-   * @param {UserResolvable|string} accessTokenOrUser Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * Edits this Group DM.
+   * @param {Object} data New data for this Group DM
+   * @param {string} [reason] Reason for editing this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  addUser(accessTokenOrUser, nick) {
-    const id = this.client.resolver.resolveUserID(accessTokenOrUser);
+  edit(data, reason) {
+    return this.client.api.channels[this.id].patch({
+      data: {
+        name: (data.name || this.name).trim(),
+      },
+      reason,
+    }).then(() => this);
+  }
+
+  /**
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Adds an user to this Group DM.
+   * @param {Object} options Options for this method
+   * @param {UserResolveable} options.user User to add to this Group DM
+   * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
+   * (only available under a bot account)
+   * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
+   * @returns {Promise<GroupDMChannel>}
+   */
+  addUser({ user, accessToken, nick }) {
+    const id = this.client.resolver.resolveUserID(user);
     const data = this.client.user.bot ?
-      { nick, access_token: accessTokenOrUser } :
+      { nick, access_token: accessToken } :
       { recipient: id };
     return this.client.api.channels[this.id].recipients[id].put({ data })
+      .then(() => this);
+  }
+
+  /**
+   * Removes an user from this Group DM.
+   * @param {UserResolveable} user User to remove
+   * @returns {Promise<GroupDMChannel>}
+   */
+  removeUser(user) {
+    const id = this.client.resolver.resolveUserID(user);
+    return this.client.api.channels[this.id].recipients[id].delete()
       .then(() => this);
   }
 
