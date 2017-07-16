@@ -86,7 +86,7 @@ class OAuth2Application {
 
     /**
      * OAuth2 secret for the application
-     * @type {boolean}
+     * @type {string}
      */
     this.secret = data.secret;
 
