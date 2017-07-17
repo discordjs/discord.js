@@ -8,6 +8,7 @@ const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const { TypeError } = require('../errors');
+const emojiRegex = require('emoji-regex');
 let GuildMember;
 
 /**
@@ -206,14 +207,13 @@ class Message {
    * @readonly
    */
   get wumboji() {
-    const emojiRegex = (require('emoji-regex'))();
     let matches = [];
-    const emojiMatches = this.content.match(emojiRegex);
+    const emojiMatches = this.content.match(emojiRegex());
     const customMatches = this.content.match(/<:\w+:\d+>/g);
-    if (emojiMatches) emojiMatches.map(m=>matches.push(m));
-    if (customMatches) customMatches.map(m=>matches.push(m));
+    if (emojiMatches) emojiMatches.map(m => matches.push(m));
+    if (customMatches) customMatches.map(m => matches.push(m));
     if (!matches || matches.length > 27) return false;
-    if (this.content.replace(emojiRegex, "").replace(/<:\w+:\d+>/g, "").match(/[^ \n]/g)) return false;
+    if (this.content.replace(emojiRegex(), '').replace(/<:\w+:\d+>/g, '').match(/[^ \n]/g)) return false;
     return true;
   }
 
