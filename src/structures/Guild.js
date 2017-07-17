@@ -498,7 +498,7 @@ class Guild {
 
   /**
    * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
-   * this should not be necessary.
+   * this should not be necessary. Returns a collection of previously uncached members.
    * @param {string} [query=''] Limit fetch to members with similar usernames
    * @param {number} [limit=0] Maximum number of members to request
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
