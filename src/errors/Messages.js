@@ -93,14 +93,9 @@ const Messages = {
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
-  NOT_INSTANTIABLE: name => `The ${name} class may not be instantiated.`,
-
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
-
-  COLLECTION_VALUE_MISSING: 'Value must be specified.',
-  COLLECTION_STRING_OR_FN: 'First argument must be a property string or a function.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
