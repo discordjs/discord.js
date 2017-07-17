@@ -212,7 +212,7 @@ class Message {
     const customMatches = this.content.match(/<:\w+:\d+>/g);
     if (emojiMatches) emojiMatches.map(m => matches.push(m));
     if (customMatches) customMatches.map(m => matches.push(m));
-    if (!matches || matches.length > 27) return false;
+    if (matches.length === 0 || matches.length > 27) return false;
     if (this.content.replace(emojiRegex(), '').replace(/<:\w+:\d+>/g, '').match(/[^ \n]/g)) return false;
     return true;
   }
