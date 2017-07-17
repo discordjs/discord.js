@@ -1,4 +1,5 @@
 const Long = require('long');
+const { Error } = require('../errors');
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -9,7 +10,7 @@ let INCREMENT = 0;
  */
 class SnowflakeUtil {
   constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+    throw new Error('NOT_INSTANTIABLE', this.constructor.name);
   }
 
   /**

@@ -1,7 +1,7 @@
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
 const ConstantsHttp = Constants.DefaultOptions.http;
-const { RangeError, TypeError } = require('../errors');
+const { Error, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /**
@@ -9,7 +9,7 @@ const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
  */
 class Util {
   constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
+    throw new Error('NOT_INSTANTIABLE', this.constructor.name);
   }
 
   /**
