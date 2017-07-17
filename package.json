@@ -36,6 +36,7 @@
     "prism-media": "^0.0.1",
     "snekfetch": "^3.2.0",
     "tweetnacl": "^1.0.0",
+    "emoji-regex": "^6.5.0",
     "ws": "^3.0.0"
   },
   "peerDependencies": {
