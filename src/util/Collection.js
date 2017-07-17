@@ -1,5 +1,3 @@
-const { Error, TypeError, RangeError } = require('../errors');
-
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
@@ -67,10 +65,8 @@ class Collection extends Map {
    */
   first(count) {
     if (count === undefined) return this.values().next().value;
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     count = Math.min(this.size, count);
     const arr = new Array(count);
     const iter = this.values();
@@ -85,10 +81,8 @@ class Collection extends Map {
    */
   firstKey(count) {
     if (count === undefined) return this.keys().next().value;
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     count = Math.min(this.size, count);
     const arr = new Array(count);
     const iter = this.iter();
@@ -105,10 +99,8 @@ class Collection extends Map {
   last(count) {
     const arr = this.array();
     if (count === undefined) return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     return arr.slice(-count);
   }
 
@@ -121,10 +113,8 @@ class Collection extends Map {
   lastKey(count) {
     const arr = this.keyArray();
     if (count === undefined) return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     return arr.slice(-count);
   }
 
@@ -137,10 +127,8 @@ class Collection extends Map {
   random(count) {
     let arr = this.array();
     if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
     arr = arr.slice();
@@ -157,10 +145,8 @@ class Collection extends Map {
   randomKey(count) {
     let arr = this.keyArray();
     if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('INVALID_TYPE', 'count', 'number');
-    if (!Number.isInteger(count) || count < 1) {
-      throw new RangeError('INVALID_TYPE', 'count', 'integer greater than 0', true);
-    }
+    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
+    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
     arr = arr.slice();
@@ -178,8 +164,8 @@ class Collection extends Map {
    * collection.findAll('username', 'Bob');
    */
   findAll(prop, value) {
-    if (typeof prop !== 'string') throw new TypeError('INVALID_TYPE', 'key', 'string');
-    if (typeof value === 'undefined') throw new Error('COLLECTION_VALUE_MISSING');
+    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
+    if (typeof value === 'undefined') throw new Error('Value must be specified.');
     const results = [];
     for (const item of this.values()) {
       if (item[prop] === value) results.push(item);
@@ -204,7 +190,7 @@ class Collection extends Map {
    */
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
-      if (typeof value === 'undefined') throw new Error('COLLECTION_VALUE_MISSING');
+      if (typeof value === 'undefined') throw new Error('Value must be specified.');
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
@@ -215,7 +201,7 @@ class Collection extends Map {
       }
       return null;
     } else {
-      throw new Error('COLLECTION_STRING_OR_FN');
+      throw new Error('First argument must be a property string or a function.');
     }
   }
 
@@ -235,7 +221,7 @@ class Collection extends Map {
   /* eslint-enable max-len */
   findKey(propOrFn, value) {
     if (typeof propOrFn === 'string') {
-      if (typeof value === 'undefined') throw new Error('COLLECTION_VALUE_MISSING');
+      if (typeof value === 'undefined') throw new Error('Value must be specified.');
       for (const [key, val] of this) {
         if (val[propOrFn] === value) return key;
       }
@@ -246,7 +232,7 @@ class Collection extends Map {
       }
       return null;
     } else {
-      throw new Error('COLLECTION_STRING_OR_FN');
+      throw new Error('First argument must be a property string or a function.');
     }
   }
 
