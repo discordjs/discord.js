@@ -31,16 +31,28 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    this.client.on('message', this.listener);
+    const bulkDeleteListener = (messages => {
+      for (const message of messages.values()) this.uncollect(message);
+    }).bind(this);
+
+    this.client.on('message', this.collect);
+    this.client.on('messageDelete', this.uncollect);
+    this.client.on('messageDeleteBulk', bulkDeleteListener);
+
+    this.once('end', () => {
+      this.client.removeListener('message', this.collect);
+      this.client.removeListener('messageDelete', this.uncollect);
+      this.client.removeListener('messageDeleteBulk', bulkDeleteListener);
+    });
   }
 
   /**
-   * Handle an incoming message for possible collection.
+   * Handle a message for possible collection.
    * @param {Message} message The message that could be collected
    * @returns {?{key: Snowflake, value: Message}} Message data to collect
    * @private
    */
-  handle(message) {
+  shouldCollect(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
     return {
@@ -50,22 +62,23 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
-   * @private
+   * Handle a message for possible uncollection.
+   * @param {Message} message The message that could be uncollected
+   * @returns {?string} The message ID.
    */
-  postCheck() {
-    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
-    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
-    return null;
+  shouldUncollect(message) {
+    return message.channel.id === this.channel.id ? message.id : null;
   }
 
   /**
-   * Removes event listeners.
+   * Check after un/collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
-  cleanup() {
-    this.client.removeListener('message', this.listener);
+  shouldEnd() {
+    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
+    return null;
   }
 }
 
