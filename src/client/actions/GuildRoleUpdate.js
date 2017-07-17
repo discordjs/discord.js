@@ -5,8 +5,8 @@ const Util = require('../../util/Util');
 class GuildRoleUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+
     if (guild) {
       const roleData = data.role;
       let oldRole = null;
@@ -34,8 +34,8 @@ class GuildRoleUpdateAction extends Action {
 /**
  * Emitted whenever a guild role is updated.
  * @event Client#roleUpdate
- * @param {Role} oldRole The role before the update.
- * @param {Role} newRole The role after the update.
+ * @param {Role} oldRole The role before the update
+ * @param {Role} newRole The role after the update
  */
 
 module.exports = GuildRoleUpdateAction;

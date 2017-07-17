@@ -13,7 +13,17 @@ const ffmpegArguments = [
 
 /**
  * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
- * @extends {EventEmitter}
+ *
+ * Example usage:
+ * ```js
+ * const broadcast = client.createVoiceBroadcast();
+ * broadcast.playFile('./music.mp3');
+ * // play "music.mp3" in all voice connections that the client is in
+ * for (const connection of client.voiceConnections.values()) {
+ *   connection.playBroadcast(broadcast);
+ * }
+ * ```
+ * @implements {VolumeInterface}
  */
 class VoiceBroadcast extends VolumeInterface {
   constructor(client) {
@@ -32,7 +42,7 @@ class VoiceBroadcast extends VolumeInterface {
     this.prism = new Prism();
     /**
      * The current audio transcoder that is being used
-     * @type {object}
+     * @type {Object}
      */
     this.currentTranscoder = null;
     this.tickInterval = null;
@@ -42,6 +52,7 @@ class VoiceBroadcast extends VolumeInterface {
   /**
    * An array of subscribed dispatchers
    * @type {StreamDispatcher[]}
+   * @readonly
    */
   get dispatchers() {
     let d = [];
@@ -63,7 +74,7 @@ class VoiceBroadcast extends VolumeInterface {
     const volume = old || dispatcher.volume;
 
     /**
-     * Emitted whenever a stream dispatcher unsubscribes from the broadcast
+     * Emitted whenever a stream dispatcher unsubscribes from the broadcast.
      * @event VoiceBroadcast#unsubscribe
      * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
      */
@@ -97,7 +108,7 @@ class VoiceBroadcast extends VolumeInterface {
         this._dispatchers.get(n).add(dispatcher);
       });
       /**
-       * Emitted whenever a stream dispatcher subscribes to the broadcast
+       * Emitted whenever a stream dispatcher subscribes to the broadcast.
        * @event VoiceBroadcast#subscribe
        * @param {StreamDispatcher} dispatcher The subscribed dispatcher
        */
@@ -114,19 +125,19 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Plays any audio stream across the broadcast
+   * Plays any audio stream across the broadcast.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    * @example
-   * // play streams using ytdl-core
+   * // Play streams using ytdl-core
    * const ytdl = require('ytdl-core');
    * const streamOptions = { seek: 0, volume: 1 };
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
    *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', {filter : 'audioonly'});
+   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
    *    broadcast.playStream(stream);
    *    const dispatcher = connection.playBroadcast(broadcast);
    *  })
@@ -143,7 +154,7 @@ class VoiceBroadcast extends VolumeInterface {
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
-   * // play files natively
+   * // Play files natively
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
@@ -168,21 +179,21 @@ class VoiceBroadcast extends VolumeInterface {
       ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek)]),
     });
     /**
-     * Emitted whenever an error occurs
+     * Emitted whenever an error occurs.
      * @event VoiceBroadcast#error
-     * @param {Error} error the error that occurred
+     * @param {Error} error The error that occurred
      */
     transcoder.once('error', e => {
       if (this.listenerCount('error') > 0) this.emit('error', e);
       /**
-       * Emitted whenever the VoiceBroadcast has any warnings
+       * Emitted whenever the VoiceBroadcast has any warnings.
        * @event VoiceBroadcast#warn
-       * @param {string|Error} warning the warning that was raised
+       * @param {string|Error} warning The warning that was raised
        */
       else this.emit('warn', e);
     });
     /**
-     * Emitted once the broadcast (the audio stream) ends
+     * Emitted once the broadcast (the audio stream) ends.
      * @event VoiceBroadcast#end
      */
     transcoder.once('end', () => this.killCurrentTranscoder());
@@ -196,7 +207,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play.
+   * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
@@ -226,19 +237,17 @@ class VoiceBroadcast extends VolumeInterface {
 
   /**
    * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
+   * @param {string} input The arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
   playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    this.guaranteeOpusEngine();
-
     const options = { seek, volume, passes, input };
     return this._playTranscodable(input, options);
   }
 
   /**
-   * Pauses the entire broadcast - all dispatchers also pause
+   * Pauses the entire broadcast - all dispatchers also pause.
    */
   pause() {
     this.paused = true;
@@ -250,7 +259,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Resumes the entire broadcast - all dispatchers also resume
+   * Resumes the entire broadcast - all dispatchers also resume.
    */
   resume() {
     this.paused = false;
@@ -261,12 +270,9 @@ class VoiceBroadcast extends VolumeInterface {
     }
   }
 
-  guaranteeOpusEngine() {
-    if (!this.opusEncoder) throw new Error('Couldn\'t find an Opus engine.');
-  }
-
   _startPlaying() {
     if (this.tickInterval) clearInterval(this.tickInterval);
+    // Old code?
     // this.tickInterval = this.client.setInterval(this.tick.bind(this), 20);
     this._startTime = Date.now();
     this._count = 0;
@@ -301,7 +307,7 @@ class VoiceBroadcast extends VolumeInterface {
 
     let packetMatrix = {};
 
-    const getOpusPacket = (volume) => {
+    const getOpusPacket = volume => {
       if (packetMatrix[volume]) return packetMatrix[volume];
 
       const opusEncoder = this._encoders.get(volume);
@@ -349,7 +355,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * End the current broadcast, all subscribed dispatchers will also end
+   * End the current broadcast, all subscribed dispatchers will also end.
    */
   destroy() {
     this.end();

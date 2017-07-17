@@ -1,7 +1,8 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const secretbox = require('../util/Secretbox');
 const Readable = require('./VoiceReadable');
 const OpusEncoders = require('../opus/OpusEngineList');
+const { Error } = require('../../../errors');
 
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
@@ -9,7 +10,7 @@ nonce.fill(0);
 /**
  * Receives voice data from a voice connection.
  * ```js
- * // obtained using:
+ * // Obtained using:
  * voiceChannel.join().then(connection => {
  *  const receiver = connection.createReceiver();
  * });
@@ -20,8 +21,8 @@ class VoiceReceiver extends EventEmitter {
   constructor(connection) {
     super();
     /*
-      need a queue because we don't get the ssrc of the user speaking until after the first few packets,
-      so we queue up unknown SSRCs until they become known, then empty the queue.
+      Need a queue because we don't get the ssrc of the user speaking until after the first few packets,
+      so we queue up unknown SSRCs until they become known, then empty the queue
     */
     this.queues = new Map();
     this.pcmStreams = new Map();
@@ -29,7 +30,7 @@ class VoiceReceiver extends EventEmitter {
     this.opusEncoders = new Map();
 
     /**
-     * Whether or not this receiver has been destroyed.
+     * Whether or not this receiver has been destroyed
      * @type {boolean}
      */
     this.destroyed = false;
@@ -68,7 +69,6 @@ class VoiceReceiver extends EventEmitter {
     if (!this.destroyed) return;
     this.voiceConnection.sockets.udp.socket.on('message', this._listener);
     this.destroyed = false;
-    return;
   }
 
   /**
@@ -92,7 +92,7 @@ class VoiceReceiver extends EventEmitter {
   }
 
   /**
-   * Invoked when a user stops speaking
+   * Invoked when a user stops speaking.
    * @param {User} user The user that stopped speaking
    * @private
    */
@@ -123,8 +123,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createOpusStream(user) {
     user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
-    if (!user) throw new Error('Couldn\'t resolve the user to create Opus stream.');
-    if (this.opusStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
+    if (!user) throw new Error('VOICE_USER_MISSING');
+    if (this.opusStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();
     this.opusStreams.set(user.id, stream);
     return stream;
@@ -138,8 +138,8 @@ class VoiceReceiver extends EventEmitter {
    */
   createPCMStream(user) {
     user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
-    if (!user) throw new Error('Couldn\'t resolve the user to create PCM stream.');
-    if (this.pcmStreams.get(user.id)) throw new Error('There is already an existing stream for that user.');
+    if (!user) throw new Error('VOICE_USER_MISSING');
+    if (this.pcmStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();
     this.pcmStreams.set(user.id, stream);
     return stream;
@@ -154,7 +154,7 @@ class VoiceReceiver extends EventEmitter {
        * @event VoiceReceiver#warn
        * @param {string} reason The reason for the warning. If it happened because the voice packet could not be
        * decrypted, this would be `decrypt`. If it happened because the voice packet could not be decoded into
-       * PCM, this would be `decode`.
+       * PCM, this would be `decode`
        * @param {string} message The warning message
        */
       this.emit('warn', 'decrypt', 'Failed to decrypt voice packet');

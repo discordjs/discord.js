@@ -11,6 +11,15 @@ class OpusScriptEngine extends OpusEngine {
       throw err;
     }
     this.encoder = new OpusScript(48000, 2);
+    super.init();
+  }
+
+  setFEC(enabled) {
+    this.encoder.encoderCTL(this.ctl.FEC, enabled ? 1 : 0);
+  }
+
+  setPLP(percent) {
+    this.encoder.encoderCTL(this.ctl.PLP, Math.min(100, Math.max(0, percent * 100)));
   }
 
   encode(buffer) {

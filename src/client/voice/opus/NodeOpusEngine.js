@@ -11,6 +11,15 @@ class NodeOpusEngine extends OpusEngine {
       throw err;
     }
     this.encoder = new opus.OpusEncoder(48000, 2);
+    super.init();
+  }
+
+  setFEC(enabled) {
+    this.encoder.applyEncoderCTL(this.ctl.FEC, enabled ? 1 : 0);
+  }
+
+  setPLP(percent) {
+    this.encoder.applyEncoderCTL(this.ctl.PLP, Math.min(100, Math.max(0, percent * 100)));
   }
 
   encode(buffer) {

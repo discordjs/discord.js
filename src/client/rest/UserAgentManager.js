@@ -1,22 +1,25 @@
 const Constants = require('../../util/Constants');
 
 class UserAgentManager {
-  constructor(restManager) {
-    this.restManager = restManager;
-    this._userAgent = {
-      url: 'https://github.com/hydrabolt/discord.js',
-      version: Constants.Package.version,
-    };
+  constructor() {
+    this.build(this.constructor.DEFAULT);
   }
 
-  set(info) {
-    this._userAgent.url = info.url || 'https://github.com/hydrabolt/discord.js';
-    this._userAgent.version = info.version || Constants.Package.version;
+  set({ url, version } = {}) {
+    this.build({
+      url: url || this.constructor.DFEAULT.url,
+      version: version || this.constructor.DEFAULT.version,
+    });
   }
 
-  get userAgent() {
-    return `DiscordBot (${this._userAgent.url}, ${this._userAgent.version})`;
+  build(ua) {
+    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.version}`;
   }
 }
+
+UserAgentManager.DEFAULT = {
+  url: Constants.Package.homepage.split('#')[0],
+  version: Constants.Package.version,
+};
 
 module.exports = UserAgentManager;

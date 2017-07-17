@@ -1,8 +1,9 @@
 const Collection = require('../../util/Collection');
 const VoiceConnection = require('./VoiceConnection');
+const { Error } = require('../../errors');
 
 /**
- * Manages all the voice stuff for the Client
+ * Manages all the voice stuff for the client.
  * @private
  */
 class ClientVoiceManager {
@@ -37,18 +38,14 @@ class ClientVoiceManager {
   }
 
   /**
-   * Sets up a request to join a voice channel
+   * Sets up a request to join a voice channel.
    * @param {VoiceChannel} channel The voice channel to join
    * @returns {Promise<VoiceConnection>}
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
       if (!channel.joinable) {
-        if (channel.full) {
-          throw new Error('You do not have permission to join this voice channel; it is full.');
-        } else {
-          throw new Error('You do not have permission to join this voice channel.');
-        }
+        throw new Error('VOICE_JOIN_CHANNEL', channel.full);
       }
 
       let connection = this.connections.get(channel.guild.id);

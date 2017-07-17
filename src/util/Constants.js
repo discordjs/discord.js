@@ -1,13 +1,13 @@
 exports.Package = require('../../package.json');
+const { Error, RangeError } = require('../errors');
 
 /**
- * Options for a Client.
+ * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
- * provide the guarantee of any particular order.
- * <warn>Burst mode is more likely to hit a 429 ratelimit by its nature,
- * be advised if you are very unlucky you could be IP banned</warn>
+ * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
+ * and is therefore slightly riskier to use.
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
@@ -29,12 +29,13 @@ exports.Package = require('../../package.json');
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
- * @property {WebsocketOptions} [ws] Options for the websocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
+  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -46,7 +47,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
 
   /**
-   * Websocket options (these are left as snake_case to match the API)
+   * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
    * @property {boolean} [compress=true] Whether to compress data sent on the connection
@@ -62,110 +63,70 @@ exports.DefaultOptions = {
       $referrer: '',
       $referring_domain: '',
     },
+    version: 6,
+  },
+  http: {
+    version: 7,
+    api: 'https://discordapp.com/api',
+    cdn: 'https://cdn.discordapp.com',
+    invite: 'https://discord.gg',
   },
 };
 
-exports.Errors = {
-  NO_TOKEN: 'Request to use token, but token was unavailable to the client.',
-  NO_BOT_ACCOUNT: 'Only bot accounts are able to make use of this feature.',
-  NO_USER_ACCOUNT: 'Only user accounts are able to make use of this feature.',
-  BAD_WS_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
-  TOOK_TOO_LONG: 'Something took too long to do.',
-  NOT_A_PERMISSION: 'Invalid permission string or number.',
-  INVALID_RATE_LIMIT_METHOD: 'Unknown rate limiting method.',
-  BAD_LOGIN: 'Incorrect login details were provided.',
-  INVALID_SHARD: 'Invalid shard settings were provided.',
-  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
-  INVALID_TOKEN: 'An invalid token was provided.',
+exports.WSCodes = {
+  1000: 'Connection gracefully closed',
+  4004: 'Tried to identify with an invalid token',
+  4010: 'Sharding data provided was invalid',
+  4011: 'Shard would be on too many guilds if connected',
 };
 
-const PROTOCOL_VERSION = exports.PROTOCOL_VERSION = 6;
-const HOST = exports.HOST = `https://discordapp.com`;
-const API = exports.API = `${HOST}/api/v${PROTOCOL_VERSION}`;
-const Endpoints = exports.Endpoints = {
-  // general
-  login: `${API}/auth/login`,
-  logout: `${API}/auth/logout`,
-  gateway: `${API}/gateway`,
-  botGateway: `${API}/gateway/bot`,
-  invite: (id) => `${API}/invite/${id}`,
-  inviteLink: (id) => `https://discord.gg/${id}`,
-  assets: (asset) => `${HOST}/assets/${asset}`,
-  CDN: 'https://cdn.discordapp.com',
+const AllowedImageFormats = [
+  'webp',
+  'png',
+  'jpg',
+  'gif',
+];
 
-  // users
-  user: (userID) => `${API}/users/${userID}`,
-  userChannels: (userID) => `${Endpoints.user(userID)}/channels`,
-  userProfile: (userID) => `${Endpoints.user(userID)}/profile`,
-  avatar: (userID, avatar) => {
-    if (userID === '1') return avatar;
-    return `${Endpoints.CDN}/avatars/${userID}/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'jpg'}?size=1024`;
+const AllowedImageSizes = [
+  128,
+  256,
+  512,
+  1024,
+  2048,
+];
+
+function checkImage({ size, format }) {
+  if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
+  if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+}
+
+exports.Endpoints = {
+  CDN(root) {
+    return {
+      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
+      Asset: name => `${root}/assets/${name}`,
+      DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
+      Avatar: (userID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        checkImage({ size, format });
+        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      Icon: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      AppIcon: (clientID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      Splash: (guildID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+    };
   },
-  me: `${API}/users/@me`,
-  meGuild: (guildID) => `${Endpoints.me}/guilds/${guildID}`,
-  meChannels: `${API}/users/@me/channels`,
-  meMentions: (limit, roles, everyone, guildID) =>
-    `users/@me/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
-  relationships: (userID) => `${Endpoints.user(userID)}/relationships`,
-  note: (userID) => `${Endpoints.me}/notes/${userID}`,
-
-  voiceRegions: `${API}/voice/regions`,
-
-  // guilds
-  guilds: `${API}/guilds`,
-  guild: (guildID) => `${Endpoints.guilds}/${guildID}`,
-  guildIcon: (guildID, hash) => `${Endpoints.CDN}/icons/${guildID}/${hash}.jpg`,
-  guildSplash: (guildID, hash) => `${Endpoints.CDN}/splashes/${guildID}/${hash}.jpg`,
-  guildPrune: (guildID) => `${Endpoints.guild(guildID)}/prune`,
-  guildEmbed: (guildID) => `${Endpoints.guild(guildID)}/embed`,
-  guildInvites: (guildID) => `${Endpoints.guild(guildID)}/invites`,
-  guildRoles: (guildID) => `${Endpoints.guild(guildID)}/roles`,
-  guildRole: (guildID, roleID) => `${Endpoints.guildRoles(guildID)}/${roleID}`,
-  guildBans: (guildID) => `${Endpoints.guild(guildID)}/bans`,
-  guildIntegrations: (guildID) => `${Endpoints.guild(guildID)}/integrations`,
-  guildMembers: (guildID) => `${Endpoints.guild(guildID)}/members`,
-  guildMember: (guildID, memberID) => `${Endpoints.guildMembers(guildID)}/${memberID}`,
-  guildMemberRole: (guildID, memberID, roleID) => `${Endpoints.guildMember(guildID, memberID)}/roles/${roleID}`,
-  guildMemberNickname: (guildID) => `${Endpoints.guildMember(guildID, '@me')}/nick`,
-  guildChannels: (guildID) => `${Endpoints.guild(guildID)}/channels`,
-  guildEmojis: (guildID) => `${Endpoints.guild(guildID)}/emojis`,
-  guildEmoji: (guildID, emojiID) => `${Endpoints.guildEmojis(guildID)}/${emojiID}`,
-  guildSearch: (guildID) => `${Endpoints.guild(guildID)}/messages/search`,
-  guildVoiceRegions: (guildID) => `${Endpoints.guild(guildID)}/regions`,
-
-  // channels
-  channels: `${API}/channels`,
-  channel: (channelID) => `${Endpoints.channels}/${channelID}`,
-  channelMessages: (channelID) => `${Endpoints.channel(channelID)}/messages`,
-  channelInvites: (channelID) => `${Endpoints.channel(channelID)}/invites`,
-  channelTyping: (channelID) => `${Endpoints.channel(channelID)}/typing`,
-  channelPermissions: (channelID) => `${Endpoints.channel(channelID)}/permissions`,
-  channelMessage: (channelID, messageID) => `${Endpoints.channelMessages(channelID)}/${messageID}`,
-  channelWebhooks: (channelID) => `${Endpoints.channel(channelID)}/webhooks`,
-  channelSearch: (channelID) => `${Endpoints.channelMessages(channelID)}/search`,
-
-  dmChannelRecipient: (channelID, recipientID) => `${Endpoints.channel(channelID)}/recipients/${recipientID}`,
-
-  // message reactions
-  messageReactions: (channelID, messageID) => `${Endpoints.channelMessage(channelID, messageID)}/reactions`,
-  messageReaction:
-    (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReactions(channel, msg)}/${emoji}` +
-          `${limit ? `?limit=${limit}` : ''}`,
-  selfMessageReaction: (channel, msg, emoji, limit) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/@me`,
-  userMessageReaction: (channel, msg, emoji, limit, id) =>
-          `${Endpoints.messageReaction(channel, msg, emoji, limit)}/${id}`,
-
-  // webhooks
-  webhook: (webhookID, token) => `${API}/webhooks/${webhookID}${token ? `/${token}` : ''}`,
-
-  // oauth
-  oauth2Application: (appID) => `${API}/oauth2/applications/${appID}`,
-  getApp: (id) => `${API}/oauth2/authorize?client_id=${id}`,
-
-  // emoji
-  emoji: (emojiID) => `${Endpoints.CDN}/emojis/${emojiID}.png`,
+  invite: (root, code) => `${root}/${code}`,
+  botGateway: '/gateway/bot',
 };
 
 /**
@@ -269,6 +230,7 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
+  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -283,6 +245,7 @@ exports.Events = {
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * - READY
+ * - RESUMED
  * - GUILD_SYNC
  * - GUILD_CREATE
  * - GUILD_DELETE
@@ -309,6 +272,7 @@ exports.Events = {
  * - MESSAGE_REACTION_REMOVE_ALL
  * - USER_UPDATE
  * - USER_NOTE_UPDATE
+ * - USER_SETTINGS_UPDATE
  * - PRESENCE_UPDATE
  * - VOICE_STATE_UPDATE
  * - TYPING_START
@@ -319,6 +283,7 @@ exports.Events = {
  */
 exports.WSEvents = {
   READY: 'READY',
+  RESUMED: 'RESUMED',
   GUILD_SYNC: 'GUILD_SYNC',
   GUILD_CREATE: 'GUILD_CREATE',
   GUILD_DELETE: 'GUILD_DELETE',
@@ -346,6 +311,7 @@ exports.WSEvents = {
   MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
+  USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -354,55 +320,179 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
-exports.MessageTypes = {
-  0: 'DEFAULT',
-  1: 'RECIPIENT_ADD',
-  2: 'RECIPIENT_REMOVE',
-  3: 'CALL',
-  4: 'CHANNEL_NAME_CHANGE',
-  5: 'CHANNEL_ICON_CHANGE',
-  6: 'PINS_ADD',
+/**
+ * The type of a message, e.g. `DEFAULT`. Here are the available types:
+ * - DEFAULT
+ * - RECIPIENT_ADD
+ * - RECIPIENT_REMOVE
+ * - CALL
+ * - CHANNEL_NAME_CHANGE
+ * - CHANNEL_ICON_CHANGE
+ * - PINS_ADD
+ * - GUILD_MEMBER_JOIN
+ * @typedef {string} MessageType
+ */
+exports.MessageTypes = [
+  'DEFAULT',
+  'RECIPIENT_ADD',
+  'RECIPIENT_REMOVE',
+  'CALL',
+  'CHANNEL_NAME_CHANGE',
+  'CHANNEL_ICON_CHANGE',
+  'PINS_ADD',
+  'GUILD_MEMBER_JOIN',
+];
+
+exports.ExplicitContentFilterTypes = [
+  'DISABLED',
+  'NON_FRIENDS',
+  'FRIENDS_AND_NON_FRIENDS',
+];
+
+exports.UserSettingsMap = {
+  /**
+   * Automatically convert emoticons in your messages to emoji
+   * For example, when you type `:-)` Discord will convert it to 😃
+   * @name ClientUserSettings#convertEmoticons
+   * @type {boolean}
+   */
+  convert_emoticons: 'convertEmoticons',
+
+  /**
+   * If new guilds should automatically disable DMs between you and its members
+   * @name ClientUserSettings#defaultGuildsRestricted
+   * @type {boolean}
+   */
+  default_guilds_restricted: 'defaultGuildsRestricted',
+
+  /**
+   * Automatically detect accounts from services like Steam and Blizzard when you open the Discord client
+   * @name ClientUserSettings#detectPlatformAccounts
+   * @type {boolean}
+   */
+  detect_platform_accounts: 'detectPlatformAccounts',
+
+  /**
+   * Developer Mode exposes context menu items helpful for people writing bots using the Discord API
+   * @name ClientUserSettings#developerMode
+   * @type {boolean}
+   */
+  developer_mode: 'developerMode',
+
+  /**
+   * Allow playback and usage of the `/tts` command
+   * @name ClientUserSettings#enableTTSCommand
+   * @type {boolean}
+   */
+  enable_tts_command: 'enableTTSCommand',
+
+  /**
+   * The theme of the client. Either `light` or `dark`
+   * @name ClientUserSettings#theme
+   * @type {string}
+   */
+  theme: 'theme',
+
+  /**
+   * Last status set in the client
+   * @name ClientUserSettings#status
+   * @type {PresenceStatus}
+   */
+  status: 'status',
+
+  /**
+   * Display currently running game as status message
+   * @name ClientUserSettings#showCurrentGame
+   * @type {boolean}
+   */
+  show_current_game: 'showCurrentGame',
+
+  /**
+   * Display images, videos, and lolcats when uploaded directly to Discord
+   * @name ClientUserSettings#inlineAttachmentMedia
+   * @type {boolean}
+   */
+  inline_attachment_media: 'inlineAttachmentMedia',
+
+  /**
+   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * @name ClientUserSettings#inlineEmbedMedia
+   * @type {boolean}
+   */
+  inline_embed_media: 'inlineEmbedMedia',
+
+  /**
+   * Language the Discord client will use, as an RFC 3066 language identifier
+   * @name ClientUserSettings#locale
+   * @type {string}
+   */
+  locale: 'locale',
+
+  /**
+   * Display messages in compact mode
+   * @name ClientUserSettings#messageDisplayCompact
+   * @type {boolean}
+   */
+  message_display_compact: 'messageDisplayCompact',
+
+  /**
+   * Show emoji reactions on messages
+   * @name ClientUserSettings#renderReactions
+   * @type {boolean}
+   */
+  render_reactions: 'renderReactions',
+
+  /**
+   * Array of snowflake IDs for guilds, in the order they appear in the Discord client
+   * @name ClientUserSettings#guildPositions
+   * @type {Snowflake[]}
+   */
+  guild_positions: 'guildPositions',
+
+  /**
+   * Array of snowflake IDs for guilds which you will not recieve DMs from
+   * @name ClientUserSettings#restrictedGuilds
+   * @type {Snowflake[]}
+   */
+  restricted_guilds: 'restrictedGuilds',
+
+  explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
+    /**
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
+     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * @name ClientUserSettings#explicitContentFilter
+     * @type {string}
+     */
+    return exports.ExplicitContentFilterTypes[type];
+  },
+  friend_source_flags: function friendSources(flags) { // eslint-disable-line func-name-matching
+    /**
+     * Who can add you as a friend
+     * @name ClientUserSettings#friendSources
+     * @type {Object}
+     * @property {boolean} all Mutual friends and mutual guilds
+     * @property {boolean} mutualGuilds Only mutual guilds
+     * @property {boolean} mutualFriends Only mutual friends
+     */
+    return {
+      all: flags.all || false,
+      mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
+      mutualFriends: flags.all ? true : flags.mutualFriends || false,
+    };
+  },
 };
 
-exports.DefaultAvatars = {
-  BLURPLE: '6debd47ed13483642cf09e832ed0bc1b',
-  GREY: '322c936a8c8be1b803cd94861bdfa868',
-  GREEN: 'dd4dbc0016779df1378e7812eabaa04d',
-  ORANGE: '0e291f67c9274a1abdddeb3fd919cbaa',
-  RED: '1cbd08c76f8af6dddce02c5138971129',
-};
-
-const PermissionFlags = exports.PermissionFlags = {
-  CREATE_INSTANT_INVITE: 1 << 0,
-  KICK_MEMBERS: 1 << 1,
-  BAN_MEMBERS: 1 << 2,
-  ADMINISTRATOR: 1 << 3,
-  MANAGE_CHANNELS: 1 << 4,
-  MANAGE_GUILD: 1 << 5,
-  ADD_REACTIONS: 1 << 6,
-
-  READ_MESSAGES: 1 << 10,
-  SEND_MESSAGES: 1 << 11,
-  SEND_TTS_MESSAGES: 1 << 12,
-  MANAGE_MESSAGES: 1 << 13,
-  EMBED_LINKS: 1 << 14,
-  ATTACH_FILES: 1 << 15,
-  READ_MESSAGE_HISTORY: 1 << 16,
-  MENTION_EVERYONE: 1 << 17,
-  EXTERNAL_EMOJIS: 1 << 18,
-
-  CONNECT: 1 << 20,
-  SPEAK: 1 << 21,
-  MUTE_MEMBERS: 1 << 22,
-  DEAFEN_MEMBERS: 1 << 23,
-  MOVE_MEMBERS: 1 << 24,
-  USE_VAD: 1 << 25,
-
-  CHANGE_NICKNAME: 1 << 26,
-  MANAGE_NICKNAMES: 1 << 27,
-  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
-  MANAGE_WEBHOOKS: 1 << 29,
-  MANAGE_EMOJIS: 1 << 30,
+/**
+ * All flags users can have:
+ * - STAFF
+ * - PARTNER
+ * - HYPESQUAD
+ * @typedef {string} UserFlags
+ */
+exports.UserFlags = {
+  STAFF: 1 << 0,
+  PARTNER: 1 << 1,
+  HYPESQUAD: 1 << 2,
 };
 
 exports.Colors = {
@@ -433,7 +523,95 @@ exports.Colors = {
   NOT_QUITE_BLACK: 0x23272A,
 };
 
-let _ALL_PERMISSIONS = 0;
-for (const key in PermissionFlags) _ALL_PERMISSIONS |= PermissionFlags[key];
-exports.ALL_PERMISSIONS = _ALL_PERMISSIONS;
-exports.DEFAULT_PERMISSIONS = 104324097;
+/**
+ * An error encountered while performing an API request. Here are the potential errors:
+ * - UNKNOWN_ACCOUNT
+ * - UNKNOWN_APPLICATION
+ * - UNKNOWN_CHANNEL
+ * - UNKNOWN_GUILD
+ * - UNKNOWN_INTEGRATION
+ * - UNKNOWN_INVITE
+ * - UNKNOWN_MEMBER
+ * - UNKNOWN_MESSAGE
+ * - UNKNOWN_OVERWRITE
+ * - UNKNOWN_PROVIDER
+ * - UNKNOWN_ROLE
+ * - UNKNOWN_TOKEN
+ * - UNKNOWN_USER
+ * - UNKNOWN_EMOJI
+ * - BOT_PROHIBITED_ENDPOINT
+ * - BOT_ONLY_ENDPOINT
+ * - MAXIMUM_GUILDS
+ * - MAXIMUM_FRIENDS
+ * - MAXIMUM_PINS
+ * - MAXIMUM_ROLES
+ * - MAXIMUM_REACTIONS
+ * - UNAUTHORIZED
+ * - MISSING_ACCESS
+ * - INVALID_ACCOUNT_TYPE
+ * - CANNOT_EXECUTE_ON_DM
+ * - EMBED_DISABLED
+ * - CANNOT_EDIT_MESSAGE_BY_OTHER
+ * - CANNOT_SEND_EMPTY_MESSAGE
+ * - CANNOT_MESSAGE_USER
+ * - CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
+ * - CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
+ * - OAUTH2_APPLICATION_BOT_ABSENT
+ * - MAXIMUM_OAUTH2_APPLICATIONS
+ * - INVALID_OAUTH_STATE
+ * - MISSING_PERMISSIONS
+ * - INVALID_AUTHENTICATION_TOKEN
+ * - NOTE_TOO_LONG
+ * - INVALID_BULK_DELETE_QUANTITY
+ * - CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * - CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * - BULK_DELETE_MESSAGE_TOO_OLD
+ * - INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * - REACTION_BLOCKED
+ * @typedef {string} APIError
+ */
+exports.APIErrors = {
+  UNKNOWN_ACCOUNT: 10001,
+  UNKNOWN_APPLICATION: 10002,
+  UNKNOWN_CHANNEL: 10003,
+  UNKNOWN_GUILD: 10004,
+  UNKNOWN_INTEGRATION: 10005,
+  UNKNOWN_INVITE: 10006,
+  UNKNOWN_MEMBER: 10007,
+  UNKNOWN_MESSAGE: 10008,
+  UNKNOWN_OVERWRITE: 10009,
+  UNKNOWN_PROVIDER: 10010,
+  UNKNOWN_ROLE: 10011,
+  UNKNOWN_TOKEN: 10012,
+  UNKNOWN_USER: 10013,
+  UNKNOWN_EMOJI: 10014,
+  BOT_PROHIBITED_ENDPOINT: 20001,
+  BOT_ONLY_ENDPOINT: 20002,
+  MAXIMUM_GUILDS: 30001,
+  MAXIMUM_FRIENDS: 30002,
+  MAXIMUM_PINS: 30003,
+  MAXIMUM_ROLES: 30005,
+  MAXIMUM_REACTIONS: 30010,
+  UNAUTHORIZED: 40001,
+  MISSING_ACCESS: 50001,
+  INVALID_ACCOUNT_TYPE: 50002,
+  CANNOT_EXECUTE_ON_DM: 50003,
+  EMBED_DISABLED: 50004,
+  CANNOT_EDIT_MESSAGE_BY_OTHER: 50005,
+  CANNOT_SEND_EMPTY_MESSAGE: 50006,
+  CANNOT_MESSAGE_USER: 50007,
+  CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: 50008,
+  CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: 50009,
+  OAUTH2_APPLICATION_BOT_ABSENT: 50010,
+  MAXIMUM_OAUTH2_APPLICATIONS: 50011,
+  INVALID_OAUTH_STATE: 50012,
+  MISSING_PERMISSIONS: 50013,
+  INVALID_AUTHENTICATION_TOKEN: 50014,
+  NOTE_TOO_LONG: 50015,
+  INVALID_BULK_DELETE_QUANTITY: 50016,
+  CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
+  CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
+  BULK_DELETE_MESSAGE_TOO_OLD: 50034,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  REACTION_BLOCKED: 90001,
+};

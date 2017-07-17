@@ -1,11 +1,12 @@
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 
 /**
- * Helper class for sharded clients spawned as a child process, such as from a ShardingManager
+ * Helper class for sharded clients spawned as a child process, such as from a ShardingManager.
  */
 class ShardClientUtil {
   /**
-   * @param {Client} client Client of the current shard
+   * @param {Client} client The client of the current shard
    */
   constructor(client) {
     this.client = client;
@@ -31,7 +32,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Sends a message to the master process
+   * Sends a message to the master process.
    * @param {*} message Message to send
    * @returns {Promise<void>}
    */
@@ -40,13 +41,13 @@ class ShardClientUtil {
       const sent = process.send(message, err => {
         if (err) reject(err); else resolve();
       });
-      if (!sent) throw new Error('Failed to send message to master process.');
+      if (!sent) throw new Error('SHARDING_PARENT_CONNECTION');
     });
   }
 
   /**
-   * Fetches a Client property value of each shard.
-   * @param {string} prop Name of the Client property to get, using periods for nesting
+   * Fetches a client property value of each shard.
+   * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array>}
    * @example
    * client.shard.fetchClientValues('guilds.size').then(results => {
@@ -91,7 +92,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Handles an IPC message
+   * Handles an IPC message.
    * @param {*} message Message received
    * @private
    */
@@ -112,7 +113,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Sends a message to the master process, emitting an error from the client upon failure
+   * Sends a message to the master process, emitting an error from the client upon failure.
    * @param {string} type Type of response to send
    * @param {*} message Message to send
    * @private
@@ -125,8 +126,8 @@ class ShardClientUtil {
   }
 
   /**
-   * Creates/gets the singleton of this class
-   * @param {Client} client Client to use
+   * Creates/gets the singleton of this class.
+   * @param {Client} client The client to use
    * @returns {ShardClientUtil}
    */
   static singleton(client) {

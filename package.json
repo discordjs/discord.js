@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "11.0.0",
+  "version": "12.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -32,31 +32,31 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "@types/node": "^7.0.0",
     "long": "^3.2.0",
-    "pako": "^1.0.0",
-    "prism-media": "hydrabolt/prism-media",
-    "superagent": "^3.4.0",
-    "tweetnacl": "^0.14.0",
-    "ws": "^2.0.0"
+    "prism-media": "^0.0.1",
+    "snekfetch": "^3.2.0",
+    "tweetnacl": "^1.0.0",
+    "ws": "^3.0.0"
   },
   "peerDependencies": {
-    "bufferutil": "^2.0.0",
+    "bufferutil": "^3.0.0",
     "erlpack": "hammerandchisel/erlpack",
-    "node-opus": "^0.2.0",
-    "opusscript": "^0.0.2",
+    "node-opus": "^0.2.5",
+    "opusscript": "^0.0.3",
     "sodium": "^2.0.1",
-    "uws": "^0.12.0"
+    "libsodium-wrappers": "^0.5.1",
+    "uws": "^8.14.0"
   },
   "devDependencies": {
+    "@types/node": "^8.0.0",
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^3.13.0",
-    "parallel-webpack": "^1.6.0",
-    "uglify-js": "mishoo/UglifyJS2#harmony",
-    "webpack": "^2.2.0"
+    "eslint": "^4.0.0",
+    "parallel-webpack": "^2.0.0",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
+    "webpack": "^3.0.0"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "browser": {
     "ws": false,

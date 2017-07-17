@@ -9,10 +9,11 @@ class GuildRoleDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.guild_id);
+    let role;
+
     if (guild) {
-      let role = guild.roles.get(data.role_id);
+      role = guild.roles.get(data.role_id);
       if (role) {
         guild.roles.delete(data.role_id);
         this.deleted.set(guild.id + data.role_id, role);
@@ -21,15 +22,9 @@ class GuildRoleDeleteAction extends Action {
       } else {
         role = this.deleted.get(guild.id + data.role_id) || null;
       }
-
-      return {
-        role,
-      };
     }
 
-    return {
-      role: null,
-    };
+    return { role };
   }
 
   scheduleForDeletion(guildID, roleID) {
@@ -40,7 +35,7 @@ class GuildRoleDeleteAction extends Action {
 /**
  * Emitted whenever a guild role is deleted.
  * @event Client#roleDelete
- * @param {Role} role The role that was deleted.
+ * @param {Role} role The role that was deleted
  */
 
 module.exports = GuildRoleDeleteAction;

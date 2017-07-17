@@ -1,18 +1,27 @@
 const UserAgentManager = require('./UserAgentManager');
-const RESTMethods = require('./RESTMethods');
 const SequentialRequestHandler = require('./RequestHandlers/Sequential');
 const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
-const Constants = require('../../util/Constants');
+const mountApi = require('./APIRouter');
+const { Error } = require('../../errors');
 
 class RESTManager {
   constructor(client) {
     this.client = client;
     this.handlers = {};
     this.userAgentManager = new UserAgentManager(this);
-    this.methods = new RESTMethods(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+  }
+
+  get api() {
+    return mountApi(this);
+  }
+
+  destroy() {
+    for (const handlerID in this.handlers) {
+      this.handlers[handlerID].destroy();
+    }
   }
 
   push(handler, apiRequest) {
@@ -32,13 +41,12 @@ class RESTManager {
       case 'burst':
         return BurstRequestHandler;
       default:
-        throw new Error(Constants.Errors.INVALID_RATE_LIMIT_METHOD);
+        throw new Error('RATELIMIT_INVALID_METHOD');
     }
   }
 
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
-
+  request(method, url, options = {}) {
+    const apiRequest = new APIRequest(this, method, url, options);
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();
       this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);

@@ -1,4 +1,4 @@
-const Readable = require('stream').Readable;
+const { Readable } = require('stream');
 
 class VoiceReadable extends Readable {
   constructor() {
@@ -7,9 +7,7 @@ class VoiceReadable extends Readable {
     this.open = true;
   }
 
-  _read() {
-    return;
-  }
+  _read() {} // eslint-disable-line no-empty-function
 
   _push(d) {
     if (this.open) this.push(d);

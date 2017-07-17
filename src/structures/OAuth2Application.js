@@ -1,5 +1,8 @@
+const Snowflake = require('../util/Snowflake');
+const Constants = require('../util/Constants');
+
 /**
- * Represents an OAuth2 Application
+ * Represents an OAuth2 Application.
  */
 class OAuth2Application {
   constructor(client, data) {
@@ -40,12 +43,6 @@ class OAuth2Application {
     this.icon = data.icon;
 
     /**
-     * The app's icon URL
-     * @type {string}
-     */
-    this.iconURL = `https://cdn.discordapp.com/app-icons/${this.id}/${this.icon}.jpg`;
-
-    /**
      * The app's RPC origins
      * @type {?string[]}
      */
@@ -58,7 +55,7 @@ class OAuth2Application {
     this.redirectURIs = data.redirect_uris;
 
     /**
-     * If this app's bot requires a code grant when using the oauth2 flow
+     * If this app's bot requires a code grant when using the OAuth2 flow
      * @type {boolean}
      */
     this.botRequireCodeGrant = data.bot_require_code_grant;
@@ -82,16 +79,24 @@ class OAuth2Application {
     this.bot = data.bot;
 
     /**
-     * Flags for the app
+     * The flags for the app
      * @type {number}
      */
     this.flags = data.flags;
 
     /**
-     * oauth2 secret for the app
-     * @type {boolean}
+     * OAuth2 secret for the application
+     * @type {string}
      */
     this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
   }
 
   /**
@@ -100,7 +105,7 @@ class OAuth2Application {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -113,11 +118,35 @@ class OAuth2Application {
   }
 
   /**
-   * Reset the app's secret and bot token
+   * A link to the application's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the icon
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
+  }
+
+  /**
+   * Reset the app's secret.
+   * <warn>This is only available when using a user account.</warn>
    * @returns {OAuth2Application}
    */
-  reset() {
-    return this.client.rest.methods.resetApplication(this.id);
+  resetSecret() {
+    return this.client.api.oauth2.applications[this.id].reset.post()
+      .then(app => new OAuth2Application(this.client, app));
+  }
+
+  /**
+   * Reset the app's bot token.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {OAuth2Application}
+   */
+  resetToken() {
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
+      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**

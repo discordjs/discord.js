@@ -1,8 +1,15 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
+const ClientUserSettings = require('./ClientUserSettings');
+const Constants = require('../util/Constants');
+const Util = require('../util/Util');
+const Guild = require('./Guild');
+const Message = require('./Message');
+const GroupDMChannel = require('./GroupDMChannel');
+const { TypeError } = require('../errors');
 
 /**
- * Represents the logged in client's Discord user
+ * Represents the logged in client's Discord user.
  * @extends {User}
  */
 class ClientUser extends User {
@@ -24,35 +31,28 @@ class ClientUser extends User {
     this._typing = new Map();
 
     /**
-     * A Collection of friends for the logged in user.
+     * A Collection of friends for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.friends = new Collection();
 
     /**
-     * A Collection of blocked users for the logged in user.
+     * A Collection of blocked users for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
      */
     this.blocked = new Collection();
 
     /**
-     * A Collection of notes for the logged in user.
+     * A Collection of notes for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, string>}
      */
     this.notes = new Collection();
 
     /**
-     * Discord client settings, such as guild positions
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Object}
-     */
-    this.settings = {};
-
-    /**
-     * If the user has discord premium (nitro)
+     * If the user has Discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
@@ -66,32 +66,50 @@ class ClientUser extends User {
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
     /**
-     * If the user has ever used a mobile device on discord
+     * If the user has ever used a mobile device on Discord
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
      */
     this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
+
+    /**
+     * Various settings for this user
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?ClientUserSettings}
+     */
+    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
   }
 
-  edit(data) {
-    return this.client.rest.methods.updateCurrentUser(data);
+  edit(data, password) {
+    const _data = {};
+    _data.username = data.username || this.username;
+    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
+
+    if (!this.bot) {
+      _data.email = data.email || this.email;
+      _data.password = password;
+      if (data.new_password) _data.new_password = data.newPassword;
+    }
+
+    return this.client.api.users['@me'].patch({ data })
+      .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
   /**
-   * Set the username of the logged in Client.
+   * Set the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
    * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
-   * // set username
+   * // Set username
    * client.user.setUsername('discordjs')
    *  .then(user => console.log(`My new username is ${user.username}`))
    *  .catch(console.error);
    */
   setUsername(username, password) {
-    return this.client.rest.methods.updateCurrentUser({ username }, password);
+    return this.edit({ username }, password);
   }
 
   /**
@@ -101,13 +119,13 @@ class ClientUser extends User {
    * @param {string} password Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set email
+   * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
    *  .then(user => console.log(`My new email is ${user.email}`))
    *  .catch(console.error);
    */
   setEmail(email, password) {
-    return this.client.rest.methods.updateCurrentUser({ email }, password);
+    return this.edit({ email }, password);
   }
 
   /**
@@ -117,37 +135,36 @@ class ClientUser extends User {
    * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
    * @example
-   * // set password
+   * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
   setPassword(newPassword, oldPassword) {
-    return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
+    return this.edit({ password: newPassword }, oldPassword);
   }
 
   /**
-   * Set the avatar of the logged in Client.
+   * Set the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
-   * // set avatar
+   * // Set avatar
    * client.user.setAvatar('./avatar.png')
    *  .then(user => console.log(`New avatar set!`))
    *  .catch(console.error);
    */
   setAvatar(avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.updateCurrentUser({ avatar });
+      return this.edit({ avatar });
     } else {
-      return this.client.resolver.resolveBuffer(avatar).then(data =>
-        this.client.rest.methods.updateCurrentUser({ avatar: data })
-      );
+      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
+        .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
 
   /**
-   * Data resembling a raw Discord presence
+   * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
@@ -177,16 +194,21 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('Status must be a string');
-        status = data.status;
+        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
+        if (this.bot) {
+          status = data.status;
+        } else {
+          this.settings.update(Constants.UserSettingsMap.status, data.status);
+          status = 'invisible';
+        }
       }
 
       if (data.game) {
         game = data.game;
         if (game.url) game.type = 1;
+      } else if (typeof data.game !== 'undefined') {
+        game = null;
       }
-
-      if (data.game === null) game = null;
 
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
@@ -231,11 +253,13 @@ class ClientUser extends User {
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
-    if (game === null) return this.setPresence({ game });
-    return this.setPresence({ game: {
-      name: game,
-      url: streamingURL,
-    } });
+    if (!game) return this.setPresence({ game: null });
+    return this.setPresence({
+      game: {
+        name: game,
+        url: streamingURL,
+      },
+    });
   }
 
   /**
@@ -248,7 +272,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Fetches messages that mentioned the client's user
+   * Fetches messages that mentioned the client's user.
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -256,81 +280,79 @@ class ClientUser extends User {
    * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
-  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
-    return this.client.rest.methods.fetchMentions(options);
+  fetchMentions(options = {}) {
+    if (options.guild instanceof Guild) options.guild = options.guild.id;
+    Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
+
+    return this.client.api.users['@me'].mentions.get({ query: options })
+      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
   /**
-   * Send a friend request
-   * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to send the friend request to.
-   * @returns {Promise<User>} The user the friend request was sent to.
-   */
-  addFriend(user) {
-    user = this.client.resolver.resolveUser(user);
-    return this.client.rest.methods.addFriend(user);
-  }
-
-  /**
-   * Remove a friend
-   * <warn>This is only available when using a user account.</warn>
-   * @param {UserResolvable} user The user to remove from your friends
-   * @returns {Promise<User>} The user that was removed
-   */
-  removeFriend(user) {
-    user = this.client.resolver.resolveUser(user);
-    return this.client.rest.methods.removeFriend(user);
-  }
-
-  /**
-   * Creates a guild
+   * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
-   * @param {string} region The region for the server
-   * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
+   * @param {Object} [options] Options for the creating
+   * @param {string} [options.region] The region for the server, defaults to the closest one available
+   * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  createGuild(name, region, icon = null) {
-    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
-    if (typeof icon === 'string' && icon.startsWith('data:')) {
-      return this.client.rest.methods.createGuild({ name, icon, region });
-    } else {
-      return this.client.resolver.resolveBuffer(icon).then(data =>
-        this.client.rest.methods.createGuild({ name, icon: data, region })
+  createGuild(name, { region, icon = null } = {}) {
+    if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
+      return new Promise((resolve, reject) =>
+        this.client.api.guilds.post({ data: { name, region, icon } })
+          .then(data => {
+            if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
+
+            const handleGuild = guild => {
+              if (guild.id === data.id) {
+                this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+                this.client.clearTimeout(timeout);
+                resolve(guild);
+              }
+            };
+            this.client.on(Constants.Events.GUILD_CREATE, handleGuild);
+
+            const timeout = this.client.setTimeout(() => {
+              this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+              resolve(this.client.dataManager.newGuild(data));
+            }, 10000);
+            return undefined;
+          }, reject)
       );
+    } else {
+      return this.client.resolver.resolveBuffer(icon)
+        .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
 
   /**
-   * An object containing either a user or access token, and an optional nickname
+   * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable|Snowflake} [user] User to add to the group DM
+   * @property {UserResolvable} [user] User to add to the Group DM
    * (only available if a user is creating the DM)
-   * @property {string} [accessToken] Access token to use to add a user to the group DM
+   * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
+   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * you must provide user ids instead
    */
 
   /**
-   * Creates a group DM
+   * Creates a Group DM.
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
    */
   createGroupDM(recipients) {
-    return this.client.rest.methods.createGroupDM({
-      recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
-      accessTokens: recipients.map(u => u.accessToken),
-      nicks: recipients.map(u => u.nick),
-    });
-  }
-
-  /**
-   * Accepts an invite to join a guild
-   * @param {Invite|string} invite Invite or code to accept
-   * @returns {Promise<Guild>} Joined guild
-   */
-  acceptInvite(invite) {
-    return this.client.rest.methods.acceptInvite(invite);
+    const data = this.bot ? {
+      access_tokens: recipients.map(u => u.accessToken),
+      nicks: recipients.reduce((o, r) => {
+        if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
+        return o;
+      }, {}),
+    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
+    return this.client.api.users['@me'].channels.post({ data })
+      .then(res => new GroupDMChannel(this.client, res));
   }
 }
 

@@ -1,10 +1,11 @@
 const udp = require('dgram');
 const dns = require('dns');
 const Constants = require('../../util/Constants');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
+const { Error } = require('../../errors');
 
 /**
- * Represents a UDP Client for a Voice Connection
+ * Represents a UDP client for a Voice Connection.
  * @extends {EventEmitter}
  * @private
  */
@@ -25,7 +26,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
     this.socket = null;
 
     /**
-     * The address of the discord voice server
+     * The address of the Discord voice server
      * @type {?string}
      */
     this.discordAddress = null;
@@ -57,7 +58,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * The port of the discord voice server
+   * The port of the Discord voice server
    * @type {number}
    * @readonly
    */
@@ -66,7 +67,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * Tries to resolve the voice server endpoint to an address
+   * Tries to resolve the voice server endpoint to an address.
    * @returns {Promise<string>}
    */
   findEndpointAddress() {
@@ -83,14 +84,14 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   /**
-   * Send a packet to the UDP client
-   * @param {Object} packet the packet to send
+   * Send a packet to the UDP client.
+   * @param {Object} packet The packet to send
    * @returns {Promise<Object>}
    */
   send(packet) {
     return new Promise((resolve, reject) => {
-      if (!this.socket) throw new Error('Tried to send a UDP packet, but there is no socket available.');
-      if (!this.discordAddress || !this.discordPort) throw new Error('Malformed UDP address or port.');
+      if (!this.socket) throw new Error('UDP_SEND_FAIL');
+      if (!this.discordAddress || !this.discordPort) throw new Error('UDP_ADDRESS_MALFORMED');
       this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
         if (error) reject(error); else resolve(packet);
       });

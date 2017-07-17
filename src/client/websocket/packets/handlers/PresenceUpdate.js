@@ -9,7 +9,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     let user = client.users.get(data.user.id);
     const guild = client.guilds.get(data.guild_id);
 
-    // step 1
+    // Step 1
     if (!user) {
       if (data.user.username) {
         user = client.dataManager.newUser(data.user);
@@ -68,7 +68,7 @@ class PresenceUpdateHandler extends AbstractHandler {
  */
 
 /**
- * Emitted whenever a member becomes available in a large guild
+ * Emitted whenever a member becomes available in a large guild.
  * @event Client#guildMemberAvailable
  * @param {GuildMember} member The member that became available
  */

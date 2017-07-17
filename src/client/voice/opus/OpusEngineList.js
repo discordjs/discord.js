@@ -1,3 +1,5 @@
+const { Error } = require('../../../errors');
+
 const list = [
   require('./NodeOpusEngine'),
   require('./OpusScriptEngine'),
@@ -5,11 +7,14 @@ const list = [
 
 let opusEngineFound;
 
-function fetch(Encoder) {
+function fetch(Encoder, engineOptions) {
   try {
-    return new Encoder();
+    return new Encoder(engineOptions);
   } catch (err) {
-    return null;
+    if (err.code === 'MODULE_NOT_FOUND') return null;
+
+    // The Opus engine exists, but another error occurred.
+    throw err;
   }
 }
 
@@ -17,9 +22,9 @@ exports.add = encoder => {
   list.push(encoder);
 };
 
-exports.fetch = () => {
+exports.fetch = engineOptions => {
   for (const encoder of list) {
-    const fetched = fetch(encoder);
+    const fetched = fetch(encoder, engineOptions);
     if (fetched) return fetched;
   }
   return null;
@@ -27,5 +32,5 @@ exports.fetch = () => {
 
 exports.guaranteeOpusEngine = () => {
   if (typeof opusEngineFound === 'undefined') opusEngineFound = Boolean(exports.fetch());
-  if (!opusEngineFound) throw new Error('Couldn\'t find an Opus engine.');
+  if (!opusEngineFound) throw new Error('OPUS_ENGINE_MISSING');
 };

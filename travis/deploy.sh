@@ -1,20 +1,6 @@
 #!/bin/bash
 # Adapted from https://gist.github.com/domenic/ec8b0fc8ab45f39403dd.
-
 set -e
-
-function tests {
-  npm run lint
-  npm run docs:test
-  VERSIONED=false npm run webpack
-  exit 0
-}
-
-function build {
-  npm run lint
-  npm run docs
-  VERSIONED=false npm run webpack
-}
 
 # For revert branches, do nothing
 if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
@@ -22,10 +8,10 @@ if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   exit 0
 fi
 
-# For PRs, only run tests
+# For PRs, do nothing
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - only running tests."
-  tests
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - doing nothing."
+  exit 0
 fi
 
 # Figure out the source of the build
@@ -39,13 +25,16 @@ else
   SOURCE_TYPE="branch"
 fi
 
-# For Node != 6, only run tests
-if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
-  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - only running tests."
-  tests
+# For Node != 8, do nothing
+if [ "$TRAVIS_NODE_VERSION" != "8" ]; then
+  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - doing nothing."
+  exit 0
 fi
 
-build
+# Run the build
+npm run docs
+VERSIONED=false npm run webpack
+
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
@@ -57,7 +46,7 @@ ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
 ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
 ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
 ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
-openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy-key.enc -out deploy-key -d
+openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in travis/deploy-key.enc -out deploy-key -d
 chmod 600 deploy-key
 eval `ssh-agent -s`
 ssh-add deploy-key

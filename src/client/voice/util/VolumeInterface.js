@@ -1,9 +1,40 @@
 const EventEmitter = require('events');
 
+/**
+ * An interface class for volume transformation.
+ * @extends {EventEmitter}
+ */
 class VolumeInterface extends EventEmitter {
   constructor({ volume = 0 } = {}) {
     super();
     this.setVolume(volume || 1);
+  }
+
+  /**
+   * The current volume of the broadcast
+   * @readonly
+   * @type {number}
+   */
+  get volume() {
+    return this._volume;
+  }
+
+  /**
+   * The current volume of the broadcast in decibels
+   * @readonly
+   * @type {number}
+   */
+  get volumeDecibels() {
+    return Math.log10(this._volume) * 20;
+  }
+
+  /**
+   * The current volume of the broadcast from a logarithmic scale
+   * @readonly
+   * @type {number}
+   */
+  get volumeLogarithmic() {
+    return Math.pow(this._volume, 1 / 1.660964);
   }
 
   applyVolume(buffer, volume) {
@@ -26,7 +57,7 @@ class VolumeInterface extends EventEmitter {
    */
   setVolume(volume) {
     /**
-     * Emitted when the volume of this interface changes
+     * Emitted when the volume of this interface changes.
      * @event VolumeInterface#volumeChange
      * @param {number} oldVolume The old volume of this interface
      * @param {number} newVolume The new volume of this interface
@@ -36,7 +67,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * Set the volume in decibels
+   * Set the volume in decibels.
    * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
@@ -49,15 +80,6 @@ class VolumeInterface extends EventEmitter {
    */
   setVolumeLogarithmic(value) {
     this.setVolume(Math.pow(value, 1.660964));
-  }
-
-  /**
-   * The current volume of the broadcast
-   * @readonly
-   * @type {number}
-   */
-  get volume() {
-    return this._volume;
   }
 }
 

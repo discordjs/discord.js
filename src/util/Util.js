@@ -1,5 +1,8 @@
-const superagent = require('superagent');
-const botGateway = require('./Constants').Endpoints.botGateway;
+const snekfetch = require('snekfetch');
+const Constants = require('./Constants');
+const ConstantsHttp = Constants.DefaultOptions.http;
+const { RangeError, TypeError } = require('../errors');
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -18,7 +21,9 @@ class Util {
   static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
-    if (splitText.length === 1) throw new Error('Message exceeds the max length and contains no split characters.');
+    if (splitText.length === 1) {
+      throw new RangeError('SPLIT_MAX_LEN');
+    }
     const messages = [''];
     let msg = 0;
     for (let i = 0; i < splitText.length; i++) {
@@ -29,7 +34,7 @@ class Util {
       }
       messages[msg] += (messages[msg].length > 0 && messages[msg] !== prepend ? char : '') + splitText[i];
     }
-    return messages;
+    return messages.filter(m => m);
   }
 
   /**
@@ -49,12 +54,12 @@ class Util {
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
-   * @returns {Promise<number>} the recommended number of shards
+   * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
-      if (!token) throw new Error('A token must be provided.');
-      superagent.get(botGateway)
+      if (!token) throw new Error('TOKEN_MISSING');
+      snekfetch.get(`${ConstantsHttp.api}/v${ConstantsHttp.version}${Constants.Endpoints.botGateway}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
@@ -86,21 +91,19 @@ class Util {
   }
 
   /**
-   * Does some weird shit to test the equality of two arrays' elements.
-   * <warn>Do not use. This will give your dog/cat severe untreatable cancer of the everything. RIP Fluffykins.</warn>
-   * @param {Array<*>} a ????
-   * @param {Array<*>} b ?????????
-   * @returns {boolean}
+   * Checks whether the arrays are equal, also removes duplicated entries from b.
+   * @param {Array<*>} a Array which will not be modified.
+   * @param {Array<*>} b Array to remove duplicated entries from.
+   * @returns {boolean} Whether the arrays are equal.
    * @private
    */
   static arraysEqual(a, b) {
     if (a === b) return true;
     if (a.length !== b.length) return false;
 
-    for (const itemInd in a) {
-      const item = a[itemInd];
+    for (const item of a) {
       const ind = b.indexOf(item);
-      if (ind) b.splice(ind, 1);
+      if (ind !== -1) b.splice(ind, 1);
     }
 
     return b.length === 0;
@@ -126,7 +129,7 @@ class Util {
   static mergeDefault(def, given) {
     if (!given) return def;
     for (const key in def) {
-      if (!{}.hasOwnProperty.call(given, key)) {
+      if (!has(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
         given[key] = this.mergeDefault(def[key], given[key]);
@@ -161,7 +164,7 @@ class Util {
   }
 
   /**
-   * Makes an Error from a plain info object
+   * Makes an Error from a plain info object.
    * @param {Object} obj Error info
    * @param {string} obj.name Error type
    * @param {string} obj.message Message for the error
@@ -177,7 +180,7 @@ class Util {
   }
 
   /**
-   * Makes a plain error info object from an Error
+   * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
    * @returns {Object}
    * @private
@@ -191,12 +194,12 @@ class Util {
   }
 
   /**
-   * Moves an element in an array *in place*
+   * Moves an element in an array *in place*.
    * @param {Array<*>} array Array to modify
    * @param {*} element Element to move
    * @param {number} newIndex Index or offset to move the element to
    * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
-   * @returns {Array<*>}
+   * @returns {number}
    * @private
    */
   static moveElementInArray(array, element, newIndex, offset = false) {
@@ -206,7 +209,86 @@ class Util {
       const removedElement = array.splice(index, 1)[0];
       array.splice(newIndex, 0, removedElement);
     }
-    return array;
+    return array.indexOf(element);
+  }
+
+  /**
+   * Data that can be resolved to give a string. This can be:
+   * * A string
+   * * An array (joined with a new line delimiter to give a string)
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a string.
+   * @param {StringResolvable} data The string resolvable to resolve
+   * @returns {string}
+   */
+
+  static resolveString(data) {
+    if (typeof data === 'string') return data;
+    if (data instanceof Array) return data.join('\n');
+    return String(data);
+  }
+
+  /**
+   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
+   * ```
+   * [
+   *   'DEFAULT',
+   *   'AQUA',
+   *   'GREEN',
+   *   'BLUE',
+   *   'PURPLE',
+   *   'GOLD',
+   *   'ORANGE',
+   *   'RED',
+   *   'GREY',
+   *   'DARKER_GREY',
+   *   'NAVY',
+   *   'DARK_AQUA',
+   *   'DARK_GREEN',
+   *   'DARK_BLUE',
+   *   'DARK_PURPLE',
+   *   'DARK_GOLD',
+   *   'DARK_ORANGE',
+   *   'DARK_RED',
+   *   'DARK_GREY',
+   *   'LIGHT_GREY',
+   *   'DARK_NAVY',
+   *   'RANDOM',
+   * ]
+   * ```
+   * or something like
+   * ```
+   * [255, 0, 255]
+   * ```
+   * for purple
+   * @typedef {string|number|Array} ColorResolvable
+   */
+
+  /**
+   * Resolves a ColorResolvable into a color number.
+   * @param {ColorResolvable} color Color to resolve
+   * @returns {number} A color
+   */
+
+  static resolveColor(color) {
+    if (typeof color === 'string') {
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
+    } else if (color instanceof Array) {
+      color = (color[0] << 16) + (color[1] << 8) + color[2];
+    }
+
+    if (color < 0 || color > 0xFFFFFF) {
+      throw new RangeError('COLOR_RANGE');
+    } else if (color && isNaN(color)) {
+      throw new TypeError('COLOR_CONVERT');
+    }
+
+    return color;
   }
 }
 

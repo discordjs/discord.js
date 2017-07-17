@@ -1,5 +1,6 @@
 const VolumeInterface = require('../util/VolumeInterface');
 const VoiceBroadcast = require('../VoiceBroadcast');
+const Constants = require('../../../util/Constants');
 
 const secretbox = require('../util/Secretbox');
 
@@ -9,13 +10,13 @@ nonce.fill(0);
 /**
  * The class that sends voice packet data to the voice connection.
  * ```js
- * // obtained using:
+ * // Obtained using:
  * voiceChannel.join().then(connection => {
- *   // you can play a file or a stream here:
+ *   // You can play a file or a stream here:
  *   const dispatcher = connection.playFile('./file.mp3');
  * });
  * ```
- * @extends {EventEmitter}
+ * @implements {VolumeInterface}
  */
 class StreamDispatcher extends VolumeInterface {
   constructor(player, stream, streamOptions) {
@@ -53,8 +54,9 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
-   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime.
+   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime
    * @type {number}
+   * @readonly
    */
   get passes() {
     return this.streamOptions.passes || 1;
@@ -99,7 +101,7 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * Stops the current stream permanently and emits an `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher.
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
    */
   end(reason = 'user') {
     this.destroy('end', reason);
@@ -107,9 +109,10 @@ class StreamDispatcher extends VolumeInterface {
 
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.player.voiceConnection.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     /**
-     * Emitted when the dispatcher starts/stops speaking
+     * Emitted when the dispatcher starts/stops speaking.
      * @event StreamDispatcher#speaking
      * @param {boolean} value Whether or not the dispatcher is speaking
      */
@@ -125,7 +128,7 @@ class StreamDispatcher extends VolumeInterface {
   sendPacket(packet) {
     let repeats = this.passes;
     /**
-     * Emitted whenever the dispatcher has debug information
+     * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
      * @param {string} info the debug info
      */
@@ -203,6 +206,7 @@ class StreamDispatcher extends VolumeInterface {
 
       if (this.paused) {
         this.setSpeaking(false);
+        // Old code?
         // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
         data.pausedTime += data.length * 10;
         this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
@@ -258,7 +262,7 @@ class StreamDispatcher extends VolumeInterface {
 
     if (!data.startTime) {
       /**
-       * Emitted once the dispatcher starts streaming
+       * Emitted once the dispatcher starts streaming.
        * @event StreamDispatcher#start
        */
       this.emit('start');
@@ -279,7 +283,7 @@ class StreamDispatcher extends VolumeInterface {
     this.setSpeaking(false);
     this.emit(type, reason);
     /**
-     * Emitted once the dispatcher ends
+     * Emitted once the dispatcher ends.
      * @param {string} [reason] the reason the dispatcher ended
      * @event StreamDispatcher#end
      */
@@ -289,9 +293,9 @@ class StreamDispatcher extends VolumeInterface {
   startStreaming() {
     if (!this.stream) {
       /**
-       * Emitted if the dispatcher encounters an error
+       * Emitted if the dispatcher encounters an error.
        * @event StreamDispatcher#error
-       * @param {string} error the error message
+       * @param {string} error The error message
        */
       this.emit('error', 'No stream');
       return;

@@ -5,7 +5,7 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 
 /**
- * The Webhook Client
+ * The webhook client.
  * @extends {Webhook}
  */
 class WebhookClient extends Webhook {
@@ -14,7 +14,7 @@ class WebhookClient extends Webhook {
    * @param {string} token Token of the webhook
    * @param {ClientOptions} [options] Options for the client
    * @example
-   * // create a new webhook and send a message
+   * // Create a new webhook and send a message
    * const hook = new Discord.WebhookClient('1234', 'abcdef');
    * hook.sendMessage('This will send a message').catch(console.error);
    */
@@ -57,6 +57,15 @@ class WebhookClient extends Webhook {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Sets a timeout that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
    * @param {number} delay Time to wait before executing (in milliseconds)
@@ -65,9 +74,9 @@ class WebhookClient extends Webhook {
    */
   setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
-      fn();
+      fn(...args);
       this._timeouts.delete(timeout);
-    }, delay, ...args);
+    }, delay);
     this._timeouts.add(timeout);
     return timeout;
   }

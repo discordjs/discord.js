@@ -1,6 +1,8 @@
-const TextBasedChannel = require('./interface/TextBasedChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
+const UserProfile = require('./UserProfile');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a user on Discord.
@@ -9,9 +11,9 @@ const Presence = require('./Presence').Presence;
 class User {
   constructor(client, data) {
     /**
-     * The Client that created the instance of the the User.
+     * The client that created the instance of the the user
      * @name User#client
-     * @type {Client}
+     * @type {}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -45,19 +47,19 @@ class User {
     this.avatar = data.avatar;
 
     /**
-     * Whether or not the user is a bot.
+     * Whether or not the user is a bot
      * @type {boolean}
      */
     this.bot = Boolean(data.bot);
 
     /**
-     * The ID of the last message sent by the user, if one was sent.
+     * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the user, if one was sent.
+     * The Message object of the last message sent by the user, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -76,7 +78,7 @@ class User {
    * @readonly
    */
   get createdTimestamp() {
-    return (this.id / 4194304) + 1420070400000;
+    return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -102,13 +104,16 @@ class User {
   }
 
   /**
-   * A link to the user's avatar (if they have one, otherwise null)
-   * @type {?string}
-   * @readonly
+   * A link to the user's avatar
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string}
    */
-  get avatarURL() {
+  avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.avatar(this.id, this.avatar);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -117,18 +122,28 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    const avatars = Object.keys(Constants.DefaultAvatars);
-    const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.assets(`${Constants.DefaultAvatars[avatar]}.png`);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
   }
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
+  }
+
+  /**
+   * The Discord "tag" for this user
    * @type {string}
    * @readonly
    */
-  get displayAvatarURL() {
-    return this.avatarURL || this.defaultAvatarURL;
+  get tag() {
+    return `${this.username}#${this.discriminator}`;
   }
 
   /**
@@ -174,17 +189,22 @@ class User {
   /**
    * The DM between the client's user and this user
    * @type {?DMChannel}
+   * @readonly
    */
   get dmChannel() {
     return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
   }
 
   /**
-   * Creates a DM channel between the client and the user
+   * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
-    return this.client.rest.methods.createDM(this);
+    if (this.dmChannel) return Promise.resolve(this.dmChannel);
+    return this.client.api.users[this.client.user.id].channels.post({ data: {
+      recipient_id: this.id,
+    } })
+      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -192,62 +212,29 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
+    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
+    return this.client.api.channels[this.dmChannel.id].delete()
+      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
 
   /**
-   * Sends a friend request to the user
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  addFriend() {
-    return this.client.rest.methods.addFriend(this);
-  }
-
-  /**
-   * Removes the user from your friends
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  removeFriend() {
-    return this.client.rest.methods.removeFriend(this);
-  }
-
-  /**
-   * Blocks the user
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  block() {
-    return this.client.rest.methods.blockUser(this);
-  }
-
-  /**
-   * Unblocks the user
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  unblock() {
-    return this.client.rest.methods.unblockUser(this);
-  }
-
-  /**
-   * Get the profile of the user
+   * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.rest.methods.fetchUserProfile(this);
+    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
-   * Sets a note for the user
+   * Sets a note for the user.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.rest.methods.setNote(this, note);
+    return this.client.api.users['@me'].notes[this.id].put({ data: { note } })
+      .then(() => this);
   }
 
   /**
@@ -279,11 +266,8 @@ class User {
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  send() { return; }
-  sendMessage() { return; }
-  sendEmbed() { return; }
-  sendFile() { return; }
-  sendCode() { return; }
+  /* eslint-disable no-empty-function */
+  send() {}
 }
 
 TextBasedChannel.applyToClass(User);
