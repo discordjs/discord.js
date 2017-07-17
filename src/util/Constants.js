@@ -615,3 +615,5 @@ exports.APIErrors = {
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
   REACTION_BLOCKED: 90001,
 };
+
+exports.UnicodeEmojiRegex = require('./UnicodeEmojiRegex');
