@@ -13,8 +13,7 @@ const Messages = {
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  PERMISSIONS_INVALID: 'Invalid permission string or number.',
-  PERMISSIONS_INVALID_FLAG: 'Invalid bitfield flag string or number',
+  PERMISSION_INVALID: 'Invalid permission string or number.',
 
   RATELIMIT_INVALID_METHOD: 'Unknown rate limiting method.',
 
