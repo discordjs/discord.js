@@ -90,7 +90,7 @@ class ReactionCollector extends Collector {
    * @param {MessageReaction} reaction The reaction that was collected
    * @param {User} user The user that reacted
    */
-  postCollect(reaction, user) {
+  postCollect(reaction, user, true) {
     this.total++;
     this.users.set(user.id, user);
   }
@@ -100,7 +100,7 @@ class ReactionCollector extends Collector {
    * @param {MessageReaction} reaction The reaction that was removed
    * @param {User} user The user that removed their reaction
    */
-  postUncollect(reaction, user) {
+  postUncollect(reaction, user, false) {
     this.total--;
     if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
   }
