@@ -178,7 +178,7 @@ class Collector extends EventEmitter {
   /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
-   * @see Collector#collect
+   * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
    * @returns {?{key, value}} Data to insert into collection, if any
    * @abstract
@@ -188,7 +188,7 @@ class Collector extends EventEmitter {
   /**
    * Handles incoming events from the the `handleDispose`. Returns null if the event should not
    * be disposed, or returns the key that should be removed.
-   * @see Collector#dispose
+   * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits
    * @returns {?*} Key to remove from the collection, if any
    * @abstract
