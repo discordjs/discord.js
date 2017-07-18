@@ -136,7 +136,7 @@ class Guild {
 
     /**
      * The ID of the voice channel where AFK members are moved
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.afkChannelID = data.afk_channel_id;
 
