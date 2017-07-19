@@ -84,4 +84,4 @@ const Messages = {
   EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
 };
 
-for (const [name, message] of Object.entries(Messages)) register(name, message);
+for (const name in Messages) register(name, Messages[name]);
