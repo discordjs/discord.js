@@ -38,7 +38,7 @@ class ClientManager {
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error('INVALID_TOKEN')), 1000 * 300);
+    const timeout = this.client.setTimeout(() => reject(new Error('TOKEN_INVALID')), 1000 * 300);
     this.client.api.gateway.get().then(res => {
       const protocolVersion = Constants.DefaultOptions.ws.version;
       const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
