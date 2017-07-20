@@ -504,7 +504,7 @@ class Guild {
    * @param {number} [options.limit=0] Maximum number of members to request
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
-  fetchMembers({ query: = '', limit = 0 }) {
+  fetchMembers({ query = '', limit = 0 }) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
         resolve((query || limit) ? new Collection() : this.members);
