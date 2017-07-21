@@ -173,7 +173,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels(this.id).permissions[payload.id]
+    return this.client.api.channels(this.id).permissions[userOrRole.id]
       .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
   }
