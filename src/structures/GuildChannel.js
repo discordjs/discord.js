@@ -4,6 +4,7 @@ const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -149,7 +150,7 @@ class GuildChannel extends Channel {
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
       type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
 
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
@@ -172,7 +173,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels[this.id].permissions[userOrRole.id]
+    return this.client.api.channels(this.id).permissions[payload.id]
       .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
   }
@@ -199,7 +200,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.channels[this.id].patch({
+    return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic || this.topic,
@@ -267,12 +268,13 @@ class GuildChannel extends Channel {
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
    */
-  createInvite({ temporary = false, maxAge = 86400, maxUses = 0, reason } = {}) {
-    return this.client.api.channels[this.id].invites.post({ data: {
-      temporary, max_age: maxAge, max_uses: maxUses,
+  createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
+    return this.client.api.channels(this.id).invites.post({ data: {
+      temporary, max_age: maxAge, max_uses: maxUses, unique,
     }, reason })
       .then(invite => new Invite(this.client, invite));
   }
@@ -335,7 +337,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error); // Log error
    */
   delete(reason) {
-    return this.client.api.channels[this.id].delete({ reason }).then(() => this);
+    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
   }
 
   /**

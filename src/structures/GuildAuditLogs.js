@@ -1,5 +1,6 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Webhook = require('./Webhook');
 
 const Targets = {
   ALL: 'ALL',
@@ -51,6 +52,17 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
+    /**
+     * Cached webhooks
+     * @type {Collection<Snowflake, Webhook>}
+     * @private
+     */
+    this.webhooks = new Collection();
+    if (data.webhooks) {
+      for (const hook of data.webhooks) {
+        this.webhooks.set(hook.id, new Webhook(guild.client, hook));
+      }
+    }
 
     /**
      * The entries for this guild's audit logs
@@ -233,11 +245,7 @@ class GuildAuditLogsEntry {
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = guild.fetchWebhooks()
-        .then(hooks => {
-          this.target = hooks.find(h => h.id === data.target_id);
-          return this.target;
-        });
+      this.target = this.webhooks.get(data.target_id);
     } else if (targetType === Targets.INVITE) {
       const change = this.changes.find(c => c.key === 'code');
       this.target = guild.fetchInvites()

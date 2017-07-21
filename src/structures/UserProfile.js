@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const { UserFlags } = require('../util/Constants');
 const UserConnection = require('./UserConnection');
 
 /**
@@ -40,7 +41,14 @@ class UserProfile {
      * If the user has Discord Premium
      * @type {boolean}
      */
-    this.premium = data.premium;
+    this.premium = Boolean(data.premium_since);
+
+    /**
+     * The Bitfield of the users' flags
+     * @type {number}
+     * @private
+     */
+    this._flags = data.user.flags;
 
     /**
      * The date since which the user has had Discord Premium
@@ -56,6 +64,19 @@ class UserProfile {
     for (const connection of data.connected_accounts) {
       this.connections.set(connection.id, new UserConnection(this.user, connection));
     }
+  }
+
+  /**
+   * The flags the user has
+   * @type {UserFlags[]}
+   * @readonly
+   */
+  get flags() {
+    const flags = [];
+    for (const [name, flag] of Object.entries(UserFlags)) {
+      if ((this._flags & flag) === flag) flags.push(name);
+    }
+    return flags;
   }
 }
 

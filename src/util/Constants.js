@@ -67,8 +67,9 @@ exports.DefaultOptions = {
   },
   http: {
     version: 7,
-    host: 'https://discordapp.com',
+    api: 'https://discordapp.com/api',
     cdn: 'https://cdn.discordapp.com',
+    invite: 'https://discord.gg',
   },
 };
 
@@ -124,7 +125,7 @@ exports.Endpoints = {
       },
     };
   },
-  invite: code => `https://discord.gg/${code}`,
+  invite: (root, code) => `${root}/${code}`,
   botGateway: '/gateway/bot',
 };
 
@@ -479,6 +480,19 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+/**
+ * All flags users can have:
+ * - STAFF
+ * - PARTNER
+ * - HYPESQUAD
+ * @typedef {string} UserFlags
+ */
+exports.UserFlags = {
+  STAFF: 1 << 0,
+  PARTNER: 1 << 1,
+  HYPESQUAD: 1 << 2,
 };
 
 exports.Colors = {
