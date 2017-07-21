@@ -4,6 +4,7 @@ const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -163,7 +164,7 @@ class GuildChannel extends Channel {
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
       payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
 
     payload.id = userOrRole.id;

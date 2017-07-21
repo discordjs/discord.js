@@ -1,5 +1,6 @@
 const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
+const { Error } = require('../errors');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -113,7 +114,7 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   join() {
-    if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));
+    if (this.client.browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));
     return this.client.voice.joinChannel(this);
   }
 

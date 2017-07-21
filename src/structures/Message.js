@@ -7,7 +7,7 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 let GuildMember;
 
 /**
@@ -519,7 +519,7 @@ class Message {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
 

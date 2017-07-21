@@ -6,6 +6,7 @@ const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const { Presence } = require('./Presence');
+const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
@@ -487,7 +488,7 @@ class Guild {
    */
   fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
+    if (!user) return Promise.reject(new Error('USER_NOT_CACHED'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.api.guilds[this.id].members[user.id].get()
       .then(data => {
@@ -532,7 +533,7 @@ class Guild {
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
       this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('Members didn\'t arrive in time.'));
+        reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, 120e3);
     });
   }
@@ -730,7 +731,7 @@ class Guild {
    */
   setPosition(position, relative) {
     if (this.client.user.bot) {
-      return Promise.reject(new Error('Setting guild position is only available for user accounts'));
+      return Promise.reject(new Error('FEATURE_USER_ONLY'));
     }
     return this.client.user.settings.setGuildPosition(this, position, relative);
   }
@@ -779,7 +780,7 @@ class Guild {
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
     const id = this.client.resolver.resolveUserID(user);
-    if (!id) return Promise.reject(new Error('Couldn\'t resolve the user ID to ban.'));
+    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api.guilds[this.id].bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
@@ -996,7 +997,7 @@ class Guild {
    *  .catch(console.error);
    */
   leave() {
-    if (this.ownerID === this.client.user.id) return Promise.reject(new Error('Guild is owned by the client.'));
+    if (this.ownerID === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
     return this.client.api.users['@me'].guilds[this.id].delete()
       .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
@@ -1158,11 +1159,11 @@ class Guild {
   setRolePosition(role, position, relative = false) {
     if (typeof role === 'string') {
       role = this.roles.get(role);
-      if (!role) return Promise.reject(new Error('Supplied role is not a role or snowflake.'));
     }
+    if (!(role instanceof Role)) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
 
     position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
 
     let updatedRoles = this._sortedRoles.array();
 
@@ -1188,11 +1189,13 @@ class Guild {
   setChannelPosition(channel, position, relative = false) {
     if (typeof channel === 'string') {
       channel = this.channels.get(channel);
-      if (!channel) return Promise.reject(new Error('Supplied channel is not a channel or snowflake.'));
+    }
+    if (!(channel instanceof GuildChannel)) {
+      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
     }
 
     position = Number(position);
-    if (isNaN(position)) return Promise.reject(new Error('Supplied position is not a number.'));
+    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
 
     let updatedChannels = this._sortedChannels(channel.type).array();
 
@@ -1203,7 +1206,7 @@ class Guild {
       .then(() =>
         this.client.actions.GuildChannelsPositionUpdate.handle({
           guild_id: this.id,
-          roles: updatedChannels,
+          channels: updatedChannels,
         }).guild
       );
   }
