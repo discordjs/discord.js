@@ -8,6 +8,7 @@ const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
 const Channel = require('../structures/Channel');
 const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 const Emoji = require('../structures/Emoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const { Error, TypeError } = require('../errors');
@@ -133,6 +134,26 @@ class ClientDataResolver {
     if (typeof channel === 'string') return channel;
     if (channel instanceof Message) return channel.channel.id;
     if (channel instanceof Guild) return channel.defaultChannel.id;
+    return null;
+  }
+
+  /**
+   * Data that resolves to give a Role object. This can be:
+   * * A Role object
+   * * A Role ID
+   * @typedef {Role|Snowflake} RoleResolvable
+   */
+
+  /**
+   * Resolves a RoleResolvable to a role
+   * @param {GuildResolvable} guild The guild that the role is part of
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Role}
+   */
+  resolveRole(guild, role) {
+    if (role instanceof Role) return role;
+    guild = this.resolveGuild(guild);
+    if (typeof role === 'string') return guild.roles.get(role) || null;
     return null;
   }
 

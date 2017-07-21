@@ -58,44 +58,70 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
+   * Gets the overall set of permissions for a member or role in this channel, taking into account applicable permission
    * overwrites.
-   * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
+   * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role that you want to obtain the
+   * overall permissions for
    * @returns {?Permissions}
    */
-  permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
-    if (!member) return null;
-    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
-    let permissions = 0;
+  permissionsFor(memberOrRole) {
+    const member = this.client.resolver.resolveGuildMember(this.guild, memberOrRole);
+    if (!member) {
+      const role = this.client.resolver.resolveRole(this.guild, memberOrRole);
+      if (!role) return null;
 
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
+      let permissions = 0 | role.permissions;
 
-    const overwrites = this.overwritesFor(member, true, roles);
+      const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+      if (admin) return new Permissions(Permissions.ALL);
 
-    if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._allowed;
+      const everyoneOverwrites = this.permissionOverwrites.get(this.guild.id);
+      const roleOverwrites = this.permissionOverwrites.get(role.id);
+
+      if (everyoneOverwrites) {
+        permissions &= ~everyoneOverwrites._denied;
+        permissions |= everyoneOverwrites._allowed;
+      }
+
+      if (roleOverwrites) {
+        permissions &= ~roleOverwrites._denied;
+        permissions |= roleOverwrites._allowed;
+      }
+
+      return new Permissions(permissions);
+    } else {
+      if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
+
+      let permissions = 0;
+
+      const roles = member.roles;
+      for (const role of roles.values()) permissions |= role.permissions;
+
+      const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+      if (admin) return new Permissions(Permissions.ALL);
+
+      const overwrites = this.overwritesFor(member, true, roles);
+
+      if (overwrites.everyone) {
+        permissions &= ~overwrites.everyone._denied;
+        permissions |= overwrites.everyone._allowed;
+      }
+
+      let allow = 0;
+      for (const overwrite of overwrites.roles) {
+        permissions &= ~overwrite._denied;
+        allow |= overwrite._allowed;
+      }
+      permissions |= allow;
+
+      if (overwrites.member) {
+        permissions &= ~overwrites.member._denied;
+        permissions |= overwrites.member._allowed;
+      }
+
+      return new Permissions(permissions);
     }
-
-    let allow = 0;
-    for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite._denied;
-      allow |= overwrite._allowed;
-    }
-    permissions |= allow;
-
-    if (overwrites.member) {
-      permissions &= ~overwrites.member._denied;
-      permissions |= overwrites.member._allowed;
-    }
-
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
-
-    return new Permissions(permissions);
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -155,16 +181,13 @@ class GuildChannel extends Channel {
       deny: 0,
     };
 
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
-    } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
-    }
+    userOrRole = this.client.resolver.resolveUser(userOrRole) ||
+      this.client.resolver.resolveRole(this.guild, userOrRole);
+
+    if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+
+    if (userOrRole instanceof Role) payload.type = 'role';
+    else payload.type = 'member';
 
     payload.id = userOrRole.id;
 
