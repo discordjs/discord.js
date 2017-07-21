@@ -508,7 +508,7 @@ class Guild {
   fetchMembers({ query = '', limit = 0 }) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        resolve((query || limit) ? new Collection() : this.members);
+        resolve(query || limit ? new Collection() : this.members);
         return;
       }
       this.client.ws.send({
@@ -527,7 +527,7 @@ class Guild {
         }
         if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve((query || limit) ? fetchedMembers : this.members);
+          resolve(query || limit ? fetchedMembers : this.members);
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
