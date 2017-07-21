@@ -12720,7 +12720,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * The user ID of this Group DM's owner
-     * @type {string}
+     * @type {Snowflake}
      */
     this.ownerID = data.owner_id;
 
@@ -12732,7 +12732,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * Application ID of the application that made this Group DM, if applicable
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
 
