@@ -3,7 +3,7 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const { Presence } = require('./Presence');
-const { Error } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
@@ -396,7 +396,7 @@ class GuildMember {
    */
   addRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .put()
@@ -426,7 +426,7 @@ class GuildMember {
    */
   removeRole(role) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .delete()
       .then(() => this);

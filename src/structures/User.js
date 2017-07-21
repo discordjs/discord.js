@@ -3,6 +3,7 @@ const Constants = require('../util/Constants');
 const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.
@@ -212,7 +213,7 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
+    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
     return this.client.api.channels(this.dmChannel.id).delete()
       .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
