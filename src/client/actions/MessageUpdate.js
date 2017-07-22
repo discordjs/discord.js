@@ -18,8 +18,7 @@ class MessageUpdateAction extends Action {
         };
       }
 
-      const { autofetch } = client.options;
-      if (autofetch && autofetch.includes(Constants.WSEvents.MESSAGE_UPDATE)) {
+      if (this.client.options.autofetch.includes(Constants.WSEvents.MESSAGE_UPDATE)) {
         if (data.author) {
           const newMessage = channel._cacheMessage(new Message(channel, data, client));
           client.emit(Constants.Events.MESSAGE_UPDATE, null, newMessage);

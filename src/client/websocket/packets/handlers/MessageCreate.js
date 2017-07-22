@@ -7,8 +7,7 @@ class MessageCreateHandler extends AbstractHandler {
     const data = packet.d;
     const { message } = client.actions.MessageCreate.handle(data);
     if (message) {
-      const { autofetch } = client.options;
-      if (message.guild && autofetch && autofetch.includes(Constants.WSEvents.MESSAGE_CREATE)) {
+      if (message.guild && client.options.autofetch.includes(Constants.WSEvents.MESSAGE_CREATE)) {
         const fetchList = [];
         if (!message.member && !message.webhookID) fetchList.push(message.author.id);
 

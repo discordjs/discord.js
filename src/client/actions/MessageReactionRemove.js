@@ -19,8 +19,7 @@ class MessageReactionRemove extends Action {
     const message = channel.messages.get(data.message_id);
     if (!data.emoji) return false;
     if (!message) {
-      const { autofetch } = this.client.options;
-      if (autofetch && autofetch.includes(Constants.WSEvents.MESSAGE_REACTION_REMOVE)) {
+      if (this.client.options.autofetch.includes(Constants.WSEvents.MESSAGE_REACTION_REMOVE)) {
         // Check if message is fetchable
         if (!channel.permissionsFor(channel.guild.me).has('READ_MESSAGES')) return false;
 
