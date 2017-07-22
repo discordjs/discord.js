@@ -2,7 +2,7 @@ const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
 
 class MessageCreateHandler extends AbstractHandler {
-  handle(packet) {
+  async handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
     const { message } = client.actions.MessageCreate.handle(data);
@@ -17,10 +17,11 @@ class MessageCreateHandler extends AbstractHandler {
         });
 
         if (fetchList.length) {
-          // Emit create event regardless if members are fetched successfully
-          Promise.all(fetchList.map(user => message.guild.fetchMember(user)))
-          .then(() => client.emit(Constants.Events.MESSAGE_CREATE, message))
-          .catch(() => client.emit(Constants.Events.MESSAGE_CREATE, message));
+          try {
+            await Promise.all(fetchList.map(user => message.guild.fetchMember(user)));
+          } finally {
+            client.emit(Constants.Events.MESSAGE_CREATE, message);
+          }
           return;
         }
       }

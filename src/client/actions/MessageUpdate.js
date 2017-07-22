@@ -3,7 +3,7 @@ const Constants = require('../../util/Constants');
 const Message = require('../../structures/Message');
 
 class MessageUpdateAction extends Action {
-  handle(data) {
+  async handle(data) {
     const client = this.client;
 
     const channel = client.channels.get(data.channel_id);
@@ -28,9 +28,12 @@ class MessageUpdateAction extends Action {
             updated: newMessage,
           };
         } else {
-          channel.fetchMessage(data.id).then(fetchedMessage => {
+          try {
+            const fetchedMessage = await channel.fetchMessage(data.id);
             client.emit(Constants.Events.MESSAGE_UPDATE, null, fetchedMessage);
-          }).catch(() => this.client.emit('debug', 'Could not fetch message'));
+          } catch (e) {
+            this.client.emit('debug', 'Could not autofetch message');
+          }
         }
       }
     }

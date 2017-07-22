@@ -9,7 +9,7 @@ const Constants = require('../../util/Constants');
 */
 
 class MessageReactionAdd extends Action {
-  handle(data) {
+  async handle(data) {
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
     // Verify channel
@@ -24,10 +24,13 @@ class MessageReactionAdd extends Action {
         // Check if message is fetchable
         if (!channel.permissionsFor(channel.guild.me).has('READ_MESSAGES')) return false;
 
-        channel.fetchMessage(data.message_id).then(fetchedMessage => {
+        try {
+          const fetchedMessage = await channel.fetchMessage(data.message_id);
           const reaction = fetchedMessage._addReaction(data.emoji, user);
           this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
-        }).catch(() => this.client.emit('debug', 'Could not fetch message'));
+        } catch (e) {
+          this.client.emit('debug', 'Could not autofetch message');
+        }
       }
       return false;
     }
