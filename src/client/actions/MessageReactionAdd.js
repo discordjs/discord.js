@@ -17,8 +17,20 @@ class MessageReactionAdd extends Action {
     if (!channel || channel.type === 'voice') return false;
     // Verify message
     const message = channel.messages.get(data.message_id);
-    if (!message) return false;
     if (!data.emoji) return false;
+    if (!message) {
+      const { autofetch } = this.client.options;
+      if (autofetch && autofetch.includes(Constants.WSEvents.MESSAGE_REACTION_ADD)) {
+        // Check if message is fetchable
+        if (!channel.permissionsFor(channel.guild.me).has('READ_MESSAGES')) return false;
+
+        channel.fetchMessage(data.message_id).then(fetchedMessage => {
+          const reaction = fetchedMessage._addReaction(data.emoji, user);
+          this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
+        }).catch(() => this.client.emit('debug', 'Could not fetch message'));
+      }
+      return false;
+    }
     // Verify reaction
     const reaction = message._addReaction(data.emoji, user);
     if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);

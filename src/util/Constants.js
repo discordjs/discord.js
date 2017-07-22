@@ -44,6 +44,7 @@ exports.DefaultOptions = {
   sync: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  autofetch: [],
   restTimeOffset: 500,
 
   /**

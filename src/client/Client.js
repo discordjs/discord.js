@@ -564,6 +564,9 @@ class Client extends EventEmitter {
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
     }
+    if (!(options.autofetch instanceof Array)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'autofetch', 'an Array');
+    }
   }
 }
 
