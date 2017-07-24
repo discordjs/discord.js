@@ -4,6 +4,7 @@ const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -163,7 +164,7 @@ class GuildChannel extends Channel {
     } else {
       userOrRole = this.client.resolver.resolveUser(userOrRole);
       payload.type = 'member';
-      if (!userOrRole) return Promise.reject(new TypeError('Supplied parameter was neither a User nor a Role.'));
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
 
     payload.id = userOrRole.id;
@@ -188,7 +189,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.api.channels[this.id].permissions[payload.id]
+    return this.client.api.channels(this.id).permissions[payload.id]
       .put({ data: payload, reason })
       .then(() => this);
   }
@@ -215,7 +216,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.channels[this.id].patch({
+    return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic || this.topic,
@@ -288,7 +289,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<Invite>}
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
-    return this.client.api.channels[this.id].invites.post({ data: {
+    return this.client.api.channels(this.id).invites.post({ data: {
       temporary, max_age: maxAge, max_uses: maxUses, unique,
     }, reason })
       .then(invite => new Invite(this.client, invite));
@@ -352,7 +353,7 @@ class GuildChannel extends Channel {
    *  .catch(console.error); // Log error
    */
   delete(reason) {
-    return this.client.api.channels[this.id].delete({ reason }).then(() => this);
+    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
   }
 
   /**
