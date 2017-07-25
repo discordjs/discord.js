@@ -356,7 +356,7 @@ class GuildMember {
   /**
    * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
-   * @param {string} reason Reason for muting or unmuting
+   * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
    */
   setMute(mute, reason) {
@@ -366,7 +366,7 @@ class GuildMember {
   /**
    * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
-   * @param {string} reason Reason for deafening or undeafening
+   * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
    */
   setDeaf(deaf, reason) {
@@ -385,7 +385,7 @@ class GuildMember {
   /**
    * Sets the roles applied to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
-   * @param {string} reason Reason for applying the roles
+   * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    */
   setRoles(roles, reason) {
@@ -395,7 +395,7 @@ class GuildMember {
   /**
    * Adds a single role to the member.
    * @param {Role|Snowflake} role The role or ID of the role to add
-   * @param {string} reason Reason for adding the role
+   * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember>}
    */
   addRole(role, reason) {
@@ -410,7 +410,7 @@ class GuildMember {
   /**
    * Adds multiple roles to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
-   * @param {string} reason Reason for adding the roles
+   * @param {string} [reason] Reason for adding the roles
    * @returns {Promise<GuildMember>}
    */
   addRoles(roles, reason) {
@@ -427,7 +427,7 @@ class GuildMember {
   /**
    * Removes a single role from the member.
    * @param {Role|Snowflake} role The role or ID of the role to remove
-   * @param {string} reason Reason for removing the role
+   * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember>}
    */
   removeRole(role, reason) {
@@ -441,7 +441,7 @@ class GuildMember {
   /**
    * Removes multiple roles from the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
-   * @param {string} reason Reason for removing the roles
+   * @param {string} [reason] Reason for removing the roles
    * @returns {Promise<GuildMember>}
    */
   removeRoles(roles, reason) {
@@ -463,7 +463,7 @@ class GuildMember {
   /**
    * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
-   * @param {string} reason Reason for setting the nickname
+   * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
   setNickname(nick, reason) {
