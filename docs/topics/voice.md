@@ -48,7 +48,7 @@ file:
 **Playing a file:**
 
 ```js
-//use an absulute path
+//use an absolute path
 const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
 ```
 
