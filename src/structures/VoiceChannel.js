@@ -88,6 +88,7 @@ class VoiceChannel extends GuildChannel {
    *  .catch(console.error);
    */
   setBitrate(bitrate, reason) {
+    bitrate *= 1000;
     return this.edit({ bitrate }, reason);
   }
 
