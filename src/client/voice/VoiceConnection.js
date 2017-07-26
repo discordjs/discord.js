@@ -307,7 +307,14 @@ class VoiceConnection extends EventEmitter {
     this.sendVoiceStateUpdate({
       channel_id: null,
     });
-    this.player.destroy();
+    this._disconnect();
+  }
+
+  /**
+   * Internally disconnects (doesn't send disconnect packet.)
+   * @private
+   */
+  _disconnect() {
     this.cleanup();
     this.status = Constants.VoiceStatus.DISCONNECTED;
     /**
@@ -317,11 +324,14 @@ class VoiceConnection extends EventEmitter {
     this.emit('disconnect');
   }
 
+
   /**
    * Cleans up after disconnect.
    * @private
    */
   cleanup() {
+    this.player.destroy();
+
     const { ws, udp } = this.sockets;
 
     if (ws) {
@@ -432,6 +442,8 @@ class VoiceConnection extends EventEmitter {
    * @property {number} [seek=0] The time to seek to
    * @property {number} [volume=1] The volume to play at
    * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
+   * @property {number|string} [bitrate=48000] The bitrate (quality) of the audio.
+   * If set to 'auto', the voice channel's bitrate will be used
    */
 
   /**
@@ -482,7 +494,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * Plays a stream of 16-bit signed stereo PCM.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -492,7 +504,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays an Opus encoded stream at 48KHz.
+   * Plays an Opus encoded stream.
    * <warn>Note that inline volume is not compatible with this method.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
@@ -505,6 +517,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays a voice broadcast.
    * @param {VoiceBroadcast} broadcast The broadcast to play
+   * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
    * // Play a broadcast
@@ -513,8 +526,8 @@ class VoiceConnection extends EventEmitter {
    *   .playFile('./test.mp3');
    * const dispatcher = voiceConnection.playBroadcast(broadcast);
    */
-  playBroadcast(broadcast) {
-    return this.player.playBroadcast(broadcast);
+  playBroadcast(broadcast, options) {
+    return this.player.playBroadcast(broadcast, options);
   }
 
   /**
