@@ -241,7 +241,11 @@ class GuildAuditLogsEntry {
        * The target of this entry
        * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
        */
-      this.target = { id: data.target_id };
+       this.target = this.changes.reduce((o, c) => {
+         o[c.key] = c.new || c.old;
+         return o;
+       }, {});
+       this.target.id = data.target_id;
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
