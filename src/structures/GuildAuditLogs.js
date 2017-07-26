@@ -1,7 +1,9 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Webhook = require('./Webhook');
 
 const Targets = {
+  ALL: 'ALL',
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
@@ -10,9 +12,11 @@ const Targets = {
   WEBHOOK: 'WEBHOOK',
   EMOJI: 'EMOJI',
   MESSAGE: 'MESSAGE',
+  UNKNOWN: 'UNKNOWN',
 };
 
 const Actions = {
+  ALL: null,
   GUILD_UPDATE: 1,
   CHANNEL_CREATE: 10,
   CHANNEL_UPDATE: 11,
@@ -48,6 +52,17 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
+    /**
+     * Cached webhooks
+     * @type {Collection<Snowflake, Webhook>}
+     * @private
+     */
+    this.webhooks = new Collection();
+    if (data.webhooks) {
+      for (const hook of data.webhooks) {
+        this.webhooks.set(hook.id, new Webhook(guild.client, hook));
+      }
+    }
 
     /**
      * The entries for this guild's audit logs
@@ -83,7 +98,7 @@ class GuildAuditLogs {
     if (target < 60) return Targets.WEBHOOK;
     if (target < 70) return Targets.EMOJI;
     if (target < 80) return Targets.MESSAGE;
-    return null;
+    return Targets.UNKNOWN;
   }
 
 
@@ -121,6 +136,7 @@ class GuildAuditLogs {
       Actions.CHANNEL_UPDATE,
       Actions.CHANNEL_OVERWRITE_UPDATE,
       Actions.MEMBER_UPDATE,
+      Actions.MEMBER_ROLE_UPDATE,
       Actions.ROLE_UPDATE,
       Actions.INVITE_UPDATE,
       Actions.WEBHOOK_UPDATE,
@@ -171,8 +187,8 @@ class GuildAuditLogsEntry {
      * An entry in the audit log representing a specific change
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
-     * @property {string|boolean|number} [old] The old value of the change, e.g. for nicknames, the old nickname
-     * @property {string|boolean|number} [new] The new value of the change, e.g. for nicknames, the new nickname
+     * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
+     * @property {*} [new] The new value of the change, e.g. for nicknames, the new nickname
      */
 
     /**
@@ -219,18 +235,17 @@ class GuildAuditLogsEntry {
       }
     }
 
-    if ([Targets.USER, Targets.GUILD].includes(targetType)) {
+
+    if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {?Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
        */
+      this.target = data.target_id;
+    } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = guild.fetchWebhooks()
-        .then(hooks => {
-          this.target = hooks.find(h => h.id === data.target_id);
-          return this.target;
-        });
+      this.target = this.webhooks.get(data.target_id);
     } else if (targetType === Targets.INVITE) {
       const change = this.changes.find(c => c.key === 'code');
       this.target = guild.fetchInvites()

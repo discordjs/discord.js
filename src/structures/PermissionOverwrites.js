@@ -1,3 +1,5 @@
+const Permissions = require('../util/Permissions');
+
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
  */
@@ -27,16 +29,31 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
-    this.deny = data.deny;
-    this.allow = data.allow;
+    this._denied = data.deny;
+    this._allowed = data.allow;
+
+    /**
+     * The permissions that are denied for the user or role.
+     * @type {Permissions}
+     */
+    this.denied = new Permissions(this._denied);
+
+    /**
+     * The permissions that are allowed for the user or role.
+     * @type {Permissions}
+     */
+    this.allowed = new Permissions(this._allowed);
   }
 
   /**
    * Delete this Permission Overwrite.
+   * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */
-  delete() {
-    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+  delete(reason) {
+    return this.channel.client.api.channels[this.channel.id].permissions[this.id]
+      .delete({ reason })
+      .then(() => this);
   }
 }
 

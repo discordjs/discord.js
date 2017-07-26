@@ -1,7 +1,9 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
+const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.
@@ -104,18 +106,15 @@ class User {
 
   /**
    * A link to the user's avatar
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided, it will be `gif`
-   * for animated avatars or otherwise `webp`
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
-   * @returns {?string} avatarURL
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string}
    */
-  avatarURL(format, size) {
+  avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
-    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -124,16 +123,19 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.host).DefaultAvatar(this.discriminator % 5);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
   }
 
   /**
    * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @type {string}
-   * @readonly
+   * @param {Object} [options={}] Options for the avatar url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+   * it will be `gif` for animated avatars or otherwise `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
    */
-  get displayAvatarURL() {
-    return this.avatarURL() || this.defaultAvatarURL;
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
   }
 
   /**
@@ -199,7 +201,11 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   createDM() {
-    return this.client.rest.methods.createDM(this);
+    if (this.dmChannel) return Promise.resolve(this.dmChannel);
+    return this.client.api.users(this.client.user.id).channels.post({ data: {
+      recipient_id: this.id,
+    } })
+      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -207,43 +213,9 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-
-  /**
-   * Sends a friend request to the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  addFriend() {
-    return this.client.rest.methods.addFriend(this);
-  }
-
-  /**
-   * Removes the user from your friends.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  removeFriend() {
-    return this.client.rest.methods.removeFriend(this);
-  }
-
-  /**
-   * Blocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  block() {
-    return this.client.rest.methods.blockUser(this);
-  }
-
-  /**
-   * Unblocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   */
-  unblock() {
-    return this.client.rest.methods.unblockUser(this);
+    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
+    return this.client.api.channels(this.dmChannel.id).delete()
+      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
 
   /**
@@ -252,7 +224,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.rest.methods.fetchUserProfile(this);
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
@@ -262,7 +234,8 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.rest.methods.setNote(this, note);
+    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
+      .then(() => this);
   }
 
   /**
@@ -296,10 +269,6 @@ class User {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);

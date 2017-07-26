@@ -7,6 +7,7 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const { Error, TypeError } = require('../errors');
 let GuildMember;
 
 /**
@@ -33,14 +34,14 @@ class Message {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The ID of the message (unique in the channel it was sent)
+     * The ID of the message
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * The type of the message
-     * @type {string}
+     * @type {MessageType}
      */
     this.type = Constants.MessageTypes[data.type];
 
@@ -91,7 +92,7 @@ class Message {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(this, e));
+    this.embeds = data.embeds.map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -163,7 +164,7 @@ class Message {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
@@ -254,7 +255,7 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
+   *  (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
    *  { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
@@ -358,6 +359,7 @@ class Message {
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
+   * @property {string} [content] Content to be edited
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
@@ -380,19 +382,30 @@ class Message {
     } else if (!options) {
       options = {};
     }
-    return this.client.rest.methods.updateMessage(this, content, options);
-  }
+    if (typeof options.content !== 'undefined') content = options.content;
 
-  /**
-   * Edit the content of the message, with a code block.
-   * @param {string} lang The language for the code block
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  editCode(lang, content) {
-    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
+    if (typeof content !== 'undefined') content = Util.resolveString(content);
+
+    let { embed, code, reply } = options;
+
+    if (embed) embed = new Embed(embed)._apiTransform();
+
+    // Wrap everything in a code block
+    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
+      content = Util.escapeMarkdown(Util.resolveString(content), true);
+      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+    }
+
+    // Add the reply prefix
+    if (reply && this.channel.type !== 'dm') {
+      const id = this.client.resolver.resolveUserID(reply);
+      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+      content = `${mention}${content ? `, ${content}` : ''}`;
+    }
+
+    return this.client.api.channels[this.channel.id].messages[this.id]
+      .patch({ data: { content, embed } })
+      .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
   /**
@@ -400,7 +413,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.rest.methods.pinMessage(this);
+    return this.client.api.channels(this.channel.id).pins(this.id).put()
+      .then(() => this);
   }
 
   /**
@@ -408,7 +422,8 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.rest.methods.unpinMessage(this);
+    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+      .then(() => this);
   }
 
   /**
@@ -418,9 +433,11 @@ class Message {
    */
   react(emoji) {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+    if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.rest.methods.addMessageReaction(this, emoji);
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
+      .put()
+      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
 
   /**
@@ -428,12 +445,15 @@ class Message {
    * @returns {Promise<Message>}
    */
   clearReactions() {
-    return this.client.rest.methods.removeMessageReactions(this);
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
+      .then(() => this);
   }
 
   /**
    * Deletes the message.
-   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
+   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
@@ -441,13 +461,19 @@ class Message {
    *  .then(msg => console.log(`Deleted message from ${msg.author}`))
    *  .catch(console.error);
    */
-  delete(timeout = 0) {
+  delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.client.rest.methods.deleteMessage(this);
+      return this.client.api.channels(this.channel.id).messages(this.id)
+        .delete({ reason })
+        .then(() =>
+          this.client.actions.MessageDelete.handle({
+            id: this.id,
+            channel_id: this.channel.id,
+          }).message);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
-          resolve(this.delete());
+          resolve(this.delete({ reason }));
         }, timeout);
       });
     }
@@ -480,7 +506,12 @@ class Message {
    * @returns {Promise<Message>}
    */
   acknowledge() {
-    return this.client.rest.methods.ackMessage(this);
+    return this.client.api.channels(this.channel.id).messages(this.id).ack
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   /**
@@ -488,7 +519,7 @@ class Message {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
 

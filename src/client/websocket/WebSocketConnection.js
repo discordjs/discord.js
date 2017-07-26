@@ -284,12 +284,15 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onMessage(event) {
+    let data;
     try {
-      event.data = this.unpack(event.data);
+      data = this.unpack(event.data);
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(event.data);
+    const ret = this.onPacket(data);
+    this.client.emit('raw', data);
+    return ret;
   }
 
   /**
@@ -310,7 +313,6 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Received null packet');
       return false;
     }
-    this.client.emit('raw', packet);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
@@ -358,13 +360,16 @@ class WebSocketConnection extends EventEmitter {
    * @param {Error} error Error that occurred
    */
   onError(error) {
+    if (error && error.message === 'uWs client connection error') {
+      this.reconnect();
+      return;
+    }
     /**
      * Emitted whenever the client's WebSocket encounters a connection error.
      * @event Client#error
      * @param {Error} error The encountered error
      */
     this.client.emit(Constants.Events.ERROR, error);
-    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**
@@ -440,7 +445,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identify(after) {
-    if (after) return this.client.setTimeout(this.identify.apply(this), after);
+    if (after) return this.client.setTimeout(this.identify.bind(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 

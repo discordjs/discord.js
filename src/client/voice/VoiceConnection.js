@@ -4,11 +4,12 @@ const Util = require('../../util/Util');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Prism = require('prism-media');
+const { Error } = require('../../errors');
 
 /**
- * Represents a connection to a voice channel in Discord.
+ * Represents a connection to a guild's voice server.
  * ```js
  * // Obtained using:
  * voiceChannel.join().then(connection => {
@@ -52,7 +53,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * The current status of the voice connection
-     * @type {number}
+     * @type {VoiceStatus}
      */
     this.status = Constants.VoiceStatus.AUTHENTICATING;
 
@@ -132,6 +133,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
       op: Constants.VoiceOPCodes.SPEAKING,
@@ -175,14 +177,14 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (!token) {
-      this.authenticateFailed('Token not provided from voice server packet.');
+      this.authenticateFailed('VOICE_TOKEN_ABSENT');
       return;
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
 
     if (!endpoint) {
-      this.authenticateFailed('Invalid endpoint received.');
+      this.authenticateFailed('VOICE_INVALID_ENDPOINT');
       return;
     }
 
@@ -201,7 +203,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSessionID(sessionID) {
     if (!sessionID) {
-      this.authenticateFailed('Session ID not supplied.');
+      this.authenticateFailed('VOICE_SESSION_ABSENT');
       return;
     }
 
@@ -245,7 +247,6 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    this.status = Constants.VoiceStatus.DISCONNECTED;
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -256,6 +257,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
+    this.status = Constants.VoiceStatus.DISCONNECTED;
   }
 
   /**
@@ -275,7 +277,7 @@ class VoiceConnection extends EventEmitter {
   authenticate() {
     this.sendVoiceStateUpdate();
     this.connectTimeout = this.client.setTimeout(
-      () => this.authenticateFailed(new Error('Connection not established within 15 seconds.')), 15000);
+      () => this.authenticateFailed('VOICE_CONNECTION_TIMEOUT'), 15000);
   }
 
   /**
@@ -341,8 +343,8 @@ class VoiceConnection extends EventEmitter {
    */
   connect() {
     if (this.status !== Constants.VoiceStatus.RECONNECTING) {
-      if (this.sockets.ws) throw new Error('There is already an existing WebSocket connection.');
-      if (this.sockets.udp) throw new Error('There is already an existing UDP connection.');
+      if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
+      if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
     }
 
     if (this.sockets.ws) this.sockets.ws.shutdown();

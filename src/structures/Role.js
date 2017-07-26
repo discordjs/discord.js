@@ -1,6 +1,6 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
-const util = require('util');
+const Util = require('../util/Util');
 
 /**
  * Represents a role on Discord.
@@ -120,7 +120,7 @@ class Role {
   get editable() {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES_OR_PERMISSIONS)) return false;
+    if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
     return clientMember.highestRole.comparePositionTo(this) > 0;
   }
 
@@ -168,17 +168,6 @@ class Role {
   }
 
   /**
-   * Checks if the role has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
-   * @returns {boolean}
-   * @deprecated
-   */
-  hasPermissions(permissions, explicit = false) {
-    return new Permissions(this.permissions).has(permissions, !explicit);
-  }
-
-  /**
    * Compares this role's position to another role's.
    * @param {Role} role Role to compare to this one
    * @returns {number} Negative number if the this role's position is lower (other role's is higher),
@@ -202,6 +191,7 @@ class Role {
   /**
    * Edits the role.
    * @param {RoleData} data The new data for the role
+   * @param {string} [reason] Reason for editing this role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -209,8 +199,20 @@ class Role {
    *  .then(r => console.log(`Edited role ${r}`))
    *  .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildRole(this, data);
+  edit(data, reason) {
+    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
+    else data.permissions = this.permissions;
+    return this.client.api.guilds[this.guild.id].roles[this.id].patch({
+      data: {
+        name: data.name || this.name,
+        position: typeof data.position !== 'undefined' ? data.position : this.position,
+        color: Util.resolveColor(data.color || this.color),
+        hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+        mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
+      },
+      reason,
+    })
+      .then(role => this.client.actions.GuildRoleUpdate.handle({ role, guild_id: this.guild.id }).updated);
   }
 
   /**
@@ -300,6 +302,7 @@ class Role {
 
   /**
    * Deletes the role.
+   * @param {string} [reason] Reason for deleting this role
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
@@ -307,8 +310,11 @@ class Role {
    *  .then(r => console.log(`Deleted role ${r}`))
    *  .catch(console.error);
    */
-  delete() {
-    return this.client.rest.methods.deleteGuildRole(this);
+  delete(reason) {
+    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
+      .then(() =>
+        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
+      );
   }
 
   /**
@@ -350,9 +356,5 @@ class Role {
     return role1.position - role2.position;
   }
 }
-
-Role.prototype.hasPermissions = util
-  .deprecate(Role.prototype.hasPermissions,
-    'Role#hasPermissions is deprecated - use Role#hasPermission instead, it now takes an array');
 
 module.exports = Role;

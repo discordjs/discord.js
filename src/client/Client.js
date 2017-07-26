@@ -1,5 +1,5 @@
 const os = require('os');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -11,9 +11,15 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const Presence = require('../structures/Presence').Presence;
+const { Presence } = require('../structures/Presence');
+const VoiceRegion = require('../structures/VoiceRegion');
+const Webhook = require('../structures/Webhook');
+const User = require('../structures/User');
+const Invite = require('../structures/Invite');
+const OAuth2Application = require('../structures/OAuth2Application');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
+const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -120,6 +126,7 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
+    Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
@@ -185,8 +192,17 @@ class Client extends EventEmitter {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Current status of the client's connection to Discord
-   * @type {?number}
+   * @type {?Status}
    * @readonly
    */
   get status() {
@@ -212,7 +228,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by channel ID
+   * All active voice connections that have been established, mapped by guild ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
@@ -274,7 +290,11 @@ class Client extends EventEmitter {
    * client.login('my token');
    */
   login(token) {
-    return this.rest.methods.login(token);
+    return new Promise((resolve, reject) => {
+      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      token = token.replace(/^Bot\s*/i, '');
+      this.manager.connectToWebSocket(token, resolve, reject);
+    });
   }
 
   /**
@@ -312,7 +332,9 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.rest.methods.getUser(id, cache);
+    return this.api.users(id).get().then(data =>
+      cache ? this.dataManager.newUser(data) : new User(this, data)
+    );
   }
 
   /**
@@ -322,7 +344,8 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.rest.methods.getInvite(code);
+    return this.api.invites(code).get({ query: { with_counts: true } })
+      .then(data => new Invite(this, data));
   }
 
   /**
@@ -332,7 +355,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.rest.methods.getWebhook(id, token);
+    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -340,7 +363,11 @@ class Client extends EventEmitter {
    * @returns {Collection<string, VoiceRegion>}
    */
   fetchVoiceRegions() {
-    return this.rest.methods.fetchVoiceRegions();
+    return this.api.voice.regions.get().then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   /**
@@ -352,7 +379,9 @@ class Client extends EventEmitter {
    * or -1 if the message cache lifetime is unlimited
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
-    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
+    }
     if (lifetime <= 0) {
       this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
@@ -385,7 +414,8 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.rest.methods.getApplication(id);
+    return this.api.oauth2.applications(id).get()
+      .then(app => new OAuth2Application(this, app));
   }
 
   /**
@@ -419,9 +449,9 @@ class Client extends EventEmitter {
    */
   setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
-      fn();
+      fn(...args);
       this._timeouts.delete(timeout);
-    }, delay, ...args);
+    }, delay);
     this._timeouts.add(timeout);
     return timeout;
   }
@@ -500,35 +530,40 @@ class Client extends EventEmitter {
    */
   _validateOptions(options = this.options) {
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
     }
     if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('The shardId option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
     }
-    if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardId < 0) throw new RangeError('The shardId option must be at least 0.');
+    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
+    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
     if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('The shardId option must be less than shardCount.');
+      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('The messageCacheMaxSize option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('The messageCacheLifetime option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
     }
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('The messageSweepInterval option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
     if (typeof options.fetchAllMembers !== 'boolean') {
-      throw new TypeError('The fetchAllMembers option must be a boolean.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
     if (typeof options.disableEveryone !== 'boolean') {
-      throw new TypeError('The disableEveryone option must be a boolean.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError('The restWsBridgeTimeout option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
     }
-    if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
+    if (typeof options.internalSharding !== 'boolean') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
+    }
+    if (!(options.disabledEvents instanceof Array)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
+    }
   }
 }
 

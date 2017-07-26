@@ -1,8 +1,9 @@
 const path = require('path');
-const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
+const Shared = require('../shared');
 const Collection = require('../../util/Collection');
-const util = require('util');
+const Snowflake = require('../../util/Snowflake');
+const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -34,11 +35,10 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {RichEmbed|Object} [embed] An embed for the message
+   * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -80,11 +80,11 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
+    if (!options.content) options.content = content;
 
-    if (options.file) {
-      if (options.files) options.files.push(options.file);
-      else options.files = [options.file];
+    if (options.embed && options.embed.files) {
+      if (options.files) options.files = options.files.concat(options.embed.files);
+      else options.files = options.embed.files;
     }
 
     if (options.files) {
@@ -108,10 +108,13 @@ class TextBasedChannel {
           file.file = buffer;
           return file;
         })
-      )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
+      )).then(files => {
+        options.files = files;
+        return Shared.sendMessage(this, options);
+      });
     }
 
-    return this.client.rest.methods.sendMessage(this, content, options);
+    return Shared.sendMessage(this, options);
   }
 
   /**
@@ -127,18 +130,21 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
+    const Message = require('../Message');
     if (!this.client.user.bot) {
-      return this.fetchMessages({ limit: 1, around: messageID }).then(messages => {
-        const msg = messages.get(messageID);
-        if (!msg) throw new Error('Message not found.');
+      return this.fetchMessages({ limit: 1, around: messageID })
+        .then(messages => {
+          const msg = messages.get(messageID);
+          if (!msg) throw new Error('MESSAGE_MISSING');
+          return msg;
+        });
+    }
+    return this.client.api.channels[this.id].messages[messageID].get()
+      .then(data => {
+        const msg = data instanceof Message ? data : new Message(this, data, this.client);
+        this._cacheMessage(msg);
         return msg;
       });
-    }
-    return this.client.rest.methods.getChannelMessage(this, messageID).then(data => {
-      const msg = data instanceof Message ? data : new Message(this, data, this.client);
-      this._cacheMessage(msg);
-      return msg;
-    });
   }
 
   /**
@@ -162,15 +168,17 @@ class TextBasedChannel {
    *  .catch(console.error);
    */
   fetchMessages(options = {}) {
-    return this.client.rest.methods.getChannelMessages(this, options).then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
+    const Message = require('../Message');
+    return this.client.api.channels[this.id].messages.get({ query: options })
+      .then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        return messages;
+      });
   }
 
   /**
@@ -178,7 +186,8 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
-    return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
+    const Message = require('../Message');
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -190,50 +199,21 @@ class TextBasedChannel {
   }
 
   /**
-   * @typedef {Object} MessageSearchOptions
-   * @property {string} [content] Message content
-   * @property {Snowflake} [maxID] Maximum ID for the filter
-   * @property {Snowflake} [minID] Minimum ID for the filter
-   * @property {string} [has] One of `link`, `embed`, `file`, `video`, `image`, or `sound`,
-   * or add `-` to negate (e.g. `-file`)
-   * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
-   * @property {UserResolvable} [author] Author to limit search
-   * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
-   * @property {string} [sortBy='recent'] `recent` or `relevant`
-   * @property {string} [sortOrder='desc'] `asc` or `desc`
-   * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
-   * @property {number} [limit=25] Maximum number of results to get (1 to 25)
-   * @property {number} [offset=0] Offset the "pages" of results (since you can only see 25 at a time)
-   * @property {UserResolvable} [mentions] Mentioned user filter
-   * @property {boolean} [mentionsEveryone] If everyone is mentioned
-   * @property {string} [linkHostname] Filter links by hostname
-   * @property {string} [embedProvider] The name of an embed provider
-   * @property {string} [embedType] one of `image`, `video`, `url`, `rich`
-   * @property {string} [attachmentFilename] The name of an attachment
-   * @property {string} [attachmentExtension] The extension of an attachment
-   * @property {Date} [before] Date to find messages before
-   * @property {Date} [after] Date to find messages before
-   * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
-   */
-
-  /**
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster
-   * The message which has triggered the result will have the `hit` property set to `true`
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * channel.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   const hit = res.results[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
    * }).catch(console.error);
    */
   search(options = {}) {
-    return this.client.rest.methods.search(this, options);
+    return Shared.search(this, options);
   }
 
   /**
@@ -244,15 +224,16 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
+          endpoint.post();
         }, 9000),
       });
-      this.client.rest.methods.sendTyping(this.id);
+      endpoint.post();
     } else {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
@@ -302,28 +283,17 @@ class TextBasedChannel {
   }
 
   /**
-   * Creates a Message Collector
-   * @param {CollectorFilter} filter The filter to create the collector with
-   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
-   * @returns {MessageCollector}
-   * @deprecated
-   */
-  createCollector(filter, options) {
-    return this.createMessageCollector(filter, options);
-  }
-
-  /**
    * Creates a Message Collector.
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createCollector(
+   * const collector = channel.createMessageCollector(
    *  m => m.content.includes('discord'),
    *  { time: 15000 }
    * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(filter, options = {}) {
@@ -352,7 +322,7 @@ class TextBasedChannel {
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {
-      const collector = this.createCollector(filter, options);
+      const collector = this.createMessageCollector(filter, options);
       collector.once('end', (collection, reason) => {
         if (options.errors && options.errors.includes(reason)) {
           reject(collection);
@@ -373,10 +343,22 @@ class TextBasedChannel {
   bulkDelete(messages, filterOld = false) {
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      if (filterOld) {
+        messageIDs = messageIDs.filter(id =>
+          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+        );
+      }
+      return this.client.api.channels[this.id].messages['bulk-delete']
+        .post({ data: { messages: messageIDs } })
+        .then(() =>
+          this.client.actions.MessageDeleteBulk.handle({
+            channel_id: this.id,
+            ids: messageIDs,
+          }).messages
+        );
     }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
   /**
@@ -386,7 +368,12 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.rest.methods.ackTextChannel(this);
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
+      .post({ data: { token: this.client.rest._ackToken } })
+      .then(res => {
+        if (res.token) this.client.rest._ackToken = res.token;
+        return this;
+      });
   }
 
   _cacheMessage(message) {
@@ -396,108 +383,32 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
-}
 
-/** @lends TextBasedChannel.prototype */
-const Deprecated = {
-  /**
-   * Send a message to this channel.
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   * @deprecated
-   * @example
-   * // Send a message
-   * channel.sendMessage('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
-   */
-  sendMessage(content, options) {
-    return this.send(content, options);
-  },
-
-  /**
-   * Send an embed to this channel.
-   * @param {RichEmbed|Object} embed Embed for the message
-   * @param {string} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  sendEmbed(embed, content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
+  static applyToClass(structure, full = false, ignore = []) {
+    const props = ['send'];
+    if (full) {
+      props.push(
+        '_cacheMessage',
+        'acknowledge',
+        'fetchMessages',
+        'fetchMessage',
+        'search',
+        'bulkDelete',
+        'startTyping',
+        'stopTyping',
+        'typing',
+        'typingCount',
+        'fetchPinnedMessages',
+        'createMessageCollector',
+        'awaitMessages'
+      );
     }
-    return this.send(content, Object.assign(options, { embed }));
-  },
-
-  /**
-   * Send files to this channel.
-   * @param {FileOptions[]|string[]} files Files to send with the message
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  sendFiles(files, content, options = {}) {
-    return this.send(content, Object.assign(options, { files }));
-  },
-
-  /**
-   * Send a file to this channel.
-   * @param {BufferResolvable} attachment File to send
-   * @param {string} [name='file.jpg'] Name and extension of the file
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  sendFile(attachment, name, content, options = {}) {
-    return this.send({ files: [{ attachment, name }], content, options });
-  },
-
-  /**
-   * Send a code block to this channel.
-   * @param {string} lang Language for the code block
-   * @param {StringResolvable} content Content of the code block
-   * @param {MessageOptions} [options] Options for the message
-   * @returns {Promise<Message|Message[]>}
-   * @deprecated
-   */
-  sendCode(lang, content, options = {}) {
-    return this.send(content, Object.assign(options, { code: lang }));
-  },
-};
-
-for (const key of Object.keys(Deprecated)) {
-  TextBasedChannel.prototype[key] = util.deprecate(Deprecated[key], `TextChannel#${key}: use TextChannel#send instead`);
+    for (const prop of props) {
+      if (ignore.includes(prop)) continue;
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+    }
+  }
 }
 
-exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send', 'sendMessage', 'sendEmbed', 'sendFile', 'sendFiles', 'sendCode'];
-  if (full) {
-    props.push(
-      '_cacheMessage',
-      'acknowledge',
-      'fetchMessages',
-      'fetchMessage',
-      'search',
-      'bulkDelete',
-      'startTyping',
-      'stopTyping',
-      'typing',
-      'typingCount',
-      'fetchPinnedMessages',
-      'createCollector',
-      'createMessageCollector',
-      'awaitMessages'
-    );
-  }
-  for (const prop of props) {
-    if (ignore.includes(prop)) continue;
-    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-  }
-};
+module.exports = TextBasedChannel;

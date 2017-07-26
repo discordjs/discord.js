@@ -47,14 +47,14 @@ class GroupDMChannel extends Channel {
     this.name = data.name;
 
     /**
-     * A hash of the Group DM icon.
+     * A hash of this Group DM icon
      * @type {string}
      */
     this.icon = data.icon;
 
     /**
      * The user ID of this Group DM's owner
-     * @type {string}
+     * @type {Snowflake}
      */
     this.ownerID = data.owner_id;
 
@@ -66,7 +66,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * Application ID of the application that made this Group DM, if applicable
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
 
@@ -125,17 +125,56 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Add a user to the DM
-   * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * Edits this Group DM.
+   * @param {Object} data New data for this Group DM
+   * @param {string} [reason] Reason for editing this Group DM
+   * @returns {Promise<GroupDMChannel>}
    */
+  edit(data, reason) {
+    return this.client.api.channels[this.id].patch({
+      data: {
+        name: (data.name || this.name).trim(),
+      },
+      reason,
+    }).then(() => this);
+  }
 
-  addUser(accessTokenOrID, nick) {
-    return this.client.rest.methods.addUserToGroupDM(this, {
-      nick,
-      id: this.client.resolver.resolveUserID(accessTokenOrID),
-      accessToken: accessTokenOrID,
-    });
+  /**
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Adds an user to this Group DM.
+   * @param {Object} options Options for this method
+   * @param {UserResolveable} options.user User to add to this Group DM
+   * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
+   * (only available under a bot account)
+   * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
+   * @returns {Promise<GroupDMChannel>}
+   */
+  addUser({ user, accessToken, nick }) {
+    const id = this.client.resolver.resolveUserID(user);
+    const data = this.client.user.bot ?
+      { nick, access_token: accessToken } :
+      { recipient: id };
+    return this.client.api.channels[this.id].recipients[id].put({ data })
+      .then(() => this);
+  }
+
+  /**
+   * Removes an user from this Group DM.
+   * @param {UserResolveable} user User to remove
+   * @returns {Promise<GroupDMChannel>}
+   */
+  removeUser(user) {
+    const id = this.client.resolver.resolveUserID(user);
+    return this.client.api.channels[this.id].recipients[id].delete()
+      .then(() => this);
   }
 
   /**
@@ -155,11 +194,6 @@ class GroupDMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
   fetchMessage() {}
   fetchMessages() {}
   fetchPinnedMessages() {}
@@ -168,7 +202,7 @@ class GroupDMChannel extends Channel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}

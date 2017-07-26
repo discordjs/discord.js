@@ -39,11 +39,6 @@ class DMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
   fetchMessage() {}
   fetchMessages() {}
   fetchPinnedMessages() {}
@@ -52,7 +47,7 @@ class DMChannel extends Channel {
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
   acknowledge() {}

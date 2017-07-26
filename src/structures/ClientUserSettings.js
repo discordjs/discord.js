@@ -1,5 +1,6 @@
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 
 /**
  * A wrapper around the ClientUser's settings.
@@ -15,8 +16,7 @@ class ClientUserSettings {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserSettingsMap)) {
-      const value = Constants.UserSettingsMap[key];
+    for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
@@ -33,7 +33,7 @@ class ClientUserSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.user.client.rest.methods.patchUserSettings({ [name]: value });
+    return this.user.client.api.users['@me'].settings.patch({ data: { [name]: value } });
   }
 
   /**
@@ -55,7 +55,7 @@ class ClientUserSettings {
    */
   addRestrictedGuild(guild) {
     const temp = Object.assign([], this.restrictedGuilds);
-    if (temp.includes(guild.id)) return Promise.reject(new Error('Guild is already restricted'));
+    if (temp.includes(guild.id)) return Promise.reject(new Error('GUILD_RESTRICTED', true));
     temp.push(guild.id);
     return this.update('restricted_guilds', temp).then(() => guild);
   }
@@ -68,7 +68,7 @@ class ClientUserSettings {
   removeRestrictedGuild(guild) {
     const temp = Object.assign([], this.restrictedGuilds);
     const index = temp.indexOf(guild.id);
-    if (index < 0) return Promise.reject(new Error('Guild is not restricted'));
+    if (index < 0) return Promise.reject(new Error('GUILD_RESTRICTED'));
     temp.splice(index, 1);
     return this.update('restricted_guilds', temp).then(() => guild);
   }

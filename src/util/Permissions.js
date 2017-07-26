@@ -1,5 +1,4 @@
-const Constants = require('../util/Constants');
-const util = require('util');
+const { RangeError } = require('../errors');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -8,47 +7,14 @@ const util = require('util');
  */
 class Permissions {
   /**
-   * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
    * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
    */
-  constructor(member, permissions) {
-    permissions = typeof member === 'object' && !(member instanceof Array) ? permissions : member;
-
-    /**
-     * Member the permissions are for
-     * @type {GuildMember}
-     * @deprecated
-     */
-    this._member = typeof member === 'object' ? member : null;
-
+  constructor(permissions) {
     /**
      * Bitfield of the packed permissions
      * @type {number}
      */
     this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
-  }
-
-  get member() {
-    return this._member;
-  }
-
-  set member(value) {
-    this._member = value;
-  }
-
-  /**
-   * Bitfield of the packed permissions
-   * @type {number}
-   * @see {@link Permissions#bitfield}
-   * @deprecated
-   * @readonly
-   */
-  get raw() {
-    return this.bitfield;
-  }
-
-  set raw(raw) {
-    this.bitfield = raw;
   }
 
   /**
@@ -115,44 +81,8 @@ class Permissions {
   }
 
   /**
-   * Checks whether the user has a certain permission, e.g. `READ_MESSAGES`.
-   * @param {PermissionResolvable} permission The permission to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permission
-   * @returns {boolean}
-   * @see {@link Permissions#has}
-   * @deprecated
-   */
-  hasPermission(permission, explicit = false) {
-    return this.has(permission, !explicit);
-  }
-
-  /**
-   * Checks whether the user has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {boolean}
-   * @see {@link Permissions#has}
-   * @deprecated
-   */
-  hasPermissions(permissions, explicit = false) {
-    return this.has(permissions, !explicit);
-  }
-
-  /**
-   * Checks whether the user has all specified permissions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   * @see {@link Permissions#missing}
-   * @deprecated
-   */
-  missingPermissions(permissions, explicit = false) {
-    return this.missing(permissions, !explicit);
-  }
-
-  /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.flags})
+   * - A string (see {@link Permissions.FLAGS})
    * - A permission number
    * @typedef {string|number} PermissionResolvable
    */
@@ -165,7 +95,7 @@ class Permissions {
   static resolve(permission) {
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') permission = this.FLAGS[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
+    if (typeof permission !== 'number' || permission < 1) throw new RangeError('PERMISSION_INVALID');
     return permission;
   }
 }
@@ -189,7 +119,6 @@ class Permissions {
  * - `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
  * - `MENTION_EVERYONE`
  * - `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
- * - `EXTERNAL_EMOJIS` **(deprecated)**
  * - `CONNECT` (connect to a voice channel)
  * - `SPEAK` (speak in a voice channel)
  * - `MUTE_MEMBERS` (mute members across all voice channels)
@@ -199,7 +128,6 @@ class Permissions {
  * - `CHANGE_NICKNAME`
  * - `MANAGE_NICKNAMES` (change other members' nicknames)
  * - `MANAGE_ROLES`
- * - `MANAGE_ROLES_OR_PERMISSIONS` **(deprecated)**
  * - `MANAGE_WEBHOOKS`
  * - `MANAGE_EMOJIS`
  * @type {Object}
@@ -223,7 +151,6 @@ Permissions.FLAGS = {
   ATTACH_FILES: 1 << 15,
   READ_MESSAGE_HISTORY: 1 << 16,
   MENTION_EVERYONE: 1 << 17,
-  EXTERNAL_EMOJIS: 1 << 18,
   USE_EXTERNAL_EMOJIS: 1 << 18,
 
   CONNECT: 1 << 20,
@@ -236,7 +163,6 @@ Permissions.FLAGS = {
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES: 1 << 28,
-  MANAGE_ROLES_OR_PERMISSIONS: 1 << 28,
   MANAGE_WEBHOOKS: 1 << 29,
   MANAGE_EMOJIS: 1 << 30,
 };
@@ -245,31 +171,12 @@ Permissions.FLAGS = {
  * Bitfield representing every permission combined
  * @type {number}
  */
-Permissions.ALL = Object.keys(Permissions.FLAGS).reduce((all, p) => all | Permissions.FLAGS[p], 0);
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0);
 
 /**
  * Bitfield representing the default permissions for users
  * @type {number}
  */
 Permissions.DEFAULT = 104324097;
-
-/**
- * @class EvaluatedPermissions
- * @classdesc The final evaluated permissions for a member in a channel
- * @see {@link Permissions}
- * @deprecated
- */
-
-Permissions.prototype.hasPermission = util.deprecate(Permissions.prototype.hasPermission,
-  'EvaluatedPermissions#hasPermission is deprecated, use Permissions#has instead');
-Permissions.prototype.hasPermissions = util.deprecate(Permissions.prototype.hasPermissions,
-  'EvaluatedPermissions#hasPermissions is deprecated, use Permissions#has instead');
-Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.missingPermissions,
-  'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
-Object.defineProperty(Permissions.prototype, 'member', {
-  get: util
-        .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
-        'EvaluatedPermissions#member is deprecated'),
-});
 
 module.exports = Permissions;

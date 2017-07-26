@@ -11,13 +11,14 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
+  DiscordAPIError: require('./client/rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Util: Util,
   util: Util,
-  version: require('../package').version,
+  version: require('../package.json').version,
 
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
@@ -52,7 +53,6 @@ module.exports = {
   Presence: require('./structures/Presence').Presence,
   ReactionEmoji: require('./structures/ReactionEmoji'),
   ReactionCollector: require('./structures/ReactionCollector'),
-  RichEmbed: require('./structures/RichEmbed'),
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),

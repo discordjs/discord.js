@@ -1,9 +1,10 @@
 const path = require('path');
 const fs = require('fs');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Shard = require('./Shard');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * This is a utility class that can be used to help you spawn shards of your client. Each shard is completely separate
@@ -34,10 +35,10 @@ class ShardingManager extends EventEmitter {
      * @type {string}
      */
     this.file = file;
-    if (!file) throw new Error('File must be specified.');
+    if (!file) throw new Error('CLIENT_INVALID_OPTION', 'File', 'specified.');
     if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
     const stats = fs.statSync(this.file);
-    if (!stats.isFile()) throw new Error('File path does not point to a file.');
+    if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
      * Amount of shards that this manager is going to spawn
@@ -46,11 +47,11 @@ class ShardingManager extends EventEmitter {
     this.totalShards = options.totalShards;
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
-        throw new TypeError('Amount of shards must be a number.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
-      if (this.totalShards < 1) throw new RangeError('Amount of shards must be at least 1.');
+      if (this.totalShards < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
       if (this.totalShards !== Math.floor(this.totalShards)) {
-        throw new RangeError('Amount of shards must be an integer.');
+        throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
     }
 
@@ -109,9 +110,13 @@ class ShardingManager extends EventEmitter {
         return this._spawn(count, delay);
       });
     } else {
-      if (typeof amount !== 'number' || isNaN(amount)) throw new TypeError('Amount of shards must be a number.');
-      if (amount < 1) throw new RangeError('Amount of shards must be at least 1.');
-      if (amount !== Math.floor(amount)) throw new TypeError('Amount of shards must be an integer.');
+      if (typeof amount !== 'number' || isNaN(amount)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
+      }
+      if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
+      if (amount !== Math.floor(amount)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
+      }
       return this._spawn(amount, delay);
     }
   }
@@ -125,7 +130,7 @@ class ShardingManager extends EventEmitter {
    */
   _spawn(amount, delay) {
     return new Promise(resolve => {
-      if (this.shards.size >= amount) throw new Error(`Already spawned ${this.shards.size} shards.`);
+      if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
       this.totalShards = amount;
 
       this.createShard();
@@ -181,8 +186,8 @@ class ShardingManager extends EventEmitter {
    * }).catch(console.error);
    */
   fetchClientValues(prop) {
-    if (this.shards.size === 0) return Promise.reject(new Error('No shards have been spawned.'));
-    if (this.shards.size !== this.totalShards) return Promise.reject(new Error('Still spawning shards.'));
+    if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
+    if (this.shards.size !== this.totalShards) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
     const promises = [];
     for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
     return Promise.all(promises);
