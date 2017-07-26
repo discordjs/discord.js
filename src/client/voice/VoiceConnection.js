@@ -307,7 +307,14 @@ class VoiceConnection extends EventEmitter {
     this.sendVoiceStateUpdate({
       channel_id: null,
     });
-    this.player.destroy();
+    this._disconnect();
+  }
+
+  /**
+   * Internally disconnects (doesn't send disconnect packet.)
+   * @private
+   */
+  _disconnect() {
     this.cleanup();
     this.status = Constants.VoiceStatus.DISCONNECTED;
     /**
@@ -317,11 +324,14 @@ class VoiceConnection extends EventEmitter {
     this.emit('disconnect');
   }
 
+
   /**
    * Cleans up after disconnect.
    * @private
    */
   cleanup() {
+    this.player.destroy();
+
     const { ws, udp } = this.sockets;
 
     if (ws) {
