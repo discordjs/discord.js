@@ -1,7 +1,8 @@
 const UserAgentManager = require('./UserAgentManager');
-const handlers = require('./handlers');
+const SequentialRequestHandler = require('./RequestHandlers/Sequential');
+const BurstRequestHandler = require('./RequestHandlers/Burst');
 const APIRequest = require('./APIRequest');
-const routeBuilder = require('./APIRouter');
+const mountApi = require('./APIRouter');
 const { Error } = require('../../errors');
 
 class RESTManager {
@@ -14,7 +15,7 @@ class RESTManager {
   }
 
   get api() {
-    return routeBuilder(this);
+    return mountApi(this);
   }
 
   destroy() {
@@ -34,17 +35,21 @@ class RESTManager {
   }
 
   getRequestHandler() {
-    const method = this.client.options.apiRequestMethod;
-    if (typeof method === 'function') return method;
-    const handler = handlers[method];
-    if (!handler) throw new Error('RATELIMIT_INVALID_METHOD');
-    return handler;
+    switch (this.client.options.apiRequestMethod) {
+      case 'sequential':
+        return SequentialRequestHandler;
+      case 'burst':
+        return BurstRequestHandler;
+      default:
+        throw new Error('RATELIMIT_INVALID_METHOD');
+    }
   }
 
   request(method, url, options = {}) {
     const apiRequest = new APIRequest(this, method, url, options);
     if (!this.handlers[apiRequest.route]) {
-      this.handlers[apiRequest.route] = new handlers.RequestHandler(this, this.getRequestHandler());
+      const RequestHandlerType = this.getRequestHandler();
+      this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
     }
 
     return this.push(this.handlers[apiRequest.route], apiRequest);

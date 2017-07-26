@@ -332,7 +332,7 @@ class Client extends EventEmitter {
    */
   fetchUser(id, cache = true) {
     if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
+    return this.api.users[id].get().then(data =>
       cache ? this.dataManager.newUser(data) : new User(this, data)
     );
   }
@@ -344,7 +344,7 @@ class Client extends EventEmitter {
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
-    return this.api.invites(code).get({ query: { with_counts: true } })
+    return this.api.invites[code].get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
 
@@ -355,7 +355,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
+    return this.api.webhooks.opts(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -414,7 +414,7 @@ class Client extends EventEmitter {
    * @returns {Promise<OAuth2Application>}
    */
   fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+    return this.api.oauth2.applications[id].get()
       .then(app => new OAuth2Application(this, app));
   }
 
