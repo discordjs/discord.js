@@ -48,12 +48,12 @@ file:
 **Playing a file:**
 
 ```js
-//use an absolute path
+//Use an absolute path
 const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
 ```
 
 ```js
-//or an dynamic path
+//Or an dynamic path
 const dispatcher = connection.playFile('./myfile.mp3');
 ```
 
@@ -90,7 +90,7 @@ this can also be used:
 ```js
 connection.playStream(myReadableStream);
 
-//you can use fs.createReadStream to create an ReadableStream
+//You can use fs.createReadStream to create an ReadableStream
 
 const fs = require('fs');
 const stream = fs.createReadStream('./test.mp3');
@@ -98,7 +98,6 @@ connection.playStream(stream);
 ```
 
 It's important to note that creating a readable stream to a file is less efficient than simply using `connection.playFile()`.
-
 
 **Playing anything else:**
 
