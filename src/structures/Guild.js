@@ -936,12 +936,17 @@ class Guild {
     if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
-      this.client.actions.GuildRoleCreate.handle({
+    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(r => {
+      const role = this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
-        role,
-      }).role
-    );
+        role: r,
+      }).role;
+      if (data.position) {
+        role.setPosition(data.position, reason);
+        role.position = data.position;
+      }
+      return role;
+    });
   }
 
   /**

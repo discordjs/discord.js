@@ -269,6 +269,9 @@ class Role {
    *  .catch(console.error);
    */
   setPosition(position, relative) {
+    if (position < 1 || position >= this.guild.me.highestRole.position) {
+      return Promise.reject(new RangeError('Invalid position.'));
+    }
     return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
