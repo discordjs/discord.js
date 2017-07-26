@@ -79,6 +79,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
+   * @param {string} [reason] Reason for changing the channel's bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
@@ -86,13 +87,14 @@ class VoiceChannel extends GuildChannel {
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
    *  .catch(console.error);
    */
-  setBitrate(bitrate) {
-    return this.edit({ bitrate });
+  setBitrate(bitrate, reason) {
+    return this.edit({ bitrate }, reason);
   }
 
   /**
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
+   * @param {string} [reason] Reason for changing the user limit
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the user limit of a voice channel
@@ -100,8 +102,8 @@ class VoiceChannel extends GuildChannel {
    *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
    *  .catch(console.error);
    */
-  setUserLimit(userLimit) {
-    return this.edit({ userLimit });
+  setUserLimit(userLimit, reason) {
+    return this.edit({ userLimit }, reason);
   }
 
   /**
