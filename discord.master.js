@@ -12395,6 +12395,7 @@ const EventEmitter = __webpack_require__(12);
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
+ * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
  */
 
 /**
@@ -12444,23 +12445,19 @@ class Collector extends EventEmitter {
      */
     this._timeout = null;
 
-    /**
-     * Call this to handle an event as a collectable element
-     * Accepts any event data as parameters
-     * @type {Function}
-     * @private
-     */
-    this.listener = this._handle.bind(this);
+    this.handleCollect = this.handleCollect.bind(this);
+    this.handleDispose = this.handleDispose.bind(this);
+
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
   }
 
   /**
+   * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
-   * @private
    */
-  _handle(...args) {
-    const collect = this.handle(...args);
+  handleCollect(...args) {
+    const collect = this.collect(...args);
     if (!collect || !this.filter(...args)) return;
 
     this.collected.set(collect.key, collect.value);
@@ -12469,12 +12466,34 @@ class Collector extends EventEmitter {
      * Emitted whenever an element is collected.
      * @event Collector#collect
      * @param {*} element The element that got collected
-     * @param {Collector} collector The collector
+     * @param {...*} args The arguments emitted by the listener
      */
-    this.emit('collect', collect.value, this);
+    this.emit('collect', collect.value, ...args);
+    this.checkEnd();
+  }
 
-    const post = this.postCheck(...args);
-    if (post) this.stop(post);
+  /**
+   * Call this to remove an element from the collection. Accepts any event data as parameters.
+   * @param {...*} args The arguments emitted by the listener
+   * @emits Collector#dispose
+   */
+  handleDispose(...args) {
+    if (!this.options.dispose) return;
+
+    const dispose = this.dispose(...args);
+    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+
+    const value = this.collected.get(dispose);
+    this.collected.delete(dispose);
+
+    /**
+     * Emitted whenever an element has been disposed.
+     * @event Collector#dispose
+     * @param {*} element The element that was disposed
+     * @param {...*} args The arguments emitted by the listener
+     */
+    this.emit('dispose', value, ...args);
+    this.checkEnd();
   }
 
   /**
@@ -12520,7 +12539,6 @@ class Collector extends EventEmitter {
 
     if (this._timeout) this.client.clearTimeout(this._timeout);
     this.ended = true;
-    this.cleanup();
 
     /**
      * Emitted when the collector is finished collecting.
@@ -12531,30 +12549,41 @@ class Collector extends EventEmitter {
     this.emit('end', this.collected, reason);
   }
 
+  /**
+   * Check whether the collector should end, and if so, end it.
+   */
+  checkEnd() {
+    const reason = this.endReason();
+    if (reason) this.stop(reason);
+  }
+
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
-   * Handles incoming events from the `listener` function. Returns null if the event should not be collected,
-   * or returns an object describing the data that should be stored.
-   * @see Collector#listener
+   * Handles incoming events from the `handleCollect` function. Returns null if the event should not
+   * be collected, or returns an object describing the data that should be stored.
+   * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
-   * @returns {?{key: string, value}} Data to insert into collection, if any
+   * @returns {?{key, value}} Data to insert into collection, if any
    * @abstract
    */
-  handle() {}
+  collect() {}
 
   /**
-   * This method runs after collection to see if the collector should finish.
+   * Handles incoming events from the the `handleDispose`. Returns null if the event should not
+   * be disposed, or returns the key that should be removed.
+   * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits
+   * @returns {?*} Key to remove from the collection, if any
+   * @abstract
+   */
+  dispose() {}
+
+  /**
+   * The reason this collector has ended or will end with.
    * @returns {?string} Reason to end the collector, if any
    * @abstract
    */
-  postCheck() {}
-
-  /**
-   * Called when the collector is ending.
-   * @abstract
-   */
-  cleanup() {}
+  endReason() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
 }
 
@@ -15804,16 +15833,28 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    this.client.on('message', this.listener);
+    const bulkDeleteListener = (messages => {
+      for (const message of messages.values()) this.handleDispose(message);
+    }).bind(this);
+
+    this.client.on('message', this.handleCollect);
+    this.client.on('messageDelete', this.handleDispose);
+    this.client.on('messageDeleteBulk', bulkDeleteListener);
+
+    this.once('end', () => {
+      this.client.removeListener('message', this.handleCollect);
+      this.client.removeListener('messageDelete', this.handleDispose);
+      this.client.removeListener('messageDeleteBulk', bulkDeleteListener);
+    });
   }
 
   /**
-   * Handle an incoming message for possible collection.
+   * Handle a message for possible collection.
    * @param {Message} message The message that could be collected
    * @returns {?{key: Snowflake, value: Message}} Message data to collect
    * @private
    */
-  handle(message) {
+  collect(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
     return {
@@ -15823,22 +15864,23 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
-   * @private
+   * Handle a message for possible disposal.
+   * @param {Message} message The message that could be disposed
+   * @returns {?string} The message ID.
    */
-  postCheck() {
-    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
-    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
-    return null;
+  dispose(message) {
+    return message.channel.id === this.channel.id ? message.id : null;
   }
 
   /**
-   * Removes event listeners.
+   * Check after un/collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
-  cleanup() {
-    this.client.removeListener('message', this.listener);
+  endReason() {
+    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
+    return null;
   }
 }
 
@@ -16232,7 +16274,27 @@ class ReactionCollector extends Collector {
      */
     this.total = 0;
 
-    this.client.on('messageReactionAdd', this.listener);
+    this.empty = this.empty.bind(this);
+
+    this.client.on('messageReactionAdd', this.handleCollect);
+    this.client.on('messageReactionRemove', this.handleDispose);
+    this.client.on('messageReactionRemoveAll', this.empty);
+
+    this.once('end', () => {
+      this.client.removeListener('messageReactionAdd', this.handleCollect);
+      this.client.removeListener('messageReactionRemove', this.handleDispose);
+      this.client.removeListener('messageReactionRemoveAll', this.empty);
+    });
+
+    this.on('collect', (collected, reaction, user) => {
+      this.total++;
+      this.users.set(user.id, user);
+    });
+
+    this.on('dispose', (disposed, reaction, user) => {
+      this.total--;
+      if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
+    });
   }
 
   /**
@@ -16241,35 +16303,47 @@ class ReactionCollector extends Collector {
    * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
    * @private
    */
-  handle(reaction) {
+  collect(reaction) {
     if (reaction.message.id !== this.message.id) return null;
     return {
-      key: reaction.emoji.id || reaction.emoji.name,
+      key: ReactionCollector.key(reaction),
       value: reaction,
     };
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @param {MessageReaction} reaction The reaction that was collected
-   * @param {User} user The user that reacted
-   * @returns {?string} Reason to end the collector, if any
-   * @private
+   * Handle a reaction deletion for possible disposal.
+   * @param {MessageReaction} reaction The reaction to possibly dispose
+   * @returns {?Snowflake|string} The reaction key
    */
-  postCheck(reaction, user) {
-    this.users.set(user.id, user);
-    if (this.options.max && ++this.total >= this.options.max) return 'limit';
+  dispose(reaction) {
+    return reaction.message.id === this.message.id && !reaction.count ? ReactionCollector.key(reaction) : null;
+  }
+
+  /**
+   * Empty this reaction collector.
+   */
+  empty() {
+    this.total = 0;
+    this.collected.clear();
+    this.users.clear();
+    this.checkEnd();
+  }
+
+  endReason() {
+    if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
   }
 
   /**
-   * Remove event listeners.
-   * @private
+   * Get the collector key for a reaction.
+   * @param {MessageReaction} reaction The message reaction to get the key for
+   * @returns {Snowflake|string} The emoji ID (if custom) or the emoji name (if native; will be unicode)
    */
-  cleanup() {
-    this.client.removeListener('messageReactionAdd', this.listener);
+  static key(reaction) {
+    return reaction.emoji.id || reaction.emoji.name;
   }
 }
 
