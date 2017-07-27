@@ -120,16 +120,17 @@ class MessageMentions {
   /**
    * Check if a user is mentioned. Takes into account user mentions, role
    * mentions, and @everyone/@here mentions.
-   * @param {UserResolvable|GuildMember} user User/member to check
+   * @param {UserResolvable|GuildMember|Role|GuildChannel} user User/member to check
+   * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
    * @returns {boolean}
    */
-  includes(user) {
-    if (this.everyone) return true;
-    if (this.users.includes(user.user ? user.user.id : user.id)) return true;
-    if (user instanceof GuildMember) {
-      for (const role of this.roles) if (user.roles.has(role.id)) return true;
+  has(data, strict = true) {
+    if (strict && this.everyone) return true;
+    if (strict && data instanceof GuildMember) {
+      for (const role of this.roles) if (data.roles.has(role.id)) return true;
     }
-    return false;
+    const id = data.id ? data.id : data.user ? data.user.id : data;
+    return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
   }
 }
 
