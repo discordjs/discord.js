@@ -342,13 +342,13 @@ class GuildMember {
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
-    let endpoint = this.client.api.guilds[this.guild.id];
+    let endpoint = this.client.api.guilds(this.guild.id);
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members['@me'].nick;
-      else endpoint = endpoint.members[this.id];
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
+      else endpoint = endpoint.members(this.id);
     } else {
-      endpoint = endpoint.members[this.id];
+      endpoint = endpoint.members(this.id);
     }
     return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
   }
@@ -402,7 +402,7 @@ class GuildMember {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds[this.guild.id].members[this.user.id].roles[role.id]
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .put({ reason })
       .then(() => this);
   }
@@ -433,7 +433,7 @@ class GuildMember {
   removeRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    return this.client.api.guilds[this.guild.id].members[this.user.id].roles[role.id]
+    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .delete({ reason })
       .then(() => this);
   }
@@ -492,7 +492,7 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.api.guilds[this.guild.id].members[this.user.id].delete({ reason })
+    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
       .then(() =>
         this.client.actions.GuildMemberRemove.handle({
           guild_id: this.guild.id,
