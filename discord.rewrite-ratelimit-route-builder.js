@@ -23966,7 +23966,7 @@ module.exports = {
 /***/ (function(module, exports) {
 
 module.exports = function sequential() {
-  if (this.busy || this.limited) return;
+  if (this.busy || this.limited || this.queue.length === 0) return;
   this.busy = true;
   this.execute(this.queue.shift())
     .then(() => {
@@ -23988,7 +23988,7 @@ module.exports = function sequential() {
 /***/ (function(module, exports) {
 
 module.exports = function burst() {
-  if (this.limited) return;
+  if (this.limited || this.queue.length === 0) return;
   this.execute(this.queue.shift())
     .then(this.handle.bind(this))
     .catch(({ timeout }) => {
@@ -24022,7 +24022,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return this.queue.length === 0 || this.manager.globallyRateLimited || this.remaining <= 0;
+    return this.manager.globallyRateLimited || this.remaining <= 0;
   }
 
   set globallyLimited(limited) {
