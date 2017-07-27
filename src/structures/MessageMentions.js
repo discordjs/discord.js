@@ -118,8 +118,9 @@ class MessageMentions {
   }
 
   /**
-   * Check if a user is mentioned
-   * @param {UserResolvable} user User to check
+   * Check if a user is mentioned Takes into account user mentions, role
+   * mentions, and @everyone/@here mentions.
+   * @param {UserResolvable|GuildMember} user User/member to check
    * @returns {boolean}
    */
   includes(user) {

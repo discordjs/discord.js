@@ -342,21 +342,6 @@ class Message {
   }
 
   /**
-   * Whether or not a guild member is mentioned in this message. Takes into account
-   * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member The member/user to check for a mention of
-   * @returns {boolean}
-   */
-  isMemberMentioned(member) {
-    // Lazy-loading is used here to get around a circular dependency that breaks things
-    if (!GuildMember) GuildMember = require('./GuildMember');
-    if (this.mentions.everyone) return true;
-    if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
-    return false;
-  }
-
-  /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
