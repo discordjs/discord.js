@@ -14,7 +14,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return this.queue.length === 0 || this.manager.globallyRateLimited || this.remaining <= 0;
+    return this.manager.globallyRateLimited || this.remaining <= 0;
   }
 
   set globallyLimited(limited) {
