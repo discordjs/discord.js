@@ -6501,15 +6501,17 @@ class Guild {
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
-  setExplicitContentFilter(explicitContentFilter) {
-    return this.edit({ explicitContentFilter });
+  setExplicitContentFilter(explicitContentFilter, reason) {
+    return this.edit({ explicitContentFilter }, reason);
   }
 
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
+   * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -6517,13 +6519,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Edit the region of the guild.
    * @param {string} region The new region of the guild
+   * @param {string} [reason] Reason for changing the guild's region
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild region
@@ -6531,13 +6534,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
    *  .catch(console.error);
    */
-  setRegion(region) {
-    return this.edit({ region });
+  setRegion(region, reason) {
+    return this.edit({ region }, reason);
   }
 
   /**
    * Edit the verification level of the guild.
    * @param {number} verificationLevel The new verification level of the guild
+   * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild verification level
@@ -6545,13 +6549,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
    *  .catch(console.error);
    */
-  setVerificationLevel(verificationLevel) {
-    return this.edit({ verificationLevel });
+  setVerificationLevel(verificationLevel, reason) {
+    return this.edit({ verificationLevel }, reason);
   }
 
   /**
    * Edit the AFK channel of the guild.
    * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -6559,13 +6564,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
    *  .catch(console.error);
    */
-  setAFKChannel(afkChannel) {
-    return this.edit({ afkChannel });
+  setAFKChannel(afkChannel, reason) {
+    return this.edit({ afkChannel }, reason);
   }
 
   /**
    * Edit the AFK timeout of the guild.
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @param {string} [reason] Reason for changing the guild's AFK timeout
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -6573,13 +6579,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
    *  .catch(console.error);
    */
-  setAFKTimeout(afkTimeout) {
-    return this.edit({ afkTimeout });
+  setAFKTimeout(afkTimeout, reason) {
+    return this.edit({ afkTimeout }, reason);
   }
 
   /**
    * Set a new guild icon.
    * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
@@ -6587,13 +6594,14 @@ class Guild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon) {
-    return this.edit({ icon });
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
    * Sets a new owner of the guild.
    * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild owner
@@ -6601,13 +6609,14 @@ class Guild {
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
    */
-  setOwner(owner) {
-    return this.edit({ owner });
+  setOwner(owner, reason) {
+    return this.edit({ owner }, reason);
   }
 
   /**
    * Set a new guild splash screen.
    * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
@@ -6615,8 +6624,8 @@ class Guild {
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash) {
-    return this.edit({ splash });
+  setSplash(splash, reason) {
+    return this.edit({ splash }, reason);
   }
 
   /**
@@ -6845,7 +6854,9 @@ class Guild {
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
-   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Object} [options] Options
+   * @param {Collection<Snowflake, Role>|Role[]} [options.roles] Roles to limit the emoji to
+   * @param {string} [options.reason] Reason for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url
@@ -6858,11 +6869,11 @@ class Guild {
    *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *  .catch(console.error);
    */
-  createEmoji(attachment, name, roles) {
+  createEmoji(attachment, name, { roles, reason } = {}) {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
       if (roles) data.roles = roles.map(r => r.id ? r.id : r);
-      return this.client.api.guilds(this.id).emojis.post({ data })
+      return this.client.api.guilds(this.id).emojis.post({ data, reason })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     } else {
       return this.client.resolver.resolveBuffer(attachment)
@@ -6876,11 +6887,12 @@ class Guild {
   /**
    * Delete an emoji.
    * @param {Emoji|string} emoji The emoji to delete
+   * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise}
    */
-  deleteEmoji(emoji) {
+  deleteEmoji(emoji, reason) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -7699,10 +7711,11 @@ class Emoji {
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -8553,6 +8566,7 @@ class Role {
   /**
    * Set a new name for the role.
    * @param {string} name The new name of the role
+   * @param {string} [reason] Reason for changing the role's name
    * @returns {Promise<Role>}
    * @example
    * // Set the name of the role
@@ -8560,13 +8574,14 @@ class Role {
    *  .then(r => console.log(`Edited name of role ${r}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Set a new color for the role.
    * @param {ColorResolvable} color The color of the role
+   * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
    * @example
    * // Set the color of a role
@@ -8574,13 +8589,14 @@ class Role {
    *  .then(r => console.log(`Set color of role ${r}`))
    *  .catch(console.error);
    */
-  setColor(color) {
-    return this.edit({ color });
+  setColor(color, reason) {
+    return this.edit({ color }, reason);
   }
 
   /**
    * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
+   * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
    * @example
    * // Set the hoist of the role
@@ -8588,8 +8604,8 @@ class Role {
    *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
    *  .catch(console.error);
    */
-  setHoist(hoist) {
-    return this.edit({ hoist });
+  setHoist(hoist, reason) {
+    return this.edit({ hoist }, reason);
   }
 
   /**
@@ -8610,6 +8626,7 @@ class Role {
   /**
    * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
+   * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
@@ -8617,13 +8634,14 @@ class Role {
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
    */
-  setPermissions(permissions) {
-    return this.edit({ permissions });
+  setPermissions(permissions, reason) {
+    return this.edit({ permissions }, reason);
   }
 
   /**
    * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
+   * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
    * @example
    * // Make the role mentionable
@@ -8631,8 +8649,8 @@ class Role {
    *  .then(r => console.log(`Role updated ${r}`))
    *  .catch(console.error);
    */
-  setMentionable(mentionable) {
-    return this.edit({ mentionable });
+  setMentionable(mentionable, reason) {
+    return this.edit({ mentionable }, reason);
   }
 
   /**
@@ -8932,6 +8950,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel name
@@ -8939,8 +8958,8 @@ class GuildChannel extends Channel {
    *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -8961,6 +8980,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel topic
@@ -8968,8 +8988,8 @@ class GuildChannel extends Channel {
    *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *  .catch(console.error);
    */
-  setTopic(topic) {
-    return this.edit({ topic });
+  setTopic(topic, reason) {
+    return this.edit({ topic }, reason);
   }
 
   /**
@@ -8998,13 +9018,18 @@ class GuildChannel extends Channel {
 
   /**
    * Clone this channel.
-   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
-   * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
-   * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {Object} [options] The options
+   * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
+   * of this channel
+   * @param {boolean} [options.withPermissions=true] Whether to clone the channel with this channel's
+   * permission overwrites
+   * @param {boolean} [options.withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true, withTopic = true) {
-    return this.guild.createChannel(name, this.type, { overwrites: withPermissions ? this.permissionOverwrites : [] })
+  clone({ name = this.name, withPermissions = true, withTopic = true, reason } = {}) {
+    const options = { overwrites: withPermissions ? this.permissionOverwrites : [], reason };
+    return this.guild.createChannel(name, this.type, options)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
@@ -17019,17 +17044,18 @@ class TextChannel extends GuildChannel {
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook
    * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @param {string} [reason] Reason for creating this webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
    *  .then(webhook => console.log(`Created webhook ${webhook}`))
    *  .catch(console.error)
    */
-  createWebhook(name, avatar) {
+  createWebhook(name, avatar, reason) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.client.api.channels[this.id].webhooks.post({ data: {
         name, avatar,
-      } }).then(data => new Webhook(this.client, data));
+      }, reason }).then(data => new Webhook(this.client, data));
     } else {
       return this.client.resolver.resolveBuffer(avatar).then(data =>
         this.createWebhook(name, this.client.resolver.resolveBase64(data) || null));
@@ -17144,6 +17170,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Sets the bitrate of the channel (in kbps).
    * @param {number} bitrate The new bitrate
+   * @param {string} [reason] Reason for changing the channel's bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
@@ -17151,14 +17178,15 @@ class VoiceChannel extends GuildChannel {
    *  .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
    *  .catch(console.error);
    */
-  setBitrate(bitrate) {
+  setBitrate(bitrate, reason) {
     bitrate *= 1000;
-    return this.edit({ bitrate });
+    return this.edit({ bitrate }, reason);
   }
 
   /**
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
+   * @param {string} [reason] Reason for changing the user limit
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the user limit of a voice channel
@@ -17166,8 +17194,8 @@ class VoiceChannel extends GuildChannel {
    *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
    *  .catch(console.error);
    */
-  setUserLimit(userLimit) {
-    return this.edit({ userLimit });
+  setUserLimit(userLimit, reason) {
+    return this.edit({ userLimit }, reason);
   }
 
   /**
