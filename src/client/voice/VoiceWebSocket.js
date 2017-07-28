@@ -123,7 +123,7 @@ class VoiceWebSocket extends EventEmitter {
         session_id: this.voiceConnection.authentication.sessionID,
       },
     }).catch(() => {
-      this.emit('error', new Error('Tried to send join packet, but the WebSocket is not open.'));
+      this.emit('error', new Error('WS_JOIN_NOT_OPEN'));
     });
   }
 
@@ -204,7 +204,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   setHeartbeat(interval) {
     if (!interval || isNaN(interval)) {
-      this.onError(new Error('Tried to set voice heartbeat but no valid interval was specified.'));
+      this.onError(new Error('VOICE_INVALID_HEARTBEAT'));
       return;
     }
     if (this.heartbeatInterval) {
