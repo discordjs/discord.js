@@ -29,7 +29,7 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = !!data.nsfw;
+    this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
   }
