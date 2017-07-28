@@ -11,7 +11,7 @@ const util = require('util');
  * @returns {DiscordjsError}
  */
 function makeDiscordjsError(Base) {
-  return class DiscordjsError extends Base { 
+  return class DiscordjsError extends Base {
     constructor(key, ...args) {
       super(message(key, args));
       this[kCode] = key;
