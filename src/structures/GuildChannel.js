@@ -38,7 +38,7 @@ class GuildChannel extends Channel {
 
     /**
      * The ID of the category parent of this channel
-     * @type {?snowflake}
+     * @type {?Snowflake}
      */
     this.parentID = data.parent_id;
 
