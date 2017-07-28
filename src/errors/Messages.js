@@ -12,6 +12,7 @@ const Messages = {
   WS_BAD_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
+  WS_JOIN_NOT_OPEN: 'Tried to send join packet, but the WebSocket is not open.',
 
   PERMISSION_INVALID: 'Invalid permission string or number.',
 
