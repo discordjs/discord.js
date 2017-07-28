@@ -12,7 +12,6 @@ const Messages = {
   WS_BAD_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
-  WS_JOIN_NOT_OPEN: 'Tried to send join packet, but the WebSocket is not open.',
 
   PERMISSION_INVALID: 'Invalid permission string or number.',
 
@@ -55,6 +54,7 @@ const Messages = {
   VOICE_INVALID_ENDPOINT: 'Invalid endpoint received.',
   VOICE_NO_BROWSER: 'Voice connections are not available in browsers.',
   VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
+  VOICE_JOIN_SOCKET_CLOSED: 'Tried to send join packet, but the WebSocket is not open.',
 
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 
