@@ -5,6 +5,7 @@ const User = require('../structures/User');
 const DMChannel = require('../structures/DMChannel');
 const Emoji = require('../structures/Emoji');
 const TextChannel = require('../structures/TextChannel');
+const CategoryChannel = require('../structures/CategoryChannel');
 const VoiceChannel = require('../structures/VoiceChannel');
 const GuildChannel = require('../structures/GuildChannel');
 const GroupDMChannel = require('../structures/GroupDMChannel');
@@ -55,13 +56,21 @@ class ClientDataManager {
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
       if (guild) {
-        if (data.type === Constants.ChannelTypes.TEXT) {
-          channel = new TextChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.VOICE) {
-          channel = new VoiceChannel(guild, data);
-          guild.channels.set(channel.id, channel);
+        const types = Constants.ChannelTypes;
+        switch (data.type) {
+          case types.text:
+            channel = new TextChannel(guild, data);
+            break;
+          case types.voice:
+            channel = new VoiceChannel(guild, data);
+            break;
+          case types.category:
+            channel = new CategoryChannel(guild, data);
+            break;
+          default:
+            channel = new GuildChannel(guild, data);
         }
+        guild.channels.set(channel.id, channel);
       }
     }
 
