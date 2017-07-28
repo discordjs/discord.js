@@ -11,7 +11,7 @@ const util = require('util');
  * @returns {DiscordjsError}
  */
 function makeDiscordjsError(Base) {
-  return class DiscordjsError extends Base {
+  return class DiscordjsError extends Base { // IF an error is created and the key has not been registered node.js crashes
     constructor(key, ...args) {
       super(message(key, args));
       this[kCode] = key;
@@ -37,7 +37,7 @@ function makeDiscordjsError(Base) {
 function message(key, args) {
   assert.strictEqual(typeof key, 'string');
   const msg = messages.get(key);
-  assert(msg, `An invalid error message key was used: ${key}.`);
+  assert(msg, `An invalid error message key was used: ${key}.`); // If the key is not found this crashes node.js
   let fmt = util.format;
   if (typeof msg === 'function') {
     fmt = msg;
