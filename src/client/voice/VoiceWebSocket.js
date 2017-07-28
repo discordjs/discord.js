@@ -123,7 +123,7 @@ class VoiceWebSocket extends EventEmitter {
         session_id: this.voiceConnection.authentication.sessionID,
       },
     }).catch(() => {
-      this.emit('error', new Error('WS_JOIN_NOT_OPEN'));
+      this.emit('error', new Error('VOICE_JOIN_SOCKET_CLOSED'));
     });
   }
 
