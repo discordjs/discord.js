@@ -21,9 +21,10 @@ class Channel {
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
+     * * `generic` - a generic guild channel, unknown type
      * @type {string}
      */
-    this.type = Object.keys(Constants.ChannelTypes)[data.type];
+    this.type = Object.keys(Constants.ChannelTypes)[data.type] || 'generic';
 
     if (data) this.setup(data);
   }
