@@ -53,6 +53,7 @@ const Messages = {
   VOICE_SESSION_ABSENT: 'Session ID not supplied.',
   VOICE_INVALID_ENDPOINT: 'Invalid endpoint received.',
   VOICE_NO_BROWSER: 'Voice connections are not available in browsers.',
+  VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
 
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 
