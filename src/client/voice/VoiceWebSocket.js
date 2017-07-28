@@ -65,7 +65,7 @@ class VoiceWebSocket extends EventEmitter {
     if (this.dead) return;
     if (this.ws) this.reset();
     if (this.attempts >= 5) {
-      this.emit('debug', new Error(`Too many connection attempts (${this.attempts}).`));
+      this.emit('debug', new Error(`Too many connection attempts (${this.attempts}).`)); // This line of code crashes node.js because the string is not recognized as a valid error key
       return;
     }
 
