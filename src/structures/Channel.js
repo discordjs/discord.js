@@ -1,4 +1,5 @@
 const Snowflake = require('../util/Snowflake');
+const Constants = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -19,9 +20,10 @@ class Channel {
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
+     * * `category` - a guild category channel
      * @type {string}
      */
-    this.type = null;
+    this.type = Object.keys(Constants.ChannelTypes)[data.type];
 
     if (data) this.setup(data);
   }

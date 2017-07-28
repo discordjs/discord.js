@@ -32,7 +32,6 @@ const Collection = require('../util/Collection');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.type = 'group';
     this.messages = new Collection();
     this._typing = new Map();
   }

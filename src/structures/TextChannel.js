@@ -11,7 +11,6 @@ const Collection = require('../util/Collection');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.type = 'text';
     this.messages = new Collection();
     this._typing = new Map();
   }

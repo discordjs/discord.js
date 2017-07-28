@@ -495,6 +495,14 @@ exports.UserFlags = {
   HYPESQUAD: 1 << 2,
 };
 
+exports.ChannelTypes = {
+  text: 0,
+  dm: 1,
+  voice: 2,
+  group: 3,
+  category: 4,
+};
+
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,

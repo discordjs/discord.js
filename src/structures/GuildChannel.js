@@ -37,6 +37,12 @@ class GuildChannel extends Channel {
     this.position = data.position;
 
     /**
+     * The ID of the category parent of this channel
+     * @type {?snowflake}
+     */
+    this.parentID = data.parent_id;
+
+    /**
      * A map of permission overwrites in this channel for roles and users
      * @type {Collection<Snowflake, PermissionOverwrites>}
      */
@@ -46,6 +52,14 @@ class GuildChannel extends Channel {
         this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
       }
     }
+  }
+
+  /**
+   * The category parent of this channel
+   * @type {?GuildChannel}
+   */
+  get parent() {
+    return this.guild.channels.get(this.parentID);
   }
 
   /**
@@ -219,10 +233,11 @@ class GuildChannel extends Channel {
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        topic: data.topic || this.topic,
+        topic: data.topic,
         position: data.position || this.position,
         bitrate: data.bitrate || this.bitrate,
-        user_limit: data.userLimit || this.userLimit,
+        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        parent_id: data.parentID,
       },
       reason,
     }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
@@ -256,6 +271,16 @@ class GuildChannel extends Channel {
    */
   setPosition(position, relative) {
     return this.guild.setChannelPosition(this, position, relative).then(() => this);
+  }
+
+  /**
+   * Set the category parent of this channel
+   * @param {GuildChannel|Snowflake} channel Parent channel
+   * @param {string} [reason] Reason for setting the parent
+   * @returns {Promise<GuildChannel>}
+   */
+  setParent(channel, reason) {
+    return this.edit({ parentID: channel.id ? channel.id : channel }, reason);
   }
 
   /**
