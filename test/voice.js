@@ -51,10 +51,10 @@ client.on('message', m => {
   } else if (m.content.startsWith('#eval') && m.author.id === '66564597481480192') {
     try {
       const com = eval(m.content.split(' ').slice(1).join(' '));
-      m.channel.sendMessage(`\`\`\`\n${com}\`\`\``);
+      m.channel.send(com, { code: true });
     } catch (e) {
       console.log(e);
-      m.channel.sendMessage(`\`\`\`\n${e}\`\`\``);
+      m.channel.send(e, { code: true });
     }
   }
 });

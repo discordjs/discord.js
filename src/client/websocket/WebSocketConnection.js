@@ -166,6 +166,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Object}
    */
   unpack(data) {
+    if (Array.isArray(data)) data = Buffer.concat(data);
     if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
 
     if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
@@ -290,7 +291,9 @@ class WebSocketConnection extends EventEmitter {
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(data);
+    const ret = this.onPacket(data);
+    this.client.emit('raw', data);
+    return ret;
   }
 
   /**
@@ -311,7 +314,6 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Received null packet');
       return false;
     }
-    this.client.emit('raw', packet);
     switch (packet.op) {
       case Constants.OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
@@ -444,7 +446,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identify(after) {
-    if (after) return this.client.setTimeout(this.identify.apply(this), after);
+    if (after) return this.client.setTimeout(this.identify.bind(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 

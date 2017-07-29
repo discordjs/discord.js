@@ -7,6 +7,7 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const { Error, TypeError } = require('../errors');
 let GuildMember;
 
 /**
@@ -33,7 +34,7 @@ class Message {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The ID of the message (unique in the channel it was sent)
+     * The ID of the message
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -358,6 +359,7 @@ class Message {
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
+   * @property {string} [content] Content to be edited
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    */
@@ -380,10 +382,13 @@ class Message {
     } else if (!options) {
       options = {};
     }
+    if (typeof options.content !== 'undefined') content = options.content;
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);
 
-    const { embed, code, reply } = options;
+    let { embed, code, reply } = options;
+
+    if (embed) embed = new Embed(embed)._apiTransform();
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
@@ -398,7 +403,7 @@ class Message {
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
 
-    return this.client.api.channels(this.channel.id).messages(this.id)
+    return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
       .then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
@@ -428,9 +433,9 @@ class Message {
    */
   react(emoji) {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+    if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji)['@me']
+    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
       .put()
       .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
   }
@@ -514,7 +519,7 @@ class Message {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
 

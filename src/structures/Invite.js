@@ -136,7 +136,7 @@ class Invite {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.invite(this.code);
+    return Constants.Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**
@@ -145,7 +145,7 @@ class Invite {
    * @returns {Promise<Invite>}
    */
   delete(reason) {
-    return this.client.api.invites(this.code).delete({ reason }).then(() => this);
+    return this.client.api.invites[this.code].delete({ reason }).then(() => this);
   }
 
   /**

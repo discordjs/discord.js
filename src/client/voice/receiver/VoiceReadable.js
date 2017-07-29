@@ -1,4 +1,4 @@
-const Readable = require('stream').Readable;
+const { Readable } = require('stream');
 
 class VoiceReadable extends Readable {
   constructor() {

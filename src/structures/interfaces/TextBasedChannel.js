@@ -3,6 +3,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -34,7 +35,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
-   * @property {RichEmbed|Object} [embed] An embed for the message
+   * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
@@ -81,11 +82,9 @@ class TextBasedChannel {
 
     if (!options.content) options.content = content;
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
-
-    if (options.file) {
-      if (options.files) options.files.push(options.file);
-      else options.files = [options.file];
+    if (options.embed && options.embed.files) {
+      if (options.files) options.files = options.files.concat(options.embed.files);
+      else options.files = options.embed.files;
     }
 
     if (options.files) {
@@ -134,18 +133,18 @@ class TextBasedChannel {
     const Message = require('../Message');
     if (!this.client.user.bot) {
       return this.fetchMessages({ limit: 1, around: messageID })
-      .then(messages => {
-        const msg = messages.get(messageID);
-        if (!msg) throw new Error('Message not found.');
+        .then(messages => {
+          const msg = messages.get(messageID);
+          if (!msg) throw new Error('MESSAGE_MISSING');
+          return msg;
+        });
+    }
+    return this.client.api.channels[this.id].messages[messageID].get()
+      .then(data => {
+        const msg = data instanceof Message ? data : new Message(this, data, this.client);
+        this._cacheMessage(msg);
         return msg;
       });
-    }
-    return this.client.api.channels(this.id).messages(messageID).get()
-    .then(data => {
-      const msg = data instanceof Message ? data : new Message(this, data, this.client);
-      this._cacheMessage(msg);
-      return msg;
-    });
   }
 
   /**
@@ -170,16 +169,16 @@ class TextBasedChannel {
    */
   fetchMessages(options = {}) {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).messages.get({ query: options })
-    .then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
+    return this.client.api.channels[this.id].messages.get({ query: options })
+      .then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        return messages;
+      });
   }
 
   /**
@@ -188,7 +187,7 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     const Message = require('../Message');
-    return this.client.api.channels(this.id).pins.get().then(data => {
+    return this.client.api.channels[this.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) {
         const msg = new Message(this, message, this.client);
@@ -203,16 +202,14 @@ class TextBasedChannel {
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster
-   * The message which has triggered the result will have the `hit` property set to `true`
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * channel.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
    * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   const hit = res.results[0].find(m => m.hit).content;
+   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
    * }).catch(console.error);
    */
   search(options = {}) {
@@ -227,9 +224,9 @@ class TextBasedChannel {
    * channel.startTyping();
    */
   startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
+    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels(this.id).typing;
+      const endpoint = this.client.api.channels[this.id].typing;
       this.client.user._typing.set(this.id, {
         count: count || 1,
         interval: this.client.setInterval(() => {
@@ -352,16 +349,16 @@ class TextBasedChannel {
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels(this.id).messages()['bulk-delete']
-      .post({ data: { messages: messageIDs } })
-      .then(() =>
-        this.client.actions.MessageDeleteBulk.handle({
-          channel_id: this.id,
-          ids: messageIDs,
-        }).messages
-      );
+      return this.client.api.channels[this.id].messages['bulk-delete']
+        .post({ data: { messages: messageIDs } })
+        .then(() =>
+          this.client.actions.MessageDeleteBulk.handle({
+            channel_id: this.id,
+            ids: messageIDs,
+          }).messages
+        );
     }
-    throw new TypeError('The messages must be an Array, Collection, or number.');
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
   /**
@@ -371,7 +368,7 @@ class TextBasedChannel {
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels(this.id).messages(this.lastMessageID).ack
+    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
       .post({ data: { token: this.client.rest._ackToken } })
       .then(res => {
         if (res.token) this.client.rest._ackToken = res.token;
@@ -386,29 +383,32 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+
+  static applyToClass(structure, full = false, ignore = []) {
+    const props = ['send'];
+    if (full) {
+      props.push(
+        '_cacheMessage',
+        'acknowledge',
+        'fetchMessages',
+        'fetchMessage',
+        'search',
+        'bulkDelete',
+        'startTyping',
+        'stopTyping',
+        'typing',
+        'typingCount',
+        'fetchPinnedMessages',
+        'createMessageCollector',
+        'awaitMessages'
+      );
+    }
+    for (const prop of props) {
+      if (ignore.includes(prop)) continue;
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+    }
+  }
 }
 
-exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send'];
-  if (full) {
-    props.push(
-      '_cacheMessage',
-      'acknowledge',
-      'fetchMessages',
-      'fetchMessage',
-      'search',
-      'bulkDelete',
-      'startTyping',
-      'stopTyping',
-      'typing',
-      'typingCount',
-      'fetchPinnedMessages',
-      'createMessageCollector',
-      'awaitMessages'
-    );
-  }
-  for (const prop of props) {
-    if (ignore.includes(prop)) continue;
-    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-  }
-};
+module.exports = TextBasedChannel;

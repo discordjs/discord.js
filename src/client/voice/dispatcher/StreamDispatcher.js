@@ -1,5 +1,6 @@
 const VolumeInterface = require('../util/VolumeInterface');
 const VoiceBroadcast = require('../VoiceBroadcast');
+const Constants = require('../../../util/Constants');
 
 const secretbox = require('../util/Secretbox');
 
@@ -108,6 +109,7 @@ class StreamDispatcher extends VolumeInterface {
 
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.player.voiceConnection.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     /**
      * Emitted when the dispatcher starts/stops speaking.
@@ -115,6 +117,16 @@ class StreamDispatcher extends VolumeInterface {
      * @param {boolean} value Whether or not the dispatcher is speaking
      */
     this.emit('speaking', value);
+  }
+
+
+  /**
+   * Set the bitrate of the current Opus encoder.
+   * @param {number} bitrate New bitrate, in kbps.
+   * If set to 'auto', the voice channel's bitrate will be used
+   */
+  setBitrate(bitrate) {
+    this.player.setBitrate(bitrate);
   }
 
   sendBuffer(buffer, sequence, timestamp, opusPacket) {

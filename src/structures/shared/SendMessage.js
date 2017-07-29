@@ -1,14 +1,18 @@
 const Util = require('../../util/Util');
+const Embed = require('../MessageEmbed');
+const { RangeError } = require('../../errors');
 
-module.exports = function sendMessage(channel, options) {
+module.exports = function sendMessage(channel, options) { // eslint-disable-line complexity
   const User = require('../User');
   const GuildMember = require('../GuildMember');
   if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
   let { content, nonce, reply, code, disableEveryone, tts, embed, files, split } = options;
 
+  if (embed) embed = new Embed(embed)._apiTransform();
+
   if (typeof nonce !== 'undefined') {
     nonce = parseInt(nonce);
-    if (isNaN(nonce) || nonce < 0) throw new RangeError('Message nonce must fit in an unsigned 64-bit integer.');
+    if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
   if (content) {
@@ -54,7 +58,7 @@ module.exports = function sendMessage(channel, options) {
     });
   }
 
-  return channel.client.api.channels(channel.id).messages.post({
+  return channel.client.api.channels[channel.id].messages.post({
     data: { content, tts, nonce, embed },
     files,
   }).then(data => channel.client.actions.MessageCreate.handle(data).message);

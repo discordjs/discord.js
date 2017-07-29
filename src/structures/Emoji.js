@@ -132,10 +132,11 @@ class Emoji {
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**

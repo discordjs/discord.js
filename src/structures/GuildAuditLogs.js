@@ -1,7 +1,9 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Webhook = require('./Webhook');
 
 const Targets = {
+  ALL: 'ALL',
   GUILD: 'GUILD',
   CHANNEL: 'CHANNEL',
   USER: 'USER',
@@ -14,6 +16,7 @@ const Targets = {
 };
 
 const Actions = {
+  ALL: null,
   GUILD_UPDATE: 1,
   CHANNEL_CREATE: 10,
   CHANNEL_UPDATE: 11,
@@ -49,6 +52,17 @@ const Actions = {
 class GuildAuditLogs {
   constructor(guild, data) {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
+    /**
+     * Cached webhooks
+     * @type {Collection<Snowflake, Webhook>}
+     * @private
+     */
+    this.webhooks = new Collection();
+    if (data.webhooks) {
+      for (const hook of data.webhooks) {
+        this.webhooks.set(hook.id, new Webhook(guild.client, hook));
+      }
+    }
 
     /**
      * The entries for this guild's audit logs
@@ -227,22 +241,29 @@ class GuildAuditLogsEntry {
        * The target of this entry
        * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
        */
-      this.target = data.target_id;
+      this.target = this.changes.reduce((o, c) => {
+        o[c.key] = c.new || c.old;
+        return o;
+      }, {});
+      this.target.id = data.target_id;
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = guild.fetchWebhooks()
-        .then(hooks => {
-          this.target = hooks.find(h => h.id === data.target_id);
-          return this.target;
-        });
+      this.target = this.webhooks.get(data.target_id);
     } else if (targetType === Targets.INVITE) {
-      const change = this.changes.find(c => c.key === 'code');
-      this.target = guild.fetchInvites()
-        .then(invites => {
-          this.target = invites.find(i => i.code === (change.new_value || change.old_value));
-          return this.target;
-        });
+      if (guild.me.permissions.has('MANAGE_GUILD')) {
+        const change = this.changes.find(c => c.key === 'code');
+        this.target = guild.fetchInvites()
+          .then(invites => {
+            this.target = invites.find(i => i.code === (change.new || change.old));
+            return this.target;
+          });
+      } else {
+        this.target = this.changes.reduce((o, c) => {
+          o[c.key] = c.new || c.old;
+          return o;
+        }, {});
+      }
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.get(data.target_id);
     } else {

@@ -1,39 +1,34 @@
 const util = require('util');
 
+const noop = () => {}; // eslint-disable-line no-empty-function
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
-// Paramable exists so we don't return a function unless we actually need one #savingmemory
-const paramable = [
-  'channels', 'users', 'guilds', 'members',
-  'bans', 'emojis', 'pins', 'permissions',
-  'reactions', 'webhooks', 'messages',
-  'notes', 'roles', 'applications',
-  'invites',
+const reflectors = [
+  'toString', 'valueOf', 'inspect', 'constructor',
+  Symbol.toPrimitive, util.inspect.custom,
 ];
-const reflectors = ['toString', 'valueOf', 'inspect', Symbol.toPrimitive, util.inspect.custom];
 
-module.exports = restManager => {
+function buildRoute(manager) {
+  const route = [''];
   const handler = {
-    get(list, name) {
-      if (reflectors.includes(name)) return () => list.join('/');
-      if (paramable.includes(name)) {
-        function toReturn(...args) { // eslint-disable-line no-inner-declarations
-          list = list.concat(name);
-          for (const arg of args) {
-            if (arg !== null && typeof arg !== 'undefined') list = list.concat(arg);
-          }
-          return new Proxy(list, handler);
-        }
-        const directJoin = () => `${list.join('/')}/${name}`;
-        for (const r of reflectors) toReturn[r] = directJoin;
-        for (const method of methods) {
-          toReturn[method] = options => restManager.request(method, `${list.join('/')}/${name}`, options);
-        }
-        return toReturn;
+    get(target, name) {
+      if (reflectors.includes(name)) return () => route.join('/');
+      if (methods.includes(name)) {
+        return options => manager.request(name, route.join('/'), Object.assign({
+          route: route.map((r, i) => {
+            if (/\d{16,19}/g.test(r)) return /channels|guilds/.test(route[i - 1]) ? r : ':id';
+            return r;
+          }).join('/'),
+        }, options));
       }
-      if (methods.includes(name)) return options => restManager.request(name, list.join('/'), options);
-      return new Proxy(list.concat(name), handler);
+      route.push(name);
+      return new Proxy(noop, handler);
+    },
+    apply(target, _, args) {
+      route.push(...args.filter(x => x != null)); // eslint-disable-line eqeqeq
+      return new Proxy(noop, handler);
     },
   };
+  return new Proxy(noop, handler);
+}
 
-  return new Proxy([''], handler);
-};
+module.exports = buildRoute;

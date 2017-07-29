@@ -11,7 +11,6 @@ const Collector = require('./interfaces/Collector');
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
-
   /**
    * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
    * @param {CollectorFilter} filter The filter to be applied to this collector
@@ -32,16 +31,28 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    this.client.on('message', this.listener);
+    const bulkDeleteListener = (messages => {
+      for (const message of messages.values()) this.handleDispose(message);
+    }).bind(this);
+
+    this.client.on('message', this.handleCollect);
+    this.client.on('messageDelete', this.handleDispose);
+    this.client.on('messageDeleteBulk', bulkDeleteListener);
+
+    this.once('end', () => {
+      this.client.removeListener('message', this.handleCollect);
+      this.client.removeListener('messageDelete', this.handleDispose);
+      this.client.removeListener('messageDeleteBulk', bulkDeleteListener);
+    });
   }
 
   /**
-   * Handle an incoming message for possible collection.
+   * Handle a message for possible collection.
    * @param {Message} message The message that could be collected
    * @returns {?{key: Snowflake, value: Message}} Message data to collect
    * @private
    */
-  handle(message) {
+  collect(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
     return {
@@ -51,22 +62,23 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
-   * @private
+   * Handle a message for possible disposal.
+   * @param {Message} message The message that could be disposed
+   * @returns {?string} The message ID.
    */
-  postCheck() {
-    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
-    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
-    return null;
+  dispose(message) {
+    return message.channel.id === this.channel.id ? message.id : null;
   }
 
   /**
-   * Removes event listeners.
+   * Check after un/collection to see if the collector is done.
+   * @returns {?string} Reason to end the collector, if any
    * @private
    */
-  cleanup() {
-    this.client.removeListener('message', this.listener);
+  endReason() {
+    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
+    return null;
   }
 }
 

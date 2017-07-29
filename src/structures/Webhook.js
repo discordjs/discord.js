@@ -1,5 +1,6 @@
 const path = require('path');
 const Util = require('../util/Util');
+const Embed = require('./MessageEmbed');
 
 /**
  * Represents a webhook.
@@ -124,6 +125,8 @@ class Webhook {
     }
     options.content = content;
 
+    if (options.embeds) options.embeds = options.embeds.map(embed => new Embed(embed)._apiTransform());
+
     if (options.file) {
       if (options.files) options.files.push(options.file);
       else options.files = [options.file];
@@ -165,7 +168,7 @@ class Webhook {
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 
@@ -194,7 +197,7 @@ class Webhook {
     }).then(data => {
       if (!this.client.channels) return data;
       const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id, data, this.client));
+      return new Message(this.client.channels.get(data.channel_id), data, this.client);
     });
   }
 

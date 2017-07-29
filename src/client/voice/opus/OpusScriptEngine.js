@@ -10,8 +10,12 @@ class OpusScriptEngine extends OpusEngine {
     } catch (err) {
       throw err;
     }
-    this.encoder = new OpusScript(48000, 2);
+    this.encoder = new OpusScript(this.samplingRate, this.channels);
     super.init();
+  }
+
+  setBitrate(bitrate) {
+    this.encoder.encoderCTL(this.ctl.BITRATE, Math.min(128, Math.max(16, bitrate)) * 1000);
   }
 
   setFEC(enabled) {
