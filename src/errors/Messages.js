@@ -60,8 +60,11 @@ const Messages = {
   UDP_ADDRESS_MALFORMED: 'Malformed UDP address or port.',
   UDP_CONNECTION_EXISTS: 'There is already an existing UDP connection.',
 
+  ATTACHMENT_NO_FILE: 'There is no attachment file specified.',
+  ATTACHMENT_INVALID: 'The array of attachments is invalid.',
+
   REQ_BODY_TYPE: 'The response body isn\'t a Buffer.',
-  REQ_RESOURCE_TYPE: 'The resource must be a string or Buffer.',
+  REQ_RESOURCE_TYPE: 'The resource must be a string, Buffer or a valid file stream.',
 
   IMAGE_FORMAT: format => `Invalid image format: ${format}`,
   IMAGE_SIZE: size => `Invalid image size: ${size}`,

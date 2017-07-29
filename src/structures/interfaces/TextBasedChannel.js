@@ -3,6 +3,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const Attachment = require('../../structures/Attachment');
 const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
@@ -80,6 +81,16 @@ class TextBasedChannel {
       options = {};
     }
 
+    if (options instanceof Attachment) {
+      if (!options.files[0] || !options.files[0].attachment) throw new TypeError('ATTACHMENT_NO_FILE');
+    }
+
+    if (content instanceof Array) {
+      if (!content.every(item => item && item.attachment)) throw new TypeError('ATTACHMENT_INVALID');
+      options.files = content.map(item => item.files[0]);
+      content = '';
+    }
+
     if (!options.content) options.content = content;
 
     if (options.embed && options.embed.files) {
@@ -104,8 +115,8 @@ class TextBasedChannel {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        this.client.resolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
       )).then(files => {
