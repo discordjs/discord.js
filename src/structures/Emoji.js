@@ -121,7 +121,7 @@ class Emoji {
    *  .catch(console.error);
    */
   edit(data, reason) {
-    return this.client.api.guilds[this.guild.id].emojis[this.id]
+    return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
         roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
@@ -132,10 +132,11 @@ class Emoji {
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**

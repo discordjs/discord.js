@@ -46,9 +46,15 @@ have obtained a voice connection, we can start streaming audio to it. The follow
 file:
 
 **Playing a file:**
+
 ```js
-// To play a file, we need to give an absolute path to it
+// Use an absolute path
 const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
+```
+
+```js
+// Or an dynamic path
+const dispatcher = connection.playFile('./myfile.mp3');
 ```
 
 Your file doesn't have to be just an mp3; ffmpeg can convert videos and audios of many formats.
@@ -84,8 +90,7 @@ this can also be used:
 ```js
 connection.playStream(myReadableStream);
 
-// If you don't want to use absolute paths, you can use
-// fs.createReadStream to circumvent it
+// You can use fs.createReadStream to create an ReadableStream
 
 const fs = require('fs');
 const stream = fs.createReadStream('./test.mp3');

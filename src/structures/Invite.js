@@ -136,7 +136,7 @@ class Invite {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.invite(this.code);
+    return Constants.Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**

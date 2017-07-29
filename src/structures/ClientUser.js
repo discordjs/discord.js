@@ -104,7 +104,7 @@ class ClientUser extends User {
       if (data.new_password) _data.new_password = data.newPassword;
     }
 
-    return this.client.api.users['@me'].patch({ data })
+    return this.client.api.users('@me').patch({ data })
       .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
   }
 
@@ -297,7 +297,7 @@ class ClientUser extends User {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
-    return this.client.api.users['@me'].mentions.get({ query: options })
+    return this.client.api.users('@me').mentions.get({ query: options })
       .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
   }
 
@@ -364,7 +364,7 @@ class ClientUser extends User {
         return o;
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
-    return this.client.api.users['@me'].channels.post({ data })
+    return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
 }

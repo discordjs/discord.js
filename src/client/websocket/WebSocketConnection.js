@@ -166,6 +166,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Object}
    */
   unpack(data) {
+    if (Array.isArray(data)) data = Buffer.concat(data);
     if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
 
     if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
@@ -445,7 +446,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identify(after) {
-    if (after) return this.client.setTimeout(this.identify.apply(this), after);
+    if (after) return this.client.setTimeout(this.identify.bind(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 

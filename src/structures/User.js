@@ -3,6 +3,7 @@ const Constants = require('../util/Constants');
 const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.
@@ -201,10 +202,10 @@ class User {
    */
   createDM() {
     if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users[this.client.user.id].channels.post({ data: {
+    return this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
     } })
-    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -212,10 +213,9 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels[this.dmChannel.id].delete().then(data =>
-       this.client.actions.ChannelDelete.handle(data).channel
-    );
+    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
+    return this.client.api.channels(this.dmChannel.id).delete()
+      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
 
   /**
@@ -224,7 +224,7 @@ class User {
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users[this.id].profile.get().then(data => new UserProfile(this, data));
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
@@ -234,7 +234,7 @@ class User {
    * @returns {Promise<User>}
    */
   setNote(note) {
-    return this.client.api.users['@me'].notes[this.id].put({ data: { note } })
+    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
       .then(() => this);
   }
 

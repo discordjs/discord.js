@@ -82,9 +82,9 @@ class TextBasedChannel {
 
     if (!options.content) options.content = content;
 
-    if (options.embed && options.embed.file) {
-      if (options.files) options.files.push(options.embed.file);
-      else options.files = [options.embed.file];
+    if (options.embed && options.embed.files) {
+      if (options.files) options.files = options.files.concat(options.embed.files);
+      else options.files = options.embed.files;
     }
 
     if (options.files) {
@@ -133,18 +133,18 @@ class TextBasedChannel {
     const Message = require('../Message');
     if (!this.client.user.bot) {
       return this.fetchMessages({ limit: 1, around: messageID })
-      .then(messages => {
-        const msg = messages.get(messageID);
-        if (!msg) throw new Error('MESSAGE_MISSING');
-        return msg;
-      });
+        .then(messages => {
+          const msg = messages.get(messageID);
+          if (!msg) throw new Error('MESSAGE_MISSING');
+          return msg;
+        });
     }
     return this.client.api.channels[this.id].messages[messageID].get()
-    .then(data => {
-      const msg = data instanceof Message ? data : new Message(this, data, this.client);
-      this._cacheMessage(msg);
-      return msg;
-    });
+      .then(data => {
+        const msg = data instanceof Message ? data : new Message(this, data, this.client);
+        this._cacheMessage(msg);
+        return msg;
+      });
   }
 
   /**
@@ -170,15 +170,15 @@ class TextBasedChannel {
   fetchMessages(options = {}) {
     const Message = require('../Message');
     return this.client.api.channels[this.id].messages.get({ query: options })
-    .then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
-      return messages;
-    });
+      .then(data => {
+        const messages = new Collection();
+        for (const message of data) {
+          const msg = new Message(this, message, this.client);
+          messages.set(message.id, msg);
+          this._cacheMessage(msg);
+        }
+        return messages;
+      });
   }
 
   /**
@@ -350,13 +350,13 @@ class TextBasedChannel {
         );
       }
       return this.client.api.channels[this.id].messages['bulk-delete']
-      .post({ data: { messages: messageIDs } })
-      .then(() =>
-        this.client.actions.MessageDeleteBulk.handle({
-          channel_id: this.id,
-          ids: messageIDs,
-        }).messages
-      );
+        .post({ data: { messages: messageIDs } })
+        .then(() =>
+          this.client.actions.MessageDeleteBulk.handle({
+            channel_id: this.id,
+            ids: messageIDs,
+          }).messages
+        );
     }
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
@@ -383,29 +383,32 @@ class TextBasedChannel {
     this.messages.set(message.id, message);
     return message;
   }
+
+  static applyToClass(structure, full = false, ignore = []) {
+    const props = ['send'];
+    if (full) {
+      props.push(
+        '_cacheMessage',
+        'acknowledge',
+        'fetchMessages',
+        'fetchMessage',
+        'search',
+        'bulkDelete',
+        'startTyping',
+        'stopTyping',
+        'typing',
+        'typingCount',
+        'fetchPinnedMessages',
+        'createMessageCollector',
+        'awaitMessages'
+      );
+    }
+    for (const prop of props) {
+      if (ignore.includes(prop)) continue;
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+    }
+  }
 }
 
-exports.applyToClass = (structure, full = false, ignore = []) => {
-  const props = ['send'];
-  if (full) {
-    props.push(
-      '_cacheMessage',
-      'acknowledge',
-      'fetchMessages',
-      'fetchMessage',
-      'search',
-      'bulkDelete',
-      'startTyping',
-      'stopTyping',
-      'typing',
-      'typingCount',
-      'fetchPinnedMessages',
-      'createMessageCollector',
-      'awaitMessages'
-    );
-  }
-  for (const prop of props) {
-    if (ignore.includes(prop)) continue;
-    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
-  }
-};
+module.exports = TextBasedChannel;
