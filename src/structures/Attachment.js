@@ -29,7 +29,7 @@ class Attachment {
   /**
     * Set the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
-	* @param {string} name The name of the file
+    * @param {string} name The name of the file
     * @returns {Attachment} This attachment
     */
   setAttachment(file, name) {
@@ -65,6 +65,7 @@ class Attachment {
     * Set the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
     * @param {string} name The name of the file
+    * @private
     */
   _attach(file, name) {
     if (file) {

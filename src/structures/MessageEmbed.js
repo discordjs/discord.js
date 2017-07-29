@@ -300,6 +300,7 @@ class MessageEmbed {
   /**
    * Transforms the embed object to be processed.
    * @returns {Object} The raw data of this embed
+   * @private
    */
   _apiTransform() {
     return {
