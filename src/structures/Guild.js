@@ -381,10 +381,11 @@ class Guild {
    * @type {boolean}
    */
   get suppressEveryone() {
-    if (this.client.user.bot) return null;
-    if (!this.client.user.guildSettings) return null;
-    if (!this.client.user.guildSettings.get(this.id)) return null;
-    return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    try {
+      return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    } catch (err) {
+      return null; 
+    }
   }
 
   /*
