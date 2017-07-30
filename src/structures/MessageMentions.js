@@ -129,7 +129,7 @@ class MessageMentions {
     if (strict && data instanceof GuildMember) {
       for (const role of this.roles) if (data.roles.has(role.id)) return true;
     }
-    const id = data.id ? data.id : data.user ? data.user.id : data;
+    const id = data.id || data;
     return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
   }
 }
