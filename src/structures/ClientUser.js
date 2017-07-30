@@ -82,13 +82,14 @@ class ClientUser extends User {
 
     /**
      * All of the user's guild settings
-     * @type {Collection<ClientUserGuildSettings>}
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
      * <warn>This is only filled when using a user account</warn>
      */
+    this.guildSettings = new Collection();
     if (data.user_guild_settings) {
-      this.guildSettings = new Collection();
-      for (const guild of data.user_guild_settings) {
-        this.guildSettings.set(guild.guild_id, new ClientUserGuildSettings(this, guild));
+      for (const settings of data.user_guild_settings) {
+        const guild = this.client.guilds.get(settings.guild_id);
+        this.guildSettings.set(guild.id, new ClientUserGuildSettings(settings, guild));
       }
     }
   }
