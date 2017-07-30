@@ -12397,6 +12397,7 @@ class DiscordAPIError extends Error {
     let messages = [];
 
     for (const k of Object.keys(obj)) {
+      if (k === 'message') continue;
       const newKey = key ? isNaN(k) ? `${key}.${k}` : `${key}[${k}]` : k;
 
       if (obj[k]._errors) {
