@@ -83,18 +83,12 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options instanceof Attachment) {
-      if (!options.files[0] || !options.files[0].attachment) throw new TypeError('ATTACHMENT_NO_FILE');
-    }
-
-    if (content instanceof Array) {
-      const attachments = content.filter(item => item instanceof Attachment);
+    if (content instanceof Array || options instanceof Array) {
+      const which = content instanceof Array ? content : options;
+      const attachments = which.filter(item => item instanceof Attachment);
       if (attachments.length) {
-        if (!attachments.every(item => item && item.files[0] && item.files[0].attachment)) {
-          throw new TypeError('ATTACHMENT_INVALID');
-        }
         options.files = attachments.map(item => item.files[0]);
-        content = '';
+        if (content instanceof Array) content = '';
       }
     }
 
@@ -114,10 +108,10 @@ class TextBasedChannel {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
-          } else {
-            file.name = 'file.jpg';
-          }
-        }
+          } else if (file instanceof Attachment) {
+            file = { name: 'file.jpg', attachment: file.files[0] };
+          } else { file.name = 'file.jpg'; }
+        } else if (file instanceof Attachment) { file = file.files[0]; }
         options.files[i] = file;
       }
 
