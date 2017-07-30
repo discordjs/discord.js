@@ -74,7 +74,7 @@ class TextBasedChannel {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  send(content, options) {
+  send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
@@ -109,7 +109,7 @@ class TextBasedChannel {
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
           } else if (file instanceof Attachment) {
-            file = { name: 'file.jpg', attachment: file.files[0] };
+            file = { name: path.basename(file.files[0]) || 'file.jpg', attachment: file.files[0] };
           } else { file.name = 'file.jpg'; }
         } else if (file instanceof Attachment) { file = file.files[0]; }
         options.files[i] = file;
