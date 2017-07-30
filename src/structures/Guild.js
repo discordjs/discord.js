@@ -384,7 +384,7 @@ class Guild {
     try {
       return this.client.user.guildSettings.get(this.id).suppressEveryone;
     } catch (err) {
-      return null; 
+      return null;
     }
   }
 
