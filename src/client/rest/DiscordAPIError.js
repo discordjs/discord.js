@@ -5,9 +5,9 @@
 class DiscordAPIError extends Error {
   constructor(error) {
     super();
-    const flattened = error.errors ? `\n${this.constructor.flattenErrors(error.errors).join('\n')}` : '';
+    const flattened = this.constructor.flattenErrors(error.errors || error).join('\n');
     this.name = 'DiscordAPIError';
-    this.message = `${error.message}${flattened}`;
+    this.message = error.message && flattened ? `${error.message}\n${flattened}` : error.message || flattened;
 
     /**
      * HTTP error code returned by Discord
@@ -32,7 +32,9 @@ class DiscordAPIError extends Error {
       if (obj[k]._errors) {
         messages.push(`${newKey}: ${obj[k]._errors.map(e => e.message).join(' ')}`);
       } else if (obj[k].code && obj[k].message) {
-        messages.push(`${obj[k].code}: ${obj[k].message}`);
+        messages.push(`${obj[k].code ? `${obj[k].code}: `: ''}: ${obj[k].message}`.trim());
+      } else if (typeof obj[k] === 'string') {
+        messages.push(obj[k]);
       } else {
         messages = messages.concat(this.flattenErrors(obj[k], newKey));
       }
