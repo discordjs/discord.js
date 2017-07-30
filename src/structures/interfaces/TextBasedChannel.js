@@ -4,6 +4,7 @@ const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
 const Attachment = require('../../structures/Attachment');
+const MessageEmbed = require('../../structures/MessageEmbed');
 const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
@@ -77,6 +78,7 @@ class TextBasedChannel {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
+      if (options instanceof MessageEmbed) options.embed = options;
     } else if (!options) {
       options = {};
     }
@@ -86,9 +88,14 @@ class TextBasedChannel {
     }
 
     if (content instanceof Array) {
-      if (!content.every(item => item && item.attachment)) throw new TypeError('ATTACHMENT_INVALID');
-      options.files = content.map(item => item.files[0]);
-      content = '';
+      const attachments = content.filter(item => item instanceof Attachment);
+      if (attachments.length) {
+        if (!attachments.every(item => item && item.files[0] && item.files[0].attachment)) {
+          throw new TypeError('ATTACHMENT_INVALID');
+        }
+        options.files = attachments.map(item => item.files[0]);
+        content = '';
+      }
     }
 
     if (!options.content) options.content = content;
