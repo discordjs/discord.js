@@ -89,7 +89,7 @@ class TextBasedChannel {
       const which = content instanceof Array ? content : options;
       const attachments = which.filter(item => item instanceof Attachment);
       if (attachments.length) {
-        options.files = attachments;
+        options = { files: attachments };
         if (content instanceof Array) content = '';
       }
     }

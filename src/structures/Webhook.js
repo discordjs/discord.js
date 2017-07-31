@@ -1,6 +1,8 @@
 const path = require('path');
 const Util = require('../util/Util');
 const Embed = require('./MessageEmbed');
+const Attachment = require('./Attachment');
+const MessageEmbed = require('./MessageEmbed');
 
 /**
  * Represents a webhook.
@@ -100,7 +102,7 @@ class Webhook {
    *  .then(message => console.log(`Sent message: ${message.content}`))
    *  .catch(console.error);
    */
-  send(content, options) {
+  send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
@@ -108,15 +110,28 @@ class Webhook {
       options = {};
     }
 
-    if (!options.username) options.username = this.name;
+    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof MessageEmbed) options = { embeds: [options] };
+    if (options.embed) options = { embeds: [options.embed] };
 
+
+    if (content instanceof Array || options instanceof Array) {
+      const which = content instanceof Array ? content : options;
+      const attachments = which.filter(item => item instanceof Attachment);
+      const embeds = which.filter(item => item instanceof MessageEmbed);
+      if (attachments.length) options = { files: attachments };
+      if (embeds.length) options = { embeds };
+      if ((embeds.length || attachments.length) && content instanceof Array) content = '';
+    }
+
+    if (!options.username) options.username = this.name;
     if (options.avatarURL) {
       options.avatar_url = options.avatarURL;
       options.avatarURL = null;
     }
 
-    if (typeof content !== 'undefined') content = Util.resolveString(content);
     if (content) {
+      content = Util.resolveString(content);
       if (options.disableEveryone ||
         (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
       ) {
@@ -127,11 +142,6 @@ class Webhook {
 
     if (options.embeds) options.embeds = options.embeds.map(embed => new Embed(embed)._apiTransform());
 
-    if (options.file) {
-      if (options.files) options.files.push(options.file);
-      else options.files = [options.file];
-    }
-
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
@@ -141,16 +151,20 @@ class Webhook {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
+          } else if (file instanceof Attachment) {
+            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
+        } else if (file instanceof Attachment) {
+          file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        this.client.resolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
       )).then(files => this.client.api.webhooks(this.id, this.token).post({
@@ -159,6 +173,18 @@ class Webhook {
         files,
         auth: false,
       }));
+    }
+
+    if (content instanceof Array) {
+      return new Promise((resolve, reject) => {
+        (function sendChunk() {
+          this.client.api.webhooks(this.id, this.token).post({
+            data: { options: { content: content.shift() } },
+            query: { wait: true },
+            auth: false,
+          }).catch(reject);
+        }.call(this));
+      });
     }
 
     return this.client.api.webhooks(this.id, this.token).post({
