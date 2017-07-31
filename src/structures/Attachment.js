@@ -10,7 +10,7 @@ class Attachment {
   /**
     * The name of the file
     * @type {?string}
-	  * @readonly
+    * @readonly
     */
   get name() {
     return this.file.name;
