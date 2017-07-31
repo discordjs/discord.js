@@ -222,7 +222,9 @@ class ClientDataResolver {
    */
   resolveFile(resource) {
     return new Promise((resolve, reject) => {
-      if (!resource) { reject(new TypeError('REQ_RESOURCE_TYPE')); } else {
+      if (!resource) {
+        reject(new TypeError('REQ_RESOURCE_TYPE'));
+      } else {
         this.resolveBuffer(resource)
           .then(result => resolve(result))
           .catch(() => {
