@@ -1,11 +1,9 @@
-const { resolveString } = require('../util/Util');
-
 /**
  * Represents an attachment in a message
  */
 class Attachment {
   constructor(file, name) {
-    this.file = {};
+    this.file = null;
     this._attach(file, name);
   }
 
@@ -32,9 +30,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setAttachment(file, name) {
-    this.file = {};
-    this.file.attachment = file;
-    this.file.name = name ? resolveString(name) : name;
+    this.file = { attachment: file, name };
     return this;
   }
 
@@ -54,7 +50,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setName(name) {
-    this.file.name = name ? resolveString(name) : name;
+    this.file.name = name;
     return this;
   }
 
@@ -66,11 +62,8 @@ class Attachment {
     */
   _attach(file, name) {
     if (file) {
-      if (typeof file === 'string') {
-        this.file = resolveString(file);
-      } else {
-        this.setAttachment(file, name);
-      }
+      if (typeof file === 'string') this.file = file;
+      else this.setAttachment(file, name);
     }
   }
 }
