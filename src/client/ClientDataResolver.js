@@ -226,14 +226,16 @@ class ClientDataResolver {
         reject(new TypeError('REQ_RESOURCE_TYPE'));
       } else {
         this.resolveBuffer(resource)
-          .then(result => resolve(result))
+          .then(resolve)
           .catch(() => {
             if (resource.pipe && typeof resource.pipe === 'function') {
               const buffers = [];
               resource.on('error', reject);
               resource.on('data', data => buffers.push(data));
               resource.on('end', () => resolve(Buffer.concat(buffers)));
-            } else { reject(new TypeError('REQ_RESOURCE_TYPE')); }
+            } else {
+              reject(new TypeError('REQ_RESOURCE_TYPE'));
+            }
           });
       }
     });
