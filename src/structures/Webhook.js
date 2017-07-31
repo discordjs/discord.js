@@ -114,7 +114,6 @@ class Webhook {
     if (options instanceof MessageEmbed) options = { embeds: [options] };
     if (options.embed) options = { embeds: [options.embed] };
 
-
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
       const attachments = which.filter(item => item instanceof Attachment);
