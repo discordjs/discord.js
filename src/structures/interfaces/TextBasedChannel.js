@@ -110,7 +110,9 @@ class TextBasedChannel {
             file.name = path.basename(file.attachment.path);
           } else if (file instanceof Attachment) {
             file = { name: path.basename(file.files[0]) || 'file.jpg', attachment: file.files[0] };
-          } else { file.name = 'file.jpg'; }
+          } else {
+            file.name = 'file.jpg';
+          }
         } else if (file instanceof Attachment) { file = file.files[0]; }
         options.files[i] = file;
       }
