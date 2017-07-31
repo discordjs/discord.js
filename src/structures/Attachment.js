@@ -1,12 +1,11 @@
 const { resolveString } = require('../util/Util');
-const { TypeError } = require('../errors');
 
 /**
  * Represents an attachment in a message
  */
 class Attachment {
   constructor(file, name) {
-    this.files = [];
+    this.file = {};
     this._attach(file, name);
   }
 
@@ -15,15 +14,15 @@ class Attachment {
     * @type {?string}
     */
   get name() {
-    return this.files[0] ? this.files[0].name : null;
+    return this.file.name;
   }
 
   /**
     * The file
     * @type {?BufferResolvable|Stream}
     */
-  get file() {
-    return this.files[0] ? this.files[0].attachment : null;
+  get attachment() {
+    return this.file.attachment;
   }
 
   /**
@@ -33,9 +32,9 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setAttachment(file, name) {
-    if (!file) throw new TypeError('ATTACHMENT_NO_FILE');
-    this.files = [];
-    this._attach(file, name);
+    this.file = {};
+    this.file.attachment = file;
+    this.file.name = name ? resolveString(name) : name;
     return this;
   }
 
@@ -45,8 +44,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setFile(attachment) {
-    if (!this.files.length) this.files = [{ attachment, name: null }];
-    else this.files[0].attachment = attachment;
+    this.file.attachment = attachment;
     return this;
   }
 
@@ -56,8 +54,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setName(name) {
-    if (!this.files.length) this.files = [{ attachment: null, name: resolveString(name) }];
-    else this.files[0].name = name;
+    this.file.name = name ? resolveString(name) : name;
     return this;
   }
 
@@ -69,8 +66,11 @@ class Attachment {
     */
   _attach(file, name) {
     if (file) {
-      if (typeof file === 'string') this.files.push(resolveString(file));
-      else this.files.push({ attachment: file, name: name ? resolveString(name) : null });
+      if (typeof file === 'string') {
+        this.file = resolveString(file);
+      } else {
+        this.setAttachment(file, name);
+      }
     }
   }
 }

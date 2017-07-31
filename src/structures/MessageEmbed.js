@@ -138,7 +138,7 @@ class MessageEmbed {
 	*/
     this.files = data.files ?
       data.files.every(file => file instanceof Attachment) ?
-        data.files.map(item => item.files[0]) : data.files : null;
+        data.files.map(item => item.file) : data.files : null;
   }
 
   /**
@@ -194,7 +194,7 @@ class MessageEmbed {
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
-    if (files.every(file => file instanceof Attachment)) this.files = files.map(item => item.files[0]);
+    if (files.every(file => file instanceof Attachment)) this.files = files.map(item => item.file);
     return this;
   }
 

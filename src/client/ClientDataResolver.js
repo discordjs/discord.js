@@ -230,9 +230,9 @@ class ClientDataResolver {
           .catch(() => {
             if (resource.pipe && typeof resource.pipe === 'function') {
               const buffers = [];
-              resource.on('error', reject);
+              resource.once('error', reject);
               resource.on('data', data => buffers.push(data));
-              resource.on('end', () => resolve(Buffer.concat(buffers)));
+              resource.once('end', () => resolve(Buffer.concat(buffers)));
             } else {
               reject(new TypeError('REQ_RESOURCE_TYPE'));
             }

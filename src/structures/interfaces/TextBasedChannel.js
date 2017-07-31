@@ -41,7 +41,7 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
+   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
@@ -78,16 +78,18 @@ class TextBasedChannel {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
-      if (options instanceof MessageEmbed) options.embed = options;
     } else if (!options) {
       options = {};
     }
+
+    if (options instanceof MessageEmbed) options = { embed: options };
+    if (options instanceof Attachment) options = { files: [options.file] };
 
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
       const attachments = which.filter(item => item instanceof Attachment);
       if (attachments.length) {
-        options.files = attachments.map(item => item.files[0]);
+        options.files = attachments;
         if (content instanceof Array) content = '';
       }
     }
@@ -102,18 +104,20 @@ class TextBasedChannel {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
+        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
           } else if (file instanceof Attachment) {
-            file = { name: path.basename(file.files[0]) || 'file.jpg', attachment: file.files[0] };
+            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
-        } else if (file instanceof Attachment) { file = file.files[0]; }
+        } else if (file instanceof Attachment) {
+          file = file.file;
+        }
         options.files[i] = file;
       }
 
