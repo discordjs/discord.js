@@ -10,6 +10,7 @@ class Attachment {
   /**
     * The name of the file
     * @type {?string}
+	  * @readonly
     */
   get name() {
     return this.file.name;
@@ -18,6 +19,7 @@ class Attachment {
   /**
     * The file
     * @type {?BufferResolvable|Stream}
+    * @readonly
     */
   get attachment() {
     return this.file.attachment;
