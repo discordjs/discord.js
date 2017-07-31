@@ -1,4 +1,4 @@
-const Long = require('long');
+const Long = require('Long');
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
@@ -6,7 +6,6 @@ const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const { Presence } = require('./Presence');
-const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
@@ -508,7 +507,7 @@ class Guild {
   fetchMembers({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        resolve((query || limit) ? new Collection() : this.members);
+        resolve(query || limit ? new Collection() : this.members);
         return;
       }
       this.client.ws.send({
@@ -527,7 +526,7 @@ class Guild {
         }
         if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve((query || limit) ? fetchedMembers : this.members);
+          resolve(query || limit ? fetchedMembers : this.members);
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -1194,64 +1193,14 @@ class Guild {
   }
 
   /**
-   * Set the position of a channel in this guild.
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
-   * @param {number} position The new position of the channel
-   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setChannelPosition(channel, position, relative = false) {
-    if (typeof channel === 'string') {
-      channel = this.channels.get(channel);
-    }
-    if (!(channel instanceof GuildChannel)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-
-    let updatedChannels = this._sortedChannels(channel.type).array();
-
-    Util.moveElementInArray(updatedChannels, channel, position, relative);
-
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
-      .then(() =>
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        }).guild
-      );
-  }
-
-  /**
-   * Fetches a collection of channels in the current guild sorted by position.
-   * @param {string} type The channel type
+   * @param {GuildChannel} channel Channel
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
-  _sortedChannels(type) {
-    return this._sortPositionWithID(this.channels.filter(c => {
-      if (type === 'voice' && c.type === 'voice') return true;
-      else if (type !== 'voice' && c.type !== 'voice') return true;
-      else return type === c.type;
-    }));
-  }
-
-  /**
-   * Sorts a collection by object position or ID if the positions are equivalent.
-   * Intended to be identical to Discord's sorting method.
-   * @param {Collection} collection The collection to sort
-   * @returns {Collection}
-   * @private
-   */
-  _sortPositionWithID(collection) {
-    return collection.sort((a, b) =>
-      a.position !== b.position ?
-        a.position - b.position :
-        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
-    );
+  _sortedChannels(channel) {
+    return this.channels
+      .filter(c => c.type === channel.type)
+      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
   }
 }
 
