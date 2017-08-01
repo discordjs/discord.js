@@ -8,6 +8,7 @@ const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 class ClientUserGuildSettings {
   constructor(data, guild) {
     this.guild = guild;
+    this.client = data.client;
     this.channelOverrides = new Collection();
     this.patch(data);
   }
@@ -23,7 +24,7 @@ class ClientUserGuildSettings {
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {
           this.channelOverrides.set(channel.channel_id,
-            new ClientUserChannelOverride(this.guild.client.user, channel));
+            new ClientUserChannelOverride(this.client.user, channel));
         }
       } else if (typeof value === 'function') {
         this[value.name] = value(data[key]);
