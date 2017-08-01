@@ -1,4 +1,4 @@
-const Long = require('Long');
+const Long = require('long');
 const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
