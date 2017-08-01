@@ -221,24 +221,20 @@ class ClientDataResolver {
    * @returns {Promise<Buffer>}
    */
   resolveFile(resource) {
-    return new Promise((resolve, reject) => {
-      if (!resource) {
-        reject(new TypeError('REQ_RESOURCE_TYPE'));
-      } else {
-        this.resolveBuffer(resource)
-          .then(resolve)
-          .catch(() => {
-            if (resource.pipe && typeof resource.pipe === 'function') {
-              const buffers = [];
-              resource.once('error', reject);
-              resource.on('data', data => buffers.push(data));
-              resource.once('end', () => resolve(Buffer.concat(buffers)));
-            } else {
-              reject(new TypeError('REQ_RESOURCE_TYPE'));
-            }
+    return resource ? this.resolveBuffer(resource)
+      .catch(() => {
+        if (resource.pipe && typeof resource.pipe === 'function') {
+          return new Promise((resolve, reject) => {
+            const buffers = [];
+            resource.once('error', reject);
+            resource.on('data', data => buffers.push(data));
+            resource.once('end', () => resolve(Buffer.concat(buffers)));
           });
-      }
-    });
+        } else {
+          throw new TypeError('REQ_RESOURCE_TYPE');
+        }
+      }) :
+      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**
