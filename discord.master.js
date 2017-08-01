@@ -17978,6 +17978,7 @@ class ClientUser extends User {
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
+        settings.client = this.client;
         const guild = this.client.guilds.get(settings.guild_id);
         this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, guild));
       }
@@ -25126,6 +25127,7 @@ const ClientUserChannelOverride = __webpack_require__(127);
 class ClientUserGuildSettings {
   constructor(data, guild) {
     this.guild = guild;
+    this.client = data.client;
     this.channelOverrides = new Collection();
     this.patch(data);
   }
@@ -25141,7 +25143,7 @@ class ClientUserGuildSettings {
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {
           this.channelOverrides.set(channel.channel_id,
-            new ClientUserChannelOverride(this.guild.client.user, channel));
+            new ClientUserChannelOverride(this.client.user, channel));
         }
       } else if (typeof value === 'function') {
         this[value.name] = value(data[key]);
