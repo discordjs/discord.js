@@ -3970,32 +3970,6 @@ class Message {
   }
 
   /**
-   * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing
-   * the ID of any of these
-   * @returns {boolean}
-   */
-  isMentioned(data) {
-    data = data && data.id ? data.id : data;
-    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
-  }
-
-  /**
-   * Whether or not a guild member is mentioned in this message. Takes into account
-   * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member The member/user to check for a mention of
-   * @returns {boolean}
-   */
-  isMemberMentioned(member) {
-    // Lazy-loading is used here to get around a circular dependency that breaks things
-    if (!GuildMember) GuildMember = __webpack_require__(25);
-    if (this.mentions.everyone) return true;
-    if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
-    return false;
-  }
-
-  /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
@@ -5960,14 +5934,14 @@ var substr = 'ab'.substr(-1) === 'b'
 
 const Long = __webpack_require__(39);
 const User = __webpack_require__(15);
-const Role = __webpack_require__(26);
-const Emoji = __webpack_require__(24);
+const Role = __webpack_require__(25);
+const Emoji = __webpack_require__(26);
 const Invite = __webpack_require__(32);
 const GuildAuditLogs = __webpack_require__(66);
 const Webhook = __webpack_require__(18);
 const { Presence } = __webpack_require__(17);
 const GuildChannel = __webpack_require__(27);
-const GuildMember = __webpack_require__(25);
+const GuildMember = __webpack_require__(24);
 const VoiceRegion = __webpack_require__(68);
 const Constants = __webpack_require__(0);
 const Collection = __webpack_require__(3);
@@ -7697,234 +7671,8 @@ module.exports = TextBasedChannel;
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Constants = __webpack_require__(0);
-const Collection = __webpack_require__(3);
-const Snowflake = __webpack_require__(9);
-
-/**
- * Represents a custom emoji.
- */
-class Emoji {
-  constructor(guild, data) {
-    /**
-     * The client that instantiated this object
-     * @name Emoji#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
-
-    /**
-     * The guild this emoji is part of
-     * @type {Guild}
-     */
-    this.guild = guild;
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of the emoji
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of the emoji
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * Whether or not this emoji requires colons surrounding it
-     * @type {boolean}
-     */
-    this.requiresColons = data.require_colons;
-
-    /**
-     * Whether this emoji is managed by an external service
-     * @type {boolean}
-     */
-    this.managed = data.managed;
-
-    this._roles = data.roles;
-  }
-
-  /**
-   * The timestamp the emoji was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the emoji was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * A collection of roles this emoji is active for (empty if all), mapped by role ID
-   * @type {Collection<Snowflake, Role>}
-   * @readonly
-   */
-  get roles() {
-    const roles = new Collection();
-    for (const role of this._roles) {
-      if (this.guild.roles.has(role)) roles.set(role, this.guild.roles.get(role));
-    }
-    return roles;
-  }
-
-  /**
-   * The URL to the emoji file
-   * @type {string}
-   * @readonly
-   */
-  get url() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
-  }
-
-  /**
-   * The identifier of this emoji, used for message reactions
-   * @type {string}
-   * @readonly
-   */
-  get identifier() {
-    if (this.id) return `${this.name}:${this.id}`;
-    return encodeURIComponent(this.name);
-  }
-
-  /**
-   * Data for editing an emoji.
-   * @typedef {Object} EmojiEditData
-   * @property {string} [name] The name of the emoji
-   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
-   */
-
-  /**
-   * Edits the emoji.
-   * @param {EmojiEditData} data The new data for the emoji
-   * @param {string} [reason] Reason for editing this emoji
-   * @returns {Promise<Emoji>}
-   * @example
-   * // Edit a emoji
-   * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
-   */
-  edit(data, reason) {
-    return this.client.api.guilds(this.guild.id).emojis(this.id)
-      .patch({ data: {
-        name: data.name,
-        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
-      }, reason })
-      .then(() => this);
-  }
-
-  /**
-   * Set the name of the emoji.
-   * @param {string} name The new name for the emoji
-   * @param {string} [reason] Reason for changing the emoji's name
-   * @returns {Promise<Emoji>}
-   */
-  setName(name, reason) {
-    return this.edit({ name }, reason);
-  }
-
-  /**
-   * Add a role to the list of roles that can use this emoji.
-   * @param {Role} role The role to add
-   * @returns {Promise<Emoji>}
-   */
-  addRestrictedRole(role) {
-    return this.addRestrictedRoles([role]);
-  }
-
-  /**
-   * Add multiple roles to the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to add
-   * @returns {Promise<Emoji>}
-   */
-  addRestrictedRoles(roles) {
-    const newRoles = new Collection(this.roles);
-    for (const role of roles) {
-      if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
-    }
-    return this.edit({ roles: newRoles });
-  }
-
-  /**
-   * Remove a role from the list of roles that can use this emoji.
-   * @param {Role} role The role to remove
-   * @returns {Promise<Emoji>}
-   */
-  removeRestrictedRole(role) {
-    return this.removeRestrictedRoles([role]);
-  }
-
-  /**
-   * Remove multiple roles from the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to remove
-   * @returns {Promise<Emoji>}
-   */
-  removeRestrictedRoles(roles) {
-    const newRoles = new Collection(this.roles);
-    for (const role of roles) {
-      if (newRoles.has(role.id)) newRoles.delete(role.id);
-    }
-    return this.edit({ roles: newRoles });
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the emoji mention rather than the object.
-   * @returns {string}
-   * @example
-   * // Send an emoji:
-   * const emoji = guild.emojis.first();
-   * msg.reply(`Hello! ${emoji}`);
-   */
-  toString() {
-    return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
-  }
-
-  /**
-   * Whether this emoji is the same as another one.
-   * @param {Emoji|Object} other The emoji to compare it to
-   * @returns {boolean} Whether the emoji is equal to the given emoji or not
-   */
-  equals(other) {
-    if (other instanceof Emoji) {
-      return (
-        other.id === this.id &&
-        other.name === this.name &&
-        other.managed === this.managed &&
-        other.requiresColons === this.requiresColons
-      );
-    } else {
-      return (
-        other.id === this.id &&
-        other.name === this.name
-      );
-    }
-  }
-}
-
-module.exports = Emoji;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
 const TextBasedChannel = __webpack_require__(23);
-const Role = __webpack_require__(26);
+const Role = __webpack_require__(25);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
 const { Presence } = __webpack_require__(17);
@@ -8463,7 +8211,7 @@ module.exports = GuildMember;
 
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Snowflake = __webpack_require__(9);
@@ -8834,11 +8582,237 @@ module.exports = Role;
 
 
 /***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const Snowflake = __webpack_require__(9);
+
+/**
+ * Represents a custom emoji.
+ */
+class Emoji {
+  constructor(guild, data) {
+    /**
+     * The client that instantiated this object
+     * @name Emoji#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: guild.client });
+
+    /**
+     * The guild this emoji is part of
+     * @type {Guild}
+     */
+    this.guild = guild;
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of the emoji
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the emoji
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * Whether or not this emoji requires colons surrounding it
+     * @type {boolean}
+     */
+    this.requiresColons = data.require_colons;
+
+    /**
+     * Whether this emoji is managed by an external service
+     * @type {boolean}
+     */
+    this.managed = data.managed;
+
+    this._roles = data.roles;
+  }
+
+  /**
+   * The timestamp the emoji was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the emoji was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A collection of roles this emoji is active for (empty if all), mapped by role ID
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get roles() {
+    const roles = new Collection();
+    for (const role of this._roles) {
+      if (this.guild.roles.has(role)) roles.set(role, this.guild.roles.get(role));
+    }
+    return roles;
+  }
+
+  /**
+   * The URL to the emoji file
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
+  }
+
+  /**
+   * The identifier of this emoji, used for message reactions
+   * @type {string}
+   * @readonly
+   */
+  get identifier() {
+    if (this.id) return `${this.name}:${this.id}`;
+    return encodeURIComponent(this.name);
+  }
+
+  /**
+   * Data for editing an emoji.
+   * @typedef {Object} EmojiEditData
+   * @property {string} [name] The name of the emoji
+   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
+   */
+
+  /**
+   * Edits the emoji.
+   * @param {EmojiEditData} data The new data for the emoji
+   * @param {string} [reason] Reason for editing this emoji
+   * @returns {Promise<Emoji>}
+   * @example
+   * // Edit a emoji
+   * emoji.edit({name: 'newemoji'})
+   *  .then(e => console.log(`Edited emoji ${e}`))
+   *  .catch(console.error);
+   */
+  edit(data, reason) {
+    return this.client.api.guilds(this.guild.id).emojis(this.id)
+      .patch({ data: {
+        name: data.name,
+        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
+      }, reason })
+      .then(() => this);
+  }
+
+  /**
+   * Set the name of the emoji.
+   * @param {string} name The new name for the emoji
+   * @param {string} [reason] Reason for changing the emoji's name
+   * @returns {Promise<Emoji>}
+   */
+  setName(name, reason) {
+    return this.edit({ name }, reason);
+  }
+
+  /**
+   * Add a role to the list of roles that can use this emoji.
+   * @param {Role} role The role to add
+   * @returns {Promise<Emoji>}
+   */
+  addRestrictedRole(role) {
+    return this.addRestrictedRoles([role]);
+  }
+
+  /**
+   * Add multiple roles to the list of roles that can use this emoji.
+   * @param {Role[]} roles Roles to add
+   * @returns {Promise<Emoji>}
+   */
+  addRestrictedRoles(roles) {
+    const newRoles = new Collection(this.roles);
+    for (const role of roles) {
+      if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
+    }
+    return this.edit({ roles: newRoles });
+  }
+
+  /**
+   * Remove a role from the list of roles that can use this emoji.
+   * @param {Role} role The role to remove
+   * @returns {Promise<Emoji>}
+   */
+  removeRestrictedRole(role) {
+    return this.removeRestrictedRoles([role]);
+  }
+
+  /**
+   * Remove multiple roles from the list of roles that can use this emoji.
+   * @param {Role[]} roles Roles to remove
+   * @returns {Promise<Emoji>}
+   */
+  removeRestrictedRoles(roles) {
+    const newRoles = new Collection(this.roles);
+    for (const role of roles) {
+      if (newRoles.has(role.id)) newRoles.delete(role.id);
+    }
+    return this.edit({ roles: newRoles });
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the emoji mention rather than the object.
+   * @returns {string}
+   * @example
+   * // Send an emoji:
+   * const emoji = guild.emojis.first();
+   * msg.reply(`Hello! ${emoji}`);
+   */
+  toString() {
+    return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+  }
+
+  /**
+   * Whether this emoji is the same as another one.
+   * @param {Emoji|Object} other The emoji to compare it to
+   * @returns {boolean} Whether the emoji is equal to the given emoji or not
+   */
+  equals(other) {
+    if (other instanceof Emoji) {
+      return (
+        other.id === this.id &&
+        other.name === this.name &&
+        other.managed === this.managed &&
+        other.requiresColons === this.requiresColons
+      );
+    } else {
+      return (
+        other.id === this.id &&
+        other.name === this.name
+      );
+    }
+  }
+}
+
+module.exports = Emoji;
+
+
+/***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Channel = __webpack_require__(16);
-const Role = __webpack_require__(26);
+const Role = __webpack_require__(25);
 const Invite = __webpack_require__(32);
 const PermissionOverwrites = __webpack_require__(67);
 const Permissions = __webpack_require__(11);
@@ -16080,6 +16054,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
+const GuildMember = __webpack_require__(24);
 
 /**
  * Keeps track of mentions in a {@link Message}.
@@ -16196,6 +16171,22 @@ class MessageMentions {
     }
     return this._channels;
   }
+
+  /**
+   * Check if a user is mentioned. Takes into account user mentions, role
+   * mentions, and @everyone/@here mentions.
+   * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
+   * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
+   * @returns {boolean}
+   */
+  has(data, strict = true) {
+    if (strict && this.everyone) return true;
+    if (strict && data instanceof GuildMember) {
+      for (const role of this.roles) if (data.roles.has(role.id)) return true;
+    }
+    const id = data.id || data;
+    return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+  }
 }
 
 /**
@@ -16304,7 +16295,7 @@ module.exports = MessageAttachment;
 /***/ (function(module, exports, __webpack_require__) {
 
 const Collection = __webpack_require__(3);
-const Emoji = __webpack_require__(24);
+const Emoji = __webpack_require__(26);
 const ReactionEmoji = __webpack_require__(41);
 const { Error } = __webpack_require__(4);
 
@@ -18369,8 +18360,8 @@ const User = __webpack_require__(15);
 const Message = __webpack_require__(10);
 const Guild = __webpack_require__(22);
 const Channel = __webpack_require__(16);
-const GuildMember = __webpack_require__(25);
-const Emoji = __webpack_require__(24);
+const GuildMember = __webpack_require__(24);
+const Emoji = __webpack_require__(26);
 const ReactionEmoji = __webpack_require__(41);
 const { Error, TypeError } = __webpack_require__(4);
 
@@ -18643,13 +18634,13 @@ module.exports = {
   ClientUserSettings: __webpack_require__(74),
   Collector: __webpack_require__(40),
   DMChannel: __webpack_require__(69),
-  Emoji: __webpack_require__(24),
+  Emoji: __webpack_require__(26),
   Game: __webpack_require__(17).Game,
   GroupDMChannel: __webpack_require__(42),
   Guild: __webpack_require__(22),
   GuildAuditLogs: __webpack_require__(66),
   GuildChannel: __webpack_require__(27),
-  GuildMember: __webpack_require__(25),
+  GuildMember: __webpack_require__(24),
   Invite: __webpack_require__(32),
   Message: __webpack_require__(10),
   MessageAttachment: __webpack_require__(61),
@@ -18665,7 +18656,7 @@ module.exports = {
   Presence: __webpack_require__(17).Presence,
   ReactionEmoji: __webpack_require__(41),
   ReactionCollector: __webpack_require__(63),
-  Role: __webpack_require__(26),
+  Role: __webpack_require__(25),
   TextChannel: __webpack_require__(70),
   User: __webpack_require__(15),
   VoiceChannel: __webpack_require__(71),
@@ -24390,7 +24381,7 @@ const Util = __webpack_require__(5);
 const Guild = __webpack_require__(22);
 const User = __webpack_require__(15);
 const DMChannel = __webpack_require__(69);
-const Emoji = __webpack_require__(24);
+const Emoji = __webpack_require__(26);
 const TextChannel = __webpack_require__(70);
 const VoiceChannel = __webpack_require__(71);
 const GuildChannel = __webpack_require__(27);
@@ -24634,7 +24625,7 @@ const { RangeError } = __webpack_require__(4);
 
 module.exports = function sendMessage(channel, options) { // eslint-disable-line complexity
   const User = __webpack_require__(15);
-  const GuildMember = __webpack_require__(25);
+  const GuildMember = __webpack_require__(24);
   if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
   let { content, nonce, reply, code, disableEveryone, tts, embed, files, split } = options;
 
@@ -26902,7 +26893,7 @@ module.exports = GuildBanRemove;
 
 const Action = __webpack_require__(2);
 const Constants = __webpack_require__(0);
-const Role = __webpack_require__(26);
+const Role = __webpack_require__(25);
 
 class GuildRoleCreate extends Action {
   handle(data) {
