@@ -15,11 +15,7 @@ const erlpack = (function findErlpack() {
 
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
-  try {
-    return require('uws');
-  } catch (e) {
-    return require('ws');
-  }
+  return require('uws');
 }());
 
 /**

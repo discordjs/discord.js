@@ -3,12 +3,7 @@ const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
 
-let WebSocket;
-try {
-  WebSocket = require('uws');
-} catch (err) {
-  WebSocket = require('ws');
-}
+const WebSocket = require('uws');
 
 /**
  * Represents a Voice Connection's WebSocket.
