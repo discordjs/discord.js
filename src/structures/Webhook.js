@@ -131,11 +131,21 @@ class Webhook {
 
     if (content) {
       content = Util.resolveString(content);
-      if (options.disableEveryone ||
-        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
-      ) {
+      let { split, code, disableEveryone } = options;
+      if (split && typeof split !== 'object') split = {};
+      if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
+        content = Util.escapeMarkdown(content, true);
+        content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+        if (split) {
+          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+          split.append = '\n```';
+        }
+      }
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
         content = content.replace(/@(everyone|here)/g, '@\u200b$1');
       }
+
+      if (split) content = Util.splitMessage(content, split);
     }
     options.content = content;
 
@@ -176,12 +186,20 @@ class Webhook {
 
     if (content instanceof Array) {
       return new Promise((resolve, reject) => {
+        const messages = [];
         (function sendChunk() {
+          const opt = content.length ? null : { embeds: options.embeds, files: options.files };
           this.client.api.webhooks(this.id, this.token).post({
-            data: { options: { content: content.shift() } },
+            data: { content: content.shift(), opt },
             query: { wait: true },
             auth: false,
-          }).catch(reject);
+          })
+            .then(message => {
+              messages.push(message);
+              if (content.length === 0) return resolve(messages);
+              return sendChunk.call(this);
+            })
+            .catch(reject);
         }.call(this));
       });
     }
