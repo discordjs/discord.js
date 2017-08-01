@@ -17979,7 +17979,7 @@ class ClientUser extends User {
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
         const guild = this.client.guilds.get(settings.guild_id);
-        this.guildSettings.set(guild.id, new ClientUserGuildSettings(settings, guild));
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, guild));
       }
     }
   }
