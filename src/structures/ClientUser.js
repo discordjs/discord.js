@@ -95,12 +95,15 @@ class ClientUser extends User {
     }
   }
 
-  edit(data, password, mfaCode) {
+  edit(data, passcode) {
     if (!this.bot) {
-      data.code = mfaCode;
-      data.password = password;
+      if (typeof passcode !== 'object') {
+        data.password = passcode;
+      } else {
+        data.code = passcode.mfaCode;
+        data.password = passcode.password;
+      }
     }
-
     return this.client.api.users('@me').patch({ data })
       .then(newData => {
         this.client.token = newData.token;
@@ -145,8 +148,8 @@ class ClientUser extends User {
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} newPassword New password to change to
-   * @param {string} oldPassword Current password
-   * @param {string} mfaCode Timed MFA Code
+   * @param {string} [options.oldPassword] Current password
+   * @param {string} [options.mfaCode] Timed MFA Code or Backup Code
    * @returns {Promise<ClientUser>}
    * @example
    * // Set password
@@ -154,8 +157,8 @@ class ClientUser extends User {
    *  .then(user => console.log('New password set!'))
    *  .catch(console.error);
    */
-  setPassword(newPassword, oldPassword, mfaCode) {
-    return this.edit({ new_password: newPassword }, oldPassword, mfaCode);
+  setPassword(newPassword, options) {
+    return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
   }
 
   /**
