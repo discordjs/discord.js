@@ -333,6 +333,62 @@ class Guild {
   }
 
   /**
+   * Whether the guild is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {string}
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).messageNotifications;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /**
+   * Whether to receive mobile push notifications
+   * <warn>This is only available when using a user account.</warn>
+   * @type {boolean}
+   */
+  get mobilePush() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).mobilePush;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Whether to suppress everyone messages
+   * <warn>This is only available when using a user account.</warn>
+   * @type {boolean}
+   */
+  get suppressEveryone() {
+    try {
+      return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /*
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly

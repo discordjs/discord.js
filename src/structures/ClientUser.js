@@ -1,6 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
@@ -78,6 +79,19 @@ class ClientUser extends User {
      * @type {?ClientUserSettings}
      */
     if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+
+    /**
+     * All of the user's guild settings
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
+     * <warn>This is only filled when using a user account</warn>
+     */
+    this.guildSettings = new Collection();
+    if (data.user_guild_settings) {
+      for (const settings of data.user_guild_settings) {
+        const guild = this.client.guilds.get(settings.guild_id);
+        this.guildSettings.set(guild.id, new ClientUserGuildSettings(settings, guild));
+      }
+    }
   }
 
   edit(data, password) {

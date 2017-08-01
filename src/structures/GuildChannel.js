@@ -4,6 +4,7 @@ const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 const { TypeError } = require('../errors');
 
 /**
@@ -361,6 +362,35 @@ class GuildChannel extends Channel {
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);
+  }
+
+  /**
+ * Whether the channel is muted
+ * <warn>This is only available when using a user account.</warn>
+ * @type {boolean}
+ */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {string}
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
+      return Constants.MessageNotificationTypes[3];
+    }
   }
 
   /**
