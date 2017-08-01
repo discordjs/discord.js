@@ -266,6 +266,19 @@ class User {
     return `<@${this.id}>`;
   }
 
+  toJSON() {
+    return {
+      id: this.id,
+      username: this.username,
+      discriminator: this.discriminator,
+      avatar: this.avatar,
+      avatarURL: this.avatarURL(),
+      bot: this.bot,
+      createdAt: this.createdAt,
+      createdTimestamp: this.createdTimestamp,
+    };
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

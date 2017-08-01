@@ -1308,6 +1308,30 @@ class Guild {
         Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
     );
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      icon: this.icon,
+      iconURL: this.iconURL(),
+      splash: this.splash,
+      splashURL: this.splashURL,
+      region: this.region,
+      large: this.large,
+      features: this.features,
+      applicationID: this.applicationID,
+      afkTimeout: this.afkTimeout,
+      afkChannelID: this.afkChannelID,
+      verificationLevel: this.verificationLevel,
+      explicitContentFilter: this.explicitContentFilter,
+      createdAt: this.createdAt,
+      createdTimestamp: this.createdTimestamp,
+      roles: this.roles.map(r => r.id),
+      emojis: this.emojis.map(e => e.id),
+      channels: this.channels.map(c => c.id),
+    };
+  }
 }
 
 module.exports = Guild;
