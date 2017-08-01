@@ -106,20 +106,6 @@ class ClientUser extends User {
         this.client.token = newData.token;
         return this.client.actions.UserUpdate.handle(newData).updated;
       });
-
-    /* Old code
-    const _data = {};
-    _data.username = data.username || this.username;
-    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
-
-    if (!this.bot) {
-      _data.email = data.email || this.email;
-      _data.password = password;
-      if (data.new_password) _data.new_password = data.newPassword;
-    }
-
-    return this.client.api.users('@me').patch({ data })
-      .then(newData => this.client.actions.UserUpdate.handle(newData).updated);*/
   }
 
   /**
