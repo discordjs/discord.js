@@ -1,7 +1,7 @@
 const Constants = require('../util/Constants');
 
 /**
- * A wrapper around the ClientUser's channel overrides
+ * A wrapper around the ClientUser's channel overrides.
  */
 class ClientUserChannelOverride {
   constructor(user, data) {
@@ -10,7 +10,7 @@ class ClientUserChannelOverride {
   }
 
   /**
-   * Patch the data contained in this class with new partial data
+   * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
    */
   patch(data) {
