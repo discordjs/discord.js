@@ -84,34 +84,32 @@ class GuildChannel extends Channel {
     if (!member) return null;
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
-    let permissions = 0;
+    let resolved = this.guild.roles.get(this.guild.id).permissions;
 
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const overwrites = this.overwritesFor(member, true, roles);
-
+    const overwrites = this.overwritesFor(member, true);
     if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._allowed;
+      resolved &= ~overwrites.everyone._denied;
+      resolved |= overwrites.everyone._allowed;
     }
 
-    let allow = 0;
+    let allows = 0;
+    let denies = 0;
     for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite._denied;
-      allow |= overwrite._allowed;
+      allows |= overwrite._allowed;
+      denies |= overwrite._denied;
     }
-    permissions |= allow;
+    resolved &= ~denies;
+    resolved |= allows;
 
     if (overwrites.member) {
-      permissions &= ~overwrites.member._denied;
-      permissions |= overwrites.member._allowed;
+      resolved &= ~overwrites.member._denied;
+      resolved |= overwrites.member._allowed;
     }
 
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
+    const admin = Boolean(resolved & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) resolved = Permissions.ALL;
 
-    return new Permissions(permissions);
+    return new Permissions(resolved);
   }
 
   overwritesFor(member, verified = false, roles = null) {
