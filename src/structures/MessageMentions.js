@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const GuildMember = require('./GuildMember');
 
 /**
  * Keeps track of mentions in a {@link Message}.
@@ -114,6 +115,22 @@ class MessageMentions {
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
+  }
+
+  /**
+   * Check if a user is mentioned. Takes into account user mentions, role
+   * mentions, and @everyone/@here mentions.
+   * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
+   * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
+   * @returns {boolean}
+   */
+  has(data, strict = true) {
+    if (strict && this.everyone) return true;
+    if (strict && data instanceof GuildMember) {
+      for (const role of this.roles) if (data.roles.has(role.id)) return true;
+    }
+    const id = data.id || data;
+    return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
   }
 }
 
