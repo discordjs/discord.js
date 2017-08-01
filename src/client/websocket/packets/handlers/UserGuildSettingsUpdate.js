@@ -10,9 +10,9 @@ class UserGuildSettingsUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted when the client user's settings update
+ * Emitted whenever the client user's settings update.
  * @event Client#clientUserGuildSettingsUpdate
- * @param {ClientUserGuildSettings} clientUserGuildSettings The new client user settings
+ * @param {ClientUserGuildSettings} clientUserGuildSettings The new client user guild settings
  */
 
 module.exports = UserGuildSettingsUpdateHandler;
