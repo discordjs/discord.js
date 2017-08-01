@@ -3,7 +3,7 @@ const Collection = require('../util/Collection');
 const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 
 /**
- * A wrapper around the ClientUser's guild settings
+ * A wrapper around the ClientUser's guild settings.
  */
 class ClientUserGuildSettings {
   constructor(data, guild) {
@@ -13,7 +13,7 @@ class ClientUserGuildSettings {
   }
 
   /**
-   * Patch the data contained in this class with new partial data
+   * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
    */
   patch(data) {
