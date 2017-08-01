@@ -1094,23 +1094,24 @@ class Guild {
   equals(guild) {
     let equal =
       guild &&
+      guild instanceof this.constructor &&
       this.id === guild.id &&
-      this.available === !guild.unavailable &&
+      this.available === guild.available &&
       this.splash === guild.splash &&
       this.region === guild.region &&
       this.name === guild.name &&
-      this.memberCount === guild.member_count &&
+      this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
       Util.arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
+      this.ownerID === guild.ownerID &&
+      this.verificationLevel === guild.verificationLevel &&
+      this.embedEnabled === guild.embedEnabled;
 
     if (equal) {
       if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
+        if (!guild.embedChannel || this.embedChannel.id !== guild.embedChannel.id) equal = false;
+      } else if (guild.embedChannel) {
         equal = false;
       }
     }
