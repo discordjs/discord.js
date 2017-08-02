@@ -135,7 +135,7 @@ class GroupDMChannel extends Channel {
     return this.client.api.channels[this.id].patch({
       data: {
         icon: data.icon,
-        name: name === null ? null : name.trim(),
+        name,
       },
       reason,
     }).then(() => this);
@@ -149,9 +149,11 @@ class GroupDMChannel extends Channel {
   setIcon(icon) {
     if (typeof icon === 'string' && icon.startsWith('data:')) {
       return this.edit({ icon });
+    } else if (!icon) {
+      return this.edit({ icon: null });
     } else {
-      return this.client.resolver.resolveBuffer(icon || Buffer.alloc(0))
-        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) || null }));
+      return this.client.resolver.resolveBuffer(icon)
+        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
     }
   }
 
@@ -209,20 +211,20 @@ class GroupDMChannel extends Channel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
-  send() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
-  search() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
-  createMessageCollector() {}
-  awaitMessages() {}
+  send() { }
+  fetchMessage() { }
+  fetchMessages() { }
+  fetchPinnedMessages() { }
+  search() { }
+  startTyping() { }
+  stopTyping() { }
+  get typing() { }
+  get typingCount() { }
+  createMessageCollector() { }
+  awaitMessages() { }
   // Doesn't work on Group DMs; bulkDelete() {}
-  acknowledge() {}
-  _cacheMessage() {}
+  acknowledge() { }
+  _cacheMessage() { }
 }
 
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
