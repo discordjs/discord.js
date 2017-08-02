@@ -142,7 +142,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Set a new icon for this Group DM.
+   * Sets a new icon for this Group DM.
    * @param {Base64Resolvable} icon The new icon of this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
