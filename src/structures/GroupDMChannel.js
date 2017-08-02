@@ -131,12 +131,28 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   edit(data, reason) {
+    const name = data.name === null ? null : data.name || this.name;
     return this.client.api.channels[this.id].patch({
       data: {
-        name: (data.name || this.name).trim(),
+        icon: data.icon,
+        name: name === null ? null : name.trim(),
       },
       reason,
     }).then(() => this);
+  }
+
+  /**
+   * Set a new icon for this Group DM.
+   * @param {Base64Resolvable} icon The new icon of this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setIcon(icon) {
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
+      return this.edit({ icon });
+    } else {
+      return this.client.resolver.resolveBuffer(icon || Buffer.alloc(0))
+        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) || null }));
+    }
   }
 
   /**
