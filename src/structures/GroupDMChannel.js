@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /*
 { type: 3,
@@ -101,6 +102,18 @@ class GroupDMChannel extends Channel {
    */
   get owner() {
     return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Gets the URL to this Group DM's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).GDMIcon(this.id, this.icon, format, size);
   }
 
   /**
