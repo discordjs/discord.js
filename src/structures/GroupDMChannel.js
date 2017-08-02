@@ -148,6 +148,26 @@ class GroupDMChannel extends Channel {
     return this.edit({ name });
   }
 
+
+  /**
+   * Sets a new GroupDM channel icon.
+   * @param {Base64Resolvable} icon The new icon for the Channel
+   * @returns {Promise<GroupDMChannel>}
+   * @example
+   * // Edit the guild icon
+   * groupDM.setIcon(fs.readFileSync('./icon.png'))
+   *  .then(updated => console.log('Updated the channel icon for', updated.name || updated.id))
+   *  .catch(console.error);
+   */
+  setIcon(icon) {
+    if (icon instanceof Buffer) icon = icon.toString('base64');
+    return this.client.api.channels[this.id].patch({
+      data: {
+        icon: icon.includes('data:image/png;base64,') ? icon : `data:image/png;base64,${icon}`,
+      },
+    }).then(() => this);
+  }
+
   /**
    * Adds an user to this Group DM.
    * @param {Object} options Options for this method
