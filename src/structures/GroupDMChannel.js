@@ -131,11 +131,10 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   edit(data, reason) {
-    const name = data.name === null ? null : data.name || this.name;
     return this.client.api.channels[this.id].patch({
       data: {
         icon: data.icon,
-        name,
+        name: data.name === null ? null : data.name || this.name,
       },
       reason,
     }).then(() => this);
