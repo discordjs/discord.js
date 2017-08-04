@@ -129,8 +129,6 @@ exports.DefaultOptions = {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
       $device: 'discord.js',
-      $referrer: '',
-      $referring_domain: '',
     },
     version: 6,
   },
