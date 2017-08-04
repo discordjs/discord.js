@@ -1,3 +1,4 @@
+const util = require('util');
 const Long = require('long');
 const User = require('./User');
 const Role = require('./Role');
@@ -289,15 +290,6 @@ class Guild {
   get voiceConnection() {
     if (this.client.browser) return null;
     return this.client.voice.connections.get(this.id) || null;
-  }
-
-  /**
-   * The `#general` TextChannel of the guild
-   * @type {TextChannel}
-   * @readonly
-   */
-  get defaultChannel() {
-    return this.channels.get(this.id);
   }
 
   /**
@@ -1092,5 +1084,17 @@ class Guild {
     );
   }
 }
+
+/**
+ * The `#general` TextChannel of the guild
+ * @name Guild#defaultChannel
+ * @type {TextChannel}
+ * @readonly
+ */
+Object.defineProperty(Guild.prototype, 'defaultChannel', {
+  get: util.deprecate(function defaultChannel() {
+    return this.channels.get(this.id);
+  }, 'Guild#defaultChannel: This property is obsolete, will be removed in v12.0.0, and may not function as expected.'),
+});
 
 module.exports = Guild;
