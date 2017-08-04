@@ -36,6 +36,11 @@ class VoiceBroadcast extends VolumeInterface {
     this._dispatchers = new Collection();
     this._encoders = new Collection();
     /**
+     * Whether playing is paused
+     * @type {boolean}
+     */
+    this.paused = false;
+    /**
      * The audio transcoder that this broadcast uses
      * @type {Prism}
      */
