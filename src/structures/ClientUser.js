@@ -148,7 +148,8 @@ class ClientUser extends User {
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} newPassword New password to change to
-   * @param {(Object|string)} options Options object containing either an MFA code, password or both. Can be just a string for password
+   * @param {Object|string} options Object containing an MFA code, password or both. 
+   * Can be just a string for the password.
    * @param {string} [options.oldPassword] Current password
    * @param {string} [options.mfaCode] Timed MFA Code
    * @returns {Promise<ClientUser>}
