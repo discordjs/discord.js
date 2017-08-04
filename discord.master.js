@@ -188,6 +188,10 @@ exports.Endpoints = {
         checkImage({ size, format });
         return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
+      GDMIcon: (channelID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/channel-icons/${channelID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash, format = 'webp', size) => {
         checkImage({ size, format });
         return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
@@ -12801,6 +12805,7 @@ module.exports = ReactionEmoji;
 const Channel = __webpack_require__(16);
 const TextBasedChannel = __webpack_require__(23);
 const Collection = __webpack_require__(3);
+const Constants = __webpack_require__(0);
 
 /*
 { type: 3,
@@ -12904,6 +12909,18 @@ class GroupDMChannel extends Channel {
   }
 
   /**
+   * Gets the URL to this Group DM's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).GDMIcon(this.id, this.icon, format, size);
+  }
+
+  /**
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
@@ -12933,10 +12950,27 @@ class GroupDMChannel extends Channel {
   edit(data, reason) {
     return this.client.api.channels[this.id].patch({
       data: {
-        name: (data.name || this.name).trim(),
+        icon: data.icon,
+        name: data.name === null ? null : data.name || this.name,
       },
       reason,
     }).then(() => this);
+  }
+
+  /**
+   * Sets a new icon for this Group DM.
+   * @param {Base64Resolvable} icon The new icon of this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setIcon(icon) {
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
+      return this.edit({ icon });
+    } else if (!icon) {
+      return this.edit({ icon: null });
+    } else {
+      return this.client.resolver.resolveBuffer(icon)
+        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
+    }
   }
 
   /**
@@ -18235,7 +18269,6 @@ class ClientUser extends User {
    * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
    * @property {UserResolvable} [user] User to add to the Group DM
-   * (only available if a user is creating the DM)
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
@@ -18255,7 +18288,7 @@ class ClientUser extends User {
         if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
         return o;
       }, {}),
-    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
+    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
