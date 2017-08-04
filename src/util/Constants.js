@@ -119,6 +119,10 @@ exports.Endpoints = {
         checkImage({ size, format });
         return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
+      GDMIcon: (channelID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/channel-icons/${channelID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
       Splash: (guildID, hash, format = 'webp', size) => {
         checkImage({ size, format });
         return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
