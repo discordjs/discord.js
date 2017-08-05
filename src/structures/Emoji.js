@@ -106,7 +106,7 @@ class Emoji {
    * Data for editing an emoji.
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
-   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] Roles to restrict emoji to
    */
 
   /**
@@ -150,13 +150,18 @@ class Emoji {
 
   /**
    * Add multiple roles to the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to add
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to add
    * @returns {Promise<Emoji>}
    */
   addRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
-    for (const role of roles) {
-      if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
+    for (let role of roles instanceof Collection ? roles.values() : roles) {
+      role = this.client.resolver.resolveRole(this.guild, role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
+      }
+      newRoles.set(role.id, role);
     }
     return this.edit({ roles: newRoles });
   }
@@ -172,12 +177,17 @@ class Emoji {
 
   /**
    * Remove multiple roles from the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to remove
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to remove
    * @returns {Promise<Emoji>}
    */
   removeRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
-    for (const role of roles) {
+    for (let role of roles instanceof Collection ? roles.values() : roles) {
+      role = this.client.resolver.resolveRole(this.guild, role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
+      }
       if (newRoles.has(role.id)) newRoles.delete(role.id);
     }
     return this.edit({ roles: newRoles });

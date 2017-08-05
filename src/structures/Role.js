@@ -169,11 +169,13 @@ class Role {
 
   /**
    * Compares this role's position to another role's.
-   * @param {Role} role Role to compare to this one
+   * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if the this role's position is lower (other role's is higher),
    * positive number if the this one is higher (other's is lower), 0 if equal
    */
   comparePositionTo(role) {
+    role = this.client.resolver.resolveRole(this.guild, role);
+    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     return this.constructor.comparePositions(this, role);
   }
 
