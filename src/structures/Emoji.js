@@ -124,7 +124,7 @@ class Emoji {
     return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
-        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
+        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined,
       }, reason })
       .then(() => this);
   }
@@ -216,12 +216,14 @@ class Emoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
-        other.requiresColons === this.requiresColons
+        other.requiresColons === this.requiresColons &&
+        other._roles === this._roles
       );
     } else {
       return (
         other.id === this.id &&
-        other.name === this.name
+        other.name === this.name &&
+        other._roles === this._roles
       );
     }
   }
