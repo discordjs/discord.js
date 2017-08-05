@@ -942,10 +942,7 @@ class Guild {
         guild_id: this.id,
         role: r,
       });
-      if (data.position) {
-        role.setPosition(data.position, reason);
-        role.position = data.position;
-      }
+      if (data.position) return role.setPosition(data.position, reason);
       return role;
     });
   }
