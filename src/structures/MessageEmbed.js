@@ -136,9 +136,11 @@ class MessageEmbed {
 	* @type {?Object}
 	* @property {Array<FileOptions|string|Attachment>} files Files to attach
 	*/
-    this.files = data.files ?
-      data.files.every(file => file instanceof Attachment) ?
-        data.files.map(item => item.file) : data.files : null;
+    if (data.files) {
+      for (let file of data.files) {
+        if (file instanceof Attachment) file = file.file;
+      }
+    } else { data.files = null; }
   }
 
   /**
@@ -194,7 +196,9 @@ class MessageEmbed {
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
-    if (files.every(file => file instanceof Attachment)) this.files = files.map(item => item.file);
+    for (let file of files) {
+      if (file instanceof Attachment) file = file.file;
+    }
     return this;
   }
 
