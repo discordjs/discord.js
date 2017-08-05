@@ -365,10 +365,11 @@ class GuildChannel extends Channel {
   }
 
   /**
- * Whether the channel is muted
- * <warn>This is only available when using a user account.</warn>
- * @type {boolean}
- */
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
   get muted() {
     if (this.client.user.bot) return null;
     try {
@@ -382,7 +383,8 @@ class GuildChannel extends Channel {
    * The type of message that should notify you
    * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
    * <warn>This is only available when using a user account.</warn>
-   * @type {string}
+   * @type {?string}
+   * @readonly
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;

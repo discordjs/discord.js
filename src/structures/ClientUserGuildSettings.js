@@ -6,9 +6,19 @@ const ClientUserChannelOverride = require('./ClientUserChannelOverride');
  * A wrapper around the ClientUser's guild settings.
  */
 class ClientUserGuildSettings {
-  constructor(data, guild) {
-    this.guild = guild;
-    this.client = data.client;
+  constructor(data, client) {
+    /**
+     * The client that created the instance of the the user
+     * @name ClientUserGuildSettings#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+    /**
+     * The ID of the guild this settings are for
+     * @type {Snowflake}
+     */
+    this.guildID = data.guild_id;
     this.channelOverrides = new Collection();
     this.patch(data);
   }
@@ -18,13 +28,12 @@ class ClientUserGuildSettings {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserGuildSettingsMap)) {
-      const value = Constants.UserGuildSettingsMap[key];
+    for (const [key, value] of Object.entries(Constants.UserGuildSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {
           this.channelOverrides.set(channel.channel_id,
-            new ClientUserChannelOverride(this.client.user, channel));
+            new ClientUserChannelOverride(channel));
         }
       } else if (typeof value === 'function') {
         this[value.name] = value(data[key]);
@@ -41,7 +50,7 @@ class ClientUserGuildSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.guild.client.api.guilds(this.guild.id).settings.patch({ data: { [name]: value } });
+    return this.client.api.users('@me').guilds(this.guildID).settings.patch({ data: { [name]: value } });
   }
 }
 
