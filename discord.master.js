@@ -17991,7 +17991,7 @@ class ClientUser extends User {
      * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
-    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+    this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
 
     /**
      * All of the user's guild settings
