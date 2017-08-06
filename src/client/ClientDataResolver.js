@@ -216,6 +216,28 @@ class ClientDataResolver {
   }
 
   /**
+   * Converts a Stream to a Buffer.
+   * @param {Stream} resource The stream to convert
+   * @returns {Promise<Buffer>}
+   */
+  resolveFile(resource) {
+    return resource ? this.resolveBuffer(resource)
+      .catch(() => {
+        if (resource.pipe && typeof resource.pipe === 'function') {
+          return new Promise((resolve, reject) => {
+            const buffers = [];
+            resource.once('error', reject);
+            resource.on('data', data => buffers.push(data));
+            resource.once('end', () => resolve(Buffer.concat(buffers)));
+          });
+        } else {
+          throw new TypeError('REQ_RESOURCE_TYPE');
+        }
+      }) :
+      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
+  }
+
+  /**
    * Data that can be resolved to give an emoji identifier. This can be:
    * * The unicode representation of an emoji
    * * A custom emoji ID

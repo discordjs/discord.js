@@ -63,7 +63,7 @@ const Messages = {
   UDP_CONNECTION_EXISTS: 'There is already an existing UDP connection.',
 
   REQ_BODY_TYPE: 'The response body isn\'t a Buffer.',
-  REQ_RESOURCE_TYPE: 'The resource must be a string or Buffer.',
+  REQ_RESOURCE_TYPE: 'The resource must be a string, Buffer or a valid file stream.',
 
   IMAGE_FORMAT: format => `Invalid image format: ${format}`,
   IMAGE_SIZE: size => `Invalid image size: ${size}`,
