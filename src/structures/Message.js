@@ -138,6 +138,30 @@ class Message {
     this.webhookID = data.webhook_id || null;
 
     /**
+     * Supplimental application information for group activities
+     */
+    this.application = data.application ? {
+      coverImage({ format, size }) {
+        return Constants.Endpoints
+          .CDN(this.client.options.http.cdn)
+          .AppIcon(this.id, data.application.cover_image, { format, size });
+      },
+      description: data.application.descripton,
+      icon: data.application.icon,
+      id: data.application.id,
+      name: data.application.name,
+    } : null;
+
+    /**
+     * Group activity
+     * @type {Object}
+     */
+    this.activiy = data.activity ? {
+      partyID: data.activity.party_id,
+      type: data.activity.type,
+    } : null;
+
+    /**
      * Whether this message is a hit in a search
      * @type {?boolean}
      */

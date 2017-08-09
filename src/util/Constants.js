@@ -93,9 +93,10 @@ const AllowedImageSizes = [
   2048,
 ];
 
-function checkImage({ size, format }) {
+function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+  return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
 
 exports.Endpoints = {
@@ -106,25 +107,16 @@ exports.Endpoints = {
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
-        checkImage({ size, format });
-        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+        return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
-      Icon: (guildID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      AppIcon: (clientID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      GDMIcon: (channelID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/channel-icons/${channelID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      Splash: (guildID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
+      Icon: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+      AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
+      GDMIcon: (channelID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
+      Splash: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -558,6 +550,11 @@ exports.UserFlags = {
   STAFF: 1 << 0,
   PARTNER: 1 << 1,
   HYPESQUAD: 1 << 2,
+};
+
+exports.ClientApplicationAssetTypes = {
+  SMALL: 1,
+  BIG: 2,
 };
 
 exports.Colors = {
