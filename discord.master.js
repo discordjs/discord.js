@@ -603,14 +603,14 @@ exports.UserChannelOverrideMap = {
     /**
      * The type of message that should notify you
      * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
-     * @name ClientUserChannelOverrides#messageNotifications
+     * @name ClientUserChannelOverride#messageNotifications
      * @type {string}
      */
     return exports.MessageNotificationTypes[type];
   },
   /**
    * Whether the guild is muted or not
-   * @name ClientUserChannelOverrides#muted
+   * @name ClientUserChannelOverride#muted
    * @type {boolean}
    */
   muted: 'muted',
@@ -4894,7 +4894,7 @@ class User {
     /**
      * The client that created the instance of the the user
      * @name User#client
-     * @type {}
+     * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -7012,6 +7012,7 @@ class Guild {
    * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
+   * @readonly
    */
   get position() {
     if (this.client.user.bot) return null;
@@ -7023,6 +7024,7 @@ class Guild {
    * Whether the guild is muted
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
+   * @readonly
    */
   get muted() {
     if (this.client.user.bot) return null;
@@ -7037,7 +7039,8 @@ class Guild {
    * The type of message that should notify you
    * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
    * <warn>This is only available when using a user account.</warn>
-   * @type {string}
+   * @type {?string}
+   * @readonly
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;
@@ -7051,7 +7054,8 @@ class Guild {
   /**
    * Whether to receive mobile push notifications
    * <warn>This is only available when using a user account.</warn>
-   * @type {boolean}
+   * @type {?boolean}
+   * @readonly
    */
   get mobilePush() {
     if (this.client.user.bot) return null;
@@ -7065,9 +7069,11 @@ class Guild {
   /**
    * Whether to suppress everyone messages
    * <warn>This is only available when using a user account.</warn>
-   * @type {boolean}
+   * @type {?boolean}
+   * @readonly
    */
   get suppressEveryone() {
+    if (this.client.user.bot) return null;
     try {
       return this.client.user.guildSettings.get(this.id).suppressEveryone;
     } catch (err) {
@@ -9634,10 +9640,11 @@ class GuildChannel extends Channel {
   }
 
   /**
- * Whether the channel is muted
- * <warn>This is only available when using a user account.</warn>
- * @type {boolean}
- */
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
   get muted() {
     if (this.client.user.bot) return null;
     try {
@@ -9651,7 +9658,8 @@ class GuildChannel extends Channel {
    * The type of message that should notify you
    * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
    * <warn>This is only available when using a user account.</warn>
-   * @type {string}
+   * @type {?string}
+   * @readonly
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;
@@ -18131,9 +18139,7 @@ class ClientUser extends User {
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
-        settings.client = this.client;
-        const guild = this.client.guilds.get(settings.guild_id);
-        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, guild));
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
       }
     }
   }
@@ -24251,9 +24257,19 @@ const ClientUserChannelOverride = __webpack_require__(129);
  * A wrapper around the ClientUser's guild settings.
  */
 class ClientUserGuildSettings {
-  constructor(data, guild) {
-    this.guild = guild;
-    this.client = data.client;
+  constructor(data, client) {
+    /**
+     * The client that created the instance of the the user
+     * @name ClientUserGuildSettings#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+    /**
+     * The ID of the guild this settings are for
+     * @type {Snowflake}
+     */
+    this.guildID = data.guild_id;
     this.channelOverrides = new Collection();
     this.patch(data);
   }
@@ -24263,13 +24279,12 @@ class ClientUserGuildSettings {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserGuildSettingsMap)) {
-      const value = Constants.UserGuildSettingsMap[key];
+    for (const [key, value] of Object.entries(Constants.UserGuildSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {
           this.channelOverrides.set(channel.channel_id,
-            new ClientUserChannelOverride(this.client.user, channel));
+            new ClientUserChannelOverride(channel));
         }
       } else if (typeof value === 'function') {
         this[value.name] = value(data[key]);
@@ -24286,7 +24301,7 @@ class ClientUserGuildSettings {
    * @returns {Promise<Object>}
    */
   update(name, value) {
-    return this.guild.client.api.guilds(this.guild.id).settings.patch({ data: { [name]: value } });
+    return this.client.api.users('@me').guilds(this.guildID).settings.patch({ data: { [name]: value } });
   }
 }
 
@@ -24303,8 +24318,7 @@ const Constants = __webpack_require__(0);
  * A wrapper around the ClientUser's channel overrides.
  */
 class ClientUserChannelOverride {
-  constructor(user, data) {
-    this.user = user;
+  constructor(data) {
     this.patch(data);
   }
 
@@ -24313,8 +24327,7 @@ class ClientUserChannelOverride {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserChannelOverrideMap)) {
-      const value = Constants.UserChannelOverrideMap[key];
+    for (const [key, value] of Object.entries(Constants.UserChannelOverrideMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
