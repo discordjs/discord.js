@@ -139,6 +139,12 @@ class Message {
 
     /**
      * Supplimental application information for group activities
+     * @type {Object}
+     * @prop {function} coverImage Get the cover image of this application
+     * @prop {string} description Description of this application
+     * @prop {string} icon Icon has for this application
+     * @prop {Snowflake} id Snowflake ID of this application
+     * @prop {string} name Name of this application
      */
     this.application = data.application ? {
       coverImage({ format, size }) {
