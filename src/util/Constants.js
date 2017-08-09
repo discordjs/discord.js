@@ -534,14 +534,14 @@ exports.UserChannelOverrideMap = {
     /**
      * The type of message that should notify you
      * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
-     * @name ClientUserChannelOverrides#messageNotifications
+     * @name ClientUserChannelOverride#messageNotifications
      * @type {string}
      */
     return exports.MessageNotificationTypes[type];
   },
   /**
    * Whether the guild is muted or not
-   * @name ClientUserChannelOverrides#muted
+   * @name ClientUserChannelOverride#muted
    * @type {boolean}
    */
   muted: 'muted',

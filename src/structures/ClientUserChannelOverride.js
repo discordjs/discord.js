@@ -4,8 +4,7 @@ const Constants = require('../util/Constants');
  * A wrapper around the ClientUser's channel overrides.
  */
 class ClientUserChannelOverride {
-  constructor(user, data) {
-    this.user = user;
+  constructor(data) {
     this.patch(data);
   }
 
@@ -14,8 +13,7 @@ class ClientUserChannelOverride {
    * @param {Object} data Data to patch this with
    */
   patch(data) {
-    for (const key of Object.keys(Constants.UserChannelOverrideMap)) {
-      const value = Constants.UserChannelOverrideMap[key];
+    for (const [key, value] of Object.entries(Constants.UserChannelOverrideMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
