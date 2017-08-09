@@ -8817,9 +8817,10 @@ class Role {
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
-        position: typeof data.position !== 'undefined' ? data.position : this.position,
         color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+        position: typeof data.position !== 'undefined' ? data.position : this.position,
+        permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },
       reason,
