@@ -25,7 +25,7 @@ const { Error, TypeError } = require('../errors');
 class Guild {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the guild
+     * The client that created the instance of the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -912,9 +912,9 @@ class Guild {
   /**
    * Can be used to overwrite permissions when creating a channel.
    * @typedef {Object} ChannelCreationOverwrites
-   * @property {PermissionResolveable[]|number} [allow] The permissions to allow
-   * @property {PermissionResolveable[]|number} [deny] The permissions to deny
-   * @property {RoleResolveable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
+   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
    */
 
   /**

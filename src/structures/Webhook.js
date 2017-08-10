@@ -40,7 +40,7 @@ class Webhook {
 
     /**
      * The avatar for the webhook
-     * @type {string}
+     * @type {?string}
      */
     this.avatar = data.avatar;
 

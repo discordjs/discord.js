@@ -165,7 +165,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Set the token and endpoint required to connect to the the voice servers.
+   * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
    * @returns {void}
