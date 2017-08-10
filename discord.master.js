@@ -23392,7 +23392,7 @@ class RequestHandler {
           if (err.status === 429) {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
-          } else if (err.status >= 500 && err.status < 600) {
+          } else if (err.status === 500) {
             this.queue.unshift(item);
             finish(1e3 + this.client.options.restTimeOffset);
           } else {
