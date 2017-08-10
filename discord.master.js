@@ -99,6 +99,7 @@ const { Error, RangeError } = __webpack_require__(4);
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
+ * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -132,6 +133,15 @@ exports.DefaultOptions = {
     },
     version: 6,
   },
+
+  /**
+   * HTTP options
+   * @typedef {Object} HTTPOptions
+   * @property {number} [version=7] API version to use
+   * @property {string} [api='https://discordapp.com/api'] Base url of the API
+   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
+   * @property {string} [invite='https://discord.gg'] Base url of invites
+   */
   http: {
     version: 7,
     api: 'https://discordapp.com/api',
@@ -538,8 +548,8 @@ exports.UserSettingsMap = {
 
   explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
     /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
-     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
+     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
      * @name ClientUserSettings#explicitContentFilter
      * @type {string}
      */
@@ -565,8 +575,8 @@ exports.UserSettingsMap = {
 exports.UserGuildSettingsMap = {
   message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
     /**
-     * The type of message that should notify you
-     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`
      * @name ClientUserGuildSettings#messageNotifications
      * @type {string}
      */
@@ -601,15 +611,15 @@ exports.UserGuildSettingsMap = {
 exports.UserChannelOverrideMap = {
   message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
     /**
-     * The type of message that should notify you
-     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
      * @name ClientUserChannelOverride#messageNotifications
      * @type {string}
      */
     return exports.MessageNotificationTypes[type];
   },
   /**
-   * Whether the guild is muted or not
+   * Whether the channel is muted or not
    * @name ClientUserChannelOverride#muted
    * @type {boolean}
    */
@@ -4892,7 +4902,7 @@ const { Error } = __webpack_require__(4);
 class User {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the user
+     * The client that created the instance of the user
      * @name User#client
      * @type {Client}
      * @readonly
@@ -5423,7 +5433,7 @@ class Role {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {string[]} [permissions] The permissions of the role
+   * @property {PermissionResolvable|PermissionResolvable[]} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -6089,7 +6099,7 @@ class Webhook {
 
     /**
      * The avatar for the webhook
-     * @type {string}
+     * @type {?string}
      */
     this.avatar = data.avatar;
 
@@ -6721,7 +6731,7 @@ const { Error, TypeError } = __webpack_require__(4);
 class Guild {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the guild
+     * The client that created the instance of the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -7608,9 +7618,9 @@ class Guild {
   /**
    * Can be used to overwrite permissions when creating a channel.
    * @typedef {Object} ChannelCreationOverwrites
-   * @property {PermissionResolveable[]|number} [allow] The permissions to allow
-   * @property {PermissionResolveable[]|number} [deny] The permissions to deny
-   * @property {RoleResolveable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
+   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
    */
 
   /**
@@ -9550,14 +9560,8 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite.
-   * @typedef {Object} InviteOptions
-
-   */
-
-  /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
@@ -12941,7 +12945,7 @@ class Collector extends EventEmitter {
   collect() {}
 
   /**
-   * Handles incoming events from the the `handleDispose`. Returns null if the event should not
+   * Handles incoming events from the `handleDispose`. Returns null if the event should not
    * be disposed, or returns the key that should be removed.
    * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits
@@ -13072,7 +13076,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * A hash of this Group DM icon
-     * @type {string}
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -13094,11 +13098,13 @@ class GroupDMChannel extends Channel {
      */
     this.applicationID = data.application_id;
 
-    /**
-     * Nicknames for group members
-     * @type {?Collection<Snowflake, string>}
-     */
-    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    if (data.nicks) {
+      /**
+       * Nicknames for group members
+       * @type {?Collection<Snowflake, string>}
+       */
+      this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    }
 
     if (!this.recipients) {
       /**
@@ -13204,7 +13210,7 @@ class GroupDMChannel extends Channel {
   /**
    * Adds an user to this Group DM.
    * @param {Object} options Options for this method
-   * @param {UserResolveable} options.user User to add to this Group DM
+   * @param {UserResolvable} options.user User to add to this Group DM
    * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
    * (only available under a bot account)
    * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
@@ -13221,7 +13227,7 @@ class GroupDMChannel extends Channel {
 
   /**
    * Removes an user from this Group DM.
-   * @param {UserResolveable} user User to remove
+   * @param {UserResolvable} user User to remove
    * @returns {Promise<GroupDMChannel>}
    */
   removeUser(user) {
@@ -16319,7 +16325,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
@@ -18397,7 +18403,7 @@ class ClientUser extends User {
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * @property {string} [id] If no user resolvable is provided and you want to assign nicknames
    * you must provide user ids instead
    */
 
@@ -23386,7 +23392,7 @@ class RequestHandler {
           if (err.status === 429) {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
-          } else if (err.status === 500) {
+          } else if (err.status >= 500 && err.status < 600) {
             this.queue.unshift(item);
             finish(1e3 + this.client.options.restTimeOffset);
           } else {
@@ -23839,7 +23845,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The client that created the instance of the the UserProfile.
+     * The client that created the instance of the UserProfile.
      * @name UserProfile#client
      * @type {Client}
      * @readonly
@@ -24259,7 +24265,7 @@ const ClientUserChannelOverride = __webpack_require__(129);
 class ClientUserGuildSettings {
   constructor(data, client) {
     /**
-     * The client that created the instance of the the user
+     * The client that created the instance of the ClientUserGuildSettings
      * @name ClientUserGuildSettings#client
      * @type {Client}
      * @readonly
