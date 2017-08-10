@@ -346,7 +346,7 @@ class ClientUser extends User {
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * @property {string} [id] If no user resolvable is provided and you want to assign nicknames
    * you must provide user ids instead
    */
 

@@ -12,7 +12,7 @@ const { Error } = require('../errors');
 class User {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the user
+     * The client that created the instance of the user
      * @name User#client
      * @type {Client}
      * @readonly

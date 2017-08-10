@@ -275,14 +275,8 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite.
-   * @typedef {Object} InviteOptions
-
-   */
-
-  /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)

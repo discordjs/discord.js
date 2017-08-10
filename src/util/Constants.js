@@ -30,6 +30,7 @@ const { Error, RangeError } = require('../errors');
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
+ * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -63,6 +64,15 @@ exports.DefaultOptions = {
     },
     version: 6,
   },
+
+  /**
+   * HTTP options
+   * @typedef {Object} HTTPOptions
+   * @property {number} [version=7] API version to use
+   * @property {string} [api='https://discordapp.com/api'] Base url of the API
+   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
+   * @property {string} [invite='https://discord.gg'] Base url of invites
+   */
   http: {
     version: 7,
     api: 'https://discordapp.com/api',
@@ -469,8 +479,8 @@ exports.UserSettingsMap = {
 
   explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
     /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
-     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
+     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
      * @name ClientUserSettings#explicitContentFilter
      * @type {string}
      */
@@ -496,8 +506,8 @@ exports.UserSettingsMap = {
 exports.UserGuildSettingsMap = {
   message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
     /**
-     * The type of message that should notify you
-     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`
      * @name ClientUserGuildSettings#messageNotifications
      * @type {string}
      */
@@ -532,15 +542,15 @@ exports.UserGuildSettingsMap = {
 exports.UserChannelOverrideMap = {
   message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
     /**
-     * The type of message that should notify you
-     * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
      * @name ClientUserChannelOverride#messageNotifications
      * @type {string}
      */
     return exports.MessageNotificationTypes[type];
   },
   /**
-   * Whether the guild is muted or not
+   * Whether the channel is muted or not
    * @name ClientUserChannelOverride#muted
    * @type {boolean}
    */
