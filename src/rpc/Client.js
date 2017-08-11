@@ -2,7 +2,7 @@ const request = require('snekfetch');
 const BaseClient = require('../BaseClient');
 const transports = require('./transports');
 const Snowflake = require('../util/Snowflake');
-const OAuth2Application = require('../structures/OAuth2Application');
+const ClientApplication = require('../structures/ClientApplication');
 const User = require('../structures/User');
 const Guild = require('../structures/Guild');
 const { RPCCommands, RPCEvents } = require('../util/Constants');
@@ -148,7 +148,7 @@ class RPCClient extends BaseClient {
     this.accessToken = accessToken;
     return this.request('AUTHENTICATE', { access_token: accessToken })
       .then(({ application, user }) => {
-        this.application = new OAuth2Application(this, application);
+        this.application = new ClientApplication(this, application);
         this.user = new User(this, user);
         this.emit('ready');
         return this;
