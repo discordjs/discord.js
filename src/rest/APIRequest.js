@@ -12,7 +12,8 @@ class APIRequest {
   }
 
   gen() {
-    const API = `${this.client.options.http.api}/v${this.client.options.http.version}`;
+    const API = this.options.versioned === false ? this.client.options.http.api :
+      `${this.client.options.http.api}/v${this.client.options.http.version}`;
 
     if (this.options.query) {
       const queryString = (querystring.stringify(this.options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');

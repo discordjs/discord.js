@@ -4,6 +4,7 @@ const transports = require('./transports');
 const Snowflake = require('../util/Snowflake');
 const OAuth2Application = require('../structures/OAuth2Application');
 const User = require('../structures/User');
+const { RPCCommands, RPCEvents } = require('../util/Constants');
 
 /**
  * @typedef {RPCClientOptions}
@@ -31,6 +32,7 @@ class RPCClient extends BaseClient {
     this.transport = new transports[options.transport](this);
     this.transport.on('message', this._onMessage.bind(this));
     this._expecting = new Map();
+    this.subscriptions = [];
   }
 
   /**
@@ -89,7 +91,7 @@ class RPCClient extends BaseClient {
    * @private
    */
   _onMessage(message) {
-    if (message.cmd === 'DISPATCH' && message.evt === 'READY') {
+    if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       this.emit('connected');
     } else if (this._expecting.has(message.nonce)) {
       const { resolve, reject } = this._expecting.get(message.nonce);
@@ -145,6 +147,53 @@ class RPCClient extends BaseClient {
         this.emit('ready');
         return this;
       });
+  }
+
+  getGuild(id, timeout) {
+    return this.request(RPCCommands.GET_GUILD, { guild_id: id, timeout });
+  }
+
+  getGuilds(timeout) {
+    return this.request(RPCCommands.GET_GUILDS, { timeout });
+  }
+
+  getChannel(id, timeout) {
+    return this.request(RPCCommands.GET_CHANNEL, { channel_id: id, timeout });
+  }
+
+  getChannels(timeout) {
+    return this.request(RPCCommands.GET_CHANNELS, { timeout });
+  }
+
+  setUserVoiceSettings(args) {
+    return this.request(RPCCommands.SET_USER_VOICE_SETTINGS, args);
+  }
+
+  selectVoiceChannel(id, { timeout, force = false } = {}) {
+    return this.request(RPCCommands.SELECT_VOICE_CHANNEL, { channel_id: id, timeout, force });
+  }
+
+  selectTextChannel(id, { timeout, force = false } = {}) {
+    return this.request(RPCCommands.SELECT_TEXT_CHANNEL, { channel_id: id, timeout, force });
+  }
+
+  getVoiceSettings() {
+    return this.request(RPCCommands.GET_VOICE_SETTINGS);
+  }
+
+  setVoiceSettings(args) {
+    return this.request(RPCCommands.SET_VOICE_SETTINGS, args);
+  }
+
+  subscribe(event, args, callback) {
+    return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
+      this.subscriptions.push({ event, args, callback });
+      return { unsubscribe: () => this.unsubscribe(event, args) };
+    });
+  }
+
+  unsubscribe(event, args) {
+    return this.request(RPCCommands.UNSUBSCRIBE, args, event);
   }
 }
 

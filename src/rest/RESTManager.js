@@ -12,6 +12,7 @@ class RESTManager {
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
+    this.versioned = true;
   }
 
   get api() {
