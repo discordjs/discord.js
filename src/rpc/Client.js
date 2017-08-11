@@ -109,29 +109,33 @@ class RPCClient extends BaseClient {
    * @returns {Promise}
    * @private
    */
-  async authorize({ rpcToken, scopes, clientSecret, tokenEndpoint }) {
-    if (tokenEndpoint) rpcToken = await request.get(tokenEndpoint).then(r => r.body.rpc_token);
-    const { code } = await this.request('AUTHORIZE', {
+  authorize({ rpcToken, scopes, clientSecret, tokenEndpoint }) {
+    if (!rpcToken && tokenEndpoint) {
+      return request.get(tokenEndpoint).then(r => r.body.rpc_token)
+        .then(t => this.authorize({ rpcToken: t, scopes, clientSecret, tokenEndpoint }));
+    }
+    return this.request('AUTHORIZE', {
       client_id: this.clientID,
       scopes,
       rpc_token: rpcToken,
+    }).then(({ code }) => {
+      if (tokenEndpoint) {
+        return request.post(tokenEndpoint)
+          .send({ code })
+          .then(r => this.authenticate(r.body.access_token));
+      } else if (clientSecret) {
+        return this.api.oauth2.token.post({
+          query: {
+            client_id: this.clientID,
+            client_secret: clientSecret,
+            code,
+            grant_type: 'authorization_code',
+          },
+          auth: false,
+        }).then(({ access_token }) => this.authenticate(access_token));
+      }
+      return { code };
     });
-    if (tokenEndpoint) {
-      return request.post(tokenEndpoint)
-        .send({ code })
-        .then(r => this.authenticate(r.body.access_token));
-    } else if (clientSecret) {
-      return this.api.oauth2.token.post({
-        query: {
-          client_id: this.clientID,
-          client_secret: clientSecret,
-          code,
-          grant_type: 'authorization_code',
-        },
-        auth: false,
-      }).then(({ access_token }) => this.authenticate(access_token));
-    }
-    return { code };
   }
 
   /**
