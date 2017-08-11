@@ -5,6 +5,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 const { TypeError } = require('../errors');
 
 /**
@@ -310,14 +311,8 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite.
-   * @typedef {Object} InviteOptions
-
-   */
-
-  /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
@@ -397,6 +392,37 @@ class GuildChannel extends Channel {
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);
+  }
+
+  /**
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
+      return Constants.MessageNotificationTypes[3];
+    }
   }
 
   /**

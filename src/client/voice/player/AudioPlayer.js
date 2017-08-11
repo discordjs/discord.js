@@ -77,6 +77,8 @@ class AudioPlayer extends EventEmitter {
       dispatcher.destroy('end');
     }
     this.currentStream = {};
+    this.streamingData.pausedTime = 0;
+    this.streamingData.timestamp = 0;
   }
 
   /**

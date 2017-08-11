@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /*
 { type: 3,
@@ -47,7 +48,7 @@ class GroupDMChannel extends Channel {
 
     /**
      * A hash of this Group DM icon
-     * @type {string}
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -69,11 +70,13 @@ class GroupDMChannel extends Channel {
      */
     this.applicationID = data.application_id;
 
-    /**
-     * Nicknames for group members
-     * @type {?Collection<Snowflake, string>}
-     */
-    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    if (data.nicks) {
+      /**
+       * Nicknames for group members
+       * @type {?Collection<Snowflake, string>}
+       */
+      this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    }
 
     if (!this.recipients) {
       /**
@@ -100,6 +103,18 @@ class GroupDMChannel extends Channel {
    */
   get owner() {
     return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Gets the URL to this Group DM's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).GDMIcon(this.id, this.icon, format, size);
   }
 
   /**
@@ -132,10 +147,27 @@ class GroupDMChannel extends Channel {
   edit(data, reason) {
     return this.client.api.channels[this.id].patch({
       data: {
-        name: (data.name || this.name).trim(),
+        icon: data.icon,
+        name: data.name === null ? null : data.name || this.name,
       },
       reason,
     }).then(() => this);
+  }
+
+  /**
+   * Sets a new icon for this Group DM.
+   * @param {Base64Resolvable} icon The new icon of this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setIcon(icon) {
+    if (typeof icon === 'string' && icon.startsWith('data:')) {
+      return this.edit({ icon });
+    } else if (!icon) {
+      return this.edit({ icon: null });
+    } else {
+      return this.client.resolver.resolveBuffer(icon)
+        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
+    }
   }
 
   /**
@@ -150,7 +182,7 @@ class GroupDMChannel extends Channel {
   /**
    * Adds an user to this Group DM.
    * @param {Object} options Options for this method
-   * @param {UserResolveable} options.user User to add to this Group DM
+   * @param {UserResolvable} options.user User to add to this Group DM
    * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
    * (only available under a bot account)
    * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
@@ -167,7 +199,7 @@ class GroupDMChannel extends Channel {
 
   /**
    * Removes an user from this Group DM.
-   * @param {UserResolveable} user User to remove
+   * @param {UserResolvable} user User to remove
    * @returns {Promise<GroupDMChannel>}
    */
   removeUser(user) {

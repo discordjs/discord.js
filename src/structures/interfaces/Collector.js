@@ -186,7 +186,7 @@ class Collector extends EventEmitter {
   collect() {}
 
   /**
-   * Handles incoming events from the the `handleDispose`. Returns null if the event should not
+   * Handles incoming events from the `handleDispose`. Returns null if the event should not
    * be disposed, or returns the key that should be removed.
    * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits

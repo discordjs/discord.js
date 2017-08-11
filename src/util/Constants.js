@@ -30,6 +30,7 @@ const { Error, RangeError } = require('../errors');
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
+ * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -60,11 +61,18 @@ exports.DefaultOptions = {
       $os: process ? process.platform : 'discord.js',
       $browser: 'discord.js',
       $device: 'discord.js',
-      $referrer: '',
-      $referring_domain: '',
     },
     version: 6,
   },
+
+  /**
+   * HTTP options
+   * @typedef {Object} HTTPOptions
+   * @property {number} [version=7] API version to use
+   * @property {string} [api='https://discordapp.com/api'] Base url of the API
+   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
+   * @property {string} [invite='https://discord.gg'] Base url of invites
+   */
   http: {
     version: 7,
     api: 'https://discordapp.com/api',
@@ -118,6 +126,10 @@ exports.Endpoints = {
       AppIcon: (clientID, hash, format = 'webp', size) => {
         checkImage({ size, format });
         return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+      },
+      GDMIcon: (channelID, hash, format = 'webp', size) => {
+        checkImage({ size, format });
+        return `${root}/channel-icons/${channelID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
       },
       Splash: (guildID, hash, format = 'webp', size) => {
         checkImage({ size, format });
@@ -224,6 +236,7 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
+  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -305,6 +318,7 @@ exports.WSEvents = {
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
+  USER_GUILD_SETTINGS_UPDATE: 'USER_GUILD_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -340,6 +354,13 @@ exports.ExplicitContentFilterTypes = [
   'DISABLED',
   'NON_FRIENDS',
   'FRIENDS_AND_NON_FRIENDS',
+];
+
+exports.MessageNotificationTypes = [
+  'EVERYTHING',
+  'MENTIONS',
+  'NOTHING',
+  'INHERIT',
 ];
 
 exports.UserSettingsMap = {
@@ -451,8 +472,8 @@ exports.UserSettingsMap = {
 
   explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
     /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
-     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
+     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
      * @name ClientUserSettings#explicitContentFilter
      * @type {string}
      */
@@ -473,6 +494,60 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+exports.UserGuildSettingsMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {string}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether to receive mobile push notifications
+   * @name ClientUserGuildSettings#mobilePush
+   * @type {boolean}
+   */
+  mobile_push: 'mobilePush',
+  /**
+   * Whether the guild is muted or not
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
+  /**
+   * Whether to suppress everyone messages
+   * @name ClientUserGuildSettings#suppressEveryone
+   * @type {boolean}
+   */
+  suppress_everyone: 'suppressEveryone',
+  /**
+   * A collection containing all the channel overrides
+   * @name ClientUserGuildSettings#channelOverrides
+   * @type {Collection<ClientUserChannelOverride>}
+   */
+  channel_overrides: 'channelOverrides',
+};
+
+exports.UserChannelOverrideMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you.
+     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
+     * @name ClientUserChannelOverride#messageNotifications
+     * @type {string}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether the channel is muted or not
+   * @name ClientUserChannelOverride#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
 };
 
 /**

@@ -10,7 +10,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
     if (!guild) return;
     const members = new Collection();
 
-    for (const member of data.members) members.set(member.id, guild._addMember(member, false));
+    for (const member of data.members) members.set(member.user.id, guild._addMember(member, false));
 
     client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
 

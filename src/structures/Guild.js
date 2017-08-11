@@ -24,7 +24,7 @@ const { Error, TypeError } = require('../errors');
 class Guild {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the guild
+     * The client that created the instance of the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -312,18 +312,10 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the guild
-   * @type {TextChannel}
-   * @readonly
-   */
-  get defaultChannel() {
-    return this.channels.get(this.id);
-  }
-
-  /**
    * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
+   * @readonly
    */
   get position() {
     if (this.client.user.bot) return null;
@@ -332,6 +324,67 @@ class Guild {
   }
 
   /**
+   * Whether the guild is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).messageNotifications;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /**
+   * Whether to receive mobile push notifications
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get mobilePush() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).mobilePush;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Whether to suppress everyone messages
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get suppressEveryone() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /*
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -460,7 +513,7 @@ class Guild {
    * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
    * bot's application
    * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to add to the member
    * (requires `MANAGE_ROLES`)
    * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
    * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
@@ -470,9 +523,14 @@ class Guild {
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     options.access_token = options.accessToken;
     if (options.roles) {
-      const roles = options.roles;
-      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
-        options.roles = roles.map(role => role.id);
+      const roles = [];
+      for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
+        role = this.client.resolver.resolveRole(this, role);
+        if (!role) {
+          return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
+            'Array or Collection of Roles or Snowflakes', true));
+        }
+        roles.push(role.id);
       }
     }
     return this.client.api.guilds(this.id).members(user.id).put({ data: options })
@@ -851,11 +909,19 @@ class Guild {
   }
 
   /**
+   * Can be used to overwrite permissions when creating a channel.
+   * @typedef {Object} ChannelCreationOverwrites
+   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
+   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   */
+
+  /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
    * @param {Object} options Options
-   * @param {Array<PermissionOverwrites|Object>} [options.overwrites] Permission overwrites to apply to the new channel
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
@@ -866,13 +932,30 @@ class Guild {
    */
   createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
-      overwrites = overwrites.map(overwrite => ({
-        allow: overwrite.allow || overwrite._allowed,
-        deny: overwrite.deny || overwrite._denied,
-        type: overwrite.type,
-        id: overwrite.id,
-      }));
+      overwrites = overwrites.map(overwrite => {
+        let allow = overwrite.allow || overwrite._allowed;
+        let deny = overwrite.deny || overwrite._denied;
+        if (allow instanceof Array) allow = Permissions.resolve(allow);
+        if (deny instanceof Array) deny = Permissions.resolve(deny);
+
+        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        if (role) {
+          overwrite.id = role.id;
+          overwrite.type = 'role';
+        } else {
+          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.type = 'member';
+        }
+
+        return {
+          allow,
+          deny,
+          type: overwrite.type,
+          id: overwrite.id,
+        };
+      });
     }
+
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
@@ -959,7 +1042,7 @@ class Guild {
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
    * @param {Object} [options] Options
-   * @param {Collection<Snowflake, Role>|Role[]} [options.roles] Roles to limit the emoji to
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to limit the emoji to
    * @param {string} [options.reason] Reason for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
@@ -976,16 +1059,27 @@ class Guild {
   createEmoji(attachment, name, { roles, reason } = {}) {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
-      if (roles) data.roles = roles.map(r => r.id ? r.id : r);
+      if (roles) {
+        data.roles = [];
+        for (let role of roles instanceof Collection ? roles.values() : roles) {
+          role = this.client.resolver.resolveRole(this, role);
+          if (!role) {
+            return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
+              'Array or Collection of Roles or Snowflakes', true));
+          }
+          data.roles.push(role.id);
+        }
+      }
+
       return this.client.api.guilds(this.id).emojis.post({ data, reason })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
-    } else {
-      return this.client.resolver.resolveBuffer(attachment)
-        .then(data => {
-          const dataURI = this.client.resolver.resolveBase64(data);
-          return this.createEmoji(dataURI, name, roles);
-        });
     }
+
+    return this.client.resolver.resolveBuffer(attachment)
+      .then(data => {
+        const dataURI = this.client.resolver.resolveBase64(data);
+        return this.createEmoji(dataURI, name, { roles, reason });
+      });
   }
 
   /**
@@ -1039,23 +1133,24 @@ class Guild {
   equals(guild) {
     let equal =
       guild &&
+      guild instanceof this.constructor &&
       this.id === guild.id &&
-      this.available === !guild.unavailable &&
+      this.available === guild.available &&
       this.splash === guild.splash &&
       this.region === guild.region &&
       this.name === guild.name &&
-      this.memberCount === guild.member_count &&
+      this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
       Util.arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
+      this.ownerID === guild.ownerID &&
+      this.verificationLevel === guild.verificationLevel &&
+      this.embedEnabled === guild.embedEnabled;
 
     if (equal) {
       if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
+        if (!guild.embedChannel || this.embedChannel.id !== guild.embedChannel.id) equal = false;
+      } else if (guild.embedChannel) {
         equal = false;
       }
     }

@@ -169,11 +169,13 @@ class Role {
 
   /**
    * Compares this role's position to another role's.
-   * @param {Role} role Role to compare to this one
+   * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if the this role's position is lower (other role's is higher),
    * positive number if the this one is higher (other's is lower), 0 if equal
    */
   comparePositionTo(role) {
+    role = this.client.resolver.resolveRole(this.guild, role);
+    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     return this.constructor.comparePositions(this, role);
   }
 
@@ -184,7 +186,7 @@ class Role {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {string[]} [permissions] The permissions of the role
+   * @property {PermissionResolvable|PermissionResolvable[]} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -205,9 +207,10 @@ class Role {
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
-        position: typeof data.position !== 'undefined' ? data.position : this.position,
         color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+        position: typeof data.position !== 'undefined' ? data.position : this.position,
+        permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },
       reason,

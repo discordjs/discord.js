@@ -65,7 +65,7 @@ class VoiceWebSocket extends EventEmitter {
     if (this.dead) return;
     if (this.ws) this.reset();
     if (this.attempts >= 5) {
-      this.emit('debug', new Error(`Too many connection attempts (${this.attempts}).`));
+      this.emit('debug', new Error('VOICE_CONNECTION_ATTEMPTS_EXCEEDED', this.attempts));
       return;
     }
 
@@ -123,7 +123,7 @@ class VoiceWebSocket extends EventEmitter {
         session_id: this.voiceConnection.authentication.sessionID,
       },
     }).catch(() => {
-      this.emit('error', new Error('Tried to send join packet, but the WebSocket is not open.'));
+      this.emit('error', new Error('VOICE_JOIN_SOCKET_CLOSED'));
     });
   }
 
@@ -204,7 +204,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   setHeartbeat(interval) {
     if (!interval || isNaN(interval)) {
-      this.onError(new Error('Tried to set voice heartbeat but no valid interval was specified.'));
+      this.onError(new Error('VOICE_INVALID_HEARTBEAT'));
       return;
     }
     if (this.heartbeatInterval) {

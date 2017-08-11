@@ -1,3 +1,4 @@
+const Attachment = require('./Attachment');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -129,6 +130,17 @@ class MessageEmbed {
       iconURL: data.footer.iconURL || data.footer.icon_url,
       proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
     } : null;
+
+    /**
+	* The files of this embed
+	* @type {?Object}
+	* @property {Array<FileOptions|string|Attachment>} files Files to attach
+	*/
+    if (data.files) {
+      for (let file of data.files) {
+        if (file instanceof Attachment) file = file.file;
+      }
+    } else { data.files = null; }
   }
 
   /**
@@ -178,12 +190,15 @@ class MessageEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {Array<FileOptions|string>} files Files to attach
+   * @param {Array<FileOptions|string|Attachment>} files Files to attach
    * @returns {MessageEmbed} This embed
    */
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
+    for (let file of files) {
+      if (file instanceof Attachment) file = file.file;
+    }
     return this;
   }
 
@@ -286,6 +301,11 @@ class MessageEmbed {
     return this;
   }
 
+  /**
+   * Transforms the embed object to be processed.
+   * @returns {Object} The raw data of this embed
+   * @private
+   */
   _apiTransform() {
     return {
       title: this.title,
