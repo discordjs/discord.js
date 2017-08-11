@@ -224,7 +224,7 @@ class Guild {
        * @type {Collection<Snowflake, Emoji>}
        */
       this.emojis = new Collection();
-      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+      if (data.emojis) for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,

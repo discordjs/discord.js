@@ -4,7 +4,9 @@ const transports = require('./transports');
 const Snowflake = require('../util/Snowflake');
 const OAuth2Application = require('../structures/OAuth2Application');
 const User = require('../structures/User');
+const Guild = require('../structures/Guild');
 const { RPCCommands, RPCEvents } = require('../util/Constants');
+const Collection = require('../util/Collection');
 
 /**
  * @typedef {RPCClientOptions}
@@ -149,20 +151,57 @@ class RPCClient extends BaseClient {
       });
   }
 
+
+  /**
+   * Fetch a guild
+   * @param {Snowflake} id Guild ID
+   * @param {number} [timeout] Timeout request
+   * @returns {Promise<Guild>}
+   */
   getGuild(id, timeout) {
-    return this.request(RPCCommands.GET_GUILD, { guild_id: id, timeout });
+    return this.request(RPCCommands.GET_GUILD, { guild_id: id, timeout })
+      .then(({ guild }) => new Guild(this, guild));
   }
 
+  /**
+   * Fetch all guilds
+   * @param {number} [timeout] Timeout request
+   * @returns {Promise<Collection<Snowflake, Guild>>}
+   */
   getGuilds(timeout) {
-    return this.request(RPCCommands.GET_GUILDS, { timeout });
+    return this.request(RPCCommands.GET_GUILDS, { timeout })
+      .then(({ guilds }) => {
+        const c = new Collection();
+        for (const guild of guilds) c.set(guild.id, new Guild(this, guild));
+        return c;
+      });
   }
 
+  /**
+   * Get a channel
+   * @param {Snowflake} id Channel id
+   * @param {number} [timeout] Timeout request
+   * @returns {Promise<Channel>}
+   */
   getChannel(id, timeout) {
-    return this.request(RPCCommands.GET_CHANNEL, { channel_id: id, timeout });
+    return this.request(RPCCommands.GET_CHANNEL, { channel_id: id, timeout })
+      // This will be changed to make a channel after the category pr get merged
+      .then(({ channel }) => channel);
   }
 
+  /**
+   * Get all channels
+   * @param {number} [timeout] Timeout request
+   * @returns {Promise<Collection<Snowflake, Channel>>}
+   */
   getChannels(timeout) {
-    return this.request(RPCCommands.GET_CHANNELS, { timeout });
+    return this.request(RPCCommands.GET_CHANNELS, { timeout })
+      .then(({ channels }) => {
+        const c = new Collection();
+        // This will be changed to make channels after the category pr get merged
+        for (const channel of channels) c.set(channel.id, channel);
+        return c;
+      });
   }
 
   setUserVoiceSettings(args) {
