@@ -1,25 +1,16 @@
-const Webhook = require('../structures/Webhook');
-const RESTManager = require('../rest/RESTManager');
-const ClientDataResolver = require('./ClientDataResolver');
-const Constants = require('../util/Constants');
-const Util = require('../util/Util');
+const EventEmitter = require('events');
+const RESTManager = require('./rest/RESTManager');
+const ClientDataResolver = require('./client/ClientDataResolver');
+const Util = require('./util/Util');
+const Constants = require('./util/Constants');
 
 /**
- * The webhook client.
- * @extends {Webhook}
+ * The base class for all clients
+ * @extends {EventEmitter}
  */
-class WebhookClient extends Webhook {
-  /**
-   * @param {Snowflake} id ID of the webhook
-   * @param {string} token Token of the webhook
-   * @param {ClientOptions} [options] Options for the client
-   * @example
-   * // Create a new webhook and send a message
-   * const hook = new Discord.WebhookClient('1234', 'abcdef');
-   * hook.sendMessage('This will send a message').catch(console.error);
-   */
-  constructor(id, token, options) {
-    super(null, id, token);
+class BaseClient extends EventEmitter {
+  constructor(options = {}) {
+    super();
 
     /**
      * The options the client was instantiated with
@@ -32,7 +23,7 @@ class WebhookClient extends Webhook {
      * @type {RESTManager}
      * @private
      */
-    this.rest = new RESTManager(this);
+    this.rest = new RESTManager(this, options._tokenType);
 
     /**
      * The data resolver of the client
@@ -111,17 +102,6 @@ class WebhookClient extends Webhook {
     clearInterval(interval);
     this._intervals.delete(interval);
   }
-
-
-  /**
-   * Destroys the client.
-   */
-  destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
-    this._timeouts.clear();
-    this._intervals.clear();
-  }
 }
 
-module.exports = WebhookClient;
+module.exports = BaseClient;

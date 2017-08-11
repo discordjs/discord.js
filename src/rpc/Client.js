@@ -1,0 +1,151 @@
+const request = require('snekfetch');
+const BaseClient = require('../BaseClient');
+const transports = require('./transports');
+const Snowflake = require('../util/Snowflake');
+const OAuth2Application = require('../structures/OAuth2Application');
+const User = require('../structures/User');
+
+/**
+ * @typedef {RPCClientOptions}
+ * @extends {ClientOptions}
+ * @prop {string} transport RPC transport. one of `ipc` or `websocket`
+ */
+
+/**
+ * The main hub for interacting with Discord RPC
+ * @extends {BaseClient}
+ */
+class RPCClient extends BaseClient {
+  /**
+   * @param {RPCClientOptions} [options] Options for the client
+   * You must provide a transport
+   */
+  constructor(options = {}) {
+    super(Object.assign({ _tokenType: 'Bearer' }, options));
+    this.accessToken = null;
+    this.clientID = null;
+
+    this.application = null;
+    this.user = null;
+
+    this.transport = new transports[options.transport](this);
+    this.transport.on('message', this._onMessage.bind(this));
+    this._expecting = new Map();
+  }
+
+  /**
+   * @typedef {RPCLoginOptions}
+   * @param {string} [clientSecret] Client secret
+   * @param {string} [accessToken] Access token
+   * @param {string} [rpcToken] RPC token
+   * @param {string} [tokenEndpoint] Token endpoint
+   */
+
+  /**
+   * Log in
+   * @param {string} clientID Client ID
+   * @param {RPCLoginOptions} options Options for authentication. You must provide at least one of the props to log in.
+   * @example client.login('1234567', { clientSecret: 'abcdef123' });
+   * @returns {Promise<RPCClient>}
+   */
+  login(clientID, options) {
+    return new Promise((resolve, reject) => {
+      this.clientID = clientID;
+      this.options._login = options;
+      const timeout = setTimeout(() => reject(new Error('connection timeout')), 10e3);
+      this.once('connected', () => {
+        clearTimeout(timeout);
+        resolve(this);
+        if (options.accessToken) this.authenticate(options.accessToken);
+      });
+      this.transport.connect({ client_id: this.clientID });
+    }).then(() => {
+      if (options.accessToken) return this.authenticate(options.accessToken);
+      return this.authorize(options);
+    });
+  }
+
+  /**
+   * Request
+   * @param {string} cmd Command
+   * @param {Object} [args={}] Arguments
+   * @param {string} [evt] Event
+   * @returns {Promise}
+   * @private
+   */
+  request(cmd, args = {}, evt) {
+    return new Promise((resolve, reject) => {
+      const nonce = Snowflake.generate();
+      this.transport.send({
+        cmd, args, evt, nonce,
+      });
+      this._expecting.set(nonce, { resolve, reject });
+    });
+  }
+
+  /**
+   * Message handler
+   * @param {Object} message message
+   * @private
+   */
+  _onMessage(message) {
+    if (message.cmd === 'DISPATCH' && message.evt === 'READY') {
+      this.emit('connected');
+    } else if (this._expecting.has(message.nonce)) {
+      const { resolve, reject } = this._expecting.get(message.nonce);
+      if (message.evt === 'ERROR') reject(new Error(message.data.message));
+      else resolve(message.data);
+      this._expecting.delete(message.nonce);
+    }
+  }
+
+  /**
+   * Authorize
+   * @param {Object} options options
+   * @returns {Promise}
+   * @private
+   */
+  async authorize({ rpcToken, scopes, clientSecret, tokenEndpoint }) {
+    if (tokenEndpoint) rpcToken = await request.get(tokenEndpoint).then(r => r.body.rpc_token);
+    const { code } = await this.request('AUTHORIZE', {
+      client_id: this.clientID,
+      scopes,
+      rpc_token: rpcToken,
+    });
+    if (tokenEndpoint) {
+      return request.post(tokenEndpoint)
+        .send({ code })
+        .then(r => this.authenticate(r.body.access_token));
+    } else if (clientSecret) {
+      return this.api.oauth2.token.post({
+        query: {
+          client_id: this.clientID,
+          client_secret: clientSecret,
+          code,
+          grant_type: 'authorization_code',
+        },
+        auth: false,
+      }).then(({ access_token }) => this.authenticate(access_token));
+    }
+    return { code };
+  }
+
+  /**
+   * Authenticate
+   * @param {string} accessToken access token
+   * @returns {Promise}
+   * @private
+   */
+  authenticate(accessToken) {
+    this.accessToken = accessToken;
+    return this.request('AUTHENTICATE', { access_token: accessToken })
+      .then(({ application, user }) => {
+        this.application = new OAuth2Application(this, application);
+        this.user = new User(this, user);
+        this.emit('ready');
+        return this;
+      });
+  }
+}
+
+module.exports = RPCClient;

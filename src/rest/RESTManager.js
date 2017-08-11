@@ -2,19 +2,28 @@ const UserAgentManager = require('./UserAgentManager');
 const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
-const { Error } = require('../../errors');
+const { Error } = require('../errors');
 
 class RESTManager {
-  constructor(client) {
+  constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = {};
     this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
+    this.tokenPrefix = tokenPrefix;
   }
 
   get api() {
     return routeBuilder(this);
+  }
+
+  getAuth() {
+    const token = this.client.token || this.client.accessToken;
+    const prefixed = !!this.client.application || (this.client.user && this.client.user.bot);
+    if (token && prefixed) return `${this.tokenPrefix} ${token}`;
+    else if (token) return token;
+    throw new Error('TOKEN_MISSING');
   }
 
   destroy() {
@@ -48,6 +57,10 @@ class RESTManager {
     }
 
     return this.push(this.handlers[apiRequest.route], apiRequest);
+  }
+
+  set endpoint(endpoint) {
+    this.client.options.http.api = endpoint;
   }
 }
 

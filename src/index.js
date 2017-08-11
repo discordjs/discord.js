@@ -7,11 +7,12 @@ module.exports = {
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
   WebhookClient: require('./client/WebhookClient'),
+  RPCClient: require('./rpc/Client'),
 
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
-  DiscordAPIError: require('./client/rest/DiscordAPIError'),
+  DiscordAPIError: require('./rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
