@@ -172,9 +172,10 @@ const AllowedImageSizes = [
   2048,
 ];
 
-function checkImage({ size, format }) {
+function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
+  return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
 
 exports.Endpoints = {
@@ -185,25 +186,16 @@ exports.Endpoints = {
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
-        checkImage({ size, format });
-        return `${root}/avatars/${userID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
+        return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
-      Icon: (guildID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/icons/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      AppIcon: (clientID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/app-icons/${clientID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      GDMIcon: (channelID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/channel-icons/${channelID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
-      Splash: (guildID, hash, format = 'webp', size) => {
-        checkImage({ size, format });
-        return `${root}/splashes/${guildID}/${hash}.${format}${size ? `?size=${size}` : ''}`;
-      },
+      Icon: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+      AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
+      GDMIcon: (channelID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
+      Splash: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -637,6 +629,11 @@ exports.UserFlags = {
   STAFF: 1 << 0,
   PARTNER: 1 << 1,
   HYPESQUAD: 1 << 2,
+};
+
+exports.ClientApplicationAssetTypes = {
+  SMALL: 1,
+  BIG: 2,
 };
 
 exports.Colors = {
@@ -3654,6 +3651,7 @@ const Attachment = __webpack_require__(62);
 const Embed = __webpack_require__(19);
 const MessageReaction = __webpack_require__(63);
 const ReactionCollector = __webpack_require__(64);
+const ClientApplication = __webpack_require__(43);
 const Util = __webpack_require__(5);
 const Collection = __webpack_require__(3);
 const Constants = __webpack_require__(0);
@@ -3787,6 +3785,21 @@ class Message {
      * @type {?Snowflake}
      */
     this.webhookID = data.webhook_id || null;
+
+    /**
+     * Supplimental application information for group activities
+     * @type {?ClientApplication}
+     */
+    this.application = data.application ? new ClientApplication(this.client, data.application) : null;
+
+    /**
+     * Group activity
+     * @type {?Object}
+     */
+    this.activiy = data.activity ? {
+      partyID: data.activity.party_id,
+      type: data.activity.type,
+    } : null;
 
     /**
      * Whether this message is a hit in a search
@@ -13025,6 +13038,202 @@ module.exports = ReactionEmoji;
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Snowflake = __webpack_require__(9);
+const Constants = __webpack_require__(0);
+
+/**
+ * Represents an OAuth2 Application.
+ */
+class OAuth2Application {
+  constructor(client, data) {
+    /**
+     * The client that instantiated the application
+     * @name OAuth2Application#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+
+    this.setup(data);
+  }
+
+  setup(data) {
+    /**
+     * The ID of the app
+     * @type {Snowflake}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the app
+     * @type {string}
+     */
+    this.name = data.name;
+
+    /**
+     * The app's description
+     * @type {string}
+     */
+    this.description = data.description;
+
+    /**
+     * The app's icon hash
+     * @type {string}
+     */
+    this.icon = data.icon;
+
+    /**
+     * The app's RPC origins
+     * @type {?string[]}
+     */
+    this.rpcOrigins = data.rpc_origins;
+
+    /**
+     * The app's redirect URIs
+     * @type {string[]}
+     */
+    this.redirectURIs = data.redirect_uris;
+
+    /**
+     * If this app's bot requires a code grant when using the OAuth2 flow
+     * @type {boolean}
+     */
+    this.botRequireCodeGrant = data.bot_require_code_grant;
+
+    /**
+     * If this app's bot is public
+     * @type {boolean}
+     */
+    this.botPublic = data.bot_public;
+
+    /**
+     * If this app can use rpc
+     * @type {boolean}
+     */
+    this.rpcApplicationState = data.rpc_application_state;
+
+    /**
+     * Object containing basic info about this app's bot
+     * @type {Object}
+     */
+    this.bot = data.bot;
+
+    /**
+     * The flags for the app
+     * @type {number}
+     */
+    this.flags = data.flags;
+
+    /**
+     * OAuth2 secret for the application
+     * @type {string}
+     */
+    this.secret = data.secret;
+
+    if (data.owner) {
+      /**
+       * The owner of this OAuth application
+       * @type {?User}
+       */
+      this.owner = this.client.dataManager.newUser(data.owner);
+    }
+  }
+
+  /**
+   * The timestamp the app was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the app was created
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the application's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the icon
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+  }
+
+  /**
+   * Get rich presence assets
+   * @returns {Promise<Object>}
+   */
+  fetchAssets() {
+    return this.client.api.applications(this.id).assets.get()
+      .then(assets => assets.map(a => ({
+        id: a.id,
+        name: a.name,
+        type: Object.keys(Constants.ClientApplicationAssetTypes)[a.type - 1],
+      })));
+  }
+
+  /**
+   * Create a rich presence asset
+   * @param {string} name Name of the asset
+   * @param {Base64Resolvable} data Data of the asset
+   * @param {string} type Type of the asset. `big`, or `small`
+   * @returns {Promise}
+   */
+  createAsset(name, data, type) {
+    return this.client.resolveBase64(data).then(b64 =>
+      this.client.api.applications(this.id).assets.post({ data: {
+        name,
+        data: b64,
+        type: Constants.ClientApplicationAssetTypes[type.toUpperCase()],
+      } }));
+  }
+
+  /**
+   * Reset the app's secret.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {OAuth2Application}
+   */
+  resetSecret() {
+    return this.client.api.oauth2.applications[this.id].reset.post()
+      .then(app => new OAuth2Application(this.client, app));
+  }
+
+  /**
+   * Reset the app's bot token.
+   * <warn>This is only available when using a user account.</warn>
+   * @returns {OAuth2Application}
+   */
+  resetToken() {
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
+      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
+  }
+
+  /**
+   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * @returns {string}
+   */
+  toString() {
+    return this.name;
+  }
+}
+
+module.exports = OAuth2Application;
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const Channel = __webpack_require__(16);
 const TextBasedChannel = __webpack_require__(25);
 const Collection = __webpack_require__(3);
@@ -13271,173 +13480,6 @@ class GroupDMChannel extends Channel {
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
-
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Snowflake = __webpack_require__(9);
-const Constants = __webpack_require__(0);
-
-/**
- * Represents an OAuth2 Application.
- */
-class OAuth2Application {
-  constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name OAuth2Application#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
-  }
-
-  setup(data) {
-    /**
-     * The ID of the app
-     * @type {Snowflake}
-     */
-    this.id = data.id;
-
-    /**
-     * The name of the app
-     * @type {string}
-     */
-    this.name = data.name;
-
-    /**
-     * The app's description
-     * @type {string}
-     */
-    this.description = data.description;
-
-    /**
-     * The app's icon hash
-     * @type {string}
-     */
-    this.icon = data.icon;
-
-    /**
-     * The app's RPC origins
-     * @type {?string[]}
-     */
-    this.rpcOrigins = data.rpc_origins;
-
-    /**
-     * The app's redirect URIs
-     * @type {string[]}
-     */
-    this.redirectURIs = data.redirect_uris;
-
-    /**
-     * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {boolean}
-     */
-    this.botRequireCodeGrant = data.bot_require_code_grant;
-
-    /**
-     * If this app's bot is public
-     * @type {boolean}
-     */
-    this.botPublic = data.bot_public;
-
-    /**
-     * If this app can use rpc
-     * @type {boolean}
-     */
-    this.rpcApplicationState = data.rpc_application_state;
-
-    /**
-     * Object containing basic info about this app's bot
-     * @type {Object}
-     */
-    this.bot = data.bot;
-
-    /**
-     * The flags for the app
-     * @type {number}
-     */
-    this.flags = data.flags;
-
-    /**
-     * OAuth2 secret for the application
-     * @type {string}
-     */
-    this.secret = data.secret;
-
-    if (data.owner) {
-      /**
-       * The owner of this OAuth application
-       * @type {?User}
-       */
-      this.owner = this.client.dataManager.newUser(data.owner);
-    }
-  }
-
-  /**
-   * The timestamp the app was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the app was created
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * A link to the application's icon
-   * @param {Object} [options={}] Options for the icon url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
-   * @returns {?string} URL to the icon
-   */
-  iconURL({ format, size } = {}) {
-    if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
-  }
-
-  /**
-   * Reset the app's secret.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
-   */
-  resetSecret() {
-    return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new OAuth2Application(this.client, app));
-  }
-
-  /**
-   * Reset the app's bot token.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
-   */
-  resetToken() {
-    return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
-  }
-
-  /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
-   * @returns {string}
-   */
-  toString() {
-    return this.name;
-  }
-}
-
-module.exports = OAuth2Application;
 
 
 /***/ }),
@@ -18063,7 +18105,7 @@ const Constants = __webpack_require__(0);
 const Util = __webpack_require__(5);
 const Guild = __webpack_require__(24);
 const Message = __webpack_require__(10);
-const GroupDMChannel = __webpack_require__(43);
+const GroupDMChannel = __webpack_require__(44);
 const { TypeError } = __webpack_require__(4);
 
 /**
@@ -18846,7 +18888,7 @@ module.exports = {
   DMChannel: __webpack_require__(70),
   Emoji: __webpack_require__(27),
   Game: __webpack_require__(18).Game,
-  GroupDMChannel: __webpack_require__(43),
+  GroupDMChannel: __webpack_require__(44),
   Guild: __webpack_require__(24),
   GuildAuditLogs: __webpack_require__(67),
   GuildChannel: __webpack_require__(28),
@@ -18858,8 +18900,7 @@ module.exports = {
   MessageEmbed: __webpack_require__(19),
   MessageMentions: __webpack_require__(61),
   MessageReaction: __webpack_require__(63),
-  OAuth2Application: __webpack_require__(44),
-  ClientOAuth2Application: __webpack_require__(44),
+  ClientApplication: __webpack_require__(43),
   PartialGuild: __webpack_require__(65),
   PartialGuildChannel: __webpack_require__(66),
   PermissionOverwrites: __webpack_require__(68),
@@ -22690,7 +22731,7 @@ const VoiceRegion = __webpack_require__(69);
 const Webhook = __webpack_require__(20);
 const User = __webpack_require__(15);
 const Invite = __webpack_require__(33);
-const OAuth2Application = __webpack_require__(44);
+const ClientApplication = __webpack_require__(43);
 const ShardClientUtil = __webpack_require__(200);
 const VoiceBroadcast = __webpack_require__(201);
 const { Error, TypeError, RangeError } = __webpack_require__(4);
@@ -23089,7 +23130,7 @@ class Client extends EventEmitter {
    */
   fetchApplication(id = '@me') {
     return this.api.oauth2.applications(id).get()
-      .then(app => new OAuth2Application(this, app));
+      .then(app => new ClientApplication(this, app));
   }
 
   /**
@@ -23392,7 +23433,7 @@ class RequestHandler {
           if (err.status === 429) {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
-          } else if (err.status === 500) {
+          } else if (err.status >= 500 && err.status < 600) {
             this.queue.unshift(item);
             finish(1e3 + this.client.options.restTimeOffset);
           } else {
@@ -23524,7 +23565,7 @@ const Emoji = __webpack_require__(27);
 const TextChannel = __webpack_require__(71);
 const VoiceChannel = __webpack_require__(72);
 const GuildChannel = __webpack_require__(28);
-const GroupDMChannel = __webpack_require__(43);
+const GroupDMChannel = __webpack_require__(44);
 
 class ClientDataManager {
   constructor(client) {
