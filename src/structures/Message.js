@@ -3,6 +3,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
+const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
@@ -139,28 +140,13 @@ class Message {
 
     /**
      * Supplimental application information for group activities
-     * @type {Object}
-     * @prop {function} coverImage Get the cover image of this application
-     * @prop {string} description Description of this application
-     * @prop {string} icon Icon has for this application
-     * @prop {Snowflake} id Snowflake ID of this application
-     * @prop {string} name Name of this application
+     * @type {?ClientApplication}
      */
-    this.application = data.application ? {
-      coverImage({ format, size }) {
-        return Constants.Endpoints
-          .CDN(this.client.options.http.cdn)
-          .AppIcon(this.id, data.application.cover_image, { format, size });
-      },
-      description: data.application.descripton,
-      icon: data.application.icon,
-      id: data.application.id,
-      name: data.application.name,
-    } : null;
+    this.application = data.application ? new ClientApplication(this.client, data.application) : null;
 
     /**
      * Group activity
-     * @type {Object}
+     * @type {?Object}
      */
     this.activiy = data.activity ? {
       partyID: data.activity.party_id,
