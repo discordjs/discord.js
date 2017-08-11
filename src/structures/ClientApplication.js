@@ -126,7 +126,36 @@ class OAuth2Application {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+  }
+
+  /**
+   * Get rich presence assets
+   * @returns {Promise<Object>}
+   */
+  fetchAssets() {
+    return this.client.api.applications(this.id).assets.get()
+      .then(assets => assets.map(a => ({
+        id: a.id,
+        name: a.name,
+        type: Object.keys(Constants.ClientApplicationAssetTypes)[a.type - 1],
+      })));
+  }
+
+  /**
+   * Create a rich presence asset
+   * @param {string} name Name of the asset
+   * @param {Base64Resolvable} data Data of the asset
+   * @param {string} type Type of the asset. `big`, or `small`
+   * @returns {Promise}
+   */
+  createAsset(name, data, type) {
+    return this.client.resolveBase64(data).then(b64 =>
+      this.client.api.applications(this.id).assets.post({ data: {
+        name,
+        data: b64,
+        type: Constants.ClientApplicationAssetTypes[type.toUpperCase()],
+      } }));
   }
 
   /**

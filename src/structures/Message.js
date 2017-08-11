@@ -3,6 +3,7 @@ const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
+const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
@@ -136,6 +137,21 @@ class Message {
      * @type {?Snowflake}
      */
     this.webhookID = data.webhook_id || null;
+
+    /**
+     * Supplimental application information for group activities
+     * @type {?ClientApplication}
+     */
+    this.application = data.application ? new ClientApplication(this.client, data.application) : null;
+
+    /**
+     * Group activity
+     * @type {?Object}
+     */
+    this.activiy = data.activity ? {
+      partyID: data.activity.party_id,
+      type: data.activity.type,
+    } : null;
 
     /**
      * Whether this message is a hit in a search
