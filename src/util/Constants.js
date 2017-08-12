@@ -170,10 +170,10 @@ exports.VoiceStatus = {
 };
 
 exports.ChannelTypes = {
-  text: 0,
-  dm: 1,
-  voice: 2,
-  group: 3,
+  TEXT: 0,
+  DM: 1,
+  VOICE: 2,
+  GROUP: 3,
 };
 
 exports.OPCodes = {
