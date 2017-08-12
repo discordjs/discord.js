@@ -7155,8 +7155,10 @@ class Message {
       reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
-    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
-    reaction.count++;
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+    }
     return reaction;
   }
 
@@ -17220,7 +17222,7 @@ class VoiceChannel extends GuildChannel {
      * The bitrate of this voice channel
      * @type {number}
      */
-    this.bitrate = data.bitrate;
+    this.bitrate = data.bitrate * 0.001;
 
     /**
      * The maximum amount of users allowed in this channel - 0 means unlimited.
@@ -17271,16 +17273,17 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the bitrate of the channel.
+   * Sets the bitrate of the channel (in kbps).
    * @param {number} bitrate The new bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48000)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
+   * voiceChannel.setBitrate(48)
+   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
    *  .catch(console.error);
    */
   setBitrate(bitrate) {
+    bitrate *= 1000;
     return this.edit({ bitrate });
   }
 
