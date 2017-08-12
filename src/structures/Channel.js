@@ -24,7 +24,7 @@ class Channel {
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
-    this.type = type ? type.toLowerCase() || 'unknown';
+    this.type = type ? type.toLowerCase() : 'unknown';
 
     if (data) this.setup(data);
   }
