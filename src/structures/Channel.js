@@ -68,7 +68,7 @@ class Channel {
   }
 
   static create(client, data, guild) {
-    const DMChannel = require('./DMCHannel');
+    const DMChannel = require('./DMChannel');
     const GroupDMChannel = require('./GroupDMChannel');
     const TextChannel = require('./TextChannel');
     const VoiceChannel = require('./VoiceChannel');
