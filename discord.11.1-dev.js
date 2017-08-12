@@ -8311,6 +8311,15 @@ class Guild {
   }
 
   /**
+   * Gets the acronym that shows up in place of a guild icon
+   * @type {string}
+   * @readonly
+   */
+  get nameAcronym() {
+    return this.name.replace(/\w+/g, name => name[0]).replace(/\s/g, '');
+  }
+
+  /**
    * The URL to this guild's splash
    * @type {?string}
    * @readonly
