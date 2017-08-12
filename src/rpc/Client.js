@@ -7,6 +7,7 @@ const User = require('../structures/User');
 const Guild = require('../structures/Guild');
 const { RPCCommands, RPCEvents } = require('../util/Constants');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * @typedef {RPCClientOptions}
@@ -34,7 +35,7 @@ class RPCClient extends BaseClient {
     this.transport = new transports[options.transport](this);
     this.transport.on('message', this._onMessage.bind(this));
     this._expecting = new Map();
-    this.subscriptions = [];
+    this.subscriptions = new Map();
   }
 
   /**
@@ -208,35 +209,137 @@ class RPCClient extends BaseClient {
       });
   }
 
+  /**
+   * @typedef {UserVoiceSettings}
+   * @prop {Snowflake} id ID of the user these settings apply to
+   * @prop {?Object} [pan] Pan settings, an object with `left` and `right` set between 0.0 and 1.0, inclusive
+   * @prop {?number} [volume=100] The volume
+   * @prop {bool} [mute] If the user is muted
+   */
+
   setUserVoiceSettings(args) {
-    return this.request(RPCCommands.SET_USER_VOICE_SETTINGS, args);
+    return this.request(RPCCommands.SET_USER_VOICE_SETTINGS, {
+      user_id: args.id,
+      pan: args.pan,
+      mute: args.mute,
+      volume: args.volume,
+    });
   }
 
+  /**
+   * Move the user to a voice channel
+   * @param {Snowflake} id ID of the voice channel
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout] Timeout for the command
+   * @param {boolean} [options.force] Force the move, should only be done if you have explicit permission from the user.
+   * @returns {Promise}
+   */
   selectVoiceChannel(id, { timeout, force = false } = {}) {
     return this.request(RPCCommands.SELECT_VOICE_CHANNEL, { channel_id: id, timeout, force });
   }
 
+  /**
+   * Move the user to a text channel
+   * @param {Snowflake} id ID of the voice channel
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout] Timeout for the command
+   * @param {boolean} [options.force] Force the move, should only be done if you have explicit permission from the user.
+   * @returns {Promise}
+   */
   selectTextChannel(id, { timeout, force = false } = {}) {
     return this.request(RPCCommands.SELECT_TEXT_CHANNEL, { channel_id: id, timeout, force });
   }
 
+  /**
+   * Get current voice settings
+   * @returns {Promise}
+   */
   getVoiceSettings() {
-    return this.request(RPCCommands.GET_VOICE_SETTINGS);
+    return this.request(RPCCommands.GET_VOICE_SETTINGS)
+      .then(s => ({
+        automaticGainControl: s.automatic_gain_control,
+        echoCancellation: s.echo_cancellation,
+        noiseSuppression: s.noise_suppression,
+        qos: s.qos,
+        silenceWarning: s.silence_warning,
+        deaf: s.deaf,
+        mute: s.mute,
+        input: {
+          availableDevices: s.input.available_devices,
+          device: s.input.device_id,
+          volume: s.input.volume,
+        },
+        output: {
+          availableDevices: s.output.available_devices,
+          device: s.output.device_id,
+          volume: s.output.volume,
+        },
+        mode: {
+          type: s.mode.type,
+          autoThreshold: s.mode.auto_threshold,
+          threshold: s.mode.threshold,
+          shortcut: s.mode.shortcut.map(sc => ({
+            name: sc.name, code: sc.code,
+            type: Object.keys(Constants.KeyTypes)[sc.type],
+          })),
+          delay: s.mode.delay,
+        },
+      }));
   }
 
+  /**
+   * Set current voice settings, overriding the current settings until this session disconnects. Also locks the settings
+   * for any other rpc sessions which may be connected
+   * @param {Object} args Settings
+   * @returns {Promise}
+   */
   setVoiceSettings(args) {
-    return this.request(RPCCommands.SET_VOICE_SETTINGS, args);
-  }
-
-  subscribe(event, args, callback) {
-    return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
-      this.subscriptions.push({ event, args, callback });
-      return { unsubscribe: () => this.unsubscribe(event, args) };
+    return this.request(RPCCommands.SET_VOICE_SETTINGS, {
+      automatic_gain_control: args.automaticGainControl,
+      echo_cancellation: args.echoCancellation,
+      noise_suppression: args.noiseSuppression,
+      qos: args.qos,
+      silence_warning: args.silenceWarning,
+      deaf: args.deaf,
+      mute: args.mute,
+      input: args.input ? {
+        device_id: args.input.device,
+        volume: args.input.volume,
+      } : undefined,
+      output: args.output ? {
+        device_id: args.output.device,
+        volume: args.output.volume,
+      } : undefined,
+      mode: args.mode ? {
+        mode: args.mode.type,
+        auto_threshold: args.mode.autoThreshold,
+        threshold: args.mode.threshold,
+        shortcut: args.mode.shortcut.map(sc => ({
+          name: sc.name, code: sc.code,
+          type: Constants.KeyTypes[sc.type.toUpperCase()],
+        })),
+        delay: args.mode.delay,
+      } : undefined,
     });
   }
 
-  unsubscribe(event, args) {
-    return this.request(RPCCommands.UNSUBSCRIBE, args, event);
+  /**
+   * Subscribe to an event
+   * @param {string} event Name of event e.g. `MESSAGE_CREATE`
+   * @param {Object} [args] Args for event e.g. `{ channel_id: '1234' }`
+   * @param {Function} callback Callback when an event for the subscription is triggered
+   * @returns {Promise<Object>}
+   */
+  subscribe(event, args, callback) {
+    if (!callback && typeof args === 'function') {
+      callback = args;
+      args = null;
+    }
+    return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
+      const subid = Snowflake.generate();
+      this.subscriptions.set(subid, callback);
+      return { unsubscribe: () => { this.subscriptions.delete(subid); } };
+    });
   }
 }
 

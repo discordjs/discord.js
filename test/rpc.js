@@ -9,6 +9,7 @@ const client = new Discord.RPCClient({
 client.on('ready', () => {
   console.log('Logged in as', client.application.name);
   console.log('Authed for user', client.user.tag);
+  client.getVoiceSettings().then(console.log);
 });
 
 // StreamKit client id (don't be mad jake)

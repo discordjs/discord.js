@@ -570,6 +570,13 @@ exports.UserFlags = {
   HYPESQUAD: 1 << 2,
 };
 
+exports.KeyTypes = {
+  KEYBOARD_KEY: 0,
+  MOUSE_BUTTON: 1,
+  KEYBOARD_MODIFIER_KEY: 2,
+  GAMEPAD_BUTTON: 3,
+};
+
 exports.Colors = {
   DEFAULT: 0x000000,
   AQUA: 0x1ABC9C,
