@@ -10,7 +10,6 @@ const Collection = require('../util/Collection');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.type = 'dm';
     this.messages = new Collection();
     this._typing = new Map();
   }
