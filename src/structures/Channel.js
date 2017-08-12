@@ -73,15 +73,15 @@ class Channel {
     const TextChannel = require('./TextChannel');
     const VoiceChannel = require('./VoiceChannel');
     const GuildChannel = require('./GuildChannel');
+    const types = Constants.ChannelTypes;
     let channel;
-    if (data.type === Constants.ChannelTypes.DM) {
+    if (data.type === types.dm) {
       channel = new DMChannel(client, data);
-    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
+    } else if (data.type === types.group) {
       channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
-        const types = Constants.ChannelTypes;
         switch (data.type) {
           case types.text:
             channel = new TextChannel(guild, data);
