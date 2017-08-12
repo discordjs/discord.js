@@ -562,7 +562,6 @@ exports.UserFlags = {
   HYPESQUAD: 1 << 2,
 };
 
-
 exports.KeyTypes = {
   KEYBOARD_KEY: 0,
   MOUSE_BUTTON: 1,
