@@ -66,6 +66,37 @@ class Channel {
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
   }
+
+  static create(client, data, guild) {
+    const DMChannel = require('./DMCHannel');
+    const GroupDMChannel = require('./GroupDMChannel');
+    const TextChannel = require('./TextChannel');
+    const VoiceChannel = require('./VoiceChannel');
+    const GuildChannel = require('./GuildChannel');
+    let channel;
+    if (data.type === Constants.ChannelTypes.DM) {
+      channel = new DMChannel(client, data);
+    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
+      channel = new GroupDMChannel(client, data);
+    } else {
+      guild = guild || client.guilds.get(data.guild_id);
+      if (guild) {
+        const types = Constants.ChannelTypes;
+        switch (data.type) {
+          case types.text:
+            channel = new TextChannel(guild, data);
+            break;
+          case types.voice:
+            channel = new VoiceChannel(guild, data);
+            break;
+          default:
+            channel = new GuildChannel(guild, data);
+        }
+        guild.channels.set(channel.id, channel);
+      }
+    }
+    return channel;
+  }
 }
 
 module.exports = Channel;
