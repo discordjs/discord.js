@@ -3796,7 +3796,7 @@ class Message {
      * Group activity
      * @type {?Object}
      */
-    this.activiy = data.activity ? {
+    this.activity = data.activity ? {
       partyID: data.activity.party_id,
       type: data.activity.type,
     } : null;
