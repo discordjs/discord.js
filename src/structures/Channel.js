@@ -14,6 +14,7 @@ class Channel {
      */
     Object.defineProperty(this, 'client', { value: client });
 
+    const type = Object.keys(Constants.ChannelTypes)[data.type];
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -23,7 +24,7 @@ class Channel {
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
-    this.type = Object.keys(Constants.ChannelTypes)[data.type] || 'unknown';
+    this.type = type ? type.toLowerCase() || 'unknown';
 
     if (data) this.setup(data);
   }
@@ -75,18 +76,18 @@ class Channel {
     const GuildChannel = require('./GuildChannel');
     const types = Constants.ChannelTypes;
     let channel;
-    if (data.type === types.dm) {
+    if (data.type === types.DM) {
       channel = new DMChannel(client, data);
-    } else if (data.type === types.group) {
+    } else if (data.type === types.GROUP) {
       channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
         switch (data.type) {
-          case types.text:
+          case types.TEXT:
             channel = new TextChannel(guild, data);
             break;
-          case types.voice:
+          case types.VOICE:
             channel = new VoiceChannel(guild, data);
             break;
           default:
