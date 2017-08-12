@@ -566,7 +566,7 @@ exports.ChannelTypes = {
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
   BIG: 2,
-}
+};
 
 exports.Colors = {
   DEFAULT: 0x000000,
