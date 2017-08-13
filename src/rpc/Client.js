@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const request = require('snekfetch');
 const BaseClient = require('../BaseClient');
 const transports = require('./transports');
@@ -402,10 +401,15 @@ class RPCClient extends BaseClient {
       };
     });
   }
+
+  destroy() {
+    super.destroy();
+    this.transport.close();
+  }
 }
 
 function subKey(event, args) {
-  return crypto.createHash('md5').update(`${event}${JSON.stringify(args)}`).digest('hex');
+  return `${event}${JSON.stringify(args)}`;
 }
 
 module.exports = RPCClient;

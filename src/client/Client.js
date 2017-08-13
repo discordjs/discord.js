@@ -1,4 +1,3 @@
-const os = require('os');
 const BaseClient = require('../BaseClient');
 const Permissions = require('../util/Permissions');
 const ClientDataManager = require('./ClientDataManager');
@@ -228,15 +227,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return os.platform() === 'browser';
-  }
-
-  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
@@ -270,10 +260,7 @@ class Client extends BaseClient {
    * @returns {Promise}
    */
   destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
-    this._timeouts.clear();
-    this._intervals.clear();
+    super.destroy();
     return this.manager.destroy();
   }
 

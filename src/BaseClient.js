@@ -1,3 +1,4 @@
+const os = require('os');
 const EventEmitter = require('events');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataResolver = require('./client/ClientDataResolver');
@@ -48,12 +49,31 @@ class BaseClient extends EventEmitter {
   }
 
   /**
+   * Whether the client is in a browser environment
+   * @type {boolean}
+   * @readonly
+   */
+  get browser() {
+    return os.platform() === 'browser';
+  }
+
+  /**
    * API shortcut
    * @type {Object}
    * @private
    */
   get api() {
     return this.rest.api;
+  }
+
+  /**
+   * Destroys all assets used by the base client
+   */
+  destroy() {
+    for (const t of this._timeouts) clearTimeout(t);
+    for (const i of this._intervals) clearInterval(i);
+    this._timeouts.clear();
+    this._intervals.clear();
   }
 
   /**
