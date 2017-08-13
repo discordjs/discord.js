@@ -34,6 +34,7 @@ class RPCClient extends BaseClient {
     this.application = null;
     this.user = null;
 
+    if (this.browser && options.transport === 'ipc') throw new Error('IPC cannot be used in browser');
     this.transport = new transports[options.transport](this);
     this.transport.on('message', this._onMessage.bind(this));
     this._expecting = new Map();

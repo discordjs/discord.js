@@ -3,7 +3,7 @@
 const Discord = require('../src');
 
 const client = new Discord.RPCClient({
-  transport: 'websocket',
+  transport: 'ipc',
 });
 
 client.on('ready', () => {
@@ -16,6 +16,4 @@ client.on('ready', () => {
 client.login('207646673902501888', {
   scopes: ['rpc', 'rpc.api', 'messages.read'],
   tokenEndpoint: 'https://streamkit.discordapp.com/overlay/token',
-  // Origin is only needed when using the `websocket` transport
-  origin: 'https://streamkit.discordapp.com',
 });

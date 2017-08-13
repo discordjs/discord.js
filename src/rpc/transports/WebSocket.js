@@ -31,7 +31,7 @@ class WebSocketTransport extends EventEmitter {
     this.origin = null;
   }
 
-  connect(options, tries = 0) {
+  connect(options, tries = this.tries) {
     if (this.connected) return;
     const port = 6463 + (tries % 10);
     this.hostAndPort = `127.0.0.1:${port}`;
@@ -71,7 +71,7 @@ class WebSocketTransport extends EventEmitter {
     try {
       this.ws.close();
     } catch (err) {} // eslint-disable-line no-empty
-    setTimeout(() => this.connect(e.code === 1006 ? ++this.tries : 0), 250);
+    setTimeout(() => this.connect(undefined, e.code === 1006 ? ++this.tries : 0), 250);
   }
 }
 
