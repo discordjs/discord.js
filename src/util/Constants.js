@@ -173,7 +173,7 @@ exports.ChannelTypes = {
   TEXT: 0,
   DM: 1,
   VOICE: 2,
-  GROUP_DM: 3,
+  GROUP: 3,
 };
 
 exports.OPCodes = {
