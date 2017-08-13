@@ -25,6 +25,7 @@ class APIRequest {
     if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
     if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (this.options.headers) request.set(this.options.headers);
 
     if (this.options.files) {
       for (const file of this.options.files) if (file && file.file) request.attach(file.name, file.file, file.name);

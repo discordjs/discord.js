@@ -80,7 +80,7 @@ class Guild {
    * @param {*} data The raw data of the guild
    * @private
    */
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The name of the guild
      * @type {string}
@@ -566,7 +566,7 @@ class Guild {
   fetchMembers({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        resolve((query || limit) ? new Collection() : this.members);
+        resolve(query || limit ? new Collection() : this.members);
         return;
       }
       this.client.ws.send({
@@ -585,7 +585,7 @@ class Guild {
         }
         if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve((query || limit) ? fetchedMembers : this.members);
+          resolve(query || limit ? fetchedMembers : this.members);
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -1195,12 +1195,12 @@ class Guild {
       }
     }
 
-    /**
-     * Emitted whenever a user joins a guild.
-     * @event Client#guildMemberAdd
-     * @param {GuildMember} member The member that has joined a guild
-     */
-    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
+    if (this.client.ws && this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
+      /**
+       * Emitted whenever a user joins a guild.
+       * @event Client#guildMemberAdd
+       * @param {GuildMember} member The member that has joined a guild
+       */
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
@@ -1215,7 +1215,7 @@ class Guild {
 
     const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
 
-    if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
+    if (this.client.ws && this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
        * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
        * @event Client#guildMemberUpdate

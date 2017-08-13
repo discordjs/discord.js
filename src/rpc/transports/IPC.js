@@ -1,5 +1,7 @@
 const net = require('net');
 const EventEmitter = require('events');
+const request = require('snekfetch');
+const Snowflake = require('../../util/Snowflake');
 
 const OPCodes = {
   HANDSHAKE: 0,
@@ -8,7 +10,6 @@ const OPCodes = {
   PING: 3,
   PONG: 4,
 };
-const OPArray = Object.keys(OPCodes);
 
 class IPCTransport extends EventEmitter {
   constructor(client) {
@@ -27,12 +28,40 @@ class IPCTransport extends EventEmitter {
     });
     socket.pause();
     socket.on('readable', () => {
-      decode(socket, ({ data }) => this.emit('message', data));
+      decode(socket, ({ op, data }) => {
+        if (data.cmd === 'AUTHORIZE' && data.evt !== 'ERROR') {
+          findEndpoint().then(endpoint => {
+            this.client.rest.endpoint = endpoint;
+            this.client.rest.versioned = false;
+          });
+        }
+        switch (op) {
+          case OPCodes.PING:
+            this.send(data, OPCodes.PONG);
+            break;
+          case OPCodes.FRAME:
+            this.emit('message', data);
+            break;
+          case OPCodes.CLOSE:
+            this.emit('close', data);
+            break;
+          default:
+            break;
+        }
+      });
     });
   }
 
-  send(data) {
-    this.socket.write(encode(OPCodes.FRAME, data));
+  send(data, op = OPCodes.FRAME) {
+    this.socket.write(encode(op, data));
+  }
+
+  close() {
+    this.send({}, OPCodes.CLOSE);
+  }
+
+  ping() {
+    this.send(Snowflake.generate(), OPCodes.PING);
   }
 }
 
@@ -51,9 +80,9 @@ function decode(socket, callback) {
   if (!header) return;
   const op = header.readInt32LE(0);
   const len = header.readInt32LE(4);
-  if (op > OPArray.length || len < 0) throw new Error('protocol error');
+  if (op > Object.keys(OPCodes).length || len < 0) throw new Error('protocol error');
   const data = JSON.parse(socket.read(len));
-  callback({ op: OPArray[op], data }); // eslint-disable-line callback-return
+  callback({ op, data }); // eslint-disable-line callback-return
   decode(socket, callback);
 }
 
@@ -62,6 +91,15 @@ function getIPCPath() {
   const env = process.env;
   const prefix = env.XDG_RUNTIME_DIR || env.TMPDIR || env.TMP || env.TEMP || '/tmp';
   return `${prefix}/discord-ipc-0`;
+}
+
+function findEndpoint(tries = 0) {
+  const endpoint = `http://127.0.0.1:${6463 + (tries % 10)}`;
+  return request.get(endpoint)
+    .end((err, res) => {
+      if ((err.status || res.status) === 401) return Promise.resolve(endpoint);
+      return findEndpoint(tries++);
+    });
 }
 
 module.exports = IPCTransport;

@@ -35,9 +35,10 @@ class WebSocketTransport extends EventEmitter {
     if (this.connected) return;
     const port = 6463 + (tries % 10);
     this.hostAndPort = `127.0.0.1:${port}`;
+    const cid = this.client.clientID;
     this.ws = new WebSocket(
-      `ws://${this.hostAndPort}/?v=1&encoding=${erlpack ? 'etf' : 'json'}&client_id=${this.client.clientID}`,
-      typeof window === 'undefined' ? { origin: this.client.options._login.origin } : null
+      `ws://${this.hostAndPort}/?v=1&encoding=${erlpack ? 'etf' : 'json'}${cid ? `&client_id=${cid}` : ''}`,
+      typeof window === 'undefined' ? { origin: this.client.options._login.origin } : undefined
     );
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -48,6 +49,13 @@ class WebSocketTransport extends EventEmitter {
     if (!this.ws) return;
     this.ws.send(encode(data));
   }
+
+  close() {
+    if (!this.ws) return;
+    this.ws.close();
+  }
+
+  ping() {} // eslint-disable-line no-empty-function
 
   onMessage(event) {
     this.emit('message', decode(event.data));

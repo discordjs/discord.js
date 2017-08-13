@@ -2,6 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const Message = require('./Message');
 
 /**
  * Represents a guild text channel on Discord.
@@ -33,6 +34,10 @@ class TextChannel extends GuildChannel {
     this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
+
+    if (data.messages) {
+      for (const message of data.messages) this.messages.set(message.id, new Message(this, message, this.client));
+    }
   }
 
   /**

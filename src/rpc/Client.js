@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const request = require('snekfetch');
 const BaseClient = require('../BaseClient');
 const transports = require('./transports');
@@ -5,9 +6,11 @@ const Snowflake = require('../util/Snowflake');
 const ClientApplication = require('../structures/ClientApplication');
 const User = require('../structures/User');
 const Guild = require('../structures/Guild');
+const Channel = require('../structures/Channel');
 const { RPCCommands, RPCEvents } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * @typedef {RPCClientOptions}
@@ -35,7 +38,12 @@ class RPCClient extends BaseClient {
     this.transport = new transports[options.transport](this);
     this.transport.on('message', this._onMessage.bind(this));
     this._expecting = new Map();
-    this.subscriptions = new Map();
+    this._subscriptions = new Map();
+
+    this.dataManager = {
+      newUser: data => new User(this, data),
+      newChannel: (data, guild) => Channel.create(this, data, guild),
+    };
   }
 
   /**
@@ -61,10 +69,10 @@ class RPCClient extends BaseClient {
       this.once('connected', () => {
         clearTimeout(timeout);
         resolve(this);
-        if (options.accessToken) this.authenticate(options.accessToken);
       });
       this.transport.connect({ client_id: this.clientID });
     }).then(() => {
+      if (!this.clientID) return true;
       if (options.accessToken) return this.authenticate(options.accessToken);
       return this.authorize(options);
     });
@@ -78,7 +86,7 @@ class RPCClient extends BaseClient {
    * @returns {Promise}
    * @private
    */
-  request(cmd, args = {}, evt) {
+  request(cmd, args, evt) {
     return new Promise((resolve, reject) => {
       const nonce = Snowflake.generate();
       this.transport.send({
@@ -101,6 +109,9 @@ class RPCClient extends BaseClient {
       if (message.evt === 'ERROR') reject(new Error(message.data.message));
       else resolve(message.data);
       this._expecting.delete(message.nonce);
+    } else {
+      const subid = subKey(message.evt, message.args);
+      if (this._subscriptions.has(subid)) this._subscriptions.get(subid)(message.data);
     }
   }
 
@@ -110,10 +121,17 @@ class RPCClient extends BaseClient {
    * @returns {Promise}
    * @private
    */
-  authorize({ rpcToken, scopes, clientSecret, tokenEndpoint }) {
-    if (!rpcToken && tokenEndpoint) {
-      return request.get(tokenEndpoint).then(r => r.body.rpc_token)
-        .then(t => this.authorize({ rpcToken: t, scopes, clientSecret, tokenEndpoint }));
+  async authorize({ rpcToken, scopes, clientSecret, tokenEndpoint }) {
+    if (tokenEndpoint && !rpcToken) {
+      rpcToken = await request.get(tokenEndpoint).then(r => r.body.rpc_token);
+    } else if (clientSecret && rpcToken === true) {
+      rpcToken = await this.api.oauth2.token.rpc.post({
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        data: {
+          client_id: this.clientID,
+          client_secret: clientSecret,
+        },
+      });
     }
     return this.request('AUTHORIZE', {
       client_id: this.clientID,
@@ -150,7 +168,7 @@ class RPCClient extends BaseClient {
     return this.request('AUTHENTICATE', { access_token: accessToken })
       .then(({ application, user }) => {
         this.application = new ClientApplication(this, application);
-        this.user = new User(this, user);
+        this.user = this.dataManager.newUser(user);
         this.emit('ready');
         return this;
       });
@@ -165,7 +183,7 @@ class RPCClient extends BaseClient {
    */
   getGuild(id, timeout) {
     return this.request(RPCCommands.GET_GUILD, { guild_id: id, timeout })
-      .then(({ guild }) => new Guild(this, guild));
+      .then(guild => new Guild(this, guild));
   }
 
   /**
@@ -190,8 +208,12 @@ class RPCClient extends BaseClient {
    */
   getChannel(id, timeout) {
     return this.request(RPCCommands.GET_CHANNEL, { channel_id: id, timeout })
-      // This will be changed to make a channel after the category pr get merged
-      .then(({ channel }) => channel);
+      .then(channel => {
+        if (channel.guild_id) {
+          return this.getGuild(channel.guild_id).then(g => this.dataManager.newChannel(channel, g));
+        }
+        return Channel.create(this, channel);
+      });
   }
 
   /**
@@ -201,10 +223,15 @@ class RPCClient extends BaseClient {
    */
   getChannels(timeout) {
     return this.request(RPCCommands.GET_CHANNELS, { timeout })
-      .then(({ channels }) => {
+      .then(async({ channels }) => {
+        const guilds = new Collection();
         const c = new Collection();
-        // This will be changed to make channels after the category pr get merged
-        for (const channel of channels) c.set(channel.id, channel);
+        for (const channel of channels) {
+          const guild_id = channel.guild_id;
+          // eslint-disable-next-line no-await-in-loop
+          if (guild_id && !guilds.has(guild_id)) guilds.set(guild_id, await this.getGuild(guild_id));
+          c.set(channel.id, this.dataManager.newChannel(channel, guilds.get(channel.guild_id)));
+        }
         return c;
       });
   }
@@ -323,6 +350,37 @@ class RPCClient extends BaseClient {
     });
   }
 
+  captureShortcut(callback) {
+    const subid = subKey(RPCEvents.CAPTURE_SHORTCUT_CHANGE);
+    this._subscriptions.set(subid, ({ shortcut }) => {
+      const keys = shortcut.map(sc => ({
+        name: sc.name, code: sc.code,
+        type: Object.keys(Constants.KeyTypes)[sc.type],
+      }));
+      callback(keys, () => {
+        this._subscriptions.delete(subid);
+        return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'STOP' });
+      });
+    });
+    return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'START' });
+  }
+
+
+  // Purposely undocumented
+  setActivity(args) {
+    return this.request(RPCCommands.SET_ACTIVITY, Util.snakeCaseObject(args));
+  }
+
+  // Purposely undocumented, only available for browser @ *.discordapp.com origin
+  deepLink(args) {
+    return this.request(RPCCommands.DEEP_LINK, args);
+  }
+
+  // Purposely undocumented, only available for browser @ *.discordapp.com origin
+  invite(code) {
+    return this.request(RPCCommands.INVITE_BROWSER, { code });
+  }
+
   /**
    * Subscribe to an event
    * @param {string} event Name of event e.g. `MESSAGE_CREATE`
@@ -333,14 +391,21 @@ class RPCClient extends BaseClient {
   subscribe(event, args, callback) {
     if (!callback && typeof args === 'function') {
       callback = args;
-      args = null;
+      args = undefined;
     }
     return this.request(RPCCommands.SUBSCRIBE, args, event).then(() => {
-      const subid = Snowflake.generate();
-      this.subscriptions.set(subid, callback);
-      return { unsubscribe: () => { this.subscriptions.delete(subid); } };
+      const subid = subKey(event, args);
+      this._subscriptions.set(subid, callback);
+      return {
+        unsubscribe: () => this.request(RPCCommands.UNSUBSCRIBE, args, event)
+          .then(() => this._subscriptions.delete(subid)),
+      };
     });
   }
+}
+
+function subKey(event, args) {
+  return crypto.createHash('md5').update(`${event}${JSON.stringify(args)}`).digest('hex');
 }
 
 module.exports = RPCClient;
