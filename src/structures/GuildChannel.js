@@ -237,6 +237,7 @@ class GuildChannel extends Channel {
         position: data.position || this.position,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        parent_id: data.parentID,
       },
       reason,
     }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
