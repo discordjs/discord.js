@@ -173,7 +173,7 @@ exports.ChannelTypes = {
   TEXT: 0,
   DM: 1,
   VOICE: 2,
-  GROUP_DM: 3,
+  GROUP: 3,
 };
 
 exports.OPCodes = {
@@ -347,6 +347,21 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+];
+
+/**
+ * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
+ * - PLAYING
+ * - STREAMING
+ * - LISTENING
+ * - WATCHING
+ * @typedef {string} GameType
+ */
+exports.GameTypes = [
+  'PLAYING',
+  'STREAMING',
+  'LISTENING',
+  'WATCHING',
 ];
 
 exports.ExplicitContentFilterTypes = [

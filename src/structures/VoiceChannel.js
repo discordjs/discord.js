@@ -15,8 +15,6 @@ class VoiceChannel extends GuildChannel {
      * @type {Collection<Snowflake, GuildMember>}
      */
     this.members = new Collection();
-
-    this.type = 'voice';
   }
 
   setup(data) {

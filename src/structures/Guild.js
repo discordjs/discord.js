@@ -960,7 +960,9 @@ class Guild {
 
     return this.client.api.guilds(this.id).channels.post({
       data: {
-        name, type, permission_overwrites: overwrites,
+        name,
+        type: Constants.ChannelTypes[type.toUpperCase()],
+        permission_overwrites: overwrites,
       },
       reason,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
