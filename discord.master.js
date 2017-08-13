@@ -418,6 +418,21 @@ exports.MessageTypes = [
   'GUILD_MEMBER_JOIN',
 ];
 
+/**
+ * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
+ * - PLAYING
+ * - STREAMING
+ * - LISTENING
+ * - WATCHING
+ * @typedef {string} GameType
+ */
+exports.GameTypes = [
+  'PLAYING',
+  'STREAMING',
+  'LISTENING',
+  'WATCHING',
+];
+
 exports.ExplicitContentFilterTypes = [
   'DISABLED',
   'NON_FRIENDS',
@@ -5630,7 +5645,9 @@ module.exports = Role;
 
 /***/ }),
 /* 18 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
 
 /**
  * Represents a user's presence.
@@ -5687,9 +5704,9 @@ class Game {
 
     /**
      * The type of the game status
-     * @type {number}
+     * @type {GameType}
      */
-    this.type = data.type;
+    this.type = Constants.GameTypes[data.type];
 
     /**
      * If the game is being streamed, a link to the stream
@@ -5704,7 +5721,7 @@ class Game {
    * @readonly
    */
   get streaming() {
-    return this.type === 1;
+    return this.type === Constants.GameTypes[1];
   }
 
   /**
