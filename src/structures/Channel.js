@@ -14,6 +14,7 @@ class Channel {
      */
     Object.defineProperty(this, 'client', { value: client });
 
+    const type = Object.keys(Constants.ChannelTypes)[data.type];
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -24,7 +25,7 @@ class Channel {
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
-    this.type = Object.keys(Constants.ChannelTypes)[data.type] || 'unknown';
+    this.type = type ? type.toLowerCase() : 'unknown';
 
     if (data) this.setup(data);
   }
@@ -66,6 +67,41 @@ class Channel {
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
+  }
+
+  static create(client, data, guild) {
+    const DMChannel = require('./DMChannel');
+    const GroupDMChannel = require('./GroupDMChannel');
+    const TextChannel = require('./TextChannel');
+    const VoiceChannel = require('./VoiceChannel');
+    const CategoryChannel = require('./CategoryChannel');
+    const GuildChannel = require('./GuildChannel');
+    const types = Constants.ChannelTypes;
+    let channel;
+    if (data.type === types.DM) {
+      channel = new DMChannel(client, data);
+    } else if (data.type === types.GROUP) {
+      channel = new GroupDMChannel(client, data);
+    } else {
+      guild = guild || client.guilds.get(data.guild_id);
+      if (guild) {
+        switch (data.type) {
+          case types.TEXT:
+            channel = new TextChannel(guild, data);
+            break;
+          case types.VOICE:
+            channel = new VoiceChannel(guild, data);
+            break;
+          case types.CATEGORY:
+            channel = new CategoryChannel(guild, data);
+            break;
+          default:
+            channel = new GuildChannel(guild, data);
+        }
+        guild.channels.set(channel.id, channel);
+      }
+    }
+    return channel;
   }
 }
 

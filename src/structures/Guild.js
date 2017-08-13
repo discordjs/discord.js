@@ -959,7 +959,7 @@ class Guild {
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
-        type: Constants.ChannelTypes[type],
+        type: Constants.ChannelTypes[type.toUpperCase()],
         permission_overwrites: overwrites,
       },
       reason,

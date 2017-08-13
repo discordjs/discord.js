@@ -342,6 +342,21 @@ exports.MessageTypes = [
   'GUILD_MEMBER_JOIN',
 ];
 
+/**
+ * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
+ * - PLAYING
+ * - STREAMING
+ * - LISTENING
+ * - WATCHING
+ * @typedef {string} GameType
+ */
+exports.GameTypes = [
+  'PLAYING',
+  'STREAMING',
+  'LISTENING',
+  'WATCHING',
+];
+
 exports.ExplicitContentFilterTypes = [
   'DISABLED',
   'NON_FRIENDS',
@@ -556,11 +571,11 @@ exports.UserFlags = {
 };
 
 exports.ChannelTypes = {
-  text: 0,
-  dm: 1,
-  voice: 2,
-  group: 3,
-  category: 4,
+  TEXT: 0,
+  DM: 1,
+  VOICE: 2,
+  GROUP: 3,
+  CATEGORY: 4,
 };
 
 exports.ClientApplicationAssetTypes = {
