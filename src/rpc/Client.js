@@ -31,15 +31,45 @@ class RPCClient extends BaseClient {
     this.accessToken = null;
     this.clientID = null;
 
+    /**
+     * Application used in this client
+     * @type {?ClientApplication}
+     */
     this.application = null;
+
+    /**
+     * User used in this application
+     * @type {?User}
+     */
     this.user = null;
 
     if (this.browser && options.transport === 'ipc') throw new Error('IPC cannot be used in browser');
+    /**
+     * Raw transport userd
+     * @type {?IPCTransport|WebSocketTransport}
+     */
     this.transport = new transports[options.transport](this);
     this.transport.on('message', this._onMessage.bind(this));
+
+    /**
+     * Map of nonces being expected from the transport
+     * @type {Map}
+     * @private
+     */
     this._expecting = new Map();
+
+    /**
+     * Map of current subscriptions
+     * @type {Map}
+     * @private
+     */
     this._subscriptions = new Map();
 
+    /**
+     * Polyfill data manager
+     * @type {Object}
+     * @private
+     */
     this.dataManager = {
       newUser: data => new User(this, data),
       newChannel: (data, guild) => Channel.create(this, data, guild),
@@ -366,7 +396,7 @@ class RPCClient extends BaseClient {
   }
 
 
-  // Purposely undocumented
+  // Purposely undocumented, in private beta
   setActivity(args) {
     return this.request(RPCCommands.SET_ACTIVITY, Util.snakeCaseObject(args));
   }
@@ -403,6 +433,9 @@ class RPCClient extends BaseClient {
     });
   }
 
+  /**
+   * Destroy the client
+   */
   destroy() {
     super.destroy();
     this.transport.close();
