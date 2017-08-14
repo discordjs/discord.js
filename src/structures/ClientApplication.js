@@ -41,7 +41,7 @@ class ClientApplication {
      * @type {string}
      */
     this.icon = data.icon;
-    
+
     /**
      * The app's cover image hash
      * @type {?string}
@@ -185,7 +185,7 @@ class ClientApplication {
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new OAuth2Application(this.client, app));
+      .then(app => new ClientApplication(this.client, app));
   }
 
   /**
@@ -195,7 +195,7 @@ class ClientApplication {
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
+      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**
