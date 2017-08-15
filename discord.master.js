@@ -164,13 +164,7 @@ const AllowedImageFormats = [
   'gif',
 ];
 
-const AllowedImageSizes = [
-  128,
-  256,
-  512,
-  1024,
-  2048,
-];
+const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 ** (i + 4));
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
@@ -13346,13 +13340,13 @@ const Snowflake = __webpack_require__(9);
 const Constants = __webpack_require__(0);
 
 /**
- * Represents an OAuth2 Application.
+ * Represents a Client OAuth2 Application.
  */
-class OAuth2Application {
+class ClientApplication {
   constructor(client, data) {
     /**
      * The client that instantiated the application
-     * @name OAuth2Application#client
+     * @name ClientApplication#client
      * @type {Client}
      * @readonly
      */
@@ -13385,6 +13379,12 @@ class OAuth2Application {
      * @type {string}
      */
     this.icon = data.icon;
+
+    /**
+     * The app's cover image hash
+     * @type {?string}
+     */
+    this.cover = data.cover_image;
 
     /**
      * The app's RPC origins
@@ -13474,6 +13474,20 @@ class OAuth2Application {
   }
 
   /**
+   * A link to this application's cover image
+   * @param {Object} [options={}] Options for the cover image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the cover image
+   */
+  coverImage({ format, size } = {}) {
+    if (!this.cover) return null;
+    return Constants.Endpoints
+      .CDN(this.client.options.http.cdn)
+      .AppIcon(this.id, this.cover, { format, size });
+  }
+
+  /**
    * Get rich presence assets
    * @returns {Promise<Object>}
    */
@@ -13509,7 +13523,7 @@ class OAuth2Application {
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new OAuth2Application(this.client, app));
+      .then(app => new ClientApplication(this.client, app));
   }
 
   /**
@@ -13519,7 +13533,7 @@ class OAuth2Application {
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
+      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**
@@ -13531,7 +13545,7 @@ class OAuth2Application {
   }
 }
 
-module.exports = OAuth2Application;
+module.exports = ClientApplication;
 
 
 /***/ }),
