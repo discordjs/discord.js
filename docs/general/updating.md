@@ -17,7 +17,7 @@ See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.0.0)
 ### Client.login() no longer supports logging in with email + password
 Logging in with an email and password has always been heavily discouraged since the advent of proper token support, but in v11 we have made the decision to completely remove the functionality, since Hammer & Chisel have [officially stated](https://github.com/hammerandchisel/discord-api-docs/issues/69#issuecomment-223886862) it simply shouldn't be done.
 
-User accounts can still log in with tokens just like bot accounts. To obtain the token for a user account, you can log in to Discord with that account, and use Ctrl + Shift + I to open the developer tools. In the console tab, evaluating `localStorage.token` will give you the token for that account.
+User accounts can still log in with tokens just like bot accounts. To obtain the token for a user account, you can log in to Discord with that account (either in the client or on the web), and use Ctrl + Shift + I to open the developer tools. Switch to the 'Application' tab, click on 'Local Storage' in the left panel, and then on the entry `https://discordapp.com`. In the 'Key' column, look for 'token'. The assigned value is the token for that account.
 
 ### ClientUser.setEmail()/setPassword() now require the current password, as well as setUsername() on user accounts
 Since you can no longer log in with email and password, you must provide the current account password to the `setEmail()`, `setPassword()`, and `setUsername()` methods for user accounts (self-bots).
