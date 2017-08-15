@@ -187,6 +187,7 @@ class ClientUser extends User {
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [game] Game the user is playing
    * @property {string} [game.name] Name of the game
+   * @property {number} [game.type] Type of the game
    * @property {string} [game.url] Twitch stream URL
    */
 
@@ -222,7 +223,9 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) game.type = 1;
+        if (typeof data.game.type === 'undefined') {
+          data.game.type = game.url ? 1 : 0;
+        }
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
@@ -266,15 +269,18 @@ class ClientUser extends User {
   /**
    * Sets the game the client user is playing.
    * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
+   * @param {Object} [options] Options for setting the game
+   * @param {string} [options.url] Twitch stream URL
+   * @param {number} [options.type] Type of the game
    * @returns {Promise<ClientUser>}
    */
-  setGame(game, streamingURL) {
+  setGame(game, { url, type }) {
     if (!game) return this.setPresence({ game: null });
     return this.setPresence({
       game: {
         name: game,
-        url: streamingURL,
+        type,
+        url,
       },
     });
   }
