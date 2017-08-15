@@ -187,7 +187,7 @@ class ClientUser extends User {
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [game] Game the user is playing
    * @property {string} [game.name] Name of the game
-   * @property {number} [game.type] Type of the game
+   * @property {GameType|number} [game.type] Type of the game
    * @property {string} [game.url] Twitch stream URL
    */
 
@@ -223,8 +223,15 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (typeof data.game.type === 'undefined') {
-          data.game.type = game.url ? 1 : 0;
+        if (typeof data.game.type === 'number') {
+          game.type = data.game.type;
+        } else if (typeof data.game.type === 'string') {
+          game.type = Constants.GameTypes.indexOf(data.game.type);
+          if (game.type === -1) {
+            throw new TypeError('INVALID_TYPE', 'type', 'GameType');
+          }
+        } else {
+          game.type = game.url ? 1 : 0;
         }
       } else if (typeof data.game !== 'undefined') {
         game = null;
@@ -271,10 +278,10 @@ class ClientUser extends User {
    * @param {?string} game Game being played
    * @param {Object} [options] Options for setting the game
    * @param {string} [options.url] Twitch stream URL
-   * @param {number} [options.type] Type of the game
+   * @param {GameType|number} [options.type] Type of the game
    * @returns {Promise<ClientUser>}
    */
-  setGame(game, { url, type }) {
+  setGame(game, { url, type } = {}) {
     if (!game) return this.setPresence({ game: null });
     return this.setPresence({
       game: {
