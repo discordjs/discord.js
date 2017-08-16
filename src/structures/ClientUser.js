@@ -190,7 +190,7 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) game.type = 1;
+        game.type = game.url ? 1 : 0;
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
