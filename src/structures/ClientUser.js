@@ -212,7 +212,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
+        if (typeof data.status !== 'string') throw new TypeError('INVALID_TYPE', 'status', 'string');
         if (this.bot) {
           status = data.status;
         } else {
@@ -223,13 +223,11 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (typeof data.game.type === 'number') {
-          game.type = data.game.type;
-        } else if (typeof data.game.type === 'string') {
-          game.type = Constants.GameTypes.indexOf(data.game.type);
-          if (game.type === -1) {
-            throw new TypeError('INVALID_TYPE', 'type', 'GameType');
-          }
+        if (typeof game.type === 'number') {
+          game.type = game.type;
+        } else if (typeof game.type === 'string') {
+          game.type = Constants.GameTypes.indexOf(game.type);
+          if (game.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
         } else {
           game.type = game.url ? 1 : 0;
         }
