@@ -223,12 +223,10 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (typeof game.type === 'number') {
-          game.type = game.type;
-        } else if (typeof game.type === 'string') {
+        if (typeof game.type === 'string') {
           game.type = Constants.GameTypes.indexOf(game.type);
           if (game.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
-        } else {
+        } else if (typeof game.type !== 'number') {
           game.type = game.url ? 1 : 0;
         }
       } else if (typeof data.game !== 'undefined') {
