@@ -674,6 +674,7 @@ class Guild {
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
+    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
@@ -753,6 +754,10 @@ class Guild {
    */
   setAFKChannel(afkChannel, reason) {
     return this.edit({ afkChannel }, reason);
+  }
+
+  setSystemChannel(systemChannel, reason) {
+    return this.edit({ systemChannel }, reason);
   }
 
   /**
