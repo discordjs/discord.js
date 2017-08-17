@@ -142,6 +142,12 @@ class Guild {
     this.afkChannelID = data.afk_channel_id;
 
     /**
+     * The ID of the system channel
+     * @type {?Snowflake}
+     */
+    this.systemChannelID = data.system_channel_id;
+
+    /**
      * Whether embedded images are enabled on this guild
      * @type {boolean}
      */
@@ -301,6 +307,24 @@ class Guild {
    */
   get owner() {
     return this.members.get(this.ownerID);
+  }
+
+  /**
+   * AFK voice channel for this guild
+   * @type {?VoiceChannel}
+   * @readonly
+   */
+  get afkChannel() {
+    return this.client.channels.get(this.afkChannelID);
+  }
+
+  /**
+   * System channel for this guild
+   * @type {?GuildChannel}
+   * @readonly
+   */
+  get systemChannel() {
+    return this.client.channels.get(this.systemChannelID);
   }
 
   /**
