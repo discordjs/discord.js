@@ -69,7 +69,7 @@ class Permissions {
   }
 
   /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
    * permission is available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {Object}
@@ -110,7 +110,7 @@ class Permissions {
  * - `MANAGE_GUILD` (edit the guild information, region, etc.)
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
- * - `READ_MESSAGES`
+ * - `VIEW_CHANNEL`
  * - `SEND_MESSAGES`
  * - `SEND_TTS_MESSAGES`
  * - `MANAGE_MESSAGES` (delete messages and reactions)
@@ -143,7 +143,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
 
-  READ_MESSAGES: 1 << 10,
+  VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
   MANAGE_MESSAGES: 1 << 13,
