@@ -23644,6 +23644,7 @@ class ClientDataManager {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
+    if (!this.client.user.bot && this.client.options.sync) this.client.syncGuilds([guild]);
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a guild.
@@ -24300,8 +24301,6 @@ class ReadyHandler extends AbstractHandler {
         client.user.notes.set(user, note);
       }
     }
-
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
 
     if (!client.users.has('1')) {
       client.dataManager.newUser({
