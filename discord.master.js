@@ -164,13 +164,7 @@ const AllowedImageFormats = [
   'gif',
 ];
 
-const AllowedImageSizes = [
-  128,
-  256,
-  512,
-  1024,
-  2048,
-];
+const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 ** (i + 4));
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
@@ -6789,15 +6783,6 @@ class Game {
      * @type {?string}
      */
     this.url = data.url || null;
-  }
-
-  /**
-   * Whether or not the game is being streamed
-   * @type {boolean}
-   * @readonly
-   */
-  get streaming() {
-    return this.type === Constants.GameTypes[1];
   }
 
   /**
@@ -18355,6 +18340,7 @@ class ClientUser extends User {
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [game] Game the user is playing
    * @property {string} [game.name] Name of the game
+   * @property {GameType|number} [game.type] Type of the game
    * @property {string} [game.url] Twitch stream URL
    */
 
@@ -18379,7 +18365,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
+        if (typeof data.status !== 'string') throw new TypeError('INVALID_TYPE', 'status', 'string');
         if (this.bot) {
           status = data.status;
         } else {
@@ -18390,7 +18376,12 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) game.type = 1;
+        if (typeof game.type === 'string') {
+          game.type = Constants.GameTypes.indexOf(game.type);
+          if (game.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
+        } else if (typeof game.type !== 'number') {
+          game.type = game.url ? 1 : 0;
+        }
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
@@ -18434,15 +18425,18 @@ class ClientUser extends User {
   /**
    * Sets the game the client user is playing.
    * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
+   * @param {Object} [options] Options for setting the game
+   * @param {string} [options.url] Twitch stream URL
+   * @param {GameType|number} [options.type] Type of the game
    * @returns {Promise<ClientUser>}
    */
-  setGame(game, streamingURL) {
+  setGame(game, { url, type } = {}) {
     if (!game) return this.setPresence({ game: null });
     return this.setPresence({
       game: {
         name: game,
-        url: streamingURL,
+        type,
+        url,
       },
     });
   }
