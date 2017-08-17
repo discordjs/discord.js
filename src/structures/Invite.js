@@ -1,5 +1,3 @@
-const Guild = require('./Guild');
-const Channel = require('./Channel');
 const Constants = require('../util/Constants');
 
 /**
@@ -20,6 +18,9 @@ class Invite {
   }
 
   setup(data) {
+    const Guild = require('./Guild');
+    const Channel = require('./Channel');
+
     /**
      * The guild the invite is for.
      * @type {Guild}
