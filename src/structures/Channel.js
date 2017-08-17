@@ -61,8 +61,8 @@ class Channel {
    * @example
    * // Delete the channel
    * channel.delete()
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then() // Success
+   *   .catch(console.error); // Log error
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);

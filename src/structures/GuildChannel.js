@@ -146,10 +146,10 @@ class GuildChannel extends Channel {
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
+   *   SEND_MESSAGES: false
    * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
+   *   .then(() => console.log('Done!'))
+   *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
     const payload = {
@@ -228,8 +228,8 @@ class GuildChannel extends Channel {
    * @example
    * // Edit a channel
    * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
+   *   .then(c => console.log(`Edited channel ${c}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.channels(this.id).patch({
@@ -252,8 +252,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel name
    * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *   .catch(console.error);
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
@@ -267,8 +267,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel position
    * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, relative) {
     return this.guild.setChannelPosition(this, position, relative).then(() => this);
@@ -282,8 +282,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
    */
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
@@ -366,8 +366,8 @@ class GuildChannel extends Channel {
    * @example
    * // Delete the channel
    * channel.delete('making room for new channels')
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then() // Success
+   *   .catch(console.error); // Log error
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);

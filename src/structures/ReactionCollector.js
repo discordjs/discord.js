@@ -65,7 +65,7 @@ class ReactionCollector extends Collector {
   /**
    * Handle an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
+   * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
    */
   collect(reaction) {
@@ -79,7 +79,7 @@ class ReactionCollector extends Collector {
   /**
    * Handle a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose
-   * @returns {?Snowflake|string} The reaction key
+   * @returns {?Snowflake|string}
    */
   dispose(reaction) {
     return reaction.message.id === this.message.id && !reaction.count ? ReactionCollector.key(reaction) : null;
@@ -105,7 +105,7 @@ class ReactionCollector extends Collector {
   /**
    * Get the collector key for a reaction.
    * @param {MessageReaction} reaction The message reaction to get the key for
-   * @returns {Snowflake|string} The emoji ID (if custom) or the emoji name (if native; will be unicode)
+   * @returns {Snowflake|string}
    */
   static key(reaction) {
     return reaction.emoji.id || reaction.emoji.name;

@@ -1,5 +1,5 @@
 /**
- * Represents an attachment in a message
+ * Represents an attachment in a message.
  */
 class Attachment {
   constructor(file, name) {

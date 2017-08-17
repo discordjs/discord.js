@@ -83,7 +83,7 @@ class ClientUser extends User {
     /**
      * All of the user's guild settings
      * @type {Collection<Snowflake, ClientUserGuildSettings>}
-     * <warn>This is only filled when using a user account</warn>
+     * <warn>This is only filled when using a user account.</warn>
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
@@ -119,8 +119,8 @@ class ClientUser extends User {
    * @example
    * // Set username
    * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new username is ${user.username}`))
+   *   .catch(console.error);
    */
   setUsername(username, password) {
     return this.edit({ username }, password);
@@ -135,8 +135,8 @@ class ClientUser extends User {
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new email is ${user.email}`))
+   *   .catch(console.error);
    */
   setEmail(email, password) {
     return this.edit({ email }, password);
@@ -154,8 +154,8 @@ class ClientUser extends User {
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
+   *   .then(user => console.log('New password set!'))
+   *   .catch(console.error);
    */
   setPassword(newPassword, options) {
     return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
@@ -168,8 +168,8 @@ class ClientUser extends User {
    * @example
    * // Set avatar
    * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`New avatar set!`))
+   *   .catch(console.error);
    */
   setAvatar(avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
@@ -253,10 +253,10 @@ class ClientUser extends User {
 
   /**
    * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
+   * * `online`
+   * * `idle`
+   * * `invisible`
+   * * `dnd` (do not disturb)
    * @typedef {string} PresenceStatus
    */
 

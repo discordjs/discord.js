@@ -115,10 +115,10 @@ class Emoji {
    * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit an emoji
    * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
+   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.guilds(this.guild.id).emojis(this.id)

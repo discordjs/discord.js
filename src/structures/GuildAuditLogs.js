@@ -184,7 +184,7 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
-     * An entry in the audit log representing a specific change
+     * An entry in the audit log representing a specific change.
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname

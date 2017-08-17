@@ -124,7 +124,7 @@ class ClientApplication {
   }
 
   /**
-   * A link to the application's icon
+   * A link to the application's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -136,7 +136,7 @@ class ClientApplication {
   }
 
   /**
-   * A link to this application's cover image
+   * A link to this application's cover image.
    * @param {Object} [options={}] Options for the cover image url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -150,7 +150,7 @@ class ClientApplication {
   }
 
   /**
-   * Get rich presence assets
+   * Get rich presence assets.
    * @returns {Promise<Object>}
    */
   fetchAssets() {
@@ -163,7 +163,7 @@ class ClientApplication {
   }
 
   /**
-   * Create a rich presence asset
+   * Create a rich presence asset.
    * @param {string} name Name of the asset
    * @param {Base64Resolvable} data Data of the asset
    * @param {string} type Type of the asset. `big`, or `small`

@@ -29,12 +29,12 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {string} gateway The WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
     /**
-     * WebSocket Manager of this connection
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
@@ -233,7 +233,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -358,7 +358,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {

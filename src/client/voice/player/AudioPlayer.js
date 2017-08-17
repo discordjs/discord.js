@@ -83,7 +83,7 @@ class AudioPlayer extends EventEmitter {
 
   /**
    * Set the bitrate of the current Opus encoder.
-   * @param {number} value New bitrate, in kbps.
+   * @param {number} value New bitrate, in kbps
    * If set to 'auto', the voice channel's bitrate will be used
    */
   setBitrate(value) {

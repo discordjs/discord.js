@@ -118,8 +118,8 @@ class MessageMentions {
   }
 
   /**
-   * Check if a user is mentioned. Takes into account user mentions, role
-   * mentions, and @everyone/@here mentions.
+   * Check if a user is mentioned.
+   * Takes into account user mentions, role mentions, and @everyone/@here mentions.
    * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
    * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
    * @returns {boolean}

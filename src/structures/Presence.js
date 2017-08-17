@@ -67,7 +67,7 @@ class Game {
   }
 
   /**
-   * Whether this game is equal to another game
+   * Whether this game is equal to another game.
    * @param {Game} game The game to compare with
    * @returns {boolean}
    */
