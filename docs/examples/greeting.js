@@ -20,7 +20,7 @@ client.on('ready', () => {
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
   // Send the message to a first channel on a server:
-  let firstTextCh = msg.guild.channels
+  let firstTextCh = member.guild.channels
     .filter(c => c.type === "text")
     .filter(c => c.permissionsFor(c.guild.member(client.user)).has("SEND_MESSAGES"))
     .first();
