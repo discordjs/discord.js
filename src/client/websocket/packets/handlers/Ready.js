@@ -44,8 +44,6 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-
     if (!client.users.has('1')) {
       client.dataManager.newUser({
         id: '1',
