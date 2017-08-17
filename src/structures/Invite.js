@@ -90,7 +90,7 @@ class Invite {
     }
 
     /**
-     * The channel the invite is for.
+     * The channel the invite is for
      * @type {GuildChannel}
      */
     this.channel = this.client.channels.get(data.channel.id) || Channel.create(this.client, data.channel, this.guild);
