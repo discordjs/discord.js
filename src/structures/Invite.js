@@ -22,7 +22,7 @@ class Invite {
     const Channel = require('./Channel');
 
     /**
-     * The guild the invite is for.
+     * The guild the invite is for
      * @type {Guild}
      */
     this.guild = this.client.guilds.get(data.guild.id) || new Guild(this.client, data.guild);
