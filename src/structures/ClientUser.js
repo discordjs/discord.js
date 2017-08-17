@@ -271,8 +271,11 @@ class ClientUser extends User {
    */
   setGame(game, streamingURL) {
     if (!game) return this.setPresence({ game: null });
+    let gameType = 0;
+    if(streamingURL) gameType = 1;
     return this.setPresence({
       game: {
+        type: gameType,
         name: game,
         url: streamingURL,
       },
