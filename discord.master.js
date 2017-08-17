@@ -198,12 +198,12 @@ exports.Endpoints = {
 
 /**
  * The current status of the client. Here are the available statuses:
- * - READY
- * - CONNECTING
- * - RECONNECTING
- * - IDLE
- * - NEARLY
- * - DISCONNECTED
+ * * READY
+ * * CONNECTING
+ * * RECONNECTING
+ * * IDLE
+ * * NEARLY
+ * * DISCONNECTED
  * @typedef {number} Status
  */
 exports.Status = {
@@ -217,11 +217,11 @@ exports.Status = {
 
 /**
  * The current status of a voice connection. Here are the available statuses:
- * - CONNECTED
- * - CONNECTING
- * - AUTHENTICATING
- * - RECONNECTING
- * - DISCONNECTED
+ * * CONNECTED
+ * * CONNECTING
+ * * AUTHENTICATING
+ * * RECONNECTING
+ * * DISCONNECTED
  * @typedef {number} VoiceStatus
  */
 exports.VoiceStatus = {
@@ -312,41 +312,41 @@ exports.Events = {
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
- * - READY
- * - RESUMED
- * - GUILD_SYNC
- * - GUILD_CREATE
- * - GUILD_DELETE
- * - GUILD_UPDATE
- * - GUILD_MEMBER_ADD
- * - GUILD_MEMBER_REMOVE
- * - GUILD_MEMBER_UPDATE
- * - GUILD_MEMBERS_CHUNK
- * - GUILD_ROLE_CREATE
- * - GUILD_ROLE_DELETE
- * - GUILD_ROLE_UPDATE
- * - GUILD_BAN_ADD
- * - GUILD_BAN_REMOVE
- * - CHANNEL_CREATE
- * - CHANNEL_DELETE
- * - CHANNEL_UPDATE
- * - CHANNEL_PINS_UPDATE
- * - MESSAGE_CREATE
- * - MESSAGE_DELETE
- * - MESSAGE_UPDATE
- * - MESSAGE_DELETE_BULK
- * - MESSAGE_REACTION_ADD
- * - MESSAGE_REACTION_REMOVE
- * - MESSAGE_REACTION_REMOVE_ALL
- * - USER_UPDATE
- * - USER_NOTE_UPDATE
- * - USER_SETTINGS_UPDATE
- * - PRESENCE_UPDATE
- * - VOICE_STATE_UPDATE
- * - TYPING_START
- * - VOICE_SERVER_UPDATE
- * - RELATIONSHIP_ADD
- * - RELATIONSHIP_REMOVE
+ * * READY
+ * * RESUMED
+ * * GUILD_SYNC
+ * * GUILD_CREATE
+ * * GUILD_DELETE
+ * * GUILD_UPDATE
+ * * GUILD_MEMBER_ADD
+ * * GUILD_MEMBER_REMOVE
+ * * GUILD_MEMBER_UPDATE
+ * * GUILD_MEMBERS_CHUNK
+ * * GUILD_ROLE_CREATE
+ * * GUILD_ROLE_DELETE
+ * * GUILD_ROLE_UPDATE
+ * * GUILD_BAN_ADD
+ * * GUILD_BAN_REMOVE
+ * * CHANNEL_CREATE
+ * * CHANNEL_DELETE
+ * * CHANNEL_UPDATE
+ * * CHANNEL_PINS_UPDATE
+ * * MESSAGE_CREATE
+ * * MESSAGE_DELETE
+ * * MESSAGE_UPDATE
+ * * MESSAGE_DELETE_BULK
+ * * MESSAGE_REACTION_ADD
+ * * MESSAGE_REACTION_REMOVE
+ * * MESSAGE_REACTION_REMOVE_ALL
+ * * USER_UPDATE
+ * * USER_NOTE_UPDATE
+ * * USER_SETTINGS_UPDATE
+ * * PRESENCE_UPDATE
+ * * VOICE_STATE_UPDATE
+ * * TYPING_START
+ * * VOICE_SERVER_UPDATE
+ * * RELATIONSHIP_ADD
+ * * RELATIONSHIP_REMOVE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -391,14 +391,14 @@ exports.WSEvents = {
 
 /**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
- * - DEFAULT
- * - RECIPIENT_ADD
- * - RECIPIENT_REMOVE
- * - CALL
- * - CHANNEL_NAME_CHANGE
- * - CHANNEL_ICON_CHANGE
- * - PINS_ADD
- * - GUILD_MEMBER_JOIN
+ * * DEFAULT
+ * * RECIPIENT_ADD
+ * * RECIPIENT_REMOVE
+ * * CALL
+ * * CHANNEL_NAME_CHANGE
+ * * CHANNEL_ICON_CHANGE
+ * * PINS_ADD
+ * * GUILD_MEMBER_JOIN
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -414,10 +414,10 @@ exports.MessageTypes = [
 
 /**
  * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
- * - PLAYING
- * - STREAMING
- * - LISTENING
- * - WATCHING
+ * * PLAYING
+ * * STREAMING
+ * * LISTENING
+ * * WATCHING
  * @typedef {string} GameType
  */
 exports.GameTypes = [
@@ -629,9 +629,9 @@ exports.UserChannelOverrideMap = {
 
 /**
  * All flags users can have:
- * - STAFF
- * - PARTNER
- * - HYPESQUAD
+ * * STAFF
+ * * PARTNER
+ * * HYPESQUAD
  * @typedef {string} UserFlags
  */
 exports.UserFlags = {
@@ -675,49 +675,49 @@ exports.Colors = {
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:
- * - UNKNOWN_ACCOUNT
- * - UNKNOWN_APPLICATION
- * - UNKNOWN_CHANNEL
- * - UNKNOWN_GUILD
- * - UNKNOWN_INTEGRATION
- * - UNKNOWN_INVITE
- * - UNKNOWN_MEMBER
- * - UNKNOWN_MESSAGE
- * - UNKNOWN_OVERWRITE
- * - UNKNOWN_PROVIDER
- * - UNKNOWN_ROLE
- * - UNKNOWN_TOKEN
- * - UNKNOWN_USER
- * - UNKNOWN_EMOJI
- * - BOT_PROHIBITED_ENDPOINT
- * - BOT_ONLY_ENDPOINT
- * - MAXIMUM_GUILDS
- * - MAXIMUM_FRIENDS
- * - MAXIMUM_PINS
- * - MAXIMUM_ROLES
- * - MAXIMUM_REACTIONS
- * - UNAUTHORIZED
- * - MISSING_ACCESS
- * - INVALID_ACCOUNT_TYPE
- * - CANNOT_EXECUTE_ON_DM
- * - EMBED_DISABLED
- * - CANNOT_EDIT_MESSAGE_BY_OTHER
- * - CANNOT_SEND_EMPTY_MESSAGE
- * - CANNOT_MESSAGE_USER
- * - CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
- * - CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
- * - OAUTH2_APPLICATION_BOT_ABSENT
- * - MAXIMUM_OAUTH2_APPLICATIONS
- * - INVALID_OAUTH_STATE
- * - MISSING_PERMISSIONS
- * - INVALID_AUTHENTICATION_TOKEN
- * - NOTE_TOO_LONG
- * - INVALID_BULK_DELETE_QUANTITY
- * - CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
- * - CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
- * - BULK_DELETE_MESSAGE_TOO_OLD
- * - INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
- * - REACTION_BLOCKED
+ * * UNKNOWN_ACCOUNT
+ * * UNKNOWN_APPLICATION
+ * * UNKNOWN_CHANNEL
+ * * UNKNOWN_GUILD
+ * * UNKNOWN_INTEGRATION
+ * * UNKNOWN_INVITE
+ * * UNKNOWN_MEMBER
+ * * UNKNOWN_MESSAGE
+ * * UNKNOWN_OVERWRITE
+ * * UNKNOWN_PROVIDER
+ * * UNKNOWN_ROLE
+ * * UNKNOWN_TOKEN
+ * * UNKNOWN_USER
+ * * UNKNOWN_EMOJI
+ * * BOT_PROHIBITED_ENDPOINT
+ * * BOT_ONLY_ENDPOINT
+ * * MAXIMUM_GUILDS
+ * * MAXIMUM_FRIENDS
+ * * MAXIMUM_PINS
+ * * MAXIMUM_ROLES
+ * * MAXIMUM_REACTIONS
+ * * UNAUTHORIZED
+ * * MISSING_ACCESS
+ * * INVALID_ACCOUNT_TYPE
+ * * CANNOT_EXECUTE_ON_DM
+ * * EMBED_DISABLED
+ * * CANNOT_EDIT_MESSAGE_BY_OTHER
+ * * CANNOT_SEND_EMPTY_MESSAGE
+ * * CANNOT_MESSAGE_USER
+ * * CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
+ * * CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
+ * * OAUTH2_APPLICATION_BOT_ABSENT
+ * * MAXIMUM_OAUTH2_APPLICATIONS
+ * * INVALID_OAUTH_STATE
+ * * MISSING_PERMISSIONS
+ * * INVALID_AUTHENTICATION_TOKEN
+ * * NOTE_TOO_LONG
+ * * INVALID_BULK_DELETE_QUANTITY
+ * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * * BULK_DELETE_MESSAGE_TOO_OLD
+ * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * * REACTION_BLOCKED
  * @typedef {string} APIError
  */
 exports.APIErrors = {
@@ -1330,9 +1330,9 @@ class Util {
 
   /**
    * Parses emoji info out of a string. The string must be one of:
-   * - A UTF-8 emoji (no ID)
-   * - A URL-encoded UTF-8 emoji (no ID)
-   * - A Discord custom emoji (`<:name:id>`)
+   * * A UTF-8 emoji (no ID)
+   * * A URL-encoded UTF-8 emoji (no ID)
+   * * A Discord custom emoji (`<:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {Object} Object with `name` and `id` properties
    * @private
@@ -3716,8 +3716,8 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author);
 
     /**
-     * Represents the author of the message as a guild member. Only available if the message comes from a guild
-     * where the author is still a member.
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */
     this.member = this.guild ? this.guild.member(this.author) || null : null;
@@ -3883,8 +3883,8 @@ class Message {
   }
 
   /**
-   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted
+   * The message contents with all mentions replaced by the equivalent text.
+   * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
    * @type {string}
    * @readonly
    */
@@ -3928,8 +3928,8 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
-   *  { time: 15000 }
+   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
+   *   { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -3945,8 +3945,8 @@ class Message {
    */
 
   /**
-   * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
-   * filter.
+   * Similar to createCollector but in promise form.
+   * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
@@ -4019,8 +4019,8 @@ class Message {
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .catch(console.error);
    */
   edit(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -4105,8 +4105,8 @@ class Message {
    * @example
    * // Delete a message
    * message.delete()
-   *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .catch(console.error);
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
@@ -4134,8 +4134,8 @@ class Message {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -4326,7 +4326,7 @@ class Permissions {
   }
 
   /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
    * permission is available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {Object}
@@ -4339,8 +4339,8 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.FLAGS})
-   * - A permission number
+   * * A string (see {@link Permissions.FLAGS})
+   * * A permission number
    * @typedef {string|number} PermissionResolvable
    */
 
@@ -4359,34 +4359,34 @@ class Permissions {
 
 /**
  * Numeric permission flags. All available properties:
- * - `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
- * - `CREATE_INSTANT_INVITE` (create invitations to the guild)
- * - `KICK_MEMBERS`
- * - `BAN_MEMBERS`
- * - `MANAGE_CHANNELS` (edit and reorder channels)
- * - `MANAGE_GUILD` (edit the guild information, region, etc.)
- * - `ADD_REACTIONS` (add new reactions to messages)
- * - `VIEW_AUDIT_LOG`
- * - `VIEW_CHANNELS`
- * - `SEND_MESSAGES`
- * - `SEND_TTS_MESSAGES`
- * - `MANAGE_MESSAGES` (delete messages and reactions)
- * - `EMBED_LINKS` (links posted will have a preview embedded)
- * - `ATTACH_FILES`
- * - `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
- * - `MENTION_EVERYONE`
- * - `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
- * - `CONNECT` (connect to a voice channel)
- * - `SPEAK` (speak in a voice channel)
- * - `MUTE_MEMBERS` (mute members across all voice channels)
- * - `DEAFEN_MEMBERS` (deafen members across all voice channels)
- * - `MOVE_MEMBERS` (move members between voice channels)
- * - `USE_VAD` (use voice activity detection)
- * - `CHANGE_NICKNAME`
- * - `MANAGE_NICKNAMES` (change other members' nicknames)
- * - `MANAGE_ROLES`
- * - `MANAGE_WEBHOOKS`
- * - `MANAGE_EMOJIS`
+ * * `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
+ * * `CREATE_INSTANT_INVITE` (create invitations to the guild)
+ * * `KICK_MEMBERS`
+ * * `BAN_MEMBERS`
+ * * `MANAGE_CHANNELS` (edit and reorder channels)
+ * * `MANAGE_GUILD` (edit the guild information, region, etc.)
+ * * `ADD_REACTIONS` (add new reactions to messages)
+ * * `VIEW_AUDIT_LOG`
+ * * `VIEW_CHANNEL`
+ * * `SEND_MESSAGES`
+ * * `SEND_TTS_MESSAGES`
+ * * `MANAGE_MESSAGES` (delete messages and reactions)
+ * * `EMBED_LINKS` (links posted will have a preview embedded)
+ * * `ATTACH_FILES`
+ * * `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
+ * * `MENTION_EVERYONE`
+ * * `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
+ * * `CONNECT` (connect to a voice channel)
+ * * `SPEAK` (speak in a voice channel)
+ * * `MUTE_MEMBERS` (mute members across all voice channels)
+ * * `DEAFEN_MEMBERS` (deafen members across all voice channels)
+ * * `MOVE_MEMBERS` (move members between voice channels)
+ * * `USE_VAD` (use voice activity detection)
+ * * `CHANGE_NICKNAME`
+ * * `MANAGE_NICKNAMES` (change other members' nicknames)
+ * * `MANAGE_ROLES`
+ * * `MANAGE_WEBHOOKS`
+ * * `MANAGE_EMOJIS`
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/permissions}
  */
@@ -5017,7 +5017,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar
+   * A link to the user's avatar.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
@@ -5039,7 +5039,8 @@ class User {
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * A link to the user's avatar if they have one.
+   * Otherwise a link to their default avatar will be returned.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
@@ -5255,8 +5256,8 @@ class Channel {
    * @example
    * // Delete the channel
    * channel.delete()
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then() // Success
+   *   .catch(console.error); // Log error
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
@@ -5449,10 +5450,10 @@ class GuildChannel extends Channel {
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
+   *   SEND_MESSAGES: false
    * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
+   *   .then(() => console.log('Done!'))
+   *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
     const payload = {
@@ -5531,8 +5532,8 @@ class GuildChannel extends Channel {
    * @example
    * // Edit a channel
    * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
+   *   .then(c => console.log(`Edited channel ${c}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.channels(this.id).patch({
@@ -5555,8 +5556,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel name
    * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *   .catch(console.error);
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
@@ -5570,8 +5571,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel position
    * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, relative) {
     return this.guild.setChannelPosition(this, position, relative).then(() => this);
@@ -5585,8 +5586,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
    */
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
@@ -5669,8 +5670,8 @@ class GuildChannel extends Channel {
    * @example
    * // Delete the channel
    * channel.delete('making room for new channels')
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then() // Success
+   *   .catch(console.error); // Log error
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);
@@ -5866,7 +5867,7 @@ class Role {
   }
 
   /**
-   * Get an object mapping permission names to whether or not the role enables that permission
+   * Get an object mapping permission names to whether or not the role enables that permission.
    * @returns {Object<string, boolean>}
    * @example
    * // Print the serialized role permissions
@@ -5929,8 +5930,8 @@ class Role {
    * @example
    * // Edit a role
    * role.edit({name: 'new role'})
-   *  .then(r => console.log(`Edited role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Edited role ${r}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
@@ -5957,8 +5958,8 @@ class Role {
    * @example
    * // Set the name of the role
    * role.setName('new role')
-   *  .then(r => console.log(`Edited name of role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Edited name of role ${r}`))
+   *   .catch(console.error);
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
@@ -5972,8 +5973,8 @@ class Role {
    * @example
    * // Set the color of a role
    * role.setColor('#FF0000')
-   *  .then(r => console.log(`Set color of role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Set color of role ${r}`))
+   *   .catch(console.error);
    */
   setColor(color, reason) {
     return this.edit({ color }, reason);
@@ -5987,8 +5988,8 @@ class Role {
    * @example
    * // Set the hoist of the role
    * role.setHoist(true)
-   *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
+   *   .catch(console.error);
    */
   setHoist(hoist, reason) {
     return this.edit({ hoist }, reason);
@@ -6002,8 +6003,8 @@ class Role {
    * @example
    * // Set the position of the role
    * role.setPosition(1)
-   *  .then(r => console.log(`Role position: ${r.position}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role position: ${r.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, relative) {
     return this.guild.setRolePosition(this, position, relative).then(() => this);
@@ -6017,8 +6018,8 @@ class Role {
    * @example
    * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
-   *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role updated ${r}`))
+   *   .catch(console.error);
    */
   setPermissions(permissions, reason) {
     return this.edit({ permissions }, reason);
@@ -6032,8 +6033,8 @@ class Role {
    * @example
    * // Make the role mentionable
    * role.setMentionable(true)
-   *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role updated ${r}`))
+   *   .catch(console.error);
    */
   setMentionable(mentionable, reason) {
     return this.edit({ mentionable }, reason);
@@ -6046,8 +6047,8 @@ class Role {
    * @example
    * // Delete a role
    * role.delete()
-   *  .then(r => console.log(`Deleted role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Deleted role ${r}`))
+   *   .catch(console.error);
    */
   delete(reason) {
     return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
@@ -6204,8 +6205,8 @@ class Webhook {
    * @example
    * // Send a message
    * webhook.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -6451,7 +6452,7 @@ class MessageEmbed {
     this.fields = data.fields || [];
 
     /**
-     * The thumbnail of this embed, if there is one
+     * The thumbnail of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
@@ -6481,7 +6482,7 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The video of this embed, if there is one
+     * The video of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL of this video
      * @property {number} height Height of this video
@@ -6490,7 +6491,7 @@ class MessageEmbed {
     this.video = data.video;
 
     /**
-     * The author of this embed, if there is one
+     * The author of this embed (if there is one)
      * @type {?Object}
      * @property {string} name The name of this author
      * @property {string} url URL of this author
@@ -6505,7 +6506,7 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The provider of this embed, if there is one
+     * The provider of this embed (if there is one)
      * @type {?Object}
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
@@ -6526,14 +6527,12 @@ class MessageEmbed {
     } : null;
 
     /**
-	* The files of this embed
-	* @type {?Object}
-	* @property {Array<FileOptions|string|Attachment>} files Files to attach
-	*/
+     * The files of this embed
+     * @type {?Object}
+     * @property {Array<FileOptions|string|Attachment>} files Files to attach
+     */
     if (data.files) {
-      for (let file of data.files) {
-        if (file instanceof Attachment) file = file.file;
-      }
+      for (let file of data.files) if (file instanceof Attachment) file = file.file;
     } else { data.files = null; }
   }
 
@@ -6560,7 +6559,7 @@ class MessageEmbed {
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
@@ -6575,7 +6574,7 @@ class MessageEmbed {
   /**
    * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
    * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   addBlankField(inline = false) {
     return this.addField('\u200B', '\u200B', inline);
@@ -6585,7 +6584,7 @@ class MessageEmbed {
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
    * @param {Array<FileOptions|string|Attachment>} files Files to attach
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
@@ -6601,7 +6600,7 @@ class MessageEmbed {
    * @param {StringResolvable} name The name of the author
    * @param {string} [iconURL] The icon URL of the author
    * @param {string} [url] The URL of the author
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setAuthor(name, iconURL, url) {
     this.author = { name: Util.resolveString(name), iconURL, url };
@@ -6611,7 +6610,7 @@ class MessageEmbed {
   /**
    * Sets the color of this embed.
    * @param {ColorResolvable} color The color of the embed
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setColor(color) {
     this.color = Util.resolveColor(color);
@@ -6621,7 +6620,7 @@ class MessageEmbed {
   /**
    * Sets the description of this embed.
    * @param {StringResolvable} description The description
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setDescription(description) {
     description = Util.resolveString(description);
@@ -6634,7 +6633,7 @@ class MessageEmbed {
    * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [iconURL] The icon URL of the footer
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
@@ -6646,7 +6645,7 @@ class MessageEmbed {
   /**
    * Set the image of this embed.
    * @param {string} url The URL of the image
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setImage(url) {
     this.image = { url };
@@ -6656,7 +6655,7 @@ class MessageEmbed {
   /**
    * Set the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setThumbnail(url) {
     this.thumbnail = { url };
@@ -6666,7 +6665,7 @@ class MessageEmbed {
   /**
    * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setTimestamp(timestamp = new Date()) {
     this.timestamp = timestamp.getTime();
@@ -6676,7 +6675,7 @@ class MessageEmbed {
   /**
    * Sets the title of this embed.
    * @param {StringResolvable} title The title
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setTitle(title) {
     title = Util.resolveString(title);
@@ -6688,7 +6687,7 @@ class MessageEmbed {
   /**
    * Sets the URL of this embed.
    * @param {string} url The URL
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setURL(url) {
     this.url = url;
@@ -6801,7 +6800,7 @@ class Game {
   }
 
   /**
-   * Whether this game is equal to another game
+   * Whether this game is equal to another game.
    * @param {Game} game The game to compare with
    * @returns {boolean}
    */
@@ -7403,7 +7402,8 @@ class Guild {
 
     if (!this.emojis) {
       /**
-       * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+       * A collection of emojis that are in this guild
+       * The key is the emoji's ID, the value is the emoji
        * @type {Collection<Snowflake, Emoji>}
        */
       this.emojis = new Collection();
@@ -7444,7 +7444,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon
+   * The URL to this guild's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -7456,7 +7456,7 @@ class Guild {
   }
 
   /**
-   * Gets the acronym that shows up in place of a guild icon
+   * The acronym that shows up in place of a guild icon.
    * @type {string}
    * @readonly
    */
@@ -7465,7 +7465,7 @@ class Guild {
   }
 
   /**
-   * The URL to this guild's splash
+   * The URL to this guild's splash.
    * @param {Object} [options={}] Options for the splash url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -7626,7 +7626,8 @@ class Guild {
   }
 
   /**
-   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
+   * Fetch a collection of invites to this guild.
+   * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites() {
@@ -7749,7 +7750,7 @@ class Guild {
   fetchMembers({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        resolve((query || limit) ? new Collection() : this.members);
+        resolve(query || limit ? new Collection() : this.members);
         return;
       }
       this.client.ws.send({
@@ -7768,7 +7769,7 @@ class Guild {
         }
         if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve((query || limit) ? fetchedMembers : this.members);
+          resolve(query || limit ? fetchedMembers : this.members);
         }
       };
       this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
@@ -7819,11 +7820,11 @@ class Guild {
    * @example
    * // Set the guild name and region
    * guild.edit({
-   *  name: 'Discord Guild',
-   *  region: 'london',
+   *   name: 'Discord Guild',
+   *   region: 'london',
    * })
-   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
-   * .catch(console.error);
+   *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     const _data = {};
@@ -8024,8 +8025,8 @@ class Guild {
    * @example
    * // Ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
-   *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
@@ -8051,8 +8052,8 @@ class Guild {
    * @example
    * // Unban a user by ID (or with a user/guild member object)
    * guild.unban('some user ID')
-   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *   .catch(console.error);
    */
   unban(user, reason) {
     const id = this.client.resolver.resolveUserID(user);
@@ -8112,8 +8113,8 @@ class Guild {
    * @example
    * // Create a new text channel
    * guild.createChannel('new-general', 'text')
-   *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.error);
+   *   .then(channel => console.log(`Created new channel ${channel}`))
+   *   .catch(console.error);
    */
   createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
@@ -8164,8 +8165,8 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
-   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
-   *  .catch(console.error);
+   *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
     const data = new Array(channelPositions.length);
@@ -8196,8 +8197,8 @@ class Guild {
    * @example
    * // Create a new role
    * guild.createRole()
-   *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.error);
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error);
    * @example
    * // Create a new role with data and a reason
    * guild.createRole({
@@ -8207,8 +8208,8 @@ class Guild {
    *   },
    *   reason: 'we needed a role for Super Cool People',
    * })
-   * .then(role => console.log(`Created role ${role}`))
-   * .catch(console.error)
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error)
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
@@ -8233,13 +8234,13 @@ class Guild {
    * @example
    * // Create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .catch(console.error);
    */
   createEmoji(attachment, name, { roles, reason } = {}) {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
@@ -8285,8 +8286,8 @@ class Guild {
    * @example
    * // Leave a guild
    * guild.leave()
-   *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.error);
+   *   .then(g => console.log(`Left the guild ${g}`))
+   *   .catch(console.error);
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
@@ -8300,8 +8301,8 @@ class Guild {
    * @example
    * // Delete a guild
    * guild.delete()
-   *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.error);
+   *   .then(g => console.log(`Deleted the guild ${g}`))
+   *   .catch(console.error);
    */
   delete() {
     return this.client.api.guilds(this.id).delete()
@@ -8614,8 +8615,8 @@ class TextBasedChannel {
    * @example
    * // Send a message
    * channel.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -8725,8 +8726,8 @@ class TextBasedChannel {
    * @example
    * // Get messages
    * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchMessages(options = {}) {
     const Message = __webpack_require__(10);
@@ -8851,8 +8852,8 @@ class TextBasedChannel {
    * @example
    * // Create a message collector
    * const collector = channel.createMessageCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
+   *   m => m.content.includes('discord'),
+   *   { time: 15000 }
    * );
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -8878,8 +8879,8 @@ class TextBasedChannel {
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   *   .then(collected => console.log(collected.size))
+   *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {
@@ -9485,7 +9486,7 @@ class GuildMember {
   }
 
   /**
-   * Ban this guild member
+   * Ban this guild member.
    * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
@@ -9641,10 +9642,10 @@ class Emoji {
    * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit an emoji
    * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
+   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.guilds(this.guild.id).emojis(this.id)
@@ -10040,7 +10041,7 @@ module.exports = Invite;
 /***/ (function(module, exports) {
 
 /**
- * Represents an attachment in a message
+ * Represents an attachment in a message.
  */
 class Attachment {
   constructor(file, name) {
@@ -13144,7 +13145,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Gets the URL to this Group DM's icon
+   * Gets the URL to this Group DM's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -13468,7 +13469,7 @@ class ClientApplication {
   }
 
   /**
-   * A link to the application's icon
+   * A link to the application's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -13480,7 +13481,7 @@ class ClientApplication {
   }
 
   /**
-   * A link to this application's cover image
+   * A link to this application's cover image.
    * @param {Object} [options={}] Options for the cover image url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -13494,7 +13495,7 @@ class ClientApplication {
   }
 
   /**
-   * Get rich presence assets
+   * Get rich presence assets.
    * @returns {Promise<Object>}
    */
   fetchAssets() {
@@ -13507,7 +13508,7 @@ class ClientApplication {
   }
 
   /**
-   * Create a rich presence asset
+   * Create a rich presence asset.
    * @param {string} name Name of the asset
    * @param {Base64Resolvable} data Data of the asset
    * @param {string} type Type of the asset. `big`, or `small`
@@ -16050,7 +16051,7 @@ const assert = __webpack_require__(108);
 const util = __webpack_require__(39);
 
 /**
- * Extend an error of some sort into a DiscordjsError
+ * Extend an error of some sort into a DiscordjsError.
  * @param {Error} Base Base error to extend
  * @returns {DiscordjsError}
  */
@@ -16073,7 +16074,7 @@ function makeDiscordjsError(Base) {
 }
 
 /**
- * Format the message for an error
+ * Format the message for an error.
  * @param {string} key Error key
  * @param {Array<*>} args Arguments to pass for util format or as function args
  * @returns {string} Formatted string
@@ -16093,7 +16094,7 @@ function message(key, args) {
 }
 
 /**
- * Register an error code and message
+ * Register an error code and message.
  * @param {string} sym Unique name for the error
  * @param {*} val Value of the error
  */
@@ -16256,7 +16257,8 @@ class MessageCollector extends Collector {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel
+     * The channel
+     * @type {TextBasedChannel}
      */
     this.channel = channel;
 
@@ -16284,7 +16286,7 @@ class MessageCollector extends Collector {
   /**
    * Handle a message for possible collection.
    * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @returns {?{key: Snowflake, value: Message}}
    * @private
    */
   collect(message) {
@@ -16299,7 +16301,7 @@ class MessageCollector extends Collector {
   /**
    * Handle a message for possible disposal.
    * @param {Message} message The message that could be disposed
-   * @returns {?string} The message ID.
+   * @returns {?string}
    */
   dispose(message) {
     return message.channel.id === this.channel.id ? message.id : null;
@@ -16307,7 +16309,7 @@ class MessageCollector extends Collector {
 
   /**
    * Check after un/collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
+   * @returns {?string}
    * @private
    */
   endReason() {
@@ -16454,9 +16456,9 @@ class TextChannel extends GuildChannel {
    * @param {string} [reason] Reason for creating this webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created webhook ${webhook}`))
-   *  .catch(console.error)
+   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
+   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   *   .catch(console.error)
    */
   createWebhook(name, avatar, reason) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
@@ -16789,8 +16791,8 @@ class MessageMentions {
   }
 
   /**
-   * Check if a user is mentioned. Takes into account user mentions, role
-   * mentions, and @everyone/@here mentions.
+   * Check if a user is mentioned.
+   * Takes into account user mentions, role mentions, and @everyone/@here mentions.
    * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
    * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
    * @returns {boolean}
@@ -17085,7 +17087,7 @@ class ReactionCollector extends Collector {
   /**
    * Handle an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
+   * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
    */
   collect(reaction) {
@@ -17099,7 +17101,7 @@ class ReactionCollector extends Collector {
   /**
    * Handle a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose
-   * @returns {?Snowflake|string} The reaction key
+   * @returns {?Snowflake|string}
    */
   dispose(reaction) {
     return reaction.message.id === this.message.id && !reaction.count ? ReactionCollector.key(reaction) : null;
@@ -17125,7 +17127,7 @@ class ReactionCollector extends Collector {
   /**
    * Get the collector key for a reaction.
    * @param {MessageReaction} reaction The message reaction to get the key for
-   * @returns {Snowflake|string} The emoji ID (if custom) or the emoji name (if native; will be unicode)
+   * @returns {Snowflake|string}
    */
   static key(reaction) {
     return reaction.emoji.id || reaction.emoji.name;
@@ -17223,8 +17225,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the bitrate of a voice channel
    * voiceChannel.setBitrate(48)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
+   *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
     bitrate *= 1000;
@@ -17239,8 +17241,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
-   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
     return this.edit({ userLimit }, reason);
@@ -17252,8 +17254,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Join a voice channel
    * voiceChannel.join()
-   *  .then(connection => console.log('Connected!'))
-   *  .catch(console.error);
+   *   .then(connection => console.log('Connected!'))
+   *   .catch(console.error);
    */
   join() {
     if (this.client.browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));
@@ -17466,7 +17468,7 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
-     * An entry in the audit log representing a specific change
+     * An entry in the audit log representing a specific change.
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
@@ -17670,12 +17672,12 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {string} gateway The WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
     /**
-     * WebSocket Manager of this connection
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
@@ -17874,7 +17876,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -17999,7 +18001,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
@@ -18236,7 +18238,7 @@ class ClientUser extends User {
     /**
      * All of the user's guild settings
      * @type {Collection<Snowflake, ClientUserGuildSettings>}
-     * <warn>This is only filled when using a user account</warn>
+     * <warn>This is only filled when using a user account.</warn>
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
@@ -18272,8 +18274,8 @@ class ClientUser extends User {
    * @example
    * // Set username
    * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new username is ${user.username}`))
+   *   .catch(console.error);
    */
   setUsername(username, password) {
     return this.edit({ username }, password);
@@ -18288,8 +18290,8 @@ class ClientUser extends User {
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new email is ${user.email}`))
+   *   .catch(console.error);
    */
   setEmail(email, password) {
     return this.edit({ email }, password);
@@ -18307,8 +18309,8 @@ class ClientUser extends User {
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
+   *   .then(user => console.log('New password set!'))
+   *   .catch(console.error);
    */
   setPassword(newPassword, options) {
     return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
@@ -18321,8 +18323,8 @@ class ClientUser extends User {
    * @example
    * // Set avatar
    * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`New avatar set!`))
+   *   .catch(console.error);
    */
   setAvatar(avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
@@ -18406,10 +18408,10 @@ class ClientUser extends User {
 
   /**
    * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
+   * * `online`
+   * * `idle`
+   * * `invisible`
+   * * `dnd` (do not disturb)
    * @typedef {string} PresenceStatus
    */
 
@@ -18656,7 +18658,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A user ID
+   * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A Guild object (owner of the guild)
    * * A GuildMember object
@@ -18693,7 +18695,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * * A Guild ID
+   * * A Snowflake
    * @typedef {Guild|Snowflake} GuildResolvable
    */
 
@@ -18755,7 +18757,7 @@ class ClientDataResolver {
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
-   * * A channel ID
+   * * A Snowflake
    * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
    */
 
@@ -23935,7 +23937,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The client that created the instance of the UserProfile.
+     * The client that created the instance of the UserProfile
      * @name UserProfile#client
      * @type {Client}
      * @readonly
@@ -25425,7 +25427,7 @@ const Constants = __webpack_require__(0);
 const WebSocketConnection = __webpack_require__(73);
 
 /**
- * WebSocket Manager of the client
+ * WebSocket Manager of the client.
  * @private
  */
 class WebSocketManager extends EventEmitter {
@@ -25445,7 +25447,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Sends a heartbeat on the available connection
+   * Sends a heartbeat on the available connection.
    * @returns {void}
    */
   heartbeat() {
@@ -25489,7 +25491,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects the client to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @returns {boolean}
    */
   connect(gateway) {
