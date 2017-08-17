@@ -758,7 +758,7 @@ class Guild {
 
   /**
    * Edit the system channel of the guild.
-   * @param {ChannelResolvable} systemChannel The new AFK channel
+   * @param {ChannelResolvable} systemChannel The new system channel
    * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    */
