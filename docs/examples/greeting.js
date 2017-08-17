@@ -19,7 +19,7 @@ client.on('ready', () => {
 
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
-  // Send the message to a first channel on a server:
+  // Send the message to the first channel on a server:
   let firstTextCh = member.guild.channels.filter(c => c.type === "text" && c.permissionsFor(msg.guild.me).has("SEND_MESSAGES")).sort((a, b) => a.position - b.position || a.id - b.id).first();
   firstTextCh.send(`Welcome to the server, ${member}`);
   
