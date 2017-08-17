@@ -19,7 +19,14 @@ client.on('ready', () => {
 
 // Create an event listener for new guild members
 client.on('guildMemberAdd', member => {
-  // Send the message to a designated channel on a server:
+  // Send the message to a first channel on a server:
+  let firstTextCh = msg.guild.channels
+    .filter(c => c.type === "text")
+    .filter(c => c.permissionsFor(c.guild.member(client.user)).has("SEND_MESSAGES"))
+    .first();
+  firstTextCh.send(`Welcome to the server, ${member}`);
+  
+  // Or send the message to a designated channel on a server:
   const channel = member.guild.channels.find('name', 'member-log');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
