@@ -48,7 +48,7 @@ class PartialGuild {
      */
     this.splash = data.splash;
   }
-     
+
   /**
    * Gets the URL to this guild's icon
    * @param {Object} [options={}] Options for the icon url
