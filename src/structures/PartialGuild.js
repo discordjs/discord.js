@@ -1,3 +1,5 @@
+const Constants = require('../util/Constants');
+
 /*
 { splash: null,
      id: '123123123',
@@ -45,6 +47,18 @@ class PartialGuild {
      * @type {?string}
      */
     this.splash = data.splash;
+  }
+
+  /**
+   * Gets the URL to this guild's icon
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
   }
 }
 
