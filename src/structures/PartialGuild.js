@@ -1,3 +1,5 @@
+const Constants = require('../util/Constants');
+
 /*
 { splash: null,
      id: '123123123',
