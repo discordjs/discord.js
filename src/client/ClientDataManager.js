@@ -19,6 +19,7 @@ class ClientDataManager {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
+    if (!this.client.user.bot && this.client.options.sync) this.client.syncGuilds([guild]);
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a guild.
