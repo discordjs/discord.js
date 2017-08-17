@@ -4367,7 +4367,7 @@ class Permissions {
  * - `MANAGE_GUILD` (edit the guild information, region, etc.)
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
- * - `READ_MESSAGES`
+ * - `VIEW_CHANNELS`
  * - `SEND_MESSAGES`
  * - `SEND_TTS_MESSAGES`
  * - `MANAGE_MESSAGES` (delete messages and reactions)
@@ -4400,7 +4400,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
 
-  READ_MESSAGES: 1 << 10,
+  VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
   MANAGE_MESSAGES: 1 << 13,
@@ -5496,6 +5496,21 @@ class GuildChannel extends Channel {
     return this.client.api.channels(this.id).permissions[payload.id]
       .put({ data: payload, reason })
       .then(() => this);
+  }
+
+  /**
+   * A collection of members that can see this channel, mapped by their ID
+   * @type {Collection<Snowflake, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).has('VIEW_CHANNEL')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
   }
 
   /**
@@ -16418,21 +16433,6 @@ class TextChannel extends GuildChannel {
     this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
-  }
-
-  /**
-   * A collection of members that can see this channel, mapped by their ID
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).has('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
   }
 
   /**
