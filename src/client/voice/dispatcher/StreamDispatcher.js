@@ -98,15 +98,6 @@ class StreamDispatcher extends VolumeInterface {
    */
   resume() { this.setPaused(false); }
 
-
-  /**
-   * Stops the current stream permanently and emits an `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
-   */
-  end(reason = 'user') {
-    this.destroy('end', reason);
-  }
-
   setSpeaking(value) {
     if (this.speaking === value) return;
     if (this.player.voiceConnection.status !== Constants.VoiceStatus.CONNECTED) return;
@@ -287,8 +278,12 @@ class StreamDispatcher extends VolumeInterface {
     data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
   }
 
-  destroy(type, reason) {
-    if (this.destroyed) return;
+  /**
+   * Stops the current stream permanently.
+   * @param {string} [type='end'] The type of ending. 'end' will emit the `end` event.
+   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
+   */
+  destroy(type = 'end', reason = 'user') {
     this.destroyed = true;
     this.setSpeaking(false);
     this.emit(type, reason);
