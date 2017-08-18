@@ -284,6 +284,7 @@ class StreamDispatcher extends VolumeInterface {
    * @param {string} [reason='user'] An optional reason for stopping the dispatcher
    */
   destroy(type = 'end', reason = 'user') {
+    if (this.destroyed) return;
     this.destroyed = true;
     this.setSpeaking(false);
     this.emit(type, reason);
