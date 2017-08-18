@@ -280,10 +280,11 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * Stops the current stream permanently.
-   * @param {string} [type='end'] The type of ending. 'end' will emit the `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
+   * @param {Object} [options] Options for the destruction
+   * @param {string} [options.type='end'] The type of ending. 'end' will emit the `end` event.
+   * @param {string} [options.reason='user'] A reason for stopping the dispatcher
    */
-  destroy(type = 'end', reason = 'user') {
+  destroy({ type = 'end', reason = 'user' } = {}) {
     if (this.destroyed) return;
     this.destroyed = true;
     this.setSpeaking(false);
