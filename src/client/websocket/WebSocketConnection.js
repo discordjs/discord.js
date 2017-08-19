@@ -82,7 +82,7 @@ class WebSocketConnection extends EventEmitter {
     this.ratelimit = {
       queue: [],
       remaining: 120,
-      resetTime: -1,
+      resetTimer: -1,
     };
     this.connect(gateway);
 
@@ -276,6 +276,7 @@ class WebSocketConnection extends EventEmitter {
     this.packetManager.handleQueue();
     this.ws = null;
     this.status = Constants.Status.DISCONNECTED;
+    clearTimeout(this.ratelimit.resetTimer);
     return true;
   }
 
