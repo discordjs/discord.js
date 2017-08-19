@@ -18,8 +18,8 @@ class RESTManager {
   }
 
   destroy() {
-    for (const handlerID in this.handlers) {
-      this.handlers[handlerID].destroy();
+    for (const handler of Object.values(this.handlers)) {
+      if (handler.destroy) handler.destroy();
     }
   }
 
