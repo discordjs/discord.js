@@ -65,6 +65,10 @@ class RequestHandler {
     this.globallyLimited = false;
     this.remaining = 1;
   }
+
+  destroy() {
+    this.queue = [];
+  }
 }
 
 module.exports = RequestHandler;
