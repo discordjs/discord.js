@@ -493,6 +493,9 @@ class WebSocketConnection extends EventEmitter {
       d,
     });
   }
+
+  // for the future
+  destroy() {} // eslint-disable-line no-empty-function
 }
 
 /**
