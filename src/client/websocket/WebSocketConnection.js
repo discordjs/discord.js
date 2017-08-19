@@ -275,8 +275,8 @@ class WebSocketConnection extends EventEmitter {
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
-    this.status = Constants.Status.DISCONNECTED;
     clearTimeout(this.ratelimit.resetTimer);
+    this.status = Constants.Status.DISCONNECTED;
     return true;
   }
 
