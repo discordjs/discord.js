@@ -3,6 +3,8 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Collection = require('../../util/Collection');
 const Snowflake = require('../../util/Snowflake');
+const Attachment = require('../../structures/Attachment');
+const MessageEmbed = require('../../structures/MessageEmbed');
 const { Error, RangeError, TypeError } = require('../../errors');
 
 /**
@@ -39,7 +41,7 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
+   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
@@ -69,15 +71,27 @@ class TextBasedChannel {
    * @example
    * // Send a message
    * channel.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
-  send(content, options) {
+  send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
     } else if (!options) {
       options = {};
+    }
+
+    if (options instanceof MessageEmbed) options = { embed: options };
+    if (options instanceof Attachment) options = { files: [options.file] };
+
+    if (content instanceof Array || options instanceof Array) {
+      const which = content instanceof Array ? content : options;
+      const attachments = which.filter(item => item instanceof Attachment);
+      if (attachments.length) {
+        options = { files: attachments };
+        if (content instanceof Array) content = '';
+      }
     }
 
     if (!options.content) options.content = content;
@@ -90,22 +104,26 @@ class TextBasedChannel {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
+        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
+          } else if (file instanceof Attachment) {
+            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
+        } else if (file instanceof Attachment) {
+          file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        this.client.resolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
       )).then(files => {
@@ -164,8 +182,8 @@ class TextBasedChannel {
    * @example
    * // Get messages
    * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchMessages(options = {}) {
     const Message = require('../Message');
@@ -290,8 +308,8 @@ class TextBasedChannel {
    * @example
    * // Create a message collector
    * const collector = channel.createMessageCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
+   *   m => m.content.includes('discord'),
+   *   { time: 15000 }
    * );
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -317,8 +335,8 @@ class TextBasedChannel {
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   *   .then(collected => console.log(collected.size))
+   *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {

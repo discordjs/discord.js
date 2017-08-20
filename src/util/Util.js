@@ -70,9 +70,9 @@ class Util {
 
   /**
    * Parses emoji info out of a string. The string must be one of:
-   * - A UTF-8 emoji (no ID)
-   * - A URL-encoded UTF-8 emoji (no ID)
-   * - A Discord custom emoji (`<:name:id>`)
+   * * A UTF-8 emoji (no ID)
+   * * A URL-encoded UTF-8 emoji (no ID)
+   * * A Discord custom emoji (`<:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {Object} Object with `name` and `id` properties
    * @private

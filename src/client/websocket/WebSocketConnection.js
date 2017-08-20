@@ -29,12 +29,12 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {string} gateway The WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
     /**
-     * WebSocket Manager of this connection
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
@@ -81,8 +81,9 @@ class WebSocketConnection extends EventEmitter {
      */
     this.ratelimit = {
       queue: [],
-      remaining: 120,
-      resetTime: -1,
+      remaining: 60,
+      total: 60,
+      resetTimer: null,
     };
     this.connect(gateway);
 
@@ -166,6 +167,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {Object}
    */
   unpack(data) {
+    if (Array.isArray(data)) data = Buffer.concat(data);
     if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
 
     if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
@@ -189,11 +191,11 @@ class WebSocketConnection extends EventEmitter {
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
     if (this.ratelimit.queue.length === 0) return;
-    if (this.ratelimit.remaining === 120) {
-      this.ratelimit.resetTimer = setTimeout(() => {
-        this.ratelimit.remaining = 120;
+    if (this.ratelimit.remaining === this.ratelimit.total) {
+      this.ratelimit.resetTimer = this.client.setTimeout(() => {
+        this.ratelimit.remaining = this.ratelimit.total;
         this.processQueue();
-      }, 120e3); // eslint-disable-line
+      }, 120e3);
     }
     while (this.ratelimit.remaining > 0) {
       const item = this.ratelimit.queue.shift();
@@ -232,7 +234,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -275,6 +277,7 @@ class WebSocketConnection extends EventEmitter {
     this.packetManager.handleQueue();
     this.ws = null;
     this.status = Constants.Status.DISCONNECTED;
+    this.ratelimit.remaining = this.ratelimit.total;
     return true;
   }
 
@@ -357,7 +360,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {

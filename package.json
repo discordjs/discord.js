@@ -32,19 +32,19 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "long": "^3.2.0",
+    "long": "^3.0.0",
     "prism-media": "^0.0.1",
-    "snekfetch": "^3.2.0",
+    "snekfetch": "^3.0.0",
     "tweetnacl": "^1.0.0",
     "ws": "^3.0.0"
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
     "erlpack": "hammerandchisel/erlpack",
-    "node-opus": "^0.2.5",
+    "node-opus": "^0.2.0",
     "opusscript": "^0.0.3",
-    "sodium": "^2.0.1",
-    "libsodium-wrappers": "^0.5.1",
+    "sodium": "^2.0.0",
+    "libsodium-wrappers": "^0.5.0",
     "uws": "^8.14.0"
   },
   "devDependencies": {

@@ -5,20 +5,37 @@
 class BaseOpus {
   /**
    * @param {Object} [options] The options to apply to the Opus engine
-   * @param {boolean} [options.fec] Whether to enable forward error correction (defaults to false)
-   * @param {number} [options.plp] The expected packet loss percentage (0-1 inclusive, defaults to 0)
+   * @param {number} [options.bitrate=48] The desired bitrate (kbps)
+   * @param {boolean} [options.fec=false] Whether to enable forward error correction
+   * @param {number} [options.plp=0] The expected packet loss percentage
    */
-  constructor(options = {}) {
+  constructor({ bitrate = 48, fec = false, plp = 0 } = {}) {
     this.ctl = {
+      BITRATE: 4002,
       FEC: 4012,
       PLP: 4014,
     };
 
-    this.options = options;
+    this.samplingRate = 48000;
+    this.channels = 2;
+
+    /**
+     * The desired bitrate (kbps)
+     * @type {number}
+     */
+    this.bitrate = bitrate;
+
+    /**
+     * Miscellaneous Opus options
+     * @type {Object}
+     */
+    this.options = { fec, plp };
   }
 
   init() {
     try {
+      this.setBitrate(this.bitrate);
+
       // Set FEC (forward error correction)
       if (this.options.fec) this.setFEC(this.options.fec);
 

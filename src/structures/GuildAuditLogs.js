@@ -184,7 +184,7 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
-     * An entry in the audit log representing a specific change
+     * An entry in the audit log representing a specific change.
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
@@ -241,18 +241,29 @@ class GuildAuditLogsEntry {
        * The target of this entry
        * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
        */
-      this.target = data.target_id;
+      this.target = this.changes.reduce((o, c) => {
+        o[c.key] = c.new || c.old;
+        return o;
+      }, {});
+      this.target.id = data.target_id;
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target = this.webhooks.get(data.target_id);
     } else if (targetType === Targets.INVITE) {
-      const change = this.changes.find(c => c.key === 'code');
-      this.target = guild.fetchInvites()
-        .then(invites => {
-          this.target = invites.find(i => i.code === (change.new_value || change.old_value));
-          return this.target;
-        });
+      if (guild.me.permissions.has('MANAGE_GUILD')) {
+        const change = this.changes.find(c => c.key === 'code');
+        this.target = guild.fetchInvites()
+          .then(invites => {
+            this.target = invites.find(i => i.code === (change.new || change.old));
+            return this.target;
+          });
+      } else {
+        this.target = this.changes.reduce((o, c) => {
+          o[c.key] = c.new || c.old;
+          return o;
+        }, {});
+      }
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.get(data.target_id);
     } else {

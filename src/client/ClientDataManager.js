@@ -2,12 +2,9 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
-const DMChannel = require('../structures/DMChannel');
-const Emoji = require('../structures/Emoji');
-const TextChannel = require('../structures/TextChannel');
-const VoiceChannel = require('../structures/VoiceChannel');
+const Channel = require('../structures/Channel');
 const GuildChannel = require('../structures/GuildChannel');
-const GroupDMChannel = require('../structures/GroupDMChannel');
+const Emoji = require('../structures/Emoji');
 
 class ClientDataManager {
   constructor(client) {
@@ -22,6 +19,7 @@ class ClientDataManager {
     const already = this.client.guilds.has(data.id);
     const guild = new Guild(this.client, data);
     this.client.guilds.set(guild.id, guild);
+    if (!this.client.user.bot && this.client.options.sync) this.client.syncGuilds([guild]);
     if (this.pastReady && !already) {
       /**
        * Emitted whenever the client joins a guild.
@@ -47,23 +45,7 @@ class ClientDataManager {
 
   newChannel(data, guild) {
     const already = this.client.channels.has(data.id);
-    let channel;
-    if (data.type === Constants.ChannelTypes.DM) {
-      channel = new DMChannel(this.client, data);
-    } else if (data.type === Constants.ChannelTypes.GROUP_DM) {
-      channel = new GroupDMChannel(this.client, data);
-    } else {
-      guild = guild || this.client.guilds.get(data.guild_id);
-      if (guild) {
-        if (data.type === Constants.ChannelTypes.TEXT) {
-          channel = new TextChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.VOICE) {
-          channel = new VoiceChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        }
-      }
-    }
+    const channel = Channel.create(this.client, data, guild);
 
     if (channel) {
       if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);

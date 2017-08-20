@@ -3,7 +3,7 @@ const Constants = require('../../util/Constants');
 const WebSocketConnection = require('./WebSocketConnection');
 
 /**
- * WebSocket Manager of the client
+ * WebSocket Manager of the client.
  * @private
  */
 class WebSocketManager extends EventEmitter {
@@ -23,7 +23,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Sends a heartbeat on the available connection
+   * Sends a heartbeat on the available connection.
    * @returns {void}
    */
   heartbeat() {
@@ -67,7 +67,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects the client to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @returns {boolean}
    */
   connect(gateway) {

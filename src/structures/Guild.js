@@ -25,7 +25,7 @@ const { Error, TypeError } = require('../errors');
 class Guild {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the guild
+     * The client that created the instance of the guild
      * @name Guild#client
      * @type {Client}
      * @readonly
@@ -80,7 +80,7 @@ class Guild {
    * @param {*} data The raw data of the guild
    * @private
    */
-  setup(data) {
+  setup(data) { // eslint-disable-line complexity
     /**
      * The name of the guild
      * @type {string}
@@ -140,6 +140,12 @@ class Guild {
      * @type {?Snowflake}
      */
     this.afkChannelID = data.afk_channel_id;
+
+    /**
+     * The ID of the system channel
+     * @type {?Snowflake}
+     */
+    this.systemChannelID = data.system_channel_id;
 
     /**
      * Whether embedded images are enabled on this guild
@@ -220,11 +226,12 @@ class Guild {
 
     if (!this.emojis) {
       /**
-       * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
+       * A collection of emojis that are in this guild
+       * The key is the emoji's ID, the value is the emoji
        * @type {Collection<Snowflake, Emoji>}
        */
       this.emojis = new Collection();
-      for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
+      if (data.emojis) for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
@@ -261,7 +268,7 @@ class Guild {
   }
 
   /**
-   * Gets the URL to this guild's icon
+   * The URL to this guild's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -273,7 +280,7 @@ class Guild {
   }
 
   /**
-   * Gets the acronym that shows up in place of a guild icon
+   * The acronym that shows up in place of a guild icon.
    * @type {string}
    * @readonly
    */
@@ -282,7 +289,7 @@ class Guild {
   }
 
   /**
-   * The URL to this guild's splash
+   * The URL to this guild's splash.
    * @param {Object} [options={}] Options for the splash url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -303,6 +310,24 @@ class Guild {
   }
 
   /**
+   * AFK voice channel for this guild
+   * @type {?VoiceChannel}
+   * @readonly
+   */
+  get afkChannel() {
+    return this.client.channels.get(this.afkChannelID);
+  }
+
+  /**
+   * System channel for this guild
+   * @type {?GuildChannel}
+   * @readonly
+   */
+  get systemChannel() {
+    return this.client.channels.get(this.systemChannelID);
+  }
+
+  /**
    * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
    * @type {?VoiceConnection}
    * @readonly
@@ -313,18 +338,10 @@ class Guild {
   }
 
   /**
-   * The `#general` TextChannel of the guild
-   * @type {TextChannel}
-   * @readonly
-   */
-  get defaultChannel() {
-    return this.channels.get(this.id);
-  }
-
-  /**
    * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
+   * @readonly
    */
   get position() {
     if (this.client.user.bot) return null;
@@ -333,6 +350,67 @@ class Guild {
   }
 
   /**
+   * Whether the guild is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).messageNotifications;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /**
+   * Whether to receive mobile push notifications
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get mobilePush() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).mobilePush;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Whether to suppress everyone messages
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get suppressEveryone() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /*
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -390,7 +468,8 @@ class Guild {
   }
 
   /**
-   * Fetch a collection of invites to this guild. Resolves with a collection mapping invites by their codes.
+   * Fetch a collection of invites to this guild.
+   * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
    */
   fetchInvites() {
@@ -461,7 +540,7 @@ class Guild {
    * @param {string} options.accessToken An OAuth2 access token for the user with the `guilds.join` scope granted to the
    * bot's application
    * @param {string} [options.nick] Nickname to give the member (requires `MANAGE_NICKNAMES`)
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} [options.roles] Roles to add to the member
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to add to the member
    * (requires `MANAGE_ROLES`)
    * @param {boolean} [options.mute] Whether the member should be muted (requires `MUTE_MEMBERS`)
    * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
@@ -471,9 +550,14 @@ class Guild {
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     options.access_token = options.accessToken;
     if (options.roles) {
-      const roles = options.roles;
-      if (roles instanceof Collection || (roles instanceof Array && roles[0] instanceof Role)) {
-        options.roles = roles.map(role => role.id);
+      const roles = [];
+      for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
+        role = this.client.resolver.resolveRole(this, role);
+        if (!role) {
+          return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
+            'Array or Collection of Roles or Snowflakes', true));
+        }
+        roles.push(role.id);
       }
     }
     return this.client.api.guilds(this.id).members(user.id).put({ data: options })
@@ -505,7 +589,7 @@ class Guild {
    * @param {number} [options.limit=0] Maximum number of members to request
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
-  fetchMembers({ query = '', limit = 0 }) {
+  fetchMembers({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
         resolve(query || limit ? new Collection() : this.members);
@@ -578,11 +662,11 @@ class Guild {
    * @example
    * // Set the guild name and region
    * guild.edit({
-   *  name: 'Discord Guild',
-   *  region: 'london',
+   *   name: 'Discord Guild',
+   *   region: 'london',
    * })
-   * .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
-   * .catch(console.error);
+   *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     const _data = {};
@@ -590,6 +674,7 @@ class Guild {
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
+    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
@@ -604,15 +689,17 @@ class Guild {
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
-  setExplicitContentFilter(explicitContentFilter) {
-    return this.edit({ explicitContentFilter });
+  setExplicitContentFilter(explicitContentFilter, reason) {
+    return this.edit({ explicitContentFilter }, reason);
   }
 
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
+   * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -620,13 +707,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Edit the region of the guild.
    * @param {string} region The new region of the guild
+   * @param {string} [reason] Reason for changing the guild's region
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild region
@@ -634,13 +722,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
    *  .catch(console.error);
    */
-  setRegion(region) {
-    return this.edit({ region });
+  setRegion(region, reason) {
+    return this.edit({ region }, reason);
   }
 
   /**
    * Edit the verification level of the guild.
    * @param {number} verificationLevel The new verification level of the guild
+   * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild verification level
@@ -648,13 +737,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
    *  .catch(console.error);
    */
-  setVerificationLevel(verificationLevel) {
-    return this.edit({ verificationLevel });
+  setVerificationLevel(verificationLevel, reason) {
+    return this.edit({ verificationLevel }, reason);
   }
 
   /**
    * Edit the AFK channel of the guild.
    * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -662,13 +752,24 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
    *  .catch(console.error);
    */
-  setAFKChannel(afkChannel) {
-    return this.edit({ afkChannel });
+  setAFKChannel(afkChannel, reason) {
+    return this.edit({ afkChannel }, reason);
+  }
+
+  /**
+   * Edit the system channel of the guild.
+   * @param {ChannelResolvable} systemChannel The new system channel
+   * @param {string} [reason] Reason for changing the guild's system channel
+   * @returns {Promise<Guild>}
+   */
+  setSystemChannel(systemChannel, reason) {
+    return this.edit({ systemChannel }, reason);
   }
 
   /**
    * Edit the AFK timeout of the guild.
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @param {string} [reason] Reason for changing the guild's AFK timeout
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -676,13 +777,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
    *  .catch(console.error);
    */
-  setAFKTimeout(afkTimeout) {
-    return this.edit({ afkTimeout });
+  setAFKTimeout(afkTimeout, reason) {
+    return this.edit({ afkTimeout }, reason);
   }
 
   /**
    * Set a new guild icon.
    * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
@@ -690,13 +792,14 @@ class Guild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon) {
-    return this.edit({ icon });
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
    * Sets a new owner of the guild.
    * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild owner
@@ -704,13 +807,14 @@ class Guild {
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
    */
-  setOwner(owner) {
-    return this.edit({ owner });
+  setOwner(owner, reason) {
+    return this.edit({ owner }, reason);
   }
 
   /**
    * Set a new guild splash screen.
    * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
@@ -718,8 +822,8 @@ class Guild {
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash) {
-    return this.edit({ splash });
+  setSplash(splash, reason) {
+    return this.edit({ splash }, reason);
   }
 
   /**
@@ -774,8 +878,8 @@ class Guild {
    * @example
    * // Ban a user by ID (or with a user/guild member object)
    * guild.ban('some user ID')
-   *  .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
@@ -801,8 +905,8 @@ class Guild {
    * @example
    * // Unban a user by ID (or with a user/guild member object)
    * guild.unban('some user ID')
-   *  .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *   .catch(console.error);
    */
   unban(user, reason) {
     const id = this.client.resolver.resolveUserID(user);
@@ -843,31 +947,59 @@ class Guild {
   }
 
   /**
+   * Can be used to overwrite permissions when creating a channel.
+   * @typedef {Object} ChannelCreationOverwrites
+   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
+   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   */
+
+  /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Object} options Options
-   * @param {Array<PermissionOverwrites|Object>} [options.overwrites] Permission overwrites to apply to the new channel
+   * @param {Object} [options={}] Options
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
+   * to apply to the new channel
    * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
    * guild.createChannel('new-general', 'text')
-   *  .then(channel => console.log(`Created new channel ${channel}`))
-   *  .catch(console.error);
+   *   .then(channel => console.log(`Created new channel ${channel}`))
+   *   .catch(console.error);
    */
   createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
-      overwrites = overwrites.map(overwrite => ({
-        allow: overwrite.allow || overwrite.allowed.bitfield,
-        deny: overwrite.deny || overwrite.denied.bitfield,
-        type: overwrite.type,
-        id: overwrite.id,
-      }));
+      overwrites = overwrites.map(overwrite => {
+        let allow = overwrite.allow || overwrite.allowed.bitfield;
+        let deny = overwrite.deny || overwrite.denied.bitfield;
+        if (allow instanceof Array) allow = Permissions.resolve(allow);
+        if (deny instanceof Array) deny = Permissions.resolve(deny);
+
+        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        if (role) {
+          overwrite.id = role.id;
+          overwrite.type = 'role';
+        } else {
+          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.type = 'member';
+        }
+
+        return {
+          allow,
+          deny,
+          type: overwrite.type,
+          id: overwrite.id,
+        };
+      });
     }
+
     return this.client.api.guilds(this.id).channels.post({
       data: {
-        name, type, permission_overwrites: overwrites,
+        name,
+        type: Constants.ChannelTypes[type.toUpperCase()],
+        permission_overwrites: overwrites,
       },
       reason,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
@@ -886,8 +1018,8 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
-   *  .then(guild => console.log(`Updated channel positions for ${guild.id}`))
-   *  .catch(console.error);
+   *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
     const data = new Array(channelPositions.length);
@@ -911,6 +1043,7 @@ class Guild {
 
   /**
    * Creates a new role in the guild with given information
+   * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
    * @param {string} [options.reason] Reason for creating this role
@@ -918,8 +1051,8 @@ class Guild {
    * @example
    * // Create a new role
    * guild.createRole()
-   *  .then(role => console.log(`Created role ${role}`))
-   *  .catch(console.error);
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error);
    * @example
    * // Create a new role with data and a reason
    * guild.createRole({
@@ -929,61 +1062,77 @@ class Guild {
    *   },
    *   reason: 'we needed a role for Super Cool People',
    * })
-   * .then(role => console.log(`Created role ${role}`))
-   * .catch(console.error)
+   *   .then(role => console.log(`Created role ${role}`))
+   *   .catch(console.error)
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
-      this.client.actions.GuildRoleCreate.handle({
+    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(r => {
+      const { role } = this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
-        role,
-      }).role
-    );
+        role: r,
+      });
+      if (data.position) return role.setPosition(data.position, reason);
+      return role;
+    });
   }
 
   /**
    * Creates a new custom emoji in the guild.
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
-   * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {Object} [options] Options
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [options.roles] Roles to limit the emoji to
+   * @param {string} [options.reason] Reason for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
-   *  .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
-   *  .catch(console.error);
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .catch(console.error);
    */
-  createEmoji(attachment, name, roles) {
+  createEmoji(attachment, name, { roles, reason } = {}) {
     if (typeof attachment === 'string' && attachment.startsWith('data:')) {
       const data = { image: attachment, name };
-      if (roles) data.roles = roles.map(r => r.id ? r.id : r);
-      return this.client.api.guilds(this.id).emojis.post({ data })
+      if (roles) {
+        data.roles = [];
+        for (let role of roles instanceof Collection ? roles.values() : roles) {
+          role = this.client.resolver.resolveRole(this, role);
+          if (!role) {
+            return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
+              'Array or Collection of Roles or Snowflakes', true));
+          }
+          data.roles.push(role.id);
+        }
+      }
+
+      return this.client.api.guilds(this.id).emojis.post({ data, reason })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
-    } else {
-      return this.client.resolver.resolveBuffer(attachment)
-        .then(data => {
-          const dataURI = this.client.resolver.resolveBase64(data);
-          return this.createEmoji(dataURI, name, roles);
-        });
     }
+
+    return this.client.resolver.resolveBuffer(attachment)
+      .then(data => {
+        const dataURI = this.client.resolver.resolveBase64(data);
+        return this.createEmoji(dataURI, name, { roles, reason });
+      });
   }
 
   /**
    * Delete an emoji.
    * @param {Emoji|string} emoji The emoji to delete
+   * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise}
    */
-  deleteEmoji(emoji) {
+  deleteEmoji(emoji, reason) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete()
+    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -993,8 +1142,8 @@ class Guild {
    * @example
    * // Leave a guild
    * guild.leave()
-   *  .then(g => console.log(`Left the guild ${g}`))
-   *  .catch(console.error);
+   *   .then(g => console.log(`Left the guild ${g}`))
+   *   .catch(console.error);
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
@@ -1008,8 +1157,8 @@ class Guild {
    * @example
    * // Delete a guild
    * guild.delete()
-   *  .then(g => console.log(`Deleted the guild ${g}`))
-   *  .catch(console.error);
+   *   .then(g => console.log(`Deleted the guild ${g}`))
+   *   .catch(console.error);
    */
   delete() {
     return this.client.api.guilds(this.id).delete()
@@ -1026,23 +1175,24 @@ class Guild {
   equals(guild) {
     let equal =
       guild &&
+      guild instanceof this.constructor &&
       this.id === guild.id &&
-      this.available === !guild.unavailable &&
+      this.available === guild.available &&
       this.splash === guild.splash &&
       this.region === guild.region &&
       this.name === guild.name &&
-      this.memberCount === guild.member_count &&
+      this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
       Util.arraysEqual(this.features, guild.features) &&
-      this.ownerID === guild.owner_id &&
-      this.verificationLevel === guild.verification_level &&
-      this.embedEnabled === guild.embed_enabled;
+      this.ownerID === guild.ownerID &&
+      this.verificationLevel === guild.verificationLevel &&
+      this.embedEnabled === guild.embedEnabled;
 
     if (equal) {
       if (this.embedChannel) {
-        if (this.embedChannel.id !== guild.embed_channel_id) equal = false;
-      } else if (guild.embed_channel_id) {
+        if (!guild.embedChannel || this.embedChannel.id !== guild.embedChannel.id) equal = false;
+      } else if (guild.embedChannel) {
         equal = false;
       }
     }

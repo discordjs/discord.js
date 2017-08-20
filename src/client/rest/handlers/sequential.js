@@ -1,5 +1,5 @@
 module.exports = function sequential() {
-  if (this.busy || this.limited) return;
+  if (this.busy || this.limited || this.queue.length === 0) return;
   this.busy = true;
   this.execute(this.queue.shift())
     .then(() => {

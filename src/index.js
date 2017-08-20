@@ -26,6 +26,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
@@ -45,10 +46,7 @@ module.exports = {
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
-  OAuth2Application: require('./structures/OAuth2Application'),
-  ClientOAuth2Application: require('./structures/OAuth2Application'),
-  PartialGuild: require('./structures/PartialGuild'),
-  PartialGuildChannel: require('./structures/PartialGuildChannel'),
+  ClientApplication: require('./structures/ClientApplication'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ReactionEmoji: require('./structures/ReactionEmoji'),

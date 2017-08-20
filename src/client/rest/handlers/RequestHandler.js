@@ -14,7 +14,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return this.queue.length === 0 || this.manager.globallyRateLimited || this.remaining <= 0;
+    return this.manager.globallyRateLimited || this.remaining <= 0;
   }
 
   set globallyLimited(limited) {
@@ -45,6 +45,9 @@ class RequestHandler {
           if (err.status === 429) {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
+          } else if (err.status >= 500 && err.status < 600) {
+            this.queue.unshift(item);
+            finish(1e3 + this.client.options.restTimeOffset);
           } else {
             item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
             finish();

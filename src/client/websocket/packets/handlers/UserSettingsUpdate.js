@@ -10,7 +10,7 @@ class UserSettingsUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted when the client user's settings update.
+ * Emitted whenever the client user's settings update.
  * @event Client#clientUserSettingsUpdate
  * @param {ClientUserSettings} clientUserSettings The new client user settings
  */

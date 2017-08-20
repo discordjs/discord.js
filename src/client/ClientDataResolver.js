@@ -8,6 +8,7 @@ const Message = require('../structures/Message');
 const Guild = require('../structures/Guild');
 const Channel = require('../structures/Channel');
 const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 const Emoji = require('../structures/Emoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const { Error, TypeError } = require('../errors');
@@ -28,7 +29,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A user ID
+   * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A Guild object (owner of the guild)
    * * A GuildMember object
@@ -65,7 +66,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * * A Guild ID
+   * * A Snowflake
    * @typedef {Guild|Snowflake} GuildResolvable
    */
 
@@ -102,11 +103,32 @@ class ClientDataResolver {
   }
 
   /**
+   * Data that can be resolved to a Role object. This can be:
+   * * A Role
+   * * A Snowflake
+   * @typedef {Role|Snowflake} RoleResolvable
+   */
+
+  /**
+    * Resolves a RoleResolvable to a Role object.
+    * @param {GuildResolvable} guild The guild that this role is part of
+    * @param {RoleResolvable} role The role resolvable to resolve
+    * @returns {?Role}
+    */
+  resolveRole(guild, role) {
+    if (role instanceof Role) return role;
+    guild = this.resolveGuild(guild);
+    if (!guild) return null;
+    if (typeof role === 'string') return guild.roles.get(role);
+    return null;
+  }
+
+  /**
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
-   * * A channel ID
+   * * A Snowflake
    * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
    */
 
@@ -213,6 +235,28 @@ class ClientDataResolver {
     }
 
     return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
+  }
+
+  /**
+   * Converts a Stream to a Buffer.
+   * @param {Stream} resource The stream to convert
+   * @returns {Promise<Buffer>}
+   */
+  resolveFile(resource) {
+    return resource ? this.resolveBuffer(resource)
+      .catch(() => {
+        if (resource.pipe && typeof resource.pipe === 'function') {
+          return new Promise((resolve, reject) => {
+            const buffers = [];
+            resource.once('error', reject);
+            resource.on('data', data => buffers.push(data));
+            resource.once('end', () => resolve(Buffer.concat(buffers)));
+          });
+        } else {
+          throw new TypeError('REQ_RESOURCE_TYPE');
+        }
+      }) :
+      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**

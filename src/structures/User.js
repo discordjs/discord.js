@@ -12,9 +12,9 @@ const { Error } = require('../errors');
 class User {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the user
+     * The client that created the instance of the user
      * @name User#client
-     * @type {}
+     * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -105,7 +105,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar
+   * A link to the user's avatar.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
@@ -127,7 +127,8 @@ class User {
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * A link to the user's avatar if they have one.
+   * Otherwise a link to their default avatar will be returned.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`

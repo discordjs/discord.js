@@ -15,6 +15,14 @@ module.exports = function sendMessage(channel, options) { // eslint-disable-line
     if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
+  // Add the reply prefix
+  if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+    const id = channel.client.resolver.resolveUserID(reply);
+    const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
+    if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
+    content = `${mention}${typeof content !== 'undefined' ? `, ${content}` : ''}`;
+  }
+
   if (content) {
     content = Util.resolveString(content);
     if (split && typeof split !== 'object') split = {};
@@ -34,14 +42,6 @@ module.exports = function sendMessage(channel, options) { // eslint-disable-line
     }
 
     if (split) content = Util.splitMessage(content, split);
-  }
-
-  // Add the reply prefix
-  if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
-    const id = channel.client.resolver.resolveUserID(reply);
-    const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
-    if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
-    content = `${mention}${typeof content !== 'undefined' ? `, ${content}` : ''}`;
   }
 
   if (content instanceof Array) {
