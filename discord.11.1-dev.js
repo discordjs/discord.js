@@ -11706,7 +11706,7 @@ class ReactionEmoji {
    * Creates the text required to form a graphical emoji on Discord.
    * @example
    * // Send the emoji used in a reaction to the channel the reaction is part of
-   * reaction.message.channel.sendMessage(`The emoji used is ${reaction.emoji}`);
+   * reaction.message.channel.send(`The emoji used is ${reaction.emoji}`);
    * @returns {string}
    */
   toString() {
@@ -17888,7 +17888,7 @@ class ClientUser extends User {
      * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
-    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+    this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
   }
 
   edit(data) {
