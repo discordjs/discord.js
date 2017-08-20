@@ -211,7 +211,7 @@ class Role extends Base {
       },
       reason,
     })
-      .then(role => this.client.actions.GuildRoleUpdate.handle({ role, guild_id: this.guild.id }).updated);
+      .then(role => this._update(role));
   }
 
   /**
