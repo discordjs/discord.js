@@ -14,7 +14,7 @@ const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Invite = require('../structures/Invite');
-const OAuth2Application = require('../structures/OAuth2Application');
+const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
@@ -193,6 +193,15 @@ class Client extends EventEmitter {
   }
 
   /**
+   * API shortcut
+   * @type {Object}
+   * @private
+   */
+  get api() {
+    return this.rest.api;
+  }
+
+  /**
    * Current status of the client's connection to Discord
    * @type {?Status}
    * @readonly
@@ -220,7 +229,7 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by channel ID
+   * All active voice connections that have been established, mapped by guild ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
@@ -237,7 +246,7 @@ class Client extends EventEmitter {
   get emojis() {
     const emojis = new Collection();
     for (const guild of this.guilds.values()) {
-      for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
+      if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
     return emojis;
   }
@@ -393,7 +402,7 @@ class Client extends EventEmitter {
    */
   fetchApplication(id = '@me') {
     return this.api.oauth2.applications(id).get()
-    .then(app => new OAuth2Application(this, app));
+      .then(app => new ClientApplication(this, app));
   }
 
   /**

@@ -1,5 +1,3 @@
-const PartialGuild = require('./PartialGuild');
-const PartialGuildChannel = require('./PartialGuildChannel');
 const Constants = require('../util/Constants');
 const Base = require('./Base');
 
@@ -15,12 +13,13 @@ class Invite extends Base {
   }
 
   _patch(data) {
+    const Guild = require('./Guild');
+    const Channel = require('./Channel');
     /**
-     * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
-     * unknown, this will be a PartialGuild object
-     * @type {Guild|PartialGuild}
+     * The guild the invite is for
+     * @type {Guild}
      */
-    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
+    this.guild = this.client.guilds.get(data.guild.id) || new Guild(this.client, data.guild);
 
     /**
      * The code for this invite
@@ -85,11 +84,10 @@ class Invite extends Base {
     }
 
     /**
-     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
-     * If the channel is unknown, this will be a PartialGuildChannel object.
-     * @type {GuildChannel|PartialGuildChannel}
+     * The channel the invite is for
+     * @type {GuildChannel}
      */
-    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+    this.channel = this.client.channels.get(data.channel.id) || Channel.create(this.client, data.channel, this.guild);
 
     /**
      * The timestamp the invite was created at
@@ -131,7 +129,7 @@ class Invite extends Base {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.invite(this.code);
+    return Constants.Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**
@@ -140,7 +138,7 @@ class Invite extends Base {
    * @returns {Promise<Invite>}
    */
   delete(reason) {
-    return this.client.api.invites(this.code).delete({ reason }).then(() => this);
+    return this.client.api.invites[this.code].delete({ reason }).then(() => this);
   }
 
   /**

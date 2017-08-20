@@ -10,6 +10,7 @@ class ReadyHandler extends AbstractHandler {
     client.ws.heartbeat();
 
     data.user.user_settings = data.user_settings;
+    data.user.user_guild_settings = data.user_guild_settings;
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
@@ -42,8 +43,6 @@ class ReadyHandler extends AbstractHandler {
         client.user.notes.set(user, note);
       }
     }
-
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
 
     if (!client.users.has('1')) {
       client.users.create({

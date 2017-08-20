@@ -1,6 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
@@ -77,22 +78,35 @@ class ClientUser extends User {
      * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
-    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+    this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
+
+    /**
+     * All of the user's guild settings
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
+     * <warn>This is only filled when using a user account.</warn>
+     */
+    this.guildSettings = new Collection();
+    if (data.user_guild_settings) {
+      for (const settings of data.user_guild_settings) {
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+      }
+    }
   }
 
-  edit(data, password) {
-    const _data = {};
-    _data.username = data.username || this.username;
-    _data.avatar = this.client.resolver.resolveBase64(data.avatar);
-
+  edit(data, passcode) {
     if (!this.bot) {
-      _data.email = data.email || this.email;
-      _data.password = password;
-      if (data.new_password) _data.new_password = data.newPassword;
+      if (typeof passcode !== 'object') {
+        data.password = passcode;
+      } else {
+        data.code = passcode.mfaCode;
+        data.password = passcode.password;
+      }
     }
-
     return this.client.api.users('@me').patch({ data })
-      .then(newData => this.client.actions.UserUpdate.handle(newData).updated);
+      .then(newData => {
+        this.client.token = newData.token;
+        return this.client.actions.UserUpdate.handle(newData).updated;
+      });
   }
 
   /**
@@ -105,8 +119,8 @@ class ClientUser extends User {
    * @example
    * // Set username
    * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new username is ${user.username}`))
+   *   .catch(console.error);
    */
   setUsername(username, password) {
     return this.edit({ username }, password);
@@ -121,8 +135,8 @@ class ClientUser extends User {
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new email is ${user.email}`))
+   *   .catch(console.error);
    */
   setEmail(email, password) {
     return this.edit({ email }, password);
@@ -132,16 +146,19 @@ class ClientUser extends User {
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} newPassword New password to change to
-   * @param {string} oldPassword Current password
+   * @param {Object|string} options Object containing an MFA code, password or both. 
+   * Can be just a string for the password.
+   * @param {string} [options.oldPassword] Current password
+   * @param {string} [options.mfaCode] Timed MFA Code
    * @returns {Promise<ClientUser>}
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
+   *   .then(user => console.log('New password set!'))
+   *   .catch(console.error);
    */
-  setPassword(newPassword, oldPassword) {
-    return this.edit({ password: newPassword }, oldPassword);
+  setPassword(newPassword, options) {
+    return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
   }
 
   /**
@@ -151,8 +168,8 @@ class ClientUser extends User {
    * @example
    * // Set avatar
    * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`New avatar set!`))
+   *   .catch(console.error);
    */
   setAvatar(avatar) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
@@ -170,6 +187,7 @@ class ClientUser extends User {
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [game] Game the user is playing
    * @property {string} [game.name] Name of the game
+   * @property {GameType|number} [game.type] Type of the game
    * @property {string} [game.url] Twitch stream URL
    */
 
@@ -194,7 +212,7 @@ class ClientUser extends User {
       }
 
       if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
+        if (typeof data.status !== 'string') throw new TypeError('INVALID_TYPE', 'status', 'string');
         if (this.bot) {
           status = data.status;
         } else {
@@ -205,7 +223,12 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) game.type = 1;
+        if (typeof game.type === 'string') {
+          game.type = Constants.GameTypes.indexOf(game.type);
+          if (game.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
+        } else if (typeof game.type !== 'number') {
+          game.type = game.url ? 1 : 0;
+        }
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
@@ -230,10 +253,10 @@ class ClientUser extends User {
 
   /**
    * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
+   * * `online`
+   * * `idle`
+   * * `invisible`
+   * * `dnd` (do not disturb)
    * @typedef {string} PresenceStatus
    */
 
@@ -249,15 +272,18 @@ class ClientUser extends User {
   /**
    * Sets the game the client user is playing.
    * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
+   * @param {Object} [options] Options for setting the game
+   * @param {string} [options.url] Twitch stream URL
+   * @param {GameType|number} [options.type] Type of the game
    * @returns {Promise<ClientUser>}
    */
-  setGame(game, streamingURL) {
+  setGame(game, { url, type } = {}) {
     if (!game) return this.setPresence({ game: null });
     return this.setPresence({
       game: {
         name: game,
-        url: streamingURL,
+        type,
+        url,
       },
     });
   }
@@ -330,11 +356,10 @@ class ClientUser extends User {
    * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
    * @property {UserResolvable} [user] User to add to the Group DM
-   * (only available if a user is creating the DM)
    * @property {string} [accessToken] Access token to use to add a user to the Group DM
    * (only available if a bot is creating the DM)
    * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   * @property {string} [id] If no user resolveable is provided and you want to assign nicknames
+   * @property {string} [id] If no user resolvable is provided and you want to assign nicknames
    * you must provide user ids instead
    */
 
@@ -350,7 +375,7 @@ class ClientUser extends User {
         if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
         return o;
       }, {}),
-    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u)) };
+    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }

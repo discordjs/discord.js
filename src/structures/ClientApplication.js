@@ -3,12 +3,11 @@ const Constants = require('../util/Constants');
 const Base = require('./Base');
 
 /**
- * Represents an OAuth2 Application.
+ * Represents a Client OAuth2 Application.
  */
-class OAuth2Application extends Base {
+class ClientApplication extends Base {
   constructor(client, data) {
     super(client);
-
     this._patch(data);
   }
 
@@ -37,6 +36,12 @@ class OAuth2Application extends Base {
      * @type {string}
      */
     this.icon = data.icon;
+
+    /**
+     * The app's cover image hash
+     * @type {?string}
+     */
+    this.cover = data.cover_image;
 
     /**
      * The app's RPC origins
@@ -82,7 +87,7 @@ class OAuth2Application extends Base {
 
     /**
      * OAuth2 secret for the application
-     * @type {boolean}
+     * @type {string}
      */
     this.secret = data.secret;
 
@@ -114,18 +119,58 @@ class OAuth2Application extends Base {
   }
 
   /**
-   * A link to the application's icon
-   * @param {string} [format='webp'] One of `webp`, `png`, `jpg`, `gif`.
-   * @param {number} [size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * A link to the application's icon.
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
    * @returns {?string} URL to the icon
    */
-  iconURL(format, size) {
+  iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+  }
+
+  /**
+   * A link to this application's cover image.
+   * @param {Object} [options={}] Options for the cover image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {?string} URL to the cover image
+   */
+  coverImage({ format, size } = {}) {
+    if (!this.cover) return null;
+    return Constants.Endpoints
+      .CDN(this.client.options.http.cdn)
+      .AppIcon(this.id, this.cover, { format, size });
+  }
+
+  /**
+   * Get rich presence assets.
+   * @returns {Promise<Object>}
+   */
+  fetchAssets() {
+    return this.client.api.applications(this.id).assets.get()
+      .then(assets => assets.map(a => ({
+        id: a.id,
+        name: a.name,
+        type: Object.keys(Constants.ClientApplicationAssetTypes)[a.type - 1],
+      })));
+  }
+
+  /**
+   * Create a rich presence asset.
+   * @param {string} name Name of the asset
+   * @param {Base64Resolvable} data Data of the asset
+   * @param {string} type Type of the asset. `big`, or `small`
+   * @returns {Promise}
+   */
+  createAsset(name, data, type) {
+    return this.client.resolveBase64(data).then(b64 =>
+      this.client.api.applications(this.id).assets.post({ data: {
+        name,
+        data: b64,
+        type: Constants.ClientApplicationAssetTypes[type.toUpperCase()],
+      } }));
   }
 
   /**
@@ -134,8 +179,8 @@ class OAuth2Application extends Base {
    * @returns {OAuth2Application}
    */
   resetSecret() {
-    return this.client.api.oauth2.applications(this.id).reset.post()
-      .then(app => new OAuth2Application(this.client, app));
+    return this.client.api.oauth2.applications[this.id].reset.post()
+      .then(app => new ClientApplication(this.client, app));
   }
 
   /**
@@ -144,8 +189,8 @@ class OAuth2Application extends Base {
    * @returns {OAuth2Application}
    */
   resetToken() {
-    return this.client.api.oauth2.applications(this.id).bot().reset.post()
-      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
+    return this.client.api.oauth2.applications[this.id].bot.reset.post()
+      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**
@@ -157,4 +202,4 @@ class OAuth2Application extends Base {
   }
 }
 
-module.exports = OAuth2Application;
+module.exports = ClientApplication;

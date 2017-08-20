@@ -102,7 +102,7 @@ class Emoji extends Base {
    * Data for editing an emoji.
    * @typedef {Object} EmojiEditData
    * @property {string} [name] The name of the emoji
-   * @property {Collection<Snowflake, Role>|Array<Snowflake|Role>} [roles] Roles to restrict emoji to
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] Roles to restrict emoji to
    */
 
   /**
@@ -111,16 +111,16 @@ class Emoji extends Base {
    * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit an emoji
    * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
+   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
-        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : [],
+        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined,
       }, reason })
       .then(() => this);
   }
@@ -128,10 +128,11 @@ class Emoji extends Base {
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -145,13 +146,18 @@ class Emoji extends Base {
 
   /**
    * Add multiple roles to the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to add
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to add
    * @returns {Promise<Emoji>}
    */
   addRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
-    for (const role of roles) {
-      if (this.guild.roles.has(role.id)) newRoles.set(role.id, role);
+    for (let role of roles instanceof Collection ? roles.values() : roles) {
+      role = this.client.resolver.resolveRole(this.guild, role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
+      }
+      newRoles.set(role.id, role);
     }
     return this.edit({ roles: newRoles });
   }
@@ -167,12 +173,17 @@ class Emoji extends Base {
 
   /**
    * Remove multiple roles from the list of roles that can use this emoji.
-   * @param {Role[]} roles Roles to remove
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to remove
    * @returns {Promise<Emoji>}
    */
   removeRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
-    for (const role of roles) {
+    for (let role of roles instanceof Collection ? roles.values() : roles) {
+      role = this.client.resolver.resolveRole(this.guild, role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
+      }
       if (newRoles.has(role.id)) newRoles.delete(role.id);
     }
     return this.edit({ roles: newRoles });
@@ -201,12 +212,14 @@ class Emoji extends Base {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
-        other.requiresColons === this.requiresColons
+        other.requiresColons === this.requiresColons &&
+        other._roles === this._roles
       );
     } else {
       return (
         other.id === this.id &&
-        other.name === this.name
+        other.name === this.name &&
+        other._roles === this._roles
       );
     }
   }

@@ -1,3 +1,5 @@
+const Constants = require('../util/Constants');
+
 /**
  * Represents a user's presence.
  */
@@ -53,9 +55,9 @@ class Game {
 
     /**
      * The type of the game status
-     * @type {number}
+     * @type {GameType}
      */
-    this.type = data.type;
+    this.type = Constants.GameTypes[data.type];
 
     /**
      * If the game is being streamed, a link to the stream
@@ -65,16 +67,7 @@ class Game {
   }
 
   /**
-   * Whether or not the game is being streamed
-   * @type {boolean}
-   * @readonly
-   */
-  get streaming() {
-    return this.type === 1;
-  }
-
-  /**
-   * Whether this game is equal to another game
+   * Whether this game is equal to another game.
    * @param {Game} game The game to compare with
    * @returns {boolean}
    */
