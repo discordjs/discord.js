@@ -555,8 +555,8 @@ exports.UserSettingsMap = {
 
   explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
     /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
-     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
+     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
      * @name ClientUserSettings#explicitContentFilter
      * @type {string}
      */

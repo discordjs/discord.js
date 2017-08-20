@@ -18,7 +18,7 @@ const Snowflake = require('../util/Snowflake');
 class Guild {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the guild
+     * The client that created the instance of the guild
      * @name Guild#client
      * @type {Client}
      * @readonly

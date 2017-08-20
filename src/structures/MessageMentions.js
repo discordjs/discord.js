@@ -102,7 +102,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {

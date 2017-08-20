@@ -47,8 +47,8 @@ class GroupDMChannel extends Channel {
     this.name = data.name;
 
     /**
-     * A hash of the Group DM icon.
-     * @type {string}
+     * A hash of this Group DM icon
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -70,11 +70,13 @@ class GroupDMChannel extends Channel {
      */
     this.applicationID = data.application_id;
 
-    /**
-     * Nicknames for group members
-     * @type {?Collection<Snowflake, string>}
-     */
-    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    if (data.nicks) {
+      /**
+       * Nicknames for group members
+       * @type {?Collection<Snowflake, string>}
+       */
+      this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    }
 
     if (!this.recipients) {
       /**
