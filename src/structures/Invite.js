@@ -6,7 +6,6 @@ const Base = require('./Base');
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
  */
 class Invite extends Base {
-
   constructor(client, data) {
     super(client);
     this._patch(data);

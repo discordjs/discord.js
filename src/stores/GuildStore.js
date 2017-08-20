@@ -14,7 +14,7 @@ class GuildStore extends DataStore {
     this.set(guild.id, guild);
 
     if (emitEvent) {
-			/**
+      /**
        * Emitted whenever the client joins a guild.
        * @event Client#guildCreate
        * @param {Guild} guild The created guild

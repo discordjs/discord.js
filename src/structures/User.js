@@ -11,7 +11,6 @@ const { Error } = require('../errors');
  * @implements {TextBasedChannel}
  */
 class User extends Base {
-
   constructor(client, data) {
     super(client);
     this._patch(data);
