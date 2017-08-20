@@ -81,8 +81,8 @@ class WebSocketConnection extends EventEmitter {
      */
     this.ratelimit = {
       queue: [],
-      remaining: 120,
-      resetTime: -1,
+      remaining: 60,
+      resetTimer: null,
     };
     this.connect(gateway);
 
@@ -190,10 +190,10 @@ class WebSocketConnection extends EventEmitter {
     if (this.ratelimit.remaining === 0) return;
     if (this.ratelimit.queue.length === 0) return;
     if (this.ratelimit.remaining === 120) {
-      this.ratelimit.resetTimer = setTimeout(() => {
-        this.ratelimit.remaining = 120;
+      this.ratelimit.resetTimer = this.client.setTimeout(() => {
+        this.ratelimit.remaining = 60;
         this.processQueue();
-      }, 120e3); // eslint-disable-line
+      }, 120e3);
     }
     while (this.ratelimit.remaining > 0) {
       const item = this.ratelimit.queue.shift();
