@@ -27,17 +27,7 @@ const { Error, TypeError } = require('../errors');
  */
 class Guild extends Base {
   constructor(client, data) {
-<<<<<<< HEAD
     super(client);
-=======
-    /**
-     * The client that created the instance of the guild
-     * @name Guild#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
->>>>>>> master
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
@@ -87,12 +77,8 @@ class Guild extends Base {
    * @param {*} data The raw data of the guild
    * @private
    */
-<<<<<<< HEAD
   _patch(data) {
     super._patch(data);
-=======
-  setup(data) { // eslint-disable-line complexity
->>>>>>> master
     /**
      * The name of the guild
      * @type {string}
@@ -240,20 +226,11 @@ class Guild extends Base {
 
     if (!this.emojis) {
       /**
-<<<<<<< HEAD
        * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
        * @type {EmojiStore<Snowflake, Emoji>}
        */
       this.emojis = new EmojiStore(this);
       for (const emoji of data.emojis) this.emojis.create(emoji);
-=======
-       * A collection of emojis that are in this guild
-       * The key is the emoji's ID, the value is the emoji
-       * @type {Collection<Snowflake, Emoji>}
-       */
-      this.emojis = new Collection();
-      if (data.emojis) for (const emoji of data.emojis) this.emojis.set(emoji.id, new Emoji(this, emoji));
->>>>>>> master
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,

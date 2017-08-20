@@ -52,13 +52,6 @@ class Client extends EventEmitter {
     this.rest = new RESTManager(this);
 
     /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
-
-    /**
      * The manager of the client
      * @type {ClientManager}
      * @private

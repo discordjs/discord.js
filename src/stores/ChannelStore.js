@@ -15,13 +15,13 @@ class ChannelStore extends DataStore {
       case Constants.ChannelTypes.DM:
         channel = new DMChannel(this.client, data);
         break;
-      case Constants.ChannelTypes.GROUP_DM:
+      case Constants.ChannelTypes.GROUP:
         channel = new GroupDMChannel(this.client, data);
         break;
       default: // eslint-disable-line no-case-declarations
         guild = guild || this.client.guilds.get(data.guild_id);
         if (!guild) {
-          this.client.emit('debug', `Failed to find guild for channel ${data.id}`);
+          this.client.emit('debug', `Failed to find guild for channel ${data.id} ${data.type}`);
           return null;
         }
         channel = guild.channels.create(data);
