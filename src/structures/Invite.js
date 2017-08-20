@@ -141,10 +141,11 @@ class Invite {
 
   /**
    * Deletes this invite.
+   * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete() {
-    return this.client.rest.methods.deleteInvite(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteInvite(this, reason);
   }
 
   /**
