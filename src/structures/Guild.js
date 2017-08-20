@@ -628,11 +628,10 @@ class Guild {
   /**
    * Edit the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
-   * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    */
-  setSystemChannel(systemChannel, reason) {
-    return this.edit({ systemChannel }, reason);
+  setSystemChannel(systemChannel) {
+    return this.edit({ systemChannel });
   }
 
   /**
