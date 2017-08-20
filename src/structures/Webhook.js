@@ -94,8 +94,8 @@ class Webhook {
    * @example
    * // Send a message
    * webhook.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {

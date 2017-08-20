@@ -11,9 +11,10 @@ const Prism = require('prism-media');
  * Represents a connection to a guild's voice server.
  * ```js
  * // Obtained using:
- * voiceChannel.join().then(connection => {
+ * voiceChannel.join()
+ *   .then(connection => {
  *
- * });
+ *   });
  * ```
  * @extends {EventEmitter}
  */
@@ -443,10 +444,10 @@ class VoiceConnection extends EventEmitter {
    * @example
    * // Play files natively
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *   })
+   *   .catch(console.error);
    */
   playFile(file, options) {
     return this.player.playUnknownStream(`file:${file}`, options);
@@ -472,11 +473,11 @@ class VoiceConnection extends EventEmitter {
    * const ytdl = require('ytdl-core');
    * const streamOptions = { seek: 0, volume: 1 };
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *    const dispatcher = connection.playStream(stream, streamOptions);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+   *     const dispatcher = connection.playStream(stream, streamOptions);
+   *   })
+   *   .catch(console.error);
    */
   playStream(stream, options) {
     return this.player.playUnknownStream(stream, options);
@@ -520,7 +521,8 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
+   * Creates a VoiceReceiver so you can start listening to voice data.
+   * It's recommended to only create one of these.
    * @returns {VoiceReceiver}
    */
   createReceiver() {

@@ -63,9 +63,9 @@ class TextChannel extends GuildChannel {
    * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created webhook ${webhook}`))
-   *  .catch(console.error)
+   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
+   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   *   .catch(console.error)
    */
   createWebhook(name, avatar) {
     return new Promise(resolve => {

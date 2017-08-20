@@ -114,10 +114,10 @@ class Emoji {
    * @param {EmojiEditData} data The new data for the emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit an emoji
    * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
+   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .catch(console.error);
    */
   edit(data) {
     return this.client.rest.methods.updateEmoji(this, data);

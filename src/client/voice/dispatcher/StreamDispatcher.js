@@ -89,12 +89,12 @@ class StreamDispatcher extends VolumeInterface {
   }
 
   /**
-   * Stops sending voice packets to the voice connection (stream may still progress however)
+   * Stops sending voice packets to the voice connection (stream may still progress however).
    */
   pause() { this.setPaused(true); }
 
   /**
-   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused)
+   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused).
    */
   resume() { this.setPaused(false); }
 
@@ -122,7 +122,7 @@ class StreamDispatcher extends VolumeInterface {
 
   /**
    * Set the bitrate of the current Opus encoder.
-   * @param {number} bitrate New bitrate, in kbps.
+   * @param {number} bitrate New bitrate, in kbps
    * If set to 'auto', the voice channel's bitrate will be used
    */
   setBitrate(bitrate) {
@@ -140,7 +140,7 @@ class StreamDispatcher extends VolumeInterface {
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
-     * @param {string} info the debug info
+     * @param {string} info The debug info
      */
     this.setSpeaking(true);
     while (repeats--) {
@@ -294,7 +294,7 @@ class StreamDispatcher extends VolumeInterface {
     this.emit(type, reason);
     /**
      * Emitted once the dispatcher ends.
-     * @param {string} [reason] the reason the dispatcher ended
+     * @param {string} [reason] The reason the dispatcher ended
      * @event StreamDispatcher#end
      */
     if (type !== 'end') this.emit('end', `destroyed due to ${type} - ${reason}`);

@@ -103,7 +103,7 @@ class Permissions {
   }
 
   /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
    * permission is available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {Object}
@@ -152,8 +152,8 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.FLAGS})
-   * - A permission number
+   * * A string (see {@link Permissions.FLAGS})
+   * * A permission number
    * @typedef {string|number} PermissionResolvable
    */
 

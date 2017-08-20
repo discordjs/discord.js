@@ -69,8 +69,8 @@ class TextBasedChannel {
    * @example
    * // Send a message
    * channel.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -158,8 +158,8 @@ class TextBasedChannel {
    * @example
    * // Get messages
    * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchMessages(options = {}) {
     return this.client.rest.methods.getChannelMessages(this, options).then(data => {
@@ -321,8 +321,8 @@ class TextBasedChannel {
    * @example
    * // Create a message collector
    * const collector = channel.createMessageCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
+   *   m => m.content.includes('discord'),
+   *   { time: 15000 }
    * );
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -348,8 +348,8 @@ class TextBasedChannel {
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   *   .then(collected => console.log(collected.size))
+   *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {

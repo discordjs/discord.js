@@ -135,7 +135,7 @@ class Role {
   }
 
   /**
-   * Get an object mapping permission names to whether or not the role enables that permission
+   * Get an object mapping permission names to whether or not the role enables that permission.
    * @returns {Object<string, boolean>}
    * @example
    * // Print the serialized role permissions
@@ -206,8 +206,8 @@ class Role {
    * @example
    * // Edit a role
    * role.edit({name: 'new role'})
-   *  .then(r => console.log(`Edited role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Edited role ${r}`))
+   *   .catch(console.error);
    */
   edit(data) {
     return this.client.rest.methods.updateGuildRole(this, data);
@@ -220,8 +220,8 @@ class Role {
    * @example
    * // Set the name of the role
    * role.setName('new role')
-   *  .then(r => console.log(`Edited name of role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Edited name of role ${r}`))
+   *   .catch(console.error);
    */
   setName(name) {
     return this.edit({ name });
@@ -234,8 +234,8 @@ class Role {
    * @example
    * // Set the color of a role
    * role.setColor('#FF0000')
-   *  .then(r => console.log(`Set color of role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Set color of role ${r}`))
+   *   .catch(console.error);
    */
   setColor(color) {
     return this.edit({ color });
@@ -248,8 +248,8 @@ class Role {
    * @example
    * // Set the hoist of the role
    * role.setHoist(true)
-   *  .then(r => console.log(`Role hoisted: ${r.hoist}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
+   *   .catch(console.error);
    */
   setHoist(hoist) {
     return this.edit({ hoist });
@@ -263,8 +263,8 @@ class Role {
    * @example
    * // Set the position of the role
    * role.setPosition(1)
-   *  .then(r => console.log(`Role position: ${r.position}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role position: ${r.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, relative) {
     return this.guild.setRolePosition(this, position, relative).then(() => this);
@@ -277,8 +277,8 @@ class Role {
    * @example
    * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
-   *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role updated ${r}`))
+   *   .catch(console.error);
    */
   setPermissions(permissions) {
     return this.edit({ permissions });
@@ -291,8 +291,8 @@ class Role {
    * @example
    * // Make the role mentionable
    * role.setMentionable(true)
-   *  .then(r => console.log(`Role updated ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Role updated ${r}`))
+   *   .catch(console.error);
    */
   setMentionable(mentionable) {
     return this.edit({ mentionable });
@@ -304,8 +304,8 @@ class Role {
    * @example
    * // Delete a role
    * role.delete()
-   *  .then(r => console.log(`Deleted role ${r}`))
-   *  .catch(console.error);
+   *   .then(r => console.log(`Deleted role ${r}`))
+   *   .catch(console.error);
    */
   delete() {
     return this.client.rest.methods.deleteGuildRole(this);

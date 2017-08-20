@@ -82,8 +82,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the bitrate of a voice channel
    * voiceChannel.setBitrate(48)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
+   *   .catch(console.error);
    */
   setBitrate(bitrate) {
     bitrate *= 1000;
@@ -97,8 +97,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
-   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *   .catch(console.error);
    */
   setUserLimit(userLimit) {
     return this.edit({ userLimit });
@@ -110,8 +110,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Join a voice channel
    * voiceChannel.join()
-   *  .then(connection => console.log('Connected!'))
-   *  .catch(console.error);
+   *   .then(connection => console.log('Connected!'))
+   *   .catch(console.error);
    */
   join() {
     if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));

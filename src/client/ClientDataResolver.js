@@ -28,7 +28,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A user ID
+   * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A Guild object (owner of the guild)
    * * A GuildMember object
@@ -65,7 +65,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * * A Guild ID
+   * * A Snowflake
    * @typedef {Guild|Snowflake} GuildResolvable
    */
 
@@ -106,7 +106,7 @@ class ClientDataResolver {
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
-   * * A channel ID
+   * * A Snowflake
    * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
    */
 

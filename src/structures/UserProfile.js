@@ -13,7 +13,7 @@ class UserProfile {
     this.user = user;
 
     /**
-     * The client that created the instance of the the UserProfile.
+     * The client that created the instance of the UserProfile
      * @name UserProfile#client
      * @type {Client}
      * @readonly

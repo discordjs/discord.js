@@ -4,10 +4,10 @@
  */
 class BaseOpus {
   /**
-   * @param {Object} [options] The options to apply to the Opus engine.
-   * @param {number} [options.bitrate=48] The desired bitrate (kbps).
-   * @param {boolean} [options.fec=false] Whether to enable forward error correction.
-   * @param {number} [options.plp=0] The expected packet loss percentage.
+   * @param {Object} [options] The options to apply to the Opus engine
+   * @param {number} [options.bitrate=48] The desired bitrate (kbps)
+   * @param {boolean} [options.fec=false] Whether to enable forward error correction
+   * @param {number} [options.plp=0] The expected packet loss percentage
    */
   constructor({ bitrate = 48, fec = false, plp = 0 } = {}) {
     this.ctl = {
