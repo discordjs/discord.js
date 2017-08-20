@@ -6347,6 +6347,7 @@ class Guild {
 
   /**
    * Creates a new role in the guild with given information
+   * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
    * @param {string} [options.reason] Reason for creating this role
@@ -6372,12 +6373,14 @@ class Guild {
     if (data.color) data.color = Util.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(role =>
-      this.client.actions.GuildRoleCreate.handle({
+    return this.client.api.guilds(this.id).roles.post({ data, reason }).then(r => {
+      const { role } = this.client.actions.GuildRoleCreate.handle({
         guild_id: this.id,
-        role,
-      }).role
-    );
+        role: r,
+      });
+      if (data.position) return role.setPosition(data.position, reason);
+      return role;
+    });
   }
 
   /**
