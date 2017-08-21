@@ -1,8 +1,9 @@
 const path = require('path');
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
-const Collection = require('../../util/Collection');
+const MessageStore = require('../../stores/MessageStore');
 const Snowflake = require('../../util/Snowflake');
+const Collection = require('../../util/Collection');
 const Attachment = require('../../structures/Attachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
 const { Error, RangeError, TypeError } = require('../../errors');
@@ -17,7 +18,7 @@ class TextBasedChannel {
      * A collection containing the messages sent to this channel
      * @type {Collection<Snowflake, Message>}
      */
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
 
     /**
      * The ID of the last message in the channel, if one was sent
@@ -148,7 +149,6 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessage(messageID) {
-    const Message = require('../Message');
     if (!this.client.user.bot) {
       return this.fetchMessages({ limit: 1, around: messageID })
         .then(messages => {
@@ -158,11 +158,7 @@ class TextBasedChannel {
         });
     }
     return this.client.api.channels[this.id].messages[messageID].get()
-      .then(data => {
-        const msg = data instanceof Message ? data : new Message(this, data, this.client);
-        this._cacheMessage(msg);
-        return msg;
-      });
+      .then(data => this.messages.create(data));
   }
 
   /**
@@ -186,15 +182,10 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   fetchMessages(options = {}) {
-    const Message = require('../Message');
     return this.client.api.channels[this.id].messages.get({ query: options })
       .then(data => {
-        const messages = new Collection();
-        for (const message of data) {
-          const msg = new Message(this, message, this.client);
-          messages.set(message.id, msg);
-          this._cacheMessage(msg);
-        }
+        const messages = new MessageStore(data);
+        for (const message of messages) this.messages.set(message.id, message);
         return messages;
       });
   }
@@ -204,14 +195,9 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinnedMessages() {
-    const Message = require('../Message');
     return this.client.api.channels[this.id].pins.get().then(data => {
-      const messages = new Collection();
-      for (const message of data) {
-        const msg = new Message(this, message, this.client);
-        messages.set(message.id, msg);
-        this._cacheMessage(msg);
-      }
+      const messages = new MessageStore(data);
+      for (const message of messages) this.messages.set(message.id, message);
       return messages;
     });
   }
@@ -394,19 +380,10 @@ class TextBasedChannel {
       });
   }
 
-  _cacheMessage(message) {
-    const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) return null;
-    if (this.messages.size >= maxSize && maxSize > 0) this.messages.delete(this.messages.firstKey());
-    this.messages.set(message.id, message);
-    return message;
-  }
-
   static applyToClass(structure, full = false, ignore = []) {
     const props = ['send'];
     if (full) {
       props.push(
-        '_cacheMessage',
         'acknowledge',
         'fetchMessages',
         'fetchMessage',
