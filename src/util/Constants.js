@@ -102,7 +102,10 @@ const Endpoints = exports.Endpoints = {
       relationships: `${base}/relationships`,
       settings: `${base}/settings`,
       Relationship: uID => `${base}/relationships/${uID}`,
-      Guild: guildID => `${base}/guilds/${guildID}`,
+      Guild: guildID => ({
+        toString: () => `${base}/guilds/${guildID}`,
+        settings: `${base}/guilds/${guildID}/settings`,
+      }),
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
@@ -200,7 +203,8 @@ const Endpoints = exports.Endpoints = {
       const base = `/oauth2/applications/${appID}`;
       return {
         toString: () => base,
-        reset: `${base}/reset`,
+        resetSecret: `${base}/reset`,
+        resetToken: `${base}/bot/reset`,
       };
     },
     App: appID => `/oauth2/authorize?client_id=${appID}`,
@@ -320,6 +324,7 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
+  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -401,6 +406,7 @@ exports.WSEvents = {
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
+  USER_GUILD_SETTINGS_UPDATE: 'USER_GUILD_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -430,6 +436,21 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+];
+
+/**
+ * The type of a message notification setting. Here are the available types:
+ * * EVERYTHING
+ * * MENTIONS
+ * * NOTHING
+ * * INHERIT (only for GuildChannel)
+ * @typedef {string} MessageNotificationType
+ */
+exports.MessageNotificationTypes = [
+  'EVERYTHING',
+  'MENTIONS',
+  'NOTHING',
+  'INHERIT',
 ];
 
 exports.DefaultAvatars = {
@@ -577,6 +598,58 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+exports.UserGuildSettingsMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether to receive mobile push notifications
+   * @name ClientUserGuildSettings#mobilePush
+   * @type {boolean}
+   */
+  mobile_push: 'mobilePush',
+  /**
+   * Whether the guild is muted
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
+  /**
+   * Whether to suppress everyone mention
+   * @name ClientUserGuildSettings#suppressEveryone
+   * @type {boolean}
+   */
+  suppress_everyone: 'suppressEveryone',
+  /**
+   * A collection containing all the channel overrides
+   * @name ClientUserGuildSettings#channelOverrides
+   * @type {Collection<ClientUserChannelOverride>}
+   */
+  channel_overrides: 'channelOverrides',
+};
+
+exports.UserChannelOverrideMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserChannelOverride#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether the channel is muted
+   * @name ClientUserChannelOverride#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
 };
 
 exports.Colors = {

@@ -878,7 +878,8 @@ class RESTMethods {
   }
 
   resetApplication(id) {
-    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).reset, true)
+    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetToken, true)
+      .then(() => this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetSecret, true))
       .then(app => new OAuth2Application(this.client, app));
   }
 
@@ -907,6 +908,10 @@ class RESTMethods {
 
   patchUserSettings(data) {
     return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').settings, true, data);
+  }
+
+  patchClientUserGuildSettings(guildID, data) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').Guild(guildID).settings, true, data);
   }
 }
 

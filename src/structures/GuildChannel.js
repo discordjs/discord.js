@@ -3,6 +3,7 @@ const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -326,6 +327,36 @@ class GuildChannel extends Channel {
   get deletable() {
     return this.id !== this.guild.id &&
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
+  }
+
+  /**
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?MessageNotificationType}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
+      return Constants.MessageNotificationTypes[3];
+    }
   }
 
   /**

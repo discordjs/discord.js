@@ -12,7 +12,7 @@ class User {
     /**
      * The client that created the instance of the user
      * @name User#client
-     * @type {}
+     * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
