@@ -2,6 +2,8 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const Attachment = require('../../structures/Attachment');
+const RichEmbed = require('../../structures/RichEmbed');
 const util = require('util');
 
 /**
@@ -38,8 +40,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
+   * @property {FileOptions|BufferResolvable|Attachment} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
@@ -64,7 +66,8 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
+   * @param {MessageOptions|Attachment|RichEmbed} [options] Options for the message,
+   * can also be just a RichEmbed or Attachment
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
@@ -80,7 +83,13 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
+    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof RichEmbed) options = { embed: options };
+
+    if (options.embed && options.embed.file) {
+      if (options.files) options.files.push(options.embed.file);
+      else options.files = [options.embed.file];
+    }
 
     if (options.file) {
       if (options.files) options.files.push(options.file);
@@ -90,22 +99,26 @@ class TextBasedChannel {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
+        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
+          } else if (file instanceof Attachment) {
+            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
+        } else if (file instanceof Attachment) {
+          file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        this.client.resolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
       )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));

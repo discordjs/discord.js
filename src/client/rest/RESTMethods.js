@@ -102,12 +102,12 @@ class RESTMethods {
         if (content instanceof Array) {
           const messages = [];
           (function sendChunk(list, index) {
-            const options = index === list.length ? { tts, embed } : { tts };
-            chan.send(list[index], options, index === list.length ? files : null).then(message => {
+            const options = index === list.length - 1 ? { tts, embed, files } : { tts };
+            chan.send(list[index], options).then(message => {
               messages.push(message);
               if (index >= list.length - 1) return resolve(messages);
               return sendChunk(list, ++index);
-            });
+            }).catch(reject);
           }(content, 0));
         } else {
           this.rest.makeRequest('post', Endpoints.Channel(chan).messages, true, {
@@ -738,21 +738,30 @@ class RESTMethods {
     return this.rest.makeRequest('delete', Endpoints.Webhook(webhook.id, webhook.token), false);
   }
 
-  sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
-    username = username || webhook.name;
-    if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
-    if (content) {
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
-        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+  sendWebhookMessage(webhook, content, { avatarURL, tts, embeds, username } = {}, files = null) {
+    return new Promise((resolve, reject) => {
+      username = username || webhook.name;
+
+      if (content instanceof Array) {
+        const messages = [];
+        (function sendChunk(list, index) {
+          const options = index === list.length - 1 ? { tts, embeds, files } : { tts };
+          webhook.send(list[index], options).then(message => {
+            messages.push(message);
+            if (index >= list.length - 1) return resolve(messages);
+            return sendChunk(list, ++index);
+          }).catch(reject);
+        }(content, 0));
+      } else {
+        this.rest.makeRequest('post', `${Endpoints.Webhook(webhook.id, webhook.token)}?wait=true`, false, {
+          username,
+          avatar_url: avatarURL,
+          content,
+          tts,
+          embeds,
+        }, files).then(resolve, reject);
       }
-    }
-    return this.rest.makeRequest('post', `${Endpoints.Webhook(webhook.id, webhook.token)}?wait=true`, false, {
-      username,
-      avatar_url: avatarURL,
-      content,
-      tts,
-      embeds,
-    }, file);
+    });
   }
 
   sendSlackWebhookMessage(webhook, body) {
