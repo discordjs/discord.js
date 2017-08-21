@@ -7817,8 +7817,8 @@ const Collection = __webpack_require__(3);
  */
 class DataStore extends Collection {
   constructor(client, iterable) {
-    super(iterable);
-
+    super();
+    for (const item of iterable) this.create(item);
     Object.defineProperty(this, 'client', { value: client });
   }
 
