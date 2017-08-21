@@ -203,11 +203,16 @@ class ClientDataResolver {
    */
 
   /**
+   * @external Stream
+   * @see {@link https://nodejs.org/api/stream.html}
+   */
+
+  /**
    * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Buffer>}
    */
-  resolveBuffer(resource) {
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
@@ -232,31 +237,16 @@ class ClientDataResolver {
           });
         }
       });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
+      });
     }
 
     return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
-  }
-
-  /**
-   * Converts a Stream to a Buffer.
-   * @param {Stream} resource The stream to convert
-   * @returns {Promise<Buffer>}
-   */
-  resolveFile(resource) {
-    return resource ? this.resolveBuffer(resource)
-      .catch(() => {
-        if (resource.pipe && typeof resource.pipe === 'function') {
-          return new Promise((resolve, reject) => {
-            const buffers = [];
-            resource.once('error', reject);
-            resource.on('data', data => buffers.push(data));
-            resource.once('end', () => resolve(Buffer.concat(buffers)));
-          });
-        } else {
-          throw new TypeError('REQ_RESOURCE_TYPE');
-        }
-      }) :
-      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**
