@@ -9,11 +9,7 @@ class Base {
      * @type {Client}
      * @readonly
      */
-    Object.defineProperty(this, 'client', {
-      value: client,
-      enumerable: false,
-      writable: false,
-    });
+    Object.defineProperty(this, 'client', { value: client });
   }
 
   _clone() {

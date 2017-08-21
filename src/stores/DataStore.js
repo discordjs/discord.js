@@ -1,7 +1,7 @@
 const Collection = require('../util/Collection');
 
 /**
- * A data store what else????
+ * A data store
  * @class DataStore
  * @extends {Collection}
  */
@@ -9,11 +9,7 @@ class DataStore extends Collection {
   constructor(client, iterable) {
     super(iterable);
 
-    Object.defineProperty(this, 'client', {
-      value: client,
-      enumerable: false,
-      writable: false,
-    });
+    Object.defineProperty(this, 'client', { value: client });
   }
 
   // Stubs
