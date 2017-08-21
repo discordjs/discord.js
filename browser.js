@@ -1,6 +1,9 @@
+const browser = typeof window !== 'undefined';
+const webpack = !!process.env.__DISCORD_WEBPACK__;
+
 const Discord = require('./');
 
 module.exports = Discord;
-if (typeof window !== 'undefined') window.Discord = Discord; // eslint-disable-line no-undef
+if (browser && webpack) window.Discord = Discord; // eslint-disable-line no-undef
 // eslint-disable-next-line no-console
-else console.warn('Warning: using browser version of Discord.js in a non-browser environment');
+else if (!browser) console.warn('Warning: using browser version of Discord.js in a non-browser environment');

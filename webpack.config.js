@@ -12,6 +12,11 @@ const createConfig = options => {
   const plugins = [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        __DISCORD_WEBPACK__: '"true"',
+      },
+    }),
   ];
 
   if (options.minify) plugins.push(new UglifyJSPlugin({ uglifyOptions: { output: { comments: false } } }));
