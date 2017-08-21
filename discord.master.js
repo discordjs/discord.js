@@ -7600,7 +7600,7 @@ class Webhook {
   /**
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
+   * @param {WebhookMessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
@@ -8648,7 +8648,7 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
+   * @param {MessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
@@ -10079,11 +10079,14 @@ module.exports = Invite;
 
 /**
  * Represents an attachment in a message.
+ * @param {BufferResolvable|Stream} file The file
+ * @param {string} [name] The name of the file, if any
  */
 class Attachment {
   constructor(file, name) {
     this.file = null;
-    this._attach(file, name);
+    if (name) this.setAttachment(file, name);
+    else this._attach(file);
   }
 
   /**
@@ -10121,7 +10124,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setFile(attachment) {
-    this.file.attachment = attachment;
+    this.file = { attachment };
     return this;
   }
 
@@ -10142,10 +10145,8 @@ class Attachment {
     * @private
     */
   _attach(file, name) {
-    if (file) {
-      if (typeof file === 'string') this.file = file;
-      else this.setAttachment(file, name);
-    }
+    if (typeof file === 'string') this.file = file;
+    else this.setAttachment(file, name);
   }
 }
 
@@ -18766,11 +18767,16 @@ class ClientDataResolver {
    */
 
   /**
+   * @external Stream
+   * @see {@link https://nodejs.org/api/stream.html}
+   */
+
+  /**
    * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Buffer>}
    */
-  resolveBuffer(resource) {
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
@@ -18795,31 +18801,16 @@ class ClientDataResolver {
           });
         }
       });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
+      });
     }
 
     return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
-  }
-
-  /**
-   * Converts a Stream to a Buffer.
-   * @param {Stream} resource The stream to convert
-   * @returns {Promise<Buffer>}
-   */
-  resolveFile(resource) {
-    return resource ? this.resolveBuffer(resource)
-      .catch(() => {
-        if (resource.pipe && typeof resource.pipe === 'function') {
-          return new Promise((resolve, reject) => {
-            const buffers = [];
-            resource.once('error', reject);
-            resource.on('data', data => buffers.push(data));
-            resource.once('end', () => resolve(Buffer.concat(buffers)));
-          });
-        } else {
-          throw new TypeError('REQ_RESOURCE_TYPE');
-        }
-      }) :
-      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**
