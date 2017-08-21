@@ -171,7 +171,10 @@ const Endpoints = exports.Endpoints = {
       relationships: `${base}/relationships`,
       settings: `${base}/settings`,
       Relationship: uID => `${base}/relationships/${uID}`,
-      Guild: guildID => `${base}/guilds/${guildID}`,
+      Guild: guildID => ({
+        toString: () => `${base}/guilds/${guildID}`,
+        settings: `${base}/guilds/${guildID}/settings`,
+      }),
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
@@ -269,7 +272,8 @@ const Endpoints = exports.Endpoints = {
       const base = `/oauth2/applications/${appID}`;
       return {
         toString: () => base,
-        reset: `${base}/reset`,
+        resetSecret: `${base}/reset`,
+        resetToken: `${base}/bot/reset`,
       };
     },
     App: appID => `/oauth2/authorize?client_id=${appID}`,
@@ -389,6 +393,7 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
+  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -470,6 +475,7 @@ exports.WSEvents = {
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
+  USER_GUILD_SETTINGS_UPDATE: 'USER_GUILD_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -499,6 +505,21 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+];
+
+/**
+ * The type of a message notification setting. Here are the available types:
+ * * EVERYTHING
+ * * MENTIONS
+ * * NOTHING
+ * * INHERIT (only for GuildChannel)
+ * @typedef {string} MessageNotificationType
+ */
+exports.MessageNotificationTypes = [
+  'EVERYTHING',
+  'MENTIONS',
+  'NOTHING',
+  'INHERIT',
 ];
 
 exports.DefaultAvatars = {
@@ -646,6 +667,58 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+exports.UserGuildSettingsMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether to receive mobile push notifications
+   * @name ClientUserGuildSettings#mobilePush
+   * @type {boolean}
+   */
+  mobile_push: 'mobilePush',
+  /**
+   * Whether the guild is muted
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
+  /**
+   * Whether to suppress everyone mention
+   * @name ClientUserGuildSettings#suppressEveryone
+   * @type {boolean}
+   */
+  suppress_everyone: 'suppressEveryone',
+  /**
+   * A collection containing all the channel overrides
+   * @name ClientUserGuildSettings#channelOverrides
+   * @type {Collection<ClientUserChannelOverride>}
+   */
+  channel_overrides: 'channelOverrides',
+};
+
+exports.UserChannelOverrideMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserChannelOverride#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether the channel is muted
+   * @name ClientUserChannelOverride#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
 };
 
 exports.Colors = {
@@ -4922,7 +4995,7 @@ class User {
     /**
      * The client that created the instance of the user
      * @name User#client
-     * @type {}
+     * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
@@ -8407,11 +8480,72 @@ class Guild {
    * The position of this guild
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
+   * @readonly
    */
   get position() {
     if (this.client.user.bot) return null;
     if (!this.client.user.settings.guildPositions) return null;
     return this.client.user.settings.guildPositions.indexOf(this.id);
+  }
+
+  /**
+   * Whether the guild is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?MessageNotificationType}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).messageNotifications;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  /**
+   * Whether to receive mobile push notifications
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get mobilePush() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).mobilePush;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * Whether to suppress everyone messages
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get suppressEveryone() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.id).suppressEveryone;
+    } catch (err) {
+      return null;
+    }
   }
 
   /**
@@ -9248,6 +9382,7 @@ const Role = __webpack_require__(15);
 const PermissionOverwrites = __webpack_require__(68);
 const Permissions = __webpack_require__(11);
 const Collection = __webpack_require__(3);
+const Constants = __webpack_require__(0);
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -9571,6 +9706,36 @@ class GuildChannel extends Channel {
   get deletable() {
     return this.id !== this.guild.id &&
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
+  }
+
+  /**
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?MessageNotificationType}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
+      return Constants.MessageNotificationTypes[3];
+    }
   }
 
   /**
@@ -12218,7 +12383,7 @@ class OAuth2Application {
 
     /**
      * The app's icon hash
-     * @type {string}
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -12305,6 +12470,7 @@ class OAuth2Application {
 
   /**
    * Reset the app's secret and bot token.
+   * <warn>This is only available when using a user account.</warn> 
    * @returns {OAuth2Application}
    */
   reset() {
@@ -17358,7 +17524,7 @@ const zlib = __webpack_require__(26);
 const PacketManager = __webpack_require__(116);
 const erlpack = (function findErlpack() {
   try {
-    const e = __webpack_require__(153);
+    const e = __webpack_require__(156);
     if (!e.pack) return null;
     return e;
   } catch (e) {
@@ -17369,9 +17535,9 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return __webpack_require__(154);
+    return __webpack_require__(157);
   } catch (e) {
-    return __webpack_require__(155);
+    return __webpack_require__(158);
   }
 }());
 
@@ -17864,6 +18030,7 @@ module.exports = WebSocketConnection;
 const User = __webpack_require__(14);
 const Collection = __webpack_require__(3);
 const ClientUserSettings = __webpack_require__(72);
+const ClientUserGuildSettings = __webpack_require__(118);
 const Constants = __webpack_require__(0);
 
 /**
@@ -17936,6 +18103,18 @@ class ClientUser extends User {
      * @type {?ClientUserSettings}
      */
     this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
+
+    /**
+     * All of the user's guild settings
+     * <warn>This is only filled when using a user account</warn>
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
+     */
+    this.guildSettings = new Collection();
+    if (data.user_guild_settings) {
+      for (const settings of data.user_guild_settings) {
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+      }
+    }
   }
 
   edit(data) {
@@ -18321,10 +18500,10 @@ const Util = __webpack_require__(4);
 module.exports = {
   // "Root" classes (starting points)
   Client: __webpack_require__(103),
-  Shard: __webpack_require__(189),
-  ShardClientUtil: __webpack_require__(190),
-  ShardingManager: __webpack_require__(191),
-  WebhookClient: __webpack_require__(192),
+  Shard: __webpack_require__(192),
+  ShardClientUtil: __webpack_require__(193),
+  ShardingManager: __webpack_require__(194),
+  WebhookClient: __webpack_require__(195),
 
   // Utilities
   Collection: __webpack_require__(3),
@@ -18371,7 +18550,7 @@ module.exports = {
   Presence: __webpack_require__(16).Presence,
   ReactionEmoji: __webpack_require__(36),
   ReactionCollector: __webpack_require__(59),
-  RichEmbed: __webpack_require__(193),
+  RichEmbed: __webpack_require__(196),
   Role: __webpack_require__(15),
   TextChannel: __webpack_require__(67),
   User: __webpack_require__(14),
@@ -21602,13 +21781,13 @@ const RESTManager = __webpack_require__(54);
 const ClientDataManager = __webpack_require__(114);
 const ClientManager = __webpack_require__(115);
 const ClientDataResolver = __webpack_require__(42);
-const ClientVoiceManager = __webpack_require__(156);
-const WebSocketManager = __webpack_require__(157);
-const ActionsManager = __webpack_require__(158);
+const ClientVoiceManager = __webpack_require__(159);
+const WebSocketManager = __webpack_require__(160);
+const ActionsManager = __webpack_require__(161);
 const Collection = __webpack_require__(3);
 const Presence = __webpack_require__(16).Presence;
-const ShardClientUtil = __webpack_require__(187);
-const VoiceBroadcast = __webpack_require__(188);
+const ShardClientUtil = __webpack_require__(190);
+const VoiceBroadcast = __webpack_require__(191);
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -23100,7 +23279,8 @@ class RESTMethods {
   }
 
   resetApplication(id) {
-    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).reset, true)
+    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetToken, true)
+      .then(() => this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetSecret, true))
       .then(app => new OAuth2Application(this.client, app));
   }
 
@@ -23129,6 +23309,10 @@ class RESTMethods {
 
   patchUserSettings(data) {
     return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').settings, true, data);
+  }
+
+  patchClientUserGuildSettings(guildID, data) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').Guild(guildID).settings, true, data);
   }
 }
 
@@ -23383,6 +23567,9 @@ class SequentialRequestHandler extends RequestHandler {
               resolve();
             }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
+          } else if (err.status >= 500 && err.status < 600) {
+            this.queue.unshift(item);
+            this.restManager.client.setTimeout(resolve, 1e3 + this.client.options.restTimeOffset);
           } else {
             item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.body) : err);
             resolve(err);
@@ -23463,6 +23650,12 @@ class BurstRequestHandler extends RequestHandler {
             this.handle();
             this.resetTimeout = null;
           }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
+        } else if (err.status >= 500 && err.status < 600) {
+          this.queue.unshift(item);
+          this.resetTimeout = this.client.setTimeout(() => {
+            this.handle();
+            this.resetTimeout = null;
+          }, 1e3 + this.client.options.restTimeOffset);
         } else {
           item.reject(err.status === 400 ? new DiscordAPIError(res.body) : err);
           this.handle();
@@ -23784,41 +23977,42 @@ class WebSocketPacketManager {
     this.queue = [];
 
     this.register(Constants.WSEvents.READY, __webpack_require__(117));
-    this.register(Constants.WSEvents.RESUMED, __webpack_require__(118));
-    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(119));
-    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(120));
-    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(121));
-    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(122));
-    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(123));
-    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(124));
-    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(125));
-    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(126));
-    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(127));
-    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(128));
-    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(129));
-    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(130));
-    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(131));
-    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(132));
-    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(133));
-    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(134));
-    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(135));
-    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(136));
-    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(137));
-    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(138));
-    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(139));
-    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(140));
-    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(141));
-    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(142));
-    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(143));
-    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(144));
-    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(145));
-    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(146));
-    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(147));
-    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(148));
-    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(149));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(150));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(151));
-    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(152));
+    this.register(Constants.WSEvents.RESUMED, __webpack_require__(120));
+    this.register(Constants.WSEvents.GUILD_CREATE, __webpack_require__(121));
+    this.register(Constants.WSEvents.GUILD_DELETE, __webpack_require__(122));
+    this.register(Constants.WSEvents.GUILD_UPDATE, __webpack_require__(123));
+    this.register(Constants.WSEvents.GUILD_BAN_ADD, __webpack_require__(124));
+    this.register(Constants.WSEvents.GUILD_BAN_REMOVE, __webpack_require__(125));
+    this.register(Constants.WSEvents.GUILD_MEMBER_ADD, __webpack_require__(126));
+    this.register(Constants.WSEvents.GUILD_MEMBER_REMOVE, __webpack_require__(127));
+    this.register(Constants.WSEvents.GUILD_MEMBER_UPDATE, __webpack_require__(128));
+    this.register(Constants.WSEvents.GUILD_ROLE_CREATE, __webpack_require__(129));
+    this.register(Constants.WSEvents.GUILD_ROLE_DELETE, __webpack_require__(130));
+    this.register(Constants.WSEvents.GUILD_ROLE_UPDATE, __webpack_require__(131));
+    this.register(Constants.WSEvents.GUILD_EMOJIS_UPDATE, __webpack_require__(132));
+    this.register(Constants.WSEvents.GUILD_MEMBERS_CHUNK, __webpack_require__(133));
+    this.register(Constants.WSEvents.CHANNEL_CREATE, __webpack_require__(134));
+    this.register(Constants.WSEvents.CHANNEL_DELETE, __webpack_require__(135));
+    this.register(Constants.WSEvents.CHANNEL_UPDATE, __webpack_require__(136));
+    this.register(Constants.WSEvents.CHANNEL_PINS_UPDATE, __webpack_require__(137));
+    this.register(Constants.WSEvents.PRESENCE_UPDATE, __webpack_require__(138));
+    this.register(Constants.WSEvents.USER_UPDATE, __webpack_require__(139));
+    this.register(Constants.WSEvents.USER_NOTE_UPDATE, __webpack_require__(140));
+    this.register(Constants.WSEvents.USER_SETTINGS_UPDATE, __webpack_require__(141));
+    this.register(Constants.WSEvents.USER_GUILD_SETTINGS_UPDATE, __webpack_require__(142));
+    this.register(Constants.WSEvents.VOICE_STATE_UPDATE, __webpack_require__(143));
+    this.register(Constants.WSEvents.TYPING_START, __webpack_require__(144));
+    this.register(Constants.WSEvents.MESSAGE_CREATE, __webpack_require__(145));
+    this.register(Constants.WSEvents.MESSAGE_DELETE, __webpack_require__(146));
+    this.register(Constants.WSEvents.MESSAGE_UPDATE, __webpack_require__(147));
+    this.register(Constants.WSEvents.MESSAGE_DELETE_BULK, __webpack_require__(148));
+    this.register(Constants.WSEvents.VOICE_SERVER_UPDATE, __webpack_require__(149));
+    this.register(Constants.WSEvents.GUILD_SYNC, __webpack_require__(150));
+    this.register(Constants.WSEvents.RELATIONSHIP_ADD, __webpack_require__(151));
+    this.register(Constants.WSEvents.RELATIONSHIP_REMOVE, __webpack_require__(152));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_ADD, __webpack_require__(153));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE, __webpack_require__(154));
+    this.register(Constants.WSEvents.MESSAGE_REACTION_REMOVE_ALL, __webpack_require__(155));
   }
 
   get client() {
@@ -23890,6 +24084,7 @@ class ReadyHandler extends AbstractHandler {
     client.ws.heartbeat();
 
     data.user.user_settings = data.user_settings;
+    data.user.user_guild_settings = data.user_guild_settings;
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
@@ -23966,6 +24161,104 @@ module.exports = ReadyHandler;
 /* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
+const Constants = __webpack_require__(0);
+const Collection = __webpack_require__(3);
+const ClientUserChannelOverride = __webpack_require__(119);
+
+/**
+ * A wrapper around the ClientUser's guild settings.
+ */
+class ClientUserGuildSettings {
+  constructor(data, client) {
+    /**
+     * The client that created the instance of the ClientUserGuildSettings
+     * @name ClientUserGuildSettings#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+    /**
+     * The ID of the guild this settings are for
+     * @type {Snowflake}
+     */
+    this.guildID = data.guild_id;
+    this.channelOverrides = new Collection();
+    this.patch(data);
+  }
+
+  /**
+   * Patch the data contained in this class with new partial data.
+   * @param {Object} data Data to patch this with
+   */
+  patch(data) {
+    for (const key of Object.keys(Constants.UserGuildSettingsMap)) {
+      const value = Constants.UserGuildSettingsMap[key];
+      if (!data.hasOwnProperty(key)) continue;
+      if (key === 'channel_overrides') {
+        for (const channel of data[key]) {
+          this.channelOverrides.set(channel.channel_id,
+            new ClientUserChannelOverride(channel));
+        }
+      } else if (typeof value === 'function') {
+        this[value.name] = value(data[key]);
+      } else {
+        this[value] = data[key];
+      }
+    }
+  }
+
+  /**
+   * Update a specific property of the guild settings.
+   * @param {string} name Name of property
+   * @param {value} value Value to patch
+   * @returns {Promise<Object>}
+   */
+  update(name, value) {
+    return this.client.rest.methods.patchClientUserGuildSettings(this.guildID, { [name]: value });
+  }
+}
+
+module.exports = ClientUserGuildSettings;
+
+
+/***/ }),
+/* 119 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Constants = __webpack_require__(0);
+
+/**
+ * A wrapper around the ClientUser's channel overrides.
+ */
+class ClientUserChannelOverride {
+  constructor(data) {
+    this.patch(data);
+  }
+
+  /**
+   * Patch the data contained in this class with new partial data.
+   * @param {Object} data Data to patch this with
+   */
+  patch(data) {
+    for (const key of Object.keys(Constants.UserChannelOverrideMap)) {
+      const value = Constants.UserChannelOverrideMap[key];
+      if (!data.hasOwnProperty(key)) continue;
+      if (typeof value === 'function') {
+        this[value.name] = value(data[key]);
+      } else {
+        this[value] = data[key];
+      }
+    }
+  }
+}
+
+module.exports = ClientUserChannelOverride;
+
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
 const AbstractHandler = __webpack_require__(1);
 const Constants = __webpack_require__(0);
 
@@ -23997,7 +24290,7 @@ module.exports = ResumedHandler;
 
 
 /***/ }),
-/* 119 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24025,7 +24318,7 @@ module.exports = GuildCreateHandler;
 
 
 /***/ }),
-/* 120 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24050,7 +24343,7 @@ module.exports = GuildDeleteHandler;
 
 
 /***/ }),
-/* 121 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24067,7 +24360,7 @@ module.exports = GuildUpdateHandler;
 
 
 /***/ }),
-/* 122 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24096,7 +24389,7 @@ module.exports = GuildBanAddHandler;
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24122,7 +24415,7 @@ module.exports = GuildBanRemoveHandler;
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24145,7 +24438,7 @@ module.exports = GuildMemberAddHandler;
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24164,7 +24457,7 @@ module.exports = GuildMemberRemoveHandler;
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ##untested handler##
@@ -24188,7 +24481,7 @@ module.exports = GuildMemberUpdateHandler;
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24205,7 +24498,7 @@ module.exports = GuildRoleCreateHandler;
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24222,7 +24515,7 @@ module.exports = GuildRoleDeleteHandler;
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24239,7 +24532,7 @@ module.exports = GuildRoleUpdateHandler;
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24256,7 +24549,7 @@ module.exports = GuildEmojisUpdate;
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24295,7 +24588,7 @@ module.exports = GuildMembersChunkHandler;
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24318,7 +24611,7 @@ module.exports = ChannelCreateHandler;
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24344,7 +24637,7 @@ module.exports = ChannelDeleteHandler;
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24361,7 +24654,7 @@ module.exports = ChannelUpdateHandler;
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24398,7 +24691,7 @@ module.exports = ChannelPinsUpdate;
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24480,7 +24773,7 @@ module.exports = PresenceUpdateHandler;
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24497,7 +24790,7 @@ module.exports = UserUpdateHandler;
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24515,7 +24808,7 @@ module.exports = UserNoteUpdateHandler;
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24539,7 +24832,31 @@ module.exports = UserSettingsUpdateHandler;
 
 
 /***/ }),
-/* 140 */
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const AbstractHandler = __webpack_require__(1);
+const Constants = __webpack_require__(0);
+
+class UserGuildSettingsUpdateHandler extends AbstractHandler {
+  handle(packet) {
+    const client = this.packetManager.client;
+    client.user.guildSettings.get(packet.d.guild_id).patch(packet.d);
+    client.emit(Constants.Events.USER_GUILD_SETTINGS_UPDATE, client.user.guildSettings.get(packet.d.guild_id));
+  }
+}
+
+/**
+ * Emitted whenever the client user's settings update.
+ * @event Client#clientUserGuildSettingsUpdate
+ * @param {ClientUserGuildSettings} clientUserGuildSettings The new client user guild settings
+ */
+
+module.exports = UserGuildSettingsUpdateHandler;
+
+
+/***/ }),
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24594,7 +24911,7 @@ module.exports = VoiceStateUpdateHandler;
 
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24668,7 +24985,7 @@ module.exports = TypingStartHandler;
 
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24693,7 +25010,7 @@ module.exports = MessageCreateHandler;
 
 
 /***/ }),
-/* 143 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24718,7 +25035,7 @@ module.exports = MessageDeleteHandler;
 
 
 /***/ }),
-/* 144 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24735,7 +25052,7 @@ module.exports = MessageUpdateHandler;
 
 
 /***/ }),
-/* 145 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24758,7 +25075,7 @@ module.exports = MessageDeleteBulkHandler;
 
 
 /***/ }),
-/* 146 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24783,7 +25100,7 @@ module.exports = VoiceServerUpdate;
 
 
 /***/ }),
-/* 147 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24800,7 +25117,7 @@ module.exports = GuildSyncHandler;
 
 
 /***/ }),
-/* 148 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24825,7 +25142,7 @@ module.exports = RelationshipAddHandler;
 
 
 /***/ }),
-/* 149 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24850,7 +25167,7 @@ module.exports = RelationshipRemoveHandler;
 
 
 /***/ }),
-/* 150 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24867,7 +25184,7 @@ module.exports = MessageReactionAddHandler;
 
 
 /***/ }),
-/* 151 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24884,7 +25201,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 152 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const AbstractHandler = __webpack_require__(1);
@@ -24901,24 +25218,6 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 153 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 154 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 155 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 156 */
 /***/ (function(module, exports) {
 
@@ -24926,6 +25225,24 @@ module.exports = MessageReactionRemoveAll;
 
 /***/ }),
 /* 157 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const EventEmitter = __webpack_require__(9).EventEmitter;
@@ -25021,16 +25338,13 @@ module.exports = WebSocketManager;
 
 
 /***/ }),
-/* 158 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(__webpack_require__(159));
-    this.register(__webpack_require__(160));
-    this.register(__webpack_require__(161));
     this.register(__webpack_require__(162));
     this.register(__webpack_require__(163));
     this.register(__webpack_require__(164));
@@ -25056,6 +25370,9 @@ class ActionsManager {
     this.register(__webpack_require__(184));
     this.register(__webpack_require__(185));
     this.register(__webpack_require__(186));
+    this.register(__webpack_require__(187));
+    this.register(__webpack_require__(188));
+    this.register(__webpack_require__(189));
   }
 
   register(Action) {
@@ -25067,7 +25384,7 @@ module.exports = ActionsManager;
 
 
 /***/ }),
-/* 159 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25128,7 +25445,7 @@ module.exports = MessageCreateAction;
 
 
 /***/ }),
-/* 160 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25168,7 +25485,7 @@ module.exports = MessageDeleteAction;
 
 
 /***/ }),
-/* 161 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25196,7 +25513,7 @@ module.exports = MessageDeleteBulkAction;
 
 
 /***/ }),
-/* 162 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25242,7 +25559,7 @@ module.exports = MessageUpdateAction;
 
 
 /***/ }),
-/* 163 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25285,7 +25602,7 @@ module.exports = MessageReactionAdd;
 
 
 /***/ }),
-/* 164 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25328,7 +25645,7 @@ module.exports = MessageReactionRemove;
 
 
 /***/ }),
-/* 165 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25359,7 +25676,7 @@ module.exports = MessageReactionRemoveAll;
 
 
 /***/ }),
-/* 166 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25376,7 +25693,7 @@ module.exports = ChannelCreateAction;
 
 
 /***/ }),
-/* 167 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25411,7 +25728,7 @@ module.exports = ChannelDeleteAction;
 
 
 /***/ }),
-/* 168 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25451,7 +25768,7 @@ module.exports = ChannelUpdateAction;
 
 
 /***/ }),
-/* 169 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25510,7 +25827,7 @@ module.exports = GuildDeleteAction;
 
 
 /***/ }),
-/* 170 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25550,7 +25867,7 @@ module.exports = GuildUpdateAction;
 
 
 /***/ }),
-/* 171 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25566,7 +25883,7 @@ module.exports = GuildMemberGetAction;
 
 
 /***/ }),
-/* 172 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25612,7 +25929,7 @@ module.exports = GuildMemberRemoveAction;
 
 
 /***/ }),
-/* 173 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25631,7 +25948,7 @@ module.exports = GuildBanRemove;
 
 
 /***/ }),
-/* 174 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25663,7 +25980,7 @@ module.exports = GuildRoleCreate;
 
 
 /***/ }),
-/* 175 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25710,7 +26027,7 @@ module.exports = GuildRoleDeleteAction;
 
 
 /***/ }),
-/* 176 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25757,7 +26074,7 @@ module.exports = GuildRoleUpdateAction;
 
 
 /***/ }),
-/* 177 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25774,7 +26091,7 @@ module.exports = UserGetAction;
 
 
 /***/ }),
-/* 178 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25813,7 +26130,7 @@ module.exports = UserUpdateAction;
 
 
 /***/ }),
-/* 179 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25849,7 +26166,7 @@ module.exports = UserNoteUpdateAction;
 
 
 /***/ }),
-/* 180 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25884,7 +26201,7 @@ module.exports = GuildSync;
 
 
 /***/ }),
-/* 181 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25907,7 +26224,7 @@ module.exports = GuildEmojiCreateAction;
 
 
 /***/ }),
-/* 182 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25930,7 +26247,7 @@ module.exports = GuildEmojiDeleteAction;
 
 
 /***/ }),
-/* 183 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25953,7 +26270,7 @@ module.exports = GuildEmojiUpdateAction;
 
 
 /***/ }),
-/* 184 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -25997,7 +26314,7 @@ module.exports = GuildEmojisUpdateAction;
 
 
 /***/ }),
-/* 185 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -26022,7 +26339,7 @@ module.exports = GuildRolesPositionUpdate;
 
 
 /***/ }),
-/* 186 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Action = __webpack_require__(2);
@@ -26047,24 +26364,6 @@ module.exports = GuildChannelsPositionUpdate;
 
 
 /***/ }),
-/* 187 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 188 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 189 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 190 */
 /***/ (function(module, exports) {
 
@@ -26078,6 +26377,24 @@ module.exports = GuildChannelsPositionUpdate;
 
 /***/ }),
 /* 192 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 193 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const Webhook = __webpack_require__(38);
@@ -26201,7 +26518,7 @@ module.exports = WebhookClient;
 
 
 /***/ }),
-/* 193 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 const ClientDataResolver = __webpack_require__(42);
