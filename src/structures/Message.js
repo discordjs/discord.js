@@ -262,7 +262,7 @@ class Message {
     const matches = [];
     let match;
     // eslint-disable-next-line no-cond-assign
-    while (match = Constants.UnicodeEmojiRegex.exec(this.content)) {
+    while (match = Constants.UnicodeEmojiRegex().exec(this.content)) {
       matches.push({ emoji: match[0], index: match.index });
     }
     const CustomRe = /<:(\w+):(\d+)>/g;
