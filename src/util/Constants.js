@@ -200,7 +200,8 @@ const Endpoints = exports.Endpoints = {
       const base = `/oauth2/applications/${appID}`;
       return {
         toString: () => base,
-        reset: `${base}/reset`,
+        resetSecret: `${base}/reset`,
+        resetToken: `${base}/bot/reset`,
       };
     },
     App: appID => `/oauth2/authorize?client_id=${appID}`,

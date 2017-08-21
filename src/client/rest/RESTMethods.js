@@ -869,7 +869,8 @@ class RESTMethods {
   }
 
   resetApplication(id) {
-    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).reset, true)
+    return this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetToken, true)
+      .then(() => this.rest.makeRequest('post', Endpoints.OAUTH2.Application(id).resetSecret, true))
       .then(app => new OAuth2Application(this.client, app));
   }
 
