@@ -26,6 +26,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
