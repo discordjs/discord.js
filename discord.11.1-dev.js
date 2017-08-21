@@ -5421,6 +5421,7 @@ class Role {
   /**
    * Edits the role.
    * @param {RoleData} data The new data for the role
+   * @param {string} [reason] The reason for editing this role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -5428,13 +5429,14 @@ class Role {
    *   .then(r => console.log(`Edited role ${r}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildRole(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateGuildRole(this, data, reason);
   }
 
   /**
    * Set a new name for the role.
    * @param {string} name The new name of the role
+   * @param {string} [reason] Reason for changing the role's name
    * @returns {Promise<Role>}
    * @example
    * // Set the name of the role
@@ -5442,13 +5444,14 @@ class Role {
    *   .then(r => console.log(`Edited name of role ${r}`))
    *   .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Set a new color for the role.
    * @param {ColorResolvable} color The color of the role
+   * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
    * @example
    * // Set the color of a role
@@ -5456,13 +5459,14 @@ class Role {
    *   .then(r => console.log(`Set color of role ${r}`))
    *   .catch(console.error);
    */
-  setColor(color) {
-    return this.edit({ color });
+  setColor(color, reason) {
+    return this.edit({ color }, reason);
   }
 
   /**
    * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
+   * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
    * @example
    * // Set the hoist of the role
@@ -5470,8 +5474,8 @@ class Role {
    *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
    *   .catch(console.error);
    */
-  setHoist(hoist) {
-    return this.edit({ hoist });
+  setHoist(hoist, reason) {
+    return this.edit({ hoist }, reason);
   }
 
   /**
@@ -5492,6 +5496,7 @@ class Role {
   /**
    * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
+   * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
@@ -5499,13 +5504,14 @@ class Role {
    *   .then(r => console.log(`Role updated ${r}`))
    *   .catch(console.error);
    */
-  setPermissions(permissions) {
-    return this.edit({ permissions });
+  setPermissions(permissions, reason) {
+    return this.edit({ permissions }, reason);
   }
 
   /**
    * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
+   * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
    * @example
    * // Make the role mentionable
@@ -5513,12 +5519,13 @@ class Role {
    *   .then(r => console.log(`Role updated ${r}`))
    *   .catch(console.error);
    */
-  setMentionable(mentionable) {
-    return this.edit({ mentionable });
+  setMentionable(mentionable, reason) {
+    return this.edit({ mentionable }, reason);
   }
 
   /**
    * Deletes the role.
+   * @param {string} [reason] Reason for deleting the role
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
@@ -5526,8 +5533,8 @@ class Role {
    *   .then(r => console.log(`Deleted role ${r}`))
    *   .catch(console.error);
    */
-  delete() {
-    return this.client.rest.methods.deleteGuildRole(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteGuildRole(this, reason);
   }
 
   /**
@@ -7315,6 +7322,7 @@ class Emoji {
   /**
    * Edits the emoji.
    * @param {EmojiEditData} data The new data for the emoji
+   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
    * // Edit an emoji
@@ -7322,17 +7330,18 @@ class Emoji {
    *   .then(e => console.log(`Edited emoji ${e}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateEmoji(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateEmoji(this, data, reason);
   }
 
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] The reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -7767,28 +7776,31 @@ class GuildMember {
   /**
    * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateGuildMember(this, data, reason);
   }
 
   /**
    * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
+   * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
    */
-  setMute(mute) {
-    return this.edit({ mute });
+  setMute(mute, reason) {
+    return this.edit({ mute }, reason);
   }
 
   /**
    * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
    */
-  setDeaf(deaf) {
-    return this.edit({ deaf });
+  setDeaf(deaf, reason) {
+    return this.edit({ deaf }, reason);
   }
 
   /**
@@ -7803,29 +7815,32 @@ class GuildMember {
   /**
    * Sets the roles applied to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
+   * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    */
-  setRoles(roles) {
-    return this.edit({ roles });
+  setRoles(roles, reason) {
+    return this.edit({ roles }, reason);
   }
 
   /**
    * Adds a single role to the member.
    * @param {Role|Snowflake} role The role or ID of the role to add
+   * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember>}
    */
-  addRole(role) {
+  addRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.rest.methods.addMemberRole(this, role);
+    return this.client.rest.methods.addMemberRole(this, role, reason);
   }
 
   /**
    * Adds multiple roles to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
+   * @param {string} [reason] Reason for adding the roles
    * @returns {Promise<GuildMember>}
    */
-  addRoles(roles) {
+  addRoles(roles, reason) {
     let allRoles;
     if (roles instanceof Collection) {
       allRoles = this._roles.slice();
@@ -7833,26 +7848,28 @@ class GuildMember {
     } else {
       allRoles = this._roles.concat(roles);
     }
-    return this.edit({ roles: allRoles });
+    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
    * Removes a single role from the member.
    * @param {Role|Snowflake} role The role or ID of the role to remove
+   * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember>}
    */
-  removeRole(role) {
+  removeRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
     if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
-    return this.client.rest.methods.removeMemberRole(this, role);
+    return this.client.rest.methods.removeMemberRole(this, role, reason);
   }
 
   /**
    * Removes multiple roles from the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
+   * @param {string} [reason] Reason for removing the roles
    * @returns {Promise<GuildMember>}
    */
-  removeRoles(roles) {
+  removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
     if (roles instanceof Collection) {
       for (const role of roles.values()) {
@@ -7865,16 +7882,17 @@ class GuildMember {
         if (index >= 0) allRoles.splice(index, 1);
       }
     }
-    return this.edit({ roles: allRoles });
+    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
    * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
+   * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
-  setNickname(nick) {
-    return this.edit({ nick });
+  setNickname(nick, reason) {
+    return this.edit({ nick }, reason);
   }
 
   /**
@@ -8594,6 +8612,7 @@ class Guild {
   /**
    * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
+   * @param {string} [reason] Reason for editing this guild
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name and region
@@ -8604,7 +8623,7 @@ class Guild {
    *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
    *   .catch(console.error);
    */
-  edit(data) {
+  edit(data, reason) {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
@@ -8618,21 +8637,23 @@ class Guild {
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
-    return this.client.rest.methods.updateGuild(this, _data);
+    return this.client.rest.methods.updateGuild(this, _data, reason);
   }
 
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter 
    * @returns {Promise<Guild>}
    */
-  setExplicitContentFilter(explicitContentFilter) {
-    return this.edit({ explicitContentFilter });
+  setExplicitContentFilter(explicitContentFilter, reason) {
+    return this.edit({ explicitContentFilter }, reason);
   }
 
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
+   * @param {string} [reason] Reason for changing the guild's name 
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -8640,13 +8661,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
    *  .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Edit the region of the guild.
    * @param {string} region The new region of the guild
+   * @param {string} [reason] Reason for changing the guild's region
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild region
@@ -8654,13 +8676,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
    *  .catch(console.error);
    */
-  setRegion(region) {
-    return this.edit({ region });
+  setRegion(region, reason) {
+    return this.edit({ region }, reason);
   }
 
   /**
    * Edit the verification level of the guild.
    * @param {number} verificationLevel The new verification level of the guild
+   * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild verification level
@@ -8668,13 +8691,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
    *  .catch(console.error);
    */
-  setVerificationLevel(verificationLevel) {
-    return this.edit({ verificationLevel });
+  setVerificationLevel(verificationLevel, reason) {
+    return this.edit({ verificationLevel }, reason);
   }
 
   /**
    * Edit the AFK channel of the guild.
    * @param {ChannelResolvable} afkChannel The new AFK channel
+   * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -8682,22 +8706,24 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
    *  .catch(console.error);
    */
-  setAFKChannel(afkChannel) {
-    return this.edit({ afkChannel });
+  setAFKChannel(afkChannel, reason) {
+    return this.edit({ afkChannel }, reason);
   }
 
   /**
    * Edit the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
+   * @param {string} [reason] Reason for changing the guild's system channel 
    * @returns {Promise<Guild>}
    */
-  setSystemChannel(systemChannel) {
-    return this.edit({ systemChannel });
+  setSystemChannel(systemChannel, reason) {
+    return this.edit({ systemChannel }, reason);
   }
 
   /**
    * Edit the AFK timeout of the guild.
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
+   * @param {string} [reason] Reason for changing the guild's AFK timeout
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild AFK channel
@@ -8705,13 +8731,14 @@ class Guild {
    *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
    *  .catch(console.error);
    */
-  setAFKTimeout(afkTimeout) {
-    return this.edit({ afkTimeout });
+  setAFKTimeout(afkTimeout, reason) {
+    return this.edit({ afkTimeout }, reason);
   }
 
   /**
    * Set a new guild icon.
    * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
@@ -8719,13 +8746,14 @@ class Guild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon) {
-    return this.edit({ icon });
+  setIcon(icon, reason) {
+    return this.edit({ icon }, reason);
   }
 
   /**
    * Sets a new owner of the guild.
    * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild owner
@@ -8733,13 +8761,14 @@ class Guild {
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
    *  .catch(console.error);
    */
-  setOwner(owner) {
-    return this.edit({ owner });
+  setOwner(owner, reason) {
+    return this.edit({ owner }, reason);
   }
 
   /**
    * Set a new guild splash screen.
    * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
@@ -8747,8 +8776,8 @@ class Guild {
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash) {
-    return this.edit({ splash });
+  setSplash(splash, reason) {
+    return this.edit({ splash }, reason);
   }
 
   /**
@@ -8814,6 +8843,7 @@ class Guild {
   /**
    * Unbans a user from the guild.
    * @param {UserResolvable} user The user to unban
+    * @param {string} [reason] Reason for unbanning the user
    * @returns {Promise<User>}
    * @example
    * // Unban a user by ID (or with a user/guild member object)
@@ -8821,14 +8851,15 @@ class Guild {
    *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *   .catch(console.error);
    */
-  unban(user) {
-    return this.client.rest.methods.unbanGuildMember(this, user);
+  unban(user, reason) {
+    return this.client.rest.methods.unbanGuildMember(this, user, reason);
   }
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
    * @param {number} days Number of days of inactivity required to kick
    * @param {boolean} [dry=false] If true, will return number of users that will be kicked, without actually doing it
+   * @param {string} [reason] Reason for this prune
    * @returns {Promise<number>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
@@ -8841,9 +8872,9 @@ class Guild {
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
-  pruneMembers(days, dry = false) {
+  pruneMembers(days, dry = false, reason) {
     if (typeof days !== 'number') throw new TypeError('Days must be a number.');
-    return this.client.rest.methods.pruneGuildMembers(this, days, dry);
+    return this.client.rest.methods.pruneGuildMembers(this, days, dry, reason);
   }
 
   /**
@@ -8858,7 +8889,8 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Array<PermissionOverwrites|Object>} overwrites Permission overwrites to apply to the new channel
+   * @param {Array<PermissionOverwrites|Object>} [overwrites] Permission overwrites to apply to the new channel
+   * @param {string} [reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
@@ -8866,8 +8898,8 @@ class Guild {
    *   .then(channel => console.log(`Created new channel ${channel}`))
    *   .catch(console.error);
    */
-  createChannel(name, type, overwrites) {
-    return this.client.rest.methods.createChannel(this, name, type, overwrites);
+  createChannel(name, type, overwrites, reason) {
+    return this.client.rest.methods.createChannel(this, name, type, overwrites, reason);
   }
 
   /**
@@ -8893,6 +8925,7 @@ class Guild {
   /**
    * Creates a new role in the guild with given information
    * @param {RoleData} [data] The data to update the role with
+   * @param {string} [reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
@@ -8908,8 +8941,8 @@ class Guild {
    *   .then(role => console.log(`Created role ${role}`))
    *   .catch(console.error)
    */
-  createRole(data = {}) {
-    return this.client.rest.methods.createGuildRole(this, data);
+  createRole(data = {}, reason) {
+    return this.client.rest.methods.createGuildRole(this, data, reason);
   }
 
   /**
@@ -8917,6 +8950,7 @@ class Guild {
    * @param {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @param {string} name The name for the emoji
    * @param {Collection<Snowflake, Role>|Role[]} [roles] Roles to limit the emoji to
+   * @param {string} [reason] Reason for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url
@@ -8929,14 +8963,14 @@ class Guild {
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  createEmoji(attachment, name, roles) {
+  createEmoji(attachment, name, roles, reason) {
     return new Promise(resolve => {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles));
+        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles, reason));
       } else {
         this.client.resolver.resolveBuffer(attachment).then(data => {
           const dataURI = this.client.resolver.resolveBase64(data);
-          resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles));
+          resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles, reason));
         });
       }
     });
@@ -8945,11 +8979,12 @@ class Guild {
   /**
    * Delete an emoji.
    * @param {Emoji|string} emoji The emoji to delete
+   * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise}
    */
-  deleteEmoji(emoji) {
+  deleteEmoji(emoji, reason) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.rest.methods.deleteEmoji(emoji);
+    return this.client.rest.methods.deleteEmoji(emoji, reason);
   }
 
   /**
@@ -9348,6 +9383,7 @@ class GuildChannel extends Channel {
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise}
    * @example
    * // Overwrite permissions for a message author
@@ -9357,7 +9393,7 @@ class GuildChannel extends Channel {
    *   .then(() => console.log('Done!'))
    *   .catch(console.error);
    */
-  overwritePermissions(userOrRole, options) {
+  overwritePermissions(userOrRole, options, reason) {
     const payload = {
       allow: 0,
       deny: 0,
@@ -9396,7 +9432,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
+    return this.client.rest.methods.setChannelOverwrite(this, payload, reason);
   }
 
   /**
@@ -9412,6 +9448,7 @@ class GuildChannel extends Channel {
   /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -9419,13 +9456,14 @@ class GuildChannel extends Channel {
    *   .then(c => console.log(`Edited channel ${c}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateChannel(this, data, reason);
   }
 
   /**
    * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel name
@@ -9433,8 +9471,8 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *   .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -9455,6 +9493,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel topic
@@ -9462,8 +9501,8 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *   .catch(console.error);
    */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
+  setTopic(topic, reason) {
+    return this.edit({ topic }, reason);
   }
 
   /**
@@ -9479,10 +9518,11 @@ class GuildChannel extends Channel {
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {string} [reason] Reason for creating the invite
    * @returns {Promise<Invite>}
    */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
+  createInvite(options = {}, reason) {
+    return this.client.rest.methods.createChannelInvite(this, options, reason);
   }
 
   /**
@@ -9490,10 +9530,11 @@ class GuildChannel extends Channel {
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {string} [reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true, withTopic = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+  clone(name = this.name, withPermissions = true, withTopic = true, reason) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
@@ -12123,10 +12164,11 @@ class Webhook {
 
   /**
    * Delete the webhook.
+   * @param {string} [reason] Reason for deleting the webhook
    * @returns {Promise}
    */
-  delete() {
-    return this.client.rest.methods.deleteWebhook(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteWebhook(this, reason);
   }
 }
 
@@ -15391,8 +15433,8 @@ class RESTManager {
     }
   }
 
-  makeRequest(method, url, auth, data, file) {
-    const apiRequest = new APIRequest(this, method, url, auth, data, file);
+  makeRequest(method, url, auth, data, file, reason) {
+    const apiRequest = new APIRequest(this, method, url, auth, data, file, reason);
     if (!this.handlers[apiRequest.route]) {
       const RequestHandlerType = this.getRequestHandler();
       this.handlers[apiRequest.route] = new RequestHandlerType(this, apiRequest.route);
@@ -16459,10 +16501,11 @@ class Invite {
 
   /**
    * Deletes this invite.
+   * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete() {
-    return this.client.rest.methods.deleteInvite(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteInvite(this, reason);
   }
 
   /**
@@ -17064,19 +17107,20 @@ class TextChannel extends GuildChannel {
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook
    * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @param {string} [reason] Reason for creating this webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
    *   .then(webhook => console.log(`Created webhook ${webhook}`))
    *   .catch(console.error)
    */
-  createWebhook(name, avatar) {
+  createWebhook(name, avatar, reason) {
     return new Promise(resolve => {
       if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
+        resolve(this.client.rest.methods.createWebhook(this, name, avatar, reason));
       } else {
         this.client.resolver.resolveBuffer(avatar).then(data =>
-          resolve(this.client.rest.methods.createWebhook(this, name, data))
+          resolve(this.client.rest.methods.createWebhook(this, name, data, reason))
         );
       }
     });
@@ -17150,10 +17194,11 @@ class PermissionOverwrites {
 
   /**
    * Delete this Permission Overwrite.
+   * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */
-  delete() {
-    return this.channel.client.rest.methods.deletePermissionOverwrites(this);
+  delete(reason) {
+    return this.channel.client.rest.methods.deletePermissionOverwrites(this, reason);
   }
 }
 
@@ -17244,6 +17289,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * Sets the bitrate of the channel (in kbps).
    * @param {number} bitrate The new bitrate
+   * @param {string} [reason] Reason for changing the channel's bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
@@ -17251,14 +17297,15 @@ class VoiceChannel extends GuildChannel {
    *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
    *   .catch(console.error);
    */
-  setBitrate(bitrate) {
+  setBitrate(bitrate, reason) {
     bitrate *= 1000;
-    return this.edit({ bitrate });
+    return this.edit({ bitrate }, reason);
   }
 
   /**
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
+   * @param {string} [reason] Reason for changing the user limit
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the user limit of a voice channel
@@ -17266,8 +17313,8 @@ class VoiceChannel extends GuildChannel {
    *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
    *   .catch(console.error);
    */
-  setUserLimit(userLimit) {
-    return this.edit({ userLimit });
+  setUserLimit(userLimit, reason) {
+    return this.edit({ userLimit }, reason);
   }
 
   /**
@@ -22427,13 +22474,13 @@ class RESTMethods {
     });
   }
 
-  createChannel(guild, channelName, channelType, overwrites) {
+  createChannel(guild, channelName, channelType, overwrites, reason) {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
       type: channelType,
       permission_overwrites: overwrites,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    }, undefined, reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   createDM(recipient) {
@@ -22475,14 +22522,14 @@ class RESTMethods {
     });
   }
 
-  updateChannel(channel, _data) {
+  updateChannel(channel, _data, reason) {
     const data = {};
     data.name = (_data.name || channel.name).trim();
     data.topic = _data.topic || channel.topic;
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || channel.bitrate;
     data.user_limit = _data.userLimit || channel.userLimit;
-    return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data).then(newData =>
+    return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data, undefined, reason).then(newData =>
       this.client.actions.ChannelUpdate.handle(newData).updated
     );
   }
@@ -22548,58 +22595,57 @@ class RESTMethods {
     );
   }
 
-  updateGuild(guild, _data) {
-    const data = {};
-    if (_data.name) data.name = _data.name;
-    if (_data.region) data.region = _data.region;
-    if (_data.verificationLevel) data.verification_level = Number(_data.verificationLevel);
-    if (_data.afkChannel) data.afk_channel_id = this.client.resolver.resolveChannel(_data.afkChannel).id;
-    if (_data.afkTimeout) data.afk_timeout = Number(_data.afkTimeout);
-    if (_data.icon) data.icon = this.client.resolver.resolveBase64(_data.icon);
-    if (_data.owner) data.owner_id = this.client.resolver.resolveUser(_data.owner).id;
-    if (_data.splash) data.splash = this.client.resolver.resolveBase64(_data.splash);
-    return this.rest.makeRequest('patch', Endpoints.Guild(guild), true, data).then(newData =>
+  updateGuild(guild, data, reason) {
+    return this.rest.makeRequest('patch', Endpoints.Guild(guild), true, data, undefined, reason).then(newData =>
       this.client.actions.GuildUpdate.handle(newData).updated
     );
   }
 
   kickGuildMember(guild, member, reason) {
-    const url = `${Endpoints.Guild(guild).Member(member)}?reason=${reason}`;
-    return this.rest.makeRequest('delete', url, true).then(() =>
-      this.client.actions.GuildMemberRemove.handle({
-        guild_id: guild.id,
-        user: member.user,
-      }).member
-    );
+    return this.rest.makeRequest(
+      'delete', Endpoints.Guild(guild).Member(member), true,
+      undefined, undefined, reason)
+      .then(() =>
+        this.client.actions.GuildMemberRemove.handle({
+          guild_id: guild.id,
+          user: member.user,
+        }).member
+      );
   }
 
-  createGuildRole(guild, data) {
+  createGuildRole(guild, data, reason) {
     if (data.color) data.color = this.client.resolver.resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
-    return this.rest.makeRequest('post', Endpoints.Guild(guild).roles, true, data).then(role =>
-      this.client.actions.GuildRoleCreate.handle({
+    return this.rest.makeRequest('post', Endpoints.Guild(guild).roles, true, data, undefined, reason).then(r => {
+      const { role } = this.client.actions.GuildRoleCreate.handle({
         guild_id: guild.id,
-        role,
-      }).role
-    );
+        role: r,
+      });
+      if (data.position) return role.setPosition(data.position, reason);
+      return role;
+    });
   }
 
-  deleteGuildRole(role) {
-    return this.rest.makeRequest('delete', Endpoints.Guild(role.guild).Role(role.id), true).then(() =>
-      this.client.actions.GuildRoleDelete.handle({
-        guild_id: role.guild.id,
-        role_id: role.id,
-      }).role
-    );
+  deleteGuildRole(role, reason) {
+    return this.rest.makeRequest(
+      'delete', Endpoints.Guild(role.guild).Role(role.id), true,
+      undefined, undefined, reason)
+      .then(() =>
+        this.client.actions.GuildRoleDelete.handle({
+          guild_id: role.guild.id,
+          role_id: role.id,
+        }).role
+      );
   }
 
   setChannelOverwrite(channel, payload) {
     return this.rest.makeRequest('put', `${Endpoints.Channel(channel).permissions}/${payload.id}`, true, payload);
   }
 
-  deletePermissionOverwrites(overwrite) {
+  deletePermissionOverwrites(overwrite, reason) {
     return this.rest.makeRequest(
-      'delete', `${Endpoints.Channel(overwrite.channel).permissions}/${overwrite.id}`, true
+      'delete', `${Endpoints.Channel(overwrite.channel).permissions}/${overwrite.id}`,
+      true, undefined, undefined, reason
     ).then(() => overwrite);
   }
 
@@ -22640,7 +22686,7 @@ class RESTMethods {
     });
   }
 
-  updateGuildMember(member, data) {
+  updateGuildMember(member, data, reason) {
     if (data.channel) {
       data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
       data.channel = null;
@@ -22656,12 +22702,12 @@ class RESTMethods {
       }
     }
 
-    return this.rest.makeRequest('patch', endpoint, true, data).then(newData =>
+    return this.rest.makeRequest('patch', endpoint, true, data, undefined, reason).then(newData =>
       member.guild._updateMember(member, newData).mem
     );
   }
 
-  addMemberRole(member, role) {
+  addMemberRole(member, role, reason) {
     return new Promise((resolve, reject) => {
       if (member._roles.includes(role.id)) return resolve(member);
 
@@ -22676,15 +22722,16 @@ class RESTMethods {
       const timeout = this.client.setTimeout(() =>
         this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true).catch(err => {
-        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.client.clearTimeout(timeout);
-        reject(err);
-      });
+      return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
+        .catch(err => {
+          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.clearTimeout(timeout);
+          reject(err);
+        });
     });
   }
 
-  removeMemberRole(member, role) {
+  removeMemberRole(member, role, reason) {
     return new Promise((resolve, reject) => {
       if (!member._roles.includes(role.id)) return resolve(member);
 
@@ -22699,11 +22746,12 @@ class RESTMethods {
       const timeout = this.client.setTimeout(() =>
         this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
 
-      return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true).catch(err => {
-        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.client.clearTimeout(timeout);
-        reject(err);
-      });
+      return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
+        .catch(err => {
+          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.clearTimeout(timeout);
+          reject(err);
+        });
     });
   }
 
@@ -22727,7 +22775,7 @@ class RESTMethods {
     });
   }
 
-  unbanGuildMember(guild, member) {
+  unbanGuildMember(guild, member, reason) {
     return new Promise((resolve, reject) => {
       const id = this.client.resolver.resolveUserID(member);
       if (!id) throw new Error('Couldn\'t resolve the user ID to unban.');
@@ -22746,11 +22794,12 @@ class RESTMethods {
         reject(new Error('Took too long to receive the ban remove event.'));
       }, 10000);
 
-      this.rest.makeRequest('delete', `${Endpoints.Guild(guild).bans}/${id}`, true).catch(err => {
-        this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
-        this.client.clearTimeout(timeout);
-        reject(err);
-      });
+      this.rest.makeRequest('delete', `${Endpoints.Guild(guild).bans}/${id}`, true, undefined, undefined, reason)
+        .catch(err => {
+          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.clearTimeout(timeout);
+          reject(err);
+        });
     });
   }
 
@@ -22766,7 +22815,7 @@ class RESTMethods {
     );
   }
 
-  updateGuildRole(role, _data) {
+  updateGuildRole(role, _data, reason) {
     const data = {};
     data.name = _data.name || role.name;
     data.position = typeof _data.position !== 'undefined' ? _data.position : role.position;
@@ -22777,12 +22826,13 @@ class RESTMethods {
     if (_data.permissions) data.permissions = Permissions.resolve(_data.permissions);
     else data.permissions = role.permissions;
 
-    return this.rest.makeRequest('patch', Endpoints.Guild(role.guild).Role(role.id), true, data).then(_role =>
-      this.client.actions.GuildRoleUpdate.handle({
-        role: _role,
-        guild_id: role.guild.id,
-      }).updated
-    );
+    return this.rest.makeRequest('patch', Endpoints.Guild(role.guild).Role(role.id), true, data, undefined, reason)
+      .then(_role =>
+        this.client.actions.GuildRoleUpdate.handle({
+          role: _role,
+          guild_id: role.guild.id,
+        }).updated
+      );
   }
 
   pinMessage(message) {
@@ -22799,17 +22849,18 @@ class RESTMethods {
     return this.rest.makeRequest('get', Endpoints.Channel(channel).pins, true);
   }
 
-  createChannelInvite(channel, options) {
+  createChannelInvite(channel, options, reason) {
     const payload = {};
     payload.temporary = options.temporary;
     payload.max_age = options.maxAge;
     payload.max_uses = options.maxUses;
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).invites, true, payload)
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).invites, true, payload, undefined, reason)
       .then(invite => new Invite(this.client, invite));
   }
 
-  deleteInvite(invite) {
-    return this.rest.makeRequest('delete', Endpoints.Invite(invite.code), true).then(() => invite);
+  deleteInvite(invite, reason) {
+    return this.rest.makeRequest('delete', Endpoints.Invite(invite.code), true, undefined, undefined, reason)
+      .then(() => invite);
   }
 
   getInvite(code) {
@@ -22829,28 +22880,31 @@ class RESTMethods {
     });
   }
 
-  pruneGuildMembers(guild, days, dry) {
-    return this.rest.makeRequest(dry ? 'get' : 'post', `${Endpoints.Guild(guild).prune}?days=${days}`, true)
+  pruneGuildMembers(guild, days, dry, reason) {
+    return this.rest.makeRequest(dry ?
+      'get' :
+      'post',
+    `${Endpoints.Guild(guild).prune}?days=${days}`, true, undefined, undefined, reason)
       .then(data => data.pruned);
   }
 
-  createEmoji(guild, image, name, roles) {
+  createEmoji(guild, image, name, roles, reason) {
     const data = { image, name };
     if (roles) data.roles = roles.map(r => r.id ? r.id : r);
-    return this.rest.makeRequest('post', Endpoints.Guild(guild).emojis, true, data)
+    return this.rest.makeRequest('post', Endpoints.Guild(guild).emojis, true, data, undefined, reason)
       .then(emoji => this.client.actions.GuildEmojiCreate.handle(guild, emoji).emoji);
   }
 
-  updateEmoji(emoji, _data) {
+  updateEmoji(emoji, _data, reason) {
     const data = {};
     if (_data.name) data.name = _data.name;
     if (_data.roles) data.roles = _data.roles.map(r => r.id ? r.id : r);
-    return this.rest.makeRequest('patch', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true, data)
+    return this.rest.makeRequest('patch', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true, data, undefined, reason)
       .then(newEmoji => this.client.actions.GuildEmojiUpdate.handle(emoji, newEmoji).emoji);
   }
 
-  deleteEmoji(emoji) {
-    return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true)
+  deleteEmoji(emoji, reason) {
+    return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true, undefined, reason)
       .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
@@ -22893,8 +22947,8 @@ class RESTMethods {
     });
   }
 
-  createWebhook(channel, name, avatar) {
-    return this.rest.makeRequest('post', Endpoints.Channel(channel).webhooks, true, { name, avatar })
+  createWebhook(channel, name, avatar, reason) {
+    return this.rest.makeRequest('post', Endpoints.Channel(channel).webhooks, true, { name, avatar }, undefined, reason)
       .then(data => new Webhook(this.client, data));
   }
 
@@ -22909,8 +22963,10 @@ class RESTMethods {
     });
   }
 
-  deleteWebhook(webhook) {
-    return this.rest.makeRequest('delete', Endpoints.Webhook(webhook.id, webhook.token), false);
+  deleteWebhook(webhook, reason) {
+    return this.rest.makeRequest(
+      'delete', Endpoints.Webhook(webhook.id, webhook.token),
+      false, undefined, undefined, reason);
   }
 
   sendWebhookMessage(webhook, content, { avatarURL, tts, disableEveryone, embeds, username } = {}, file = null) {
@@ -23440,7 +23496,7 @@ const snekfetch = __webpack_require__(30);
 const Constants = __webpack_require__(0);
 
 class APIRequest {
-  constructor(rest, method, path, auth, data, files) {
+  constructor(rest, method, path, auth, data, files, reason) {
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
@@ -23449,6 +23505,7 @@ class APIRequest {
     this.data = data;
     this.files = files;
     this.route = this.getRoute(this.path);
+    this.reason = reason;
   }
 
   getRoute(url) {
@@ -23474,6 +23531,7 @@ class APIRequest {
     const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
     const request = snekfetch[this.method](`${API}${this.path}`);
     if (this.auth) request.set('Authorization', this.getAuth());
+    if (this.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.reason));
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.files) {
       for (const file of this.files) if (file && file.file) request.attach(file.name, file.file, file.name);
