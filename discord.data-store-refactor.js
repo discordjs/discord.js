@@ -26562,7 +26562,7 @@ class ChannelStore extends DataStore {
       default: // eslint-disable-line no-case-declarations
         guild = guild || this.client.guilds.get(data.guild_id);
         if (!guild) {
-          this.client.emit('debug', `Failed to find guild for channel ${data.id} ${data.type}`);
+          this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
           return null;
         }
         channel = guild.channels.create(data);
