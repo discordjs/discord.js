@@ -3666,11 +3666,7 @@ class Base {
      * @type {Client}
      * @readonly
      */
-    Object.defineProperty(this, 'client', {
-      value: client,
-      enumerable: false,
-      writable: false,
-    });
+    Object.defineProperty(this, 'client', { value: client });
   }
 
   _clone() {
@@ -9814,7 +9810,7 @@ module.exports = GuildMember;
 const Collection = __webpack_require__(3);
 
 /**
- * A data store what else????
+ * A data store
  * @class DataStore
  * @extends {Collection}
  */
@@ -9822,11 +9818,7 @@ class DataStore extends Collection {
   constructor(client, iterable) {
     super(iterable);
 
-    Object.defineProperty(this, 'client', {
-      value: client,
-      enumerable: false,
-      writable: false,
-    });
+    Object.defineProperty(this, 'client', { value: client });
   }
 
   // Stubs
