@@ -66,7 +66,7 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
+   * @param {MessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
