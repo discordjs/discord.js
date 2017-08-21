@@ -112,6 +112,7 @@ class Emoji {
   /**
    * Edits the emoji.
    * @param {EmojiEditData} data The new data for the emoji
+   * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
    * // Edit an emoji
@@ -119,17 +120,18 @@ class Emoji {
    *   .then(e => console.log(`Edited emoji ${e}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateEmoji(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateEmoji(this, data, reason);
   }
 
   /**
    * Set the name of the emoji.
    * @param {string} name The new name for the emoji
+   * @param {string} [reason] The reason for changing the emoji's name
    * @returns {Promise<Emoji>}
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**

@@ -138,6 +138,7 @@ class GuildChannel extends Channel {
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise}
    * @example
    * // Overwrite permissions for a message author
@@ -147,7 +148,7 @@ class GuildChannel extends Channel {
    *   .then(() => console.log('Done!'))
    *   .catch(console.error);
    */
-  overwritePermissions(userOrRole, options) {
+  overwritePermissions(userOrRole, options, reason) {
     const payload = {
       allow: 0,
       deny: 0,
@@ -186,7 +187,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
+    return this.client.rest.methods.setChannelOverwrite(this, payload, reason);
   }
 
   /**
@@ -202,6 +203,7 @@ class GuildChannel extends Channel {
   /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -209,13 +211,14 @@ class GuildChannel extends Channel {
    *   .then(c => console.log(`Edited channel ${c}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateChannel(this, data, reason);
   }
 
   /**
    * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel name
@@ -223,8 +226,8 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *   .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -245,6 +248,7 @@ class GuildChannel extends Channel {
   /**
    * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel topic
@@ -252,8 +256,8 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *   .catch(console.error);
    */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
+  setTopic(topic, reason) {
+    return this.edit({ topic }, reason);
   }
 
   /**
@@ -269,10 +273,11 @@ class GuildChannel extends Channel {
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {string} [reason] Reason for creating the invite
    * @returns {Promise<Invite>}
    */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
+  createInvite(options = {}, reason) {
+    return this.client.rest.methods.createChannelInvite(this, options, reason);
   }
 
   /**
@@ -280,10 +285,11 @@ class GuildChannel extends Channel {
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {string} [reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true, withTopic = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+  clone(name = this.name, withPermissions = true, withTopic = true, reason) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 

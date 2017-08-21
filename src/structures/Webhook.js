@@ -216,10 +216,11 @@ class Webhook {
 
   /**
    * Delete the webhook.
+   * @param {string} [reason] Reason for deleting the webhook
    * @returns {Promise}
    */
-  delete() {
-    return this.client.rest.methods.deleteWebhook(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteWebhook(this, reason);
   }
 }
 

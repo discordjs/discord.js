@@ -202,6 +202,7 @@ class Role {
   /**
    * Edits the role.
    * @param {RoleData} data The new data for the role
+   * @param {string} [reason] The reason for editing this role
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
@@ -209,13 +210,14 @@ class Role {
    *   .then(r => console.log(`Edited role ${r}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildRole(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateGuildRole(this, data, reason);
   }
 
   /**
    * Set a new name for the role.
    * @param {string} name The new name of the role
+   * @param {string} [reason] Reason for changing the role's name
    * @returns {Promise<Role>}
    * @example
    * // Set the name of the role
@@ -223,13 +225,14 @@ class Role {
    *   .then(r => console.log(`Edited name of role ${r}`))
    *   .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
    * Set a new color for the role.
    * @param {ColorResolvable} color The color of the role
+   * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
    * @example
    * // Set the color of a role
@@ -237,13 +240,14 @@ class Role {
    *   .then(r => console.log(`Set color of role ${r}`))
    *   .catch(console.error);
    */
-  setColor(color) {
-    return this.edit({ color });
+  setColor(color, reason) {
+    return this.edit({ color }, reason);
   }
 
   /**
    * Set whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
+   * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
    * @example
    * // Set the hoist of the role
@@ -251,8 +255,8 @@ class Role {
    *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
    *   .catch(console.error);
    */
-  setHoist(hoist) {
-    return this.edit({ hoist });
+  setHoist(hoist, reason) {
+    return this.edit({ hoist }, reason);
   }
 
   /**
@@ -273,6 +277,7 @@ class Role {
   /**
    * Set the permissions of the role.
    * @param {string[]} permissions The permissions of the role
+   * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
@@ -280,13 +285,14 @@ class Role {
    *   .then(r => console.log(`Role updated ${r}`))
    *   .catch(console.error);
    */
-  setPermissions(permissions) {
-    return this.edit({ permissions });
+  setPermissions(permissions, reason) {
+    return this.edit({ permissions }, reason);
   }
 
   /**
    * Set whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
+   * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
    * @example
    * // Make the role mentionable
@@ -294,12 +300,13 @@ class Role {
    *   .then(r => console.log(`Role updated ${r}`))
    *   .catch(console.error);
    */
-  setMentionable(mentionable) {
-    return this.edit({ mentionable });
+  setMentionable(mentionable, reason) {
+    return this.edit({ mentionable }, reason);
   }
 
   /**
    * Deletes the role.
+   * @param {string} [reason] Reason for deleting the role
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
@@ -307,8 +314,8 @@ class Role {
    *   .then(r => console.log(`Deleted role ${r}`))
    *   .catch(console.error);
    */
-  delete() {
-    return this.client.rest.methods.deleteGuildRole(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteGuildRole(this, reason);
   }
 
   /**
