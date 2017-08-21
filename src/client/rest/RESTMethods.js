@@ -900,6 +900,10 @@ class RESTMethods {
   patchUserSettings(data) {
     return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').settings, true, data);
   }
+
+  patchClientUserGuildSettings(guildID, data) {
+    return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').Guild(guildID).settings, true, data);
+  }
 }
 
 module.exports = RESTMethods;
