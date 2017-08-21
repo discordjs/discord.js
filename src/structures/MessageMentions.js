@@ -143,18 +143,18 @@ MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
  * Regular expression that globally matches user mentions like `<@81440962496172032>`
  * @type {RegExp}
  */
-MessageMentions.USERS_PATTERN = /<@!?[0-9]+>/g;
+MessageMentions.USERS_PATTERN = /<@!?(1|\d{17,19})>/g;
 
 /**
  * Regular expression that globally matches role mentions like `<@&297577916114403338>`
  * @type {RegExp}
  */
-MessageMentions.ROLES_PATTERN = /<@&[0-9]+>/g;
+MessageMentions.ROLES_PATTERN = /<@&(\d{17,19})>/g;
 
 /**
  * Regular expression that globally matches channel mentions like `<#222079895583457280>`
  * @type {RegExp}
  */
-MessageMentions.CHANNELS_PATTERN = /<#([0-9]+)>/g;
+MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})>/g;
 
 module.exports = MessageMentions;
