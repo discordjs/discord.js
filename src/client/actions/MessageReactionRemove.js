@@ -10,7 +10,6 @@ const Constants = require('../../util/Constants');
 
 class MessageReactionRemove extends Action {
   handle(data) {
-    console.log(data);
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
     // Verify channel
