@@ -143,7 +143,7 @@ class ClientUser extends User {
 
   /**
    * Set the avatar of the logged in client.
-   * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
+   * @param {string|BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
    * // Set avatar

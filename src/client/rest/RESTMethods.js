@@ -285,6 +285,13 @@ class RESTMethods {
       .then(() => channel);
   }
 
+  updateGroupDMChannel(channel, _data) {
+    const data = {};
+    data.name = _data.name;
+    data.icon = _data.icon;
+    return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data).then(() => channel);
+  }
+
   getExistingDM(recipient) {
     return this.client.channels.find(channel =>
       channel.recipient && channel.recipient.id === recipient.id
