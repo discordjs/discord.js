@@ -9,14 +9,14 @@ class MessageStore extends DataStore {
     Message = require('../structures/Message');
   }
 
-  create(data) {
+  create(data, cache = true) {
     super.create();
     const existing = this.get(data.id);
     if (existing) return existing;
 
     const message = new Message(this.client.channels.get(data.channel_id), data, this.client);
 
-    this.set(message.id, message);
+    if (cache) this.set(message.id, message);
     return message;
   }
 

@@ -4,7 +4,7 @@ const GroupDMChannel = require('../structures/GroupDMChannel');
 const Constants = require('../util/Constants');
 
 class ChannelStore extends DataStore {
-  create(data, guild) {
+  create(data, guild, cache = true) {
     super.create();
 
     const existing = this.get(data.id);
@@ -24,11 +24,11 @@ class ChannelStore extends DataStore {
           this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
           return null;
         }
-        channel = guild.channels.create(data);
+        channel = guild.channels.create(data, cache);
         break;
     }
 
-    this.set(channel.id, channel);
+    if (cache) this.set(channel.id, channel);
 
     return channel;
   }

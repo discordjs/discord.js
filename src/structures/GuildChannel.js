@@ -241,7 +241,7 @@ class GuildChannel extends Channel {
         user_limit: data.userLimit || this.userLimit,
       },
       reason,
-    }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
+    }).then(newData => this._update(newData));
   }
 
   /**

@@ -9,7 +9,7 @@ class GuildChannelStore extends DataStore {
     this.guild = guild;
   }
 
-  create(data) {
+  create(data, cache = true) {
     super.create();
 
     const existing = this.get(data.id);
@@ -17,7 +17,7 @@ class GuildChannelStore extends DataStore {
 
     const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
     const channel = new ChannelModel(this.guild, data);
-    this.set(channel.id, channel);
+    if (cache) this.set(channel.id, channel);
 
     return channel;
   }

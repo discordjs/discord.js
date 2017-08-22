@@ -10,10 +10,4 @@ class MessageDeleteHandler extends AbstractHandler {
   }
 }
 
-/**
- * Emitted whenever a message is deleted.
- * @event Client#messageDelete
- * @param {Message} message The deleted message
- */
-
 module.exports = MessageDeleteHandler;
