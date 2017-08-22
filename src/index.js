@@ -57,5 +57,3 @@ module.exports = {
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
 };
-
-if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef

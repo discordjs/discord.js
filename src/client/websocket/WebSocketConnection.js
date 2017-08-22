@@ -1,4 +1,4 @@
-const browser = require('os').platform() === 'browser';
+const browser = typeof window !== 'undefined';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');

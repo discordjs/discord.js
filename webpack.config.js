@@ -12,6 +12,11 @@ const createConfig = options => {
   const plugins = [
     new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new webpack.optimize.ModuleConcatenationPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        __DISCORD_WEBPACK__: '"true"',
+      },
+    }),
   ];
 
   if (options.minify) plugins.push(new UglifyJSPlugin({ uglifyOptions: { output: { comments: false } } }));
@@ -19,7 +24,7 @@ const createConfig = options => {
   const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
 
   return {
-    entry: './src/index.js',
+    entry: './browser.js',
     output: {
       path: __dirname,
       filename,
