@@ -627,7 +627,7 @@ class Guild {
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
-   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter 
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
   setExplicitContentFilter(explicitContentFilter, reason) {
@@ -637,7 +637,7 @@ class Guild {
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
-   * @param {string} [reason] Reason for changing the guild's name 
+   * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -697,7 +697,7 @@ class Guild {
   /**
    * Edit the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
-   * @param {string} [reason] Reason for changing the guild's system channel 
+   * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    */
   setSystemChannel(systemChannel, reason) {
@@ -721,7 +721,7 @@ class Guild {
 
   /**
    * Set a new guild icon.
-   * @param {Base64Resolvable|BufferResolvable|string} icon The new icon of the guild
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
@@ -751,7 +751,7 @@ class Guild {
 
   /**
    * Set a new guild splash screen.
-   * @param {string|BufferResolvable|Base64Resolvable} splash The new splash screen of the guild
+   * @param {BufferResolvable|Base64Resolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
