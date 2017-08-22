@@ -154,7 +154,6 @@ class ClientDataResolver {
     if (channel instanceof Channel) return channel.id;
     if (typeof channel === 'string') return channel;
     if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
     return null;
   }
 
