@@ -234,14 +234,14 @@ class ClientDataResolver {
           snekfetch.get(resource)
             .end((err, res) => {
               if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
+              if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
               return resolve(res.body);
             });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));
+            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
@@ -258,7 +258,7 @@ class ClientDataResolver {
       });
     }
 
-    return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
+    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
   }
 
   /**
