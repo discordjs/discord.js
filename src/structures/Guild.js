@@ -952,7 +952,7 @@ class Guild {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles, reason));
       } else {
-        this.client.resolver.resolveBuffer(attachment).then(data => {
+        this.client.resolver.resolveFile(attachment).then(data => {
           const dataURI = this.client.resolver.resolveBase64(data);
           resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles, reason));
         });

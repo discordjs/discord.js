@@ -333,7 +333,7 @@ class ClientUser extends User {
           }, reject)
       );
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }

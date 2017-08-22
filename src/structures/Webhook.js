@@ -247,7 +247,7 @@ class Webhook {
    */
   edit(name = this.name, avatar) {
     if (avatar) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
+      return this.client.resolver.resolveFile(avatar).then(file => {
         const dataURI = this.client.resolver.resolveBase64(file);
         return this.client.rest.methods.editWebhook(this, name, dataURI);
       });

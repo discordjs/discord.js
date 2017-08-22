@@ -206,19 +206,25 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
+    * Data that can be resolved to give a Buffer. This can be:
+    * * A Buffer
+    * * The path to a local file
+    * * A URL
+    * * A Stream
+    * @typedef {string|Buffer} BufferResolvable
+    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
+    * @external Stream
+    * @see {@link https://nodejs.org/api/stream.html}
+    */
+
+  /**
+    * Resolves a BufferResolvable to a Buffer.
+    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
+    * @returns {Promise<Buffer>}
+    */
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
@@ -228,14 +234,14 @@ class ClientDataResolver {
           snekfetch.get(resource)
             .end((err, res) => {
               if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+              if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
               return resolve(res.body);
             });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
+            if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });
@@ -243,36 +249,16 @@ class ClientDataResolver {
           });
         }
       });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
+      });
     }
 
-    return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
-  }
-
-  /**
-   * @external Stream
-   * @see {@link https://nodejs.org/api/stream.html}
-   */
-
-  /**
-   * Converts a Stream to a Buffer.
-   * @param {Stream} resource The stream to convert
-   * @returns {Promise<Buffer>}
-   */
-  resolveFile(resource) {
-    return resource ? this.resolveBuffer(resource)
-      .catch(() => {
-        if (resource.pipe && typeof resource.pipe === 'function') {
-          return new Promise((resolve, reject) => {
-            const buffers = [];
-            resource.once('error', reject);
-            resource.on('data', data => buffers.push(data));
-            resource.once('end', () => resolve(Buffer.concat(buffers)));
-          });
-        } else {
-          throw new TypeError('The resource must be a string, Buffer or a valid file stream.');
-        }
-      }) :
-      Promise.reject(new TypeError('The resource must be a string, Buffer or a valid file stream.'));
+    return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**
