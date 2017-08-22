@@ -6,6 +6,7 @@ const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
+const ReactionStore = require('../stores/ReactionStore');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
@@ -113,7 +114,7 @@ class Message extends Base {
      * A collection of reactions to this message, mapped by the reaction ID
      * @type {Collection<Snowflake, MessageReaction>}
      */
-    this.reactions = new Collection();
+    this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
         const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
@@ -547,38 +548,6 @@ class Message extends Base {
    */
   toString() {
     return this.content;
-  }
-
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-    }
-    return reaction;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) reaction.me = false;
-        if (reaction.count <= 0) this.reactions.delete(emojiID);
-        return reaction;
-      }
-    }
-    return null;
   }
 
   _clearReactions() {

@@ -97,6 +97,25 @@ class MessageReaction {
         return this.users;
       });
   }
+
+  _add(user) {
+    if (!this.users.has(user.id)) {
+      this.users.set(user.id, user);
+      this.count++;
+    }
+    if (!this.me) this.me = user.id === this.message.client.user.id;
+  }
+
+  _remove(user) {
+    if (this.users.has(user.id)) {
+      this.users.delete(user.id);
+      this.count--;
+      if (user.id === this.message.client.user.id) this.me = false;
+      if (this.count <= 0) {
+        this.message.reactions.remove(this.emoji.id || this.emoji.name);
+      }
+    }
+  }
 }
 
 module.exports = MessageReaction;

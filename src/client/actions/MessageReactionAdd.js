@@ -20,7 +20,12 @@ class MessageReactionAdd extends Action {
     if (!message) return false;
     if (!data.emoji) return false;
     // Verify reaction
-    const reaction = message._addReaction(data.emoji, user);
+    const reaction = message.reactions.create({
+      emoji: data.emoji,
+      count: 0,
+      me: user.id === this.client.user.id,
+    });
+    reaction._add(user);
     if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
 
     return { message, reaction, user };
