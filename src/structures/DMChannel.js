@@ -1,6 +1,6 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
+const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a direct message channel between two users.
@@ -10,7 +10,7 @@ const Collection = require('../util/Collection');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 

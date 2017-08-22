@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const Message = require('../../structures/Message');
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -12,7 +11,7 @@ class MessageCreateAction extends Action {
       if (data instanceof Array) {
         const messages = new Array(data.length);
         for (let i = 0; i < data.length; i++) {
-          messages[i] = channel._cacheMessage(new Message(channel, data[i], client));
+          messages[i] = channel.messages.create(data[i]);
         }
         const lastMessage = messages[messages.length - 1];
         channel.lastMessageID = lastMessage.id;
@@ -29,7 +28,7 @@ class MessageCreateAction extends Action {
           messages,
         };
       } else {
-        const message = channel._cacheMessage(new Message(channel, data, client));
+        const message = channel.messages.create(data);
         channel.lastMessageID = data.id;
         channel.lastMessage = message;
         if (user) {

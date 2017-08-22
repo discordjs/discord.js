@@ -2,6 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a guild text channel on Discord.
@@ -12,7 +13,7 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.type = 'text';
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 

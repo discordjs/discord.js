@@ -1,9 +1,11 @@
 const DataStore = require('./DataStore');
+const Collection = require('../util/Collection');
 let Message;
 
 class MessageStore extends DataStore {
-  constructor(...args) {
-    super(...args);
+  constructor(channel, iterable) {
+    super(channel.client, iterable);
+    this.channel = channel;
     Message = require('../structures/Message');
   }
 
@@ -28,6 +30,32 @@ class MessageStore extends DataStore {
   remove(id) {
     super.remove();
     this.delete(id);
+  }
+
+  fetch(message) {
+    return typeof message === 'string' ? this._fetchId(message) : this._fetchMany(message);
+  }
+
+  _fetchId(messageID) {
+    if (!this.client.user.bot) {
+      return this._fetchMany({ limit: 1, around: messageID })
+        .then(messages => {
+          const msg = messages.get(messageID);
+          if (!msg) throw new Error('MESSAGE_MISSING');
+          return msg;
+        });
+    }
+    return this.client.api.channels[this.channel.id].messages[messageID].get()
+      .then(data => this.create(data));
+  }
+
+  _fetchMany(options = {}) {
+    return this.client.api.channels[this.channel.id].messages.get({ query: options })
+      .then(data => {
+        const messages = new Collection();
+        for (const message of data) messages.set(message.id, this.create(message));
+        return messages;
+      });
   }
 }
 

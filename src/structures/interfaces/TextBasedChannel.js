@@ -184,8 +184,8 @@ class TextBasedChannel {
   fetchMessages(options = {}) {
     return this.client.api.channels[this.id].messages.get({ query: options })
       .then(data => {
-        const messages = new MessageStore(data);
-        for (const message of messages) this.messages.set(message.id, message);
+        const messages = new Collection();
+        for (const message of data) messages.set(message.id, this.messages.create(message));
         return messages;
       });
   }
@@ -196,8 +196,8 @@ class TextBasedChannel {
    */
   fetchPinnedMessages() {
     return this.client.api.channels[this.id].pins.get().then(data => {
-      const messages = new MessageStore(data);
-      for (const message of messages) this.messages.set(message.id, message);
+      const messages = new Collection();
+      for (const message of data) messages.set(message.id, this.messages.create(message));
       return messages;
     });
   }

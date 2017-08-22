@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const MessageStore = require('../stores/MessageStore');
 const Constants = require('../util/Constants');
 
 /*
@@ -33,7 +34,7 @@ const Constants = require('../util/Constants');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
