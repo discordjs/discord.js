@@ -793,7 +793,8 @@ class Guild {
    *  .catch(console.error);
    */
   setIcon(icon, reason) {
-    return this.edit({ icon }, reason);
+    return this.client.resolver.resolveImage(icon)
+      .then(data => this.edit({ icon: data }, reason));
   }
 
   /**
@@ -823,7 +824,8 @@ class Guild {
    *  .catch(console.error);
    */
   setSplash(splash, reason) {
-    return this.edit({ splash }, reason);
+    return this.client.resolver.resolveImage(splash)
+      .then(data => this.edit({ splash: data }, reason));
   }
 
   /**

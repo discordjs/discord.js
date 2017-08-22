@@ -160,14 +160,8 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   setIcon(icon) {
-    if (typeof icon === 'string' && icon.startsWith('data:')) {
-      return this.edit({ icon });
-    } else if (!icon) {
-      return this.edit({ icon: null });
-    } else {
-      return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
-    }
+    return this.client.resolver.resolveImage(icon)
+      .then(data => this.edit({ icon: data }));
   }
 
   /**
