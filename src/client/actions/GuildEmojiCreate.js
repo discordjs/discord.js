@@ -1,8 +1,11 @@
 const Action = require('./Action');
+const Constants = require('../../util/Constants');
 
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
-    return { emoji: guild.emojis.create(createdEmoji) };
+    const emoji = guild.emojis.create(createdEmoji);
+    this.client.emit(Constants.Events.GUILD_EMOJI_CREATE, emoji);
+    return { emoji };
   }
 }
 

@@ -1,6 +1,5 @@
 const DataStore = require('./DataStore');
 const Emoji = require('../structures/Emoji');
-const Constants = require('../util/Constants');
 
 class EmojiStore extends DataStore {
   constructor(guild, iterable) {
@@ -8,7 +7,7 @@ class EmojiStore extends DataStore {
     this.guild = guild;
   }
 
-  create(data, emitEvent = true) {
+  create(data) {
     super.create();
     const guild = this.guild;
 
@@ -18,19 +17,12 @@ class EmojiStore extends DataStore {
     const emoji = new Emoji(guild, data);
     guild.emojis.set(emoji.id, emoji);
 
-    if (emitEvent && emoji) {
-      this.client.emit(Constants.Events.GUILD_EMOJI_CREATE, emoji);
-    }
     return emoji;
   }
 
-  remove(id, emitEvent = true) {
+  remove(id) {
     super.remove();
-    const emoji = this.get(id);
     this.delete(id);
-    if (emitEvent && emoji) {
-      this.client.emit(Constants.Events.GUILD_EMOJI_DELETE, emoji);
-    }
   }
 }
 
