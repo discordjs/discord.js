@@ -1,12 +1,8 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
 
 class ChannelCreateHandler extends AbstractHandler {
   handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
-    const { channel } = client.actions.ChannelCreate.handle(data);
-    if (channel) client.emit(Constants.Events.CHANNEL_CREATE, channel);
+    this.packetManager.client.actions.ChannelCreate.handle(packet.d);
   }
 }
 
