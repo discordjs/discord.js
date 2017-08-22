@@ -2,7 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class MessageDeleteAction extends Action {
-
   handle(data) {
     const client = this.client;
     const channel = client.channels.get(data.channel_id);
