@@ -159,9 +159,8 @@ class GroupDMChannel extends Channel {
    * @param {Base64Resolvable} icon The new icon of this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  setIcon(icon) {
-    return this.client.resolver.resolveImage(icon)
-      .then(data => this.edit({ icon: data }));
+  async setIcon(icon) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon) });
   }
 
   /**

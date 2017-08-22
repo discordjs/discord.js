@@ -171,9 +171,8 @@ class ClientUser extends User {
    *   .then(user => console.log(`New avatar set!`))
    *   .catch(console.error);
    */
-  setAvatar(avatar) {
-    return this.client.resolver.resolveImage(avatar)
-      .then(data => this.edit({ avatar: data }));
+  async setAvatar(avatar) {
+    return this.edit({ avatar: await this.client.resolver.resolveImage(avatar) });
   }
 
   /**

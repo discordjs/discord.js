@@ -792,9 +792,8 @@ class Guild {
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon, reason) {
-    return this.client.resolver.resolveImage(icon)
-      .then(data => this.edit({ icon: data }, reason));
+  async setIcon(icon, reason) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
   }
 
   /**
@@ -819,13 +818,12 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
+   * guild.setSplash(fs.readFileSync('./splash.png'))
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash, reason) {
-    return this.client.resolver.resolveImage(splash)
-      .then(data => this.edit({ splash: data }, reason));
+  async setSplash(splash, reason) {
+    return this.edit({ avatar: await this.client.resolver.resolveImage(splash), reason });
   }
 
   /**
