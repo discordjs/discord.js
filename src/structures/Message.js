@@ -549,10 +549,6 @@ class Message extends Base {
   toString() {
     return this.content;
   }
-
-  _clearReactions() {
-    this.reactions.clear();
-  }
 }
 
 module.exports = Message;
