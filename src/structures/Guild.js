@@ -788,7 +788,7 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
+   * guild.setIcon('./icon.png')
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
@@ -818,7 +818,7 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setSplash(fs.readFileSync('./splash.png'))
+   * guild.setSplash('./splash.png')
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
