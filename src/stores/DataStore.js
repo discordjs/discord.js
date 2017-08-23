@@ -1,8 +1,7 @@
 const Collection = require('../util/Collection');
 
 /**
- * A data store
- * @class DataStore
+ * Manages the creation, retrieval and deletion of a specific data model.
  * @extends {Collection}
  */
 class DataStore extends Collection {
