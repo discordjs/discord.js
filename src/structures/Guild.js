@@ -1324,12 +1324,14 @@ class VoiceStateCollection extends Collection {
   set(id, voiceState) {
     super.set(id, voiceState);
     const member = this.guild.members.get(id);
-    if (member && member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
-      member.voiceChannel.members.delete(member.id);
+    if (member) {
+      if (member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
+        member.voiceChannel.members.delete(member.id);
+      }
+      if (!voiceState.channel_id) member.speaking = null;
+      const newChannel = this.guild.channels.get(voiceState.channel_id);
+      if (newChannel) newChannel.members.set(member.user.id, member);
     }
-    if (!voiceState.channel_id) member.speaking = null;
-    const newChannel = this.guild.channels.get(voiceState.channel_id);
-    if (newChannel) newChannel.members.set(member.user.id, member);
   }
 }
 

@@ -424,7 +424,12 @@ class Message extends Base {
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
       .put()
-      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
+      .then(() => this.client.actions.MessageReactionAdd.handle({
+        user: this.client.user,
+        channel: this.channel,
+        message: this,
+        emoji: Util.parseEmoji(emoji),
+      }).reaction);
   }
 
   /**
