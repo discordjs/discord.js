@@ -319,15 +319,12 @@ class TextBasedChannel {
     if (full) {
       props.push(
         'acknowledge',
-        'fetchMessages',
-        'fetchMessage',
         'search',
         'bulkDelete',
         'startTyping',
         'stopTyping',
         'typing',
         'typingCount',
-        'fetchPinnedMessages',
         'createMessageCollector',
         'awaitMessages'
       );
