@@ -11979,7 +11979,8 @@ const EventEmitter = __webpack_require__(9).EventEmitter;
  * Filter to be applied to the collector.
  * @typedef {Function} CollectorFilter
  * @param {...*} args Any arguments received by the listener
- * @returns {boolean} To collect or not collect
+ * @param {Collection} collection The items collected by this collector
+ * @returns {boolean}
  */
 
 /**
@@ -12052,7 +12053,7 @@ class Collector extends EventEmitter {
    */
   _handle(...args) {
     const collect = this.handle(...args);
-    if (!collect || !this.filter(...args)) return;
+    if (!collect || !this.filter(...args, this.collected)) return;
 
     this.collected.set(collect.key, collect.value);
 
