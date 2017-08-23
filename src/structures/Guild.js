@@ -208,15 +208,9 @@ class Guild extends Base {
       }
     }
 
-    this.voiceStates = new Collection();
+    this.voiceStates = new VoiceStateCollection(this);
     if (data.voice_states) {
-      for (const voiceState of data.voice_states) {
-        this.voiceStates.set(voiceState.user_id, voiceState);
-        const member = this.members.get(voiceState.user_id);
-        if (member) {
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-        }
-      }
+      for (const voiceState of data.voice_states) this.voiceStates.set(voiceState.user_id, voiceState);
     }
 
     if (!this.emojis) {
@@ -1376,6 +1370,23 @@ class Guild extends Base {
         a.position - b.position :
         Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
     );
+  }
+}
+
+class VoiceStateCollection extends Collection {
+  constructor(guild) {
+    super();
+    this.guild = guild;
+  }
+  set(id, voiceState) {
+    super.set(id, voiceState);
+    const member = this.guild.members.get(id);
+    if (member && member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
+      member.voiceChannel.members.delete(member.id);
+    }
+    if (!voiceState.channel_id) member.speaking = null;
+    const newChannel = this.guild.channels.get(voiceState.channel_id);
+    if (newChannel) newChannel.members.set(member.user.id, member);
   }
 }
 

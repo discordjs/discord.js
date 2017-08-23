@@ -11,24 +11,16 @@ class VoiceStateUpdateHandler extends AbstractHandler {
     if (guild) {
       const member = guild.members.get(data.user_id);
       if (member) {
-        const oldVoiceChannelMember = member._clone();
-        if (member.voiceChannel && member.voiceChannel.id !== data.channel_id) {
-          member.voiceChannel.members.delete(oldVoiceChannelMember.id);
-        }
-
-        // If the member left the voice channel, unset their speaking property
-        if (!data.channel_id) member.speaking = null;
+        const oldMember = member._clone();
+        oldMember._frozenVoiceState = oldMember.voiceState;
 
         if (member.user.id === client.user.id && data.channel_id) {
           client.emit('self.voiceStateUpdate', data);
         }
 
-        const newChannel = client.channels.get(data.channel_id);
-        if (newChannel) newChannel.members.set(member.user.id, member);
-
         guild.voiceStates.set(member.user.id, data);
 
-        client.emit(Constants.Events.VOICE_STATE_UPDATE, oldVoiceChannelMember, member);
+        client.emit(Constants.Events.VOICE_STATE_UPDATE, oldMember, member);
       }
     }
   }

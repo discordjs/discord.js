@@ -69,7 +69,7 @@ class GuildMember extends Base {
   }
 
   get voiceState() {
-    return this.guild.voiceStates.get(this.id) || {};
+    return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
   }
 
   /**
