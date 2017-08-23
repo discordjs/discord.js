@@ -26,12 +26,8 @@ class VoiceStateUpdateHandler extends AbstractHandler {
         const newChannel = client.channels.get(data.channel_id);
         if (newChannel) newChannel.members.set(member.user.id, member);
 
-        member.serverMute = data.mute;
-        member.serverDeaf = data.deaf;
-        member.selfMute = data.self_mute;
-        member.selfDeaf = data.self_deaf;
-        member.voiceSessionID = data.session_id;
-        member.voiceChannelID = data.channel_id;
+        guild.voiceStates.set(member.user.id, data);
+
         client.emit(Constants.Events.VOICE_STATE_UPDATE, oldVoiceChannelMember, member);
       }
     }

@@ -45,41 +45,6 @@ class GuildMember extends Base {
 
   _patch(data) {
     super._patch(data);
-    /**
-     * Whether this member is deafened server-wide
-     * @type {boolean}
-     */
-    this.serverDeaf = data.deaf;
-
-    /**
-     * Whether this member is muted server-wide
-     * @type {boolean}
-     */
-    this.serverMute = data.mute;
-
-    /**
-     * Whether this member is self-muted
-     * @type {boolean}
-     */
-    this.selfMute = data.self_mute;
-
-    /**
-     * Whether this member is self-deafened
-     * @type {boolean}
-     */
-    this.selfDeaf = data.self_deaf;
-
-    /**
-     * The voice session ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceSessionID = data.session_id;
-
-    /**
-     * The voice channel ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceChannelID = data.channel_id;
 
     /**
      * Whether this member is speaking
@@ -102,6 +67,46 @@ class GuildMember extends Base {
     this.user = data.user;
     this._roles = data.roles;
   }
+
+  get voiceState() {
+    return this.guild.voiceStates.get(this.id) || {};
+  }
+
+  /**
+   * Whether this member is deafened server-wide
+   * @type {boolean}
+   */
+  get serverDeaf() { return this.voiceState.deaf; }
+
+  /**
+   * Whether this member is muted server-wide
+   * @type {boolean}
+   */
+  get serverMute() { return this.voiceState.mute; }
+
+  /**
+   * Whether this member is self-muted
+   * @type {boolean}
+   */
+  get selfMute() { return this.voiceState.self_mute; }
+
+  /**
+   * Whether this member is self-deafened
+   * @type {boolean}
+   */
+  get selfDeaf() { return this.voiceState.self_deaf; }
+
+  /**
+   * The voice session ID of this member, if any
+   * @type {?Snowflake}
+   */
+  get voiceSessionID() { return this.voiceState.session_id; }
+
+  /**
+   * The voice channel ID of this member, if any
+   * @type {?Snowflake}
+   */
+  get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
    * The time the member joined the guild
