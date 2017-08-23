@@ -321,9 +321,10 @@ class Role extends Base {
    */
   delete(reason) {
     return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
-      .then(() =>
-        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
-      );
+      .then(() => {
+        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
+        return this;
+      });
   }
 
   /**

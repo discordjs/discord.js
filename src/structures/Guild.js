@@ -15,6 +15,7 @@ const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
 const GuildMemberStore = require('../stores/GuildMemberStore');
+const RoleStore = require('../stores/RoleStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
 const Base = require('./Base');
@@ -46,7 +47,7 @@ class Guild extends Base {
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role
      * @type {Collection<Snowflake, Role>}
      */
-    this.roles = new Collection();
+    this.roles = new RoleStore(this);
 
     /**
      * A collection of presences in this guild
@@ -196,10 +197,7 @@ class Guild extends Base {
 
     if (data.roles) {
       this.roles.clear();
-      for (const role of data.roles) {
-        const newRole = new Role(this, role);
-        this.roles.set(newRole.id, newRole);
-      }
+      for (const role of data.roles) this.roles.create(role);
     }
 
     if (data.presences) {
