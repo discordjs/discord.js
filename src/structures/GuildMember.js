@@ -28,6 +28,7 @@ class GuildMember extends Base {
     this.user = {};
 
     this._roles = [];
+
     if (data) this._patch(data);
 
     /**
@@ -49,23 +50,26 @@ class GuildMember extends Base {
     /**
      * Whether this member is speaking
      * @type {boolean}
+     * @name GuildMember#speaking
      */
-    this.speaking = false;
+    if (typeof this.speaking === 'undefined') this.speaking = false;
 
     /**
      * The nickname of this guild member, if they have one
      * @type {?string}
+     * @name GuildMember#nickname
      */
-    this.nickname = data.nick || null;
+    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     /**
      * The timestamp the member joined the guild at
      * @type {number}
+     * @name GuildMember#joinedTimestamp
      */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = data.user;
-    this._roles = data.roles;
+    this.user = this.guild.client.users.create(data.user);
+    if (data.roles) this._roles = data.roles;
   }
 
   get voiceState() {
@@ -352,7 +356,7 @@ class GuildMember extends Base {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
+    return endpoint.patch({ data, reason }).then(newData => this._update(newData));
   }
 
   /**

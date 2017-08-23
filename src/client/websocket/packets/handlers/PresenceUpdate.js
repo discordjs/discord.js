@@ -26,12 +26,12 @@ class PresenceUpdateHandler extends AbstractHandler {
     if (guild) {
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
-        member = guild._addMember({
+        member = guild.members.create({
           user,
           roles: data.roles,
           deaf: false,
           mute: false,
-        }, false);
+        });
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
       }
       if (member) {

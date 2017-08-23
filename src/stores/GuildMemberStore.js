@@ -2,22 +2,20 @@ const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 
 class GuildMemberStore extends DataStore {
-  constructor(message, iterable) {
-    super(message.client, iterable);
-    this.message = message;
+  constructor(guild, iterable) {
+    super(guild.client, iterable);
+    this.guild = guild;
   }
 
   create(data) {
-    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
-
-    const existing = this.get(data.id);
+    const existing = this.has(data.user.id);
     if (existing) return existing;
 
-    const reaction = new MessageReaction(this.message, data.emoji, data.count, data.me);
-    this.set(emojiID, reaction);
+    const member = new GuildMember(this.guild, data);
+    this.set(member.id, member);
 
-    return reaction;
+    return member;
   }
 }
 
-module.exports = ReactionStore;
+module.exports = GuildMemberStore;

@@ -1,5 +1,4 @@
 const Long = require('long');
-const User = require('./User');
 const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Invite = require('./Invite');
@@ -15,6 +14,7 @@ const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
+const GuildMemberStore = require('../stores/GuildMemberStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
 const Base = require('./Base');
@@ -34,7 +34,7 @@ class Guild extends Base {
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
      * @type {Collection<Snowflake, GuildMember>}
      */
-    this.members = new Collection();
+    this.members = new GuildMemberStore(this);
 
     /**
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
@@ -176,7 +176,7 @@ class Guild extends Base {
 
     if (data.members) {
       this.members.clear();
-      for (const guildUser of data.members) this._addMember(guildUser, false);
+      for (const guildUser of data.members) this.members.create(guildUser);
     }
 
     if (data.owner_id) {
@@ -1200,63 +1200,6 @@ class Guild extends Base {
    */
   toString() {
     return this.name;
-  }
-
-  _addMember(guildUser, emitEvent = true) {
-    const existing = this.members.has(guildUser.user.id);
-    if (!(guildUser.user instanceof User)) guildUser.user = this.client.users.create(guildUser.user);
-
-    guildUser.joined_at = guildUser.joined_at || 0;
-    const member = new GuildMember(this, guildUser);
-    this.members.set(member.id, member);
-
-    if (this.voiceStates && this.voiceStates.has(member.user.id)) {
-      const voiceState = this.voiceStates.get(member.user.id);
-      if (this.client.channels.has(voiceState.channel_id)) {
-        this.client.channels.get(voiceState.channel_id).members.set(member.user.id, member);
-      } else {
-        this.client.emit('warn', `Member ${member.id} added in guild ${this.id} with an uncached voice channel`);
-      }
-    }
-
-    /**
-     * Emitted whenever a user joins a guild.
-     * @event Client#guildMemberAdd
-     * @param {GuildMember} member The member that has joined a guild
-     */
-    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
-      this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
-    }
-
-    return member;
-  }
-
-  _updateMember(member, data) {
-    const oldMember = member._clone();
-
-    if (data.roles) member._roles = data.roles;
-    if (typeof data.nick !== 'undefined') member.nickname = data.nick;
-
-    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
-
-    if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
-      /**
-       * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
-       * @event Client#guildMemberUpdate
-       * @param {GuildMember} oldMember The member before the update
-       * @param {GuildMember} newMember The member after the update
-       */
-      this.client.emit(Constants.Events.GUILD_MEMBER_UPDATE, oldMember, member);
-    }
-
-    return {
-      old: oldMember,
-      mem: member,
-    };
-  }
-
-  _removeMember(guildMember) {
-    this.members.delete(guildMember.id);
   }
 
   _memberSpeakUpdate(user, speaking) {
