@@ -5,6 +5,7 @@ const Base = require('./Base');
 
 /**
  * Represents a role on Discord.
+ * @extends {Base}
  */
 class Role extends Base {
   constructor(guild, data) {

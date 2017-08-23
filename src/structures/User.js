@@ -9,6 +9,7 @@ const { Error } = require('../errors');
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
 class User extends Base {
   constructor(client, data) {

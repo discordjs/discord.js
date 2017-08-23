@@ -5,6 +5,7 @@ const Base = require('./Base');
 
 /**
  * Represents a user's profile on Discord.
+ * @extends {Base}
  */
 class UserProfile extends Base {
   constructor(user, data) {

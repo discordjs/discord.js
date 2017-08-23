@@ -4,6 +4,7 @@ const Base = require('./Base');
 
 /**
  * Represents a Client OAuth2 Application.
+ * @extends {Base}
  */
 class ClientApplication extends Base {
   constructor(client, data) {

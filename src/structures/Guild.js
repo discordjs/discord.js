@@ -24,6 +24,7 @@ const { Error, TypeError } = require('../errors');
  * Represents a guild (or a server) on Discord.
  * <info>It's recommended to see if a guild is available before performing operations or reading data from it. You can
  * check this with `guild.available`.</info>
+ * @extends {Base}
  */
 class Guild extends Base {
   constructor(client, data) {

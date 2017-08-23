@@ -4,6 +4,7 @@ const Constants = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
+ * @extends {Base}
  */
 class Channel extends Base {
   constructor(client, data) {

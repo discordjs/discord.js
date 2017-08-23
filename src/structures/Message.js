@@ -15,6 +15,7 @@ let GuildMember;
 
 /**
  * Represents a message on Discord.
+ * @extends {Base}
  */
 class Message extends Base {
   constructor(channel, data, client) {

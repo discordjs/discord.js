@@ -5,6 +5,7 @@ const Base = require('./Base');
 
 /**
  * Represents a custom emoji.
+ * @extends {Base}
  */
 class Emoji extends Base {
   constructor(guild, data) {

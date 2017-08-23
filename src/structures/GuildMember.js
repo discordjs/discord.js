@@ -9,6 +9,7 @@ const { Error, TypeError } = require('../errors');
 /**
  * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
 class GuildMember extends Base {
   constructor(guild, data) {
