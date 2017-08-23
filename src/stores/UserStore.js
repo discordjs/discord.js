@@ -7,8 +7,6 @@ const User = require('../structures/User');
  */
 class UserStore extends DataStore {
   create(data) {
-    super.create();
-
     const existing = this.get(data.id);
     if (existing) return existing;
 
@@ -18,7 +16,6 @@ class UserStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 

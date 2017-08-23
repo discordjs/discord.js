@@ -10,8 +10,6 @@ class GuildChannelStore extends DataStore {
   }
 
   create(data, cache = true) {
-    super.create();
-
     const existing = this.get(data.id);
     if (existing) return existing;
 
@@ -23,7 +21,6 @@ class GuildChannelStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 }

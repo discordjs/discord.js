@@ -8,7 +8,6 @@ class EmojiStore extends DataStore {
   }
 
   create(data) {
-    super.create();
     const guild = this.guild;
 
     const existing = guild.emojis.get(data.id);
@@ -21,7 +20,6 @@ class EmojiStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 }

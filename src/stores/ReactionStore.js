@@ -8,8 +8,6 @@ class ReactionStore extends DataStore {
   }
 
   create(data) {
-    super.create();
-
     const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
 
     const existing = this.get(data.id);
@@ -22,7 +20,6 @@ class ReactionStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 }

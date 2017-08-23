@@ -3,8 +3,6 @@ const Guild = require('../structures/Guild');
 
 class GuildStore extends DataStore {
   create(data) {
-    super.create();
-
     const existing = this.get(data.id);
     if (existing) return existing;
 
@@ -15,7 +13,6 @@ class GuildStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 }

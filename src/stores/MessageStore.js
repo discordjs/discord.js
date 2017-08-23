@@ -10,7 +10,6 @@ class MessageStore extends DataStore {
   }
 
   create(data, cache = true) {
-    super.create();
     const existing = this.get(data.id);
     if (existing) return existing;
 
@@ -21,14 +20,13 @@ class MessageStore extends DataStore {
   }
 
   set(key, value) {
-    super.set(key, value);
     const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) this.delete(key);
+    if (maxSize === 0) return;
     if (this.size >= maxSize && maxSize > 0) this.delete(this.firstKey());
+    super.set(key, value);
   }
 
   remove(id) {
-    super.remove();
     this.delete(id);
   }
 

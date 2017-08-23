@@ -5,8 +5,6 @@ const Constants = require('../util/Constants');
 
 class ChannelStore extends DataStore {
   create(data, guild, cache = true) {
-    super.create();
-
     const existing = this.get(data.id);
     if (existing) return existing;
 
@@ -34,7 +32,6 @@ class ChannelStore extends DataStore {
   }
 
   remove(id) {
-    super.remove();
     const channel = this.get(id);
     if (channel.guild) channel.guild.channels.remove(id);
     this.delete(id);
