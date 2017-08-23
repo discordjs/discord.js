@@ -12819,7 +12819,7 @@ const EventEmitter = __webpack_require__(12);
  * @typedef {Function} CollectorFilter
  * @param {...*} args Any arguments received by the listener
  * @param {Collection} collection The items collected by this collector
- * @returns {boolean} To collect or not collect
+ * @returns {boolean}
  */
 
 /**
