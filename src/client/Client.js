@@ -1,4 +1,3 @@
-const os = require('os');
 const EventEmitter = require('events');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
@@ -259,7 +258,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get browser() {
-    return os.platform() === 'browser';
+    return typeof window !== 'undefined';
   }
 
   /**
