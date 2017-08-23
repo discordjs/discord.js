@@ -27,26 +27,30 @@ class User extends Base {
     /**
      * The username of the user
      * @type {string}
+     * @name User#username
      */
-    this.username = data.username;
+    if (data.username) this.username = data.username;
 
     /**
      * A discriminator based on username for the user
      * @type {string}
+     * @name User#discriminator
      */
-    this.discriminator = data.discriminator;
+    if (data.discriminator) this.discriminator = data.discriminator;
 
     /**
      * The ID of the user's avatar
      * @type {string}
+     * @name User#avatar
      */
-    this.avatar = data.avatar;
+    if (data.avatar) this.avatar = data.avatar;
 
     /**
      * Whether or not the user is a bot
      * @type {boolean}
+     * @name User#bot
      */
-    this.bot = Boolean(data.bot);
+    if (typeof this.bot === 'undefined' && typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -59,12 +63,7 @@ class User extends Base {
      * @type {?Message}
      */
     this.lastMessage = null;
-  }
 
-  patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
-      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
-    }
     if (data.token) this.client.token = data.token;
   }
 
