@@ -18,10 +18,6 @@ class EmojiStore extends DataStore {
 
     return emoji;
   }
-
-  remove(id) {
-    this.delete(id);
-  }
 }
 
 module.exports = EmojiStore;
