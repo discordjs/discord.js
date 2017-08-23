@@ -615,9 +615,9 @@ class Guild {
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
     if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
+    if (data.icon) _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
-    if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
+    if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -627,7 +627,7 @@ class Guild {
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
-   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter 
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
   setExplicitContentFilter(explicitContentFilter, reason) {
@@ -637,7 +637,7 @@ class Guild {
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
-   * @param {string} [reason] Reason for changing the guild's name 
+   * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -697,7 +697,7 @@ class Guild {
   /**
    * Edit the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
-   * @param {string} [reason] Reason for changing the guild's system channel 
+   * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    */
   setSystemChannel(systemChannel, reason) {
@@ -721,17 +721,17 @@ class Guild {
 
   /**
    * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
+   * guild.setIcon('./icon.png')
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
   setIcon(icon, reason) {
-    return this.edit({ icon }, reason);
+    return this.client.resolver.resolveImage(icon).then(data => this.edit({ icon: data, reason }));
   }
 
   /**
@@ -751,17 +751,17 @@ class Guild {
 
   /**
    * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {BufferResolvable|Base64Resolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
+   * guild.setSplash('./splash.png')
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash, reason) {
-    return this.edit({ splash }, reason);
+  setSplash(splash) {
+    return this.client.resolver.resolveImage(splash).then(data => this.edit({ splash: data }));
   }
 
   /**
@@ -952,7 +952,7 @@ class Guild {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles, reason));
       } else {
-        this.client.resolver.resolveBuffer(attachment).then(data => {
+        this.client.resolver.resolveFile(attachment).then(data => {
           const dataURI = this.client.resolver.resolveBase64(data);
           resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles, reason));
         });

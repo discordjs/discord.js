@@ -73,7 +73,7 @@ class TextChannel extends GuildChannel {
       if (typeof avatar === 'string' && avatar.startsWith('data:')) {
         resolve(this.client.rest.methods.createWebhook(this, name, avatar, reason));
       } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
+        this.client.resolver.resolveFile(avatar).then(data =>
           resolve(this.client.rest.methods.createWebhook(this, name, data, reason))
         );
       }

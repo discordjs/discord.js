@@ -152,13 +152,9 @@ class ClientUser extends User {
    *   .catch(console.error);
    */
   setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.updateCurrentUser({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar).then(data =>
-        this.client.rest.methods.updateCurrentUser({ avatar: data })
-      );
-    }
+    return this.client.resolver.resolveImage(avatar).then(data =>
+      this.client.rest.methods.updateCurrentUser({ avatar: data })
+    );
   }
 
   /**
@@ -337,7 +333,7 @@ class ClientUser extends User {
           }, reject)
       );
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
