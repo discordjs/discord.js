@@ -1,6 +1,10 @@
 const DataStore = require('./DataStore');
 const User = require('../structures/User');
 
+/**
+ * A data store to store User models
+ * @extends {DataStore}
+ */
 class UserStore extends DataStore {
   create(data) {
     super.create();
