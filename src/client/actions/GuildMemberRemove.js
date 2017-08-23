@@ -2,11 +2,6 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
-  constructor(client) {
-    super(client);
-    this.deleted = new Map();
-  }
-
   handle(data) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);
@@ -16,18 +11,10 @@ class GuildMemberRemoveAction extends Action {
       if (member) {
         guild.memberCount--;
         guild.members.remove(member.id);
-        this.deleted.set(guild.id + data.user.id, member);
         if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, member);
-        this.scheduleForDeletion(guild.id, data.user.id);
-      } else {
-        member = this.deleted.get(guild.id + data.user.id) || null;
       }
     }
     return { guild, member };
-  }
-
-  scheduleForDeletion(guildID, userID) {
-    this.client.setTimeout(() => this.deleted.delete(guildID + userID), this.client.options.restWsBridgeTimeout);
   }
 }
 
