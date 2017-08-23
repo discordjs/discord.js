@@ -15,10 +15,6 @@ class UserStore extends DataStore {
     return user;
   }
 
-  remove(id) {
-    this.delete(id);
-  }
-
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
    * <warn>This is only available when using a bot account.</warn>

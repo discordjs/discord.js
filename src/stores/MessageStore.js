@@ -26,10 +26,6 @@ class MessageStore extends DataStore {
     super.set(key, value);
   }
 
-  remove(id) {
-    this.delete(id);
-  }
-
   /**
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.

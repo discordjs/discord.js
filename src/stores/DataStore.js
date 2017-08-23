@@ -13,7 +13,7 @@ class DataStore extends Collection {
 
   // Stubs
   create() { return undefined; }
-  remove() { return undefined; }
+  remove(key) { return this.delete(key); }
 }
 
 module.exports = DataStore;

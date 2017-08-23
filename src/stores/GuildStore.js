@@ -11,10 +11,6 @@ class GuildStore extends DataStore {
 
     return guild;
   }
-
-  remove(id) {
-    this.delete(id);
-  }
 }
 
 module.exports = GuildStore;

@@ -19,10 +19,6 @@ class GuildChannelStore extends DataStore {
 
     return channel;
   }
-
-  remove(id) {
-    this.delete(id);
-  }
 }
 
 module.exports = GuildChannelStore;

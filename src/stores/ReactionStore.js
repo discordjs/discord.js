@@ -18,10 +18,6 @@ class ReactionStore extends DataStore {
 
     return reaction;
   }
-
-  remove(id) {
-    this.delete(id);
-  }
 }
 
 module.exports = ReactionStore;

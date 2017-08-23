@@ -34,7 +34,7 @@ class ChannelStore extends DataStore {
   remove(id) {
     const channel = this.get(id);
     if (channel.guild) channel.guild.channels.remove(id);
-    this.delete(id);
+    super.remove(id);
   }
 }
 
