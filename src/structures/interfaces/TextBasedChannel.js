@@ -6,7 +6,7 @@ const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const Attachment = require('../../structures/Attachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
-const { Error, RangeError, TypeError } = require('../../errors');
+const { RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
