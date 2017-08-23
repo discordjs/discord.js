@@ -236,6 +236,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       search: `${base}/messages/search`,
       pins: `${base}/pins`,
+      Icon: (root, hash) => Endpoints.CDN(root).GDMIcon(channelID, hash),
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
       Message: messageID => {
@@ -264,6 +265,7 @@ const Endpoints = exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      GDMIcon: (channelID, hash) => `${root}/channel-icons/${channelID}/${hash}.jpg?size=2048`,
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },
@@ -8808,9 +8810,9 @@ class Guild {
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
     if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
+    if (data.icon) _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
-    if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
+    if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -8820,7 +8822,7 @@ class Guild {
   /**
    * Edit the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
-   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter 
+   * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
   setExplicitContentFilter(explicitContentFilter, reason) {
@@ -8830,7 +8832,7 @@ class Guild {
   /**
    * Edit the name of the guild.
    * @param {string} name The new name of the guild
-   * @param {string} [reason] Reason for changing the guild's name 
+   * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild name
@@ -8890,7 +8892,7 @@ class Guild {
   /**
    * Edit the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
-   * @param {string} [reason] Reason for changing the guild's system channel 
+   * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
    */
   setSystemChannel(systemChannel, reason) {
@@ -8914,17 +8916,17 @@ class Guild {
 
   /**
    * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
+   * guild.setIcon('./icon.png')
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
   setIcon(icon, reason) {
-    return this.edit({ icon }, reason);
+    return this.client.resolver.resolveImage(icon).then(data => this.edit({ icon: data, reason }));
   }
 
   /**
@@ -8944,17 +8946,17 @@ class Guild {
 
   /**
    * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {BufferResolvable|Base64Resolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
+   * guild.setSplash('./splash.png')
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash, reason) {
-    return this.edit({ splash }, reason);
+  setSplash(splash) {
+    return this.client.resolver.resolveImage(splash).then(data => this.edit({ splash: data }));
   }
 
   /**
@@ -9145,7 +9147,7 @@ class Guild {
       if (typeof attachment === 'string' && attachment.startsWith('data:')) {
         resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles, reason));
       } else {
-        this.client.resolver.resolveBuffer(attachment).then(data => {
+        this.client.resolver.resolveFile(attachment).then(data => {
           const dataURI = this.client.resolver.resolveBase64(data);
           resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles, reason));
         });
@@ -12562,6 +12564,20 @@ class ClientDataResolver {
     return String(data);
   }
 
+
+  /**
+   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+   * @param {string|BufferResolvable|Base64Resolvable} image The image to be resolved
+   * @returns {Promise<string>}
+   */
+  resolveImage(image) {
+    if (!image) return Promise.resolve(null);
+    if (typeof image === 'string' && image.startsWith('data:')) {
+      return Promise.resolve(image);
+    }
+    return this.resolveFile(image).then(this.resolveBase64);
+  }
+
   /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
@@ -12580,19 +12596,25 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
+    * Data that can be resolved to give a Buffer. This can be:
+    * * A Buffer
+    * * The path to a local file
+    * * A URL
+    * * A Stream
+    * @typedef {string|Buffer} BufferResolvable
+    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
+    * @external Stream
+    * @see {@link https://nodejs.org/api/stream.html}
+    */
+
+  /**
+    * Resolves a BufferResolvable to a Buffer.
+    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
+    * @returns {Promise<Buffer>}
+    */
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
@@ -12617,36 +12639,16 @@ class ClientDataResolver {
           });
         }
       });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
+      });
     }
 
     return Promise.reject(new TypeError('The resource must be a string or Buffer.'));
-  }
-
-  /**
-   * @external Stream
-   * @see {@link https://nodejs.org/api/stream.html}
-   */
-
-  /**
-   * Converts a Stream to a Buffer.
-   * @param {Stream} resource The stream to convert
-   * @returns {Promise<Buffer>}
-   */
-  resolveFile(resource) {
-    return resource ? this.resolveBuffer(resource)
-      .catch(() => {
-        if (resource.pipe && typeof resource.pipe === 'function') {
-          return new Promise((resolve, reject) => {
-            const buffers = [];
-            resource.once('error', reject);
-            resource.on('data', data => buffers.push(data));
-            resource.once('end', () => resolve(Buffer.concat(buffers)));
-          });
-        } else {
-          throw new TypeError('The resource must be a string, Buffer or a valid file stream.');
-        }
-      }) :
-      Promise.reject(new TypeError('The resource must be a string, Buffer or a valid file stream.'));
   }
 
   /**
@@ -12997,7 +12999,7 @@ class Webhook {
    */
   edit(name = this.name, avatar) {
     if (avatar) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
+      return this.client.resolver.resolveFile(avatar).then(file => {
         const dataURI = this.client.resolver.resolveBase64(file);
         return this.client.rest.methods.editWebhook(this, name, dataURI);
       });
@@ -13178,6 +13180,7 @@ module.exports = OAuth2Application;
 const Channel = __webpack_require__(17);
 const TextBasedChannel = __webpack_require__(21);
 const Collection = __webpack_require__(3);
+const Constants = __webpack_require__(0);
 
 /*
 { type: 3,
@@ -13283,6 +13286,23 @@ class GroupDMChannel extends Channel {
   }
 
   /**
+   * The URL to this guild's icon
+   * @type {?string}
+   * @readonly
+   */
+  get iconURL() {
+    if (!this.icon) return null;
+    return Constants.Endpoints.Channel(this).Icon(this.client.options.http.cdn, this.icon);
+  }
+
+  edit(data) {
+    const _data = {};
+    if (data.name) _data.name = data.name;
+    if (data.icon) _data.icon = data.icon;
+    return this.client.rest.methods.updateGroupDMChannel(this, _data);
+  }
+
+  /**
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
@@ -13315,6 +13335,20 @@ class GroupDMChannel extends Channel {
       id: this.client.resolver.resolveUserID(accessTokenOrID),
       accessToken: accessTokenOrID,
     });
+  }
+
+  /**
+   * Set a new GroupDMChannel icon.
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the group dm
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the group dm icon
+   * channel.setIcon('./icon.png')
+   *  .then(updated => console.log('Updated the channel icon'))
+   *  .catch(console.error);
+   */
+  setIcon(icon) {
+    return this.client.resolver.resolveImage(icon).then(data => this.edit({ icon: data }));
   }
 
   /**
@@ -17632,7 +17666,7 @@ class TextChannel extends GuildChannel {
       if (typeof avatar === 'string' && avatar.startsWith('data:')) {
         resolve(this.client.rest.methods.createWebhook(this, name, avatar, reason));
       } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
+        this.client.resolver.resolveFile(avatar).then(data =>
           resolve(this.client.rest.methods.createWebhook(this, name, data, reason))
         );
       }
@@ -18528,13 +18562,9 @@ class ClientUser extends User {
    *   .catch(console.error);
    */
   setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.updateCurrentUser({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar).then(data =>
-        this.client.rest.methods.updateCurrentUser({ avatar: data })
-      );
-    }
+    return this.client.resolver.resolveImage(avatar).then(data =>
+      this.client.rest.methods.updateCurrentUser({ avatar: data })
+    );
   }
 
   /**
@@ -18713,7 +18743,7 @@ class ClientUser extends User {
           }, reject)
       );
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
@@ -23095,6 +23125,13 @@ class RESTMethods {
       { recipient: options.id };
     return this.rest.makeRequest('put', Endpoints.Channel(channel).Recipient(options.id), true, data)
       .then(() => channel);
+  }
+
+  updateGroupDMChannel(channel, _data) {
+    const data = {};
+    data.name = _data.name;
+    data.icon = _data.icon;
+    return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data).then(() => channel);
   }
 
   getExistingDM(recipient) {
