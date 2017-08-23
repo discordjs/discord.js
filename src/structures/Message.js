@@ -392,7 +392,11 @@ class Message extends Base {
 
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
-      .then(data => this._update(data));
+      .then(data => {
+        const clone = this._clone();
+        clone._patch(data);
+        return clone;
+      });
   }
 
   /**

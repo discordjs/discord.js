@@ -356,7 +356,11 @@ class GuildMember extends Base {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(newData => this._update(newData));
+    return endpoint.patch({ data, reason }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**

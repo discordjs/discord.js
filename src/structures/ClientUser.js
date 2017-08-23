@@ -82,8 +82,8 @@ class ClientUser extends User {
 
     /**
      * All of the user's guild settings
-     * @type {Collection<Snowflake, ClientUserGuildSettings>}
      * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {

@@ -212,7 +212,11 @@ class Role extends Base {
       },
       reason,
     })
-      .then(role => this._update(role));
+      .then(role => {
+        const clone = this._clone();
+        clone._patch(role);
+        return clone;
+      });
   }
 
   /**

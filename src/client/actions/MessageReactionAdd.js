@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
 
 /*
 { user_id: 'id',

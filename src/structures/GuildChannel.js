@@ -241,7 +241,11 @@ class GuildChannel extends Channel {
         user_limit: data.userLimit || this.userLimit,
       },
       reason,
-    }).then(newData => this._update(newData));
+    }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**
