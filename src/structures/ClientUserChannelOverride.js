@@ -11,6 +11,8 @@ class ClientUserChannelOverride {
   /**
    * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
+   * @returns {void}
+   * @private
    */
   patch(data) {
     for (const key of Object.keys(Constants.UserChannelOverrideMap)) {

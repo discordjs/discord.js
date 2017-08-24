@@ -14,7 +14,7 @@ class ResumedHandler extends AbstractHandler {
     const replayed = ws.sequence - ws.closeSequence;
 
     ws.debug(`RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events.`);
-    client.emit('resume', replayed);
+    client.emit(Constants.Events.RESUME, replayed);
     ws.heartbeat();
   }
 }

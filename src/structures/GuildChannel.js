@@ -137,7 +137,7 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {Role|Snowflake|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise}
@@ -262,18 +262,14 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Options given when creating a guild channel invite.
-   * @typedef {Object} InviteOptions
-
-   */
-
-  /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [reason] Reason for creating the invite
    * @returns {Promise<Invite>}
    */
@@ -292,6 +288,20 @@ class GuildChannel extends Channel {
   clone(name = this.name, withPermissions = true, withTopic = true, reason) {
     return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
+  }
+
+  /**
+   * Deletes this channel.
+   * @param {string} [reason] Reason for deleting this channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Delete the channel
+   * channel.delete('making room for new channels')
+   *   .then(channel => console.log(`Deleted ${channel.name} to make room for new channels`))
+   *   .catch(console.error); // Log error
+   */
+  delete(reason) {
+    return this.client.rest.methods.deleteChannel(this, reason);
   }
 
   /**

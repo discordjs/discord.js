@@ -231,12 +231,17 @@ class TextBasedChannel {
    */
 
   /**
+   * @typedef {Object} MessageSearchResult
+   * @property {number} totalResults Total result count
+   * @property {Message[][]} messages Array of message results
+   * The message which has triggered the result will have the `hit` property set to `true`
+   */
+
+  /**
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster
-   * The message which has triggered the result will have the `hit` property set to `true`
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * channel.search({
    *   content: 'discord.js',

@@ -63,6 +63,7 @@ class Attachment {
     * Set the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
     * @param {string} name The name of the file
+    * @returns {void}
     * @private
     */
   _attach(file, name) {

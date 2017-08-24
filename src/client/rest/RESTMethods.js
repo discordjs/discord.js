@@ -285,6 +285,11 @@ class RESTMethods {
       .then(() => channel);
   }
 
+  removeUserFromGroupDM(channel, userId) {
+    return this.rest.makeRequest('delete', Endpoints.Channel(channel).Recipient(userId), true)
+      .then(() => channel);
+  }
+
   updateGroupDMChannel(channel, _data) {
     const data = {};
     data.name = _data.name;
@@ -298,13 +303,14 @@ class RESTMethods {
     );
   }
 
-  deleteChannel(channel) {
+  deleteChannel(channel, reason) {
     if (channel instanceof User || channel instanceof GuildMember) channel = this.getExistingDM(channel);
     if (!channel) return Promise.reject(new Error('No channel to delete.'));
-    return this.rest.makeRequest('delete', Endpoints.Channel(channel), true).then(data => {
-      data.id = channel.id;
-      return this.client.actions.ChannelDelete.handle(data).channel;
-    });
+    return this.rest.makeRequest('delete', Endpoints.Channel(channel), true, undefined, undefined, reason)
+      .then(data => {
+        data.id = channel.id;
+        return this.client.actions.ChannelDelete.handle(data).channel;
+      });
   }
 
   updateChannel(channel, _data, reason) {
@@ -639,6 +645,7 @@ class RESTMethods {
     payload.temporary = options.temporary;
     payload.max_age = options.maxAge;
     payload.max_uses = options.maxUses;
+    payload.unique = options.unique;
     return this.rest.makeRequest('post', Endpoints.Channel(channel).invites, true, payload, undefined, reason)
       .then(invite => new Invite(this.client, invite));
   }

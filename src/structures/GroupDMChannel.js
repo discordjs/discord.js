@@ -148,6 +148,7 @@ class GroupDMChannel extends Channel {
    * Add a user to the DM
    * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
    * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * @returns {Promise<GroupDMChannel>}
    */
 
   addUser(accessTokenOrID, nick) {
@@ -161,7 +162,7 @@ class GroupDMChannel extends Channel {
   /**
    * Set a new GroupDMChannel icon.
    * @param {Base64Resolvable|BufferResolvable} icon The new icon of the group dm
-   * @returns {Promise<Guild>}
+   * @returns {Promise<GroupDMChannel>}
    * @example
    * // Edit the group dm icon
    * channel.setIcon('./icon.png')
@@ -170,6 +171,25 @@ class GroupDMChannel extends Channel {
    */
   setIcon(icon) {
     return this.client.resolver.resolveImage(icon).then(data => this.edit({ icon: data }));
+  }
+
+  /**
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Removes an user from this Group DM.
+   * @param {UserResolvable} user User to remove
+   * @returns {Promise<GroupDMChannel>}
+   */
+  removeUser(user) {
+    const id = this.client.resolver.resolveUserID(user);
+    return this.client.rest.methods.removeUserFromGroupDM(this, id);
   }
 
   /**
@@ -203,6 +223,7 @@ class GroupDMChannel extends Channel {
   get typing() {}
   get typingCount() {}
   createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}
