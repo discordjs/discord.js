@@ -51,7 +51,7 @@ class RPCClient extends BaseClient {
 
     /**
      * Raw transport userd
-     * @type {?IPCTransport|WebSocketTransport}
+     * @type {RPCTransport}
      */
     this.transport = new Transport(this);
     this.transport.on('message', this._onRpcMessage.bind(this));
@@ -124,9 +124,7 @@ class RPCClient extends BaseClient {
   request(cmd, args, evt) {
     return new Promise((resolve, reject) => {
       const nonce = Snowflake.generate();
-      this.transport.send({
-        cmd, args, evt, nonce,
-      });
+      this.transport.send({ cmd, args, evt, nonce });
       this._expecting.set(nonce, { resolve, reject });
     });
   }
