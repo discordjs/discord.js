@@ -32,7 +32,7 @@ class UserProfile extends Base {
     this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     super._patch(data);
     /**
      * If the user has Discord Premium
