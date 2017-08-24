@@ -1,2 +1,2 @@
-# discord.js Webpack builds
-These are the Webpack builds of discord.js that are usable in browsers.
+# Discord.js Webpack Builds
+Find out more @ https://discord.js.org/#/docs/main/stable/topics/web
