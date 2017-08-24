@@ -309,7 +309,6 @@ class ClientUser extends User {
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
-    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
     if (typeof icon === 'string' && icon.startsWith('data:')) {
       return this.client.rest.methods.createGuild({ name, icon, region });
     } else {

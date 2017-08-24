@@ -375,7 +375,7 @@ class RESTMethods {
     const user = this.client.user;
     const data = {};
     data.username = _data.username || user.username;
-    data.avatar = this.client.resolver.resolveBase64(_data.avatar) || user.avatar;
+    data.avatar = typeof _data.avatar === 'undefined' ? user.avatar : this.client.resolver.resolveBase64(_data.avatar);
     if (!user.bot) {
       data.email = _data.email || user.email;
       data.password = password;

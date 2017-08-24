@@ -119,7 +119,7 @@ class GroupDMChannel extends Channel {
   edit(data) {
     const _data = {};
     if (data.name) _data.name = data.name;
-    if (data.icon) _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     return this.client.rest.methods.updateGroupDMChannel(this, _data);
   }
 
