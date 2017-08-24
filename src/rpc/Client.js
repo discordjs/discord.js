@@ -10,6 +10,7 @@ const { RPCCommands, RPCEvents } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 
 /**
  * @typedef {RPCClientOptions}
@@ -43,13 +44,17 @@ class RPCClient extends BaseClient {
      */
     this.user = null;
 
-    if (this.browser && options.transport === 'ipc') throw new Error('IPC cannot be used in browser');
+    const Transport = transports[options.transport];
+    if (!Transport || (this.browser && options.transport === 'ipc')) {
+      throw new Error('RPC_INVALID_TRANSPORT', options.transport);
+    }
+
     /**
      * Raw transport userd
      * @type {?IPCTransport|WebSocketTransport}
      */
-    this.transport = new transports[options.transport](this);
-    this.transport.on('message', this._onMessage.bind(this));
+    this.transport = new Transport(this);
+    this.transport.on('message', this._onRpcMessage.bind(this));
 
     /**
      * Map of nonces being expected from the transport
@@ -131,7 +136,7 @@ class RPCClient extends BaseClient {
    * @param {Object} message message
    * @private
    */
-  _onMessage(message) {
+  _onRpcMessage(message) {
     if (message.cmd === RPCCommands.DISPATCH && message.evt === RPCEvents.READY) {
       this.emit('connected');
     } else if (this._expecting.has(message.nonce)) {
