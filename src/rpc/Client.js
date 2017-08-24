@@ -279,12 +279,18 @@ class RPCClient extends BaseClient {
    * @prop {bool} [mute] If the user is muted
    */
 
-  setUserVoiceSettings(args) {
+  /**
+   * Set the voice settings for a uer, by id
+   * @param {Snowflake} id ID of the user to set
+   * @param {UserVoiceSettings} settings Settings
+   * @returns {Promise}
+   */
+  setUserVoiceSettings(id, settings) {
     return this.request(RPCCommands.SET_USER_VOICE_SETTINGS, {
-      user_id: args.id,
-      pan: args.pan,
-      mute: args.mute,
-      volume: args.volume,
+      user_id: id,
+      pan: settings.pan,
+      mute: settings.mute,
+      volume: settings.volume,
     });
   }
 
@@ -385,19 +391,29 @@ class RPCClient extends BaseClient {
     });
   }
 
+  /**
+   * Capture a shortcut using the client
+   * The callback takes (key, stop) where `stop` is a function that will stop capturing.
+   * This `stop` function must be called before disconnecting or else the user will have
+   * to restart their client.
+   * @param {Function} callback Callback handling keys
+   * @returns {Promise<Function>}
+   */
   captureShortcut(callback) {
     const subid = subKey(RPCEvents.CAPTURE_SHORTCUT_CHANGE);
+    const stop = () => {
+      this._subscriptions.delete(subid);
+      return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'STOP' });
+    };
     this._subscriptions.set(subid, ({ shortcut }) => {
       const keys = shortcut.map(sc => ({
         name: sc.name, code: sc.code,
         type: Object.keys(Constants.KeyTypes)[sc.type],
       }));
-      callback(keys, () => {
-        this._subscriptions.delete(subid);
-        return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'STOP' });
-      });
+      callback(keys, stop);
     });
-    return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'START' });
+    return this.request(RPCCommands.CAPTURE_SHORTCUT, { action: 'START' })
+      .then(() => stop);
   }
 
 
