@@ -33,7 +33,6 @@ class UserProfile extends Base {
   }
 
   _patch(data) {
-    super._patch(data);
     /**
      * If the user has Discord Premium
      * @type {boolean}

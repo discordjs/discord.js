@@ -80,7 +80,6 @@ class Guild extends Base {
    * @private
    */
   _patch(data) {
-    super._patch(data);
     /**
      * The name of the guild
      * @type {string}

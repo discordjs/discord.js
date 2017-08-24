@@ -21,7 +21,6 @@ class Role extends Base {
   }
 
   _patch(data) {
-    super._patch(data);
     /**
      * The ID of the role (unique to the guild it is part of)
      * @type {Snowflake}

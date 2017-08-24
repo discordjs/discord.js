@@ -18,7 +18,6 @@ class User extends Base {
   }
 
   _patch(data) {
-    super._patch();
     /**
      * The ID of the user
      * @type {Snowflake}

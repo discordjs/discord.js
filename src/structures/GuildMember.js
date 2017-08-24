@@ -45,8 +45,6 @@ class GuildMember extends Base {
   }
 
   _patch(data) {
-    super._patch(data);
-
     /**
      * Whether this member is speaking
      * @type {boolean}

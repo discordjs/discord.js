@@ -18,8 +18,6 @@ class VoiceChannel extends GuildChannel {
   }
 
   _patch(data) {
-    super._patch(data);
-
     /**
      * The bitrate of this voice channel
      * @type {number}

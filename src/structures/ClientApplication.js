@@ -13,7 +13,6 @@ class ClientApplication extends Base {
   }
 
   _patch(data) {
-    super._patch(data);
     /**
      * The ID of the app
      * @type {Snowflake}

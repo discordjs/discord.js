@@ -21,7 +21,6 @@ class Emoji extends Base {
   }
 
   _patch(data) {
-    super._patch(data);
     /**
      * The ID of the emoji
      * @type {Snowflake}
