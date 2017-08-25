@@ -1,6 +1,7 @@
 const Mentions = require('./MessageMentions');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const RichEmbed = require('./RichEmbed');
 const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const Util = require('../util/Util');
@@ -365,7 +366,7 @@ class Message {
   /**
    * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|RichEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -380,6 +381,7 @@ class Message {
     } else if (!options) {
       options = {};
     }
+    if (options instanceof RichEmbed) options = { embed: options };
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 
