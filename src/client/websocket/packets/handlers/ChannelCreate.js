@@ -2,9 +2,7 @@ const AbstractHandler = require('./AbstractHandler');
 
 class ChannelCreateHandler extends AbstractHandler {
   handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
-    client.actions.ChannelCreate.handle(data);
+    this.packetManager.client.actions.ChannelCreate.handle(packet.d);
   }
 }
 

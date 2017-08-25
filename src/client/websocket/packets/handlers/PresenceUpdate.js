@@ -12,14 +12,13 @@ class PresenceUpdateHandler extends AbstractHandler {
     // Step 1
     if (!user) {
       if (data.user.username) {
-        user = client.dataManager.newUser(data.user);
+        user = client.users.create(data.user);
       } else {
         return;
       }
     }
 
-    const oldUser = Util.cloneObject(user);
-    user.patch(data.user);
+    const oldUser = user._update(data.user);
     if (!user.equals(oldUser)) {
       client.emit(Constants.Events.USER_UPDATE, oldUser, user);
     }
@@ -27,12 +26,12 @@ class PresenceUpdateHandler extends AbstractHandler {
     if (guild) {
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
-        member = guild._addMember({
+        member = guild.members.create({
           user,
           roles: data.roles,
           deaf: false,
           mute: false,
-        }, false);
+        });
         client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
       }
       if (member) {
@@ -40,7 +39,7 @@ class PresenceUpdateHandler extends AbstractHandler {
           guild._setPresence(user.id, data);
           return;
         }
-        const oldMember = Util.cloneObject(member);
+        const oldMember = member._clone();
         if (member.presence) {
           oldMember.frozenPresence = Util.cloneObject(member.presence);
         }

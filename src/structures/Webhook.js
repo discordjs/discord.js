@@ -17,7 +17,7 @@ class Webhook {
        * @readonly
        */
       Object.defineProperty(this, 'client', { value: client });
-      if (dataOrID) this.setup(dataOrID);
+      if (dataOrID) this._patch(dataOrID);
     } else {
       this.id = dataOrID;
       this.token = token;
@@ -25,7 +25,7 @@ class Webhook {
     }
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The name of the webhook
      * @type {string}
@@ -94,13 +94,13 @@ class Webhook {
   /**
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
+   * @param {WebhookMessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
    * webhook.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {

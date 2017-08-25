@@ -1,19 +1,15 @@
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 
 /**
  * Represents a custom emoji.
+ * @extends {Base}
  */
-class Emoji {
+class Emoji extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated this object
-     * @name Emoji#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild this emoji is part of
@@ -21,10 +17,10 @@ class Emoji {
      */
     this.guild = guild;
 
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of the emoji
      * @type {Snowflake}
@@ -115,10 +111,10 @@ class Emoji {
    * @param {string} [reason] Reason for editing this emoji
    * @returns {Promise<Emoji>}
    * @example
-   * // Edit a emoji
+   * // Edit an emoji
    * emoji.edit({name: 'newemoji'})
-   *  .then(e => console.log(`Edited emoji ${e}`))
-   *  .catch(console.error);
+   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.guilds(this.guild.id).emojis(this.id)

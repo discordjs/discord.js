@@ -70,9 +70,11 @@ class Shard {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<*>}
    * @example
-   * shard.fetchClientValue('guilds.size').then(count => {
-   *   console.log(`${count} guilds in shard ${shard.id}`);
-   * }).catch(console.error);
+   * shard.fetchClientValue('guilds.size')
+   *   .then(count => {
+   *     console.log(`${count} guilds in shard ${shard.id}`);
+   *   })
+   *   .catch(console.error);
    */
   fetchClientValue(prop) {
     if (this._fetches.has(prop)) return this._fetches.get(prop);

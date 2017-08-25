@@ -1,10 +1,13 @@
 /**
- * Represents an attachment in a message
+ * Represents an attachment in a message.
+ * @param {BufferResolvable|Stream} file The file
+ * @param {string} [name] The name of the file, if any
  */
 class Attachment {
   constructor(file, name) {
     this.file = null;
-    this._attach(file, name);
+    if (name) this.setAttachment(file, name);
+    else this._attach(file);
   }
 
   /**
@@ -42,7 +45,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setFile(attachment) {
-    this.file.attachment = attachment;
+    this.file = { attachment };
     return this;
   }
 
@@ -63,10 +66,8 @@ class Attachment {
     * @private
     */
   _attach(file, name) {
-    if (file) {
-      if (typeof file === 'string') this.file = file;
-      else this.setAttachment(file, name);
-    }
+    if (typeof file === 'string') this.file = file;
+    else this.setAttachment(file, name);
   }
 }
 

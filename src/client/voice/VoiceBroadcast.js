@@ -18,7 +18,7 @@ const ffmpegArguments = [
  * ```js
  * const broadcast = client.createVoiceBroadcast();
  * broadcast.playFile('./music.mp3');
- * // play "music.mp3" in all voice connections that the client is in
+ * // Play "music.mp3" in all voice connections that the client is in
  * for (const connection of client.voiceConnections.values()) {
  *   connection.playBroadcast(broadcast);
  * }
@@ -141,12 +141,12 @@ class VoiceBroadcast extends VolumeInterface {
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *    broadcast.playStream(stream);
-   *    const dispatcher = connection.playBroadcast(broadcast);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+   *     broadcast.playStream(stream);
+   *     const dispatcher = connection.playBroadcast(broadcast);
+   *   })
+   *   .catch(console.error);
    */
   playStream(stream, options = {}) {
     this.setVolume(options.volume || 1);
@@ -163,11 +163,11 @@ class VoiceBroadcast extends VolumeInterface {
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
-   *  .then(connection => {
-   *    broadcast.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *    const dispatcher = connection.playBroadcast(broadcast);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     broadcast.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *     const dispatcher = connection.playBroadcast(broadcast);
+   *   })
+   *   .catch(console.error);
    */
   playFile(file, options = {}) {
     this.setVolume(options.volume || 1);

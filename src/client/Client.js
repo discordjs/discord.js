@@ -1,6 +1,6 @@
 const BaseClient = require('../BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientDataManager = require('./ClientDataManager');
+const RESTManager = require('../rest/RESTManager');
 const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -9,11 +9,13 @@ const Collection = require('../util/Collection');
 const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
-const User = require('../structures/User');
 const Invite = require('../structures/Invite');
 const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
+const UserStore = require('../stores/UserStore');
+const ChannelStore = require('../stores/ChannelStore');
+const GuildStore = require('../stores/GuildStore');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -34,11 +36,11 @@ class Client extends BaseClient {
     this._validateOptions();
 
     /**
-     * The data manager of the client
-     * @type {ClientDataManager}
+     * The REST manager of the client
+     * @type {RESTManager}
      * @private
      */
-    this.dataManager = new ClientDataManager(this);
+    this.rest = new RESTManager(this);
 
     /**
      * The manager of the client
@@ -77,23 +79,23 @@ class Client extends BaseClient {
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {Collection<Snowflake, User>}
+     * @type {UserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {Collection<Snowflake, Guild>}
+     * @type {GuildStore<Snowflake, Guild>}
      */
-    this.guilds = new Collection();
+    this.guilds = new GuildStore(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
-     * @type {Collection<Snowflake, Channel>}
+     * @type {ChannelStore<Snowflake, Channel>}
      */
-    this.channels = new Collection();
+    this.channels = new ChannelStore(this);
 
     /**
      * Presences that have been received for the client user's friends, mapped by user IDs
@@ -276,20 +278,6 @@ class Client extends BaseClient {
       op: 12,
       d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
     });
-  }
-
-  /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @returns {Promise<User>}
-   */
-  fetchUser(id, cache = true) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
-      cache ? this.dataManager.newUser(data) : new User(this, data)
-    );
   }
 
   /**

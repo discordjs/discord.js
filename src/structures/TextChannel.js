@@ -2,7 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
-const Message = require('./Message');
+const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a guild text channel on Discord.
@@ -12,12 +12,12 @@ const Message = require('./Message');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The topic of the text channel
@@ -34,24 +34,7 @@ class TextChannel extends GuildChannel {
 
     this.lastMessageID = data.last_message_id;
 
-    if (data.messages) {
-      for (const message of data.messages) this.messages.set(message.id, new Message(this, message, this.client));
-    }
-  }
-
-  /**
-   * A collection of members that can see this channel, mapped by their ID
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).has('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
+    if (data.messages) for (const message of data.messages) this.messages.create(message);
   }
 
   /**
@@ -73,9 +56,9 @@ class TextChannel extends GuildChannel {
    * @param {string} [reason] Reason for creating this webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created webhook ${webhook}`))
-   *  .catch(console.error)
+   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
+   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   *   .catch(console.error)
    */
   createWebhook(name, avatar, reason) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {

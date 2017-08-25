@@ -90,12 +90,31 @@ class MessageReaction {
       .then(users => {
         this.users = new Collection();
         for (const rawUser of users) {
-          const user = message.client.dataManager.newUser(rawUser);
+          const user = message.client.users.create(rawUser);
           this.users.set(user.id, user);
         }
         this.count = this.users.size;
         return this.users;
       });
+  }
+
+  _add(user) {
+    if (!this.users.has(user.id)) {
+      this.users.set(user.id, user);
+      this.count++;
+    }
+    if (!this.me) this.me = user.id === this.message.client.user.id;
+  }
+
+  _remove(user) {
+    if (this.users.has(user.id)) {
+      this.users.delete(user.id);
+      this.count--;
+      if (user.id === this.message.client.user.id) this.me = false;
+      if (this.count <= 0) {
+        this.message.reactions.remove(this.emoji.id || this.emoji.name);
+      }
+    }
   }
 }
 

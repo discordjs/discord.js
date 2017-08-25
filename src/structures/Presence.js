@@ -67,16 +67,7 @@ class Game {
   }
 
   /**
-   * Whether or not the game is being streamed
-   * @type {boolean}
-   * @readonly
-   */
-  get streaming() {
-    return this.type === Constants.GameTypes[1];
-  }
-
-  /**
-   * Whether this game is equal to another game
+   * Whether this game is equal to another game.
    * @param {Game} game The game to compare with
    * @returns {boolean}
    */

@@ -48,8 +48,6 @@ module.exports = {
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   ClientApplication: require('./structures/ClientApplication'),
-  PartialGuild: require('./structures/PartialGuild'),
-  PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ReactionEmoji: require('./structures/ReactionEmoji'),
@@ -60,5 +58,3 @@ module.exports = {
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
 };
-
-if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef

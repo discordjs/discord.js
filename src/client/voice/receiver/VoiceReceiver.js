@@ -11,9 +11,10 @@ nonce.fill(0);
  * Receives voice data from a voice connection.
  * ```js
  * // Obtained using:
- * voiceChannel.join().then(connection => {
- *  const receiver = connection.createReceiver();
- * });
+ * voiceChannel.join()
+ *   .then(connection => {
+ *     const receiver = connection.createReceiver();
+ *   });
  * ```
  * @extends {EventEmitter}
  */
