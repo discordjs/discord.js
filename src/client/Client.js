@@ -287,7 +287,7 @@ class Client extends EventEmitter {
       if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
-    });
+    }).catch(() => this.destroy());
   }
 
   /**
