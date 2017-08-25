@@ -1,4 +1,3 @@
-const os = require('os');
 const EventEmitter = require('events');
 const RESTManager = require('./rest/RESTManager');
 const ClientDataResolver = require('./client/ClientDataResolver');
