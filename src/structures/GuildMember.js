@@ -354,9 +354,14 @@ class GuildMember extends Base {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(newData => {
+    return endpoint.patch({ data, reason }).then(() => {
       const clone = this._clone();
-      clone._patch(newData);
+      data.user = this.user;
+      clone._patch(data);
+      clone._frozenVoiceState = this.voiceState;
+      if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
+      if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
+      if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;
       return clone;
     });
   }
@@ -412,7 +417,11 @@ class GuildMember extends Base {
     if (this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .put({ reason })
-      .then(() => this);
+      .then(() => {
+        const clone = this._clone();
+        if (!clone._roles.includes(role.id)) clone._roles.push(role.id);
+        return clone;
+      });
   }
 
   /**
@@ -446,7 +455,12 @@ class GuildMember extends Base {
     if (!this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .delete({ reason })
-      .then(() => this);
+      .then(() => {
+        const clone = this._clone();
+        const index = clone._roles.indexOf(role.id);
+        if (~index) clone._roles.splice(index, 1);
+        return clone;
+      });
   }
 
   /**
