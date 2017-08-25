@@ -180,7 +180,8 @@ class Permissions {
  * - `MANAGE_GUILD` (edit the guild information, region, etc.)
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
- * - `READ_MESSAGES`
+ * - `VIEW_CHANNEL`
+ * - `READ_MESSAGES` **(deprecated)**
  * - `SEND_MESSAGES`
  * - `SEND_TTS_MESSAGES`
  * - `MANAGE_MESSAGES` (delete messages and reactions)
@@ -215,6 +216,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
 
+  VIEW_CHANNEL: 1 << 10,
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,

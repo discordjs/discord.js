@@ -512,7 +512,7 @@ class Guild {
   /**
    * Fetch a single guild member from a user.
    * @param {UserResolvable} user The user to fetch the member for
-   * @param {boolean} [cache=true] Insert the user into the users cache
+   * @param {boolean} [cache=true] Insert the member into the members cache
    * @returns {Promise<GuildMember>}
    */
   fetchMember(user, cache = true) {
@@ -563,9 +563,7 @@ class Guild {
    * Performs a search within the entire guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster.
-   * The message which has triggered the result will have the `hit` property set to `true`.
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * guild.search({
    *   content: 'discord.js',
@@ -587,6 +585,7 @@ class Guild {
    * @property {number} [verificationLevel] The verification level of the guild
    * @property {number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -596,7 +595,7 @@ class Guild {
   /**
    * Updates the guild with new information - e.g. a new name.
    * @param {GuildEditData} data The data to update the guild with
-   * @param {string} [reason] Reason for editing this guild
+   * @param {string} [reason] Reason for editing the guild
    * @returns {Promise<Guild>}
    * @example
    * // Set the guild name and region
@@ -615,9 +614,9 @@ class Guild {
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
     if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
-    if (data.splash) _data.splash = data.splash;
+    if (typeof data.splash !== 'undefined') _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -789,6 +788,7 @@ class Guild {
 
   /**
    * Allow direct messages from guild members.
+   * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -827,7 +827,7 @@ class Guild {
   /**
    * Unbans a user from the guild.
    * @param {UserResolvable} user The user to unban
-    * @param {string} [reason] Reason for unbanning the user
+   * @param {string} [reason] Reason for unbanning the user
    * @returns {Promise<User>}
    * @example
    * // Unban a user by ID (or with a user/guild member object)
@@ -948,16 +948,13 @@ class Guild {
    *   .catch(console.error);
    */
   createEmoji(attachment, name, roles, reason) {
-    return new Promise(resolve => {
-      if (typeof attachment === 'string' && attachment.startsWith('data:')) {
-        resolve(this.client.rest.methods.createEmoji(this, attachment, name, roles, reason));
-      } else {
-        this.client.resolver.resolveFile(attachment).then(data => {
-          const dataURI = this.client.resolver.resolveBase64(data);
-          resolve(this.client.rest.methods.createEmoji(this, dataURI, name, roles, reason));
-        });
-      }
-    });
+    if (typeof attachment === 'string' && attachment.startsWith('data:')) {
+      return this.client.rest.methods.createEmoji(this, attachment, name, roles, reason);
+    } else {
+      return this.client.resolver.resolveImage(attachment).then(data =>
+        this.client.rest.methods.createEmoji(this, data, name, roles, reason)
+      );
+    }
   }
 
   /**

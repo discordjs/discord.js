@@ -178,7 +178,7 @@ class ClientDataResolver {
   /**
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
-   * @returns {Promise<string>}
+   * @returns {Promise<?string>}
    */
   resolveImage(image) {
     if (!image) return Promise.resolve(null);

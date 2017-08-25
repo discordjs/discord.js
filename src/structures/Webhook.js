@@ -242,20 +242,16 @@ class Webhook {
   /**
    * Edit the webhook.
    * @param {string} name The new name for the webhook
-   * @param {BufferResolvable} avatar The new avatar for the webhook
+   * @param {BufferResolvable} [avatar] The new avatar for the webhook
    * @returns {Promise<Webhook>}
    */
   edit(name = this.name, avatar) {
     if (avatar) {
-      return this.client.resolver.resolveFile(avatar).then(file => {
-        const dataURI = this.client.resolver.resolveBase64(file);
-        return this.client.rest.methods.editWebhook(this, name, dataURI);
-      });
+      return this.client.resolver.resolveImage(avatar).then(data =>
+        this.client.rest.methods.editWebhook(this, name, data)
+      );
     }
-    return this.client.rest.methods.editWebhook(this, name).then(data => {
-      this.setup(data);
-      return this;
-    });
+    return this.client.rest.methods.editWebhook(this, name);
   }
 
   /**
