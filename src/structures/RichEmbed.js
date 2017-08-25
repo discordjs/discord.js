@@ -69,7 +69,7 @@ class RichEmbed {
 
     /**
      * File to upload alongside this Embed
-     * @type {string}
+     * @type {FileOptions|string|Attachment}
      */
     this.file = data.file;
   }
