@@ -823,7 +823,7 @@ class Guild {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ avatar: await this.client.resolver.resolveImage(splash), reason });
+    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
   }
 
   /**
