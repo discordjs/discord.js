@@ -2,6 +2,10 @@ const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
 let Message;
 
+/**
+ * Stores messages from channels
+ * @extends {DataStore}
+ */
 class MessageStore extends DataStore {
   constructor(channel, iterable) {
     super(channel.client, iterable);
