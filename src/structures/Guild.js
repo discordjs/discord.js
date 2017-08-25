@@ -1117,7 +1117,7 @@ class Guild {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveBuffer(attachment)
+    return this.client.resolver.resolveFile(attachment)
       .then(data => {
         const dataURI = this.client.resolver.resolveBase64(data);
         return this.createEmoji(dataURI, name, { roles, reason });

@@ -165,7 +165,7 @@ class GroupDMChannel extends Channel {
     } else if (!icon) {
       return this.edit({ icon: null });
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
     }
   }

@@ -175,7 +175,7 @@ class ClientUser extends User {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.edit({ avatar });
     } else {
-      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
+      return this.client.resolver.resolveFile(avatar || Buffer.alloc(0))
         .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
     }
   }
@@ -347,7 +347,7 @@ class ClientUser extends User {
           }, reject)
       );
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
