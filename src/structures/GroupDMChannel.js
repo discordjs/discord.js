@@ -157,18 +157,11 @@ class GroupDMChannel extends Channel {
 
   /**
    * Sets a new icon for this Group DM.
-   * @param {Base64Resolvable} icon The new icon of this Group DM
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  setIcon(icon) {
-    if (typeof icon === 'string' && icon.startsWith('data:')) {
-      return this.edit({ icon });
-    } else if (!icon) {
-      return this.edit({ icon: null });
-    } else {
-      return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
-    }
+  async setIcon(icon) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon) });
   }
 
   /**

@@ -178,6 +178,20 @@ class ClientDataResolver {
   }
 
   /**
+   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+   * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
+   * @returns {Promise<string>}
+   */
+  async resolveImage(image) {
+    if (!image) return null;
+    if (typeof image === 'string' && image.startsWith('data:')) {
+      return image;
+    }
+    const file = await this.resolveFile(image);
+    return this.resolveBase64(file);
+  }
+
+  /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
    * * A base64 string

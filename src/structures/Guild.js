@@ -661,9 +661,9 @@ class Guild extends Base {
     if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
     if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
+    if (data.icon) _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
-    if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
+    if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -768,17 +768,17 @@ class Guild extends Base {
 
   /**
    * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
+   * guild.setIcon('./icon.png')
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon, reason) {
-    return this.edit({ icon }, reason);
+  async setIcon(icon, reason) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
   }
 
   /**
@@ -798,17 +798,17 @@ class Guild extends Base {
 
   /**
    * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {Base64Resolvable|BufferResolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
+   * guild.setSplash('./splash.png')
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash, reason) {
-    return this.edit({ splash }, reason);
+  async setSplash(splash, reason) {
+    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
   }
 
   /**
@@ -1102,7 +1102,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveBuffer(attachment)
+    return this.client.resolver.resolveFile(attachment)
       .then(data => {
         const dataURI = this.client.resolver.resolveBase64(data);
         return this.createEmoji(dataURI, name, { roles, reason });

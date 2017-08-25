@@ -146,7 +146,7 @@ class ClientUser extends User {
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} newPassword New password to change to
-   * @param {Object|string} options Object containing an MFA code, password or both. 
+   * @param {Object|string} options Object containing an MFA code, password or both.
    * Can be just a string for the password.
    * @param {string} [options.oldPassword] Current password
    * @param {string} [options.mfaCode] Timed MFA Code
@@ -171,13 +171,8 @@ class ClientUser extends User {
    *   .then(user => console.log(`New avatar set!`))
    *   .catch(console.error);
    */
-  setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.edit({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
-        .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
-    }
+  async setAvatar(avatar) {
+    return this.edit({ avatar: await this.client.resolver.resolveImage(avatar) });
   }
 
   /**
@@ -347,7 +342,7 @@ class ClientUser extends User {
           }, reject)
       );
     } else {
-      return this.client.resolver.resolveBuffer(icon)
+      return this.client.resolver.resolveFile(icon)
         .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
   }
