@@ -1,25 +1,21 @@
 const Collection = require('../util/Collection');
 const { UserFlags } = require('../util/Constants');
 const UserConnection = require('./UserConnection');
+const Base = require('./Base');
 
 /**
  * Represents a user's profile on Discord.
+ * @extends {Base}
  */
-class UserProfile {
+class UserProfile extends Base {
   constructor(user, data) {
+    super(user.client);
+
     /**
      * The owner of the profile
      * @type {User}
      */
     this.user = user;
-
-    /**
-     * The client that created the instance of the UserProfile
-     * @name UserProfile#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: user.client });
 
     /**
      * The guilds that the client user and the user share
@@ -33,10 +29,10 @@ class UserProfile {
      */
     this.connections = new Collection();
 
-    this.setup(data);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * If the user has Discord Premium
      * @type {boolean}

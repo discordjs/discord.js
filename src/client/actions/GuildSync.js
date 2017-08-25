@@ -14,9 +14,9 @@ class GuildSync extends Action {
         for (const syncMember of data.members) {
           const member = guild.members.get(syncMember.user.id);
           if (member) {
-            guild._updateMember(member, syncMember);
+            member._patch(syncMember);
           } else {
-            guild._addMember(syncMember, false);
+            guild.members.create(syncMember, false);
           }
         }
       }

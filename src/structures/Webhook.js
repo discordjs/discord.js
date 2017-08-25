@@ -17,7 +17,7 @@ class Webhook {
        * @readonly
        */
       Object.defineProperty(this, 'client', { value: client });
-      if (dataOrID) this.setup(dataOrID);
+      if (dataOrID) this._patch(dataOrID);
     } else {
       this.id = dataOrID;
       this.token = token;
@@ -25,7 +25,7 @@ class Webhook {
     }
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The name of the webhook
      * @type {string}

@@ -22,8 +22,8 @@ class GuildChannel extends Channel {
     this.guild = guild;
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of the guild channel
@@ -241,7 +241,11 @@ class GuildChannel extends Channel {
         user_limit: data.userLimit || this.userLimit,
       },
       reason,
-    }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
+    }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**

@@ -9,7 +9,7 @@ class MessageReactionRemoveAll extends Action {
     const message = channel.messages.get(data.message_id);
     if (!message) return false;
 
-    message._clearReactions();
+    message.reactions.clear();
     this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
     return { message };

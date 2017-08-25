@@ -1,0 +1,3 @@
+{
+	"plugins": ["node_modules/jsdoc-strip-async-await"]
+}

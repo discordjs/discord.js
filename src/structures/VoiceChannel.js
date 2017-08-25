@@ -17,9 +17,7 @@ class VoiceChannel extends GuildChannel {
     Object.defineProperty(this, 'members', { value: new Collection() });
   }
 
-  setup(data) {
-    super.setup(data);
-
+  _patch(data) {
     /**
      * The bitrate of this voice channel
      * @type {number}

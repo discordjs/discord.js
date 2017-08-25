@@ -2,22 +2,18 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Base = require('./Base');
 const { Presence } = require('./Presence');
 const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
-class GuildMember {
+class GuildMember extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated this GuildMember
-     * @name GuildMember#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild that this member is part of
@@ -32,7 +28,8 @@ class GuildMember {
     this.user = {};
 
     this._roles = [];
-    if (data) this.setup(data);
+
+    if (data) this._patch(data);
 
     /**
      * The ID of the last message sent by the member in their guild, if one was sent
@@ -47,64 +44,71 @@ class GuildMember {
     this.lastMessage = null;
   }
 
-  setup(data) {
-    /**
-     * Whether this member is deafened server-wide
-     * @type {boolean}
-     */
-    this.serverDeaf = data.deaf;
-
-    /**
-     * Whether this member is muted server-wide
-     * @type {boolean}
-     */
-    this.serverMute = data.mute;
-
-    /**
-     * Whether this member is self-muted
-     * @type {boolean}
-     */
-    this.selfMute = data.self_mute;
-
-    /**
-     * Whether this member is self-deafened
-     * @type {boolean}
-     */
-    this.selfDeaf = data.self_deaf;
-
-    /**
-     * The voice session ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceSessionID = data.session_id;
-
-    /**
-     * The voice channel ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceChannelID = data.channel_id;
-
+  _patch(data) {
     /**
      * Whether this member is speaking
      * @type {boolean}
+     * @name GuildMember#speaking
      */
-    this.speaking = false;
+    if (typeof this.speaking === 'undefined') this.speaking = false;
 
     /**
      * The nickname of this guild member, if they have one
      * @type {?string}
+     * @name GuildMember#nickname
      */
-    this.nickname = data.nick || null;
+    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     /**
      * The timestamp the member joined the guild at
      * @type {number}
+     * @name GuildMember#joinedTimestamp
      */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = data.user;
-    this._roles = data.roles;
+    this.user = this.guild.client.users.create(data.user);
+    if (data.roles) this._roles = data.roles;
   }
+
+  get voiceState() {
+    return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
+  }
+
+  /**
+   * Whether this member is deafened server-wide
+   * @type {boolean}
+   */
+  get serverDeaf() { return this.voiceState.deaf; }
+
+  /**
+   * Whether this member is muted server-wide
+   * @type {boolean}
+   */
+  get serverMute() { return this.voiceState.mute; }
+
+  /**
+   * Whether this member is self-muted
+   * @type {boolean}
+   */
+  get selfMute() { return this.voiceState.self_mute; }
+
+  /**
+   * Whether this member is self-deafened
+   * @type {boolean}
+   */
+  get selfDeaf() { return this.voiceState.self_deaf; }
+
+  /**
+   * The voice session ID of this member (if any)
+   * @type {?Snowflake}
+   */
+  get voiceSessionID() { return this.voiceState.session_id; }
+
+  /**
+   * The voice channel ID of this member, (if any)
+   * @type {?Snowflake}
+   */
+  get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
    * The time the member joined the guild
@@ -350,7 +354,11 @@ class GuildMember {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
+    return endpoint.patch({ data, reason }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**

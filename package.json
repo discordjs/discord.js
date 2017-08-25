@@ -6,8 +6,8 @@
   "types": "./typings/index.d.ts",
   "scripts": {
     "test": "npm run lint && npm run docs:test",
-    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "docs:test": "docgen --source src --custom docs/index.yml",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
+    "docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
     "lint": "eslint src",
     "lint:fix": "eslint --fix src",
     "webpack": "parallel-webpack"
@@ -51,6 +51,7 @@
     "@types/node": "^8.0.0",
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
     "eslint": "^4.0.0",
+    "jsdoc-strip-async-await": "^0.1.0",
     "parallel-webpack": "^2.0.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
     "webpack": "^3.0.0"

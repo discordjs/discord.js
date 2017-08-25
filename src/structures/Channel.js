@@ -1,18 +1,14 @@
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 const Constants = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
+ * @extends {Base}
  */
-class Channel {
+class Channel extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the Channel
-     * @name Channel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     const type = Object.keys(Constants.ChannelTypes)[data.type];
     /**
@@ -26,10 +22,10 @@ class Channel {
      */
     this.type = type ? type.toLowerCase() : 'unknown';
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The unique ID of the channel
      * @type {Snowflake}

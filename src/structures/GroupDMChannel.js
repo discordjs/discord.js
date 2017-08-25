@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const MessageStore = require('../stores/MessageStore');
 const Constants = require('../util/Constants');
 
 /*
@@ -33,12 +34,12 @@ const Constants = require('../util/Constants');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of this Group DM, can be null if one isn't set
@@ -88,7 +89,7 @@ class GroupDMChannel extends Channel {
 
     if (data.recipients) {
       for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
+        const user = this.client.users.create(recipient);
         this.recipients.set(user.id, user);
       }
     }

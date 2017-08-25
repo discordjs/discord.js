@@ -1,4 +1,5 @@
 const Action = require('./Action');
+const Constants = require('../../util/Constants');
 
 class ChannelDeleteAction extends Action {
   constructor(client) {
@@ -8,22 +9,21 @@ class ChannelDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
     let channel = client.channels.get(data.id);
+
     if (channel) {
-      client.dataManager.killChannel(channel);
-      this.deleted.set(channel.id, channel);
-      this.scheduleForDeletion(channel.id);
-    } else {
-      channel = this.deleted.get(data.id) || null;
+      client.channels.remove(channel.id);
+      client.emit(Constants.Events.CHANNEL_DELETE, channel);
     }
 
     return { channel };
   }
-
-  scheduleForDeletion(id) {
-    this.client.setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout);
-  }
 }
+
+/**
+ * Emitted whenever a channel is deleted.
+ * @event Client#channelDelete
+ * @param {Channel} channel The channel that was deleted
+ */
 
 module.exports = ChannelDeleteAction;

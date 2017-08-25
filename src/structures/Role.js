@@ -1,19 +1,15 @@
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
+const Base = require('./Base');
 
 /**
  * Represents a role on Discord.
+ * @extends {Base}
  */
-class Role {
+class Role extends Base {
   constructor(guild, data) {
-    /**
-     * The client that instantiated the role
-     * @name Role#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+    super(guild.client);
 
     /**
      * The guild that the role belongs to
@@ -21,10 +17,10 @@ class Role {
      */
     this.guild = guild;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of the role (unique to the guild it is part of)
      * @type {Snowflake}
@@ -215,7 +211,11 @@ class Role {
       },
       reason,
     })
-      .then(role => this.client.actions.GuildRoleUpdate.handle({ role, guild_id: this.guild.id }).updated);
+      .then(role => {
+        const clone = this._clone();
+        clone._patch(role);
+        return clone;
+      });
   }
 
   /**
@@ -320,9 +320,10 @@ class Role {
    */
   delete(reason) {
     return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
-      .then(() =>
-        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id }).role
-      );
+      .then(() => {
+        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
+        return this;
+      });
   }
 
   /**

@@ -14,8 +14,8 @@ const { TypeError } = require('../errors');
  * @extends {User}
  */
 class ClientUser extends User {
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * Whether or not this account has been verified
@@ -82,8 +82,8 @@ class ClientUser extends User {
 
     /**
      * All of the user's guild settings
-     * @type {Collection<Snowflake, ClientUserGuildSettings>}
      * <warn>This is only filled when using a user account.</warn>
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
@@ -341,7 +341,7 @@ class ClientUser extends User {
 
             const timeout = this.client.setTimeout(() => {
               this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.dataManager.newGuild(data));
+              resolve(this.client.guilds.create(data));
             }, 10000);
             return undefined;
           }, reject)

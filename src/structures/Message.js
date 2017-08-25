@@ -6,23 +6,20 @@ const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
+const ReactionStore = require('../stores/ReactionStore');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 let GuildMember;
 
 /**
  * Represents a message on Discord.
+ * @extends {Base}
  */
-class Message {
+class Message extends Base {
   constructor(channel, data, client) {
-    /**
-     * The client that instantiated the Message
-     * @name Message#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * The channel that the message was sent in
@@ -30,10 +27,10 @@ class Message {
      */
     this.channel = channel;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) { // eslint-disable-line complexity
+  _patch(data) { // eslint-disable-line complexity
     /**
      * The ID of the message
      * @type {Snowflake}
@@ -56,7 +53,7 @@ class Message {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.dataManager.newUser(data.author);
+    this.author = this.client.users.create(data.author);
 
     /**
      * Represents the author of the message as a guild member
@@ -116,9 +113,9 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction ID
-     * @type {Collection<Snowflake, MessageReaction>}
+     * @type {ReactionStore<Snowflake, MessageReaction>}
      */
-    this.reactions = new Collection();
+    this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
         const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
@@ -173,7 +170,7 @@ class Message {
    * @private
    */
   patch(data) {
-    const clone = Util.cloneObject(this);
+    const clone = this._clone();
     this._edits.unshift(clone);
 
     this.editedTimestamp = new Date(data.edited_timestamp).getTime();
@@ -395,7 +392,11 @@ class Message {
 
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
-      .then(data => this.client.actions.MessageUpdate.handle(data).updated);
+      .then(data => {
+        const clone = this._clone();
+        clone._patch(data);
+        return clone;
+      });
   }
 
   /**
@@ -427,7 +428,12 @@ class Message {
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
       .put()
-      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
+      .then(() => this.client.actions.MessageReactionAdd.handle({
+        user: this.client.user,
+        channel: this.channel,
+        message: this,
+        emoji: Util.parseEmoji(emoji),
+      }).reaction);
   }
 
   /**
@@ -552,42 +558,6 @@ class Message {
    */
   toString() {
     return this.content;
-  }
-
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-    }
-    return reaction;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) reaction.me = false;
-        if (reaction.count <= 0) this.reactions.delete(emojiID);
-        return reaction;
-      }
-    }
-    return null;
-  }
-
-  _clearReactions() {
-    this.reactions.clear();
   }
 }
 
