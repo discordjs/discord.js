@@ -2,7 +2,11 @@ const DataStore = require('./DataStore');
 const TextChannel = require('../structures/TextChannel');
 const VoiceChannel = require('../structures/VoiceChannel');
 const Constants = require('../util/Constants');
-
+/**
+ * Stores guild channels.
+ * @private
+ * @extends {DataStore}
+ */
 class GuildChannelStore extends DataStore {
   constructor(guild, iterable) {
     super(guild.client, iterable);

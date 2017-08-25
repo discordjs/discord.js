@@ -1,6 +1,10 @@
 const DataStore = require('./DataStore');
 const Guild = require('../structures/Guild');
-
+/**
+ * Stores guilds.
+ * @private
+ * @extends {DataStore}
+ */
 class GuildStore extends DataStore {
   create(data) {
     const existing = this.get(data.id);

@@ -3,6 +3,11 @@ const DMChannel = require('../structures/DMChannel');
 const GroupDMChannel = require('../structures/GroupDMChannel');
 const Constants = require('../util/Constants');
 
+/**
+ * Stores channels.
+ * @private
+ * @extends {DataStore}
+ */
 class ChannelStore extends DataStore {
   create(data, guild, cache = true) {
     const existing = this.get(data.id);

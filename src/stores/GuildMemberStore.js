@@ -1,6 +1,10 @@
 const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
-
+/**
+ * Stores guild members.
+ * @private
+ * @extends {DataStore}
+ */
 class GuildMemberStore extends DataStore {
   constructor(guild, iterable) {
     super(guild.client, iterable);
