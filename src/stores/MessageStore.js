@@ -3,7 +3,7 @@ const Collection = require('../util/Collection');
 let Message;
 
 /**
- * Stores messages from channels
+ * Stores messages for text-based channels.
  * @extends {DataStore}
  */
 class MessageStore extends DataStore {
