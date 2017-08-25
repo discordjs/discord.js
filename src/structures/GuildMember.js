@@ -99,13 +99,13 @@ class GuildMember extends Base {
   get selfDeaf() { return this.voiceState.self_deaf; }
 
   /**
-   * The voice session ID of this member, if any
+   * The voice session ID of this member (if any)
    * @type {?Snowflake}
    */
   get voiceSessionID() { return this.voiceState.session_id; }
 
   /**
-   * The voice channel ID of this member, if any
+   * The voice channel ID of this member, (if any)
    * @type {?Snowflake}
    */
   get voiceChannelID() { return this.voiceState.channel_id; }
