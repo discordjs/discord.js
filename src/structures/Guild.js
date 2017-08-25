@@ -39,7 +39,7 @@ class Guild extends Base {
 
     /**
      * A collection of channels that are in this guild. The key is the channel's ID, the value is the channel
-     * @type {Collection<Snowflake, GuildChannel>}
+     * @type {GuildChannelStore<Snowflake, GuildChannel>}
      */
     this.channels = new GuildChannelStore(this);
 

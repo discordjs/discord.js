@@ -113,7 +113,7 @@ class Message extends Base {
 
     /**
      * A collection of reactions to this message, mapped by the reaction ID
-     * @type {Collection<Snowflake, MessageReaction>}
+     * @type {ReactionStore<Snowflake, MessageReaction>}
      */
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
