@@ -17,18 +17,21 @@ class TextBasedChannel {
     /**
      * A collection containing the messages sent to this channel
      * @type {Collection<Snowflake, Message>}
+     * @memberof TextBasedChannel
      */
     this.messages = new MessageStore(this);
 
     /**
      * The ID of the last message in the channel, if one was sent
      * @type {?Snowflake}
+     * @memberof TextBasedChannel
      */
     this.lastMessageID = null;
 
     /**
      * The Message object of the last message in the channel, if one was sent
      * @type {?Message}
+     * @memberof TextBasedChannel
      */
     this.lastMessage = null;
   }
