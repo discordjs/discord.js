@@ -172,7 +172,7 @@ class MessageEmbed {
     name = Util.resolveString(name);
     if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!String(name) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!String(value) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
     this.fields.push({ name, value, inline });
     return this;
   }
