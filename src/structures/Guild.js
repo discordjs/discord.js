@@ -33,7 +33,7 @@ class Guild extends Base {
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
-     * @type {Collection<Snowflake, GuildMember>}
+     * @type {GuildMemberStore<Snowflake, GuildMember>}
      */
     this.members = new GuildMemberStore(this);
 
