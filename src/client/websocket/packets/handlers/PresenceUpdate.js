@@ -1,6 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
-const Util = require('../../../../util/Util');
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
