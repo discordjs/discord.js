@@ -1166,7 +1166,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a role in this guild.
-   * @param {string|Role} role The role to edit, can be a role object or a role ID
+   * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
