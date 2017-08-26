@@ -92,6 +92,7 @@ class MessageEmbed {
      * @property {string} url URL of this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
+     * @readonly
      */
     this.video = data.video;
 
