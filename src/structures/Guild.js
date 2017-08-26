@@ -844,6 +844,7 @@ class Guild extends Base {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {string} [options.reason] Reason for this prune
