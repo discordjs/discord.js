@@ -23,7 +23,7 @@ class GuildCreateHandler extends AbstractHandler {
          * @event Client#guildCreate
          * @param {Guild} guild The created guild
          */
-        if (client.options.fetchAllMembers) await guild.fetchMembers();
+        if (client.options.fetchAllMembers) await guild.members.fetch();
         client.emit(Constants.Events.GUILD_CREATE, guild);
       }
     }
