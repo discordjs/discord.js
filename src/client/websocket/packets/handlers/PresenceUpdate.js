@@ -41,7 +41,7 @@ class PresenceUpdateHandler extends AbstractHandler {
         }
         const oldMember = member._clone();
         if (member.presence) {
-          oldMember.frozenPresence = Util.cloneObject(member.presence);
+          oldMember.frozenPresence = member.presence._clone();
         }
         guild._setPresence(user.id, data);
         client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);

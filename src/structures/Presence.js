@@ -28,6 +28,12 @@ class Presence {
     this.game = data.game ? new Game(data.game) : null;
   }
 
+  _clone() {
+    const clone = Object.assign(Object.create(this), this);
+    if (this.game) clone.game = this.game._clone();
+    return clone;
+  }
+
   /**
    * Whether this presence is equal to another
    * @param {Presence} presence The presence to compare with
@@ -78,6 +84,10 @@ class Game {
       this.type === game.type &&
       this.url === game.url
     );
+  }
+
+  _clone() {
+    return Object.assign(Object.create(this), this);
   }
 }
 
