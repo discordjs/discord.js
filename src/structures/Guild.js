@@ -1056,7 +1056,7 @@ class Guild extends Base {
    * Delete an emoji.
    * @param {Emoji|string} emoji The emoji to delete
    * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise}
+   * @returns {Promise<Emoji>}
    */
   deleteEmoji(emoji, reason) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
