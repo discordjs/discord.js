@@ -550,64 +550,6 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch a single guild member from a user.
-   * @param {UserResolvable} user The user to fetch the member for
-   * @param {boolean} [cache=true] Insert the user into the users cache
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMember(user, cache = true) {
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('USER_NOT_CACHED'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.api.guilds(this.id).members(user.id).get()
-      .then(data => {
-        if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
-        else return new GuildMember(this, data);
-      });
-  }
-
-  /**
-   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
-   * this should not be necessary.
-   * @param {Object} [options] Options for the fetch operation
-   * @param {string} [options.query=''] Limit fetch to members with similar usernames
-   * @param {number} [options.limit=0] Maximum number of members to request
-   * @returns {Promise<Collection<Snowflake, GuildMember>>}
-   */
-  fetchMembers({ query = '', limit = 0 } = {}) {
-    return new Promise((resolve, reject) => {
-      if (this.memberCount === this.members.size) {
-        resolve(query || limit ? new Collection() : this.members);
-        return;
-      }
-      this.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
-        d: {
-          guild_id: this.id,
-          query,
-          limit,
-        },
-      });
-      const fetchedMembers = new Collection();
-      const handler = (members, guild) => {
-        if (guild.id !== this.id) return;
-        for (const member of members.values()) {
-          if (query || limit) fetchedMembers.set(member.user.id, member);
-        }
-        if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
-          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(query || limit ? fetchedMembers : this.members);
-        }
-      };
-      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-      this.client.setTimeout(() => {
-        this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('GUILD_MEMBERS_TIMEOUT'));
-      }, 120e3);
-    });
-  }
-
-  /**
    * Performs a search within the entire guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
