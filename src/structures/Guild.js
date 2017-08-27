@@ -1044,11 +1044,8 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveFile(attachment)
-      .then(data => {
-        const dataURI = this.client.resolver.resolveBase64(data);
-        return this.createEmoji(dataURI, name, { roles, reason });
-      });
+    return this.client.resolver.resolveImage(attachment)
+      .then(image => this.createEmoji(image, name, { roles, reason }));
   }
 
   /**

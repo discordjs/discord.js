@@ -51,23 +51,23 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
-   * @param {string} [reason] Reason for creating this webhook
+   * @param {Object} [options] Options for creating the webhook
+   * @param {BufferResolvable|Base64Resolvable} [options.avatar] Avatar for the webhook
+   * @param {string} [options.reason] Reason for creating the webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
    * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
    *   .then(webhook => console.log(`Created webhook ${webhook}`))
    *   .catch(console.error)
    */
-  createWebhook(name, avatar, reason) {
+  createWebhook(name, { avatar, reason } = {}) {
     if (typeof avatar === 'string' && avatar.startsWith('data:')) {
       return this.client.api.channels[this.id].webhooks.post({ data: {
         name, avatar,
       }, reason }).then(data => new Webhook(this.client, data));
-    } else {
-      return this.client.resolver.resolveFile(avatar).then(data =>
-        this.createWebhook(name, this.client.resolver.resolveBase64(data) || null));
     }
+    return this.client.resolver.resolveImage(avatar).then(image =>
+      this.createWebhook(name, { avatar: image, reason }));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
