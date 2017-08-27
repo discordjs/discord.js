@@ -880,7 +880,7 @@ class Guild extends Base {
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable[]|number} [allow] The permissions to allow
    * @property {PermissionResolvable[]|number} [deny] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 
   /**
