@@ -354,7 +354,7 @@ class Message extends Base {
   /**
    * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -369,6 +369,8 @@ class Message extends Base {
     } else if (!options) {
       options = {};
     }
+    if (options instanceof Embed) options = { embed: options };
+
     if (typeof options.content !== 'undefined') content = options.content;
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);
