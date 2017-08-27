@@ -124,7 +124,7 @@ class ClientDataResolver {
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Snowflake
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   * @typedef {Channel|Snowflake} ChannelResolvable
    */
 
   /**
