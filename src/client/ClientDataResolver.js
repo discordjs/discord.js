@@ -32,7 +32,7 @@ class ClientDataResolver {
    * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
    */
 
   /**
