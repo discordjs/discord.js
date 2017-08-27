@@ -254,10 +254,9 @@ class Webhook {
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveFile(avatar).then(file => {
-        const dataURI = this.client.resolver.resolveBase64(file);
-        return this.edit({ name, avatar: dataURI }, reason);
-      });
+      return this.client.resolver.resolveImage(avatar).then(image =>
+        this.edit({ name, avatar: image }, reason)
+      );
     }
     return this.client.api.webhooks(this.id, this.token).patch({
       data: { name, avatar },

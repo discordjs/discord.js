@@ -341,10 +341,10 @@ class ClientUser extends User {
             return undefined;
           }, reject)
       );
-    } else {
-      return this.client.resolver.resolveFile(icon)
-        .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
+
+    return this.client.resolver.resolveImage(icon)
+      .then(data => this.createGuild(name, { region, icon: data || null }));
   }
 
   /**
