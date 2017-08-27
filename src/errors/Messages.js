@@ -6,10 +6,8 @@ const Messages = {
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
 
-  FEATURE_BOT_ONLY: 'Only bot accounts are able to make use of this feature.',
   FEATURE_USER_ONLY: 'Only user accounts are able to make use of this feature.',
 
-  WS_BAD_MESSAGE: 'A bad message was received from the websocket; either bad compression, or not JSON.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
@@ -25,8 +23,6 @@ const Messages = {
   SHARDING_IN_PROCESS: 'Shards are still being spawned',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards`,
 
-  SHARD_MESSAGE_FAILED: 'Failed to send message to master process.',
-
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
@@ -39,8 +35,6 @@ const Messages = {
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
-  USER_STATUS: 'User status must be a string',
-  USER_NOT_CACHED: 'User is not cached. Use Client.fetchUser first.',
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
 
   VOICE_INVALID_HEARTBEAT: 'Tried to set voice heartbeat but no valid interval was specified.',
@@ -90,7 +84,6 @@ const Messages = {
   GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
-
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
