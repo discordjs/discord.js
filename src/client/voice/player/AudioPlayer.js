@@ -40,6 +40,7 @@ class AudioPlayer extends EventEmitter {
       pausedTime: 0,
     };
     this.voiceConnection.once('closing', () => this.destroyCurrentStream());
+    this.bitrate = 48;
   }
 
   /**
@@ -88,8 +89,11 @@ class AudioPlayer extends EventEmitter {
    */
   setBitrate(value) {
     if (!value) return;
-    if (!this.opusEncoder) return;
     const bitrate = value === 'auto' ? this.voiceConnection.channel.bitrate : value;
+
+    this.bitrate = bitrate;
+
+    if (!this.opusEncoder) return;
     this.opusEncoder.setBitrate(bitrate);
   }
 
@@ -134,8 +138,13 @@ class AudioPlayer extends EventEmitter {
   }
 
   playOpusStream(stream, options = {}) {
+    if (options.bitrate === 'auto') {
+      throw new Error('you must specify the bitrate in number when using AudioPlayer#playOpusStream');
+    }
+
     options.opus = true;
     this.destroyCurrentStream();
+    this.setBitrate(options.bitrate);
     const dispatcher = this.createDispatcher(stream, options);
     this.currentStream = {
       dispatcher,
@@ -145,8 +154,9 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playBroadcast(broadcast, options) {
+  playBroadcast(broadcast, options = {}) {
     this.destroyCurrentStream();
+    this.setBitrate(options.bitrate);
     const dispatcher = this.createDispatcher(broadcast, options);
     this.currentStream = {
       dispatcher,
@@ -158,8 +168,8 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  createDispatcher(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  createDispatcher(stream, { seek = 0, volume = 1, passes = 1, opus, bitrate } = {}) {
+    const options = { seek, volume, passes, opus, bitrate };
 
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('end', () => this.destroyCurrentStream());

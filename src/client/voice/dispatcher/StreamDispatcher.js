@@ -126,6 +126,9 @@ class StreamDispatcher extends VolumeInterface {
    * If set to 'auto', the voice channel's bitrate will be used
    */
   setBitrate(bitrate) {
+    // It may be sucks to cauculate the real bitrate twice at two class, but event here must emit real bitrate
+    const realBitrate = bitrate === 'auto' ? this.player.voiceConnection.channel.bitrate : bitrate;
+    this.emit('bitrateChange', this.player.bitrate, realBitrate);
     this.player.setBitrate(bitrate);
   }
 
@@ -252,7 +255,7 @@ class StreamDispatcher extends VolumeInterface {
 
   readStreamBuffer() {
     const data = this.streamingData;
-    const bufferLength = (this._opus ? 80 : 1920) * data.channels;
+    const bufferLength = (this._opus ? this.player.bitrate / 4 * 5 : 1920) * data.channels;
     let buffer = this.stream.read(bufferLength);
     if (this._opus) return buffer;
     if (!buffer) return null;

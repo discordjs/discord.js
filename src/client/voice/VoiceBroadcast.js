@@ -76,7 +76,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   unregisterDispatcher(dispatcher, old) {
-    const volume = old || dispatcher.volume;
+    const key = old || `${dispatcher.player.bitrate},${dispatcher.volume}`;
 
     /**
      * Emitted whenever a stream dispatcher unsubscribes from the broadcast.
@@ -88,29 +88,54 @@ class VoiceBroadcast extends VolumeInterface {
       container.delete(dispatcher);
 
       if (!container.size) {
-        this._encoders.get(volume).destroy();
-        this._dispatchers.delete(volume);
-        this._encoders.delete(volume);
+        this._encoders.get(key).destroy();
+        this._dispatchers.delete(key);
+        this._encoders.delete(key);
       }
     }
   }
 
   registerDispatcher(dispatcher) {
-    if (!this._dispatchers.has(dispatcher.volume)) {
-      this._dispatchers.set(dispatcher.volume, new Set());
-      this._encoders.set(dispatcher.volume, OpusEncoders.fetch());
+    const key = `${dispatcher.player.bitrate},${dispatcher.volume}`;
+
+    if (!this._dispatchers.has(key)) {
+      this._dispatchers.set(key, new Set());
+      this._encoders.set(key, OpusEncoders.fetch());
+      this._encoders.get(key).setBitrate(dispatcher.player.bitrate);
     }
-    const container = this._dispatchers.get(dispatcher.volume);
+
+    const container = this._dispatchers.get(key);
     if (!container.has(dispatcher)) {
       container.add(dispatcher);
       dispatcher.once('end', () => this.unregisterDispatcher(dispatcher));
       dispatcher.on('volumeChange', (o, n) => {
-        this.unregisterDispatcher(dispatcher, o);
-        if (!this._dispatchers.has(n)) {
-          this._dispatchers.set(n, new Set());
-          this._encoders.set(n, OpusEncoders.fetch());
+        const oldKey = `${dispatcher.player.bitrate},${o}`;
+        const newKey = `${dispatcher.player.bitrate},${n}`;
+
+        this.unregisterDispatcher(dispatcher, oldKey);
+
+        if (!this._dispatchers.has(newKey)) {
+          this._dispatchers.set(newKey, new Set());
+          this._encoders.set(newKey, OpusEncoders.fetch());
+          this._encoders.get(newKey).setBitrate(dispatcher.player.bitrate);
         }
-        this._dispatchers.get(n).add(dispatcher);
+
+        this._dispatchers.get(newKey).add(dispatcher);
+      });
+
+      dispatcher.on('bitrateChange', (o, n) => {
+        const oldKey = `${o},${dispatcher.volume}`;
+        const newKey = `${n},${dispatcher.volume}`;
+
+        this.unregisterDispatcher(dispatcher, oldKey);
+
+        if (!this._dispatchers.has(newKey)) {
+          this._dispatchers.set(newKey, new Set());
+          this._encoders.set(newKey, OpusEncoders.fetch());
+          this._encoders.get(newKey).setBitrate(n);
+        }
+
+        this._dispatchers.get(newKey).add(dispatcher);
       });
       /**
        * Emitted whenever a stream dispatcher subscribes to the broadcast.
@@ -225,12 +250,17 @@ class VoiceBroadcast extends VolumeInterface {
   /**
    * Plays an Opus encoded stream.
    * <warn>Note that inline volume is not compatible with this method.</warn>
+   * <warn>Note that options.bitrate must correspond to your stream.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playOpusStream(stream) {
-    this.currentTranscoder = { options: { stream }, opus: true };
+  playOpusStream(stream, options = {}) {
+    if (options.bitrate === 'auto') {
+      throw new Error('you must specify the bitrate in number when using VoiceBroadcast#playOpusStream');
+    }
+
+    this.currentTranscoder = { options: { stream }, opus: true, bitrate: options.bitrate || 64 };
     stream.once('readable', () => this._startPlaying());
     return this;
   }
@@ -308,12 +338,14 @@ class VoiceBroadcast extends VolumeInterface {
 
     let packetMatrix = {};
 
-    const getOpusPacket = volume => {
-      if (packetMatrix[volume]) return packetMatrix[volume];
+    const getOpusPacket = (volume, bitrate) => {
+      const key = `${bitrate},${volume}`;
 
-      const opusEncoder = this._encoders.get(volume);
+      if (packetMatrix[key]) return packetMatrix[key];
+
+      const opusEncoder = this._encoders.get(key);
       const opusPacket = opusEncoder.encode(this.applyVolume(buffer, this._volume * volume));
-      packetMatrix[volume] = opusPacket;
+      packetMatrix[key] = opusPacket;
       return opusPacket;
     };
 
@@ -324,7 +356,8 @@ class VoiceBroadcast extends VolumeInterface {
       }
 
       const volume = dispatcher.volume;
-      dispatcher.processPacket(getOpusPacket(volume));
+      const bitrate = dispatcher.player.bitrate;
+      dispatcher.processPacket(getOpusPacket(volume, bitrate));
     }
 
     const next = 20 + (this._startTime + this._pausedTime + (this._count * 20) - Date.now());
@@ -334,7 +367,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   readStreamBuffer() {
     const opus = this.currentTranscoder.opus;
-    const bufferLength = (opus ? 80 : 1920) * 2;
+    const bufferLength = (opus ? this.currentTranscoder.bitrate / 4 * 5 : 1920) * 2;
     let buffer = this._playableStream.read(bufferLength);
     if (opus) return buffer;
     if (!buffer) return null;
