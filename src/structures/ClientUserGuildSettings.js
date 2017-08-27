@@ -49,6 +49,7 @@ class ClientUserGuildSettings {
    * @param {string} name Name of property
    * @param {*} value Value to patch
    * @returns {Promise<Object>}
+   * @private
    */
   update(name, value) {
     return this.client.api.users('@me').guilds(this.guildID).settings.patch({ data: { [name]: value } });

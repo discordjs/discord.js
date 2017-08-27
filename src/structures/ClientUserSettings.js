@@ -32,6 +32,7 @@ class ClientUserSettings {
    * @param {string} name Name of property
    * @param {*} value Value to patch
    * @returns {Promise<Object>}
+   * @private
    */
   update(name, value) {
     return this.user.client.api.users['@me'].settings.patch({ data: { [name]: value } });
