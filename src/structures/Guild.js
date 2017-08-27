@@ -783,6 +783,7 @@ class Guild extends Base {
 
   /**
    * Allow direct messages from guild members.
+   * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -1196,7 +1197,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a channel in this guild.
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
+   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}
