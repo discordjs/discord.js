@@ -47,7 +47,7 @@ class ClientUserGuildSettings {
   /**
    * Update a specific property of the guild settings.
    * @param {string} name Name of property
-   * @param {value} value Value to patch
+   * @param {*} value Value to patch
    * @returns {Promise<Object>}
    */
   update(name, value) {
