@@ -217,7 +217,7 @@ class GuildChannel extends Channel {
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of voice the channel
+   * @property {number} [userLimit] The user limit of the voice channel
    */
 
   /**
