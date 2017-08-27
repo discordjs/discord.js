@@ -196,7 +196,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
-  RESUME: 'resume',
+  RESUMED: 'resumed',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
