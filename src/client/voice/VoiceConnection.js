@@ -150,6 +150,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
+   * @private
    */
   sendVoiceStateUpdate(options = {}) {
     options = Util.mergeDefault({
@@ -169,6 +170,7 @@ class VoiceConnection extends EventEmitter {
    * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
+   * @private
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
@@ -201,6 +203,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sets the Session ID for the connection.
    * @param {string} sessionID The voice session ID
+   * @private
    */
   setSessionID(sessionID) {
     if (!sessionID) {
