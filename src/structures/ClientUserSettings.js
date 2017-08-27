@@ -14,6 +14,7 @@ class ClientUserSettings {
   /**
    * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
+   * @private
    */
   patch(data) {
     for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
@@ -37,6 +38,8 @@ class ClientUserSettings {
   }
 
   /**
+   * Sets the position of the guild in the guild listing.
+   * <warn>This is only available when using a user account.</warn>
    * @param {Guild} guild The guild to move
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
