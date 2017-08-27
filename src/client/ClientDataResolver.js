@@ -260,7 +260,7 @@ class ClientDataResolver {
    * * A custom emoji ID
    * * An Emoji object
    * * A ReactionEmoji object
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   * @typedef {string|Snowflake|Emoji|ReactionEmoji} EmojiIdentifierResolvable
    */
 
   /**
