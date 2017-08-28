@@ -17,20 +17,20 @@ class Presence {
     this.status = data.status || 'offline';
 
     /**
-     * The game that the user is playing
-     * @type {?Game}
+     * The activity that the user is doing
+     * @type {?Activity}
      */
-    this.game = data.game ? new Game(data.game) : null;
+    this.activity = data.activity ? new Activity(data.activity) : null;
   }
 
   update(data) {
     this.status = data.status || this.status;
-    this.game = data.game ? new Game(data.game) : null;
+    this.activity = data.activity ? new Activity(data.activity) : null;
   }
 
   _clone() {
     const clone = Object.assign(Object.create(this), this);
-    if (this.game) clone.game = this.game._clone();
+    if (this.activity) clone.activity = this.activity._clone();
     return clone;
   }
 
@@ -43,46 +43,46 @@ class Presence {
     return this === presence || (
       presence &&
       this.status === presence.status &&
-      this.game ? this.game.equals(presence.game) : !presence.game
+      this.activity ? this.activity.equals(presence.activity) : !presence.activity
     );
   }
 }
 
 /**
- * Represents a game that is part of a user's presence.
+ * Represents the activity of a user's presence
  */
-class Game {
+class Activity {
   constructor(data) {
     /**
-     * The name of the game being played
+     * The name of the activity is happening
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The type of the game status
-     * @type {GameType}
+     * The type of the activity
+     * @type {ActivityType}
      */
-    this.type = Constants.GameTypes[data.type];
+    this.type = Constants.ActivityTypes[data.type];
 
     /**
-     * If the game is being streamed, a link to the stream
+     * Contextual url for the activity
      * @type {?string}
      */
     this.url = data.url || null;
   }
 
   /**
-   * Whether this game is equal to another game.
-   * @param {Game} game The game to compare with
+   * Whether this activity is equal to another activity.
+   * @param {Activity} activity The activity to compare.
    * @returns {boolean}
    */
-  equals(game) {
-    return this === game || (
-      game &&
-      this.name === game.name &&
-      this.type === game.type &&
-      this.url === game.url
+  equals(activity) {
+    return this === activity || (
+      activity &&
+      this.name === activity.name &&
+      this.type === activity.type &&
+      this.url === activity.url
     );
   }
 
@@ -92,4 +92,4 @@ class Game {
 }
 
 exports.Presence = Presence;
-exports.Game = Game;
+exports.Activity = Activity;
