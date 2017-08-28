@@ -70,6 +70,29 @@ class Game {
      * @type {?string}
      */
     this.url = data.url || null;
+
+    /**
+     * If the game is in a rich presence, the details of the game
+     * @type {?string}
+     */
+    this.details = data.details || null;
+
+    /**
+     * If the game is in a rich presence, the state of the game
+     * @type {?string}
+     */
+    this.state = data.state || null;
+
+    /**
+     * If the game is in a rich presence, the assets included in the presence
+     * @type {?string}
+     */
+    this.assets = data.assets ? new RichPresenceAssets(data.assets) : null;;
+    /**
+     * If the game is in a rich presence, the ID of the application that set the presence
+     * @type {?string}
+     */
+    this.applicationID = data.application_id || null;
   }
 
   /**
@@ -91,5 +114,56 @@ class Game {
   }
 }
 
+/**
+ * Represents the assets that is part of a user's rich presence.
+ */
+class RichPresenceAssets {
+  constructor(data) {
+    /**
+     * The text shown hovering over the large image
+     * @type {string}
+     */
+    this.largeText = data.large_text;
+    
+    /**
+     * The text shown hovering over the small image
+     * @type {string}
+     */
+    this.smallText = data.small_text;
+
+    /**
+     * The ID if the large image
+     * @type {string}
+     */
+    this.largeImage = data.large_image;
+    
+    /**
+     * The ID if the small image
+     * @type {string}
+     */
+    this.smallImage = data.small_image;
+  }
+
+  /**
+   * Whether this game is equal to another game.
+   * @param {RichPresenceAssets} game The game to compare with
+   * @returns {boolean}
+   */
+  equals(assets) {
+    return this === game || (
+      game &&
+      this.largeText === game.largeText &&
+      this.smallText === game.smallText &&
+      this.largeImage === game.largeImage &&
+      this.smallImage === game.smallImage
+    );
+  }
+
+  _clone() {
+    return Object.assign(Object.create(this), this);
+  }
+}
+
 exports.Presence = Presence;
 exports.Game = Game;
+exports.RichPresenceAssets = RichPresenceAssets;
