@@ -161,7 +161,8 @@ class RichPresenceAssets {
    */
   smallImageURL({ format, size } = {}) {
     if (!this.smallImage) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppAsset(this.game.applicationID, this.smallImage, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn)
+      .AppAsset(this.game.applicationID, this.smallImage, format, size);
   }
 
   /**
@@ -174,7 +175,8 @@ class RichPresenceAssets {
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppAsset(this.game.applicationID, this.largeImage, format, size);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn)
+      .AppAsset(this.game.applicationID, this.largeImage, format, size);
   }
 
   /**
