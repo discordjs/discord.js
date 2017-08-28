@@ -87,7 +87,8 @@ class Game {
      * If the game is in a rich presence, the assets included in the presence
      * @type {?string}
      */
-    this.assets = data.assets ? new RichPresenceAssets(data.assets, this) : null;;
+    this.assets = data.assets ? new RichPresenceAssets(data.assets, this) : null;
+
     /**
      * If the game is in a rich presence, the ID of the application that set the presence
      * @type {?string}
@@ -124,7 +125,7 @@ class RichPresenceAssets {
      * @type {string}
      */
     this.largeText = data.large_text;
-    
+
     /**
      * The text shown hovering over the small image
      * @type {string}
@@ -136,13 +137,13 @@ class RichPresenceAssets {
      * @type {string}
      */
     this.largeImage = data.large_image;
-    
+
     /**
      * The ID if the small image
      * @type {string}
      */
     this.smallImage = data.small_image;
-    
+
     /**
      * The game this originates from
      * @type {Game}
@@ -177,17 +178,17 @@ class RichPresenceAssets {
   }
 
   /**
-   * Whether this game is equal to another game.
-   * @param {RichPresenceAssets} game The game to compare with
+   * Whether these assets is equal to another set of assets.
+   * @param {RichPresenceAssets} assets The assets to compare with
    * @returns {boolean}
    */
   equals(assets) {
-    return this === game || (
-      game &&
-      this.largeText === game.largeText &&
-      this.smallText === game.smallText &&
-      this.largeImage === game.largeImage &&
-      this.smallImage === game.smallImage
+    return this === assets || (
+      assets &&
+      this.largeText === assets.largeText &&
+      this.smallText === assets.smallText &&
+      this.largeImage === assets.largeImage &&
+      this.smallImage === assets.smallImage
     );
   }
 
