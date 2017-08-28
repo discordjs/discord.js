@@ -70,6 +70,30 @@ class Game {
      * @type {?string}
      */
     this.url = data.url || null;
+
+    /**
+     * If the game is in a rich presence, the details of the game
+     * @type {?string}
+     */
+    this.details = data.details || null;
+
+    /**
+     * If the game is in a rich presence, the state of the game
+     * @type {?string}
+     */
+    this.state = data.state || null;
+
+    /**
+     * If the game is in a rich presence, the assets included in the presence
+     * @type {?RichPresenceAssets}
+     */
+    this.assets = data.assets ? new RichPresenceAssets(data.assets, data.application_id) : null;
+
+    /**
+     * If the game is in a rich presence, the ID of the application that set the presence
+     * @type {?string}
+     */
+    this.applicationID = data.application_id || null;
   }
 
   /**
@@ -82,7 +106,97 @@ class Game {
       game &&
       this.name === game.name &&
       this.type === game.type &&
-      this.url === game.url
+      this.url === game.url &&
+      this.assets ? this.assets.equals(presence.assets) : !presence.assets &&
+      this.applicationID === game.applicationID &&
+      this.state === game.state &&
+      this.details === game.details
+    );
+  }
+
+  _clone() {
+    return Object.assign(Object.create(this), this);
+  }
+}
+
+/**
+ * Represents the assets that belongs to an application.
+ */
+class RichPresenceAssets {
+  constructor(data, applicationID) {
+
+    /**
+     * the ID of the application
+     * @type {?string}
+     */
+    this.applicationID = applicationID;
+
+    /**
+     * The text shown hovering over the large image
+     * @type {string}
+     */
+    this.largeText = data.large_text;
+
+    /**
+     * The text shown hovering over the small image
+     * @type {string}
+     */
+    this.smallText = data.small_text;
+
+    /**
+     * The ID if the large image
+     * @type {string}
+     */
+    this.largeImage = data.large_image;
+
+    /**
+     * The ID if the small image
+     * @type {string}
+     */
+    this.smallImage = data.small_image;
+  }
+
+  /**
+   * The URL to the small image
+   * @param {Object} [options={}] Options for the image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`. If no format is provided,
+   * it will be `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  smallImageURL({ format, size } = {}) {
+    if (!this.smallImage) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn)
+      .AppAsset(this.game.applicationID, this.smallImage, format, size);
+  }
+
+  /**
+   * The URL to the large image
+   * @param {Object} [options={}] Options for the image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`. If no format is provided,
+   * it will be `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  largeImageURL({ format, size } = {}) {
+    if (!this.largeImage) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn)
+      .AppAsset(this.game.applicationID, this.largeImage, format, size);
+  }
+
+  /**
+   * Whether these assets is equal to another set of assets.
+   * @param {RichPresenceAssets} assets The assets to compare with
+   * @returns {boolean}
+   */
+  equals(assets) {
+    return this === assets || (
+      assets &&
+      this.largeText === assets.largeText &&
+      this.smallText === assets.smallText &&
+      this.largeImage === assets.largeImage &&
+      this.smallImage === assets.smallImage &&
+      this.applicationID === assets.applicationID
     );
   }
 
@@ -93,3 +207,4 @@ class Game {
 
 exports.Presence = Presence;
 exports.Game = Game;
+exports.RichPresenceAssets = RichPresenceAssets;
