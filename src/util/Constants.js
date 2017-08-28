@@ -345,14 +345,15 @@ exports.MessageTypes = [
 ];
 
 /**
- * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
+ * The type of a activity of a users presence, e.g. `PLAYING`.
+ * Available Types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
  * * WATCHING
- * @typedef {string} GameType
+ * @typedef {string} ActivityType
  */
-exports.GameTypes = [
+exports.ActivityTypes = [
   'PLAYING',
   'STREAMING',
   'LISTENING',
