@@ -87,7 +87,7 @@ class Game {
      * If the game is in a rich presence, the assets included in the presence
      * @type {?string}
      */
-    this.assets = data.assets ? new RichPresenceAssets(data.assets) : null;;
+    this.assets = data.assets ? new RichPresenceAssets(data.assets, this) : null;;
     /**
      * If the game is in a rich presence, the ID of the application that set the presence
      * @type {?string}
@@ -118,7 +118,7 @@ class Game {
  * Represents the assets that is part of a user's rich presence.
  */
 class RichPresenceAssets {
-  constructor(data) {
+  constructor(data, game) {
     /**
      * The text shown hovering over the large image
      * @type {string}
@@ -142,6 +142,38 @@ class RichPresenceAssets {
      * @type {string}
      */
     this.smallImage = data.small_image;
+    
+    /**
+     * The game this originates from
+     * @type {Game}
+     */
+    this.game = data.game;
+  }
+
+  /**
+   * The URL to the small image
+   * @param {Object} [options={}] Options for the image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`. If no format is provided,
+   * it will be `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  smallImageURL({ format, size } = {}) {
+    if (!this.smallImage) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppAsset(this.game.applicationID, this.smallImage, format, size);
+  }
+
+  /**
+   * The URL to the large image
+   * @param {Object} [options={}] Options for the image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`. If no format is provided,
+   * it will be `webp`
+   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @returns {string}
+   */
+  largeImageURL({ format, size } = {}) {
+    if (!this.largeImage) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppAsset(this.game.applicationID, this.largeImage, format, size);
   }
 
   /**
