@@ -132,8 +132,8 @@ class StreamDispatcher extends VolumeInterface {
     /**
      * Emitted when the the bitrate of this dispatcher is about to change.
      * @event StreamDispatcher#bitrateChange
-     * @param {number} oldVolume The old bitrate
-     * @param {number} newVolume The new bitrate
+     * @param {number} oldBitrate The old bitrate
+     * @param {number} newBitrate The new bitrate
      */
     this.emit('bitrateChange', this.player.bitrate, realBitrate);
     this.player.setBitrate(bitrate);
