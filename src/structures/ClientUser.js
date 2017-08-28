@@ -180,10 +180,10 @@ class ClientUser extends User {
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [game] Game the user is playing
-   * @property {string} [game.name] Name of the game
-   * @property {GameType|number} [game.type] Type of the game
-   * @property {string} [game.url] Twitch stream URL
+   * @property {Object} [activity] Activity the user is doing
+   * @property {string} [activity.name] Name of the activity
+   * @property {ActivityType|number} [activity.type] Type of the activity
+   * @property {string} [activity.url] Twitch stream URL
    */
 
   /**
@@ -218,8 +218,8 @@ class ClientUser extends User {
       if (data.activity) {
         activity = data.activity;
         if (typeof activity.type === 'string') {
-          activity.type = Constants.GameTypes.indexOf(activity.type);
-          if (activity.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
+          activity.type = Constants.ActivityTypes.indexOf(activity.type);
+          if (activity.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'ActivityType');
         } else if (typeof activity.type !== 'number') {
           activity.type = activity.url ? 1 : 0;
         }
@@ -230,7 +230,7 @@ class ClientUser extends User {
       if (typeof data.afk !== 'undefined') afk = data.afk;
       afk = Boolean(afk);
 
-      this.localPresence = { status, game, afk };
+      this.localPresence = { status, activity, afk };
       this.localPresence.since = 0;
       this.localPresence.activity = this.localPresence.activity || null;
 
@@ -266,9 +266,9 @@ class ClientUser extends User {
   /**
    * Sets the activity the client user is playing.
    * @param {?string} name Name of activity
-   * @param {Object} [options] Options for setting the game
+   * @param {Object} [options] Options for setting the activity
    * @param {string} [options.url] Twitch stream URL
-   * @param {GameType|number} [options.type] Type of the game
+   * @param {ActivityType|number} [options.type] Type of the activity
    * @returns {Promise<ClientUser>}
    */
   setActivity(name, { url, type } = {}) {
