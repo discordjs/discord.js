@@ -85,9 +85,9 @@ class Game {
 
     /**
      * If the game is in a rich presence, the assets included in the presence
-     * @type {?string}
+     * @type {?RichPresenceAssets}
      */
-    this.assets = data.assets ? new RichPresenceAssets(data.assets, this) : null;
+    this.assets = data.assets ? new RichPresenceAssets(data.assets, data.application_id) : null;
 
     /**
      * If the game is in a rich presence, the ID of the application that set the presence
@@ -106,7 +106,11 @@ class Game {
       game &&
       this.name === game.name &&
       this.type === game.type &&
-      this.url === game.url
+      this.url === game.url &&
+      this.assets ? this.assets.equals(presence.assets) : !presence.assets &&
+      this.applicationID === game.applicationID &&
+      this.state === game.state &&
+      this.details === game.details
     );
   }
 
@@ -116,10 +120,17 @@ class Game {
 }
 
 /**
- * Represents the assets that is part of a user's rich presence.
+ * Represents the assets that belongs to an application.
  */
 class RichPresenceAssets {
-  constructor(data, game) {
+  constructor(data, applicationID) {
+
+    /**
+     * the ID of the application
+     * @type {?string}
+     */
+    this.applicationID = applicationID;
+
     /**
      * The text shown hovering over the large image
      * @type {string}
@@ -143,12 +154,6 @@ class RichPresenceAssets {
      * @type {string}
      */
     this.smallImage = data.small_image;
-
-    /**
-     * The game this originates from
-     * @type {Game}
-     */
-    this.game = game;
   }
 
   /**
@@ -190,7 +195,8 @@ class RichPresenceAssets {
       this.largeText === assets.largeText &&
       this.smallText === assets.smallText &&
       this.largeImage === assets.largeImage &&
-      this.smallImage === assets.smallImage
+      this.smallImage === assets.smallImage &&
+      this.applicationID === assets.applicationID
     );
   }
 
