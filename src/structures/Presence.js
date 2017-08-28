@@ -147,7 +147,7 @@ class RichPresenceAssets {
      * The game this originates from
      * @type {Game}
      */
-    this.game = data.game;
+    this.game = game;
   }
 
   /**
