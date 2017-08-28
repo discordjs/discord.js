@@ -128,6 +128,13 @@ class StreamDispatcher extends VolumeInterface {
   setBitrate(bitrate) {
     // It may be sucks to cauculate the real bitrate twice at two class, but event here must emit real bitrate
     const realBitrate = bitrate === 'auto' ? this.player.voiceConnection.channel.bitrate : bitrate;
+
+    /**
+     * Emitted when the the bitrate of this dispatcher is about to change.
+     * @event StreamDispatcher#bitrateChange
+     * @param {number} oldVolume The old bitrate
+     * @param {number} newVolume The new bitrate
+     */
     this.emit('bitrateChange', this.player.bitrate, realBitrate);
     this.player.setBitrate(bitrate);
   }
