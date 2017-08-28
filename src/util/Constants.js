@@ -115,6 +115,8 @@ exports.Endpoints = {
       },
       Icon: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+      AppAsset: (appID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/app-assets/${appID}/${hash}`, { format, size }),
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
       GDMIcon: (channelID, hash, format = 'webp', size) =>
