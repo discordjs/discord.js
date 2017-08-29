@@ -119,6 +119,14 @@ class User extends Base {
   get defaultAvatarURL() {
     return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
   }
+  
+  /**
+   * A collection of mutual guilds shared between the user and the client.
+   * @type {Collection}
+   */
+  get mutualGuilds() {
+    return this.client.guilds.filter(g => g.members.has(this.id));
+  }
 
   /**
    * A link to the user's avatar if they have one.
