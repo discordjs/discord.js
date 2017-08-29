@@ -121,6 +121,14 @@ class User extends Base {
   }
 
   /**
+   * A collection of mutual guilds shared between the user and the client.
+   * @type {Collection}
+   */
+  get mutualGuilds() {
+    return this.client.guilds.filter(g => g.members.has(this.id));
+  }
+
+  /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
    * @param {Object} [options={}] Options for the avatar url
