@@ -25,6 +25,8 @@ class ShardingManager extends EventEmitter {
     super();
     options = Util.mergeDefault({
       totalShards: 'auto',
+      startShard: 0,
+      endShard: 'auto',
       respawn: true,
       shardArgs: [],
       token: null,
@@ -41,7 +43,7 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
-     * Amount of shards that this manager is going to spawn
+     * Amount of shards the client will use in total
      * @type {number|string}
      */
     this.totalShards = options.totalShards;
@@ -53,6 +55,22 @@ class ShardingManager extends EventEmitter {
       if (this.totalShards !== Math.floor(this.totalShards)) {
         throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
+    }
+
+    /**
+     * The start shard this node will be using
+     * @type {number}
+     */
+    this.startShard = options.startShard;
+
+    /**
+     * The end shard this node will be using
+     * @type {number}
+     */
+    this.endShard = options.endShard;
+
+    if (this.startShard >= this.endShard) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'Start and end shards', 'a number.');
     }
 
     /**
@@ -135,6 +153,15 @@ class ShardingManager extends EventEmitter {
 
       this.createShard();
       if (this.shards.size >= this.totalShards) {
+        resolve(this.shards);
+        return;
+      }
+
+      if (this.endShard !== 'auto') {
+        Array(this.endShard + 1 - this.startShard).fill().map((x, i) => i + this.startShard)
+          .forEach(i => {
+            this.createShard(i);
+          });
         resolve(this.shards);
         return;
       }
