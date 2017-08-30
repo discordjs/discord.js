@@ -1,7 +1,7 @@
-const PresenceStore = require('./DataStore');
+const DataStore = require('./DataStore');
 const { Presence } = require('../structures/Presence');
 
-class ClientPresenceStore extends PresenceStore {
+class PresenceStore extends DataStore {
   create(data) {
     if (this.has(data.user.id)) {
       this.get(data.user.id).patch(data);
@@ -12,4 +12,4 @@ class ClientPresenceStore extends PresenceStore {
   }
 }
 
-module.exports = ClientPresenceStore;
+module.exports = PresenceStore;
