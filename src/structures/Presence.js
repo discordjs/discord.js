@@ -4,7 +4,8 @@ const Constants = require('../util/Constants');
  * Represents a user's presence.
  */
 class Presence {
-  constructor(data = {}) {
+  constructor(client, data = {}) {
+    Object.defineProperty(this, 'client', { value: client });
     this.patch(data);
   }
 
@@ -48,10 +49,12 @@ class Presence {
 }
 
 /**
- * Represents a activity that is part of a user's presence.
+ * Represents an activity that is part of a user's presence.
  */
 class Activity {
-  constructor(data) {
+  constructor(presence, data) {
+    Object.defineProperty(this, 'presence', { value: presence });
+
     /**
      * The name of the activity being played
      * @type {string}
@@ -92,7 +95,7 @@ class Activity {
      * Assets for rich presence
      * @type {?RichPresenceAssets}
      */
-    this.assets = data.assets ? new RichPresenceAssets(data.assets) : null;
+    this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
   }
 
   /**
@@ -153,7 +156,7 @@ class RichPresenceAssets {
    */
   smallImageURL({ format, size } = {}) {
     if (!this.smallImage) return null;
-    return this.client.rest.cdn
+    return this.activity.presence.client.rest.cdn
       .AppAsset(this.activity.applicationID, this.smallImage, { format, size });
   }
 
@@ -164,10 +167,11 @@ class RichPresenceAssets {
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;
-    return this.client.rest.cdn
+    return this.activity.presence.client.rest.cdn
       .AppAsset(this.activity.applicationID, this.largeImage, { format, size });
   }
 }
 
 exports.Presence = Presence;
 exports.Activity = Activity;
+exports.RichPresenceAssets = RichPresenceAssets;
