@@ -8,6 +8,7 @@ class ClientPresenceStore extends PresenceStore {
     } else {
       this.set(data.user.id, new Presence(this.client, data));
     }
+    return this.get(data.user.id);
   }
 }
 
