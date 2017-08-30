@@ -6,7 +6,7 @@ const { Presence } = require('../structures/Presence');
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
     super(...args);
-    this.clientPresence = new Presence({
+    this.clientPresence = new Presence(this.client, {
       status: 'online',
       afk: false,
       since: null,
