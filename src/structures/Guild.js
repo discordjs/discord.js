@@ -1258,7 +1258,6 @@ class VoiceStateCollection extends Collection {
     this.guild = guild;
   }
   set(id, voiceState) {
-    super.set(id, voiceState);
     const member = this.guild.members.get(id);
     if (member) {
       if (member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
@@ -1268,6 +1267,7 @@ class VoiceStateCollection extends Collection {
       const newChannel = this.guild.channels.get(voiceState.channel_id);
       if (newChannel) newChannel.members.set(member.user.id, member);
     }
+    super.set(id, voiceState);
   }
 }
 
