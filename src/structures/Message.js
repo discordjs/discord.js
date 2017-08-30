@@ -27,6 +27,8 @@ class Message extends Base {
      */
     this.channel = channel;
 
+    Object.defineProperty(this, '_edits', { writable: true });
+
     if (data) this._patch(data);
   }
 
@@ -560,6 +562,19 @@ class Message extends Base {
    */
   toString() {
     return this.content;
+  }
+
+  toJSON() {
+    return super.toJSON([
+      'createdAt',
+      'editedAt',
+      'guild',
+      'cleanContent',
+      'edits',
+      'editable',
+      'deletable',
+      'pinnable',
+    ]);
   }
 }
 

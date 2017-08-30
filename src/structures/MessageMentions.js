@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Util = require('../util/Util');
 const GuildMember = require('./GuildMember');
 
 /**
@@ -51,37 +52,45 @@ class MessageMentions {
     /**
      * Content of the message
      * @type {Message}
+     * @name MessageMentions#_content
+     * @readonly
      * @private
      */
-    this._content = message.content;
+    Object.defineProperty(this, '_content', { value: message.content });
 
     /**
      * The client the message is from
      * @type {Client}
+     * @name MessageMentions#_client
+     * @readonly
      * @private
      */
-    this._client = message.client;
+    Object.defineProperty(this, '_client', { value: message.client });
 
     /**
      * The guild the message is in
      * @type {?Guild}
+     * @name MessageMentions#_guild
+     * @readonly
      * @private
      */
-    this._guild = message.channel.guild;
+    Object.defineProperty(this, '_guild', { value: message.channel.guild });
 
     /**
      * Cached members for {@MessageMention#members}
      * @type {?Collection<Snowflake, GuildMember>}
+     * @name MessageMentions#_members
      * @private
      */
-    this._members = null;
+    Object.defineProperty(this, '_members', { writable: true, value: null });
 
     /**
      * Cached channels for {@MessageMention#channels}
      * @type {?Collection<Snowflake, GuildChannel>}
+     * @name MessageMentions#_channels
      * @private
      */
-    this._channels = null;
+    Object.defineProperty(this, '_channels', { writable: true, value: null });
   }
 
   /**
@@ -130,6 +139,10 @@ class MessageMentions {
     }
     const id = data.id || data;
     return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+  }
+
+  toJSON() {
+    return Util.flatten(this, ['members', 'channels']);
   }
 }
 

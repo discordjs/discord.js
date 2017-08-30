@@ -27,7 +27,7 @@ class GuildMember extends Base {
      */
     this.user = {};
 
-    this._roles = [];
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
 
     if (data) this._patch(data);
 
@@ -548,6 +548,33 @@ class GuildMember extends Base {
    */
   toString() {
     return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
+  }
+
+  toJSON() {
+    return super.toJSON([
+      'serverDeaf',
+      'serverMute',
+      'selfMute',
+      'selfDeaf',
+      'voiceSessionID',
+      'voiceChannelID',
+      'joinedAt',
+      'presence',
+      'roles',
+      'highestRole',
+      'colorRole',
+      'displayColor',
+      'displayHexColor',
+      'hoistRole',
+      'mute',
+      'deaf',
+      'voiceChannel',
+      'id',
+      'displayName',
+      'permissions',
+      'kickable',
+      'bannable',
+    ]);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

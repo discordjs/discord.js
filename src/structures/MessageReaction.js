@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Util = require('../util/Util');
 const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const { Error } = require('../errors');
@@ -32,7 +33,7 @@ class MessageReaction {
      */
     this.users = new Collection();
 
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+    Object.defineProperty(this, '_emoji', { value: new ReactionEmoji(this, emoji.name, emoji.id) });
   }
 
   /**
@@ -96,6 +97,10 @@ class MessageReaction {
         this.count = this.users.size;
         return this.users;
       });
+  }
+
+  toJSON() {
+    return Util.flatten(this, ['emoji']);
   }
 
   _add(user) {

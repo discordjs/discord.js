@@ -151,6 +151,16 @@ class Invite extends Base {
   toString() {
     return this.url;
   }
+
+  toJSON() {
+    return super.toJSON([
+      'createdAt',
+      'createdTimestamp',
+      'expiresAt',
+      'expiresTimestamp',
+      'url',
+    ]);
+  }
 }
 
 module.exports = Invite;

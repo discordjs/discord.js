@@ -94,6 +94,10 @@ class Channel extends Base {
     }
     return channel;
   }
+
+  toJSON(extra = []) {
+    return super.toJSON(['createdAt', 'createdTimestamp'].concat(extra));
+  }
 }
 
 module.exports = Channel;

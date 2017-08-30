@@ -11,7 +11,7 @@ class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
     this.messages = new MessageStore(this);
-    this._typing = new Map();
+    Object.defineProperty(this, '_typing', { value: new Map() });
   }
 
   _patch(data) {
@@ -33,6 +33,10 @@ class DMChannel extends Channel {
    */
   toString() {
     return this.recipient.toString();
+  }
+
+  toJSON() {
+    return super.toJSON(['typing', 'typingCount']);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 /**
  * Represents an attachment in a message.
  * @param {BufferResolvable|Stream} file The file
@@ -5,7 +7,7 @@
  */
 class Attachment {
   constructor(file, name) {
-    this.file = null;
+    Object.defineProperty(this, 'file', { writable: true, value: null });
     if (name) this.setAttachment(file, name);
     else this._attach(file);
   }
@@ -57,6 +59,10 @@ class Attachment {
   setName(name) {
     this.file.name = name;
     return this;
+  }
+
+  toJSON() {
+    return Util.flatten(this, ['name', 'attachment']);
   }
 
   /**

@@ -200,6 +200,10 @@ class ClientApplication extends Base {
   toString() {
     return this.name;
   }
+
+  toJSON() {
+    return super.toJSON(['createdAt', 'createdTimestamp']);
+  }
 }
 
 module.exports = ClientApplication;

@@ -17,6 +17,8 @@ class Emoji extends Base {
      */
     this.guild = guild;
 
+    Object.defineProperty(this, '_roles', { writable: true });
+
     this._patch(data);
   }
 
@@ -199,6 +201,10 @@ class Emoji extends Base {
    */
   toString() {
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+  }
+
+  toJSON() {
+    return super.toJSON(['createdAt', 'createdTimestamp', 'roles', 'url', 'identifier']);
   }
 
   /**

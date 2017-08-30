@@ -9,6 +9,8 @@ const MessageEmbed = require('./MessageEmbed');
  */
 class Webhook {
   constructor(client, dataOrID, token) {
+    Object.defineProperty(this, 'token', { writable: true });
+
     if (client) {
       /**
        * The client that instantiated the webhook
@@ -275,6 +277,10 @@ class Webhook {
    */
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

@@ -1,4 +1,5 @@
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * Represents a user's presence.
@@ -45,6 +46,10 @@ class Presence {
       this.status === presence.status &&
       this.game ? this.game.equals(presence.game) : !presence.game
     );
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

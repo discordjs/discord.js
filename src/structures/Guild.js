@@ -1138,6 +1138,28 @@ class Guild extends Base {
     return this.name;
   }
 
+  toJSON() {
+    return super.toJSON([
+      'createdAt',
+      'createdTimestamp',
+      'joinedAt',
+      'iconURL',
+      'nameAcronym',
+      'splashURL',
+      'owner',
+      'afkChannel',
+      'systemChannel',
+      'voiceConnection',
+      'position',
+      'muted',
+      'messageNotifications',
+      'mobilePush',
+      'suppressEveryone',
+      'defaultRole',
+      'me',
+    ]);
+  }
+
   _memberSpeakUpdate(user, speaking) {
     const member = this.members.get(user);
     if (member && member.speaking !== speaking) {

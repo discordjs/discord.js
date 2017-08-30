@@ -1,4 +1,5 @@
 const { RangeError } = require('../errors');
+const Util = require('./Util');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -78,6 +79,14 @@ class Permissions {
     const serialized = {};
     for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
     return serialized;
+  }
+
+  valueOf() {
+    return this.bitfield;
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 
   /**

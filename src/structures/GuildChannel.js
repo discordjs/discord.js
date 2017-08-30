@@ -421,6 +421,16 @@ class GuildChannel extends Channel {
   toString() {
     return `<#${this.id}>`;
   }
+
+  toJSON(extra = []) {
+    return super.toJSON([
+      'calculatedPosition',
+      'members',
+      'deletable',
+      'muted',
+      'messageNotifications',
+    ].concat(extra));
+  }
 }
 
 module.exports = GuildChannel;

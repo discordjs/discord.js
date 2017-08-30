@@ -470,6 +470,28 @@ class Client extends EventEmitter {
     this._intervals.delete(interval);
   }
 
+  toJSON() {
+    return {
+      broadcasts: this.broadcasts,
+      browser: this.browser,
+      channels: this.channels.values(),
+      emojis: this.emojis.values(),
+      guilds: this.guilds.values(),
+      options: this.options,
+      ping: this.ping,
+      pings: this.pings,
+      presences: this.presences.values(),
+      readyAt: this.readyAt,
+      readyTimestamp: this.readyTimestamp,
+      shard: this.shard,
+      status: this.status,
+      uptime: this.uptime,
+      user: this.user,
+      users: this.users.values(),
+      voiceConnections: this.voiceConnections,
+    };
+  }
+
   /**
    * Adds a ping to {@link Client#pings}.
    * @param {number} startTime Starting time of the ping

@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 /**
  * Represents a user connection (or "platform identity").
  */
@@ -42,6 +44,10 @@ class UserConnection {
      * @type {Object[]}
      */
     this.integrations = data.integrations;
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

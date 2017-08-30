@@ -353,6 +353,17 @@ class Role extends Base {
     return `<@&${this.id}>`;
   }
 
+  toJSON() {
+    return super.toJSON([
+      'createdAt',
+      'createdTimestamp',
+      'hexColor',
+      'members',
+      'editable',
+      'calculatedPosition',
+    ]);
+  }
+
   /**
    * Compares the positions of two roles.
    * @param {Role} role1 First role to compare

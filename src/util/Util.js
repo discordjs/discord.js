@@ -13,6 +13,40 @@ class Util {
   }
 
   /**
+   * Flatten an object. Any properties that are collections will get converted to an array of keys.
+   * @param {Object} obj The object to flatten.
+   * @param {string[]} [props=[]] Extra non-enumerable properties to flatten.
+   * @returns {Object}
+   */
+  static flatten(obj, props = []) {
+    const out = {};
+
+    const isObject = d => typeof d === 'object' && d !== null;
+
+    for (const prop of Object.keys(obj).concat(props)) {
+      const element = obj[prop];
+
+      const elemIsObj = isObject(element);
+      const value = elemIsObj ? element.valueOf() : null;
+
+      // If it's a collection, make the array of keys
+      if (element instanceof require('./Collection')) out[prop] = Array.from(element.keys());
+      // If it's an array, flatten each element
+      else if (Array.isArray(element)) out[prop] = element.map(e => Util.flatten(e));
+      // If it's a function, call it
+      else if (typeof element === 'function') out[prop] = element.call(obj);
+      // If it's an object and has an ID, use that ID
+      else if (elemIsObj && 'id' in element) out[prop] = element.id;
+      // If it's an object with a primitive `valueOf`, use that value
+      else if (value && !isObject(value)) out[prop] = value;
+      // If it's a primitive
+      else if (!elemIsObj) out[prop] = element;
+    }
+
+    return out;
+  }
+
+  /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
    * @param {string} text Content to split
    * @param {SplitOptions} [options] Options controlling the behaviour of the split

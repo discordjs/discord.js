@@ -14,7 +14,7 @@ class TextChannel extends GuildChannel {
     super(guild, data);
     this.type = 'text';
     this.messages = new MessageStore(this);
-    this._typing = new Map();
+    Object.defineProperty(this, '_typing', { value: new Map() });
   }
 
   _patch(data) {
@@ -68,6 +68,13 @@ class TextChannel extends GuildChannel {
     }
     return this.client.resolver.resolveImage(avatar).then(image =>
       this.createWebhook(name, { avatar: image, reason }));
+  }
+
+  toJSON() {
+    return super.toJSON([
+      'typing',
+      'typingCount',
+    ]);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

@@ -1,4 +1,5 @@
 const Collection = require('../../util/Collection');
+const Util = require('../../util/Util');
 const EventEmitter = require('events');
 
 /**
@@ -59,9 +60,10 @@ class Collector extends EventEmitter {
     /**
      * Timeout for cleanup
      * @type {?Timeout}
+     * @name _timeout
      * @private
      */
-    this._timeout = null;
+    Object.defineProperty(this, '_timeout', { writable: true, value: null });
 
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
@@ -173,6 +175,10 @@ class Collector extends EventEmitter {
   checkEnd() {
     const reason = this.endReason();
     if (reason) this.stop(reason);
+  }
+
+  toJSON() {
+    return Util.flatten(this, ['next']);
   }
 
   /* eslint-disable no-empty-function, valid-jsdoc */

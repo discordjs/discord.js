@@ -129,6 +129,15 @@ class VoiceChannel extends GuildChannel {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
+
+  toJSON() {
+    return super.toJSON([
+      'connection',
+      'full',
+      'joinable',
+      'speakable',
+    ]);
+  }
 }
 
 module.exports = VoiceChannel;

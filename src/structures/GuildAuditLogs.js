@@ -1,6 +1,7 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
+const Util = require('../util/Util');
 
 const Targets = {
   ALL: 'ALL',
@@ -145,6 +146,10 @@ class GuildAuditLogs {
 
     return 'ALL';
   }
+
+  toJSON() {
+    return Util.flatten(this);
+  }
 }
 
 /**
@@ -287,6 +292,10 @@ class GuildAuditLogsEntry {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  toJSON() {
+    return Util.flatten(this, ['createdAt', 'createdTimestamp']);
   }
 }
 
