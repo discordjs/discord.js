@@ -5,7 +5,7 @@ const Util = require('./util/Util');
 const Constants = require('./util/Constants');
 
 /**
- * The base class for all clients
+ * The base class for all clients.
  * @extends {EventEmitter}
  */
 class BaseClient extends EventEmitter {
@@ -66,7 +66,7 @@ class BaseClient extends EventEmitter {
   }
 
   /**
-   * Destroys all assets used by the base client
+   * Destroys all assets used by the base client.
    */
   destroy() {
     for (const t of this._timeouts) clearTimeout(t);
