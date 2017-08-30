@@ -63,7 +63,7 @@ class GuildMemberStore extends DataStore {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.resolver.resolveUser(options);
+    const user = this.client.resolver.resolveUserID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
       options.user = this.client.resolver.resolveUser(options);
@@ -73,8 +73,8 @@ class GuildMemberStore extends DataStore {
   }
 
   _fetchSingle({ user, cache }) {
-    if (this.has(user.id)) return Promise.resolve(this.get(user.id));
-    return this.client.api.guilds(this.guild.id).members(user.id).get()
+    if (this.has(user)) return Promise.resolve(this.get(user));
+    return this.client.api.guilds(this.guild.id).members(user).get()
       .then(data => {
         if (cache) return this.create(data);
         else return new GuildMember(this, data);
