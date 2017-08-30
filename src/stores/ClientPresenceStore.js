@@ -1,4 +1,4 @@
-const PresenceStore = require('./DataStore');
+const PresenceStore = require('./PresenceStore');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const { Presence } = require('../structures/Presence');
