@@ -25,7 +25,7 @@ class Presence {
     /**
      * @type {?Activity}
      */
-    this.activity = activity ? new Activity(activity) : null;
+    this.activity = activity ? new Activity(this, activity) : null;
   }
 
   _clone() {
