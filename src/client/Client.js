@@ -159,16 +159,20 @@ class Client extends EventEmitter {
     /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
+     * @name Client#_timeouts
+     * @readonly
      * @private
      */
-    this._timeouts = new Set();
+    Object.defineProperty(this, '_timeouts', { value: new Set() });
 
     /**
      * Intervals set by {@link Client#setInterval} that are still active
      * @type {Set<Timeout>}
+     * @name Client#_intervals
+     * @readonly
      * @private
      */
-    this._intervals = new Set();
+    Object.defineProperty(this, '_intervals', { value: new Set });
 
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
@@ -471,25 +475,15 @@ class Client extends EventEmitter {
   }
 
   toJSON() {
-    return {
-      broadcasts: this.broadcasts,
-      browser: this.browser,
-      channels: this.channels.values(),
-      emojis: this.emojis.values(),
-      guilds: this.guilds.values(),
-      options: this.options,
-      ping: this.ping,
-      pings: this.pings,
-      presences: this.presences.values(),
-      readyAt: this.readyAt,
-      readyTimestamp: this.readyTimestamp,
-      shard: this.shard,
-      status: this.status,
-      uptime: this.uptime,
-      user: this.user,
-      users: this.users.values(),
-      voiceConnections: this.voiceConnections,
-    };
+    return Util.flatten(this, [
+      'status',
+      'uptime',
+      'ping',
+      'voiceConnections',
+      'emojis',
+      'readyTimestamp',
+      'browser',
+    ]);
   }
 
   /**
