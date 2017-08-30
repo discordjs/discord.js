@@ -222,7 +222,7 @@ class ClientUser extends User {
 
   /**
    * Sets the activity the client user is playing.
-   * @param {?string} name activity being played
+   * @param {?string} name Activity being played
    * @param {Object} [options] Options for setting the activity
    * @param {string} [options.url] Twitch stream URL
    * @param {ActivityType|number} [options.type] Type of the activity
