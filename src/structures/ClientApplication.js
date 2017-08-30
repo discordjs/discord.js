@@ -127,7 +127,7 @@ class ClientApplication extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+    return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
   }
 
   /**

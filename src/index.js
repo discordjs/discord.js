@@ -33,7 +33,7 @@ module.exports = {
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  Game: require('./structures/Presence').Game,
+  Activity: require('./structures/Presence').Activity,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),

@@ -4,7 +4,6 @@ const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const { Presence } = require('./Presence');
 const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
@@ -18,6 +17,7 @@ const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
+const PresenceStore = require('../stores/PresenceStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -51,9 +51,9 @@ class Guild extends Base {
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<Snowflake, Presence>}
+     * @type {PresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new PresenceStore(this.client);
 
     if (!data) return;
     if (data.unavailable) {
@@ -201,7 +201,7 @@ class Guild extends Base {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
+        this.presences.create(presence);
       }
     }
 
@@ -261,7 +261,7 @@ class Guild extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.Icon(this.id, this.icon, format, size);
   }
 
   /**
@@ -282,7 +282,7 @@ class Guild extends Base {
    */
   splashURL({ format, size } = {}) {
     if (!this.splash) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash, format, size);
+    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -1150,14 +1150,6 @@ class Guild extends Base {
        */
       this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
-  }
-
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
   }
 
   /**

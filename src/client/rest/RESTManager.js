@@ -2,6 +2,7 @@ const UserAgentManager = require('./UserAgentManager');
 const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
+const Constants = require('../../util/Constants');
 const { Error } = require('../../errors');
 
 class RESTManager {
@@ -15,6 +16,10 @@ class RESTManager {
 
   get api() {
     return routeBuilder(this);
+  }
+
+  get cdn() {
+    return Constants.Endpoints.CDN(this.client.options.http.cdn);
   }
 
   destroy() {

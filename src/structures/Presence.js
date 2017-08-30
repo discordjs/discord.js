@@ -5,32 +5,31 @@ const Constants = require('../util/Constants');
  */
 class Presence {
   constructor(data = {}) {
+    this.patch(data);
+  }
+
+  patch(data) {
     /**
      * The status of the presence:
      *
      * * **`online`** - user is online
      * * **`offline`** - user is offline or invisible
      * * **`idle`** - user is AFK
-     * * **`dnd`** - user is in Do not Disturb
+     * * **`dnd`** - user is in Do Not Disturb
      * @type {string}
      */
-    this.status = data.status || 'offline';
-
-    /**
-     * The game that the user is playing
-     * @type {?Game}
-     */
-    this.game = data.game ? new Game(data.game) : null;
-  }
-
-  update(data) {
     this.status = data.status || this.status;
-    this.game = data.game ? new Game(data.game) : null;
+
+    const activity = data.game || data.activity;
+    /**
+     * @type {?Activity}
+     */
+    this.activity = activity ? new Activity(activity) : null;
   }
 
   _clone() {
     const clone = Object.assign(Object.create(this), this);
-    if (this.game) clone.game = this.game._clone();
+    if (this.activity) clone.activity = this.activity._clone();
     return clone;
   }
 
@@ -43,46 +42,70 @@ class Presence {
     return this === presence || (
       presence &&
       this.status === presence.status &&
-      this.game ? this.game.equals(presence.game) : !presence.game
+      this.activity ? this.activity.equals(presence.activity) : !presence.activity
     );
   }
 }
 
 /**
- * Represents a game that is part of a user's presence.
+ * Represents a activity that is part of a user's presence.
  */
-class Game {
+class Activity {
   constructor(data) {
     /**
-     * The name of the game being played
+     * The name of the activity being played
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The type of the game status
-     * @type {GameType}
+     * The type of the activity status
+     * @type {ActivityType}
      */
-    this.type = Constants.GameTypes[data.type];
+    this.type = Constants.ActivityTypes[data.type];
 
     /**
-     * If the game is being streamed, a link to the stream
+     * If the activity is being streamed, a link to the stream
      * @type {?string}
      */
     this.url = data.url || null;
+
+    /**
+     * Details about the activity
+     * @type {?string}
+     */
+    this.details = data.details || null;
+
+    /**
+     * State of the activity
+     * @type {?string}
+     */
+    this.state = data.state || null;
+
+    /**
+     * Application ID associated with this activity
+     * @type {?Snowflake}
+     */
+    this.applicationID = data.application_id || null;
+
+    /**
+     * Assets for rich presence
+     * @type {?RichPresenceAssets}
+     */
+    this.assets = data.assets ? new RichPresenceAssets(data.assets) : null;
   }
 
   /**
-   * Whether this game is equal to another game.
-   * @param {Game} game The game to compare with
+   * Whether this activity is equal to another activity.
+   * @param {Activity} activity The activity to compare with
    * @returns {boolean}
    */
-  equals(game) {
-    return this === game || (
-      game &&
-      this.name === game.name &&
-      this.type === game.type &&
-      this.url === game.url
+  equals(activity) {
+    return this === activity || (
+      activity &&
+      this.name === activity.name &&
+      this.type === activity.type &&
+      this.url === activity.url
     );
   }
 
@@ -91,5 +114,60 @@ class Game {
   }
 }
 
+/**
+ * Assets for a rich presence
+ */
+class RichPresenceAssets {
+  constructor(activity, assets) {
+    Object.defineProperty(this, 'activity', { value: activity });
+
+    /**
+     * Hover text for large image
+     * @type {?string}
+     */
+    this.largeText = assets.large_text || null;
+
+    /**
+     * Hover text for small image
+     * @type {?string}
+     */
+    this.smallText = assets.small_text || null;
+
+    /**
+     * ID of large image asset
+     * @type {?string}
+     */
+    this.largeImage = assets.large_image || null;
+
+    /**
+     * ID of small image asset
+     * @type {?string}
+     */
+    this.smallImage = assets.small_image || null;
+  }
+
+  /**
+   * @param  {string} format Format of the image
+   * @param  {number} size Size of the iamge
+   * @returns {?string} small image url
+   */
+  smallImageURL({ format, size } = {}) {
+    if (!this.smallImage) return null;
+    return this.client.rest.cdn
+      .AppAsset(this.activity.applicationID, this.smallImage, { format, size });
+  }
+
+  /**
+   * @param  {string} format Format of the image
+   * @param  {number} size Size of the iamge
+   * @returns {?string} large image url
+   */
+  largeImageURL({ format, size } = {}) {
+    if (!this.largeImage) return null;
+    return this.client.rest.cdn
+      .AppAsset(this.activity.applicationID, this.largeImage, { format, size });
+  }
+}
+
 exports.Presence = Presence;
-exports.Game = Game;
+exports.Activity = Activity;

@@ -117,6 +117,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
+      AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
       GDMIcon: (channelID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
@@ -345,14 +347,14 @@ exports.MessageTypes = [
 ];
 
 /**
- * The type of a game of a users presence, e.g. `PLAYING`. Here are the available types:
+ * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
  * * WATCHING
- * @typedef {string} GameType
+ * @typedef {string} ActivityType
  */
-exports.GameTypes = [
+exports.ActivityTypes = [
   'PLAYING',
   'STREAMING',
   'LISTENING',

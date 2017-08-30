@@ -1,5 +1,4 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Constants = require('../util/Constants');
 const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
@@ -108,7 +107,7 @@ class User extends Base {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -117,7 +116,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
   }
 
   /**
