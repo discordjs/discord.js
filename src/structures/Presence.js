@@ -92,6 +92,21 @@ class Activity {
     this.applicationID = data.application_id || null;
 
     /**
+     * Timestamps for the activity
+     * @type {Object}
+     */
+    this.timestamps = data.timestamps ? {
+      start: data.timestamps.start ? new Date(data.timestamps.start) : null,
+      end: data.timestamps.end ? new Date(data.timestamps.end) : null,
+    } : null;
+
+    /**
+     * Party of the activity
+     * @type {Object}
+     */
+    this.party = data.party || null;
+
+    /**
      * Assets for rich presence
      * @type {?RichPresenceAssets}
      */

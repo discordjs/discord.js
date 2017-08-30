@@ -40,6 +40,8 @@ class ClientPresenceStore extends PresenceStore {
           large_image: assets.get(activity.assets.largeImage) || activity.assets.largeImage,
           small_image: assets.get(activity.assets.smallImage) || activity.assets.smallImage,
         } : undefined,
+        timestamps: activity.timestamps || undefined,
+        party: activity.party || undefined,
         application_id: applicationID || undefined,
         secrets: activity.secrets || undefined,
         instance: activity.instance || undefined,
