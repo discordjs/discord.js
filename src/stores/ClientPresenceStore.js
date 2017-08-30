@@ -15,11 +15,11 @@ class ClientPresenceStore extends PresenceStore {
   }
 
   async setClientPresence({ status, since, afk, activity }) {
-    const applicationID = activity.application ? activity.application.id || activity.application : null;
+    const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
-    if (activity.assets && applicationID) {
+    if (activity && activity.assets && applicationID) {
       try {
-        const a = await this.client.api.applications(applicationID).assets.get();
+        const a = await this.client.api.oauth2.applications(applicationID).assets.get();
         for (const asset of a) assets.set(asset.name, asset.id);
       } catch (err) {} // eslint-disable-line no-empty
     }
@@ -29,14 +29,14 @@ class ClientPresenceStore extends PresenceStore {
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.clientPresence.status,
       game: activity ? {
-        type: Constants.ActivityTypes.indexOf(activity.type || 'PLAYING') || activity.type || 0,
+        type: typeof activity.type === 'number' ? activity.type : Constants.ActivityTypes.indexOf(activity.type),
         name: activity.name,
         url: activity.url,
-        description: activity.description,
-        state: activity.state,
+        description: activity.description || undefined,
+        state: activity.state || undefined,
         assets: activity.assets ? {
-          large_text: activity.assets.largeText,
-          small_text: activity.assets.smallText,
+          large_text: activity.assets.largeText || undefined,
+          small_text: activity.assets.smallText || undefined,
           large_image: assets.get(activity.assets.largeImage) || activity.assets.largeImage,
           small_image: assets.get(activity.assets.smallImage) || activity.assets.smallImage,
         } : undefined,
