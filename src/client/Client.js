@@ -471,7 +471,7 @@ class Client extends EventEmitter {
   }
 
   toJSON() {
-    return Util.flatten(this, ['emojis'], ['readyAt', 'broadcasts', 'pings', 'presences', 'domain']);
+    return Util.flatten(this, [], ['readyAt', 'broadcasts', 'pings', 'presences', 'domain']);
   }
 
   /**

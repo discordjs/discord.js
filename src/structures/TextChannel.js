@@ -70,10 +70,6 @@ class TextChannel extends GuildChannel {
       this.createWebhook(name, { avatar: image, reason }));
   }
 
-  toJSON() {
-    return super.toJSON([], ['messages', 'lastMessage', 'lastMessageID']);
-  }
-
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

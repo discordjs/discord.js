@@ -1145,9 +1145,6 @@ class Guild extends Base {
     ], [
       'presences',
       'voiceStates',
-      'verificationLevel',
-      'explicitContentFilter',
-      'features',
     ]);
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();

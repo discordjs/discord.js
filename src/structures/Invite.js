@@ -153,7 +153,7 @@ class Invite extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['url']);
+    return super.toJSON(['url', 'expiresTimestamp']);
   }
 }
 

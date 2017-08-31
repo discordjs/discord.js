@@ -129,10 +129,6 @@ class VoiceChannel extends GuildChannel {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
-
-  toJSON() {
-    return super.toJSON([], ['userLimit']);
-  }
 }
 
 module.exports = VoiceChannel;

@@ -423,7 +423,7 @@ class GuildChannel extends Channel {
   }
 
   toJSON(props, ignore = []) {
-    return super.toJSON(props, [...ignore, 'position', 'permissionOverwrites']);
+    return super.toJSON(props, ignore);
   }
 }
 
