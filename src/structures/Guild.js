@@ -1139,25 +1139,19 @@ class Guild extends Base {
   }
 
   toJSON() {
-    return super.toJSON([
-      'createdAt',
+    const json = super.toJSON([
       'createdTimestamp',
-      'joinedAt',
-      'iconURL',
       'nameAcronym',
-      'splashURL',
-      'owner',
-      'afkChannel',
-      'systemChannel',
-      'voiceConnection',
-      'position',
-      'muted',
-      'messageNotifications',
-      'mobilePush',
-      'suppressEveryone',
-      'defaultRole',
-      'me',
+    ], [
+      'presences',
+      'voiceStates',
+      'verificationLevel',
+      'explicitContentFilter',
+      'features',
     ]);
+    json.iconURL = this.iconURL();
+    json.splashURL = this.splashURL();
+    return json;
   }
 
   _memberSpeakUpdate(user, speaking) {

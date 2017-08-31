@@ -564,14 +564,16 @@ class Message extends Base {
 
   toJSON() {
     return super.toJSON([
-      'createdAt',
-      'editedAt',
       'guild',
       'cleanContent',
-      'edits',
-      'editable',
-      'deletable',
-      'pinnable',
+    ], [
+      'pinned',
+      'editedTimestamp',
+      'member',
+      'reactions',
+      'application',
+      'activity',
+      'hit',
     ]);
   }
 }

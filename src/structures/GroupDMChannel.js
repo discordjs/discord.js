@@ -216,10 +216,6 @@ class GroupDMChannel extends Channel {
     return this.name;
   }
 
-  toJSON() {
-    return super.toJSON(['typing', 'typingCount', 'owner']);
-  }
-
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

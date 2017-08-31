@@ -422,14 +422,8 @@ class GuildChannel extends Channel {
     return `<#${this.id}>`;
   }
 
-  toJSON(extra = []) {
-    return super.toJSON([
-      'calculatedPosition',
-      'members',
-      'deletable',
-      'muted',
-      'messageNotifications',
-    ].concat(extra));
+  toJSON(props, ignore = []) {
+    return super.toJSON(props, [...ignore, 'position', 'permissionOverwrites']);
   }
 }
 

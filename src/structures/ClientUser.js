@@ -374,6 +374,10 @@ class ClientUser extends User {
     return this.client.api.users('@me').channels.post({ data })
       .then(res => new GroupDMChannel(this.client, res));
   }
+
+  toJSON() {
+    return super.toJSON([], ['friends', 'blocked', 'notes', 'settings', 'guildSettings']);
+  }
 }
 
 module.exports = ClientUser;

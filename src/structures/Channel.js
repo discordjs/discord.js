@@ -95,8 +95,8 @@ class Channel extends Base {
     return channel;
   }
 
-  toJSON(extra = []) {
-    return super.toJSON(['createdAt', 'createdTimestamp'].concat(extra));
+  toJSON(extra = [], ignore) {
+    return super.toJSON([...extra, 'createdTimestamp'], ignore);
   }
 }
 

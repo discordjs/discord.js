@@ -354,14 +354,7 @@ class Role extends Base {
   }
 
   toJSON() {
-    return super.toJSON([
-      'createdAt',
-      'createdTimestamp',
-      'hexColor',
-      'members',
-      'editable',
-      'calculatedPosition',
-    ]);
+    return super.toJSON(['createdTimestamp'], ['hoist', 'color', 'position', 'managed', 'mentionable', 'permissions']);
   }
 
   /**

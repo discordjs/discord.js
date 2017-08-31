@@ -57,7 +57,7 @@ class GuildMember extends Base {
      * @type {?string}
      * @name GuildMember#nickname
      */
-    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
+    this.nickname = data.nick || null;
 
     /**
      * The timestamp the member joined the guild at
@@ -551,30 +551,7 @@ class GuildMember extends Base {
   }
 
   toJSON() {
-    return super.toJSON([
-      'serverDeaf',
-      'serverMute',
-      'selfMute',
-      'selfDeaf',
-      'voiceSessionID',
-      'voiceChannelID',
-      'joinedAt',
-      'presence',
-      'roles',
-      'highestRole',
-      'colorRole',
-      'displayColor',
-      'displayHexColor',
-      'hoistRole',
-      'mute',
-      'deaf',
-      'voiceChannel',
-      'id',
-      'displayName',
-      'permissions',
-      'kickable',
-      'bannable',
-    ]);
+    return super.toJSON(['displayName'], ['speaking', 'lastMessage', 'lastMessageID']);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

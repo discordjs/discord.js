@@ -71,10 +71,7 @@ class TextChannel extends GuildChannel {
   }
 
   toJSON() {
-    return super.toJSON([
-      'typing',
-      'typingCount',
-    ]);
+    return super.toJSON([], ['messages', 'lastMessage', 'lastMessageID']);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

@@ -131,12 +131,7 @@ class VoiceChannel extends GuildChannel {
   }
 
   toJSON() {
-    return super.toJSON([
-      'connection',
-      'full',
-      'joinable',
-      'speakable',
-    ]);
+    return super.toJSON([], ['userLimit']);
   }
 }
 

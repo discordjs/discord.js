@@ -425,7 +425,7 @@ class Collection extends Map {
   }
 
   toJSON() {
-    return this.map(e => Util.flatten(e));
+    return this.map(e => typeof e.toJSON === 'function' ? e.toJSON() : Util.flatten(e));
   }
 }
 

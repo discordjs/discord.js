@@ -295,7 +295,7 @@ class GuildAuditLogsEntry {
   }
 
   toJSON() {
-    return Util.flatten(this, ['createdAt', 'createdTimestamp']);
+    return Util.flatten(this, ['createdTimestamp']);
   }
 }
 

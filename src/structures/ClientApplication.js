@@ -202,7 +202,7 @@ class ClientApplication extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['createdAt', 'createdTimestamp']);
+    return super.toJSON(['createdTimestamp']);
   }
 }
 

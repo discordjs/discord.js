@@ -202,7 +202,7 @@ class Emoji extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['createdAt', 'createdTimestamp', 'roles', 'url', 'identifier']);
+    return super.toJSON(['createdTimestamp', 'url', 'identifier']);
   }
 
   /**

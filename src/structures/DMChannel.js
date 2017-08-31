@@ -35,10 +35,6 @@ class DMChannel extends Channel {
     return this.recipient.toString();
   }
 
-  toJSON() {
-    return super.toJSON(['typing', 'typingCount']);
-  }
-
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

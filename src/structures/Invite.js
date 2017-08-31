@@ -153,13 +153,7 @@ class Invite extends Base {
   }
 
   toJSON() {
-    return super.toJSON([
-      'createdAt',
-      'createdTimestamp',
-      'expiresAt',
-      'expiresTimestamp',
-      'url',
-    ]);
+    return super.toJSON(['url']);
   }
 }
 

@@ -261,18 +261,20 @@ class User extends Base {
     return `<@${this.id}>`;
   }
 
-  toJSON() {
-    return super.toJSON([
-      'createdAt',
+  toJSON(props = [], ignore = []) {
+    const json = super.toJSON([
+      ...props,
       'createdTimestamp',
-      'avatarURL',
-      'presence',
       'defaultAvatarURL',
-      'displayAvatarURL',
       'tag',
-      'note',
-      'dmChannel',
+    ], [
+      ...ignore,
+      'lastMessage',
+      'lastMessageID',
     ]);
+    json.defaultAvatarURL = this.avatarURL();
+    json.displayAvatarURL = this.displayAvatarURL();
+    return json;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

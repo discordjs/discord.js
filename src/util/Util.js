@@ -16,16 +16,17 @@ class Util {
    * Flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.
    * @param {string[]} [props=[]] Extra non-enumerable properties to flatten.
+   * @param {string[]} [ignore=[]] Props to ignore.
    * @returns {Object}
    */
-  static flatten(obj, props = []) {
+  static flatten(obj, props = [], ignore = []) {
     const isObject = d => typeof d === 'object' && d !== null;
     if (!isObject(obj)) return obj;
 
     const out = {};
 
     for (const prop of Object.keys(obj).concat(props)) {
-      if (prop.startsWith('_')) continue;
+      if (prop.startsWith('_') || ignore.includes(prop)) continue;
 
       const element = obj[prop];
 
@@ -36,8 +37,6 @@ class Util {
       if (element instanceof require('./Collection')) out[prop] = Array.from(element.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[prop] = element.map(e => Util.flatten(e));
-      // If it's a function, call it
-      else if (typeof element === 'function') out[prop] = element.call(obj);
       // If it's an object and has an ID, use that ID
       else if (elemIsObj && 'id' in element) out[prop] = element.id;
       // If it's an object with a primitive `valueOf`, use that value
