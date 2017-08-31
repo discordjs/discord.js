@@ -32,7 +32,7 @@ class ClientDataResolver {
    * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
    */
 
   /**
@@ -124,7 +124,7 @@ class ClientDataResolver {
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Snowflake
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   * @typedef {Channel|Snowflake} ChannelResolvable
    */
 
   /**
@@ -171,7 +171,7 @@ class ClientDataResolver {
   /**
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
-   * @returns {Promise<string>}
+   * @returns {Promise<?string>}
    */
   async resolveImage(image) {
     if (!image) return null;
@@ -260,7 +260,7 @@ class ClientDataResolver {
    * * A custom emoji ID
    * * An Emoji object
    * * A ReactionEmoji object
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   * @typedef {string|Snowflake|Emoji|ReactionEmoji} EmojiIdentifierResolvable
    */
 
   /**

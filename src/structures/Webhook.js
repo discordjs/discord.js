@@ -247,7 +247,7 @@ class Webhook {
   /**
    * Edit the webhook.
    * @param {Object} options Options
-   * @param {string} [options.name] New name for this webhook
+   * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}

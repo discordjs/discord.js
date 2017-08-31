@@ -575,6 +575,7 @@ class Guild extends Base {
    * @property {number} [verificationLevel] The verification level of the guild
    * @property {number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -783,6 +784,7 @@ class Guild extends Base {
 
   /**
    * Allow direct messages from guild members.
+   * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -844,6 +846,7 @@ class Guild extends Base {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {string} [options.reason] Reason for this prune
@@ -878,7 +881,7 @@ class Guild extends Base {
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable[]|number} [allow] The permissions to allow
    * @property {PermissionResolvable[]|number} [deny] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 
   /**
@@ -1052,7 +1055,7 @@ class Guild extends Base {
    * Delete an emoji.
    * @param {Emoji|string} emoji The emoji to delete
    * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise}
+   * @returns {Promise<Emoji>}
    */
   deleteEmoji(emoji, reason) {
     if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
@@ -1162,7 +1165,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a role in this guild.
-   * @param {string|Role} role The role to edit, can be a role object or a role ID
+   * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -1192,7 +1195,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a channel in this guild.
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
+   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}

@@ -26,6 +26,7 @@ class ClientUserGuildSettings {
   /**
    * Patch the data contained in this class with new partial data.
    * @param {Object} data Data to patch this with
+   * @private
    */
   patch(data) {
     for (const [key, value] of Object.entries(Constants.UserGuildSettingsMap)) {
@@ -46,8 +47,9 @@ class ClientUserGuildSettings {
   /**
    * Update a specific property of the guild settings.
    * @param {string} name Name of property
-   * @param {value} value Value to patch
+   * @param {*} value Value to patch
    * @returns {Promise<Object>}
+   * @private
    */
   update(name, value) {
     return this.client.api.users('@me').guilds(this.guildID).settings.patch({ data: { [name]: value } });
