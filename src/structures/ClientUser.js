@@ -29,7 +29,7 @@ class ClientUser extends User {
      */
     this.email = data.email;
     this.localPresence = {};
-    Object.defineProperty(this, '_typing', { value: new Map() });
+    this._typing = new Map();
 
     /**
      * A Collection of friends for the logged in user

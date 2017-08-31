@@ -27,7 +27,7 @@ class GuildMember extends Base {
      */
     this.user = {};
 
-    Object.defineProperty(this, '_roles', { value: [], writable: true });
+    this._roles = [];
 
     if (data) this._patch(data);
 

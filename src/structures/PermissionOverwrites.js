@@ -14,9 +14,6 @@ class PermissionOverwrites {
      */
     Object.defineProperty(this, 'channel', { value: guildChannel });
 
-    Object.defineProperty(this, '_denied', { writable: true });
-    Object.defineProperty(this, '_allowed', { writable: true });
-
     if (data) this._patch(data);
   }
 

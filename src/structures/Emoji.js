@@ -17,8 +17,6 @@ class Emoji extends Base {
      */
     this.guild = guild;
 
-    Object.defineProperty(this, '_roles', { writable: true });
-
     this._patch(data);
   }
 

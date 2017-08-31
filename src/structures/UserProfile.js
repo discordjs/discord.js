@@ -29,8 +29,6 @@ class UserProfile extends Base {
      */
     this.connections = new Collection();
 
-    Object.defineProperty(this, '_flags', { writable: true });
-
     this._patch(data);
   }
 

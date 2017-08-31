@@ -60,10 +60,9 @@ class Collector extends EventEmitter {
     /**
      * Timeout for cleanup
      * @type {?Timeout}
-     * @name _timeout
      * @private
      */
-    Object.defineProperty(this, '_timeout', { writable: true, value: null });
+    this._timeout = null;
 
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);

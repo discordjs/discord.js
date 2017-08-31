@@ -11,7 +11,7 @@ class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
     this.messages = new MessageStore(this);
-    Object.defineProperty(this, '_typing', { value: new Map() });
+    this._typing = new Map();
   }
 
   _patch(data) {

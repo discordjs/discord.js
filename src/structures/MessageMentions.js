@@ -52,45 +52,37 @@ class MessageMentions {
     /**
      * Content of the message
      * @type {Message}
-     * @name MessageMentions#_content
-     * @readonly
      * @private
      */
-    Object.defineProperty(this, '_content', { value: message.content });
+    this._content = message.content;
 
     /**
      * The client the message is from
      * @type {Client}
-     * @name MessageMentions#_client
-     * @readonly
      * @private
      */
-    Object.defineProperty(this, '_client', { value: message.client });
+    this._client = message.client;
 
     /**
      * The guild the message is in
      * @type {?Guild}
-     * @name MessageMentions#_guild
-     * @readonly
      * @private
      */
-    Object.defineProperty(this, '_guild', { value: message.channel.guild });
+    this._guild = message.channel.guild;
 
     /**
      * Cached members for {@MessageMention#members}
      * @type {?Collection<Snowflake, GuildMember>}
-     * @name MessageMentions#_members
      * @private
      */
-    Object.defineProperty(this, '_members', { writable: true, value: null });
+    this._members = null;
 
     /**
      * Cached channels for {@MessageMention#channels}
      * @type {?Collection<Snowflake, GuildChannel>}
-     * @name MessageMentions#_channels
      * @private
      */
-    Object.defineProperty(this, '_channels', { writable: true, value: null });
+    this._channels = null;
   }
 
   /**

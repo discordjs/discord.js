@@ -27,8 +27,6 @@ class Message extends Base {
      */
     this.channel = channel;
 
-    Object.defineProperty(this, '_edits', { writable: true });
-
     if (data) this._patch(data);
   }
 

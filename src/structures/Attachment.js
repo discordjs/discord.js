@@ -7,7 +7,7 @@ const Util = require('../util/Util');
  */
 class Attachment {
   constructor(file, name) {
-    Object.defineProperty(this, 'file', { writable: true, value: null });
+    this._file = null;
     if (name) this.setAttachment(file, name);
     else this._attach(file);
   }
@@ -18,7 +18,7 @@ class Attachment {
     * @readonly
     */
   get name() {
-    return this.file.name;
+    return this._file.name;
   }
 
   /**
@@ -27,7 +27,7 @@ class Attachment {
     * @readonly
     */
   get attachment() {
-    return this.file.attachment;
+    return this._file.attachment;
   }
 
   /**
@@ -37,7 +37,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setAttachment(file, name) {
-    this.file = { attachment: file, name };
+    this._file = { attachment: file, name };
     return this;
   }
 
@@ -47,7 +47,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setFile(attachment) {
-    this.file = { attachment };
+    this._file = { attachment };
     return this;
   }
 
@@ -57,7 +57,7 @@ class Attachment {
     * @returns {Attachment} This attachment
     */
   setName(name) {
-    this.file.name = name;
+    this._file.name = name;
     return this;
   }
 
@@ -72,7 +72,7 @@ class Attachment {
     * @private
     */
   _attach(file, name) {
-    if (typeof file === 'string') this.file = file;
+    if (typeof file === 'string') this._file = file;
     else this.setAttachment(file, name);
   }
 }

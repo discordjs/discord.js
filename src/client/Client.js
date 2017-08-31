@@ -159,20 +159,16 @@ class Client extends EventEmitter {
     /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
-     * @name Client#_timeouts
-     * @readonly
      * @private
      */
-    Object.defineProperty(this, '_timeouts', { value: new Set() });
+    this._timeouts = new Set();
 
     /**
      * Intervals set by {@link Client#setInterval} that are still active
      * @type {Set<Timeout>}
-     * @name Client#_intervals
-     * @readonly
      * @private
      */
-    Object.defineProperty(this, '_intervals', { value: new Set });
+    this._intervals = new Set();
 
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);

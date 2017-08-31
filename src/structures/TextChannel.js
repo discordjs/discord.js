@@ -14,7 +14,7 @@ class TextChannel extends GuildChannel {
     super(guild, data);
     this.type = 'text';
     this.messages = new MessageStore(this);
-    Object.defineProperty(this, '_typing', { value: new Map() });
+    this._typing = new Map();
   }
 
   _patch(data) {
