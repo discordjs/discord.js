@@ -602,12 +602,10 @@ class Guild extends Base {
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (typeof data.afkChannel !== 'undefined') {
-      const channel = this.client.resolver.resolveChannel(data.afkChannel);
-      _data.afk_channel_id = channel ? channel.id : null;
+      _data.afk_channel_id = this.client.resolver.resolveChannelID(data.afkChannel);
     }
     if (typeof data.systemChannel !== 'undefined') {
-      const channel = this.client.resolver.resolveChannel(data.systemChannel);
-      _data.system_channel_id = channel ? channel.id : null;
+      _data.system_channel_id = this.client.resolver.resolveChannelID(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
