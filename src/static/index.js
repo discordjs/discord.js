@@ -2,8 +2,10 @@ const buildRoute = require('../client/rest/APIRouter');
 const APIRequest = require('../client/rest/APIRequest');
 const DiscordAPIError = require('../client/rest/DiscordAPIError');
 const UserAgentManager = require('../client/rest/UserAgentManager');
-const Shared = require('../structures/Shared');
 const Constants = require('../util/Constants');
+
+const InteropTextChannel = require('./TextChannel');
+const InteropMessage = require('./Message');
 
 function Interop({ token }) {
   const client = {
@@ -28,18 +30,8 @@ function Interop({ token }) {
     },
   };
   return {
-    TextChannel(id) {
-      return {
-        id, client,
-        send(content, options) {
-          if (content && typeof content === 'object') {
-            options = content;
-            content = null;
-          }
-          return Shared.sendMessage(this, Object.assign({ content }, options));
-        },
-      };
-    },
+    TextChannel: id => InteropTextChannel(client, id),
+    Message: (channelID, id) => InteropMessage(client, InteropTextChannel(client, channelID), id),
   };
 }
 

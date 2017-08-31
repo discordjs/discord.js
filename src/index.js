@@ -57,7 +57,7 @@ module.exports = {
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
 
-  get interop() {
-    return require('./interop');
+  get static() {
+    return require('./static');
   },
 };

@@ -18,8 +18,8 @@ let GuildMember;
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(channel, data, client) {
-    super(client);
+  constructor(channel, data) {
+    super(channel.client);
 
     /**
      * The channel that the message was sent in

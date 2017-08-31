@@ -17,7 +17,7 @@ class MessageStore extends DataStore {
     const existing = this.get(data.id);
     if (existing) return existing;
 
-    const message = new Message(this.client.channels.get(data.channel_id), data, this.client);
+    const message = new Message(this.client.channels.get(data.channel_id), data);
 
     if (cache) this.set(message.id, message);
     return message;
