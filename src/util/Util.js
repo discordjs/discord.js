@@ -19,9 +19,10 @@ class Util {
    * @returns {Object}
    */
   static flatten(obj, props = []) {
-    const out = {};
-
     const isObject = d => typeof d === 'object' && d !== null;
+    if (!isObject(obj)) return obj;
+
+    const out = {};
 
     for (const prop of Object.keys(obj).concat(props)) {
       if (prop.startsWith('_')) continue;
