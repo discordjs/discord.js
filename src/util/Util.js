@@ -24,10 +24,12 @@ class Util {
     const isObject = d => typeof d === 'object' && d !== null;
 
     for (const prop of Object.keys(obj).concat(props)) {
+      if (prop.startsWith('_')) continue;
+
       const element = obj[prop];
 
       const elemIsObj = isObject(element);
-      const value = elemIsObj ? element.valueOf() : null;
+      const value = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
       // If it's a collection, make the array of keys
       if (element instanceof require('./Collection')) out[prop] = Array.from(element.keys());
