@@ -610,7 +610,7 @@ class Guild extends Base {
       _data.system_channel_id = channel ? channel.id : null;
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
