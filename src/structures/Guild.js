@@ -300,7 +300,7 @@ class Guild extends Base {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.get(this.afkChannelID);
+    return this.client.channels.get(this.afkChannelID) || null;
   }
 
   /**
@@ -309,7 +309,7 @@ class Guild extends Base {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.get(this.systemChannelID);
+    return this.client.channels.get(this.systemChannelID) || null;
   }
 
   /**
@@ -601,8 +601,14 @@ class Guild extends Base {
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
-    if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
-    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
+    if (typeof data.afkChannel !== 'undefined') {
+      const channel = this.client.resolver.resolveChannel(data.afkChannel);
+      _data.afk_channel_id = channel ? channel.id : null;
+    }
+    if (typeof data.systemChannel !== 'undefined') {
+      const channel = this.client.resolver.resolveChannel(data.systemChannel);
+      _data.system_channel_id = channel ? channel.id : null;
+    }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (data.icon) _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
