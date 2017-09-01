@@ -7,8 +7,8 @@ const Collection = require('../util/Collection');
 class DataStore extends Collection {
   constructor(client, iterable) {
     super();
-    if (iterable) for (const item of iterable) this.create(item);
     Object.defineProperty(this, 'client', { value: client });
+    if (iterable) for (const item of iterable) this.create(item);
   }
 
   // Stubs
