@@ -216,7 +216,7 @@ class Guild extends Base {
        * @type {EmojiStore<Snowflake, Emoji>}
        */
       this.emojis = new EmojiStore(this);
-      for (const emoji of data.emojis) this.emojis.create(emoji);
+      if (data.emojis) for (const emoji of data.emojis) this.emojis.create(emoji);
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
