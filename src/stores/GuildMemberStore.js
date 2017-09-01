@@ -2,9 +2,10 @@ const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
+const { Error } = require('../errors');
+
 /**
  * Stores guild members.
- * @private
  * @extends {DataStore}
  */
 class GuildMemberStore extends DataStore {
@@ -13,12 +14,12 @@ class GuildMemberStore extends DataStore {
     this.guild = guild;
   }
 
-  create(data) {
+  create(data, cache = true) {
     const existing = this.get(data.user.id);
     if (existing) return existing;
 
     const member = new GuildMember(this.guild, data);
-    this.set(member.id, member);
+    if (cache) this.set(member.id, member);
 
     return member;
   }
@@ -66,7 +67,7 @@ class GuildMemberStore extends DataStore {
     const user = this.client.resolver.resolveUserID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.client.resolver.resolveUser(options);
+      options.user = this.client.resolver.resolveUserID(options.user);
       if (options.user) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
@@ -75,10 +76,7 @@ class GuildMemberStore extends DataStore {
   _fetchSingle({ user, cache }) {
     if (this.has(user)) return Promise.resolve(this.get(user));
     return this.client.api.guilds(this.guild.id).members(user).get()
-      .then(data => {
-        if (cache) return this.create(data);
-        else return new GuildMember(this, data);
-      });
+      .then(data => this.create(data, cache));
   }
 
   _fetchMany({ query = '', limit = 0 } = {}) {
@@ -99,7 +97,7 @@ class GuildMemberStore extends DataStore {
       const handler = (members, guild) => {
         if (guild.id !== this.guild.id) return;
         for (const member of members.values()) {
-          if (query || limit) fetchedMembers.set(member.user.id, member);
+          if (query || limit) fetchedMembers.set(member.id, member);
         }
         if (this.guild.memberCount === this.size || ((query || limit) && members.size < 1000)) {
           this.guild.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);

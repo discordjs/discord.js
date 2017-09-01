@@ -5,8 +5,6 @@ const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
-const Message = require('./Message');
-const GroupDMChannel = require('./GroupDMChannel');
 
 /**
  * Represents the logged in client's Discord user.
@@ -258,7 +256,7 @@ class ClientUser extends User {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.create(m, false)));
   }
 
   /**
@@ -324,7 +322,7 @@ class ClientUser extends User {
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
-      .then(res => new GroupDMChannel(this.client, res));
+      .then(res => this.client.channels.create(res));
   }
 }
 

@@ -6,12 +6,12 @@ const Guild = require('../structures/Guild');
  * @extends {DataStore}
  */
 class GuildStore extends DataStore {
-  create(data) {
+  create(data, cache = true) {
     const existing = this.get(data.id);
     if (existing) return existing;
 
     const guild = new Guild(this.client, data);
-    this.set(guild.id, guild);
+    if (cache) this.set(guild.id, guild);
 
     return guild;
   }
