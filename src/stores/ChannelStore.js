@@ -12,8 +12,8 @@ const lruable = ['group', 'dm'];
  * @extends {DataStore}
  */
 class ChannelStore extends DataStore {
-  constructor(iterable, options = {}) {
-    super(iterable);
+  constructor(client, options = {}) {
+    super(client);
 
     if (options.lru) {
       const lru = this[kLru] = [];
