@@ -304,7 +304,7 @@ class Guild {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.get(this.afkChannelID);
+    return this.client.channels.get(this.afkChannelID) || null;
   }
 
   /**
@@ -313,7 +313,7 @@ class Guild {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.get(this.systemChannelID);
+    return this.client.channels.get(this.systemChannelID) || null;
   }
 
   /**
