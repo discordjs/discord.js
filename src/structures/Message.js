@@ -464,10 +464,11 @@ class Message extends Base {
       return this.client.api.channels(this.channel.id).messages(this.id)
         .delete({ reason })
         .then(() =>
-          this.client.actions.MessageDelete.handle({
-            id: this.id,
-            channel_id: this.channel.id,
-          }).message);
+          this.client.static ? this :
+            this.client.actions.MessageDelete.handle({
+              id: this.id,
+              channel_id: this.channel.id,
+            }).message);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {

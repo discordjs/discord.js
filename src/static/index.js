@@ -3,17 +3,19 @@ const APIRequest = require('../client/rest/APIRequest');
 const DiscordAPIError = require('../client/rest/DiscordAPIError');
 const UserAgentManager = require('../client/rest/UserAgentManager');
 const Constants = require('../util/Constants');
+const User = require('../structures/User');
 
 const InteropTextChannel = require('./TextChannel');
-const InteropMessage = require('./Message');
 
 function Interop({ token }) {
   const client = {
-    interop: true,
+    static: true,
     token, options: Constants.DefaultOptions,
     get api() {
       return buildRoute(restManager);
     },
+    users: { create: data => new User(this, data) },
+    channels: { create: data => {} },
   };
   const restManager = {
     client,
@@ -31,7 +33,7 @@ function Interop({ token }) {
   };
   return {
     TextChannel: id => InteropTextChannel(client, id),
-    Message: (channelID, id) => InteropMessage(client, InteropTextChannel(client, channelID), id),
+    Message: (channelID, id) => InteropTextChannel(client, id).Message(id),
   };
 }
 
