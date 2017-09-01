@@ -1,6 +1,5 @@
 const DataStore = require('./DataStore');
-const DMChannel = require('../structures/DMChannel');
-const GroupDMChannel = require('../structures/GroupDMChannel');
+const Channel = require('../structures/Channel');
 const Constants = require('../util/Constants');
 
 const kLru = Symbol('LRU');
@@ -52,22 +51,11 @@ class ChannelStore extends DataStore {
     const existing = this.get(data.id);
     if (existing) return existing;
 
-    let channel;
-    switch (data.type) {
-      case Constants.ChannelTypes.DM:
-        channel = new DMChannel(this.client, data);
-        break;
-      case Constants.ChannelTypes.GROUP:
-        channel = new GroupDMChannel(this.client, data);
-        break;
-      default: // eslint-disable-line no-case-declarations
-        guild = guild || this.client.guilds.get(data.guild_id);
-        if (!guild) {
-          this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
-          return null;
-        }
-        channel = guild.channels.create(data, cache);
-        break;
+    const channel = Channel.create(this.client, data, guild);
+
+    if (!channel) {
+      this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
+      return null;
     }
 
     if (cache) this.set(channel.id, channel);

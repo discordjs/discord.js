@@ -63,6 +63,37 @@ class Channel extends Base {
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
   }
+
+  static create(client, data, guild) {
+    const DMChannel = require('./DMChannel');
+    const GroupDMChannel = require('./GroupDMChannel');
+    const TextChannel = require('./TextChannel');
+    const VoiceChannel = require('./VoiceChannel');
+    const GuildChannel = require('./GuildChannel');
+    const types = Constants.ChannelTypes;
+    let channel;
+    if (data.type === types.DM) {
+      channel = new DMChannel(client, data);
+    } else if (data.type === types.GROUP) {
+      channel = new GroupDMChannel(client, data);
+    } else {
+      guild = guild || client.guilds.get(data.guild_id);
+      if (guild) {
+        switch (data.type) {
+          case types.TEXT:
+            channel = new TextChannel(guild, data);
+            break;
+          case types.VOICE:
+            channel = new VoiceChannel(guild, data);
+            break;
+          default:
+            channel = new GuildChannel(guild, data);
+        }
+        guild.channels.set(channel.id, channel);
+      }
+    }
+    return channel;
+  }
 }
 
 module.exports = Channel;
