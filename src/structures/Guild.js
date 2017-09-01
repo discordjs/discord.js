@@ -1139,13 +1139,12 @@ class Guild extends Base {
   }
 
   toJSON() {
-    const json = super.toJSON([
-      'createdTimestamp',
-      'nameAcronym',
-    ], [
-      'presences',
-      'voiceStates',
-    ]);
+    const json = super.toJSON({
+      createdTimestamp: true,
+      nameAcronym: true,
+      presences: false,
+      voiceStates: false,
+    });
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
     return json;

@@ -376,7 +376,13 @@ class ClientUser extends User {
   }
 
   toJSON() {
-    return super.toJSON([], ['friends', 'blocked', 'notes', 'settings', 'guildSettings']);
+    return super.toJSON({
+      friends: false,
+      blocked: false,
+      notes: false,
+      settings: false,
+      guildSettings: false,
+    });
   }
 }
 

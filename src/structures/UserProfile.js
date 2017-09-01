@@ -76,7 +76,7 @@ class UserProfile extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['flags']);
+    return super.toJSON({ flags: true });
   }
 }
 

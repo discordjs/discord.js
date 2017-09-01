@@ -26,8 +26,8 @@ class Base {
     return clone;
   }
 
-  toJSON(extra, ignore) {
-    return Util.flatten(this, extra, ignore);
+  toJSON(...props) {
+    return Util.flatten(this, ...props);
   }
 }
 

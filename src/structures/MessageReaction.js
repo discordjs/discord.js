@@ -100,7 +100,7 @@ class MessageReaction {
   }
 
   toJSON() {
-    return Util.flatten(this, ['emoji']);
+    return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });
   }
 
   _add(user) {

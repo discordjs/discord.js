@@ -261,13 +261,14 @@ class User extends Base {
     return `<@${this.id}>`;
   }
 
-  toJSON(props = [], ignore) {
-    const json = super.toJSON([
-      ...props,
-      'createdTimestamp',
-      'defaultAvatarURL',
-      'tag',
-    ], ignore);
+  toJSON(...props) {
+    const json = super.toJSON({
+      createdTimestamp: true,
+      defaultAvatarURL: true,
+      tag: true,
+      lastMessage: false,
+      lastMessageID: false,
+    }, ...props);
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
     return json;

@@ -95,8 +95,8 @@ class Channel extends Base {
     return channel;
   }
 
-  toJSON(extra = [], ignore) {
-    return super.toJSON([...extra, 'createdTimestamp'], ignore);
+  toJSON(...props) {
+    return super.toJSON(Object.assign({ createdTimestamp: true }, ...props));
   }
 }
 

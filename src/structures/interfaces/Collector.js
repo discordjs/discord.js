@@ -177,7 +177,7 @@ class Collector extends EventEmitter {
   }
 
   toJSON() {
-    return Util.flatten(this, ['next']);
+    return Util.flatten(this);
   }
 
   /* eslint-disable no-empty-function, valid-jsdoc */

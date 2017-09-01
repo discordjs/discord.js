@@ -15,34 +15,35 @@ class Util {
   /**
    * Flatten an object. Any properties that are collections will get converted to an array of keys.
    * @param {Object} obj The object to flatten.
-   * @param {string[]} [props=[]] Extra non-enumerable properties to flatten.
-   * @param {string[]} [ignore=[]] Props to ignore.
+   * @param {Object<string, boolean|string>[]} [props=[]] Specific properties to include/exclude.
    * @returns {Object}
    */
-  static flatten(obj, props = [], ignore = []) {
+  static flatten(obj, ...props) {
     const isObject = d => typeof d === 'object' && d !== null;
     if (!isObject(obj)) return obj;
 
+    props = Object.assign(...Object.keys(obj).filter(k => !k.startsWith('_')).map(k => ({ [k]: true })), ...props);
+
     const out = {};
 
-    for (const prop of Object.keys(obj).concat(props)) {
-      if (prop.startsWith('_') || ignore.includes(prop)) continue;
+    for (let [prop, newProp] of Object.entries(props)) {
+      if (!newProp) continue;
+      newProp = newProp === true ? prop : newProp;
 
       const element = obj[prop];
-
       const elemIsObj = isObject(element);
-      const value = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+      const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
       // If it's a collection, make the array of keys
-      if (element instanceof require('./Collection')) out[prop] = Array.from(element.keys());
+      if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
       // If it's an array, flatten each element
-      else if (Array.isArray(element)) out[prop] = element.map(e => Util.flatten(e));
+      else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object and has an ID, use that ID
-      else if (elemIsObj && 'id' in element) out[prop] = element.id;
+      else if (elemIsObj && 'id' in element) out[newProp] = element.id;
       // If it's an object with a primitive `valueOf`, use that value
-      else if (value && !isObject(value)) out[prop] = value;
+      else if (valueOf && !isObject(valueOf)) out[newProp] = valueOf;
       // If it's a primitive
-      else if (!elemIsObj) out[prop] = element;
+      else if (!elemIsObj) out[newProp] = element;
     }
 
     return out;

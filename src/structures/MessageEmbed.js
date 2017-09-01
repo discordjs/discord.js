@@ -301,7 +301,7 @@ class MessageEmbed {
   }
 
   toJSON() {
-    return Util.flatten(this, ['hexColor']);
+    return Util.flatten(this, { hexColor: true });
   }
 
   /**

@@ -62,7 +62,7 @@ class Attachment {
   }
 
   toJSON() {
-    return Util.flatten(this, ['name', 'attachment']);
+    return Util.flatten(this, { name: true, attachment: true });
   }
 
   /**

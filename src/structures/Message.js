@@ -563,7 +563,15 @@ class Message extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['guild', 'cleanContent'], ['member', 'reactions']);
+    return super.toJSON({
+      channel: 'channelID',
+      author: 'authorID',
+      application: 'applicationID',
+      guild: 'guildID',
+      cleanContent: true,
+      member: false,
+      reactions: false,
+    });
   }
 }
 

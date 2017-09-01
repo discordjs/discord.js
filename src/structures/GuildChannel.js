@@ -421,10 +421,6 @@ class GuildChannel extends Channel {
   toString() {
     return `<#${this.id}>`;
   }
-
-  toJSON(props, ignore = []) {
-    return super.toJSON(props, ignore);
-  }
 }
 
 module.exports = GuildChannel;

@@ -134,7 +134,10 @@ class MessageMentions {
   }
 
   toJSON() {
-    return Util.flatten(this, ['members', 'channels']);
+    return Util.flatten(this, {
+      members: true,
+      channels: true,
+    });
   }
 }
 

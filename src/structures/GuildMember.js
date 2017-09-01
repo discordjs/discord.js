@@ -551,7 +551,12 @@ class GuildMember extends Base {
   }
 
   toJSON() {
-    return super.toJSON(['displayName'], ['speaking', 'lastMessage', 'lastMessageID']);
+    return super.toJSON({
+      displayName: true,
+      speaking: false,
+      lastMessage: false,
+      lastMessageID: false,
+    });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

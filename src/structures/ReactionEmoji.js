@@ -48,7 +48,7 @@ class ReactionEmoji {
   }
 
   toJSON() {
-    return Util.flatten(this, ['identifier']);
+    return Util.flatten(this, { identifier: true });
   }
 }
 
