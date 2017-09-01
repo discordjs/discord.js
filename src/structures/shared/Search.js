@@ -84,14 +84,13 @@ module.exports = function search(target, options) {
   // Lazy load these because some of them use util
   const Channel = require('../Channel');
   const Guild = require('../Guild');
-  const Message = require('../Message');
 
   if (!(target instanceof Channel || target instanceof Guild)) throw new TypeError('SEARCH_CHANNEL_TYPE');
 
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
     const results = body.messages.map(x =>
-      x.map(m => new Message(target.client.channels.get(m.channel_id), m, target.client))
+      x.map(m => target.client.channels.get(m.channel_id).messages.create(m, false))
     );
     return {
       total: body.total_results,

@@ -210,8 +210,7 @@ class Webhook {
       auth: false,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
@@ -239,8 +238,7 @@ class Webhook {
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
