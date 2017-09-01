@@ -99,7 +99,9 @@ class GuildMemberStore extends DataStore {
         for (const member of members.values()) {
           if (query || limit) fetchedMembers.set(member.id, member);
         }
-        if (this.guild.memberCount === this.size || ((query || limit) && members.size < 1000)) {
+        if (this.guild.memberCount <= this.size ||
+          ((query || limit) && members.size < 1000) ||
+          (limit && fetchedMembers.size >= limit)) {
           this.guild.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
           resolve(query || limit ? fetchedMembers : this);
         }
