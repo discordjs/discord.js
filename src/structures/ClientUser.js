@@ -266,7 +266,7 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {?string} game Game being played
+   * @param {?string|number} game Game being played
    * @param {Object} [options] Options for setting the game
    * @param {string} [options.url] Twitch stream URL
    * @param {GameType|number} [options.type] Type of the game
@@ -276,7 +276,7 @@ class ClientUser extends User {
     if (!game) return this.setPresence({ game: null });
     return this.setPresence({
       game: {
-        name: game,
+        name: String(game),
         type,
         url,
       },
