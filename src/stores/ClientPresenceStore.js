@@ -32,7 +32,7 @@ class ClientPresenceStore extends PresenceStore {
         type: typeof activity.type === 'number' ? activity.type : Constants.ActivityTypes.indexOf(activity.type),
         name: activity.name,
         url: activity.url,
-        description: activity.description || undefined,
+        details: activity.details || undefined,
         state: activity.state || undefined,
         assets: activity.assets ? {
           large_text: activity.assets.largeText || undefined,
