@@ -26,6 +26,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Activity: require('./structures/Presence').Activity,
   Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
@@ -33,7 +34,6 @@ module.exports = {
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),

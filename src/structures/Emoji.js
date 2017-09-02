@@ -1,4 +1,3 @@
-const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
@@ -85,7 +84,7 @@ class Emoji extends Base {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
+    return this.client.rest.cdn.Emoji(this.id);
   }
 
   /**
