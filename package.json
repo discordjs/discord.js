@@ -54,7 +54,7 @@
     "jsdoc-strip-async-await": "^0.1.0",
     "parallel-webpack": "^2.0.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
-    "webpack": "^3.5.4"
+    "webpack": "^3.0.0"
   },
   "engines": {
     "node": ">=8.0.0"

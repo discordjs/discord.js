@@ -16,6 +16,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const Constants = require('../util/Constants');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
