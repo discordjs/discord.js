@@ -5,10 +5,6 @@ const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
-<<<<<<< HEAD
-=======
-const { TypeError } = require('../errors');
->>>>>>> DataStores
 
 /**
  * Represents the logged in client's Discord user.
