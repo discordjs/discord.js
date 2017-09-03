@@ -290,6 +290,34 @@ class Util {
 
     return color;
   }
+
+  static camelCaseObject(obj) {
+    if (obj && typeof obj === 'object') {
+      const copy = {};
+      for (let [key, value] of Object.entries(obj)) {
+        if (Array.isArray(value)) value = value.map(v => this.camelCaseObject(v));
+        else if (value && typeof value === 'object') value = this.camelCaseObject(value);
+        copy[key.replace(/_(.)/g, (_, c) => c.toUpperCase())] = value;
+      }
+      return copy;
+    } else {
+      return obj;
+    }
+  }
+
+  static snakeCaseObject(obj) {
+    if (obj && typeof obj === 'object') {
+      const copy = {};
+      for (let [key, value] of Object.entries(obj)) {
+        if (Array.isArray(value)) value = value.map(v => this.snakeCaseObject(v));
+        else if (value && typeof value === 'object') value = this.snakeCaseObject(value);
+        copy[key.replace(/([A-Z])/g, (_, c) => `_${c.toLowerCase()}`)] = value;
+      }
+      return copy;
+    } else {
+      return obj;
+    }
+  }
 }
 
 module.exports = Util;

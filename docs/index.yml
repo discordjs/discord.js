@@ -20,5 +20,7 @@
       path: avatars.js
     - name: Server greeting
       path: greeting.js
+    - name: Basic RPC
+      path: rpc.js
     - name: Webhook
       path: webhook.js

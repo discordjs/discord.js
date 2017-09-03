@@ -83,6 +83,8 @@ const Messages = {
   GUILD_RESTRICTED: (state = false) => `Guild is ${state ? 'already' : 'not'} restricted.`,
   GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
 
+  RPC_INVALID_TRANSPORT: name => `Invalid transport: ${name}`,
+
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',

@@ -30,16 +30,30 @@ The usage of the API isn't any different from using it in Node.js.
 
 #### Example
 ```html
-<script type="text/javascript" src="discord.11.1.0.min.js"></script>
-<script type="text/javascript">
-  const client = new Discord.Client();
+<script src="discord.12.0.0.min.js"></script>
+<script>
+  const clientID = '187406016902594560';
+  const scopes = ['rpc', 'rpc.api', 'messages.read'];
 
-  client.on('message', msg => {
-    const guildTag = msg.channel.type === 'text' ? `[${msg.guild.name}]` : '[DM]';
-    const channelTag = msg.channel.type === 'text' ? `[#${msg.channel.name}]` : '';
-    console.log(`${guildTag}${channelTag} ${msg.author.tag}: ${msg.content}`);
+  // This demonstrates discord's implicit oauth2 flow
+  // http://discordapi.com/topics/oauth2#implicit-grant
+
+  const params = new URLSearchParams(document.location.hash.slice(1));
+
+  if (!params.has('access_token')) {
+    // Redirect to discord to get an access token
+    document.location.href =
+      `https://discordapp.com/oauth2/authorize?response_type=token&client_id=${clientID}&scope=${scopes.join('+')}`;
+  }
+
+  const client = new Discord.RPCClient();
+
+  client.on('ready', () => {
+    console.log('Logged in as', client.application.name);
+    console.log('Authed for user', client.user.tag);
   });
 
-  client.login('some crazy token');
+  // Log in to rpc with client id and access token
+  client.login(clientID, { accessToken: params.get('access_token') });
 </script>
 ```

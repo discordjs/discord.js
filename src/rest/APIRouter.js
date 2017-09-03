@@ -14,6 +14,7 @@ function buildRoute(manager) {
       if (reflectors.includes(name)) return () => route.join('/');
       if (methods.includes(name)) {
         return options => manager.request(name, route.join('/'), Object.assign({
+          versioned: manager.versioned,
           route: route.map((r, i) => {
             if (/\d{16,19}/g.test(r)) return /channels|guilds/.test(route[i - 1]) ? r : ':id';
             return r;
