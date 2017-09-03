@@ -201,6 +201,16 @@ class Emoji extends Base {
   }
 
   /**
+   * Delete the emoji.
+   * @param {string} [reason] Reason for deleting the emoji
+   * @returns {Promise<Emoji>}
+   */
+  delete(reason) {
+    return this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason })
+      .then(() => this);
+  }
+
+  /**
    * Whether this emoji is the same as another one.
    * @param {Emoji|Object} other The emoji to compare it to
    * @returns {boolean} Whether the emoji is equal to the given emoji or not

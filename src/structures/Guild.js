@@ -1,6 +1,5 @@
 const Long = require('long');
 const Role = require('./Role');
-const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
@@ -1053,18 +1052,6 @@ class Guild extends Base {
 
     return this.client.resolver.resolveImage(attachment)
       .then(image => this.createEmoji(image, name, { roles, reason }));
-  }
-
-  /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete
-   * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise<Emoji>}
-   */
-  deleteEmoji(emoji, reason) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
-      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   /**
