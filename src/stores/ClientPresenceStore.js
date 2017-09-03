@@ -16,15 +16,17 @@ class ClientPresenceStore extends PresenceStore {
   }
 
   async setClientPresence({ status, since, afk, activity }) { // eslint-disable-line complexity
-    if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string');
-    if (!activity.type) activity.type = 0;
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
-    if (activity && activity.assets && applicationID) {
-      try {
-        const a = await this.client.api.oauth2.applications(applicationID).assets.get();
-        for (const asset of a) assets.set(asset.name, asset.id);
-      } catch (err) {} // eslint-disable-line no-empty
+    if (activity) {
+      if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string');
+      if (!activity.type) activity.type = 0;
+      if (activity.assets && applicationID) {
+        try {
+          const a = await this.client.api.oauth2.applications(applicationID).assets.get();
+          for (const asset of a) assets.set(asset.name, asset.id);
+        } catch (err) { } // eslint-disable-line no-empty
+      }
     }
 
     const packet = {
