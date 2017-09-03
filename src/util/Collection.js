@@ -238,19 +238,23 @@ class Collection extends Map {
 
   /**
    * Searches for the existence of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`).
+   * (`item[prop] === value`), or the given function returns a truthy value.
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {boolean}
    * @example
    * if (collection.exists('username', 'Bob')) {
    *  console.log('user here!');
    * }
+   * @example 
+   * if (collection.exists(user => user.username === 'Bob')) {
+   *  console.log('user here!');
+   * }
    */
-  exists(prop, value) {
-    return Boolean(this.find(prop, value));
+  exists(propOrFn, value) {
+    return Boolean(this.find(propOrFn, value));
   }
 
   /**
