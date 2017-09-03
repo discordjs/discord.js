@@ -3,13 +3,14 @@ const BaseClient = require('../BaseClient');
 const transports = require('./transports');
 const Snowflake = require('../util/Snowflake');
 const ClientApplication = require('../structures/ClientApplication');
-const User = require('../structures/User');
 const Guild = require('../structures/Guild');
 const Channel = require('../structures/Channel');
 const { RPCCommands, RPCEvents } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
+const UserStore = require('../stores/UserStore');
+const ChannelStore = require('../stores/ChannelStore');
 const { Error } = require('../errors');
 
 /**
@@ -70,15 +71,9 @@ class RPCClient extends BaseClient {
      */
     this._subscriptions = new Map();
 
-    /**
-     * Polyfill data manager
-     * @type {Object}
-     * @private
-     */
-    this.dataManager = {
-      newUser: data => new User(this, data),
-      newChannel: (data, guild) => Channel.create(this, data, guild),
-    };
+    // Undocumented because they should not be used
+    this.users = new UserStore(this);
+    this.channels = new ChannelStore(this);
   }
 
   /**
