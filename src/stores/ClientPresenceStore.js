@@ -2,6 +2,7 @@ const PresenceStore = require('./PresenceStore');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const { Presence } = require('../structures/Presence');
+const { TypeError } = require('../errors');
 
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
@@ -14,7 +15,10 @@ class ClientPresenceStore extends PresenceStore {
     });
   }
 
-  async setClientPresence({ status, since, afk, activity }) {
+  async setClientPresence({ status, since, afk, activity }) { // eslint-disable-line complexity
+    if (typeof activity.name === 'number') throw new TypeError('INVALID_TYPE', 'name', 'string');
+    if (activity.name && !activity.type) activity.type = 0;
+    if (activity.url && !activity.type) activity.type = 1;
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
     if (activity && activity.assets && applicationID) {
