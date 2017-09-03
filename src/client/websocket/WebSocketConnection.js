@@ -1,4 +1,4 @@
-const browser = require('os').platform() === 'browser';
+const browser = typeof window !== 'undefined';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const zlib = require('zlib');
@@ -29,12 +29,12 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway WebSocket gateway to connect to
+   * @param {string} gateway The WebSocket gateway to connect to
    */
   constructor(manager, gateway) {
     super();
     /**
-     * WebSocket Manager of this connection
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
@@ -115,6 +115,10 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
     this.status = Constants.Status.READY;
     this.client.emit(Constants.Events.READY);
     this.packetManager.handleQueue();
@@ -228,7 +232,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -280,12 +284,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {boolean}
    */
   onMessage(event) {
+    let data;
     try {
-      event.data = this.unpack(event.data);
+      data = this.unpack(event.data);
     } catch (err) {
       this.emit('debug', err);
     }
-    return this.onPacket(event.data);
+    return this.onPacket(data);
   }
 
   /**
@@ -351,11 +356,19 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
+    if (error && error.message === 'uWs client connection error') {
+      this.reconnect();
+      return;
+    }
+    /**
+     * Emitted whenever the client's WebSocket encounters a connection error.
+     * @event Client#error
+     * @param {Error} error The encountered error
+     */
     this.client.emit(Constants.Events.ERROR, error);
-    if (error.message === 'uWs client connection error') this.reconnect();
   }
 
   /**
@@ -431,7 +444,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identify(after) {
-    if (after) return this.client.setTimeout(this.identify.apply(this), after);
+    if (after) return this.client.setTimeout(this.identify.bind(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 

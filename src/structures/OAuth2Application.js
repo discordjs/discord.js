@@ -37,7 +37,7 @@ class OAuth2Application {
 
     /**
      * The app's icon hash
-     * @type {string}
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -124,6 +124,7 @@ class OAuth2Application {
 
   /**
    * Reset the app's secret and bot token.
+   * <warn>This is only available when using a user account.</warn> 
    * @returns {OAuth2Application}
    */
   reset() {

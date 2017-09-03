@@ -345,28 +345,31 @@ class GuildMember {
   /**
    * Edit a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.client.rest.methods.updateGuildMember(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateGuildMember(this, data, reason);
   }
 
   /**
    * Mute/unmute a user.
    * @param {boolean} mute Whether or not the member should be muted
+   * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
    */
-  setMute(mute) {
-    return this.edit({ mute });
+  setMute(mute, reason) {
+    return this.edit({ mute }, reason);
   }
 
   /**
    * Deafen/undeafen a user.
    * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
    */
-  setDeaf(deaf) {
-    return this.edit({ deaf });
+  setDeaf(deaf, reason) {
+    return this.edit({ deaf }, reason);
   }
 
   /**
@@ -381,29 +384,32 @@ class GuildMember {
   /**
    * Sets the roles applied to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
+   * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    */
-  setRoles(roles) {
-    return this.edit({ roles });
+  setRoles(roles, reason) {
+    return this.edit({ roles }, reason);
   }
 
   /**
    * Adds a single role to the member.
    * @param {Role|Snowflake} role The role or ID of the role to add
+   * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember>}
    */
-  addRole(role) {
+  addRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.addMemberRole(this, role);
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    return this.client.rest.methods.addMemberRole(this, role, reason);
   }
 
   /**
    * Adds multiple roles to the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
+   * @param {string} [reason] Reason for adding the roles
    * @returns {Promise<GuildMember>}
    */
-  addRoles(roles) {
+  addRoles(roles, reason) {
     let allRoles;
     if (roles instanceof Collection) {
       allRoles = this._roles.slice();
@@ -411,26 +417,28 @@ class GuildMember {
     } else {
       allRoles = this._roles.concat(roles);
     }
-    return this.edit({ roles: allRoles });
+    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
    * Removes a single role from the member.
    * @param {Role|Snowflake} role The role or ID of the role to remove
+   * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember>}
    */
-  removeRole(role) {
+  removeRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
-    if (!role) throw new TypeError('Supplied parameter was neither a Role nor a Snowflake.');
-    return this.client.rest.methods.removeMemberRole(this, role);
+    if (!role) return Promise.reject(new TypeError('Supplied parameter was neither a Role nor a Snowflake.'));
+    return this.client.rest.methods.removeMemberRole(this, role, reason);
   }
 
   /**
    * Removes multiple roles from the member.
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
+   * @param {string} [reason] Reason for removing the roles
    * @returns {Promise<GuildMember>}
    */
-  removeRoles(roles) {
+  removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
     if (roles instanceof Collection) {
       for (const role of roles.values()) {
@@ -443,16 +451,17 @@ class GuildMember {
         if (index >= 0) allRoles.splice(index, 1);
       }
     }
-    return this.edit({ roles: allRoles });
+    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
    * Set the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
+   * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
-  setNickname(nick) {
-    return this.edit({ nick });
+  setNickname(nick, reason) {
+    return this.edit({ nick }, reason);
   }
 
   /**
@@ -481,7 +490,7 @@ class GuildMember {
   }
 
   /**
-   * Ban this guild member
+   * Ban this guild member.
    * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete

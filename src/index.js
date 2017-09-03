@@ -11,6 +11,7 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
+  DiscordAPIError: require('./client/rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
@@ -25,6 +26,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
@@ -59,5 +61,3 @@ module.exports = {
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
 };
-
-if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef

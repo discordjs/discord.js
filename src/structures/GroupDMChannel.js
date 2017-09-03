@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /*
 { type: 3,
@@ -47,8 +48,8 @@ class GroupDMChannel extends Channel {
     this.name = data.name;
 
     /**
-     * A hash of the Group DM icon.
-     * @type {string}
+     * A hash of this Group DM icon
+     * @type {?string}
      */
     this.icon = data.icon;
 
@@ -70,11 +71,13 @@ class GroupDMChannel extends Channel {
      */
     this.applicationID = data.application_id;
 
-    /**
-     * Nicknames for group members
-     * @type {?Collection<Snowflake, string>}
-     */
-    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    if (data.nicks) {
+      /**
+       * Nicknames for group members
+       * @type {?Collection<Snowflake, string>}
+       */
+      this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    }
 
     if (!this.recipients) {
       /**
@@ -104,6 +107,23 @@ class GroupDMChannel extends Channel {
   }
 
   /**
+   * The URL to this guild's icon
+   * @type {?string}
+   * @readonly
+   */
+  get iconURL() {
+    if (!this.icon) return null;
+    return Constants.Endpoints.Channel(this).Icon(this.client.options.http.cdn, this.icon);
+  }
+
+  edit(data) {
+    const _data = {};
+    if (data.name) _data.name = data.name;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
+    return this.client.rest.methods.updateGroupDMChannel(this, _data);
+  }
+
+  /**
    * Whether this channel equals another channel. It compares all properties, so for most operations
    * it is advisable to just compare `channel.id === channel2.id` as it is much faster and is often
    * what most users need.
@@ -128,6 +148,7 @@ class GroupDMChannel extends Channel {
    * Add a user to the DM
    * @param {UserResolvable|string} accessTokenOrID Access token or user resolvable
    * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * @returns {Promise<GroupDMChannel>}
    */
 
   addUser(accessTokenOrID, nick) {
@@ -136,6 +157,39 @@ class GroupDMChannel extends Channel {
       id: this.client.resolver.resolveUserID(accessTokenOrID),
       accessToken: accessTokenOrID,
     });
+  }
+
+  /**
+   * Set a new GroupDMChannel icon.
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the group dm
+   * @returns {Promise<GroupDMChannel>}
+   * @example
+   * // Edit the group dm icon
+   * channel.setIcon('./icon.png')
+   *  .then(updated => console.log('Updated the channel icon'))
+   *  .catch(console.error);
+   */
+  setIcon(icon) {
+    return this.client.resolver.resolveImage(icon).then(data => this.edit({ icon: data }));
+  }
+
+  /**
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Removes an user from this Group DM.
+   * @param {UserResolvable} user User to remove
+   * @returns {Promise<GroupDMChannel>}
+   */
+  removeUser(user) {
+    const id = this.client.resolver.resolveUserID(user);
+    return this.client.rest.methods.removeUserFromGroupDM(this, id);
   }
 
   /**
@@ -169,6 +223,7 @@ class GroupDMChannel extends Channel {
   get typing() {}
   get typingCount() {}
   createCollector() {}
+  createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on Group DMs; bulkDelete() {}
   acknowledge() {}

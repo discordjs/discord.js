@@ -1,6 +1,7 @@
 const Mentions = require('./MessageMentions');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const RichEmbed = require('./RichEmbed');
 const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const Util = require('../util/Util');
@@ -33,7 +34,7 @@ class Message {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The ID of the message (unique in the channel it was sent)
+     * The ID of the message
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -57,8 +58,8 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author);
 
     /**
-     * Represents the author of the message as a guild member. Only available if the message comes from a guild
-     * where the author is still a member.
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */
     this.member = this.guild ? this.guild.member(this.author) || null : null;
@@ -209,8 +210,8 @@ class Message {
   }
 
   /**
-   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted
+   * The message contents with all mentions replaced by the equivalent text.
+   * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
    * @type {string}
    * @readonly
    */
@@ -254,8 +255,8 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.id === '👌' && user.id === 'someID',
-   *  { time: 15000 }
+   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
+   *   { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -271,8 +272,8 @@ class Message {
    */
 
   /**
-   * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
-   * filter.
+   * Similar to createMessageCollector but in promise form.
+   * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
@@ -365,13 +366,13 @@ class Message {
   /**
    * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|RichEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .catch(console.error);
    */
   edit(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -380,6 +381,7 @@ class Message {
     } else if (!options) {
       options = {};
     }
+    if (options instanceof RichEmbed) options = { embed: options };
     return this.client.rest.methods.updateMessage(this, content, options);
   }
 
@@ -388,6 +390,7 @@ class Message {
    * @param {string} lang The language for the code block
    * @param {StringResolvable} content The new content for the message
    * @returns {Promise<Message>}
+   * @deprecated
    */
   editCode(lang, content) {
     content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
@@ -437,8 +440,8 @@ class Message {
    * @example
    * // Delete a message
    * message.delete()
-   *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .catch(console.error);
    */
   delete(timeout = 0) {
     if (timeout <= 0) {
@@ -460,8 +463,8 @@ class Message {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -533,7 +536,7 @@ class Message {
   }
 
   _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     let reaction;
     if (this.reactions.has(emojiID)) {
       reaction = this.reactions.get(emojiID);
@@ -542,13 +545,15 @@ class Message {
       reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
       this.reactions.set(emojiID, reaction);
     }
-    if (!reaction.users.has(user.id)) reaction.users.set(user.id, user);
-    reaction.count++;
+    if (!reaction.users.has(user.id)) {
+      reaction.users.set(user.id, user);
+      reaction.count++;
+    }
     return reaction;
   }
 
   _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
+    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
       if (reaction.users.has(user.id)) {

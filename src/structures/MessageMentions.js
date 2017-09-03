@@ -102,7 +102,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
@@ -124,7 +124,7 @@ class MessageMentions {
 MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
 
 /**
- * Regular expression that globally matches user mentions like `<#81440962496172032>`
+ * Regular expression that globally matches user mentions like `<@81440962496172032>`
  * @type {RegExp}
  */
 MessageMentions.USERS_PATTERN = /<@!?[0-9]+>/g;

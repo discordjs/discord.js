@@ -12,7 +12,6 @@ const util = require('util');
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
-
   /**
    * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
    * @param {CollectorFilter} filter The filter to be applied to this collector
@@ -23,7 +22,8 @@ class MessageCollector extends Collector {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel
+     * The channel
+     * @type {TextBasedChannel}
      */
     this.channel = channel;
 
@@ -61,7 +61,7 @@ class MessageCollector extends Collector {
   /**
    * Handle an incoming message for possible collection.
    * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @returns {?{key: Snowflake, value: Message}}
    * @private
    */
   handle(message) {

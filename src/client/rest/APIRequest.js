@@ -2,7 +2,7 @@ const snekfetch = require('snekfetch');
 const Constants = require('../../util/Constants');
 
 class APIRequest {
-  constructor(rest, method, path, auth, data, files) {
+  constructor(rest, method, path, auth, data, files, reason) {
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
@@ -11,6 +11,7 @@ class APIRequest {
     this.data = data;
     this.files = files;
     this.route = this.getRoute(this.path);
+    this.reason = reason;
   }
 
   getRoute(url) {
@@ -36,6 +37,7 @@ class APIRequest {
     const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
     const request = snekfetch[this.method](`${API}${this.path}`);
     if (this.auth) request.set('Authorization', this.getAuth());
+    if (this.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.reason));
     if (!this.rest.client.browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
     if (this.files) {
       for (const file of this.files) if (file && file.file) request.attach(file.name, file.file, file.name);

@@ -1,6 +1,7 @@
 const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
+const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 
 /**
@@ -72,7 +73,19 @@ class ClientUser extends User {
      * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
      */
-    if (data.user_settings) this.settings = new ClientUserSettings(this, data.user_settings);
+    this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
+
+    /**
+     * All of the user's guild settings
+     * <warn>This is only filled when using a user account</warn>
+     * @type {Collection<Snowflake, ClientUserGuildSettings>}
+     */
+    this.guildSettings = new Collection();
+    if (data.user_guild_settings) {
+      for (const settings of data.user_guild_settings) {
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+      }
+    }
   }
 
   edit(data) {
@@ -89,8 +102,8 @@ class ClientUser extends User {
    * @example
    * // Set username
    * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new username is ${user.username}`))
+   *   .catch(console.error);
    */
   setUsername(username, password) {
     return this.client.rest.methods.updateCurrentUser({ username }, password);
@@ -105,8 +118,8 @@ class ClientUser extends User {
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new email is ${user.email}`))
+   *   .catch(console.error);
    */
   setEmail(email, password) {
     return this.client.rest.methods.updateCurrentUser({ email }, password);
@@ -121,8 +134,8 @@ class ClientUser extends User {
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
+   *   .then(user => console.log('New password set!'))
+   *   .catch(console.error);
    */
   setPassword(newPassword, oldPassword) {
     return this.client.rest.methods.updateCurrentUser({ password: newPassword }, oldPassword);
@@ -135,17 +148,13 @@ class ClientUser extends User {
    * @example
    * // Set avatar
    * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`New avatar set!`))
+   *   .catch(console.error);
    */
   setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.updateCurrentUser({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar).then(data =>
-        this.client.rest.methods.updateCurrentUser({ avatar: data })
-      );
-    }
+    return this.client.resolver.resolveImage(avatar).then(data =>
+      this.client.rest.methods.updateCurrentUser({ avatar: data })
+    );
   }
 
   /**
@@ -190,7 +199,7 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        if (game.url) game.type = 1;
+        game.type = game.url ? 1 : 0;
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
@@ -215,10 +224,10 @@ class ClientUser extends User {
 
   /**
    * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
+   * * `online`
+   * * `idle`
+   * * `invisible`
+   * * `dnd` (do not disturb)
    * @typedef {string} PresenceStatus
    */
 
@@ -265,7 +274,7 @@ class ClientUser extends User {
    * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
    */
-  fetchMentions(options = { limit: 25, roles: true, everyone: true, guild: null }) {
+  fetchMentions(options = {}) {
     return this.client.rest.methods.fetchMentions(options);
   }
 
@@ -295,16 +304,15 @@ class ClientUser extends User {
    * Creates a guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
-   * @param {string} region The region for the server
+   * @param {string} [region] The region for the server
    * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   createGuild(name, region, icon = null) {
-    if (!icon) return this.client.rest.methods.createGuild({ name, icon, region });
     if (typeof icon === 'string' && icon.startsWith('data:')) {
       return this.client.rest.methods.createGuild({ name, icon, region });
     } else {
-      return this.client.resolver.resolveBuffer(icon).then(data =>
+      return this.client.resolver.resolveImage(icon).then(data =>
         this.client.rest.methods.createGuild({ name, icon: data, region })
       );
     }

@@ -24,6 +24,13 @@ class TextChannel extends GuildChannel {
      */
     this.topic = data.topic;
 
+    /**
+     * If the Discord considers this channel NSFW
+     * @type {boolean}
+     * @readonly
+     */
+    this.nsfw = Boolean(data.nsfw);
+
     this.lastMessageID = data.last_message_id;
   }
 
@@ -43,15 +50,6 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * If the Discord considers this channel NSFW
-   * @type {boolean}
-   * @readonly
-   */
-  get nsfw() {
-    return /^nsfw(-|$)/.test(this.name);
-  }
-
-  /**
    * Fetch all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
@@ -62,23 +60,22 @@ class TextChannel extends GuildChannel {
   /**
    * Create a webhook for the channel.
    * @param {string} name The name of the webhook
-   * @param {BufferResolvable|Base64Resolvable} avatar The avatar for the webhook
+   * @param {BufferResolvable|Base64Resolvable} [avatar] The avatar for the webhook
+   * @param {string} [reason] Reason for creating this webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'http://snek.s3.amazonaws.com/topSnek.png')
-   *  .then(webhook => console.log(`Created webhook ${webhook}`))
-   *  .catch(console.error)
+   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
+   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   *   .catch(console.error)
    */
-  createWebhook(name, avatar) {
-    return new Promise(resolve => {
-      if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-        resolve(this.client.rest.methods.createWebhook(this, name, avatar));
-      } else {
-        this.client.resolver.resolveBuffer(avatar).then(data =>
-           resolve(this.client.rest.methods.createWebhook(this, name, data))
-        );
-      }
-    });
+  createWebhook(name, avatar, reason) {
+    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
+      return this.client.rest.methods.createWebhook(this, name, avatar, reason);
+    } else {
+      return this.client.resolver.resolveImage(avatar).then(data =>
+        this.client.rest.methods.createWebhook(this, name, data, reason)
+      );
+    }
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

@@ -10,9 +10,9 @@ const Snowflake = require('../util/Snowflake');
 class User {
   constructor(client, data) {
     /**
-     * The client that created the instance of the the user
+     * The client that created the instance of the user
      * @name User#client
-     * @type {}
+     * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });

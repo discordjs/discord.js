@@ -1,5 +1,4 @@
-const os = require('os');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
@@ -120,6 +119,7 @@ class Client extends EventEmitter {
      */
     this.presences = new Collection();
 
+    Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
@@ -249,7 +249,7 @@ class Client extends EventEmitter {
    * @readonly
    */
   get browser() {
-    return os.platform() === 'browser';
+    return typeof window !== 'undefined';
   }
 
   /**
@@ -419,9 +419,9 @@ class Client extends EventEmitter {
    */
   setTimeout(fn, delay, ...args) {
     const timeout = setTimeout(() => {
-      fn();
+      fn(...args);
       this._timeouts.delete(timeout);
-    }, delay, ...args);
+    }, delay);
     this._timeouts.add(timeout);
     return timeout;
   }

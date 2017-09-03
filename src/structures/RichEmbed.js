@@ -1,4 +1,5 @@
-const ClientDataResolver = require('../client/ClientDataResolver');
+const Attachment = require('./Attachment');
+let ClientDataResolver;
 
 /**
  * A rich embed to be sent with a message with a fluent interface for creation.
@@ -68,7 +69,7 @@ class RichEmbed {
 
     /**
      * File to upload alongside this Embed
-     * @type {string}
+     * @type {FileOptions|string|Attachment}
      */
     this.file = data.file;
   }
@@ -113,6 +114,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setColor(color) {
+    if (!ClientDataResolver) ClientDataResolver = require('../client/ClientDataResolver');
     this.color = ClientDataResolver.resolveColor(color);
     return this;
   }
@@ -203,11 +205,13 @@ class RichEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {FileOptions|string} file Local path or URL to the file to attach, or valid FileOptions for a file to attach
+   * @param {FileOptions|string|Attachment} file Local path or URL to the file to attach,
+   * or valid FileOptions for a file to attach
    * @returns {RichEmbed} This embed
    */
   attachFile(file) {
     if (this.file) throw new RangeError('You may not upload more than one file at once.');
+    if (file instanceof Attachment) file = file.file;
     this.file = file;
     return this;
   }

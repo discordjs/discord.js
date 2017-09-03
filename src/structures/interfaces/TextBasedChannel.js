@@ -2,6 +2,8 @@ const path = require('path');
 const Message = require('../Message');
 const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
+const Attachment = require('../../structures/Attachment');
+const RichEmbed = require('../../structures/RichEmbed');
 const util = require('util');
 
 /**
@@ -38,8 +40,8 @@ class TextBasedChannel {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message **(deprecated)**
-   * @property {FileOptions[]|string[]} [files] Files to send with the message
+   * @property {FileOptions|BufferResolvable|Attachment} [file] A file to send with the message **(deprecated)**
+   * @property {FileOptions[]|BufferResolvable[]|Attachment[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
@@ -64,13 +66,14 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions} [options={}] Options for the message
+   * @param {MessageOptions|Attachment|RichEmbed} [options] Options for the message,
+   * can also be just a RichEmbed or Attachment
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
    * channel.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
   send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -80,7 +83,13 @@ class TextBasedChannel {
       options = {};
     }
 
-    if (options.embed && options.embed.file) options.file = options.embed.file;
+    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof RichEmbed) options = { embed: options };
+
+    if (options.embed && options.embed.file) {
+      if (options.files) options.files.push(options.embed.file);
+      else options.files = [options.embed.file];
+    }
 
     if (options.file) {
       if (options.files) options.files.push(options.file);
@@ -88,24 +97,28 @@ class TextBasedChannel {
     }
 
     if (options.files) {
-      for (const i in options.files) {
+      for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
+        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
+          } else if (file instanceof Attachment) {
+            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
+        } else if (file instanceof Attachment) {
+          file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        this.client.resolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
       )).then(files => this.client.rest.methods.sendMessage(this, content, options, files));
@@ -158,8 +171,8 @@ class TextBasedChannel {
    * @example
    * // Get messages
    * channel.fetchMessages({limit: 10})
-   *  .then(messages => console.log(`Received ${messages.size} messages`))
-   *  .catch(console.error);
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchMessages(options = {}) {
     return this.client.rest.methods.getChannelMessages(this, options).then(data => {
@@ -214,15 +227,21 @@ class TextBasedChannel {
    * @property {Date} [before] Date to find messages before
    * @property {Date} [after] Date to find messages before
    * @property {Date} [during] Date to find messages during (range of date to date + 24 hours)
+   * @property {boolean} [nsfw=false] Include results from NSFW channels
+   */
+
+  /**
+   * @typedef {Object} MessageSearchResult
+   * @property {number} totalResults Total result count
+   * @property {Message[][]} messages Array of message results
+   * The message which has triggered the result will have the `hit` property set to `true`
    */
 
   /**
    * Performs a search within the channel.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<Array<Message[]>>}
-   * An array containing arrays of messages. Each inner array is a search context cluster
-   * The message which has triggered the result will have the `hit` property set to `true`
+   * @returns {Promise<MessageSearchResult>}
    * @example
    * channel.search({
    *   content: 'discord.js',
@@ -319,11 +338,11 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createCollector(
-   *  m => m.content.includes('discord'),
-   *  { time: 15000 }
+   * const collector = channel.createMessageCollector(
+   *   m => m.content.includes('discord'),
+   *   { time: 15000 }
    * );
-   * collector.on('message', m => console.log(`Collected ${m.content}`));
+   * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createMessageCollector(filter, options = {}) {
@@ -347,8 +366,8 @@ class TextBasedChannel {
    * const filter = m => m.content.startsWith('!vote');
    * // Errors: ['time'] treats ending because of the time limit as an error
    * channel.awaitMessages(filter, { max: 4, time: 60000, errors: ['time'] })
-   *  .then(collected => console.log(collected.size))
-   *  .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
+   *   .then(collected => console.log(collected.size))
+   *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
   awaitMessages(filter, options = {}) {
     return new Promise((resolve, reject) => {

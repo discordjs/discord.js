@@ -3,6 +3,7 @@ const Role = require('./Role');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -72,6 +73,9 @@ class GuildChannel extends Channel {
     const roles = member.roles;
     for (const role of roles.values()) permissions |= role.permissions;
 
+    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) return new Permissions(Permissions.ALL);
+
     const overwrites = this.overwritesFor(member, true, roles);
 
     if (overwrites.everyone) {
@@ -90,9 +94,6 @@ class GuildChannel extends Channel {
       permissions &= ~overwrites.member.deny;
       permissions |= overwrites.member.allow;
     }
-
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
 
     return new Permissions(member, permissions);
   }
@@ -136,18 +137,19 @@ class GuildChannel extends Channel {
 
   /**
    * Overwrites the permissions for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {Role|Snowflake|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise}
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
+   *   SEND_MESSAGES: false
    * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
+   *   .then(() => console.log('Done!'))
+   *   .catch(console.error);
    */
-  overwritePermissions(userOrRole, options) {
+  overwritePermissions(userOrRole, options, reason) {
     const payload = {
       allow: 0,
       deny: 0,
@@ -186,7 +188,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload);
+    return this.client.rest.methods.setChannelOverwrite(this, payload, reason);
   }
 
   /**
@@ -202,29 +204,31 @@ class GuildChannel extends Channel {
   /**
    * Edits the channel.
    * @param {ChannelData} data The new data for the channel
+   * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
    * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
+   *   .then(c => console.log(`Edited channel ${c}`))
+   *   .catch(console.error);
    */
-  edit(data) {
-    return this.client.rest.methods.updateChannel(this, data);
+  edit(data, reason) {
+    return this.client.rest.methods.updateChannel(this, data, reason);
   }
 
   /**
    * Set a new name for the guild channel.
    * @param {string} name The new name for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel name
    * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *   .catch(console.error);
    */
-  setName(name) {
-    return this.edit({ name });
+  setName(name, reason) {
+    return this.edit({ name }, reason);
   }
 
   /**
@@ -235,8 +239,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel position
    * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, relative) {
     return this.guild.setChannelPosition(this, position, relative).then(() => this);
@@ -245,34 +249,32 @@ class GuildChannel extends Channel {
   /**
    * Set a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
+   * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
    */
-  setTopic(topic) {
-    return this.client.rest.methods.updateChannel(this, { topic });
+  setTopic(topic, reason) {
+    return this.edit({ topic }, reason);
   }
 
   /**
-   * Options given when creating a guild channel invite.
-   * @typedef {Object} InviteOptions
-
-   */
-
-  /**
    * Create an invite to this guild channel.
-   * @param {InviteOptions} [options={}] Options for the invite
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
+   * @param {string} [reason] Reason for creating the invite
    * @returns {Promise<Invite>}
    */
-  createInvite(options = {}) {
-    return this.client.rest.methods.createChannelInvite(this, options);
+  createInvite(options = {}, reason) {
+    return this.client.rest.methods.createChannelInvite(this, options, reason);
   }
 
   /**
@@ -280,11 +282,26 @@ class GuildChannel extends Channel {
    * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {string} [reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone(name = this.name, withPermissions = true, withTopic = true) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [])
+  clone(name = this.name, withPermissions = true, withTopic = true, reason) {
+    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
+  }
+
+  /**
+   * Deletes this channel.
+   * @param {string} [reason] Reason for deleting this channel
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Delete the channel
+   * channel.delete('making room for new channels')
+   *   .then(channel => console.log(`Deleted ${channel.name} to make room for new channels`))
+   *   .catch(console.error); // Log error
+   */
+  delete(reason) {
+    return this.client.rest.methods.deleteChannel(this, reason);
   }
 
   /**
@@ -320,6 +337,36 @@ class GuildChannel extends Channel {
   get deletable() {
     return this.id !== this.guild.id &&
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
+  }
+
+  /**
+   * Whether the channel is muted
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?boolean}
+   * @readonly
+   */
+  get muted() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
+   * The type of message that should notify you
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?MessageNotificationType}
+   * @readonly
+   */
+  get messageNotifications() {
+    if (this.client.user.bot) return null;
+    try {
+      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
+    } catch (err) {
+      return Constants.MessageNotificationTypes[3];
+    }
   }
 
   /**

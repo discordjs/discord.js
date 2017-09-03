@@ -2,27 +2,6 @@ const PartialGuild = require('./PartialGuild');
 const PartialGuildChannel = require('./PartialGuildChannel');
 const Constants = require('../util/Constants');
 
-/*
-{ max_age: 86400,
-  code: 'CG9A5',
-  guild:
-   { splash: null,
-     id: '123123123',
-     icon: '123123123',
-     name: 'name' },
-  created_at: '2016-08-28T19:07:04.763368+00:00',
-  temporary: false,
-  uses: 0,
-  max_uses: 0,
-  inviter:
-   { username: '123',
-     discriminator: '4204',
-     bot: true,
-     id: '123123123',
-     avatar: '123123123' },
-  channel: { type: 0, id: '123123', name: 'heavy-testing' } }
-*/
-
 /**
  * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
@@ -53,6 +32,30 @@ class Invite {
      * @type {string}
      */
     this.code = data.code;
+
+    /**
+     * The approximate number of online members of the guild this invite is for
+     * @type {number}
+     */
+    this.presenceCount = data.approximate_presence_count;
+
+    /**
+     * The approximate total number of members of the guild this invite is for
+     * @type {number}
+     */
+    this.memberCount = data.approximate_member_count;
+
+    /**
+     * The number of text channels the guild this invite goes to has
+     * @type {number}
+     */
+    this.textChannelCount = data.guild.text_channel_count;
+
+    /**
+     * The number of voice channels the guild this invite goes to has
+     * @type {number}
+     */
+    this.voiceChannelCount = data.guild.voice_channel_count;
 
     /**
      * Whether or not this invite is temporary
@@ -138,10 +141,11 @@ class Invite {
 
   /**
    * Deletes this invite.
+   * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<Invite>}
    */
-  delete() {
-    return this.client.rest.methods.deleteInvite(this);
+  delete(reason) {
+    return this.client.rest.methods.deleteInvite(this, reason);
   }
 
   /**

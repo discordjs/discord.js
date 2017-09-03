@@ -25,7 +25,7 @@ class VoiceChannel extends GuildChannel {
      * The bitrate of this voice channel
      * @type {number}
      */
-    this.bitrate = data.bitrate;
+    this.bitrate = data.bitrate * 0.001;
 
     /**
      * The maximum amount of users allowed in this channel - 0 means unlimited.
@@ -76,31 +76,34 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Sets the bitrate of the channel.
+   * Sets the bitrate of the channel (in kbps).
    * @param {number} bitrate The new bitrate
+   * @param {string} [reason] Reason for changing the channel's bitrate
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the bitrate of a voice channel
-   * voiceChannel.setBitrate(48000)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate} for ${vc.name}`))
-   *  .catch(console.error);
+   * voiceChannel.setBitrate(48)
+   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
+   *   .catch(console.error);
    */
-  setBitrate(bitrate) {
-    return this.edit({ bitrate });
+  setBitrate(bitrate, reason) {
+    bitrate *= 1000;
+    return this.edit({ bitrate }, reason);
   }
 
   /**
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
+   * @param {string} [reason] Reason for changing the user limit
    * @returns {Promise<VoiceChannel>}
    * @example
    * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
-   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *   .catch(console.error);
    */
-  setUserLimit(userLimit) {
-    return this.edit({ userLimit });
+  setUserLimit(userLimit, reason) {
+    return this.edit({ userLimit }, reason);
   }
 
   /**
@@ -109,8 +112,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Join a voice channel
    * voiceChannel.join()
-   *  .then(connection => console.log('Connected!'))
-   *  .catch(console.error);
+   *   .then(connection => console.log('Connected!'))
+   *   .catch(console.error);
    */
   join() {
     if (this.client.browser) return Promise.reject(new Error('Voice connections are not available in browsers.'));

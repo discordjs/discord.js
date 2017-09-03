@@ -13,7 +13,6 @@ const Collection = require('../util/Collection');
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
-
   /**
    * @param {Message} message The message upon which to collect reactions
    * @param {CollectorFilter} filter The filter to apply to this collector
@@ -46,7 +45,7 @@ class ReactionCollector extends Collector {
   /**
    * Handle an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
+   * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
    */
   handle(reaction) {

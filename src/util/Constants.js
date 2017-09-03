@@ -29,6 +29,7 @@ exports.Package = require('../../package.json');
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
+ * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
@@ -63,6 +64,15 @@ exports.DefaultOptions = {
     },
     version: 6,
   },
+
+  /**
+   * HTTP options
+   * @typedef {Object} HTTPOptions
+   * @property {number} [version=7] API version to use
+   * @property {string} [api='https://discordapp.com/api'] Base url of the API
+   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
+   * @property {string} [invite='https://discord.gg'] Base url of invites
+   */
   http: {
     version: 7,
     host: 'https://discordapp.com',
@@ -102,7 +112,10 @@ const Endpoints = exports.Endpoints = {
       relationships: `${base}/relationships`,
       settings: `${base}/settings`,
       Relationship: uID => `${base}/relationships/${uID}`,
-      Guild: guildID => `${base}/guilds/${guildID}`,
+      Guild: guildID => ({
+        toString: () => `${base}/guilds/${guildID}`,
+        settings: `${base}/guilds/${guildID}/settings`,
+      }),
       Note: id => `${base}/notes/${id}`,
       Mentions: (limit, roles, everyone, guildID) =>
         `${base}/mentions?limit=${limit}&roles=${roles}&everyone=${everyone}${guildID ? `&guild_id=${guildID}` : ''}`,
@@ -133,7 +146,7 @@ const Endpoints = exports.Endpoints = {
       ack: `${base}/ack`,
       settings: `${base}/settings`,
       auditLogs: `${base}/audit-logs`,
-      Emoji: emojiID => Endpoints.CDN(root).Emoji(emojiID),
+      Emoji: emojiID => `${base}/emojis/${emojiID}`,
       Icon: (root, hash) => Endpoints.CDN(root).Icon(guildID, hash),
       Splash: (root, hash) => Endpoints.CDN(root).Splash(guildID, hash),
       Role: roleID => `${base}/roles/${roleID}`,
@@ -164,6 +177,7 @@ const Endpoints = exports.Endpoints = {
       webhooks: `${base}/webhooks`,
       search: `${base}/messages/search`,
       pins: `${base}/pins`,
+      Icon: (root, hash) => Endpoints.CDN(root).GDMIcon(channelID, hash),
       Pin: messageID => `${base}/pins/${messageID}`,
       Recipient: recipientID => `${base}/recipients/${recipientID}`,
       Message: messageID => {
@@ -192,6 +206,7 @@ const Endpoints = exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}?size=2048`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      GDMIcon: (channelID, hash) => `${root}/channel-icons/${channelID}/${hash}.jpg?size=2048`,
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
   },
@@ -200,7 +215,8 @@ const Endpoints = exports.Endpoints = {
       const base = `/oauth2/applications/${appID}`;
       return {
         toString: () => base,
-        reset: `${base}/reset`,
+        resetSecret: `${base}/reset`,
+        resetToken: `${base}/bot/reset`,
       };
     },
     App: appID => `/oauth2/authorize?client_id=${appID}`,
@@ -212,7 +228,7 @@ const Endpoints = exports.Endpoints = {
     toString: () => '/gateway',
     bot: '/gateway/bot',
   },
-  Invite: inviteID => `/invite/${inviteID}`,
+  Invite: inviteID => `/invite/${inviteID}?with_counts=true`,
   inviteLink: id => `https://discord.gg/${id}`,
   Webhook: (webhookID, token) => `/webhooks/${webhookID}${token ? `/${token}` : ''}`,
 };
@@ -220,12 +236,12 @@ const Endpoints = exports.Endpoints = {
 
 /**
  * The current status of the client. Here are the available statuses:
- * - READY
- * - CONNECTING
- * - RECONNECTING
- * - IDLE
- * - NEARLY
- * - DISCONNECTED
+ * * READY
+ * * CONNECTING
+ * * RECONNECTING
+ * * IDLE
+ * * NEARLY
+ * * DISCONNECTED
  * @typedef {number} Status
  */
 exports.Status = {
@@ -239,11 +255,11 @@ exports.Status = {
 
 /**
  * The current status of a voice connection. Here are the available statuses:
- * - CONNECTED
- * - CONNECTING
- * - AUTHENTICATING
- * - RECONNECTING
- * - DISCONNECTED
+ * * CONNECTED
+ * * CONNECTING
+ * * AUTHENTICATING
+ * * RECONNECTING
+ * * DISCONNECTED
  * @typedef {number} VoiceStatus
  */
 exports.VoiceStatus = {
@@ -287,6 +303,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   READY: 'ready',
+  RESUME: 'resume',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -320,6 +337,7 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
+  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
@@ -333,41 +351,41 @@ exports.Events = {
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
- * - READY
- * - RESUMED
- * - GUILD_SYNC
- * - GUILD_CREATE
- * - GUILD_DELETE
- * - GUILD_UPDATE
- * - GUILD_MEMBER_ADD
- * - GUILD_MEMBER_REMOVE
- * - GUILD_MEMBER_UPDATE
- * - GUILD_MEMBERS_CHUNK
- * - GUILD_ROLE_CREATE
- * - GUILD_ROLE_DELETE
- * - GUILD_ROLE_UPDATE
- * - GUILD_BAN_ADD
- * - GUILD_BAN_REMOVE
- * - CHANNEL_CREATE
- * - CHANNEL_DELETE
- * - CHANNEL_UPDATE
- * - CHANNEL_PINS_UPDATE
- * - MESSAGE_CREATE
- * - MESSAGE_DELETE
- * - MESSAGE_UPDATE
- * - MESSAGE_DELETE_BULK
- * - MESSAGE_REACTION_ADD
- * - MESSAGE_REACTION_REMOVE
- * - MESSAGE_REACTION_REMOVE_ALL
- * - USER_UPDATE
- * - USER_NOTE_UPDATE
- * - USER_SETTINGS_UPDATE
- * - PRESENCE_UPDATE
- * - VOICE_STATE_UPDATE
- * - TYPING_START
- * - VOICE_SERVER_UPDATE
- * - RELATIONSHIP_ADD
- * - RELATIONSHIP_REMOVE
+ * * READY
+ * * RESUMED
+ * * GUILD_SYNC
+ * * GUILD_CREATE
+ * * GUILD_DELETE
+ * * GUILD_UPDATE
+ * * GUILD_MEMBER_ADD
+ * * GUILD_MEMBER_REMOVE
+ * * GUILD_MEMBER_UPDATE
+ * * GUILD_MEMBERS_CHUNK
+ * * GUILD_ROLE_CREATE
+ * * GUILD_ROLE_DELETE
+ * * GUILD_ROLE_UPDATE
+ * * GUILD_BAN_ADD
+ * * GUILD_BAN_REMOVE
+ * * CHANNEL_CREATE
+ * * CHANNEL_DELETE
+ * * CHANNEL_UPDATE
+ * * CHANNEL_PINS_UPDATE
+ * * MESSAGE_CREATE
+ * * MESSAGE_DELETE
+ * * MESSAGE_UPDATE
+ * * MESSAGE_DELETE_BULK
+ * * MESSAGE_REACTION_ADD
+ * * MESSAGE_REACTION_REMOVE
+ * * MESSAGE_REACTION_REMOVE_ALL
+ * * USER_UPDATE
+ * * USER_NOTE_UPDATE
+ * * USER_SETTINGS_UPDATE
+ * * PRESENCE_UPDATE
+ * * VOICE_STATE_UPDATE
+ * * TYPING_START
+ * * VOICE_SERVER_UPDATE
+ * * RELATIONSHIP_ADD
+ * * RELATIONSHIP_REMOVE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -401,6 +419,7 @@ exports.WSEvents = {
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
   USER_SETTINGS_UPDATE: 'USER_SETTINGS_UPDATE',
+  USER_GUILD_SETTINGS_UPDATE: 'USER_GUILD_SETTINGS_UPDATE',
   PRESENCE_UPDATE: 'PRESENCE_UPDATE',
   VOICE_STATE_UPDATE: 'VOICE_STATE_UPDATE',
   TYPING_START: 'TYPING_START',
@@ -409,6 +428,18 @@ exports.WSEvents = {
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
 };
 
+/**
+ * The type of a message, e.g. `DEFAULT`. Here are the available types:
+ * * DEFAULT
+ * * RECIPIENT_ADD
+ * * RECIPIENT_REMOVE
+ * * CALL
+ * * CHANNEL_NAME_CHANGE
+ * * CHANNEL_ICON_CHANGE
+ * * PINS_ADD
+ * * GUILD_MEMBER_JOIN
+ * @typedef {string} MessageType
+ */
 exports.MessageTypes = [
   'DEFAULT',
   'RECIPIENT_ADD',
@@ -418,6 +449,21 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+];
+
+/**
+ * The type of a message notification setting. Here are the available types:
+ * * EVERYTHING
+ * * MENTIONS
+ * * NOTHING
+ * * INHERIT (only for GuildChannel)
+ * @typedef {string} MessageNotificationType
+ */
+exports.MessageNotificationTypes = [
+  'EVERYTHING',
+  'MENTIONS',
+  'NOTHING',
+  'INHERIT',
 ];
 
 exports.DefaultAvatars = {
@@ -543,8 +589,8 @@ exports.UserSettingsMap = {
 
   explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
     /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you
-     * one of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
+     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
+     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
      * @name ClientUserSettings#explicitContentFilter
      * @type {string}
      */
@@ -565,6 +611,58 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
+};
+
+exports.UserGuildSettingsMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserGuildSettings#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether to receive mobile push notifications
+   * @name ClientUserGuildSettings#mobilePush
+   * @type {boolean}
+   */
+  mobile_push: 'mobilePush',
+  /**
+   * Whether the guild is muted
+   * @name ClientUserGuildSettings#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
+  /**
+   * Whether to suppress everyone mention
+   * @name ClientUserGuildSettings#suppressEveryone
+   * @type {boolean}
+   */
+  suppress_everyone: 'suppressEveryone',
+  /**
+   * A collection containing all the channel overrides
+   * @name ClientUserGuildSettings#channelOverrides
+   * @type {Collection<ClientUserChannelOverride>}
+   */
+  channel_overrides: 'channelOverrides',
+};
+
+exports.UserChannelOverrideMap = {
+  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
+    /**
+     * The type of message that should notify you
+     * @name ClientUserChannelOverride#messageNotifications
+     * @type {MessageNotificationType}
+     */
+    return exports.MessageNotificationTypes[type];
+  },
+  /**
+   * Whether the channel is muted
+   * @name ClientUserChannelOverride#muted
+   * @type {boolean}
+   */
+  muted: 'muted',
 };
 
 exports.Colors = {
@@ -593,4 +691,97 @@ exports.Colors = {
   GREYPLE: 0x99AAB5,
   DARK_BUT_NOT_BLACK: 0x2C2F33,
   NOT_QUITE_BLACK: 0x23272A,
+};
+
+/**
+ * An error encountered while performing an API request. Here are the potential errors:
+ * * UNKNOWN_ACCOUNT
+ * * UNKNOWN_APPLICATION
+ * * UNKNOWN_CHANNEL
+ * * UNKNOWN_GUILD
+ * * UNKNOWN_INTEGRATION
+ * * UNKNOWN_INVITE
+ * * UNKNOWN_MEMBER
+ * * UNKNOWN_MESSAGE
+ * * UNKNOWN_OVERWRITE
+ * * UNKNOWN_PROVIDER
+ * * UNKNOWN_ROLE
+ * * UNKNOWN_TOKEN
+ * * UNKNOWN_USER
+ * * UNKNOWN_EMOJI
+ * * BOT_PROHIBITED_ENDPOINT
+ * * BOT_ONLY_ENDPOINT
+ * * MAXIMUM_GUILDS
+ * * MAXIMUM_FRIENDS
+ * * MAXIMUM_PINS
+ * * MAXIMUM_ROLES
+ * * MAXIMUM_REACTIONS
+ * * UNAUTHORIZED
+ * * MISSING_ACCESS
+ * * INVALID_ACCOUNT_TYPE
+ * * CANNOT_EXECUTE_ON_DM
+ * * EMBED_DISABLED
+ * * CANNOT_EDIT_MESSAGE_BY_OTHER
+ * * CANNOT_SEND_EMPTY_MESSAGE
+ * * CANNOT_MESSAGE_USER
+ * * CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
+ * * CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
+ * * OAUTH2_APPLICATION_BOT_ABSENT
+ * * MAXIMUM_OAUTH2_APPLICATIONS
+ * * INVALID_OAUTH_STATE
+ * * MISSING_PERMISSIONS
+ * * INVALID_AUTHENTICATION_TOKEN
+ * * NOTE_TOO_LONG
+ * * INVALID_BULK_DELETE_QUANTITY
+ * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * * BULK_DELETE_MESSAGE_TOO_OLD
+ * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * * REACTION_BLOCKED
+ * @typedef {string} APIError
+ */
+exports.APIErrors = {
+  UNKNOWN_ACCOUNT: 10001,
+  UNKNOWN_APPLICATION: 10002,
+  UNKNOWN_CHANNEL: 10003,
+  UNKNOWN_GUILD: 10004,
+  UNKNOWN_INTEGRATION: 10005,
+  UNKNOWN_INVITE: 10006,
+  UNKNOWN_MEMBER: 10007,
+  UNKNOWN_MESSAGE: 10008,
+  UNKNOWN_OVERWRITE: 10009,
+  UNKNOWN_PROVIDER: 10010,
+  UNKNOWN_ROLE: 10011,
+  UNKNOWN_TOKEN: 10012,
+  UNKNOWN_USER: 10013,
+  UNKNOWN_EMOJI: 10014,
+  BOT_PROHIBITED_ENDPOINT: 20001,
+  BOT_ONLY_ENDPOINT: 20002,
+  MAXIMUM_GUILDS: 30001,
+  MAXIMUM_FRIENDS: 30002,
+  MAXIMUM_PINS: 30003,
+  MAXIMUM_ROLES: 30005,
+  MAXIMUM_REACTIONS: 30010,
+  UNAUTHORIZED: 40001,
+  MISSING_ACCESS: 50001,
+  INVALID_ACCOUNT_TYPE: 50002,
+  CANNOT_EXECUTE_ON_DM: 50003,
+  EMBED_DISABLED: 50004,
+  CANNOT_EDIT_MESSAGE_BY_OTHER: 50005,
+  CANNOT_SEND_EMPTY_MESSAGE: 50006,
+  CANNOT_MESSAGE_USER: 50007,
+  CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: 50008,
+  CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: 50009,
+  OAUTH2_APPLICATION_BOT_ABSENT: 50010,
+  MAXIMUM_OAUTH2_APPLICATIONS: 50011,
+  INVALID_OAUTH_STATE: 50012,
+  MISSING_PERMISSIONS: 50013,
+  INVALID_AUTHENTICATION_TOKEN: 50014,
+  NOTE_TOO_LONG: 50015,
+  INVALID_BULK_DELETE_QUANTITY: 50016,
+  CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
+  CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
+  BULK_DELETE_MESSAGE_TOO_OLD: 50034,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  REACTION_BLOCKED: 90001,
 };

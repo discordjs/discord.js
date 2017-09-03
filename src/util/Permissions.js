@@ -103,7 +103,7 @@ class Permissions {
   }
 
   /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
    * permission is available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {Object}
@@ -152,8 +152,8 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.flags})
-   * - A permission number
+   * * A string (see {@link Permissions.FLAGS})
+   * * A permission number
    * @typedef {string|number} PermissionResolvable
    */
 
@@ -180,7 +180,8 @@ class Permissions {
  * - `MANAGE_GUILD` (edit the guild information, region, etc.)
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
- * - `READ_MESSAGES`
+ * - `VIEW_CHANNEL`
+ * - `READ_MESSAGES` **(deprecated)**
  * - `SEND_MESSAGES`
  * - `SEND_TTS_MESSAGES`
  * - `MANAGE_MESSAGES` (delete messages and reactions)
@@ -215,6 +216,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
 
+  VIEW_CHANNEL: 1 << 10,
   READ_MESSAGES: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
@@ -268,8 +270,8 @@ Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.
   'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
 Object.defineProperty(Permissions.prototype, 'member', {
   get: util
-        .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
-        'EvaluatedPermissions#member is deprecated'),
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+      'EvaluatedPermissions#member is deprecated'),
 });
 
 module.exports = Permissions;

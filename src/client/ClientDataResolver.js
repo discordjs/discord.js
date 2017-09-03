@@ -28,7 +28,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A user ID
+   * * A Snowflake
    * * A Message object (resolves to the message author)
    * * A Guild object (owner of the guild)
    * * A GuildMember object
@@ -65,7 +65,7 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * * A Guild ID
+   * * A Snowflake
    * @typedef {Guild|Snowflake} GuildResolvable
    */
 
@@ -106,7 +106,7 @@ class ClientDataResolver {
    * * A Channel object
    * * A Message object (the channel the message was sent in)
    * * A Guild object (the #general channel)
-   * * A channel ID
+   * * A Snowflake
    * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
    */
 
@@ -174,6 +174,20 @@ class ClientDataResolver {
     return String(data);
   }
 
+
+  /**
+   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+   * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
+   * @returns {Promise<?string>}
+   */
+  resolveImage(image) {
+    if (!image) return Promise.resolve(null);
+    if (typeof image === 'string' && image.startsWith('data:')) {
+      return Promise.resolve(image);
+    }
+    return this.resolveFile(image).then(this.resolveBase64);
+  }
+
   /**
    * Data that resolves to give a Base64 string, typically for image uploading. This can be:
    * * A Buffer
@@ -192,19 +206,25 @@ class ClientDataResolver {
   }
 
   /**
-   * Data that can be resolved to give a Buffer. This can be:
-   * * A Buffer
-   * * The path to a local file
-   * * A URL
-   * @typedef {string|Buffer} BufferResolvable
-   */
+    * Data that can be resolved to give a Buffer. This can be:
+    * * A Buffer
+    * * The path to a local file
+    * * A URL
+    * * A Stream
+    * @typedef {string|Buffer} BufferResolvable
+    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
-   * @returns {Promise<Buffer>}
-   */
-  resolveBuffer(resource) {
+    * @external Stream
+    * @see {@link https://nodejs.org/api/stream.html}
+    */
+
+  /**
+    * Resolves a BufferResolvable to a Buffer.
+    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
+    * @returns {Promise<Buffer>}
+    */
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
@@ -212,11 +232,11 @@ class ClientDataResolver {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
           snekfetch.get(resource)
-          .end((err, res) => {
-            if (err) return reject(err);
-            if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-            return resolve(res.body);
-          });
+            .end((err, res) => {
+              if (err) return reject(err);
+              if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
+              return resolve(res.body);
+            });
         } else {
           const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
@@ -228,6 +248,13 @@ class ClientDataResolver {
             return null;
           });
         }
+      });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
       });
     }
 

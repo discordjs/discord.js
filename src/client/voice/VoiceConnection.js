@@ -8,12 +8,13 @@ const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
 
 /**
- * Represents a connection to a voice channel in Discord.
+ * Represents a connection to a guild's voice server.
  * ```js
  * // Obtained using:
- * voiceChannel.join().then(connection => {
+ * voiceChannel.join()
+ *   .then(connection => {
  *
- * });
+ *   });
  * ```
  * @extends {EventEmitter}
  */
@@ -132,6 +133,7 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.status !== Constants.VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
       op: Constants.VoiceOPCodes.SPEAKING,
@@ -163,7 +165,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Set the token and endpoint required to connect to the the voice servers.
+   * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
    * @returns {void}
@@ -245,7 +247,6 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    this.status = Constants.VoiceStatus.DISCONNECTED;
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -256,6 +257,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
+    this.status = Constants.VoiceStatus.DISCONNECTED;
   }
 
   /**
@@ -430,6 +432,8 @@ class VoiceConnection extends EventEmitter {
    * @property {number} [seek=0] The time to seek to
    * @property {number} [volume=1] The volume to play at
    * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
+   * @property {number|string} [bitrate=48000] The bitrate (quality) of the audio.
+   * If set to 'auto', the voice channel's bitrate will be used
    */
 
   /**
@@ -440,10 +444,10 @@ class VoiceConnection extends EventEmitter {
    * @example
    * // Play files natively
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *   })
+   *   .catch(console.error);
    */
   playFile(file, options) {
     return this.player.playUnknownStream(`file:${file}`, options);
@@ -469,18 +473,18 @@ class VoiceConnection extends EventEmitter {
    * const ytdl = require('ytdl-core');
    * const streamOptions = { seek: 0, volume: 1 };
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *    const dispatcher = connection.playStream(stream, streamOptions);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+   *     const dispatcher = connection.playStream(stream, streamOptions);
+   *   })
+   *   .catch(console.error);
    */
   playStream(stream, options) {
     return this.player.playUnknownStream(stream, options);
   }
 
   /**
-   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * Plays a stream of 16-bit signed stereo PCM.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -490,7 +494,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Plays an Opus encoded stream at 48KHz.
+   * Plays an Opus encoded stream.
    * <warn>Note that inline volume is not compatible with this method.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
@@ -503,6 +507,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays a voice broadcast.
    * @param {VoiceBroadcast} broadcast The broadcast to play
+   * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    * @example
    * // Play a broadcast
@@ -511,12 +516,13 @@ class VoiceConnection extends EventEmitter {
    *   .playFile('./test.mp3');
    * const dispatcher = voiceConnection.playBroadcast(broadcast);
    */
-  playBroadcast(broadcast) {
-    return this.player.playBroadcast(broadcast);
+  playBroadcast(broadcast, options) {
+    return this.player.playBroadcast(broadcast, options);
   }
 
   /**
-   * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
+   * Creates a VoiceReceiver so you can start listening to voice data.
+   * It's recommended to only create one of these.
    * @returns {VoiceReceiver}
    */
   createReceiver() {
