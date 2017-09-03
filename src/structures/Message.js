@@ -261,13 +261,14 @@ class Message {
   get emojis() {
     const matches = [];
     let match;
+    const unicodeEmojiRegex = Constants.UnicodeEmojiRegex();
     // eslint-disable-next-line no-cond-assign
-    while (match = Constants.UnicodeEmojiRegex().exec(this.content)) {
+    while (match = unicodeEmojiRegex.exec(this.content)) {
       matches.push({ emoji: match[0], index: match.index });
     }
-    const CustomRe = /<:(\w+):(\d+)>/g;
+    const customRe = /<:(\w+):(\d+)>/g;
     // eslint-disable-next-line no-cond-assign
-    while (match = CustomRe.exec(this.content)) {
+    while (match = customRe.exec(this.content)) {
       matches.push({
         emoji: this.client.emojis.get(match[2]) || { name: match[1], id: match[2] },
         index: match.index,
