@@ -56,4 +56,8 @@ module.exports = {
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
+
+  get static() {
+    return require('./static');
+  },
 };
