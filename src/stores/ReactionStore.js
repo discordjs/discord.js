@@ -14,7 +14,7 @@ class ReactionStore extends DataStore {
   create(data) {
     const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
 
-    const existing = this.get(data.id);
+    const existing = this.get(emojiID);
     if (existing) return existing;
 
     const reaction = new MessageReaction(this.message, data.emoji, data.count, data.me);

@@ -1,6 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
-const Util = require('../../../../util/Util');
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -36,17 +35,17 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
       if (member) {
         if (client.listenerCount(Constants.Events.PRESENCE_UPDATE) === 0) {
-          guild._setPresence(user.id, data);
+          guild.presences.create(data);
           return;
         }
         const oldMember = member._clone();
         if (member.presence) {
-          oldMember.frozenPresence = Util.cloneObject(member.presence);
+          oldMember.frozenPresence = member.presence._clone();
         }
-        guild._setPresence(user.id, data);
+        guild.presences.create(data);
         client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);
       } else {
-        guild._setPresence(user.id, data);
+        guild.presences.create(data);
       }
     }
   }

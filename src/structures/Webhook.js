@@ -210,8 +210,7 @@ class Webhook {
       auth: false,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
@@ -239,25 +238,23 @@ class Webhook {
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
   /**
    * Edit the webhook.
    * @param {Object} options Options
-   * @param {string} [options.name] New name for this webhook
+   * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
-        const dataURI = this.client.resolver.resolveBase64(file);
-        return this.edit({ name, avatar: dataURI }, reason);
-      });
+      return this.client.resolver.resolveImage(avatar).then(image =>
+        this.edit({ name, avatar: image }, reason)
+      );
     }
     return this.client.api.webhooks(this.id, this.token).patch({
       data: { name, avatar },

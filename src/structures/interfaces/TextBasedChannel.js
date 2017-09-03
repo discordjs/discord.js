@@ -38,6 +38,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
@@ -245,8 +246,8 @@ class TextBasedChannel {
    */
 
   /**
-   * Similar to createCollector but in promise form. Resolves with a collection of messages that pass the specified
-   * filter.
+   * Similar to createMessageCollector but in promise form.
+   * Resolves with a collection of messages that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
@@ -279,7 +280,9 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
+    if (!isNaN(messages)) {
+      return this.messages.fetch({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
+    }
     if (messages instanceof Array || messages instanceof Collection) {
       let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
       if (filterOld) {

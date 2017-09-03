@@ -280,7 +280,7 @@ class Role extends Base {
 
   /**
    * Set the permissions of the role.
-   * @param {string[]} permissions The permissions of the role
+   * @param {PermissionResolvable[]} permissions The permissions of the role
    * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example

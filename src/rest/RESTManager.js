@@ -3,6 +3,7 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
+const Constants = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
@@ -25,6 +26,10 @@ class RESTManager {
     if (token && prefixed) return `${this.tokenPrefix} ${token}`;
     else if (token) return token;
     throw new Error('TOKEN_MISSING');
+  }
+
+  get cdn() {
+    return Constants.Endpoints.CDN(this.client.options.http.cdn);
   }
 
   destroy() {

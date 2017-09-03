@@ -6,7 +6,6 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Invite = require('../structures/Invite');
@@ -16,6 +15,7 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
+const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -100,9 +100,9 @@ class Client extends BaseClient {
     /**
      * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, Presence>}
+     * @type {ClientPresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'CLIENT_TOKEN' in process.env) {
@@ -175,7 +175,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get status() {
-    return this.ws.connection.status;
+    return this.ws.connection ? this.ws.connection.status : null;
   }
 
   /**
@@ -254,6 +254,9 @@ class Client extends BaseClient {
       if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
+    }).catch(e => {
+      this.destroy();
+      return Promise.reject(e);
     });
   }
 
@@ -326,7 +329,7 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
     }
     if (lifetime <= 0) {
-      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      this.emit(Constants.Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -347,14 +350,15 @@ class Client extends BaseClient {
       }
     }
 
-    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    this.emit(Constants.Events.DEBUG,
+      `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
-   * @returns {Promise<OAuth2Application>}
+   * @returns {Promise<ClientApplication>}
    */
   fetchApplication(id = '@me') {
     return this.api.oauth2.applications(id).get()
@@ -392,20 +396,6 @@ class Client extends BaseClient {
     this.pings.unshift(Date.now() - startTime);
     if (this.pings.length > 3) this.pings.length = 3;
     this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
-   * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {Snowflake} id ID of the user
-   * @param {Object} presence Raw presence object from Discord
-   * @private
-   */
-  _setPresence(id, presence) {
-    if (this.presences.has(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
   }
 
   /**

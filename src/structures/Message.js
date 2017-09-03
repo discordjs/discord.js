@@ -1,7 +1,6 @@
 const Mentions = require('./MessageMentions');
 const Attachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
@@ -118,8 +117,7 @@ class Message extends Base {
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+        this.reactions.create(reaction);
       }
     }
 
@@ -285,7 +283,7 @@ class Message extends Base {
    */
 
   /**
-   * Similar to createCollector but in promise form.
+   * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
@@ -354,7 +352,7 @@ class Message extends Base {
   /**
    * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -369,6 +367,8 @@ class Message extends Base {
     } else if (!options) {
       options = {};
     }
+    if (options instanceof Embed) options = { embed: options };
+
     if (typeof options.content !== 'undefined') content = options.content;
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);

@@ -37,7 +37,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {void}
    */
   debug(message) {
-    return this.client.emit('debug', `[ws] ${message}`);
+    return this.client.emit(Constants.Events.DEBUG, `[ws] ${message}`);
   }
 
   /**

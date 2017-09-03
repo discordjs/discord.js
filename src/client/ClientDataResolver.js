@@ -31,9 +31,8 @@ class ClientDataResolver {
    * * A User object
    * * A Snowflake
    * * A Message object (resolves to the message author)
-   * * A Guild object (owner of the guild)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
    */
 
   /**
@@ -46,7 +45,6 @@ class ClientDataResolver {
     if (typeof user === 'string') return this.client.users.get(user) || null;
     if (user instanceof GuildMember) return user.user;
     if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
     return null;
   }
 
@@ -59,7 +57,6 @@ class ClientDataResolver {
     if (user instanceof User || user instanceof GuildMember) return user.id;
     if (typeof user === 'string') return user || null;
     if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.ownerID;
     return null;
   }
 
@@ -126,10 +123,8 @@ class ClientDataResolver {
   /**
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
-   * * A Message object (the channel the message was sent in)
-   * * A Guild object (the #general channel)
    * * A Snowflake
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   * @typedef {Channel|Snowflake} ChannelResolvable
    */
 
   /**
@@ -140,8 +135,6 @@ class ClientDataResolver {
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
     if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
     return null;
   }
 
@@ -153,8 +146,6 @@ class ClientDataResolver {
   resolveChannelID(channel) {
     if (channel instanceof Channel) return channel.id;
     if (typeof channel === 'string') return channel;
-    if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
     return null;
   }
 
@@ -175,6 +166,20 @@ class ClientDataResolver {
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
+  }
+
+  /**
+   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+   * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
+   * @returns {Promise<?string>}
+   */
+  async resolveImage(image) {
+    if (!image) return null;
+    if (typeof image === 'string' && image.startsWith('data:')) {
+      return image;
+    }
+    const file = await this.resolveFile(image);
+    return this.resolveBase64(file);
   }
 
   /**
@@ -255,7 +260,7 @@ class ClientDataResolver {
    * * A custom emoji ID
    * * An Emoji object
    * * A ReactionEmoji object
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   * @typedef {string|Snowflake|Emoji|ReactionEmoji} EmojiIdentifierResolvable
    */
 
   /**

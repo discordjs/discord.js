@@ -1,10 +1,8 @@
 const Long = require('long');
 const Role = require('./Role');
-const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const { Presence } = require('./Presence');
 const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
@@ -18,6 +16,7 @@ const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
+const PresenceStore = require('../stores/PresenceStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -33,7 +32,7 @@ class Guild extends Base {
 
     /**
      * A collection of members that are in this guild. The key is the member's ID, the value is the member
-     * @type {Collection<Snowflake, GuildMember>}
+     * @type {GuildMemberStore<Snowflake, GuildMember>}
      */
     this.members = new GuildMemberStore(this);
 
@@ -51,9 +50,9 @@ class Guild extends Base {
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<Snowflake, Presence>}
+     * @type {PresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new PresenceStore(this.client);
 
     if (!data) return;
     if (data.unavailable) {
@@ -201,7 +200,7 @@ class Guild extends Base {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
+        this.presences.create(presence);
       }
     }
 
@@ -261,7 +260,7 @@ class Guild extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.Icon(this.id, this.icon, format, size);
   }
 
   /**
@@ -282,7 +281,7 @@ class Guild extends Base {
    */
   splashURL({ format, size } = {}) {
     if (!this.splash) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash, format, size);
+    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -300,7 +299,7 @@ class Guild extends Base {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.get(this.afkChannelID);
+    return this.client.channels.get(this.afkChannelID) || null;
   }
 
   /**
@@ -309,7 +308,7 @@ class Guild extends Base {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.get(this.systemChannelID);
+    return this.client.channels.get(this.systemChannelID) || null;
   }
 
   /**
@@ -550,64 +549,6 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch a single guild member from a user.
-   * @param {UserResolvable} user The user to fetch the member for
-   * @param {boolean} [cache=true] Insert the user into the users cache
-   * @returns {Promise<GuildMember>}
-   */
-  fetchMember(user, cache = true) {
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('USER_NOT_CACHED'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
-    return this.client.api.guilds(this.id).members(user.id).get()
-      .then(data => {
-        if (cache) return this.client.actions.GuildMemberGet.handle(this, data).member;
-        else return new GuildMember(this, data);
-      });
-  }
-
-  /**
-   * Fetches all the members in the guild, even if they are offline. If the guild has less than 250 members,
-   * this should not be necessary.
-   * @param {Object} [options] Options for the fetch operation
-   * @param {string} [options.query=''] Limit fetch to members with similar usernames
-   * @param {number} [options.limit=0] Maximum number of members to request
-   * @returns {Promise<Collection<Snowflake, GuildMember>>}
-   */
-  fetchMembers({ query = '', limit = 0 } = {}) {
-    return new Promise((resolve, reject) => {
-      if (this.memberCount === this.members.size) {
-        resolve(query || limit ? new Collection() : this.members);
-        return;
-      }
-      this.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
-        d: {
-          guild_id: this.id,
-          query,
-          limit,
-        },
-      });
-      const fetchedMembers = new Collection();
-      const handler = (members, guild) => {
-        if (guild.id !== this.id) return;
-        for (const member of members.values()) {
-          if (query || limit) fetchedMembers.set(member.user.id, member);
-        }
-        if (this.memberCount === this.members.size || ((query || limit) && members.size < 1000)) {
-          this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(query || limit ? fetchedMembers : this.members);
-        }
-      };
-      this.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-      this.client.setTimeout(() => {
-        this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-        reject(new Error('GUILD_MEMBERS_TIMEOUT'));
-      }, 120e3);
-    });
-  }
-
-  /**
    * Performs a search within the entire guild.
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
@@ -633,6 +574,7 @@ class Guild extends Base {
    * @property {number} [verificationLevel] The verification level of the guild
    * @property {number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -658,12 +600,16 @@ class Guild extends Base {
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
-    if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
-    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
+    if (typeof data.afkChannel !== 'undefined') {
+      _data.afk_channel_id = this.client.resolver.resolveChannelID(data.afkChannel);
+    }
+    if (typeof data.systemChannel !== 'undefined') {
+      _data.system_channel_id = this.client.resolver.resolveChannelID(data.systemChannel);
+    }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = this.client.resolver.resolveBase64(data.icon);
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
-    if (data.splash) _data.splash = this.client.resolver.resolveBase64(data.splash);
+    if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -768,17 +714,17 @@ class Guild extends Base {
 
   /**
    * Set a new guild icon.
-   * @param {Base64Resolvable} icon The new icon of the guild
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild icon
-   * guild.setIcon(fs.readFileSync('./icon.png'))
+   * guild.setIcon('./icon.png')
    *  .then(updated => console.log('Updated the guild icon'))
    *  .catch(console.error);
    */
-  setIcon(icon, reason) {
-    return this.edit({ icon }, reason);
+  async setIcon(icon, reason) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
   }
 
   /**
@@ -798,17 +744,17 @@ class Guild extends Base {
 
   /**
    * Set a new guild splash screen.
-   * @param {Base64Resolvable} splash The new splash screen of the guild
+   * @param {Base64Resolvable|BufferResolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
-   * guild.setIcon(fs.readFileSync('./splash.png'))
+   * guild.setSplash('./splash.png')
    *  .then(updated => console.log('Updated the guild splash'))
    *  .catch(console.error);
    */
-  setSplash(splash, reason) {
-    return this.edit({ splash }, reason);
+  async setSplash(splash, reason) {
+    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
   }
 
   /**
@@ -841,6 +787,7 @@ class Guild extends Base {
 
   /**
    * Allow direct messages from guild members.
+   * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -902,6 +849,7 @@ class Guild extends Base {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {string} [options.reason] Reason for this prune
@@ -936,7 +884,7 @@ class Guild extends Base {
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable[]|number} [allow] The permissions to allow
    * @property {PermissionResolvable[]|number} [deny] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 
   /**
@@ -1102,23 +1050,8 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveBuffer(attachment)
-      .then(data => {
-        const dataURI = this.client.resolver.resolveBase64(data);
-        return this.createEmoji(dataURI, name, { roles, reason });
-      });
-  }
-
-  /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete
-   * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise}
-   */
-  deleteEmoji(emoji, reason) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
-      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+    return this.client.resolver.resolveImage(attachment)
+      .then(image => this.createEmoji(image, name, { roles, reason }));
   }
 
   /**
@@ -1213,17 +1146,9 @@ class Guild extends Base {
     }
   }
 
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
   /**
    * Set the position of a role in this guild.
-   * @param {string|Role} role The role to edit, can be a role object or a role ID
+   * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -1253,7 +1178,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a channel in this guild.
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
+   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}
@@ -1319,7 +1244,6 @@ class VoiceStateCollection extends Collection {
     this.guild = guild;
   }
   set(id, voiceState) {
-    super.set(id, voiceState);
     const member = this.guild.members.get(id);
     if (member) {
       if (member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
@@ -1329,6 +1253,7 @@ class VoiceStateCollection extends Collection {
       const newChannel = this.guild.channels.get(voiceState.channel_id);
       if (newChannel) newChannel.members.set(member.user.id, member);
     }
+    super.set(id, voiceState);
   }
 }
 

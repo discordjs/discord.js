@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-
+const Constants = require('../../../../util/Constants');
 const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
@@ -29,11 +29,7 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    data.presences = data.presences || [];
-    for (const presence of data.presences) {
-      client.users.create(presence.user);
-      client._setPresence(presence.user.id, presence);
-    }
+    for (const presence of data.presences || []) client.presences.create(presence);
 
     if (data.notes) {
       for (const user in data.notes) {
@@ -52,7 +48,7 @@ class ReadyHandler extends AbstractHandler {
         avatar: 'https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png',
         bot: true,
         status: 'online',
-        game: null,
+        activity: null,
         verified: true,
       });
     }
@@ -73,7 +69,7 @@ class ReadyHandler extends AbstractHandler {
 
     ws.sessionID = data.session_id;
     ws._trace = data._trace;
-    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    client.emit(Constants.Events.DEBUG, `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }
