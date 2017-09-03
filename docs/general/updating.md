@@ -1,3 +1,7 @@
+# Version 11.2.0
+v11.2.0 features fixes a lot of bugs we encountered along the 11.1.0 release, as well as support for new features such as Message Attachments and UserGuildSettings.
+See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.2.0) for a full list of changes, including information about deprecations.
+
 # Version 11.1.0
 v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
 See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.1.0) for a full list of changes, including
@@ -118,9 +122,9 @@ The guild parameter that has been dropped from the guild-related events can stil
 
 ## Dates and timestamps
 All dates/timestamps on the structures have been refactored to have a consistent naming scheme and availability.
-All of them are named similarly to this:  
-**Date:** `Message.createdAt`  
-**Timestamp:** `Message.createdTimestamp`  
+All of them are named similarly to this:
+**Date:** `Message.createdAt`
+**Timestamp:** `Message.createdTimestamp`
 See the docs for each structure to see which date/timestamps are available on them.
 
 
@@ -149,7 +153,7 @@ A couple more important details:
 * `Client.servers.length` ==> `client.guilds.size` (all instances of `server` are now `guild`)
 
 ## No more callbacks!
-Version 9 eschews callbacks in favour of Promises. This means all code relying on callbacks must be changed.  
+Version 9 eschews callbacks in favour of Promises. This means all code relying on callbacks must be changed.
 For example, the following code:
 
 ```js
