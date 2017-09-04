@@ -12,7 +12,6 @@ const MessageStore = require('../stores/MessageStore');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.type = 'text';
     this.messages = new MessageStore(this);
     this._typing = new Map();
   }
@@ -34,6 +33,8 @@ class TextChannel extends GuildChannel {
     this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
+
+    if (data.messages) for (const message of data.messages) this.messages.create(message);
   }
 
   /**
