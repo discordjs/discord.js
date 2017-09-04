@@ -65,7 +65,6 @@ class Collection extends Map {
    */
   first(count) {
     if (typeof count === 'undefined') return this.values().next().value;
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     count = Math.min(this.size, count);
     const arr = new Array(count);
@@ -81,7 +80,6 @@ class Collection extends Map {
    */
   firstKey(count) {
     if (typeof count === 'undefined') return this.keys().next().value;
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     count = Math.min(this.size, count);
     const arr = new Array(count);
@@ -99,7 +97,6 @@ class Collection extends Map {
   last(count) {
     const arr = this.array();
     if (typeof count === 'undefined') return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     return arr.slice(-count);
   }
@@ -113,7 +110,6 @@ class Collection extends Map {
   lastKey(count) {
     const arr = this.keyArray();
     if (typeof count === 'undefined') return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     return arr.slice(-count);
   }
@@ -127,7 +123,6 @@ class Collection extends Map {
   random(count) {
     let arr = this.array();
     if (typeof count === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
@@ -145,7 +140,6 @@ class Collection extends Map {
   randomKey(count) {
     let arr = this.keyArray();
     if (typeof count === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     if (arr.length === 0) return [];
     const rand = new Array(count);
@@ -248,7 +242,7 @@ class Collection extends Map {
    * if (collection.exists('username', 'Bob')) {
    *  console.log('user here!');
    * }
-   * @example 
+   * @example
    * if (collection.exists(user => user.username === 'Bob')) {
    *  console.log('user here!');
    * }
