@@ -701,7 +701,7 @@ exports.APIErrors = {
 };
 
 function keyMirror(arr) {
-  let tmp = {};
+  let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
   return tmp;
 }
