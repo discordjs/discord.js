@@ -33,8 +33,9 @@ class ClientUserGuildSettings {
       if (!data.hasOwnProperty(key)) continue;
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {
-          this.channelOverrides.set(channel.channel_id,
-            new ClientUserChannelOverride(channel));
+          const override = this.channelOverrides.get(channel.channel_id);
+          if (override) override.patch(channel);
+          else this.channelOverrides.set(channel.channel_id, new ClientUserChannelOverride(channel));
         }
       } else if (typeof value === 'function') {
         this[value.name] = value(data[key]);
