@@ -6,7 +6,7 @@ const ClientUserChannelOverride = require('./ClientUserChannelOverride');
  * A wrapper around the ClientUser's guild settings.
  */
 class ClientUserGuildSettings {
-  constructor(data, client) {
+  constructor(client, data) {
     /**
      * The client that created the instance of the ClientUserGuildSettings
      * @name ClientUserGuildSettings#client

@@ -84,7 +84,7 @@ class ClientUser extends User {
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
-        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
       }
     }
   }
