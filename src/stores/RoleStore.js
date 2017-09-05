@@ -9,6 +9,7 @@ class RoleStore extends DataStore {
   constructor(guild, iterable) {
     super(guild.client, iterable);
     this.guild = guild;
+    this.maxSize = this.client.options.cacheLimits.roles;
   }
 
   create(data) {

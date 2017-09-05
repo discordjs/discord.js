@@ -6,6 +6,11 @@ const User = require('../structures/User');
  * @extends {DataStore}
  */
 class UserStore extends DataStore {
+  constructor(...args) {
+    super(...args);
+    this.maxSize = this.client.options.cacheLimits.users;
+  }
+
   create(data, cache = true) {
     const existing = this.get(data.id);
     if (existing) return existing;
