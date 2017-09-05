@@ -10,9 +10,6 @@ const { Error, RangeError } = require('../errors');
  * and is therefore slightly riskier to use.
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
- * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
- * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
- * indefinitely)
  * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
@@ -29,6 +26,7 @@ const { Error, RangeError } = require('../errors');
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
+ * @property {CacheLimitOptions} [cacheLimits] Options for limiting caching
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
@@ -37,7 +35,6 @@ exports.DefaultOptions = {
   shardId: 0,
   shardCount: 0,
   internalSharding: false,
-  messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
   fetchAllMembers: false,
@@ -46,6 +43,35 @@ exports.DefaultOptions = {
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
+
+  /**
+   * Cache Limit options
+   *  * (-1 or Infinity for unlimited - don't do this to messages without message sweeping,
+   * otherwise memory usage will climb indefinitely)
+   * @typedef {Object} CacheLimitOptions
+   * @property {number} [channels=Infinity] Number of {@link Channel}s to cache in a {@link ChannelStore}
+   * @property {number} [emojis=Infinity] Number of {@link Emoji}s to cache in a {@link EmojiStore}
+   * @property {number} [guildChannels=Infinity] Number of {@link GuildChannel}s to cache in a {@link GuildChannelStore}
+   * @property {number} [guildMembers=Infinity] Number of {@link GuildMember}s to cache in a {@link GuildMemberStore}
+   * @property {number} [guilds=Infinity] Number of {@link Guild}s to guilds in a {@link GuildStore}
+   * @property {number} [messages=200] Number of {@link Message}s to messages in a {@link MessageStore}
+   * @property {number} [presences=Infinity] Number of {@link Presence}s to cache in a {@link PresenceStore}
+   * @property {number} [reactions=Infinity] Number of {@link ReactionEmoji}s to cache in a {@link ReactionStore}
+   * @property {number} [roles=Infinity] Number of {@link Role}s to cache in a {@link RoleStore}
+   * @property {number} [users=Infinity] Number of {@link User}s to cache in a {@link UserStore}
+   */
+  cacheLimits: {
+    channels: Infinity,
+    emojis: Infinity,
+    guildChannels: Infinity,
+    guildMembers: Infinity,
+    guilds: Infinity,
+    messages: 200,
+    presences: Infinity,
+    reactions: Infinity,
+    roles: Infinity,
+    users: Infinity,
+  },
 
   /**
    * WebSocket options (these are left as snake_case to match the API)

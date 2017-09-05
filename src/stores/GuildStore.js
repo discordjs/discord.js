@@ -6,6 +6,11 @@ const Guild = require('../structures/Guild');
  * @extends {DataStore}
  */
 class GuildStore extends DataStore {
+  constructor(...args) {
+    super(...args);
+    this.maxSize = this.client.options.cacheLimits.guilds;
+  }
+
   create(data, cache = true) {
     const existing = this.get(data.id);
     if (existing) return existing;

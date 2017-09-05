@@ -18,6 +18,8 @@ class ChannelStore extends DataStore {
     }
     super(client, iterableOrOptions);
 
+    this.maxSize = this.client.options.cacheLimits.channels;
+
     if (options.lru) {
       const lru = this[kLru] = [];
       lru.add = item => {

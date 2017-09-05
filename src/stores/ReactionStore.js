@@ -9,6 +9,7 @@ class ReactionStore extends DataStore {
   constructor(message, iterable) {
     super(message.client, iterable);
     this.message = message;
+    this.maxSize = this.client.options.cacheLimits.reactions;
   }
 
   create(data) {

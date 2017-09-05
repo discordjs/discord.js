@@ -10,6 +10,7 @@ class MessageStore extends DataStore {
   constructor(channel, iterable) {
     super(channel.client, iterable);
     this.channel = channel;
+    this.maxSize = this.client.options.cacheLimits.messages;
     Message = require('../structures/Message');
   }
 
@@ -21,13 +22,6 @@ class MessageStore extends DataStore {
 
     if (cache) this.set(message.id, message);
     return message;
-  }
-
-  set(key, value) {
-    const maxSize = this.client.options.messageCacheMaxSize;
-    if (maxSize === 0) return;
-    if (this.size >= maxSize && maxSize > 0) this.delete(this.firstKey());
-    super.set(key, value);
   }
 
   /**
@@ -61,7 +55,7 @@ class MessageStore extends DataStore {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain the reactions of the messages. 
+   * <info>The returned Collection does not contain the reactions of the messages.
    * Those need to be fetched seperately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
