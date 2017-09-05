@@ -19,7 +19,14 @@ const createConfig = options => {
     }),
   ];
 
-  if (options.minify) plugins.push(new UglifyJSPlugin({ uglifyOptions: { output: { comments: false } } }));
+  if (options.minify) {
+    plugins.push(new UglifyJSPlugin({
+      uglifyOptions: {
+        mangle: { keep_classnames: true },
+        output: { comments: false },
+      },
+    }));
+  }
 
   const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
 
