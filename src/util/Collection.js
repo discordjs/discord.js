@@ -101,7 +101,7 @@ class Collection extends Map {
     const arr = this.array();
     if (typeof amount === 'undefined') return arr[arr.length - 1];
     if (amount < 0) return this.first(amount * -1);
-    if (amount === 0) return [];
+    if (!amount) return [];
     return arr.slice(-amount);
   }
 
@@ -116,7 +116,7 @@ class Collection extends Map {
     const arr = this.keyArray();
     if (typeof amount === 'undefined') return arr[arr.length - 1];
     if (amount < 0) return this.firstKey(amount * -1);
-    if (amount === 0) return [];
+    if (!amount) return [];
     return arr.slice(-amount);
   }
 
@@ -129,7 +129,7 @@ class Collection extends Map {
   random(amount) {
     let arr = this.array();
     if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (arr.length === 0 || amount === 0) return [];
+    if (arr.length === 0 || !amount) return [];
     const rand = new Array(amount);
     arr = arr.slice();
     for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
@@ -145,7 +145,7 @@ class Collection extends Map {
   randomKey(amount) {
     let arr = this.keyArray();
     if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (arr.length === 0 || amount === 0) return [];
+    if (arr.length === 0 || !amount) return [];
     const rand = new Array(amount);
     arr = arr.slice();
     for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
