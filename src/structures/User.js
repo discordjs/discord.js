@@ -244,7 +244,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar
+      this.avatar === user.avatar;
 
     return equal;
   }
