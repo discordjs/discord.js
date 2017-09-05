@@ -7,9 +7,8 @@ const Emoji = require('../structures/Emoji');
  */
 class EmojiStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, Emoji);
     this.guild = guild;
-    Object.defineProperty(this, 'holds', { value: Emoji });
   }
 }
 

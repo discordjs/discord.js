@@ -6,9 +6,8 @@ const User = require('../structures/User');
  * @extends {DataStore}
  */
 class UserStore extends DataStore {
-  constructor(...args) {
-    super(...args);
-    Object.defineProperty(this, 'holds', { value: User });
+  constructor(client, iterable) {
+    super(client, iterable, User);
   }
 
   /**

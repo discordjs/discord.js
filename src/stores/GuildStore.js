@@ -6,9 +6,8 @@ const Guild = require('../structures/Guild');
  * @extends {DataStore}
  */
 class GuildStore extends DataStore {
-  constructor(...args) {
-    super(...args);
-    Object.defineProperty(this, 'holds', { value: Guild });
+  constructor(client, iterable) {
+    super(client, iterable, Guild);
   }
 }
 

@@ -8,9 +8,8 @@ const Message = require('../structures/Message');
  */
 class MessageStore extends DataStore {
   constructor(channel, iterable) {
-    super(channel.client, iterable);
+    super(channel.client, iterable, Message);
     this.channel = channel;
-    Object.defineProperty(this, 'holds', { value: Message });
   }
 
   set(key, value) {

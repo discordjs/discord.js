@@ -5,9 +5,10 @@ const Collection = require('../util/Collection');
  * @extends {Collection}
  */
 class DataStore extends Collection {
-  constructor(client, iterable) {
+  constructor(client, iterable, holds) {
     super();
     Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'holds', { value: holds });
     if (iterable) for (const item of iterable) this.create(item);
   }
 

@@ -7,9 +7,8 @@ const Role = require('../structures/Role');
  */
 class RoleStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, Role);
     this.guild = guild;
-    Object.defineProperty(this, 'holds', { value: Role });
   }
 }
 
