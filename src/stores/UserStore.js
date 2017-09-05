@@ -6,13 +6,9 @@ const User = require('../structures/User');
  * @extends {DataStore}
  */
 class UserStore extends DataStore {
-  create(data, cache = true) {
-    const existing = this.get(data.id);
-    if (existing) return existing;
-
-    const user = new User(this.client, data);
-    if (cache) this.set(user.id, user);
-    return user;
+  constructor(...args) {
+    super(...args);
+    Object.defineProperty(this, 'holds', { value: User });
   }
 
   /**

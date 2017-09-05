@@ -1,6 +1,6 @@
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
-let Message;
+const Message = require('../structures/Message');
 
 /**
  * Stores messages for text-based channels.
@@ -10,17 +10,7 @@ class MessageStore extends DataStore {
   constructor(channel, iterable) {
     super(channel.client, iterable);
     this.channel = channel;
-    Message = require('../structures/Message');
-  }
-
-  create(data, cache = true) {
-    const existing = this.get(data.id);
-    if (existing) return existing;
-
-    const message = new Message(this.client.channels.get(data.channel_id), data, this.client);
-
-    if (cache) this.set(message.id, message);
-    return message;
+    Object.defineProperty(this, 'holds', { value: Message });
   }
 
   set(key, value) {
@@ -61,7 +51,7 @@ class MessageStore extends DataStore {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain the reactions of the messages. 
+   * <info>The returned Collection does not contain the reactions of the messages.
    * Those need to be fetched seperately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
    */

@@ -12,7 +12,14 @@ class DataStore extends Collection {
   }
 
   // Stubs
-  create() { return undefined; }
+  create(data, cache = true) {
+    const existing = this.get(data.id);
+    if (existing) return existing;
+
+    const entry = new this.holds(this.client, data);
+    if (cache) this.set(entry.id, entry);
+    return entry;
+  }
   remove(key) { return this.delete(key); }
 }
 
