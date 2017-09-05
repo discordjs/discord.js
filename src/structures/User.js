@@ -43,7 +43,7 @@ class User extends Base {
      * @type {string}
      * @name User#avatar
      */
-    if (data.avatar) this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
      * Whether or not the user is a bot
