@@ -60,91 +60,95 @@ class Collection extends Map {
 
   /**
    * Obtains the first value(s) in this collection.
-   * @param {number} [count] Number of values to obtain from the beginning
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain from the beginning
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the end if
+   * count is negative
    */
-  first(count) {
-    if (typeof count === 'undefined') return this.values().next().value;
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    count = Math.min(this.size, count);
-    const arr = new Array(count);
+  first(amount) {
+    if (typeof amount === 'undefined') return this.values().next().value;
+    if (amount < 0) return this.last(amount * -1);
+    amount = Math.min(this.size, amount);
+    const arr = new Array(amount);
     const iter = this.values();
-    for (let i = 0; i < count; i++) arr[i] = iter.next().value;
+    for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
     return arr;
   }
 
   /**
    * Obtains the first key(s) in this collection.
-   * @param {number} [count] Number of keys to obtain from the beginning
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain from the beginning
+   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the end if
+   * count is negative
    */
-  firstKey(count) {
-    if (typeof count === 'undefined') return this.keys().next().value;
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    count = Math.min(this.size, count);
-    const arr = new Array(count);
-    const iter = this.iter();
-    for (let i = 0; i < count; i++) arr[i] = iter.next().value;
+  firstKey(amount) {
+    if (typeof amount === 'undefined') return this.keys().next().value;
+    if (amount < 0) return this.lastKey(amount * -1);
+    amount = Math.min(this.size, amount);
+    const arr = new Array(amount);
+    const iter = this.keys();
+    for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
     return arr;
   }
 
   /**
    * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain from the end
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain from the end
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the end if
+   * count is negative
    */
-  last(count) {
+  last(amount) {
     const arr = this.array();
-    if (typeof count === 'undefined') return arr[arr.length - 1];
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    return arr.slice(-count);
+    if (typeof amount === 'undefined') return arr[arr.length - 1];
+    if (amount < 0) return this.first(amount * -1);
+    if (!amount) return [];
+    return arr.slice(-amount);
   }
 
   /**
    * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain from the end
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain from the end
+   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the end if
+   * count is negative
    */
-  lastKey(count) {
+  lastKey(amount) {
     const arr = this.keyArray();
-    if (typeof count === 'undefined') return arr[arr.length - 1];
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    return arr.slice(-count);
+    if (typeof amount === 'undefined') return arr[arr.length - 1];
+    if (amount < 0) return this.firstKey(amount * -1);
+    if (!amount) return [];
+    return arr.slice(-amount);
   }
 
   /**
    * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain randomly
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain randomly
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values
    */
-  random(count) {
+  random(amount) {
     let arr = this.array();
-    if (typeof count === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    if (arr.length === 0) return [];
-    const rand = new Array(count);
+    if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
+    if (arr.length === 0 || !amount) return [];
+    const rand = new Array(amount);
     arr = arr.slice();
-    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
   /**
    * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain randomly
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain randomly
+   * @returns {*|Array<*>} A single key if no amount is provided or an array
    */
-  randomKey(count) {
+  randomKey(amount) {
     let arr = this.keyArray();
-    if (typeof count === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    if (arr.length === 0) return [];
-    const rand = new Array(count);
+    if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
+    if (arr.length === 0 || !amount) return [];
+    const rand = new Array(amount);
     arr = arr.slice();
-    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
