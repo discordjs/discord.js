@@ -31,8 +31,10 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
-    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+    if (!this.options.shardId && 'SHARD_ID' in process.env) this.options.shardId = Number(process.env.SHARD_ID);
+    if (!this.options.shardCount && 'SHARD_COUNT' in process.env) {
+      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    }
 
     this._validateOptions();
 
