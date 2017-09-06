@@ -1,4 +1,3 @@
-const browser = typeof window !== 'undefined';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
