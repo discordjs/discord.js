@@ -5,9 +5,6 @@ const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
-const Message = require('./Message');
-const GroupDMChannel = require('./GroupDMChannel');
-const { TypeError } = require('../errors');
 
 /**
  * Represents the logged in client's Discord user.
@@ -28,7 +25,6 @@ class ClientUser extends User {
      * @type {string}
      */
     this.email = data.email;
-    this.localPresence = {};
     this._typing = new Map();
 
     /**
@@ -88,9 +84,18 @@ class ClientUser extends User {
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
-        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
       }
     }
+  }
+
+  /**
+   * ClientUser's presence
+   * @readonly
+   * @type {Presence}
+   */
+  get presence() {
+    return this.client.presences.clientPresence;
   }
 
   edit(data, passcode) {
@@ -180,70 +185,19 @@ class ClientUser extends User {
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [game] Game the user is playing
-   * @property {string} [game.name] Name of the game
-   * @property {GameType|number} [game.type] Type of the game
-   * @property {string} [game.url] Twitch stream URL
+   * @property {Object} [activity] activity the user is playing
+   * @property {string} [activity.name] Name of the activity
+   * @property {ActivityType|number} [activity.type] Type of the activity
+   * @property {string} [activity.url] Stream url
    */
 
   /**
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setPresence(data) {
-    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise(resolve => {
-      let status = this.localPresence.status || this.presence.status;
-      let game = this.localPresence.game;
-      let afk = this.localPresence.afk || this.presence.afk;
-
-      if (!game && this.presence.game) {
-        game = {
-          name: this.presence.game.name,
-          type: this.presence.game.type,
-          url: this.presence.game.url,
-        };
-      }
-
-      if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('INVALID_TYPE', 'status', 'string');
-        if (this.bot) {
-          status = data.status;
-        } else {
-          this.settings.update(Constants.UserSettingsMap.status, data.status);
-          status = 'invisible';
-        }
-      }
-
-      if (data.game) {
-        game = data.game;
-        if (typeof game.type === 'string') {
-          game.type = Constants.GameTypes.indexOf(game.type);
-          if (game.type === -1) throw new TypeError('INVALID_TYPE', 'type', 'GameType');
-        } else if (typeof game.type !== 'number') {
-          game.type = game.url ? 1 : 0;
-        }
-      } else if (typeof data.game !== 'undefined') {
-        game = null;
-      }
-
-      if (typeof data.afk !== 'undefined') afk = data.afk;
-      afk = Boolean(afk);
-
-      this.localPresence = { status, game, afk };
-      this.localPresence.since = 0;
-      this.localPresence.game = this.localPresence.game || null;
-
-      this.client.ws.send({
-        op: 3,
-        d: this.localPresence,
-      });
-
-      this.client._setPresence(this.id, this.localPresence);
-
-      resolve(this);
-    });
+    return this.client.presences.setClientPresence(data);
   }
 
   /**
@@ -258,35 +212,31 @@ class ClientUser extends User {
   /**
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setStatus(status) {
     return this.setPresence({ status });
   }
 
   /**
-   * Sets the game the client user is playing.
-   * @param {?string} game Game being played
-   * @param {Object} [options] Options for setting the game
+   * Sets the activity the client user is playing.
+   * @param {?string} name Activity being played
+   * @param {Object} [options] Options for setting the activity
    * @param {string} [options.url] Twitch stream URL
-   * @param {GameType|number} [options.type] Type of the game
-   * @returns {Promise<ClientUser>}
+   * @param {ActivityType|number} [options.type] Type of the activity
+   * @returns {Promise<Presence>}
    */
-  setGame(game, { url, type } = {}) {
-    if (!game) return this.setPresence({ game: null });
+  setActivity(name, { url, type } = {}) {
+    if (!name) return this.setPresence({ activity: null });
     return this.setPresence({
-      game: {
-        name: game,
-        type,
-        url,
-      },
+      activity: { name, type, url },
     });
   }
 
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setAFK(afk) {
     return this.setPresence({ afk });
@@ -306,7 +256,7 @@ class ClientUser extends User {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.create(m, false)));
   }
 
   /**
@@ -372,7 +322,7 @@ class ClientUser extends User {
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
-      .then(res => new GroupDMChannel(this.client, res));
+      .then(res => this.client.channels.create(res));
   }
 
   toJSON() {

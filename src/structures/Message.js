@@ -1,7 +1,6 @@
 const Mentions = require('./MessageMentions');
-const Attachment = require('./MessageAttachment');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
@@ -97,7 +96,11 @@ class Message extends Base {
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    for (const attachment of data.attachments) {
+      this.attachments.set(attachment.id, new MessageAttachment(
+        attachment.url, attachment.filename, attachment
+      ));
+    }
 
     /**
      * The timestamp the message was sent at
@@ -118,8 +121,7 @@ class Message extends Base {
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+        this.reactions.create(reaction);
       }
     }
 
@@ -182,7 +184,11 @@ class Message extends Base {
 
     if ('attachments' in data) {
       this.attachments = new Collection();
-      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     } else {
       this.attachments = new Collection(this.attachments);
     }

@@ -13,13 +13,11 @@ class Invite extends Base {
   }
 
   _patch(data) {
-    const Guild = require('./Guild');
-    const Channel = require('./Channel');
     /**
      * The guild the invite is for
      * @type {Guild}
      */
-    this.guild = this.client.guilds.get(data.guild.id) || new Guild(this.client, data.guild);
+    this.guild = this.client.guilds.create(data.guild, false);
 
     /**
      * The code for this invite
@@ -87,7 +85,7 @@ class Invite extends Base {
      * The channel the invite is for
      * @type {GuildChannel}
      */
-    this.channel = this.client.channels.get(data.channel.id) || Channel.create(this.client, data.channel, this.guild);
+    this.channel = this.client.channels.create(data.channel, this.guild, false);
 
     /**
      * The timestamp the invite was created at

@@ -1,10 +1,8 @@
 const Long = require('long');
 const Role = require('./Role');
-const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const { Presence } = require('./Presence');
 const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
@@ -18,6 +16,7 @@ const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
+const PresenceStore = require('../stores/PresenceStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -51,9 +50,9 @@ class Guild extends Base {
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<Snowflake, Presence>}
+     * @type {PresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new PresenceStore(this.client);
 
     if (!data) return;
     if (data.unavailable) {
@@ -201,7 +200,7 @@ class Guild extends Base {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
+        this.presences.create(presence);
       }
     }
 
@@ -216,7 +215,7 @@ class Guild extends Base {
        * @type {EmojiStore<Snowflake, Emoji>}
        */
       this.emojis = new EmojiStore(this);
-      for (const emoji of data.emojis) this.emojis.create(emoji);
+      if (data.emojis) for (const emoji of data.emojis) this.emojis.create(emoji);
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
@@ -261,7 +260,7 @@ class Guild extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.Icon(this.id, this.icon, format, size);
   }
 
   /**
@@ -282,7 +281,7 @@ class Guild extends Base {
    */
   splashURL({ format, size } = {}) {
     if (!this.splash) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash, format, size);
+    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -300,7 +299,7 @@ class Guild extends Base {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.get(this.afkChannelID);
+    return this.client.channels.get(this.afkChannelID) || null;
   }
 
   /**
@@ -309,7 +308,7 @@ class Guild extends Base {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.get(this.systemChannelID);
+    return this.client.channels.get(this.systemChannelID) || null;
   }
 
   /**
@@ -575,6 +574,7 @@ class Guild extends Base {
    * @property {number} [verificationLevel] The verification level of the guild
    * @property {number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
+   * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
@@ -600,10 +600,14 @@ class Guild extends Base {
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
-    if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
-    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
+    if (typeof data.afkChannel !== 'undefined') {
+      _data.afk_channel_id = this.client.resolver.resolveChannelID(data.afkChannel);
+    }
+    if (typeof data.systemChannel !== 'undefined') {
+      _data.system_channel_id = this.client.resolver.resolveChannelID(data.systemChannel);
+    }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = data.icon;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
@@ -783,6 +787,7 @@ class Guild extends Base {
 
   /**
    * Allow direct messages from guild members.
+   * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
    */
@@ -844,6 +849,7 @@ class Guild extends Base {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {string} [options.reason] Reason for this prune
@@ -878,7 +884,7 @@ class Guild extends Base {
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable[]|number} [allow] The permissions to allow
    * @property {PermissionResolvable[]|number} [deny] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the group or member this overwrite is for
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 
   /**
@@ -1049,18 +1055,6 @@ class Guild extends Base {
   }
 
   /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete
-   * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise}
-   */
-  deleteEmoji(emoji, reason) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
-      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
-  }
-
-  /**
    * Causes the client to leave the guild.
    * @returns {Promise<Guild>}
    * @example
@@ -1164,17 +1158,9 @@ class Guild extends Base {
     }
   }
 
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
   /**
    * Set the position of a role in this guild.
-   * @param {string|Role} role The role to edit, can be a role object or a role ID
+   * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
    * @param {number} position The new position of the role
    * @param {boolean} [relative=false] Position Moves the role relative to its current position
    * @returns {Promise<Guild>}
@@ -1204,7 +1190,7 @@ class Guild extends Base {
 
   /**
    * Set the position of a channel in this guild.
-   * @param {string|GuildChannel} channel The channel to edit, can be a channel object or a channel ID
+   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
    * @param {number} position The new position of the channel
    * @param {boolean} [relative=false] Position Moves the channel relative to its current position
    * @returns {Promise<Guild>}

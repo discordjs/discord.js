@@ -4,7 +4,7 @@ const Shared = require('../shared');
 const MessageStore = require('../../stores/MessageStore');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
-const Attachment = require('../../structures/Attachment');
+const MessageAttachment = require('../../structures/MessageAttachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
 const { RangeError, TypeError } = require('../../errors');
 
@@ -38,6 +38,7 @@ class TextBasedChannel {
    * @typedef {Object} MessageOptions
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
+   * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
@@ -67,7 +68,7 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] Options for the message
+   * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
@@ -84,11 +85,11 @@ class TextBasedChannel {
     }
 
     if (options instanceof MessageEmbed) options = { embed: options };
-    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof MessageAttachment) options = { files: [options.file] };
 
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof Attachment);
+      const attachments = which.filter(item => item instanceof MessageAttachment);
       if (attachments.length) {
         options = { files: attachments };
         if (content instanceof Array) content = '';
@@ -111,12 +112,12 @@ class TextBasedChannel {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
-          } else if (file instanceof Attachment) {
+          } else if (file instanceof MessageAttachment) {
             file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
-        } else if (file instanceof Attachment) {
+        } else if (file instanceof MessageAttachment) {
           file = file.file;
         }
         options.files[i] = file;

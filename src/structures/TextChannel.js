@@ -12,7 +12,6 @@ const MessageStore = require('../stores/MessageStore');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.type = 'text';
     this.messages = new MessageStore(this);
     this._typing = new Map();
   }
@@ -34,6 +33,8 @@ class TextChannel extends GuildChannel {
     this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
+
+    if (data.messages) for (const message of data.messages) this.messages.create(message);
   }
 
   /**
@@ -60,14 +61,13 @@ class TextChannel extends GuildChannel {
    *   .then(webhook => console.log(`Created webhook ${webhook}`))
    *   .catch(console.error)
    */
-  createWebhook(name, { avatar, reason } = {}) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.api.channels[this.id].webhooks.post({ data: {
-        name, avatar,
-      }, reason }).then(data => new Webhook(this.client, data));
+  async createWebhook(name, { avatar, reason } = {}) {
+    if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
+      avatar = await this.client.resolver.resolveImage(avatar);
     }
-    return this.client.resolver.resolveImage(avatar).then(image =>
-      this.createWebhook(name, { avatar: image, reason }));
+    return this.client.api.channels[this.id].webhooks.post({ data: {
+      name, avatar,
+    }, reason }).then(data => new Webhook(this.client, data));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

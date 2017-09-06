@@ -2,7 +2,6 @@ const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 const MessageStore = require('../stores/MessageStore');
-const Constants = require('../util/Constants');
 
 /*
 { type: 3,
@@ -115,7 +114,7 @@ class GroupDMChannel extends Channel {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).GDMIcon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
   }
 
   /**

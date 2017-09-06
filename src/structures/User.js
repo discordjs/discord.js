@@ -1,5 +1,4 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Constants = require('../util/Constants');
 const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
@@ -14,16 +13,17 @@ const { Error } = require('../errors');
 class User extends Base {
   constructor(client, data) {
     super(client);
-    this._patch(data);
-  }
 
-  _patch(data) {
     /**
      * The ID of the user
      * @type {Snowflake}
      */
     this.id = data.id;
 
+    this._patch(data);
+  }
+
+  _patch(data) {
     /**
      * The username of the user
      * @type {string}
@@ -43,7 +43,7 @@ class User extends Base {
      * @type {string}
      * @name User#avatar
      */
-    if (data.avatar) this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
      * Whether or not the user is a bot
@@ -108,7 +108,7 @@ class User extends Base {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -117,7 +117,7 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
   }
 
   /**
@@ -126,7 +126,7 @@ class User extends Base {
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -244,8 +244,7 @@ class User extends Base {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot);
+      this.avatar === user.avatar;
 
     return equal;
   }

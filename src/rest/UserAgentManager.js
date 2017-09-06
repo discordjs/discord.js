@@ -1,4 +1,4 @@
-const Constants = require('../../util/Constants');
+const Constants = require('../util/Constants');
 
 class UserAgentManager {
   constructor() {
