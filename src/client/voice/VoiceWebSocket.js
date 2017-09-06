@@ -69,7 +69,7 @@ class VoiceWebSocket extends EventEmitter {
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
-    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}`, { v: 3 });
+    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 3 });
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -97,7 +97,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   sendPacket(packet) {
     try {
-      packet = WebSocket.pack(packet);
+      packet = JSON.stringify(packet);
     } catch (error) {
       return Promise.reject(error);
     }
