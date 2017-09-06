@@ -1,5 +1,5 @@
 const Mentions = require('./MessageMentions');
-const Attachment = require('./Attachment');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
@@ -93,11 +93,11 @@ class Message extends Base {
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
-     * @type {Collection<Snowflake, Attachment>}
+     * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
     for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new Attachment(
+      this.attachments.set(attachment.id, new MessageAttachment(
         attachment.url, attachment.filename, attachment
       ));
     }
@@ -185,7 +185,7 @@ class Message extends Base {
     if ('attachments' in data) {
       this.attachments = new Collection();
       for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new Attachment(
+        this.attachments.set(attachment.id, new MessageAttachment(
           attachment.url, attachment.filename, attachment
         ));
       }

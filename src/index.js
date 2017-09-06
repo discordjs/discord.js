@@ -28,7 +28,6 @@ module.exports = {
 
   // Structures
   Activity: require('./structures/Presence').Activity,
-  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
@@ -42,6 +41,7 @@ module.exports = {
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
+  MessageAttachment: require('./structures/MessageAttachment'),
   MessageCollector: require('./structures/MessageCollector'),
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),

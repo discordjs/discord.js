@@ -3,7 +3,7 @@
  * @param {BufferResolvable|Stream} file The file
  * @param {string} [name] The name of the file, if any
  */
-class Attachment {
+class MessageAttachment {
   constructor(file, name, data) {
     this.file = null;
     if (data) this._patch(data);
@@ -33,7 +33,7 @@ class Attachment {
     * Set the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
     * @param {string} name The name of the file
-    * @returns {Attachment} This attachment
+    * @returns {MessageAttachment} This attachment
     */
   setAttachment(file, name) {
     this.file = { attachment: file, name };
@@ -43,7 +43,7 @@ class Attachment {
   /**
     * Set the file of this attachment.
     * @param {BufferResolvable|Stream} attachment The file
-    * @returns {Attachment} This attachment
+    * @returns {MessageAttachment} This attachment
     */
   setFile(attachment) {
     this.file = { attachment };
@@ -53,7 +53,7 @@ class Attachment {
   /**
     * Set the name of this attachment.
     * @param {string} name The name of the image
-    * @returns {Attachment} This attachment
+    * @returns {MessageAttachment} This attachment
     */
   setName(name) {
     this.file.name = name;
@@ -110,4 +110,4 @@ class Attachment {
   }
 }
 
-module.exports = Attachment;
+module.exports = MessageAttachment;
