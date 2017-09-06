@@ -30,9 +30,9 @@ exports.unpack = data => {
   return JSON.parse(data);
 };
 
-exports.create = (gateway, query = {}) => {
+exports.create = (gateway, query = {}, ...args) => {
   query.encoding = exports.encoding;
-  const ws = new exports.WebSocket(`${gateway}?${querystring.stringify(query)}`);
+  const ws = new exports.WebSocket(`${gateway}?${querystring.stringify(query)}`, ...args);
   if (browser) ws.binaryType = 'arraybuffer';
   return ws;
 };
