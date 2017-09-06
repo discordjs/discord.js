@@ -28,7 +28,6 @@ module.exports = {
 
   // Structures
   Activity: require('./structures/Presence').Activity,
-  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),

@@ -4,7 +4,7 @@ const Shared = require('../shared');
 const MessageStore = require('../../stores/MessageStore');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
-const Attachment = require('../../structures/Attachment');
+const MessageAttachment = require('../../structures/MessageAttachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
 const { RangeError, TypeError } = require('../../errors');
 
@@ -68,7 +68,7 @@ class TextBasedChannel {
   /**
    * Send a message to this channel.
    * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] Options for the message
+   * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a message
@@ -85,11 +85,11 @@ class TextBasedChannel {
     }
 
     if (options instanceof MessageEmbed) options = { embed: options };
-    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof MessageAttachment) options = { files: [options.file] };
 
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof Attachment);
+      const attachments = which.filter(item => item instanceof MessageAttachment);
       if (attachments.length) {
         options = { files: attachments };
         if (content instanceof Array) content = '';
@@ -112,12 +112,12 @@ class TextBasedChannel {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
-          } else if (file instanceof Attachment) {
+          } else if (file instanceof MessageAttachment) {
             file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
-        } else if (file instanceof Attachment) {
+        } else if (file instanceof MessageAttachment) {
           file = file.file;
         }
         options.files[i] = file;

@@ -1,7 +1,7 @@
 const path = require('path');
 const Util = require('../util/Util');
 const Embed = require('./MessageEmbed');
-const Attachment = require('./Attachment');
+const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 
 /**
@@ -85,10 +85,11 @@ class Webhook {
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
+  /* eslint-disable max-len */
   /**
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] The options to provide
+   * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
@@ -96,6 +97,7 @@ class Webhook {
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    */
+  /* eslint-enable max-len */
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
@@ -104,13 +106,13 @@ class Webhook {
       options = {};
     }
 
-    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof MessageAttachment) options = { files: [options.file] };
     if (options instanceof MessageEmbed) options = { embeds: [options] };
     if (options.embed) options = { embeds: [options.embed] };
 
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof Attachment);
+      const attachments = which.filter(item => item instanceof MessageAttachment);
       const embeds = which.filter(item => item instanceof MessageEmbed);
       if (attachments.length) options = { files: attachments };
       if (embeds.length) options = { embeds };
@@ -154,12 +156,12 @@ class Webhook {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
-          } else if (file instanceof Attachment) {
+          } else if (file instanceof MessageAttachment) {
             file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
-        } else if (file instanceof Attachment) {
+        } else if (file instanceof MessageAttachment) {
           file = file.file;
         }
         options.files[i] = file;
