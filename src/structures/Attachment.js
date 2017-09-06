@@ -6,7 +6,7 @@
 class Attachment {
   constructor(file, name, data) {
     this.file = null;
-    if (data) this.setup(data);
+    if (data) this._patch(data);
     if (name) this.setAttachment(file, name);
     else this._attach(file);
   }
@@ -71,7 +71,7 @@ class Attachment {
     else this.setAttachment(file, name);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of this attachment
      * @type {Snowflake}
