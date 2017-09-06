@@ -2,13 +2,7 @@ const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
-
-let WebSocket;
-try {
-  WebSocket = require('uws');
-} catch (err) {
-  WebSocket = require('ws');
-}
+const { WebSocket } = require('../../WebSocket');
 
 /**
  * Represents a Voice Connection's WebSocket.
