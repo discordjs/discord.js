@@ -14,14 +14,16 @@ class WebhookClient extends BaseClient {
    * @example
    * // Create a new webhook and send a message
    * const hook = new Discord.WebhookClient('1234', 'abcdef');
-   * hook.sendMessage('This will send a message').catch(console.error);
+   * hook.send('This will send a message').catch(console.error);
    */
   constructor(id, token, options) {
     super(options);
-    Webhook.call(this, null, id, token);
+    Object.defineProperty(this, 'client', { value: this });
+    this.id = id;
+    this.token = token;
   }
 }
 
-Object.assign(WebhookClient.prototype, Object.create(Webhook.prototype));
+Webhook.applyToClass(WebhookClient);
 
 module.exports = WebhookClient;
