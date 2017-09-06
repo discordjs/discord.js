@@ -2,7 +2,7 @@ const browser = typeof window !== 'undefined';
 const EventEmitter = require('events');
 const Constants = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
-const { WebSocket, pack, unpack } = require('../../WebSocket');
+const WebSocket = require('../../WebSocket');
 
 /**
  * Abstracts a WebSocket connection with decoding/encoding for the Discord gateway.
@@ -173,7 +173,7 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
       return;
     }
-    this.ws.send(pack(data));
+    this.ws.send(WebSocket.pack(data));
   }
 
   /**
@@ -209,8 +209,7 @@ class WebSocketConnection extends EventEmitter {
     this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
-    const ws = this.ws = new WebSocket(gateway);
-    if (browser) ws.binaryType = 'arraybuffer';
+    const ws = this.ws = WebSocket.create(gateway, { v: Constants.DefaultOptions.ws.version });
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
@@ -247,7 +246,7 @@ class WebSocketConnection extends EventEmitter {
   onMessage(event) {
     let data;
     try {
-      data = unpack(event.data);
+      data = WebSocket.unpack(event.data);
     } catch (err) {
       this.emit('debug', err);
     }

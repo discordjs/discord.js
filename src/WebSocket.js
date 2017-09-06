@@ -1,9 +1,15 @@
+const browser = typeof window !== 'undefined';
 const zlib = require('zlib');
+const querystring = require('querystring');
 
-try {
-  exports.WebSocket = require('uws');
-} catch (err) {
-  exports.WebSocket = require('ws');
+if (browser) {
+  exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
+} else {
+  try {
+    exports.WebSocket = require('uws');
+  } catch (err) {
+    exports.WebSocket = require('ws');
+  }
 }
 
 try {
@@ -23,3 +29,12 @@ exports.unpack = data => {
   else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
   return JSON.parse(data);
 };
+
+exports.create = (gateway, query = {}) => {
+  query.encoding = exports.encoding;
+  const ws = new exports.WebSocket(`${gateway}?${querystring.stringify(query)}`);
+  if (browser) ws.binaryType = 'arraybuffer';
+  return ws;
+};
+
+for (const state of ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED']) exports[state] = exports.WebSocket[state];
