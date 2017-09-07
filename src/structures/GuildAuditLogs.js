@@ -254,6 +254,10 @@ class GuildAuditLogsEntry {
           this.target = hooks.find(h => h.id === data.target_id);
           return this.target;
         });
+      if (this.webhooks) {
+        this.target = this.webhooks.get(data.target_id);
+      } else {
+      }
     } else if (targetType === Targets.INVITE) {
       if (guild.me.permissions.has('MANAGE_GUILD')) {
         const change = this.changes.find(c => c.key === 'code');
