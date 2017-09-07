@@ -82,7 +82,7 @@ class ChannelStore extends DataStore {
 
   /**
    * Resolves a ChannelResolvable to a Channel object.
-   * @name resolve
+   * @method resolve
    * @memberof ChannelStore
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Channel}
@@ -90,7 +90,7 @@ class ChannelStore extends DataStore {
 
   /**
    * Resolves a ChannelResolvable to a channel ID string.
-   * @name resolveID
+   * @method resolveID
    * @memberof ChannelStore
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?string}

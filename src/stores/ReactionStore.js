@@ -25,7 +25,7 @@ class ReactionStore extends DataStore {
 
   /**
 	* Resolves a MessageReactionResolvable to a MessageReaction object.
-	* @name resolve
+	* @method resolve
 	* @memberof ReactionStore
     * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?MessageReaction}
@@ -33,7 +33,7 @@ class ReactionStore extends DataStore {
 
   /**
 	* Resolves a MessageReactionResolvable to a MessageReaction ID string.
-	* @name resolveID
+	* @method resolveID
 	* @memberof ReactionStore
     * @param {MessageReactionResolvable} role The role resolvable to resolve
     * @returns {?string}

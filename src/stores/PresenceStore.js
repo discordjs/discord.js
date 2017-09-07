@@ -20,7 +20,7 @@ class PresenceStore extends DataStore {
 
   /**
 	* Resolves a PresenceResolvable to a Presence object.
-	* @name resolve
+	* @method resolve
 	* @memberof PresenceStore
     * @param {PresenceResolvable} presence The presence resolvable to resolve
     * @returns {?Presence}
@@ -28,7 +28,7 @@ class PresenceStore extends DataStore {
 
   /**
 	* Resolves a PresenceResolvable to a Presence ID string.
-	* @name resolveID
+	* @method resolveID
 	* @memberof PresenceStore
     * @param {PresenceResolvable} presence The presence resolvable to resolve
     * @returns {?string}

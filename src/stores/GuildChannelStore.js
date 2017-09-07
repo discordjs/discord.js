@@ -19,6 +19,7 @@ class GuildChannelStore extends DataStore {
 
     return Channel.create(this.client, data, this.guild);
   }
+
   /**
    * Data that can be resolved to give a Channel object. This can be:
    * * A GuildChannel object
@@ -28,7 +29,7 @@ class GuildChannelStore extends DataStore {
 
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
-   * @name resolve
+   * @method resolve
    * @memberof GuildChannelStore
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Channel}
@@ -36,7 +37,7 @@ class GuildChannelStore extends DataStore {
 
   /**
    * Resolves a GuildChannelResolvable to a channel ID string.
-   * @name resolveID
+   * @method resolveID
    * @memberof GuildChannelStore
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?string}

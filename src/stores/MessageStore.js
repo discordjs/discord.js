@@ -99,7 +99,7 @@ class MessageStore extends DataStore {
 
   /**
 	* Resolves a MessageResolvable to a Message object.
-	* @name resolve
+	* @method resolve
 	* @memberof MessageStore
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?Message}
@@ -107,7 +107,7 @@ class MessageStore extends DataStore {
 
   /**
 	* Resolves a MessageResolvable to a Message ID string.
-	* @name MessageStore
+	* @method MessageStore
 	* @memberof PresenceStore
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?string}

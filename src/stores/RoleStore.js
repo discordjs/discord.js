@@ -24,7 +24,7 @@ class RoleStore extends DataStore {
 
   /**
 	* Resolves a RoleResolvable to a Role object.
-	* @name resolve
+	* @method resolve
 	* @memberof RoleStore
     * @param {RoleResolvable} role The role resolvable to resolve
     * @returns {?Role}
@@ -32,7 +32,7 @@ class RoleStore extends DataStore {
 
   /**
 	* Resolves a RoleResolvable to a role ID string.
-	* @name resolveID
+	* @method resolveID
 	* @memberof RoleStore
     * @param {RoleResolvable} role The role resolvable to resolve
     * @returns {?string}
