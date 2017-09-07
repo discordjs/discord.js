@@ -29,7 +29,6 @@ module.exports = {
 
   // Structures
   Activity: require('./structures/Presence').Activity,
-  Attachment: require('./structures/Attachment'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
@@ -58,4 +57,6 @@ module.exports = {
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
+
+  WebSocket: require('./WebSocket'),
 };

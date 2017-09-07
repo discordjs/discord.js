@@ -1,5 +1,5 @@
 const Mentions = require('./MessageMentions');
-const Attachment = require('./MessageAttachment');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
@@ -96,7 +96,11 @@ class Message extends Base {
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    for (const attachment of data.attachments) {
+      this.attachments.set(attachment.id, new MessageAttachment(
+        attachment.url, attachment.filename, attachment
+      ));
+    }
 
     /**
      * The timestamp the message was sent at
@@ -180,7 +184,11 @@ class Message extends Base {
 
     if ('attachments' in data) {
       this.attachments = new Collection();
-      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     } else {
       this.attachments = new Collection(this.attachments);
     }
