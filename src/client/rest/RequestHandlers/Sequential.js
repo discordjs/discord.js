@@ -66,7 +66,7 @@ class SequentialRequestHandler extends RequestHandler {
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else if (err.status >= 500 && err.status < 600) {
             this.queue.unshift(item);
-            this.restManager.client.setTimeout(resolve, 1e3 + this.client.options.restTimeOffset);
+            this.restManager.client.setTimeout(resolve, 1e3 + this.restManager.client.options.restTimeOffset);
           } else {
             item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
             resolve(err);
