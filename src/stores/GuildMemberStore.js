@@ -15,7 +15,7 @@ class GuildMemberStore extends DataStore {
   }
 
   create(data, cache) {
-    super.create(data, cache, this.guild);
+    return super.create(data, cache, this.guild);
   }
 
   /**

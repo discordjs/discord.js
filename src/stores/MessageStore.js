@@ -13,7 +13,7 @@ class MessageStore extends DataStore {
   }
 
   create(data, cache) {
-    super.create(data, cache, this.channel);
+    return super.create(data, cache, this.channel);
   }
 
   set(key, value) {

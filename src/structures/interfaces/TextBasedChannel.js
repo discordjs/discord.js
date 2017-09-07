@@ -1,7 +1,6 @@
 const path = require('path');
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
-const MessageStore = require('../../stores/MessageStore');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const DataResolver = require('../../util/DataResolver');
@@ -342,3 +341,6 @@ class TextBasedChannel {
 }
 
 module.exports = TextBasedChannel;
+
+// Fixes Circular
+const MessageStore = require('../../stores/MessageStore');
