@@ -8,8 +8,8 @@ const Base = require('./Base');
  * @extends {Base}
  */
 class Role extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that the role belongs to

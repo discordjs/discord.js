@@ -10,6 +10,10 @@ class RoleStore extends DataStore {
     super(guild.client, iterable, Role);
     this.guild = guild;
   }
+
+  create(data, cache) {
+    super.create(data, cache, this.guild);
+  }
 }
 
 module.exports = RoleStore;
