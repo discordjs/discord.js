@@ -65,7 +65,6 @@ class EmojiStore extends DataStore {
     }
     return null;
   }
-
 }
 
 module.exports = EmojiStore;

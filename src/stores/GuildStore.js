@@ -32,7 +32,6 @@ class GuildStore extends DataStore {
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?string}
    */
-
 }
 
 module.exports = GuildStore;
