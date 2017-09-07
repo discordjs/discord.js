@@ -2,6 +2,7 @@ const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const Base = require('./Base');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a role on Discord.
