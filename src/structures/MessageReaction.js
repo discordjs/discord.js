@@ -8,7 +8,7 @@ const { Error } = require('../errors');
  */
 class MessageReaction {
   constructor(client, data, message) {
-	/**
+    /**
      * The message that this reaction refers to
      * @type {Message}
      */
