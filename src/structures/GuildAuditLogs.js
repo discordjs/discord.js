@@ -249,14 +249,14 @@ class GuildAuditLogsEntry {
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = guild.fetchWebhooks()
-        .then(hooks => {
-          this.target = hooks.find(h => h.id === data.target_id);
-          return this.target;
-        });
       if (this.webhooks) {
         this.target = this.webhooks.get(data.target_id);
       } else {
+        this.target = guild.fetchWebhooks()
+          .then(hooks => {
+            this.target = hooks.find(h => h.id === data.target_id);
+            return this.target;
+          });
       }
     } else if (targetType === Targets.INVITE) {
       if (guild.me.permissions.has('MANAGE_GUILD')) {
