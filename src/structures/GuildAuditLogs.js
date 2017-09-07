@@ -259,7 +259,7 @@ class GuildAuditLogsEntry {
     if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {TargetType}
        */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;
