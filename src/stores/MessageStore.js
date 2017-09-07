@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
+const { Error } = require('../errors');
 let Message;
 
 /**
