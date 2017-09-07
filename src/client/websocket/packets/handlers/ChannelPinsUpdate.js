@@ -20,6 +20,8 @@ class ChannelPinsUpdate extends AbstractHandler {
   }
 }
 
+module.exports = ChannelPinsUpdate;
+
 /**
  * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event, not much information
  * can be provided easily here - you need to manually check the pins yourself.
@@ -27,5 +29,3 @@ class ChannelPinsUpdate extends AbstractHandler {
  * @param {DMChannel|GroupDMChannel|TextChannel} channel The channel that the pins update occured in
  * @param {Date} time The time of the pins update
  */
-
-module.exports = ChannelPinsUpdate;
