@@ -7,8 +7,8 @@ const Base = require('./Base');
  * @extends {Base}
  */
 class Emoji extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild this emoji is part of

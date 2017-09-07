@@ -10,18 +10,12 @@ const { Error } = require('../errors');
  */
 class GuildMemberStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, GuildMember);
     this.guild = guild;
   }
 
-  create(data, cache = true) {
-    const existing = this.get(data.user.id);
-    if (existing) return existing;
-
-    const member = new GuildMember(this.guild, data);
-    if (cache) this.set(member.id, member);
-
-    return member;
+  create(data, cache) {
+    super.create(data, cache, this.guild);
   }
 
   /**

@@ -7,20 +7,13 @@ const MessageReaction = require('../structures/MessageReaction');
  */
 class ReactionStore extends DataStore {
   constructor(message, iterable) {
-    super(message.client, iterable);
+    super(message.client, iterable, MessageReaction);
     this.message = message;
   }
 
-  create(data) {
-    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
-
-    const existing = this.get(emojiID);
-    if (existing) return existing;
-
-    const reaction = new MessageReaction(this.message, data.emoji, data.count, data.me);
-    this.set(emojiID, reaction);
-
-    return reaction;
+  create(data, cache) {
+    data.emoji.id = data.emoji.id || decodeURIComponent(data.emoji.name);
+    return super.create(data, cache, this.message);
   }
 }
 

@@ -12,8 +12,8 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that this member is part of

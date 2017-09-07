@@ -7,8 +7,8 @@ const { Error } = require('../errors');
  * Represents a reaction to a message.
  */
 class MessageReaction {
-  constructor(message, emoji, count, me) {
-    /**
+  constructor(client, data, message) {
+	/**
      * The message that this reaction refers to
      * @type {Message}
      */
@@ -18,13 +18,13 @@ class MessageReaction {
      * Whether the client has given this reaction
      * @type {boolean}
      */
-    this.me = me;
+    this.me = data.me;
 
     /**
      * The number of people that have given the same reaction
      * @type {number}
      */
-    this.count = count || 0;
+    this.count = data.count || 0;
 
     /**
      * The users that have given this reaction, mapped by their ID
@@ -32,7 +32,7 @@ class MessageReaction {
      */
     this.users = new Collection();
 
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+    this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
   }
 
   /**
