@@ -1,5 +1,6 @@
 const path = require('path');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Embed = require('./MessageEmbed');
 const Attachment = require('./Attachment');
 const MessageEmbed = require('./MessageEmbed');
@@ -172,7 +173,7 @@ class Webhook {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveFile(file.attachment).then(resource => {
+        DataResolver.resolveFile(file.attachment, this.client.browser).then(resource => {
           file.file = resource;
           return file;
         })
@@ -252,7 +253,7 @@ class Webhook {
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveImage(avatar).then(image =>
+      return DataResolver.resolveImage(avatar, this.client.browser).then(image =>
         this.edit({ name, avatar: image }, reason)
       );
     }

@@ -12,7 +12,6 @@ class DataStore extends Collection {
     if (iterable) for (const item of iterable) this.create(item);
   }
 
-  // Stubs
   create(data, cache = true, ...extras) {
     const existing = this.get(data.id);
     if (existing) return existing;
@@ -21,7 +20,30 @@ class DataStore extends Collection {
     if (cache) this.set(entry.id, entry);
     return entry;
   }
+
   remove(key) { return this.delete(key); }
+
+  /**
+   * Resolves a data entry to a data Object.
+   * @param {string|Object} idOrInstance The id or instance of something in this datastore
+   * @returns {?Object} An instance from this datastore
+   */
+  resolve(idOrInstance) {
+    if (idOrInstance instanceof this.holds) return idOrInstance;
+    if (typeof idOrInstance === 'string') return this.get(idOrInstance) || null;
+    return null;
+  }
+
+  /**
+   * Resolves a data entry to a instance ID.
+   * @param {string|Instance} idOrInstance The id or instance of something in this datastore
+   * @returns {?string}
+   */
+  resolveID(idOrInstance) {
+    if (idOrInstance instanceof this.holds) return idOrInstance.id;
+    if (typeof channel === 'string') return idOrInstance;
+    return null;
+  }
 }
 
 module.exports = DataStore;

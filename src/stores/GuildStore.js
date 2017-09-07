@@ -9,6 +9,30 @@ class GuildStore extends DataStore {
   constructor(client, iterable) {
     super(client, iterable, Guild);
   }
+
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * * A Snowflake
+   * @typedef {Guild|Snowflake} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object.
+   * @name resolve
+   * @memberof GuildStore
+   * @param {GuildResolvable} guild The guild resolvable to identify
+   * @returns {?Guild}
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild ID string.
+   * @name resolveID
+   * @memberof GuildStore
+   * @param {GuildResolvable} guild The guild resolvable to identify
+   * @returns {?string}
+   */
+
 }
 
 module.exports = GuildStore;

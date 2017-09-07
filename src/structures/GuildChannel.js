@@ -66,7 +66,7 @@ class GuildChannel extends Channel {
    * @returns {?Permissions}
    */
   permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    member = this.guild.members.resolve(member);
     if (!member) return null;
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
@@ -101,7 +101,7 @@ class GuildChannel extends Channel {
   }
 
   overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
     roles = roles || member.roles;
@@ -158,13 +158,13 @@ class GuildChannel extends Channel {
       deny: 0,
     };
 
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
+    const role = this.guild.roles.get(userOrRole);
+
+    if (role || userOrRole instanceof Role) {
+      userOrRole = role || userOrRole;
       payload.type = 'role';
     } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      userOrRole = this.client.users.resolve(userOrRole);
       payload.type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }

@@ -87,6 +87,30 @@ class MessageStore extends DataStore {
         return messages;
       });
   }
+
+
+  /**
+   * Data that can be resolved to a Message object. This can be:
+   * * A Message
+   * * A Snowflake
+   * @typedef {Message|Snowflake} MessageResolvable
+   */
+
+  /**
+	* Resolves a MessageResolvable to a Message object.
+	* @name resolve
+	* @memberof MessageStore
+    * @param {MessageResolvable} message The message resolvable to resolve
+    * @returns {?Message}
+    */
+
+  /**
+	* Resolves a MessageResolvable to a Message ID string.
+	* @name MessageStore
+	* @memberof PresenceStore
+    * @param {MessageResolvable} message The message resolvable to resolve
+    * @returns {?string}
+    */
 }
 
 module.exports = MessageStore;

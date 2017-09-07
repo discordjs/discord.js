@@ -9,6 +9,7 @@ const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
@@ -431,7 +432,7 @@ class Guild extends Base {
    * const member = guild.member(message.author);
    */
   member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
+    return this.members.resolve(user);
   }
 
   /**
@@ -511,7 +512,7 @@ class Guild extends Base {
       before: options.before,
       after: options.after,
       limit: options.limit,
-      user_id: this.client.resolver.resolveUserID(options.user),
+      user_id: this.client.users.resolveID(options.user),
       action_type: options.type,
     } })
       .then(data => GuildAuditLogs.build(this, data));
@@ -536,7 +537,7 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.client.resolver.resolveRole(this, role);
+        role = this.roles.resolve(role);
         if (!role) {
           return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
             'Array or Collection of Roles or Snowflakes', true));
@@ -601,14 +602,14 @@ class Guild extends Base {
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (typeof data.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.resolver.resolveChannelID(data.afkChannel);
+      _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
     }
     if (typeof data.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.resolver.resolveChannelID(data.systemChannel);
+      _data.system_channel_id = this.client.channels.resolveID(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
-    if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
+    if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
@@ -724,7 +725,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser), reason });
   }
 
   /**
@@ -754,7 +755,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash, this.client.browser), reason });
   }
 
   /**
@@ -815,14 +816,14 @@ class Guild extends Base {
    */
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api.guilds(this.id).bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
-        const _user = this.client.resolver.resolveUser(id);
+        const _user = this.client.users.resolve(id);
         if (_user) {
-          const member = this.client.resolver.resolveGuildMember(this, _user);
+          const member = this.members.resolve(_user);
           return member || _user;
         }
         return id;
@@ -841,7 +842,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   unban(user, reason) {
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolverID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
@@ -910,12 +911,12 @@ class Guild extends Base {
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
-        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        const role = this.roles.resolve(overwrite.id);
         if (role) {
           overwrite.id = role.id;
           overwrite.type = 'role';
         } else {
-          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.id = this.client.users.resolveID(overwrite.id);
           overwrite.type = 'member';
         }
 
@@ -958,7 +959,7 @@ class Guild extends Base {
     const data = new Array(channelPositions.length);
     for (let i = 0; i < channelPositions.length; i++) {
       data[i] = {
-        id: this.client.resolver.resolveChannelID(channelPositions[i].channel),
+        id: this.client.channels.resolveID(channelPositions[i].channel),
         position: channelPositions[i].position,
       };
     }
@@ -1037,7 +1038,7 @@ class Guild extends Base {
       if (roles) {
         data.roles = [];
         for (let role of roles instanceof Collection ? roles.values() : roles) {
-          role = this.client.resolver.resolveRole(this, role);
+          role = this.roles.resolve(role);
           if (!role) {
             return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
               'Array or Collection of Roles or Snowflakes', true));
@@ -1050,7 +1051,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveImage(attachment)
+    return DataResolver.resolveImage(attachment, this.client.browser)
       .then(image => this.createEmoji(image, name, { roles, reason }));
   }
 

@@ -151,7 +151,7 @@ class Emoji extends Base {
   addRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -178,7 +178,7 @@ class Emoji extends Base {
   removeRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));

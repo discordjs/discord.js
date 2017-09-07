@@ -4,6 +4,7 @@ const Shared = require('../shared');
 const MessageStore = require('../../stores/MessageStore');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
+const DataResolver = require('../../util/DataResolver');
 const Attachment = require('../../structures/Attachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
 const { RangeError, TypeError } = require('../../errors');
@@ -124,7 +125,7 @@ class TextBasedChannel {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveFile(file.attachment).then(resource => {
+        DataResolver.resolveFile(file.attachment, this.client.browser).then(resource => {
           file.file = resource;
           return file;
         })

@@ -12,6 +12,7 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
+  DataResolver: require('./util/DataResolver'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
   Permissions: require('./util/Permissions'),

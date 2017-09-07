@@ -385,7 +385,7 @@ class Message extends Base {
 
     // Add the reply prefix
     if (reply && this.channel.type !== 'dm') {
-      const id = this.client.resolver.resolveUserID(reply);
+      const id = this.client.users.resolveID(reply);
       const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
@@ -419,11 +419,11 @@ class Message extends Base {
 
   /**
    * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * @param {EmojiIdentifierResolveable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')

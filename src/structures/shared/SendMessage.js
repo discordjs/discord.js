@@ -17,7 +17,7 @@ module.exports = function sendMessage(channel, options) { // eslint-disable-line
 
   // Add the reply prefix
   if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
-    const id = channel.client.resolver.resolveUserID(reply);
+    const id = channel.client.users.resolveID(reply);
     const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
     if (split) split.prepend = `${mention}, ${split.prepend || ''}`;
     content = `${mention}${typeof content !== 'undefined' ? `, ${content}` : ''}`;

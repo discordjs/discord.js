@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
-const ClientDataResolver = require('./ClientDataResolver');
 const Util = require('../util/Util');
 const Constants = require('../util/Constants');
 
@@ -24,13 +23,6 @@ class BaseClient extends EventEmitter {
      * @private
      */
     this.rest = new RESTManager(this, options._tokenType);
-
-    /**
-     * The data resolver of the client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
 
     /**
      * Timeouts set by {@link WebhookClient#setTimeout} that are still active

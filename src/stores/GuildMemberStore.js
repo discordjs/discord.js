@@ -19,6 +19,38 @@ class GuildMemberStore extends DataStore {
   }
 
   /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User resolvable
+   * @typedef {GuildMember|UserResolveable} GuildMemberResolvable
+   */
+
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object.
+   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * @returns {?GuildMember}
+   */
+  resolve(member) {
+    const memberResolveable = super.resolve(member);
+    if (memberResolveable) return memberResolveable;
+    const userResolveable = this.client.users.resolveID(member);
+    if (userResolveable) return super.resolve(userResolveable);
+    return null;
+  }
+
+  /**
+   * Resolves a GuildMemberResolvable to an member ID string.
+   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * @returns {?string}
+   */
+  resolveID(member) {
+    const memberResolveable = super.resolveID(member);
+    if (memberResolveable) return memberResolveable;
+    const userResolveable = this.client.users.resolveID(member);
+    return this.has(userResolveable) ? userResolveable : null;
+  }
+
+  /**
    * Options used to fetch a single member from a guild.
    * @typedef {Object} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
@@ -58,10 +90,10 @@ class GuildMemberStore extends DataStore {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.resolver.resolveUserID(options);
+    const user = this.resolveID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.client.resolver.resolveUserID(options.user);
+      options.user = this.resolveID(options.user);
       if (options.user) return this._fetchSingle(options);
     }
     return this._fetchMany(options);

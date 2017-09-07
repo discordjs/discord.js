@@ -4,6 +4,7 @@ const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Guild = require('./Guild');
 
 /**
@@ -177,7 +178,7 @@ class ClientUser extends User {
    *   .catch(console.error);
    */
   async setAvatar(avatar) {
-    return this.edit({ avatar: await this.client.resolver.resolveImage(avatar) });
+    return this.edit({ avatar: await DataResolver.resolveImage(avatar, this.client.browser) });
   }
 
   /**
@@ -293,7 +294,7 @@ class ClientUser extends User {
       );
     }
 
-    return this.client.resolver.resolveImage(icon)
+    return DataResolver.resolveImage(icon, this.client.browser)
       .then(data => this.createGuild(name, { region, icon: data || null }));
   }
 
@@ -320,7 +321,7 @@ class ClientUser extends User {
         if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
         return o;
       }, {}),
-    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
+    } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => this.client.channels.create(res));
   }
