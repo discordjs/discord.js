@@ -12,6 +12,10 @@ class MessageStore extends DataStore {
     this.channel = channel;
   }
 
+  create(data, cache) {
+    super.create(data, cache, this.channel);
+  }
+
   set(key, value) {
     const maxSize = this.client.options.messageCacheMaxSize;
     if (maxSize === 0) return;

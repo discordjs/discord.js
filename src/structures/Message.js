@@ -17,14 +17,14 @@ let GuildMember;
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(client, data) {
+  constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
      * @type {TextChannel|DMChannel|GroupDMChannel}
      */
-    this.channel = this.client.channels.get(data.channel_id);
+    this.channel = channel;
 
     if (data) this._patch(data);
   }
