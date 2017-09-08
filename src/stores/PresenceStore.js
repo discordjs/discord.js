@@ -7,8 +7,7 @@ class PresenceStore extends DataStore {
   }
 
   create(data, cache) {
-    data.id = data.user.id;
-    const existing = this.get(data.id);
+    const existing = this.get(data.user.id);
     return existing ? existing.patch(data) : super.create(data, cache);
   }
 
