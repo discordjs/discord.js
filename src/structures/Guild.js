@@ -3,7 +3,6 @@ const Role = require('./Role');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
