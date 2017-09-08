@@ -13,7 +13,7 @@ class RoleStore extends DataStore {
   }
 
   create(data, cache) {
-    return super.create(data, cache, this.guild);
+    return super.create(data, cache, { extras: [this.guild] });
   }
 
   /**

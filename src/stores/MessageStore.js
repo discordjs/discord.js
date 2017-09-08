@@ -14,7 +14,7 @@ class MessageStore extends DataStore {
   }
 
   create(data, cache) {
-    return super.create(data, cache, this.channel);
+    return super.create(data, cache, { extras: [this.channel] });
   }
 
   set(key, value) {
