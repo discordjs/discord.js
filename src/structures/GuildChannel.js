@@ -148,10 +148,10 @@ class GuildChannel extends Channel {
 
     if (role || userOrRole instanceof Role) {
       userOrRole = role || userOrRole;
-      payload.type = 'role';
+      type = 'role';
     } else {
       userOrRole = this.client.users.resolve(userOrRole);
-      payload.type = 'member';
+      type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
 
