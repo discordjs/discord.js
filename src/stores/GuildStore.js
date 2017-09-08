@@ -22,6 +22,7 @@ class GuildStore extends DataStore {
    * Resolves a GuildResolvable to a Guild object.
    * @method resolve
    * @memberof GuildStore
+   * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Guild}
    */
@@ -30,6 +31,7 @@ class GuildStore extends DataStore {
    * Resolves a GuildResolvable to a Guild ID string.
    * @method resolveID
    * @memberof GuildStore
+   * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?string}
    */
