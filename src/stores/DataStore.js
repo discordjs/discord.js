@@ -12,7 +12,7 @@ class DataStore extends Collection {
     if (iterable) for (const item of iterable) this.create(item);
   }
 
-  create(data, cache = true, { id, extras } = {}) {
+  create(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.get(id || data.id);
     if (existing) return existing;
 
