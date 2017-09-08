@@ -842,7 +842,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   unban(user, reason) {
-    const id = this.client.users.resolverID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
