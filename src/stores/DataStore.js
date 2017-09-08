@@ -13,11 +13,11 @@ class DataStore extends Collection {
   }
 
   create(data, cache = true, ...extras) {
-    const existing = this.get(data.id);
+    const existing = this.get(data.id || data.user.id);
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.set(entry.id || data.id, entry);
+    if (cache) this.set(entry.id || data.user.id, entry);
     return entry;
   }
 
