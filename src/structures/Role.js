@@ -9,8 +9,8 @@ const { TypeError } = require('../errors');
  * @extends {Base}
  */
 class Role extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that the role belongs to
@@ -171,7 +171,7 @@ class Role extends Base {
    * positive number if the this one is higher (other's is lower), 0 if equal
    */
   comparePositionTo(role) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     return this.constructor.comparePositions(this, role);
   }

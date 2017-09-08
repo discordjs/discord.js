@@ -17,6 +17,7 @@ const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const Constants = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -292,7 +293,7 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
+    const code = DataResolver.resolveInviteCode(invite);
     return this.api.invites(code).get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }

@@ -12,8 +12,8 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that this member is part of
@@ -291,7 +291,7 @@ class GuildMember extends Base {
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.permissionsFor(this);
   }
@@ -342,7 +342,7 @@ class GuildMember extends Base {
    */
   edit(data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel_id = this.client.channels.resolve(data.channel).id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
@@ -412,7 +412,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   addRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
@@ -433,7 +433,7 @@ class GuildMember extends Base {
   addRoles(roles, reason) {
     let allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -450,7 +450,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (!this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
@@ -472,7 +472,7 @@ class GuildMember extends Base {
   removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));

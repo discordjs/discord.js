@@ -158,7 +158,7 @@ class User extends Base {
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id);
   }
 
@@ -168,7 +168,7 @@ class User extends Base {
    * @returns {?Date}
    */
   typingSinceIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
   }
 
@@ -178,7 +178,7 @@ class User extends Base {
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
   }
 

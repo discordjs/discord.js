@@ -52,9 +52,9 @@ module.exports = function search(target, options) {
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
     options.maxID = long.fromNumber(t + 864e5).shiftLeft(22).toString();
   }
-  if (options.channel) options.channel = target.client.resolver.resolveChannelID(options.channel);
-  if (options.author) options.author = target.client.resolver.resolveUserID(options.author);
-  if (options.mentions) options.mentions = target.client.resolver.resolveUserID(options.options.mentions);
+  if (options.channel) options.channel = target.client.channels.resolveID(options.channel);
+  if (options.author) options.author = target.client.users.resolveID(options.author);
+  if (options.mentions) options.mentions = target.client.users.resolveID(options.options.mentions);
   if (options.sortOrder) {
     options.sortOrder = { ascending: 'asc', descending: 'desc' }[options.sortOrder] || options.sortOrder;
   }

@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
 
 /*
@@ -160,7 +161,7 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   async setIcon(icon) {
-    return this.edit({ icon: await this.client.resolver.resolveImage(icon) });
+    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser) });
   }
 
   /**
@@ -182,7 +183,7 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   addUser({ user, accessToken, nick }) {
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     const data = this.client.user.bot ?
       { nick, access_token: accessToken } :
       { recipient: id };
@@ -196,7 +197,7 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   removeUser(user) {
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     return this.client.api.channels[this.id].recipients[id].delete()
       .then(() => this);
   }
