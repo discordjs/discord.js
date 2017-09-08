@@ -5,6 +5,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Util = require('../util/Util');
 const { TypeError } = require('../errors');
 
 /**
@@ -275,8 +276,14 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, relative) {
-    return this.guild.setChannelPosition(this, position, relative).then(() => this);
+  setPosition(position, relative = false) {
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
+
+    let updatedChannels = this.guild._sortedChannels(this.type).array();
+    Util.moveElementInArray(updatedChannels, this, position, relative);
+    updatedChannels = updatedChannels.map((r, i) => ({ channel: r.id, position: i }));
+    return this.guild.setChannelPositions(updatedChannels);
   }
 
   /**

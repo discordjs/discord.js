@@ -946,38 +946,6 @@ class Guild extends Base {
    */
 
   /**
-   * Set the position of a channel in this guild.
-   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
-   * @param {number} position The new position of the channel
-   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setChannelPosition(channel, position, relative = false) {
-    if (typeof channel === 'string') {
-      channel = this.channels.get(channel);
-    }
-    if (!(channel instanceof GuildChannel)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-
-    let updatedChannels = this._sortedChannels(channel.type).array();
-
-    Util.moveElementInArray(updatedChannels, channel, position, relative);
-
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
-      .then(() =>
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        }).guild
-      );
-  }
-
-  /**
    * Batch-updates the guild's channels' positions.
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
