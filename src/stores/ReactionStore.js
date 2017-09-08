@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const MessageReaction = require('../structures/MessageReaction');
+
 /**
  * Stores reactions.
  * @private

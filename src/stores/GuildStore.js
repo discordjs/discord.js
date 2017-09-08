@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const Guild = require('../structures/Guild');
+
 /**
  * Stores guilds.
  * @private

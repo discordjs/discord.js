@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const Role = require('../structures/Role');
+
 /**
  * Stores roles.
  * @private
