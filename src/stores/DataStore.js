@@ -17,7 +17,7 @@ class DataStore extends Collection {
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.set(entry.id, entry);
+    if (cache) this.set(data.id, entry);
     return entry;
   }
 
