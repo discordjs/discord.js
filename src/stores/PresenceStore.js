@@ -14,25 +14,35 @@ class PresenceStore extends DataStore {
   /**
    * Data that can be resolved to a Presence object. This can be:
    * * A Presence
+   * * A UserResolveable
    * * A Snowflake
-   * @typedef {Presence|Snowflake} PresenceResolvable
+   * @typedef {Presence|UserResolveable|Snowflake} PresenceResolvable
    */
 
   /**
 	* Resolves a PresenceResolvable to a Presence object.
-	* @method resolve
-	* @memberof PresenceStore
     * @param {PresenceResolvable} presence The presence resolvable to resolve
     * @returns {?Presence}
     */
+  resolve(presence) {
+    const presenceResolveable = super.resolve(presence);
+    if (presenceResolveable) return presenceResolveable;
+    const UserResolveable = this.client.users.resolveID(presence);
+    return super.resolve(UserResolveable) || null;
+  }
+
 
   /**
 	* Resolves a PresenceResolvable to a Presence ID string.
-	* @method resolveID
-	* @memberof PresenceStore
     * @param {PresenceResolvable} presence The presence resolvable to resolve
     * @returns {?string}
-    */
+	*/
+  resolveID(presence) {
+    const presenceResolveable = super.resolveID(presence);
+    if (presenceResolveable) return presenceResolveable;
+    const userResolveable = this.client.users.resolveID(presence);
+    return this.has(userResolveable) ? userResolveable : null;
+  }
 }
 
 module.exports = PresenceStore;
