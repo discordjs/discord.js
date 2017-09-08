@@ -224,7 +224,7 @@ class ClientDataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
+          snekfetch.get(resource, { followRedirects: true })
             .end((err, res) => {
               if (err) return reject(err);
               if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
