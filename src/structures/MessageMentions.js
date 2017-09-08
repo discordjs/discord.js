@@ -22,8 +22,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.get(mention.id);
-          if (!user) user = message.client.dataManager.newUser(mention);
+          let user = message.client.users.create(mention);
           this.users.set(user.id, user);
         }
       }
@@ -127,7 +126,7 @@ class MessageMentions {
   has(data, strict = true) {
     if (strict && this.everyone) return true;
     if (strict && data instanceof GuildMember) {
-      for (const role of this.roles) if (data.roles.has(role.id)) return true;
+      for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
     }
     const id = data.id || data;
     return this.users.has(id) || this.channels.has(id) || this.roles.has(id);

@@ -1,23 +1,19 @@
 const Snowflake = require('../util/Snowflake');
 const Constants = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
+const Base = require('./Base');
 
 /**
  * Represents a Client OAuth2 Application.
+ * @extends {Base}
  */
-class ClientApplication {
+class ClientApplication extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name ClientApplication#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
+    super(client);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of the app
      * @type {Snowflake}
@@ -101,7 +97,7 @@ class ClientApplication {
        * The owner of this OAuth application
        * @type {?User}
        */
-      this.owner = this.client.dataManager.newUser(data.owner);
+      this.owner = this.client.users.create(data.owner);
     }
   }
 
@@ -132,7 +128,7 @@ class ClientApplication {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+    return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
   }
 
   /**
@@ -170,7 +166,7 @@ class ClientApplication {
    * @returns {Promise}
    */
   createAsset(name, data, type) {
-    return this.client.resolveBase64(data).then(b64 =>
+    return DataResolver.resolveBase64(data).then(b64 =>
       this.client.api.applications(this.id).assets.post({ data: {
         name,
         data: b64,
@@ -181,7 +177,7 @@ class ClientApplication {
   /**
    * Reset the app's secret.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
+   * @returns {ClientApplication}
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
@@ -191,7 +187,7 @@ class ClientApplication {
   /**
    * Reset the app's bot token.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
+   * @returns {ClientApplication}
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()

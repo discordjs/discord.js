@@ -29,7 +29,8 @@ class GuildDeleteAction extends Action {
       }
 
       // Delete guild
-      client.guilds.delete(guild.id);
+      client.guilds.remove(guild.id);
+      client.emit(Constants.Events.GUILD_DELETE, guild);
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
     } else {

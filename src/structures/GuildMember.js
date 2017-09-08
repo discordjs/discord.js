@@ -2,22 +2,18 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
+const Base = require('./Base');
 const { Presence } = require('./Presence');
 const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
-class GuildMember {
-  constructor(guild, data) {
-    /**
-     * The client that instantiated this GuildMember
-     * @name GuildMember#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: guild.client });
+class GuildMember extends Base {
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that this member is part of
@@ -32,7 +28,8 @@ class GuildMember {
     this.user = {};
 
     this._roles = [];
-    if (data) this.setup(data);
+
+    if (data) this._patch(data);
 
     /**
      * The ID of the last message sent by the member in their guild, if one was sent
@@ -47,64 +44,71 @@ class GuildMember {
     this.lastMessage = null;
   }
 
-  setup(data) {
-    /**
-     * Whether this member is deafened server-wide
-     * @type {boolean}
-     */
-    this.serverDeaf = data.deaf;
-
-    /**
-     * Whether this member is muted server-wide
-     * @type {boolean}
-     */
-    this.serverMute = data.mute;
-
-    /**
-     * Whether this member is self-muted
-     * @type {boolean}
-     */
-    this.selfMute = data.self_mute;
-
-    /**
-     * Whether this member is self-deafened
-     * @type {boolean}
-     */
-    this.selfDeaf = data.self_deaf;
-
-    /**
-     * The voice session ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceSessionID = data.session_id;
-
-    /**
-     * The voice channel ID of this member, if any
-     * @type {?Snowflake}
-     */
-    this.voiceChannelID = data.channel_id;
-
+  _patch(data) {
     /**
      * Whether this member is speaking
      * @type {boolean}
+     * @name GuildMember#speaking
      */
-    this.speaking = false;
+    if (typeof this.speaking === 'undefined') this.speaking = false;
 
     /**
      * The nickname of this guild member, if they have one
      * @type {?string}
+     * @name GuildMember#nickname
      */
-    this.nickname = data.nick || null;
+    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     /**
      * The timestamp the member joined the guild at
      * @type {number}
+     * @name GuildMember#joinedTimestamp
      */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = data.user;
-    this._roles = data.roles;
+    this.user = this.guild.client.users.create(data.user);
+    if (data.roles) this._roles = data.roles;
   }
+
+  get voiceState() {
+    return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
+  }
+
+  /**
+   * Whether this member is deafened server-wide
+   * @type {boolean}
+   */
+  get serverDeaf() { return this.voiceState.deaf; }
+
+  /**
+   * Whether this member is muted server-wide
+   * @type {boolean}
+   */
+  get serverMute() { return this.voiceState.mute; }
+
+  /**
+   * Whether this member is self-muted
+   * @type {boolean}
+   */
+  get selfMute() { return this.voiceState.self_mute; }
+
+  /**
+   * Whether this member is self-deafened
+   * @type {boolean}
+   */
+  get selfDeaf() { return this.voiceState.self_deaf; }
+
+  /**
+   * The voice session ID of this member (if any)
+   * @type {?Snowflake}
+   */
+  get voiceSessionID() { return this.voiceState.session_id; }
+
+  /**
+   * The voice channel ID of this member, (if any)
+   * @type {?Snowflake}
+   */
+  get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
    * The time the member joined the guild
@@ -282,7 +286,7 @@ class GuildMember {
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.permissionsFor(this);
   }
@@ -333,7 +337,7 @@ class GuildMember {
    */
   edit(data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel_id = this.client.channels.resolve(data.channel).id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
@@ -345,7 +349,16 @@ class GuildMember {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(newData => this.guild._updateMember(this, newData).mem);
+    return endpoint.patch({ data, reason }).then(() => {
+      const clone = this._clone();
+      data.user = this.user;
+      clone._patch(data);
+      clone._frozenVoiceState = this.voiceState;
+      if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
+      if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
+      if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;
+      return clone;
+    });
   }
 
   /**
@@ -394,12 +407,16 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   addRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .put({ reason })
-      .then(() => this);
+      .then(() => {
+        const clone = this._clone();
+        if (!clone._roles.includes(role.id)) clone._roles.push(role.id);
+        return clone;
+      });
   }
 
   /**
@@ -411,7 +428,7 @@ class GuildMember {
   addRoles(roles, reason) {
     let allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -428,12 +445,17 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (!this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
       .delete({ reason })
-      .then(() => this);
+      .then(() => {
+        const clone = this._clone();
+        const index = clone._roles.indexOf(role.id);
+        if (~index) clone._roles.splice(index, 1);
+        return clone;
+      });
   }
 
   /**
@@ -445,7 +467,7 @@ class GuildMember {
   removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));

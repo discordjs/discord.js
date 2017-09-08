@@ -2,13 +2,7 @@ const Constants = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
-
-let WebSocket;
-try {
-  WebSocket = require('uws');
-} catch (err) {
-  WebSocket = require('ws');
-}
+const WebSocket = require('../../WebSocket');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -75,7 +69,7 @@ class VoiceWebSocket extends EventEmitter {
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
-    this.ws = new WebSocket(`wss://${this.voiceConnection.authentication.endpoint}`);
+    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 3 });
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -134,7 +128,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(JSON.parse(event.data));
+      return this.onPacket(WebSocket.unpack(event.data));
     } catch (error) {
       return this.onError(error);
     }

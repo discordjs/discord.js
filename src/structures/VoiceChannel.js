@@ -13,13 +13,13 @@ class VoiceChannel extends GuildChannel {
     /**
      * The members in this voice channel
      * @type {Collection<Snowflake, GuildMember>}
+     * @name VoiceChannel#members
      */
     Object.defineProperty(this, 'members', { value: new Collection() });
   }
 
-  setup(data) {
-    super.setup(data);
-
+  _patch(data) {
+    super._patch(data);
     /**
      * The bitrate of this voice channel
      * @type {number}

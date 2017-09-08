@@ -1,31 +1,23 @@
 const Constants = require('../util/Constants');
+const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ * @extends {Base}
  */
-class Invite {
+class Invite extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the invite
-     * @name Invite#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
+    super(client);
+    this._patch(data);
   }
 
-  setup(data) {
-    const Guild = require('./Guild');
-    const Channel = require('./Channel');
-
+  _patch(data) {
     /**
      * The guild the invite is for
      * @type {Guild}
      */
-    this.guild = this.client.guilds.get(data.guild.id) || new Guild(this.client, data.guild);
+    this.guild = this.client.guilds.create(data.guild, false);
 
     /**
      * The code for this invite
@@ -86,14 +78,14 @@ class Invite {
        * The user who created this invite
        * @type {User}
        */
-      this.inviter = this.client.dataManager.newUser(data.inviter);
+      this.inviter = this.client.users.create(data.inviter);
     }
 
     /**
      * The channel the invite is for
      * @type {GuildChannel}
      */
-    this.channel = this.client.channels.get(data.channel.id) || Channel.create(this.client, data.channel, this.guild);
+    this.channel = this.client.channels.create(data.channel, this.guild, false);
 
     /**
      * The timestamp the invite was created at

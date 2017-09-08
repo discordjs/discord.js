@@ -22,8 +22,8 @@ class GuildChannel extends Channel {
     this.guild = guild;
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of the guild channel
@@ -66,7 +66,7 @@ class GuildChannel extends Channel {
    * @returns {?Permissions}
    */
   permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    member = this.guild.members.resolve(member);
     if (!member) return null;
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
@@ -88,7 +88,7 @@ class GuildChannel extends Channel {
   }
 
   overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
     roles = roles || member.roles;
@@ -114,10 +114,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled).
+   * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
+   *  'EMBED_LINKS': null,
    *  'ATTACH_FILES': false,
    * }
    * ```
@@ -143,14 +144,14 @@ class GuildChannel extends Channel {
     const deny = new Permissions(0);
     let type;
 
-    if (userOrRole instanceof Role) {
-      type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      type = 'role';
+    const role = this.guild.roles.get(userOrRole);
+
+    if (role || userOrRole instanceof Role) {
+      userOrRole = role || userOrRole;
+      payload.type = 'role';
     } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      type = 'member';
+      userOrRole = this.client.users.resolve(userOrRole);
+      payload.type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
 
@@ -201,7 +202,7 @@ class GuildChannel extends Channel {
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of voice the channel
+   * @property {number} [userLimit] The user limit of the voice channel
    */
 
   /**
@@ -225,7 +226,11 @@ class GuildChannel extends Channel {
         user_limit: data.userLimit || this.userLimit,
       },
       reason,
-    }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
+    }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**
