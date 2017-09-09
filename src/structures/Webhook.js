@@ -122,7 +122,7 @@ class Webhook {
 
     if (!options.username) options.username = this.name;
     if (options.avatarURL) {
-      options.avatar_url = options.avatarURL;
+      options.avatar_url = options.avatarURL.replace(/^(.+)\?size=.+$/, '$1');
       options.avatarURL = null;
     }
 
