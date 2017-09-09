@@ -165,13 +165,6 @@ exports.VoiceStatus = {
   DISCONNECTED: 4,
 };
 
-exports.ChannelTypes = {
-  TEXT: 0,
-  DM: 1,
-  VOICE: 2,
-  GROUP: 3,
-};
-
 exports.OPCodes = {
   DISPATCH: 0,
   HEARTBEAT: 1,
@@ -572,6 +565,14 @@ exports.UserFlags = {
   STAFF: 1 << 0,
   PARTNER: 1 << 1,
   HYPESQUAD: 1 << 2,
+};
+
+exports.ChannelTypes = {
+  TEXT: 0,
+  DM: 1,
+  VOICE: 2,
+  GROUP: 3,
+  CATEGORY: 4,
 };
 
 exports.ClientApplicationAssetTypes = {
