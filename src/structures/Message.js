@@ -10,7 +10,6 @@ const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-let GuildMember;
 
 /**
  * Represents a message on Discord.
@@ -570,3 +569,6 @@ class Message extends Base {
 }
 
 module.exports = Message;
+
+// Fixes Circular
+const GuildMember = require('./GuildMember');
