@@ -296,7 +296,7 @@ class GuildChannel extends Channel {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
 
-    let updatedChannels = this.guild._sortedChannels(this.type).array();
+    let updatedChannels = this.guild._sortedChannels(this).array();
     Util.moveElementInArray(updatedChannels, this, position, relative);
     updatedChannels = updatedChannels.map((r, i) => ({ channel: r.id, position: i }));
     return this.guild.setChannelPositions(updatedChannels, reason);
