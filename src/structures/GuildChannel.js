@@ -9,7 +9,7 @@ const Constants = require('../util/Constants');
 const { TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (i.e. text channels, category channels and voice channels).
+ * Represents a guild channel (i.e. text channels and voice channels).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -58,7 +58,7 @@ class GuildChannel extends Channel {
 
   /**
    * The category parent of this channel
-   * @type {?GuildChannel}
+   * @type {?CategoryChannel}
    * @readonly
    */
   get parent() {
