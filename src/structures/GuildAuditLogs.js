@@ -51,7 +51,7 @@ const Actions = {
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
+    if (data.users) for (const user of data.users) guild.client.users.create(user);
     /**
      * Cached webhooks
      * @type {Collection<Snowflake, Webhook>}
@@ -85,6 +85,19 @@ class GuildAuditLogs {
   }
 
   /**
+   * The target type of an entry, e.g. `GUILD`. Here are the available types:
+   * * GUILD
+   * * CHANNEL
+   * * USER
+   * * ROLE
+   * * INVITE
+   * * WEBHOOK
+   * * EMOJI
+   * * MESSAGE
+   * @typedef {string} TargetType
+   */
+
+  /**
    * Find target type from entry action.
    * @param {number} target The action target
    * @returns {?string}
@@ -101,6 +114,13 @@ class GuildAuditLogs {
     return Targets.UNKNOWN;
   }
 
+  /**
+   * The action type of an entry, e.g. `CREATE`. Here are the available types:
+   * * CREATE
+   * * DELETE
+   * * UPDATE
+   * @typedef {string} ActionType
+   */
 
   /**
    * Find action type from entry action.
@@ -155,13 +175,13 @@ class GuildAuditLogsEntry {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
-     * @type {string}
+     * @type {TargetType}
      */
     this.targetType = targetType;
 
     /**
      * The action type of this entry
-     * @type {string}
+     * @type {ActionType}
      */
     this.actionType = GuildAuditLogs.actionType(data.action_type);
 
@@ -184,7 +204,7 @@ class GuildAuditLogsEntry {
     this.executor = guild.client.users.get(data.user_id);
 
     /**
-     * An entry in the audit log representing a specific change
+     * An entry in the audit log representing a specific change.
      * @typedef {object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * @property {*} [old] The old value of the change, e.g. for nicknames, the old nickname
@@ -239,7 +259,7 @@ class GuildAuditLogsEntry {
     if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {Snowflake|Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {TargetType}
        */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;

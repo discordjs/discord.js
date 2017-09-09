@@ -2,6 +2,7 @@ const Util = require('./util/Util');
 
 module.exports = {
   // "Root" classes (starting points)
+  BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
@@ -11,7 +12,7 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
-  DiscordAPIError: require('./client/rest/DiscordAPIError'),
+  DiscordAPIError: require('./rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
@@ -26,14 +27,13 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
-  Attachment: require('./structures/Attachment'),
+  Activity: require('./structures/Presence').Activity,
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
@@ -47,8 +47,6 @@ module.exports = {
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   ClientApplication: require('./structures/ClientApplication'),
-  PartialGuild: require('./structures/PartialGuild'),
-  PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ReactionEmoji: require('./structures/ReactionEmoji'),
@@ -58,6 +56,6 @@ module.exports = {
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   Webhook: require('./structures/Webhook'),
-};
 
-if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+  WebSocket: require('./WebSocket'),
+};

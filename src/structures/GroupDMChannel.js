@@ -1,7 +1,7 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
+const MessageStore = require('../stores/MessageStore');
 
 /*
 { type: 3,
@@ -33,12 +33,12 @@ const Constants = require('../util/Constants');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of this Group DM, can be null if one isn't set
@@ -88,7 +88,7 @@ class GroupDMChannel extends Channel {
 
     if (data.recipients) {
       for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
+        const user = this.client.users.create(recipient);
         this.recipients.set(user.id, user);
       }
     }
@@ -106,7 +106,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Gets the URL to this Group DM's icon
+   * Gets the URL to this Group DM's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
    * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
@@ -114,7 +114,7 @@ class GroupDMChannel extends Channel {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).GDMIcon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
   }
 
   /**
@@ -156,18 +156,11 @@ class GroupDMChannel extends Channel {
 
   /**
    * Sets a new icon for this Group DM.
-   * @param {Base64Resolvable} icon The new icon of this Group DM
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  setIcon(icon) {
-    if (typeof icon === 'string' && icon.startsWith('data:')) {
-      return this.edit({ icon });
-    } else if (!icon) {
-      return this.edit({ icon: null });
-    } else {
-      return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.edit({ icon: this.client.resolver.resolveBase64(data) }));
-    }
+  async setIcon(icon) {
+    return this.edit({ icon: await this.client.resolver.resolveImage(icon) });
   }
 
   /**
@@ -225,9 +218,6 @@ class GroupDMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
   search() {}
   startTyping() {}
   stopTyping() {}

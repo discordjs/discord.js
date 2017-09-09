@@ -21,7 +21,8 @@ class MessageCollector extends Collector {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel
+     * The channel
+     * @type {TextBasedChannel}
      */
     this.channel = channel;
 
@@ -49,7 +50,7 @@ class MessageCollector extends Collector {
   /**
    * Handle a message for possible collection.
    * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @returns {?{key: Snowflake, value: Message}}
    * @private
    */
   collect(message) {
@@ -64,7 +65,7 @@ class MessageCollector extends Collector {
   /**
    * Handle a message for possible disposal.
    * @param {Message} message The message that could be disposed
-   * @returns {?string} The message ID.
+   * @returns {?string}
    */
   dispose(message) {
     return message.channel.id === this.channel.id ? message.id : null;
@@ -72,7 +73,7 @@ class MessageCollector extends Collector {
 
   /**
    * Check after un/collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
+   * @returns {?string}
    * @private
    */
   endReason() {

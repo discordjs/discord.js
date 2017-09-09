@@ -11,9 +11,10 @@ nonce.fill(0);
  * Receives voice data from a voice connection.
  * ```js
  * // Obtained using:
- * voiceChannel.join().then(connection => {
- *  const receiver = connection.createReceiver();
- * });
+ * voiceChannel.join()
+ *   .then(connection => {
+ *     const receiver = connection.createReceiver();
+ *   });
  * ```
  * @extends {EventEmitter}
  */
@@ -161,6 +162,25 @@ class VoiceReceiver extends EventEmitter {
       return;
     }
     data = Buffer.from(data);
+
+    // Strip RTP Header Extensions (one-byte only)
+    if (data[0] === 0xBE && data[1] === 0xDE && data.length > 4) {
+      const headerExtensionLength = data.readUInt16BE(2);
+      let offset = 4;
+      for (let i = 0; i < headerExtensionLength; i++) {
+        const byte = data[offset];
+        offset++;
+        if (byte === 0) {
+          continue;
+        }
+        offset += 1 + (0b1111 & (byte >> 4));
+      }
+      while (data[offset] === 0) {
+        offset++;
+      }
+      data = data.slice(offset);
+    }
+
     if (this.opusStreams.get(user.id)) this.opusStreams.get(user.id)._push(data);
     /**
      * Emitted whenever voice data is received from the voice connection. This is _always_ emitted (unlike PCM).

@@ -1,57 +1,56 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Constants = require('../util/Constants');
 const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
 const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
-class User {
+class User extends Base {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the user
-     * @name User#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
-    if (data) this.setup(data);
-  }
-
-  setup(data) {
     /**
      * The ID of the user
      * @type {Snowflake}
      */
     this.id = data.id;
 
+    this._patch(data);
+  }
+
+  _patch(data) {
     /**
      * The username of the user
      * @type {string}
+     * @name User#username
      */
-    this.username = data.username;
+    if (data.username) this.username = data.username;
 
     /**
      * A discriminator based on username for the user
      * @type {string}
+     * @name User#discriminator
      */
-    this.discriminator = data.discriminator;
+    if (data.discriminator) this.discriminator = data.discriminator;
 
     /**
      * The ID of the user's avatar
      * @type {string}
+     * @name User#avatar
      */
-    this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
      * Whether or not the user is a bot
      * @type {boolean}
+     * @name User#bot
      */
-    this.bot = Boolean(data.bot);
+    if (typeof this.bot === 'undefined' && typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -64,12 +63,7 @@ class User {
      * @type {?Message}
      */
     this.lastMessage = null;
-  }
 
-  patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
-      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
-    }
     if (data.token) this.client.token = data.token;
   }
 
@@ -105,7 +99,7 @@ class User {
   }
 
   /**
-   * A link to the user's avatar
+   * A link to the user's avatar.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
@@ -114,7 +108,7 @@ class User {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -123,15 +117,16 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * A link to the user's avatar if they have one.
+   * Otherwise a link to their default avatar will be returned.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -249,8 +244,7 @@ class User {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot);
+      this.avatar === user.avatar;
 
     return equal;
   }

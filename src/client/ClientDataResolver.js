@@ -29,11 +29,10 @@ class ClientDataResolver {
   /**
    * Data that resolves to give a User object. This can be:
    * * A User object
-   * * A user ID
+   * * A Snowflake
    * * A Message object (resolves to the message author)
-   * * A Guild object (owner of the guild)
    * * A GuildMember object
-   * @typedef {User|Snowflake|Message|Guild|GuildMember} UserResolvable
+   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
    */
 
   /**
@@ -46,7 +45,6 @@ class ClientDataResolver {
     if (typeof user === 'string') return this.client.users.get(user) || null;
     if (user instanceof GuildMember) return user.user;
     if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
     return null;
   }
 
@@ -59,14 +57,13 @@ class ClientDataResolver {
     if (user instanceof User || user instanceof GuildMember) return user.id;
     if (typeof user === 'string') return user || null;
     if (user instanceof Message) return user.author.id;
-    if (user instanceof Guild) return user.ownerID;
     return null;
   }
 
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
-   * * A Guild ID
+   * * A Snowflake
    * @typedef {Guild|Snowflake} GuildResolvable
    */
 
@@ -126,10 +123,8 @@ class ClientDataResolver {
   /**
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
-   * * A Message object (the channel the message was sent in)
-   * * A Guild object (the #general channel)
-   * * A channel ID
-   * @typedef {Channel|Guild|Message|Snowflake} ChannelResolvable
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} ChannelResolvable
    */
 
   /**
@@ -140,8 +135,6 @@ class ClientDataResolver {
   resolveChannel(channel) {
     if (channel instanceof Channel) return channel;
     if (typeof channel === 'string') return this.client.channels.get(channel) || null;
-    if (channel instanceof Message) return channel.channel;
-    if (channel instanceof Guild) return channel.channels.get(channel.id) || null;
     return null;
   }
 
@@ -153,8 +146,6 @@ class ClientDataResolver {
   resolveChannelID(channel) {
     if (channel instanceof Channel) return channel.id;
     if (typeof channel === 'string') return channel;
-    if (channel instanceof Message) return channel.channel.id;
-    if (channel instanceof Guild) return channel.defaultChannel.id;
     return null;
   }
 
@@ -175,6 +166,20 @@ class ClientDataResolver {
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
+  }
+
+  /**
+   * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
+   * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
+   * @returns {Promise<?string>}
+   */
+  async resolveImage(image) {
+    if (!image) return null;
+    if (typeof image === 'string' && image.startsWith('data:')) {
+      return image;
+    }
+    const file = await this.resolveFile(image);
+    return this.resolveBase64(file);
   }
 
   /**
@@ -203,11 +208,16 @@ class ClientDataResolver {
    */
 
   /**
+   * @external Stream
+   * @see {@link https://nodejs.org/api/stream.html}
+   */
+
+  /**
    * Resolves a BufferResolvable to a Buffer.
-   * @param {BufferResolvable} resource The buffer resolvable to resolve
+   * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Buffer>}
    */
-  resolveBuffer(resource) {
+  resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
@@ -232,31 +242,16 @@ class ClientDataResolver {
           });
         }
       });
+    } else if (resource.pipe && typeof resource.pipe === 'function') {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        resource.once('error', reject);
+        resource.on('data', data => buffers.push(data));
+        resource.once('end', () => resolve(Buffer.concat(buffers)));
+      });
     }
 
     return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
-  }
-
-  /**
-   * Converts a Stream to a Buffer.
-   * @param {Stream} resource The stream to convert
-   * @returns {Promise<Buffer>}
-   */
-  resolveFile(resource) {
-    return resource ? this.resolveBuffer(resource)
-      .catch(() => {
-        if (resource.pipe && typeof resource.pipe === 'function') {
-          return new Promise((resolve, reject) => {
-            const buffers = [];
-            resource.once('error', reject);
-            resource.on('data', data => buffers.push(data));
-            resource.once('end', () => resolve(Buffer.concat(buffers)));
-          });
-        } else {
-          throw new TypeError('REQ_RESOURCE_TYPE');
-        }
-      }) :
-      Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
   }
 
   /**
@@ -265,7 +260,7 @@ class ClientDataResolver {
    * * A custom emoji ID
    * * An Emoji object
    * * A ReactionEmoji object
-   * @typedef {string|Emoji|ReactionEmoji} EmojiIdentifierResolvable
+   * @typedef {string|Snowflake|Emoji|ReactionEmoji} EmojiIdentifierResolvable
    */
 
   /**

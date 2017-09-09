@@ -13,13 +13,13 @@ class VoiceChannel extends GuildChannel {
     /**
      * The members in this voice channel
      * @type {Collection<Snowflake, GuildMember>}
+     * @name VoiceChannel#members
      */
-    this.members = new Collection();
+    Object.defineProperty(this, 'members', { value: new Collection() });
   }
 
-  setup(data) {
-    super.setup(data);
-
+  _patch(data) {
+    super._patch(data);
     /**
      * The bitrate of this voice channel
      * @type {number}
@@ -82,8 +82,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the bitrate of a voice channel
    * voiceChannel.setBitrate(48)
-   *  .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set bitrate to ${vc.bitrate}kbps for ${vc.name}`))
+   *   .catch(console.error);
    */
   setBitrate(bitrate, reason) {
     bitrate *= 1000;
@@ -98,8 +98,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Set the user limit of a voice channel
    * voiceChannel.setUserLimit(42)
-   *  .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
-   *  .catch(console.error);
+   *   .then(vc => console.log(`Set user limit to ${vc.userLimit} for ${vc.name}`))
+   *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
     return this.edit({ userLimit }, reason);
@@ -111,8 +111,8 @@ class VoiceChannel extends GuildChannel {
    * @example
    * // Join a voice channel
    * voiceChannel.join()
-   *  .then(connection => console.log('Connected!'))
-   *  .catch(console.error);
+   *   .then(connection => console.log('Connected!'))
+   *   .catch(console.error);
    */
   join() {
     if (this.client.browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));

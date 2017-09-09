@@ -14,14 +14,14 @@ class ResumedHandler extends AbstractHandler {
     const replayed = ws.sequence - ws.closeSequence;
 
     ws.debug(`RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events.`);
-    client.emit('resume', replayed);
+    client.emit(Constants.Events.RESUMED, replayed);
     ws.heartbeat();
   }
 }
 
 /**
- * Emitted whenever a WebSocket resumes.
- * @event Client#resume
+ * Emitted whenever a WebSocket resumed.
+ * @event Client#resumed
  * @param {number} replayed The number of events that were replayed
  */
 

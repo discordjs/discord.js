@@ -5,17 +5,14 @@ const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('./Guild');
-const Message = require('./Message');
-const GroupDMChannel = require('./GroupDMChannel');
-const { TypeError } = require('../errors');
 
 /**
  * Represents the logged in client's Discord user.
  * @extends {User}
  */
 class ClientUser extends User {
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * Whether or not this account has been verified
@@ -28,7 +25,6 @@ class ClientUser extends User {
      * @type {string}
      */
     this.email = data.email;
-    this.localPresence = {};
     this._typing = new Map();
 
     /**
@@ -82,15 +78,24 @@ class ClientUser extends User {
 
     /**
      * All of the user's guild settings
+     * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, ClientUserGuildSettings>}
-     * <warn>This is only filled when using a user account</warn>
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
       for (const settings of data.user_guild_settings) {
-        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(settings, this.client));
+        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
       }
     }
+  }
+
+  /**
+   * ClientUser's presence
+   * @readonly
+   * @type {Presence}
+   */
+  get presence() {
+    return this.client.presences.clientPresence;
   }
 
   edit(data, passcode) {
@@ -119,8 +124,8 @@ class ClientUser extends User {
    * @example
    * // Set username
    * client.user.setUsername('discordjs')
-   *  .then(user => console.log(`My new username is ${user.username}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new username is ${user.username}`))
+   *   .catch(console.error);
    */
   setUsername(username, password) {
     return this.edit({ username }, password);
@@ -135,8 +140,8 @@ class ClientUser extends User {
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *  .then(user => console.log(`My new email is ${user.email}`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`My new email is ${user.email}`))
+   *   .catch(console.error);
    */
   setEmail(email, password) {
     return this.edit({ email }, password);
@@ -146,7 +151,7 @@ class ClientUser extends User {
    * Changes the password for the client user's account.
    * <warn>This is only available when using a user account.</warn>
    * @param {string} newPassword New password to change to
-   * @param {Object|string} options Object containing an MFA code, password or both. 
+   * @param {Object|string} options Object containing an MFA code, password or both.
    * Can be just a string for the password.
    * @param {string} [options.oldPassword] Current password
    * @param {string} [options.mfaCode] Timed MFA Code
@@ -154,8 +159,8 @@ class ClientUser extends User {
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *  .then(user => console.log('New password set!'))
-   *  .catch(console.error);
+   *   .then(user => console.log('New password set!'))
+   *   .catch(console.error);
    */
   setPassword(newPassword, options) {
     return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
@@ -168,16 +173,11 @@ class ClientUser extends User {
    * @example
    * // Set avatar
    * client.user.setAvatar('./avatar.png')
-   *  .then(user => console.log(`New avatar set!`))
-   *  .catch(console.error);
+   *   .then(user => console.log(`New avatar set!`))
+   *   .catch(console.error);
    */
-  setAvatar(avatar) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.edit({ avatar });
-    } else {
-      return this.client.resolver.resolveBuffer(avatar || Buffer.alloc(0))
-        .then(data => this.edit({ avatar: this.client.resolver.resolveBase64(data) || null }));
-    }
+  async setAvatar(avatar) {
+    return this.edit({ avatar: await this.client.resolver.resolveImage(avatar) });
   }
 
   /**
@@ -185,104 +185,58 @@ class ClientUser extends User {
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [game] Game the user is playing
-   * @property {string} [game.name] Name of the game
-   * @property {string} [game.url] Twitch stream URL
+   * @property {Object} [activity] activity the user is playing
+   * @property {string} [activity.name] Name of the activity
+   * @property {ActivityType|number} [activity.type] Type of the activity
+   * @property {string} [activity.url] Stream url
    */
 
   /**
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setPresence(data) {
-    // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
-    return new Promise(resolve => {
-      let status = this.localPresence.status || this.presence.status;
-      let game = this.localPresence.game;
-      let afk = this.localPresence.afk || this.presence.afk;
-
-      if (!game && this.presence.game) {
-        game = {
-          name: this.presence.game.name,
-          type: this.presence.game.type,
-          url: this.presence.game.url,
-        };
-      }
-
-      if (data.status) {
-        if (typeof data.status !== 'string') throw new TypeError('STATUS_TYPE');
-        if (this.bot) {
-          status = data.status;
-        } else {
-          this.settings.update(Constants.UserSettingsMap.status, data.status);
-          status = 'invisible';
-        }
-      }
-
-      if (data.game) {
-        game = data.game;
-        if (game.url) game.type = 1;
-      } else if (typeof data.game !== 'undefined') {
-        game = null;
-      }
-
-      if (typeof data.afk !== 'undefined') afk = data.afk;
-      afk = Boolean(afk);
-
-      this.localPresence = { status, game, afk };
-      this.localPresence.since = 0;
-      this.localPresence.game = this.localPresence.game || null;
-
-      this.client.ws.send({
-        op: 3,
-        d: this.localPresence,
-      });
-
-      this.client._setPresence(this.id, this.localPresence);
-
-      resolve(this);
-    });
+    return this.client.presences.setClientPresence(data);
   }
 
   /**
    * A user's status. Must be one of:
-   * - `online`
-   * - `idle`
-   * - `invisible`
-   * - `dnd` (do not disturb)
+   * * `online`
+   * * `idle`
+   * * `invisible`
+   * * `dnd` (do not disturb)
    * @typedef {string} PresenceStatus
    */
 
   /**
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setStatus(status) {
     return this.setPresence({ status });
   }
 
   /**
-   * Sets the game the client user is playing.
-   * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
-   * @returns {Promise<ClientUser>}
+   * Sets the activity the client user is playing.
+   * @param {?string} name Activity being played
+   * @param {Object} [options] Options for setting the activity
+   * @param {string} [options.url] Twitch stream URL
+   * @param {ActivityType|number} [options.type] Type of the activity
+   * @returns {Promise<Presence>}
    */
-  setGame(game, streamingURL) {
-    if (!game) return this.setPresence({ game: null });
+  setActivity(name, { url, type } = {}) {
+    if (!name) return this.setPresence({ activity: null });
     return this.setPresence({
-      game: {
-        name: game,
-        url: streamingURL,
-      },
+      activity: { name, type, url },
     });
   }
 
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
-   * @returns {Promise<ClientUser>}
+   * @returns {Promise<Presence>}
    */
   setAFK(afk) {
     return this.setPresence({ afk });
@@ -302,7 +256,7 @@ class ClientUser extends User {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => new Message(this.client.channels.get(m.channel_id), m, this.client)));
+      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.create(m, false)));
   }
 
   /**
@@ -332,15 +286,15 @@ class ClientUser extends User {
 
             const timeout = this.client.setTimeout(() => {
               this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.dataManager.newGuild(data));
+              resolve(this.client.guilds.create(data));
             }, 10000);
             return undefined;
           }, reject)
       );
-    } else {
-      return this.client.resolver.resolveBuffer(icon)
-        .then(data => this.createGuild(name, { region, icon: this.client.resolver.resolveBase64(data) || null }));
     }
+
+    return this.client.resolver.resolveImage(icon)
+      .then(data => this.createGuild(name, { region, icon: data || null }));
   }
 
   /**
@@ -368,7 +322,7 @@ class ClientUser extends User {
       }, {}),
     } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
-      .then(res => new GroupDMChannel(this.client, res));
+      .then(res => this.client.channels.create(res));
   }
 }
 

@@ -23,8 +23,8 @@ class GuildChannel extends Channel {
     this.guild = guild;
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of the guild channel
@@ -140,10 +140,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled).
+   * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
+   *  'EMBED_LINKS': null,
    *  'ATTACH_FILES': false,
    * }
    * ```
@@ -159,10 +160,10 @@ class GuildChannel extends Channel {
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
-   *  SEND_MESSAGES: false
+   *   SEND_MESSAGES: false
    * })
-   * .then(() => console.log('Done!'))
-   * .catch(console.error);
+   *   .then(() => console.log('Done!'))
+   *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
     const payload = {
@@ -209,13 +210,28 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * A collection of members that can see this channel, mapped by their ID
+   * @type {Collection<Snowflake, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).has('VIEW_CHANNEL')) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
+  /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of voice the channel
+   * @property {number} [userLimit] The user limit of the voice channel
    */
 
   /**
@@ -226,8 +242,8 @@ class GuildChannel extends Channel {
    * @example
    * // Edit a channel
    * channel.edit({name: 'new-channel'})
-   *  .then(c => console.log(`Edited channel ${c}`))
-   *  .catch(console.error);
+   *   .then(c => console.log(`Edited channel ${c}`))
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.api.channels(this.id).patch({
@@ -238,9 +254,14 @@ class GuildChannel extends Channel {
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
+        lock_permissions: data.lockPermissions,
       },
       reason,
-    }).then(newData => this.client.actions.ChannelUpdate.handle(newData).updated);
+    }).then(newData => {
+      const clone = this._clone();
+      clone._patch(newData);
+      return clone;
+    });
   }
 
   /**
@@ -251,8 +272,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel name
    * channel.setName('not_general')
-   *  .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
+   *   .catch(console.error);
    */
   setName(name, reason) {
     return this.edit({ name }, reason);
@@ -266,8 +287,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel position
    * channel.setPosition(2)
-   *  .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
    */
   setPosition(position, { relative, reason }) {
     position = Number(position);
@@ -288,11 +309,15 @@ class GuildChannel extends Channel {
   /**
    * Set the category parent of this channel
    * @param {GuildChannel|Snowflake} channel Parent channel
-   * @param {string} [reason] Reason for setting the parent
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
-  setParent(channel, reason) {
-    return this.edit({ parentID: channel.id ? channel.id : channel }, reason);
+  setParent(channel, { lockPermissions = true, reason }) {
+    return this.edit({
+      parentID: channel.id ? channel.id : channel,
+      lockPermissions,
+    }, reason);
   }
 
   /**
@@ -303,8 +328,8 @@ class GuildChannel extends Channel {
    * @example
    * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
-   *  .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *  .catch(console.error);
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
    */
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
@@ -387,8 +412,8 @@ class GuildChannel extends Channel {
    * @example
    * // Delete the channel
    * channel.delete('making room for new channels')
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then() // Success
+   *   .catch(console.error); // Log error
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);

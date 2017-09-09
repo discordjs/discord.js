@@ -1,10 +1,13 @@
 const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
+const ClientUserGuildSettings = require('../../../../structures/ClientUserGuildSettings');
 
 class UserGuildSettingsUpdateHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
-    client.user.guildSettings.get(packet.d.guild_id).patch(packet.d);
+    const settings = client.user.guildSettings.get(packet.d.guild_id);
+    if (settings) settings.patch(packet.d);
+    else client.user.guildSettings.set(packet.d.guild_id, new ClientUserGuildSettings(this.client, packet.d));
     client.emit(Constants.Events.USER_GUILD_SETTINGS_UPDATE, client.user.guildSettings.get(packet.d.guild_id));
   }
 }

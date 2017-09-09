@@ -1,28 +1,24 @@
 const Mentions = require('./MessageMentions');
-const Attachment = require('./MessageAttachment');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
+const ReactionStore = require('../stores/ReactionStore');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 let GuildMember;
 
 /**
  * Represents a message on Discord.
+ * @extends {Base}
  */
-class Message {
+class Message extends Base {
   constructor(channel, data, client) {
-    /**
-     * The client that instantiated the Message
-     * @name Message#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * The channel that the message was sent in
@@ -30,10 +26,10 @@ class Message {
      */
     this.channel = channel;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) { // eslint-disable-line complexity
+  _patch(data) { // eslint-disable-line complexity
     /**
      * The ID of the message
      * @type {Snowflake}
@@ -56,11 +52,11 @@ class Message {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.dataManager.newUser(data.author);
+    this.author = this.client.users.create(data.author);
 
     /**
-     * Represents the author of the message as a guild member. Only available if the message comes from a guild
-     * where the author is still a member.
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */
     this.member = this.guild ? this.guild.member(this.author) || null : null;
@@ -100,7 +96,11 @@ class Message {
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    for (const attachment of data.attachments) {
+      this.attachments.set(attachment.id, new MessageAttachment(
+        attachment.url, attachment.filename, attachment
+      ));
+    }
 
     /**
      * The timestamp the message was sent at
@@ -116,13 +116,12 @@ class Message {
 
     /**
      * A collection of reactions to this message, mapped by the reaction ID
-     * @type {Collection<Snowflake, MessageReaction>}
+     * @type {ReactionStore<Snowflake, MessageReaction>}
      */
-    this.reactions = new Collection();
+    this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+        this.reactions.create(reaction);
       }
     }
 
@@ -173,7 +172,7 @@ class Message {
    * @private
    */
   patch(data) {
-    const clone = Util.cloneObject(this);
+    const clone = this._clone();
     this._edits.unshift(clone);
 
     this.editedTimestamp = new Date(data.edited_timestamp).getTime();
@@ -185,7 +184,11 @@ class Message {
 
     if ('attachments' in data) {
       this.attachments = new Collection();
-      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     } else {
       this.attachments = new Collection(this.attachments);
     }
@@ -226,8 +229,8 @@ class Message {
   }
 
   /**
-   * The message contents with all mentions replaced by the equivalent text. If mentions cannot be resolved to a name,
-   * the relevant mention in the message content will not be converted
+   * The message contents with all mentions replaced by the equivalent text.
+   * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
    * @type {string}
    * @readonly
    */
@@ -271,8 +274,8 @@ class Message {
    * @example
    * // Create a reaction collector
    * const collector = message.createReactionCollector(
-   *  (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
-   *  { time: 15000 }
+   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
+   *   { time: 15000 }
    * );
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -288,8 +291,8 @@ class Message {
    */
 
   /**
-   * Similar to createCollector but in promise form. Resolves with a collection of reactions that pass the specified
-   * filter.
+   * Similar to createMessageCollector but in promise form.
+   * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
@@ -357,13 +360,13 @@ class Message {
   /**
    * Edit the content of the message.
    * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *  .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .catch(console.error);
    */
   edit(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -372,6 +375,8 @@ class Message {
     } else if (!options) {
       options = {};
     }
+    if (options instanceof Embed) options = { embed: options };
+
     if (typeof options.content !== 'undefined') content = options.content;
 
     if (typeof content !== 'undefined') content = Util.resolveString(content);
@@ -395,7 +400,11 @@ class Message {
 
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data: { content, embed } })
-      .then(data => this.client.actions.MessageUpdate.handle(data).updated);
+      .then(data => {
+        const clone = this._clone();
+        clone._patch(data);
+        return clone;
+      });
   }
 
   /**
@@ -427,7 +436,12 @@ class Message {
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
       .put()
-      .then(() => this._addReaction(Util.parseEmoji(emoji), this.client.user));
+      .then(() => this.client.actions.MessageReactionAdd.handle({
+        user: this.client.user,
+        channel: this.channel,
+        message: this,
+        emoji: Util.parseEmoji(emoji),
+      }).reaction);
   }
 
   /**
@@ -448,8 +462,8 @@ class Message {
    * @example
    * // Delete a message
    * message.delete()
-   *  .then(msg => console.log(`Deleted message from ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .catch(console.error);
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
@@ -477,8 +491,8 @@ class Message {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *  .then(msg => console.log(`Sent a reply to ${msg.author}`))
-   *  .catch(console.error);
+   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -552,42 +566,6 @@ class Message {
    */
   toString() {
     return this.content;
-  }
-
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-    }
-    return reaction;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : encodeURIComponent(emoji.name);
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) reaction.me = false;
-        if (reaction.count <= 0) this.reactions.delete(emojiID);
-        return reaction;
-      }
-    }
-    return null;
-  }
-
-  _clearReactions() {
-    this.reactions.clear();
   }
 }
 

@@ -1,5 +1,4 @@
 const Constants = require('../util/Constants');
-const WebSocketConnection = require('./websocket/WebSocketConnection');
 const { Error } = require('../errors');
 
 /**
@@ -40,8 +39,7 @@ class ClientManager {
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('TOKEN_INVALID')), 1000 * 300);
     this.client.api.gateway.get().then(res => {
-      const protocolVersion = Constants.DefaultOptions.ws.version;
-      const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
+      const gateway = `${res.url}/`;
       this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
       this.client.ws.connection.once('close', event => {
