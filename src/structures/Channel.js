@@ -17,6 +17,7 @@ class Channel extends Base {
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
+     * * `category` - a guild category channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
@@ -69,6 +70,7 @@ class Channel extends Base {
     const GroupDMChannel = require('./GroupDMChannel');
     const TextChannel = require('./TextChannel');
     const VoiceChannel = require('./VoiceChannel');
+    const CategoryChannel = require('./CategoryChannel');
     const GuildChannel = require('./GuildChannel');
     const types = Constants.ChannelTypes;
     let channel;
@@ -85,6 +87,9 @@ class Channel extends Base {
             break;
           case types.VOICE:
             channel = new VoiceChannel(guild, data);
+            break;
+          case types.CATEGORY:
+            channel = new CategoryChannel(guild, data);
             break;
           default:
             channel = new GuildChannel(guild, data);

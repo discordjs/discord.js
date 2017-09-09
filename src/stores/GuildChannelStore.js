@@ -31,6 +31,7 @@ class GuildChannelStore extends DataStore {
    * Resolves a GuildChannelResolvable to a Channel object.
    * @method resolve
    * @memberof GuildChannelStore
+   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Channel}
    */
@@ -39,6 +40,7 @@ class GuildChannelStore extends DataStore {
    * Resolves a GuildChannelResolvable to a channel ID string.
    * @method resolveID
    * @memberof GuildChannelStore
+   * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?string}
    */

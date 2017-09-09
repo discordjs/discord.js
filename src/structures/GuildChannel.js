@@ -2,6 +2,7 @@ const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
+const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
@@ -32,10 +33,16 @@ class GuildChannel extends Channel {
     this.name = data.name;
 
     /**
-     * The position of the channel in the list
+     * The raw position of the channel from discord
      * @type {number}
      */
-    this.position = data.position;
+    this.rawPosition = data.position;
+
+    /**
+     * The ID of the category parent of this channel
+     * @type {?Snowflake}
+     */
+    this.parentID = data.parent_id;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -50,12 +57,20 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * The category parent of this channel
+   * @type {?GuildChannel}
+   */
+  get parent() {
+    return this.guild.channels.get(this.parentID);
+  }
+
+  /**
    * The position of the channel
    * @type {number}
    * @readonly
    */
-  get calculatedPosition() {
-    const sorted = this.guild._sortedChannels(this.type);
+  get position() {
+    const sorted = this.guild._sortedChannels(this);
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
@@ -220,10 +235,12 @@ class GuildChannel extends Channel {
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        topic: data.topic || this.topic,
+        topic: data.topic,
         position: data.position || this.position,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit || this.userLimit,
+        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        parent_id: data.parentID,
+        lock_permissions: data.lockPermissions,
       },
       reason,
     }).then(newData => {
@@ -259,8 +276,34 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, relative) {
-    return this.guild.setChannelPosition(this, position, relative).then(() => this);
+  setPosition(position, { relative, reason }) {
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
+    let updatedChannels = this.guild._sortedChannels(this).array();
+    Util.moveElementInArray(updatedChannels, this, position, relative);
+    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels, reason })
+      .then(() => {
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedChannels,
+        });
+        return this;
+      });
+  }
+
+  /**
+   * Set the category parent of this channel.
+   * @param {GuildChannel|Snowflake} channel Parent channel
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
+   * @returns {Promise<GuildChannel>}
+   */
+  setParent(channel, { lockPermissions = true, reason } = {}) {
+    return this.edit({
+      parentID: channel.id ? channel.id : channel,
+      lockPermissions,
+    }, reason);
   }
 
   /**

@@ -842,7 +842,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   unban(user, reason) {
-    const id = this.client.users.resolverID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
@@ -891,10 +891,9 @@ class Guild extends Base {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Object} [options={}] Options
+   * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
+   * @param {Object} [options] Options
    * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
-   * to apply to the new channel
    * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
@@ -1205,31 +1204,17 @@ class Guild extends Base {
 
   /**
    * Fetches a collection of channels in the current guild sorted by position.
-   * @param {string} type The channel type
+   * @param {Channel} channel Channel
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
-  _sortedChannels(type) {
-    return this._sortPositionWithID(this.channels.filter(c => {
-      if (type === 'voice' && c.type === 'voice') return true;
-      else if (type !== 'voice' && c.type !== 'voice') return true;
-      else return type === c.type;
-    }));
-  }
-
-  /**
-   * Sorts a collection by object position or ID if the positions are equivalent.
-   * Intended to be identical to Discord's sorting method.
-   * @param {Collection} collection The collection to sort
-   * @returns {Collection}
-   * @private
-   */
-  _sortPositionWithID(collection) {
-    return collection.sort((a, b) =>
-      a.position !== b.position ?
-        a.position - b.position :
-        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
-    );
+  _sortedChannels(channel) {
+    const sort = col => col
+      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+    if (channel.type === Constants.ChannelTypes.CATEGORY) {
+      return sort(this.channels.filter(c => c.type === Constants.ChannelTypes.CATEGORY));
+    }
+    return sort(this.channels.filter(c => c.parent === channel.parent));
   }
 }
 
