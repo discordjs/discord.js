@@ -18,6 +18,28 @@ class Role extends Base {
      */
     this.guild = guild;
 
+    /**
+     * Set the position of the role.
+     * @param {number} position The position of the role
+     * @param {boolean} [options.relative=false] Change the position relative to its current value
+     * @param {boolean} [options.reason] Reasion for changing the position
+     * @returns {Promise<Role>}
+     * @example
+     * // Set the position of the role
+     * role.setPosition(1)
+     *   .then(r => console.log(`Role position: ${r.position}`))
+     *   .catch(console.error);
+     */
+    this.setPosition = Util.makePositionSetter(this,
+      () => this.guild._sortedRoles(), () => this.client.api.guilds(this.guild.id).roles,
+      updatedRoles => {
+        this.client.actions.GuildRolesPositionUpdate.handle({
+          guild_id: this.guild.id,
+          roles: updatedRoles,
+        });
+        return this;
+      });
+
     if (data) this._patch(data);
   }
 
@@ -47,10 +69,10 @@ class Role extends Base {
     this.hoist = data.hoist;
 
     /**
-     * The position of the role from the API
+     * The raw position of the role from the API
      * @type {number}
      */
-    this.position = data.position;
+    this.rawPosition = data.position;
 
     /**
      * The permissions bitfield of the role
@@ -126,8 +148,8 @@ class Role extends Base {
    * @type {number}
    * @readonly
    */
-  get calculatedPosition() {
-    const sorted = this.guild._sortedRoles;
+  get position() {
+    const sorted = this.guild._sortedRoles();
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
@@ -262,21 +284,6 @@ class Role extends Base {
    */
   setHoist(hoist, reason) {
     return this.edit({ hoist }, reason);
-  }
-
-  /**
-   * Set the position of the role.
-   * @param {number} position The position of the role
-   * @param {boolean} [relative=false] Move the position relative to its current value
-   * @returns {Promise<Role>}
-   * @example
-   * // Set the position of the role
-   * role.setPosition(1)
-   *   .then(r => console.log(`Role position: ${r.position}`))
-   *   .catch(console.error);
-   */
-  setPosition(position, relative) {
-    return this.guild.setRolePosition(this, position, relative).then(() => this);
   }
 
   /**

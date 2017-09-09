@@ -1,9 +1,6 @@
-const Long = require('long');
-const Role = require('./Role');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
@@ -411,16 +408,6 @@ class Guild extends Base {
    */
   get me() {
     return this.members.get(this.client.user.id);
-  }
-
-  /**
-   * Fetches a collection of roles in the current guild sorted by position
-   * @type {Collection<Snowflake, Role>}
-   * @readonly
-   * @private
-   */
-  get _sortedRoles() {
-    return this._sortPositionWithID(this.roles);
   }
 
   /**
@@ -946,38 +933,6 @@ class Guild extends Base {
    */
 
   /**
-   * Set the position of a channel in this guild.
-   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
-   * @param {number} position The new position of the channel
-   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setChannelPosition(channel, position, relative = false) {
-    if (typeof channel === 'string') {
-      channel = this.channels.get(channel);
-    }
-    if (!(channel instanceof GuildChannel)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-
-    let updatedChannels = this._sortedChannels(channel.type).array();
-
-    Util.moveElementInArray(updatedChannels, channel, position, relative);
-
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
-      .then(() =>
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        }).guild
-      );
-  }
-
-  /**
    * Batch-updates the guild's channels' positions.
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
@@ -1172,49 +1127,15 @@ class Guild extends Base {
     }
   }
 
-  /**
-   * Set the position of a role in this guild.
-   * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
-   * @param {number} position The new position of the role
-   * @param {boolean} [relative=false] Position Moves the role relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setRolePosition(role, position, relative = false) {
-    if (typeof role === 'string') {
-      role = this.roles.get(role);
-    }
-    if (!(role instanceof Role)) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-
-    let updatedRoles = this._sortedRoles.array();
-
-    Util.moveElementInArray(updatedRoles, role, position, relative);
-
-    updatedRoles = updatedRoles.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).roles.patch({ data: updatedRoles })
-      .then(() =>
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.id,
-          roles: updatedRoles,
-        }).guild
-      );
+  _sortedRoles() {
+    return Util.discordSort(this.roles);
   }
 
-  /**
-   * Fetches a collection of channels in the current guild sorted by position.
-   * @param {Channel} channel Channel
-   * @returns {Collection<Snowflake, GuildChannel>}
-   * @private
-   */
   _sortedChannels(channel) {
-    const sort = col => col
-      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
     if (channel.type === Constants.ChannelTypes.CATEGORY) {
-      return sort(this.channels.filter(c => c.type === Constants.ChannelTypes.CATEGORY));
+      return Util.discordSort(this.channels.filter(c => c.type === Constants.ChannelTypes.CATEGORY));
     }
-    return sort(this.channels.filter(c => c.parent === channel.parent));
+    return Util.discordSort(this.channels.filter(c => c.parent === channel.parent));
   }
 }
 
