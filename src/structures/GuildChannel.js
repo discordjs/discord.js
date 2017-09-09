@@ -313,7 +313,7 @@ class GuildChannel extends Channel {
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
-  setParent(channel, { lockPermissions = true, reason }) {
+  setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit({
       parentID: channel.id ? channel.id : channel,
       lockPermissions,
