@@ -1,6 +1,11 @@
 const DataStore = require('./DataStore');
 const { Presence } = require('../structures/Presence');
 
+/**
+ * Stores presences.
+ * @private
+ * @extends {DataStore}
+ */
 class PresenceStore extends DataStore {
   constructor(client, iterable) {
     super(client, iterable, Presence);
@@ -31,12 +36,11 @@ class PresenceStore extends DataStore {
     return super.resolve(UserResolveable) || null;
   }
 
-
   /**
     * Resolves a PresenceResolvable to a Presence ID string.
     * @param {PresenceResolvable} presence The presence resolvable to resolve
     * @returns {?string}
-	*/
+    */
   resolveID(presence) {
     const presenceResolveable = super.resolveID(presence);
     if (presenceResolveable) return presenceResolveable;

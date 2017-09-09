@@ -108,8 +108,8 @@ class MessageStore extends DataStore {
 
   /**
     * Resolves a MessageResolvable to a Message ID string.
-    * @method MessageStore
-    * @memberof PresenceStore
+    * @method resolveID
+    * @memberof MessageStore
     * @instance
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?string}
