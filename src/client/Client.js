@@ -16,7 +16,9 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const EmojiStore = require('../stores/EmojiStore');
 const Constants = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -215,7 +217,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get emojis() {
-    const emojis = new Collection();
+    const emojis = new EmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
       if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
@@ -292,7 +294,7 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
+    const code = DataResolver.resolveInviteCode(invite);
     return this.api.invites(code).get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }

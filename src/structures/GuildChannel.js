@@ -2,6 +2,7 @@ const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
+const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
@@ -33,10 +34,16 @@ class GuildChannel extends Channel {
     this.name = data.name;
 
     /**
-     * The position of the channel in the list
+     * The raw position of the channel from discord
      * @type {number}
      */
-    this.position = data.position;
+    this.rawPosition = data.position;
+
+    /**
+     * The ID of the category parent of this channel
+     * @type {?Snowflake}
+     */
+    this.parentID = data.parent_id;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -51,12 +58,20 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * The category parent of this channel
+   * @type {?GuildChannel}
+   */
+  get parent() {
+    return this.guild.channels.get(this.parentID);
+  }
+
+  /**
    * The position of the channel
    * @type {number}
    * @readonly
    */
-  get calculatedPosition() {
-    const sorted = this.guild._sortedChannels(this.type);
+  get position() {
+    const sorted = this.guild._sortedChannels(this);
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
@@ -67,42 +82,40 @@ class GuildChannel extends Channel {
    * @returns {?Permissions}
    */
   permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    member = this.guild.members.resolve(member);
     if (!member) return null;
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
 
-    let permissions = 0;
+    let resolved = this.guild.roles.get(this.guild.id).permissions;
 
-    const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    const overwrites = this.overwritesFor(member, true, roles);
-
+    const overwrites = this.overwritesFor(member, true);
     if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._allowed;
+      resolved &= ~overwrites.everyone._denied;
+      resolved |= overwrites.everyone._allowed;
     }
 
-    let allow = 0;
+    let allows = 0;
+    let denies = 0;
     for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite._denied;
-      allow |= overwrite._allowed;
+      allows |= overwrite._allowed;
+      denies |= overwrite._denied;
     }
-    permissions |= allow;
+    resolved &= ~denies;
+    resolved |= allows;
 
     if (overwrites.member) {
-      permissions &= ~overwrites.member._denied;
-      permissions |= overwrites.member._allowed;
+      resolved &= ~overwrites.member._denied;
+      resolved |= overwrites.member._allowed;
     }
 
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
+    const admin = Boolean(resolved & Permissions.FLAGS.ADMINISTRATOR);
+    if (admin) resolved = Permissions.ALL;
 
-    return new Permissions(permissions);
+    return new Permissions(resolved);
   }
 
   overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
     roles = roles || member.roles;
@@ -159,13 +172,13 @@ class GuildChannel extends Channel {
       deny: 0,
     };
 
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
+    const role = this.guild.roles.get(userOrRole);
+
+    if (role || userOrRole instanceof Role) {
+      userOrRole = role || userOrRole;
       payload.type = 'role';
     } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
+      userOrRole = this.client.users.resolve(userOrRole);
       payload.type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
@@ -237,10 +250,12 @@ class GuildChannel extends Channel {
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        topic: data.topic || this.topic,
+        topic: data.topic,
         position: data.position || this.position,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit || this.userLimit,
+        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        parent_id: data.parentID,
+        lock_permissions: data.lockPermissions,
       },
       reason,
     }).then(newData => {

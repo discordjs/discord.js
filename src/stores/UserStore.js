@@ -1,18 +1,46 @@
 const DataStore = require('./DataStore');
 const User = require('../structures/User');
+const GuildMember = require('../structures/GuildMember');
+const Message = require('../structures/Message');
 
 /**
  * A data store to store User models.
  * @extends {DataStore}
  */
 class UserStore extends DataStore {
-  create(data, cache = true) {
-    const existing = this.get(data.id);
-    if (existing) return existing;
+  constructor(client, iterable) {
+    super(client, iterable, User);
+  }
 
-    const user = new User(this.client, data);
-    if (cache) this.set(user.id, user);
-    return user;
+  /**
+   * Data that resolves to give a User object. This can be:
+   * * A User object
+   * * A Snowflake
+   * * A Message object (resolves to the message author)
+   * * A GuildMember object
+   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
+   */
+
+  /**
+   * Resolves a UserResolvable to a User object.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?User}
+   */
+  resolve(user) {
+    if (user instanceof GuildMember) return user.user;
+    if (user instanceof Message) return user.author;
+    return super.resolve(user);
+  }
+
+  /**
+   * Resolves a UserResolvable to a user ID string.
+   * @param {UserResolvable} user The UserResolvable to identify
+   * @returns {?string}
+   */
+  resolveID(user) {
+    if (user instanceof GuildMember) return user.user.id;
+    if (user instanceof Message) return user.author.id;
+    return super.resolveID(user);
   }
 
   /**

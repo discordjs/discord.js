@@ -8,6 +8,7 @@ const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
@@ -430,7 +431,7 @@ class Guild extends Base {
    * const member = guild.member(message.author);
    */
   member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
+    return this.members.resolve(user);
   }
 
   /**
@@ -510,7 +511,7 @@ class Guild extends Base {
       before: options.before,
       after: options.after,
       limit: options.limit,
-      user_id: this.client.resolver.resolveUserID(options.user),
+      user_id: this.client.users.resolveID(options.user),
       action_type: options.type,
     } })
       .then(data => GuildAuditLogs.build(this, data));
@@ -535,7 +536,7 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.client.resolver.resolveRole(this, role);
+        role = this.roles.resolve(role);
         if (!role) {
           return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
             'Array or Collection of Roles or Snowflakes', true));
@@ -600,14 +601,14 @@ class Guild extends Base {
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
     if (typeof data.afkChannel !== 'undefined') {
-      _data.afk_channel_id = this.client.resolver.resolveChannelID(data.afkChannel);
+      _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
     }
     if (typeof data.systemChannel !== 'undefined') {
-      _data.system_channel_id = this.client.resolver.resolveChannelID(data.systemChannel);
+      _data.system_channel_id = this.client.channels.resolveID(data.systemChannel);
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
-    if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
+    if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
@@ -723,7 +724,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser), reason });
   }
 
   /**
@@ -753,7 +754,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash, this.client.browser), reason });
   }
 
   /**
@@ -814,14 +815,14 @@ class Guild extends Base {
    */
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api.guilds(this.id).bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
-        const _user = this.client.resolver.resolveUser(id);
+        const _user = this.client.users.resolve(id);
         if (_user) {
-          const member = this.client.resolver.resolveGuildMember(this, _user);
+          const member = this.members.resolve(_user);
           return member || _user;
         }
         return id;
@@ -840,7 +841,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   unban(user, reason) {
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
@@ -889,10 +890,9 @@ class Guild extends Base {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
-   * @param {Object} [options={}] Options
+   * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
+   * @param {Object} [options] Options
    * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
-   * to apply to the new channel
    * @param {string} [options.reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
@@ -909,12 +909,12 @@ class Guild extends Base {
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
-        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        const role = this.roles.resolve(overwrite.id);
         if (role) {
           overwrite.id = role.id;
           overwrite.type = 'role';
         } else {
-          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.id = this.client.users.resolveID(overwrite.id);
           overwrite.type = 'member';
         }
 
@@ -955,7 +955,7 @@ class Guild extends Base {
    */
   setChannelPositions(channelPositions) {
     const updatedChannels = channelPositions.map(r => ({
-      id: this.client.resolver.resolveChannelID(r.channel),
+      id: this.client.channels.resolveID(r.channel),
       position: r.position,
     }));
 
@@ -1030,7 +1030,7 @@ class Guild extends Base {
       if (roles) {
         data.roles = [];
         for (let role of roles instanceof Collection ? roles.values() : roles) {
-          role = this.client.resolver.resolveRole(this, role);
+          role = this.roles.resolve(role);
           if (!role) {
             return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
               'Array or Collection of Roles or Snowflakes', true));
@@ -1043,7 +1043,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveImage(attachment)
+    return DataResolver.resolveImage(attachment, this.client.browser)
       .then(image => this.createEmoji(image, name, { roles, reason }));
   }
 
@@ -1171,31 +1171,17 @@ class Guild extends Base {
 
   /**
    * Fetches a collection of channels in the current guild sorted by position.
-   * @param {string} type The channel type
+   * @param {Channel} channel Channel
    * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
-  _sortedChannels(type) {
-    return this._sortPositionWithID(this.channels.filter(c => {
-      if (type === 'voice' && c.type === 'voice') return true;
-      else if (type !== 'voice' && c.type !== 'voice') return true;
-      else return type === c.type;
-    }));
-  }
-
-  /**
-   * Sorts a collection by object position or ID if the positions are equivalent.
-   * Intended to be identical to Discord's sorting method.
-   * @param {Collection} collection The collection to sort
-   * @returns {Collection}
-   * @private
-   */
-  _sortPositionWithID(collection) {
-    return collection.sort((a, b) =>
-      a.position !== b.position ?
-        a.position - b.position :
-        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
-    );
+  _sortedChannels(channel) {
+    const sort = col => col
+      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+    if (channel.type === Constants.ChannelTypes.CATEGORY) {
+      return sort(this.channels.filter(c => c.type === Constants.ChannelTypes.CATEGORY));
+    }
+    return sort(this.channels.filter(c => c.parent === channel.parent));
   }
 }
 

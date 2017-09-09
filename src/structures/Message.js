@@ -8,16 +8,16 @@ const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const GuildMember = require('./GuildMember');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-let GuildMember;
 
 /**
  * Represents a message on Discord.
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(channel, data, client) {
+  constructor(client, data, channel) {
     super(client);
 
     /**
@@ -52,7 +52,7 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.create(data.author);
+    this.author = this.client.users.create(data.author, !data.webhook_id);
 
     /**
      * Represents the author of the message as a guild member
@@ -393,7 +393,7 @@ class Message extends Base {
 
     // Add the reply prefix
     if (reply && this.channel.type !== 'dm') {
-      const id = this.client.resolver.resolveUserID(reply);
+      const id = this.client.users.resolveID(reply);
       const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
@@ -427,11 +427,11 @@ class Message extends Base {
 
   /**
    * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * @param {EmojiIdentifierResolveable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')

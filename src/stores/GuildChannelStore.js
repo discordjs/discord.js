@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
+const GuildChannel = require('../structures/GuildChannel');
 
 /**
  * Stores guild channels.
@@ -8,7 +9,7 @@ const Channel = require('../structures/Channel');
  */
 class GuildChannelStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, GuildChannel);
     this.guild = guild;
   }
 
@@ -18,6 +19,31 @@ class GuildChannelStore extends DataStore {
 
     return Channel.create(this.client, data, this.guild);
   }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A GuildChannel object
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} GuildChannelResolvable
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?string}
+   */
 }
 
 module.exports = GuildChannelStore;

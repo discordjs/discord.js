@@ -1,20 +1,40 @@
 const DataStore = require('./DataStore');
 const Guild = require('../structures/Guild');
+
 /**
  * Stores guilds.
  * @private
  * @extends {DataStore}
  */
 class GuildStore extends DataStore {
-  create(data, cache = true) {
-    const existing = this.get(data.id);
-    if (existing) return existing;
-
-    const guild = new Guild(this.client, data);
-    if (cache) this.set(guild.id, guild);
-
-    return guild;
+  constructor(client, iterable) {
+    super(client, iterable, Guild);
   }
+
+  /**
+   * Data that resolves to give a Guild object. This can be:
+   * * A Guild object
+   * * A Snowflake
+   * @typedef {Guild|Snowflake} GuildResolvable
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild object.
+   * @method resolve
+   * @memberof GuildStore
+   * @instance
+   * @param {GuildResolvable} guild The guild resolvable to identify
+   * @returns {?Guild}
+   */
+
+  /**
+   * Resolves a GuildResolvable to a Guild ID string.
+   * @method resolveID
+   * @memberof GuildStore
+   * @instance
+   * @param {GuildResolvable} guild The guild resolvable to identify
+   * @returns {?string}
+   */
 }
 
 module.exports = GuildStore;

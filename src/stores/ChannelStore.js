@@ -16,7 +16,7 @@ class ChannelStore extends DataStore {
       options = iterableOrOptions;
       iterableOrOptions = undefined;
     }
-    super(client, iterableOrOptions);
+    super(client, iterableOrOptions, Channel);
 
     if (options.lru) {
       const lru = this[kLru] = [];
@@ -72,6 +72,31 @@ class ChannelStore extends DataStore {
     if (channel.guild) channel.guild.channels.remove(id);
     super.remove(id);
   }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A Channel object
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?string}
+   */
 }
 
 module.exports = ChannelStore;
