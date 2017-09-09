@@ -895,7 +895,7 @@ class Guild extends Base {
    * @param {Object} [options] Options
    * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for creating this channel
-   * @returns {Promise<TextChannel|VoiceChannel>}
+   * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
    * guild.createChannel('new-general', 'text')

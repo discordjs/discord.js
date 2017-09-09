@@ -9,7 +9,7 @@ const Constants = require('../util/Constants');
 const { TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (i.e. text channels and voice channels).
+ * Represents a guild channel (e.g. text channels and voice channels).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -58,7 +58,8 @@ class GuildChannel extends Channel {
 
   /**
    * The category parent of this channel
-   * @type {?GuildChannel}
+   * @type {?CategoryChannel}
+   * @readonly
    */
   get parent() {
     return this.guild.channels.get(this.parentID);
@@ -232,6 +233,8 @@ class GuildChannel extends Channel {
    * @property {string} [topic] The topic of the text channel
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
+   * @property {Snowflake} [parentID] The parent ID of the channel
+   * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
    */
 
   /**
