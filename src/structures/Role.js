@@ -53,10 +53,10 @@ class Role extends Base {
     this.position = data.position;
 
     /**
-     * The permissions bitfield of the role
-     * @type {number}
+     * The permissions of the role
+     * @type {Permissions}
      */
-    this.permissions = data.permissions;
+    this.permissions = new Permissions(data.permissions).freeze();
 
     /**
      * Whether or not the role is managed by an external service
@@ -139,7 +139,7 @@ class Role extends Base {
    * console.log(role.serialize());
    */
   serialize() {
-    return new Permissions(this.permissions).serialize();
+    return this.permissions.serialize();
   }
 
   /**
@@ -159,7 +159,7 @@ class Role extends Base {
    * }
    */
   hasPermission(permission, explicit = false, checkAdmin) {
-    return new Permissions(this.permissions).has(
+    return this.permissions.has(
       permission, typeof checkAdmin !== 'undefined' ? checkAdmin : !explicit
     );
   }
@@ -200,7 +200,7 @@ class Role extends Base {
    */
   edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
-    else data.permissions = this.permissions;
+    else data.permissions = this.permissions.bitfield;
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
@@ -341,7 +341,7 @@ class Role extends Base {
       this.color === role.color &&
       this.hoist === role.hoist &&
       this.position === role.position &&
-      this.permissions === role.permissions &&
+      this.permissions.bitfield === role.permissions.bitfield &&
       this.managed === role.managed;
   }
 

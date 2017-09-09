@@ -84,34 +84,23 @@ class GuildChannel extends Channel {
   permissionsFor(member) {
     member = this.guild.members.resolve(member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
+    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
-    let resolved = this.guild.roles.get(this.guild.id).permissions;
+    const roles = member.roles;
+    const permissions = new Permissions(roles.map(role => role.permissions));
 
-    const overwrites = this.overwritesFor(member, true);
-    if (overwrites.everyone) {
-      resolved &= ~overwrites.everyone._denied;
-      resolved |= overwrites.everyone._allowed;
-    }
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
-    let allows = 0;
-    let denies = 0;
-    for (const overwrite of overwrites.roles) {
-      allows |= overwrite._allowed;
-      denies |= overwrite._denied;
-    }
-    resolved &= ~denies;
-    resolved |= allows;
+    const overwrites = this.overwritesFor(member, true, roles);
 
-    if (overwrites.member) {
-      resolved &= ~overwrites.member._denied;
-      resolved |= overwrites.member._allowed;
-    }
-
-    const admin = Boolean(resolved & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) resolved = Permissions.ALL;
-
-    return new Permissions(resolved);
+    return permissions
+      .remove(overwrites.everyone ? overwrites.everyone.denied : 0)
+      .add(overwrites.everyone ? overwrites.everyone.allowed : 0)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied) : 0)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed) : 0)
+      .remove(overwrites.member ? overwrites.member.denied : 0)
+      .add(overwrites.member ? overwrites.member.allowed : 0)
+      .freeze();
   }
 
   overwritesFor(member, verified = false, roles = null) {
@@ -167,46 +156,43 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
+    const allow = new Permissions(0);
+    const deny = new Permissions(0);
+    let type;
 
     const role = this.guild.roles.get(userOrRole);
 
     if (role || userOrRole instanceof Role) {
       userOrRole = role || userOrRole;
-      payload.type = 'role';
+      type = 'role';
     } else {
       userOrRole = this.client.users.resolve(userOrRole);
-      payload.type = 'member';
+      type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
-
-    payload.id = userOrRole.id;
 
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite._allowed;
-      payload.deny = prevOverwrite._denied;
+      allow.add(prevOverwrite.allowed);
+      deny.add(prevOverwrite.denied);
     }
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Permissions.FLAGS[perm] || 0;
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.add(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny |= Permissions.FLAGS[perm] || 0;
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.add(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === null) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       }
     }
 
-    return this.client.api.channels(this.id).permissions[payload.id]
-      .put({ data: payload, reason })
+    return this.client.api.channels(this.id).permissions[userOrRole.id]
+      .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
   }
 

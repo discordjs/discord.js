@@ -249,13 +249,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
-
-    let permissions = 0;
-    const roles = this.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    return new Permissions(permissions);
+    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
+    return new Permissions(this.roles.map(role => role.permissions)).freeze();
   }
 
   /**
@@ -321,7 +316,7 @@ class GuildMember extends Base {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.missing(permissions, explicit);
+    return this.permissions.missing(permissions, explicit);
   }
 
   /**

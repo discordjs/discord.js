@@ -41,31 +41,43 @@ class Permissions {
   }
 
   /**
-   * Adds permissions to this one, creating a new instance to represent the new bitfield.
-   * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions}
+   * Freezes the permission making it immutable.
+   * @returns {Permissions} This permissions
    */
-  add(...permissions) {
-    let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
-      const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) !== perm) total |= perm;
-    }
-    return new this.constructor(this.member, this.bitfield | total);
+  freeze() {
+    return Object.freeze(this);
   }
 
   /**
-   * Removes permissions to this one, creating a new instance to represent the new bitfield.
+   * Adds permissions to this one.
+   * @param {...PermissionResolvable} permissions Permissions to add
+   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
+   */
+  add(...permissions) {
+    let total = 0;
+    for (let p = permissions.length - 1; p >= 0; p--) {
+      const perm = this.constructor.resolve(permissions[p]);
+      if ((this.bitfield & perm) !== perm) total |= perm;
+    }
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
+    this.bitfield |= total;
+    return this;
+  }
+
+  /**
+   * Removes permissions from this one.
    * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions}
+   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
    */
   remove(...permissions) {
     let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
       if ((this.bitfield & perm) === perm) total |= perm;
     }
-    return new this.constructor(this.member, this.bitfield & ~total);
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
+    this.bitfield &= ~total;
+    return this;
   }
 
   /**
@@ -84,7 +96,8 @@ class Permissions {
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
-   * @typedef {string|number} PermissionResolvable
+   * * An instance of Permissions
+   * @typedef {string|number|Permissions} PermissionResolvable
    */
 
   /**
@@ -93,10 +106,11 @@ class Permissions {
    * @returns {number}
    */
   static resolve(permission) {
+    if (typeof permission === 'number' && permission >= 0) return permission;
+    if (permission instanceof Permissions) return permission.bitfield;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (typeof permission === 'string') permission = this.FLAGS[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new RangeError('PERMISSION_INVALID');
-    return permission;
+    if (typeof permission === 'string') return this.FLAGS[permission];
+    throw new RangeError('PERMISSIONS_INVALID');
   }
 }
 

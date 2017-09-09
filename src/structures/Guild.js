@@ -905,8 +905,8 @@ class Guild extends Base {
   createChannel(name, type, { overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => {
-        let allow = overwrite.allow || overwrite._allowed;
-        let deny = overwrite.deny || overwrite._denied;
+        let allow = overwrite.allow || overwrite.allowed.bitfield;
+        let deny = overwrite.deny || overwrite.denied.bitfield;
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
