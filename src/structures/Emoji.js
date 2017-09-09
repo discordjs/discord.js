@@ -1,15 +1,15 @@
-const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a custom emoji.
  * @extends {Base}
  */
 class Emoji extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild this emoji is part of
@@ -85,7 +85,7 @@ class Emoji extends Base {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
+    return this.client.rest.cdn.Emoji(this.id);
   }
 
   /**
@@ -152,7 +152,7 @@ class Emoji extends Base {
   addRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -179,7 +179,7 @@ class Emoji extends Base {
   removeRestrictedRoles(roles) {
     const newRoles = new Collection(this.roles);
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -199,6 +199,16 @@ class Emoji extends Base {
    */
   toString() {
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+  }
+
+  /**
+   * Delete the emoji.
+   * @param {string} [reason] Reason for deleting the emoji
+   * @returns {Promise<Emoji>}
+   */
+  delete(reason) {
+    return this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason })
+      .then(() => this);
   }
 
   /**

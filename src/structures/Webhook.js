@@ -1,28 +1,23 @@
 const path = require('path');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Embed = require('./MessageEmbed');
-const Attachment = require('./Attachment');
+const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 
 /**
  * Represents a webhook.
  */
 class Webhook {
-  constructor(client, dataOrID, token) {
-    if (client) {
-      /**
-       * The client that instantiated the webhook
-       * @name Webhook#client
-       * @type {Client}
-       * @readonly
-       */
-      Object.defineProperty(this, 'client', { value: client });
-      if (dataOrID) this._patch(dataOrID);
-    } else {
-      this.id = dataOrID;
-      this.token = token;
-      Object.defineProperty(this, 'client', { value: this });
-    }
+  constructor(client, data) {
+    /**
+     * The client that instantiated the webhook
+     * @name Webhook#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+    if (data) this._patch(data);
   }
 
   _patch(data) {
@@ -91,10 +86,11 @@ class Webhook {
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
+  /* eslint-disable max-len */
   /**
    * Send a message with this webhook.
    * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions|MessageEmbed|Attachment|Attachment[]} [options={}] The options to provide
+   * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
@@ -102,6 +98,7 @@ class Webhook {
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    */
+  /* eslint-enable max-len */
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
@@ -110,13 +107,13 @@ class Webhook {
       options = {};
     }
 
-    if (options instanceof Attachment) options = { files: [options.file] };
+    if (options instanceof MessageAttachment) options = { files: [options.file] };
     if (options instanceof MessageEmbed) options = { embeds: [options] };
     if (options.embed) options = { embeds: [options.embed] };
 
     if (content instanceof Array || options instanceof Array) {
       const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof Attachment);
+      const attachments = which.filter(item => item instanceof MessageAttachment);
       const embeds = which.filter(item => item instanceof MessageEmbed);
       if (attachments.length) options = { files: attachments };
       if (embeds.length) options = { embeds };
@@ -160,19 +157,19 @@ class Webhook {
             file.name = path.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
             file.name = path.basename(file.attachment.path);
-          } else if (file instanceof Attachment) {
+          } else if (file instanceof MessageAttachment) {
             file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
-        } else if (file instanceof Attachment) {
+        } else if (file instanceof MessageAttachment) {
           file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveFile(file.attachment).then(resource => {
+        DataResolver.resolveFile(file.attachment, this.client.browser).then(resource => {
           file.file = resource;
           return file;
         })
@@ -210,8 +207,7 @@ class Webhook {
       auth: false,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
@@ -239,8 +235,7 @@ class Webhook {
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
@@ -254,7 +249,7 @@ class Webhook {
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveImage(avatar).then(image =>
+      return DataResolver.resolveImage(avatar, this.client.browser).then(image =>
         this.edit({ name, avatar: image }, reason)
       );
     }
@@ -275,6 +270,18 @@ class Webhook {
    */
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  }
+
+  static applyToClass(structure) {
+    for (const prop of [
+      'send',
+      'sendSlackMessage',
+      'edit',
+      'delete',
+    ]) {
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
+    }
   }
 }
 

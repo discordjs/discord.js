@@ -1,5 +1,6 @@
 const Snowflake = require('../util/Snowflake');
 const Constants = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const Base = require('./Base');
 
 /**
@@ -127,7 +128,7 @@ class ClientApplication extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, { format, size });
+    return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
   }
 
   /**
@@ -165,7 +166,7 @@ class ClientApplication extends Base {
    * @returns {Promise}
    */
   createAsset(name, data, type) {
-    return this.client.resolveBase64(data).then(b64 =>
+    return DataResolver.resolveBase64(data).then(b64 =>
       this.client.api.applications(this.id).assets.post({ data: {
         name,
         data: b64,

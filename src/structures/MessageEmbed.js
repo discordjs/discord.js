@@ -1,4 +1,4 @@
-const Attachment = require('./Attachment');
+const MessageAttachment = require('./MessageAttachment');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -135,16 +135,16 @@ class MessageEmbed {
     /**
      * The files of this embed
      * @type {?Object}
-     * @property {Array<FileOptions|string|Attachment>} files Files to attach
+     * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
      */
     if (data.files) {
       this.files = data.files.map(file => {
-        if (file instanceof Attachment) {
+        if (file instanceof MessageAttachment) {
           return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
         }
         return file;
       });
-    } else { this.files = null; }
+    }
   }
 
   /**
@@ -194,14 +194,14 @@ class MessageEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {Array<FileOptions|string|Attachment>} files Files to attach
+   * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
    * @returns {MessageEmbed}
    */
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
     for (let file of files) {
-      if (file instanceof Attachment) file = file.file;
+      if (file instanceof MessageAttachment) file = file.file;
     }
     return this;
   }

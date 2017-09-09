@@ -1,7 +1,7 @@
 const DataStore = require('./DataStore');
-const TextChannel = require('../structures/TextChannel');
-const VoiceChannel = require('../structures/VoiceChannel');
-const Constants = require('../util/Constants');
+const Channel = require('../structures/Channel');
+const GuildChannel = require('../structures/GuildChannel');
+
 /**
  * Stores guild channels.
  * @private
@@ -9,20 +9,41 @@ const Constants = require('../util/Constants');
  */
 class GuildChannelStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, GuildChannel);
     this.guild = guild;
   }
 
-  create(data, cache = true) {
+  create(data) {
     const existing = this.get(data.id);
     if (existing) return existing;
 
-    const ChannelModel = data.type === Constants.ChannelTypes.TEXT ? TextChannel : VoiceChannel;
-    const channel = new ChannelModel(this.guild, data);
-    if (cache) this.set(channel.id, channel);
-
-    return channel;
+    return Channel.create(this.client, data, this.guild);
   }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A GuildChannel object
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} GuildChannelResolvable
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?string}
+   */
 }
 
 module.exports = GuildChannelStore;

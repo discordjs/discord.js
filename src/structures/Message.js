@@ -1,7 +1,6 @@
 const Mentions = require('./MessageMentions');
-const Attachment = require('./MessageAttachment');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const MessageReaction = require('./MessageReaction');
 const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
@@ -18,7 +17,7 @@ let GuildMember;
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(channel, data, client) {
+  constructor(client, data, channel) {
     super(client);
 
     /**
@@ -53,7 +52,7 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.create(data.author);
+    this.author = this.client.users.create(data.author, !data.webhook_id);
 
     /**
      * Represents the author of the message as a guild member
@@ -97,7 +96,11 @@ class Message extends Base {
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    for (const attachment of data.attachments) {
+      this.attachments.set(attachment.id, new MessageAttachment(
+        attachment.url, attachment.filename, attachment
+      ));
+    }
 
     /**
      * The timestamp the message was sent at
@@ -118,8 +121,7 @@ class Message extends Base {
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+        this.reactions.create(reaction);
       }
     }
 
@@ -182,7 +184,11 @@ class Message extends Base {
 
     if ('attachments' in data) {
       this.attachments = new Collection();
-      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     } else {
       this.attachments = new Collection(this.attachments);
     }
@@ -387,7 +393,7 @@ class Message extends Base {
 
     // Add the reply prefix
     if (reply && this.channel.type !== 'dm') {
-      const id = this.client.resolver.resolveUserID(reply);
+      const id = this.client.users.resolveID(reply);
       const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
@@ -421,11 +427,11 @@ class Message extends Base {
 
   /**
    * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * @param {EmojiIdentifierResolveable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')

@@ -2,6 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
 
 /**
@@ -12,7 +13,6 @@ const MessageStore = require('../stores/MessageStore');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
-    this.type = 'text';
     this.messages = new MessageStore(this);
     this._typing = new Map();
   }
@@ -34,6 +34,8 @@ class TextChannel extends GuildChannel {
     this.nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
+
+    if (data.messages) for (const message of data.messages) this.messages.create(message);
   }
 
   /**
@@ -62,7 +64,7 @@ class TextChannel extends GuildChannel {
    */
   async createWebhook(name, { avatar, reason } = {}) {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await this.client.resolver.resolveImage(avatar);
+      avatar = await DataResolver.resolveImage(avatar, this.client.browser);
     }
     return this.client.api.channels[this.id].webhooks.post({ data: {
       name, avatar,

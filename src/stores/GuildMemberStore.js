@@ -2,25 +2,52 @@ const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
+const { Error } = require('../errors');
+
 /**
  * Stores guild members.
- * @private
  * @extends {DataStore}
  */
 class GuildMemberStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, iterable, GuildMember);
     this.guild = guild;
   }
 
-  create(data) {
-    const existing = this.get(data.user.id);
-    if (existing) return existing;
+  create(data, cache) {
+    return super.create(data, cache, { extras: [this.guild] });
+  }
 
-    const member = new GuildMember(this.guild, data);
-    this.set(member.id, member);
+  /**
+   * Data that resolves to give a GuildMember object. This can be:
+   * * A GuildMember object
+   * * A User resolvable
+   * @typedef {GuildMember|UserResolveable} GuildMemberResolvable
+   */
 
-    return member;
+  /**
+   * Resolves a GuildMemberResolvable to a GuildMember object.
+   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * @returns {?GuildMember}
+   */
+  resolve(member) {
+    const memberResolveable = super.resolve(member);
+    if (memberResolveable) return memberResolveable;
+    const userResolveable = this.client.users.resolveID(member);
+    if (userResolveable) return super.resolve(userResolveable);
+    return null;
+  }
+
+  /**
+   * Resolves a GuildMemberResolvable to an member ID string.
+   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * @returns {?string}
+   */
+  resolveID(member) {
+    const memberResolveable = super.resolveID(member);
+    if (memberResolveable) return memberResolveable;
+    const userResolveable = this.client.users.resolveID(member);
+    return this.has(userResolveable) ? userResolveable : null;
   }
 
   /**
@@ -63,10 +90,10 @@ class GuildMemberStore extends DataStore {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.client.resolver.resolveUserID(options);
+    const user = this.resolveID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.client.resolver.resolveUser(options);
+      options.user = this.resolveID(options.user);
       if (options.user) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
@@ -75,10 +102,7 @@ class GuildMemberStore extends DataStore {
   _fetchSingle({ user, cache }) {
     if (this.has(user)) return Promise.resolve(this.get(user));
     return this.client.api.guilds(this.guild.id).members(user).get()
-      .then(data => {
-        if (cache) return this.create(data);
-        else return new GuildMember(this, data);
-      });
+      .then(data => this.create(data, cache));
   }
 
   _fetchMany({ query = '', limit = 0 } = {}) {
@@ -99,9 +123,11 @@ class GuildMemberStore extends DataStore {
       const handler = (members, guild) => {
         if (guild.id !== this.guild.id) return;
         for (const member of members.values()) {
-          if (query || limit) fetchedMembers.set(member.user.id, member);
+          if (query || limit) fetchedMembers.set(member.id, member);
         }
-        if (this.guild.memberCount === this.size || ((query || limit) && members.size < 1000)) {
+        if (this.guild.memberCount <= this.size ||
+          ((query || limit) && members.size < 1000) ||
+          (limit && fetchedMembers.size >= limit)) {
           this.guild.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
           resolve(query || limit ? fetchedMembers : this);
         }

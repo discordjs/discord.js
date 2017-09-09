@@ -1,16 +1,15 @@
 const Long = require('long');
 const Role = require('./Role');
-const Emoji = require('./Emoji');
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const { Presence } = require('./Presence');
 const GuildChannel = require('./GuildChannel');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Shared = require('./shared');
@@ -18,6 +17,7 @@ const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const EmojiStore = require('../stores/EmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
+const PresenceStore = require('../stores/PresenceStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -51,9 +51,9 @@ class Guild extends Base {
 
     /**
      * A collection of presences in this guild
-     * @type {Collection<Snowflake, Presence>}
+     * @type {PresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new PresenceStore(this.client);
 
     if (!data) return;
     if (data.unavailable) {
@@ -201,7 +201,7 @@ class Guild extends Base {
 
     if (data.presences) {
       for (const presence of data.presences) {
-        this._setPresence(presence.user.id, presence);
+        this.presences.create(presence);
       }
     }
 
@@ -216,7 +216,7 @@ class Guild extends Base {
        * @type {EmojiStore<Snowflake, Emoji>}
        */
       this.emojis = new EmojiStore(this);
-      for (const emoji of data.emojis) this.emojis.create(emoji);
+      if (data.emojis) for (const emoji of data.emojis) this.emojis.create(emoji);
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
@@ -261,7 +261,7 @@ class Guild extends Base {
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Icon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.Icon(this.id, this.icon, format, size);
   }
 
   /**
@@ -282,7 +282,7 @@ class Guild extends Base {
    */
   splashURL({ format, size } = {}) {
     if (!this.splash) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Splash(this.id, this.splash, format, size);
+    return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
   }
 
   /**
@@ -300,7 +300,7 @@ class Guild extends Base {
    * @readonly
    */
   get afkChannel() {
-    return this.client.channels.get(this.afkChannelID);
+    return this.client.channels.get(this.afkChannelID) || null;
   }
 
   /**
@@ -309,7 +309,7 @@ class Guild extends Base {
    * @readonly
    */
   get systemChannel() {
-    return this.client.channels.get(this.systemChannelID);
+    return this.client.channels.get(this.systemChannelID) || null;
   }
 
   /**
@@ -432,7 +432,7 @@ class Guild extends Base {
    * const member = guild.member(message.author);
    */
   member(user) {
-    return this.client.resolver.resolveGuildMember(this, user);
+    return this.members.resolve(user);
   }
 
   /**
@@ -500,7 +500,7 @@ class Guild extends Base {
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
-   * @param {string|number} [options.type] Only show entries involving this action type
+   * @param {ActionType|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs(options = {}) {
@@ -512,7 +512,7 @@ class Guild extends Base {
       before: options.before,
       after: options.after,
       limit: options.limit,
-      user_id: this.client.resolver.resolveUserID(options.user),
+      user_id: this.client.users.resolveID(options.user),
       action_type: options.type,
     } })
       .then(data => GuildAuditLogs.build(this, data));
@@ -537,7 +537,7 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.client.resolver.resolveRole(this, role);
+        role = this.roles.resolve(role);
         if (!role) {
           return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
             'Array or Collection of Roles or Snowflakes', true));
@@ -601,11 +601,15 @@ class Guild extends Base {
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
-    if (data.afkChannel) _data.afk_channel_id = this.client.resolver.resolveChannel(data.afkChannel).id;
-    if (data.systemChannel) _data.system_channel_id = this.client.resolver.resolveChannel(data.systemChannel).id;
+    if (typeof data.afkChannel !== 'undefined') {
+      _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
+    }
+    if (typeof data.systemChannel !== 'undefined') {
+      _data.system_channel_id = this.client.channels.resolveID(data.systemChannel);
+    }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
-    if (data.icon) _data.icon = data.icon;
-    if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
+    if (typeof data.icon !== 'undefined') _data.icon = data.icon;
+    if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
@@ -721,7 +725,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await this.client.resolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser), reason });
   }
 
   /**
@@ -751,7 +755,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await this.client.resolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash, this.client.browser), reason });
   }
 
   /**
@@ -812,14 +816,14 @@ class Guild extends Base {
    */
   ban(user, options = { days: 0 }) {
     if (options.days) options['delete-message-days'] = options.days;
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api.guilds(this.id).bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
-        const _user = this.client.resolver.resolveUser(id);
+        const _user = this.client.users.resolve(id);
         if (_user) {
-          const member = this.client.resolver.resolveGuildMember(this, _user);
+          const member = this.members.resolve(_user);
           return member || _user;
         }
         return id;
@@ -838,7 +842,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   unban(user, reason) {
-    const id = this.client.resolver.resolveUserID(user);
+    const id = this.client.users.resolverID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans[id].delete({ reason })
       .then(() => user);
@@ -907,12 +911,12 @@ class Guild extends Base {
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
-        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        const role = this.roles.resolve(overwrite.id);
         if (role) {
           overwrite.id = role.id;
           overwrite.type = 'role';
         } else {
-          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.id = this.client.users.resolveID(overwrite.id);
           overwrite.type = 'member';
         }
 
@@ -943,30 +947,56 @@ class Guild extends Base {
    */
 
   /**
+   * Set the position of a channel in this guild.
+   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
+   * @param {number} position The new position of the channel
+   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
+   * @returns {Promise<Guild>}
+   */
+  setChannelPosition(channel, position, relative = false) {
+    if (typeof channel === 'string') {
+      channel = this.channels.get(channel);
+    }
+    if (!(channel instanceof GuildChannel)) {
+      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
+    }
+
+    position = Number(position);
+    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
+
+    let updatedChannels = this._sortedChannels(channel.type).array();
+
+    Util.moveElementInArray(updatedChannels, channel, position, relative);
+
+    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
+    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
+      .then(() =>
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedChannels,
+        }).guild
+      );
+  }
+
+  /**
    * Batch-updates the guild's channels' positions.
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
-   * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
+   * guild.setChannelPositions([{ channel: channelID, position: newChannelIndex }])
    *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
-    const data = new Array(channelPositions.length);
-    for (let i = 0; i < channelPositions.length; i++) {
-      data[i] = {
-        id: this.client.resolver.resolveChannelID(channelPositions[i].channel),
-        position: channelPositions[i].position,
-      };
-    }
+    const updatedChannels = channelPositions.map(r => ({
+      id: this.client.channels.resolveID(r.channel),
+      position: r.position,
+    }));
 
-    return this.client.api.guilds(this.id).channels.patch({ data: {
-      guild_id: this.id,
-      channels: channelPositions,
-    } }).then(() =>
+    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels }).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
-        channels: channelPositions,
+        channels: updatedChannels,
       }).guild
     );
   }
@@ -1034,7 +1064,7 @@ class Guild extends Base {
       if (roles) {
         data.roles = [];
         for (let role of roles instanceof Collection ? roles.values() : roles) {
-          role = this.client.resolver.resolveRole(this, role);
+          role = this.roles.resolve(role);
           if (!role) {
             return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
               'Array or Collection of Roles or Snowflakes', true));
@@ -1047,20 +1077,8 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return this.client.resolver.resolveImage(attachment)
+    return DataResolver.resolveImage(attachment, this.client.browser)
       .then(image => this.createEmoji(image, name, { roles, reason }));
-  }
-
-  /**
-   * Delete an emoji.
-   * @param {Emoji|string} emoji The emoji to delete
-   * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise<Emoji>}
-   */
-  deleteEmoji(emoji, reason) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
-    return this.client.api.guilds(this.id).emojis(emoji.id).delete({ reason })
-      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
   }
 
   /**
@@ -1155,14 +1173,6 @@ class Guild extends Base {
     }
   }
 
-  _setPresence(id, presence) {
-    if (this.presences.get(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
-  }
-
   /**
    * Set the position of a role in this guild.
    * @param {RoleResolvable} role The role to edit, can be a role object or a role ID
@@ -1189,38 +1199,6 @@ class Guild extends Base {
         this.client.actions.GuildRolesPositionUpdate.handle({
           guild_id: this.id,
           roles: updatedRoles,
-        }).guild
-      );
-  }
-
-  /**
-   * Set the position of a channel in this guild.
-   * @param {ChannelResolvable} channel The channel to edit, can be a channel object or a channel ID
-   * @param {number} position The new position of the channel
-   * @param {boolean} [relative=false] Position Moves the channel relative to its current position
-   * @returns {Promise<Guild>}
-   */
-  setChannelPosition(channel, position, relative = false) {
-    if (typeof channel === 'string') {
-      channel = this.channels.get(channel);
-    }
-    if (!(channel instanceof GuildChannel)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'channel', 'GuildChannel nor a Snowflake'));
-    }
-
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-
-    let updatedChannels = this._sortedChannels(channel.type).array();
-
-    Util.moveElementInArray(updatedChannels, channel, position, relative);
-
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels })
-      .then(() =>
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
         }).guild
       );
   }
