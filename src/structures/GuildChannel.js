@@ -234,7 +234,7 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
-   * @property {boolean} [lockPermissions] Lock the permission of the channel to what the parents permissions are
+   * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
    */
 
   /**
@@ -312,7 +312,7 @@ class GuildChannel extends Channel {
   /**
    * Set the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parents permissions are
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
