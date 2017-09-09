@@ -6,7 +6,6 @@ const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const Util = require('../util/Util');
 const { TypeError } = require('../errors');
 
 /**
