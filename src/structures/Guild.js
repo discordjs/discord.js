@@ -1134,7 +1134,7 @@ class Guild extends Base {
   _sortedChannels(channel) {
     const category = channel.type === Constants.ChannelTypes.CATEGORY;
     return Util.discordSort(this.channels.filter(c =>
-      c.type === channel.type && (category ? true : c.parent === channel.parent)));
+      c.type === channel.type && (category || c.parent === channel.parent)));
   }
 }
 
