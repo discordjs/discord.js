@@ -307,7 +307,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set the category parent of this channel
+   * Set the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
    * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
