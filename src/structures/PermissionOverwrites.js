@@ -58,7 +58,10 @@ class PermissionOverwrites {
   }
 
   toJSON() {
-    return Util.flatten(this);
+    const json = Util.flatten(this);
+    json.denied = this.denied.toJSON(true);
+    json.allowed = this.allowed.toJSON(true);
+    return json;
   }
 }
 

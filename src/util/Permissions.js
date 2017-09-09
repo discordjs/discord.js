@@ -81,12 +81,34 @@ class Permissions {
     return serialized;
   }
 
+  /**
+   * Get an array of allowed permission flags.
+   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * @returns {Array<string>}
+   */
+  allowed(checkAdmin) {
+    const serialized = this.serialize(checkAdmin);
+    return Object.keys(serialized).filter(k => serialized[k]);
+  }
+
+  /**
+   * Get an array of denied permission flags.
+   * @param {boolean} checkAdmin Whether to allow the administrator permission to override
+   * @returns {Array<string>}
+   */
+  denied(checkAdmin) {
+    const serialized = this.serialize(checkAdmin);
+    return Object.keys(serialized).filter(k => !serialized[k]);
+  }
+
   valueOf() {
     return this.bitfield;
   }
 
-  toJSON() {
-    return Util.flatten(this);
+  toJSON(basic = false) {
+    const json = Util.flatten(this);
+    json.serialized = basic ? this.allowed() : this.serialize();
+    return json;
   }
 
   /**

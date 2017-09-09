@@ -1134,6 +1134,7 @@ class Guild extends Base {
 
   toJSON() {
     const json = super.toJSON({
+      available: false,
       createdTimestamp: true,
       nameAcronym: true,
       presences: false,

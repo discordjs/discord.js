@@ -38,8 +38,6 @@ class Util {
       if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
-      // If it's an object and has an ID, use that ID
-      else if (elemIsObj && 'id' in element) out[newProp] = element.id;
       // If it's an object with a primitive `valueOf`, use that value
       else if (valueOf && !isObject(valueOf)) out[newProp] = valueOf;
       // If it's a primitive
