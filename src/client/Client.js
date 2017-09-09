@@ -16,6 +16,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const EmojiStore = require('../stores/EmojiStore');
 const Constants = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -220,7 +221,7 @@ class Client extends BaseClient {
     for (const guild of this.guilds.values()) {
       if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
-    return emojis;
+    return new EmojiStore({ client: this }, emojis);
   }
 
   /**
