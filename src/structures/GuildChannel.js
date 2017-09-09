@@ -283,7 +283,9 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel.
    * @param {number} position The new position for the guild channel
-   * @param {boolean} [relative=false] Move the position relative to its current value
+   * @param {Object} [options={}] Options for setting the position
+   * @param {boolean} [options.relative=false] Move the position relative to its current value
+   * @param {string} [options.reason] Reason for setting a new position for this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
@@ -291,14 +293,14 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, relative = false) {
+  setPosition(position, { relative = false, reason } = {}) {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
 
     let updatedChannels = this.guild._sortedChannels(this.type).array();
     Util.moveElementInArray(updatedChannels, this, position, relative);
     updatedChannels = updatedChannels.map((r, i) => ({ channel: r.id, position: i }));
-    return this.guild.setChannelPositions(updatedChannels);
+    return this.guild.setChannelPositions(updatedChannels, reason);
   }
 
   /**

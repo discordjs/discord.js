@@ -947,19 +947,20 @@ class Guild extends Base {
   /**
    * Batch-updates the guild's channels' positions.
    * @param {ChannelPosition[]} channelPositions Channel positions to update
+   * @param {string} [reason] Reason for setting channel positions
    * @returns {Promise<Guild>}
    * @example
    * guild.setChannelPositions([{ channel: channelID, position: newChannelIndex }])
    *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
    *   .catch(console.error);
    */
-  setChannelPositions(channelPositions) {
+  setChannelPositions(channelPositions, reason) {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
     }));
 
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels }).then(() =>
+    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels, reason }).then(() =>
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
         channels: updatedChannels,
