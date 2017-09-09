@@ -302,21 +302,11 @@ class Util {
       .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
   }
 
-  /**
-   * Create a setPosition function for roles and channels :(
-   * @param  {*} item Item that will be sorted
-   * @param  {Function} sort Sort function
-   * @param  {Function} route Function which returns route
-   * @param  {Function} [handle] Function which handles the final stuff
-   * @returns {Promise}
-   */
-  static makePositionSetter(item, sort, route, handle) {
-    return function setPosition(position, { relative, reason } = {}) {
-      let updatedItems = sort().array();
-      Util.moveElementInArray(updatedItems, item, position, relative);
-      updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-      return route().patch({ data: updatedItems, reason }).then(handle || (x => x));
-    };
+  static setPosition(item, position, relative, sorted, route, handle, reason) {
+    let updatedItems = sorted.array();
+    Util.moveElementInArray(updatedItems, item, position, relative);
+    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
+    return route.patch({ data: updatedItems, reason }).then(handle || (x => x));
   }
 }
 

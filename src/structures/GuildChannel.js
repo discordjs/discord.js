@@ -21,28 +21,6 @@ class GuildChannel extends Channel {
      * @type {Guild}
      */
     this.guild = guild;
-
-    /**
-     * Set a new position for the guild channel.
-     * @param {number} position The new position for the guild channel
-     * @param {boolean} [options.relative=false] Change the position relative to its current value
-     * @param {boolean} [options.reason] Reasion for changing the position
-     * @returns {Promise<GuildChannel>}
-     * @example
-     * // Set a new channel position
-     * channel.setPosition(2)
-     *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-     *   .catch(console.error);
-     */
-    this.setPosition = Util.makePositionSetter(this,
-      () => this.guild._sortedChannels(this), () => this.client.api.guilds(this.guild.id).channels,
-      updatedChannels => {
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        });
-        return this;
-      });
   }
 
   _patch(data) {
@@ -328,6 +306,31 @@ class GuildChannel extends Channel {
    */
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
+  }
+
+  /**
+   * Set a new position for the guild channel.
+   * @param {number} position The new position for the guild channel
+   * @param {Object} [options] Options for setting position
+   * @param {boolean} [options.relative=false] Change the position relative to its current value
+   * @param {boolean} [options.reason] Reasion for changing the position
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Set a new channel position
+   * channel.setPosition(2)
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
+   */
+  setPosition(position, { relative, reason } = {}) {
+    return Util.setPosition(this, position, relative,
+      this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
+      .then(updatedChannels => {
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedChannels,
+        });
+        return this;
+      });
   }
 
   /**

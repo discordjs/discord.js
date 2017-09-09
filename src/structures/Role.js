@@ -18,28 +18,6 @@ class Role extends Base {
      */
     this.guild = guild;
 
-    /**
-     * Set the position of the role.
-     * @param {number} position The position of the role
-     * @param {boolean} [options.relative=false] Change the position relative to its current value
-     * @param {boolean} [options.reason] Reasion for changing the position
-     * @returns {Promise<Role>}
-     * @example
-     * // Set the position of the role
-     * role.setPosition(1)
-     *   .then(r => console.log(`Role position: ${r.position}`))
-     *   .catch(console.error);
-     */
-    this.setPosition = Util.makePositionSetter(this,
-      () => this.guild._sortedRoles(), () => this.client.api.guilds(this.guild.id).roles,
-      updatedRoles => {
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.guild.id,
-          roles: updatedRoles,
-        });
-        return this;
-      });
-
     if (data) this._patch(data);
   }
 
@@ -314,6 +292,31 @@ class Role extends Base {
    */
   setMentionable(mentionable, reason) {
     return this.edit({ mentionable }, reason);
+  }
+
+  /**
+   * Set the position of the role.
+   * @param {number} position The position of the role
+   * @param {Object} [options] Options for setting position
+   * @param {boolean} [options.relative=false] Change the position relative to its current value
+   * @param {boolean} [options.reason] Reasion for changing the position
+   * @returns {Promise<Role>}
+   * @example
+   * // Set the position of the role
+   * role.setPosition(1)
+   *   .then(r => console.log(`Role position: ${r.position}`))
+   *   .catch(console.error);
+   */
+  setPosition(position, { relative, reason } = {}) {
+    return Util.setPosition(this, position, relative,
+      this.guild._sortedRoles(), this.client.api.guilds(this.guild.id).roles, reason)
+      .then(updatedRoles => {
+        this.client.actions.GuildRolesPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedRoles,
+        });
+        return this;
+      });
   }
 
   /**
