@@ -205,10 +205,10 @@ class Util {
   static moveElementInArray(array, element, newIndex, offset = false) {
     const index = array.indexOf(element);
     newIndex = (offset ? index : 0) + newIndex;
-    if (newIndex > -1 && newIndex < array.length) {
-      const removedElement = array.splice(index, 1)[0];
-      array.splice(newIndex, 0, removedElement);
-    }
+
+    const removedElement = array.splice(index, 1)[0];
+    array.splice(newIndex, 0, removedElement);
+
     return array.indexOf(element);
   }
 

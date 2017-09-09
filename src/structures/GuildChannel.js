@@ -271,7 +271,8 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel.
    * @param {number} position The new position for the guild channel
-   * @param {boolean} [relative=false] Move the position relative to its current value
+   * @param {boolean} [options.relative=false] Move the position relative to its current value
+   * @param {string} [options.reason] Reason for setting a new position for this channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
@@ -279,32 +280,26 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, { relative, reason }) {
+  setPosition(position, { relative = false, reason } = {}) {
     position = Number(position);
     if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
+
     let updatedChannels = this.guild._sortedChannels(this).array();
     Util.moveElementInArray(updatedChannels, this, position, relative);
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels, reason })
-      .then(() => {
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        });
-        return this;
-      });
+    updatedChannels = updatedChannels.map((r, i) => ({ channel: r.id, position: i }));
+    return this.guild.setChannelPositions(updatedChannels, reason);
   }
 
   /**
    * Set the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {boolean} [options.lockPermissions=true] Lock the permission to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit({
-      parentID: channel.id ? channel.id : channel,
+      parentID: channel.id || channel,
       lockPermissions,
     }, reason);
   }
