@@ -302,11 +302,11 @@ class Util {
       .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
   }
 
-  static setPosition(item, position, relative, sorted, route, handle, reason) {
+  static setPosition(item, position, relative, sorted, route, reason) {
     let updatedItems = sorted.array();
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    return route.patch({ data: updatedItems, reason }).then(handle || (x => x));
+    return route.patch({ data: updatedItems, reason });
   }
 }
 
