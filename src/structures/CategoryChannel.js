@@ -1,7 +1,7 @@
 const GuildChannel = require('./GuildChannel');
 
 /**
- * Represents a guild category channel on Discord
+ * Represents a guild category channel on Discord.
  * @extends {GuildChannel}
  */
 class CategoryChannel extends GuildChannel {
