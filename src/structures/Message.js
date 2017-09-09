@@ -8,6 +8,7 @@ const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const GuildMember = require('./GuildMember');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -569,6 +570,3 @@ class Message extends Base {
 }
 
 module.exports = Message;
-
-// Fixes Circular
-const GuildMember = require('./GuildMember');
