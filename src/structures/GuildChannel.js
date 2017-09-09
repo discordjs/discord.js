@@ -282,7 +282,6 @@ class GuildChannel extends Channel {
   /**
    * Set a new position for the guild channel.
    * @param {number} position The new position for the guild channel
-   * @param {Object} [options={}] Options for setting the position
    * @param {boolean} [options.relative=false] Move the position relative to its current value
    * @param {string} [options.reason] Reason for setting a new position for this channel
    * @returns {Promise<GuildChannel>}
@@ -300,6 +299,20 @@ class GuildChannel extends Channel {
     Util.moveElementInArray(updatedChannels, this, position, relative);
     updatedChannels = updatedChannels.map((r, i) => ({ channel: r.id, position: i }));
     return this.guild.setChannelPositions(updatedChannels, reason);
+  }
+
+  /**
+   * Set the category parent of this channel
+   * @param {GuildChannel|Snowflake} channel Parent channel
+   * @param {boolean} [options.lockPermissions=true] Lock the permission to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
+   * @returns {Promise<GuildChannel>}
+   */
+  setParent(channel, { lockPermissions = true, reason } = {}) {
+    return this.edit({
+      parentID: channel.id || channel,
+      lockPermissions,
+    }, reason);
   }
 
   /**
