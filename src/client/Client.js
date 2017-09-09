@@ -217,11 +217,11 @@ class Client extends BaseClient {
    * @readonly
    */
   get emojis() {
-    const emojis = new Collection();
+    const emojis = new EmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
       if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
-    return new EmojiStore({ client: this }, emojis);
+    return emojis;
   }
 
   /**
