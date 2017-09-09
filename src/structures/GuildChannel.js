@@ -269,33 +269,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel.
-   * @param {number} position The new position for the guild channel
-   * @param {boolean} [relative=false] Move the position relative to its current value
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // Set a new channel position
-   * channel.setPosition(2)
-   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *   .catch(console.error);
-   */
-  setPosition(position, { relative, reason }) {
-    position = Number(position);
-    if (isNaN(position)) return Promise.reject(new TypeError('INVALID_TYPE', 'position', 'number'));
-    let updatedChannels = this.guild._sortedChannels(this).array();
-    Util.moveElementInArray(updatedChannels, this, position, relative);
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
-    return this.client.api.guilds(this.id).channels.patch({ data: updatedChannels, reason })
-      .then(() => {
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedChannels,
-        });
-        return this;
-      });
-  }
-
-  /**
    * Set the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
    * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
@@ -322,6 +295,31 @@ class GuildChannel extends Channel {
    */
   setTopic(topic, reason) {
     return this.edit({ topic }, reason);
+  }
+
+  /**
+   * Set a new position for the guild channel.
+   * @param {number} position The new position for the guild channel
+   * @param {Object} [options] Options for setting position
+   * @param {boolean} [options.relative=false] Change the position relative to its current value
+   * @param {boolean} [options.reason] Reasion for changing the position
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Set a new channel position
+   * channel.setPosition(2)
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
+   */
+  setPosition(position, { relative, reason } = {}) {
+    return Util.setPosition(this, position, relative,
+      this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
+      .then(updatedChannels => {
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedChannels,
+        });
+        return this;
+      });
   }
 
   /**

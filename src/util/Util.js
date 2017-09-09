@@ -1,3 +1,4 @@
+const Long = require('long');
 const snekfetch = require('snekfetch');
 const Constants = require('./Constants');
 const ConstantsHttp = Constants.DefaultOptions.http;
@@ -289,6 +290,23 @@ class Util {
     }
 
     return color;
+  }
+
+  /**
+   * Sort by discord's position then ID thing
+   * @param  {Collection} collection Collection of objects to sort
+   * @returns {Collection}
+   */
+  static discordSort(collection) {
+    return collection
+      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+  }
+
+  static setPosition(item, position, relative, sorted, route, handle, reason) {
+    let updatedItems = sorted.array();
+    Util.moveElementInArray(updatedItems, item, position, relative);
+    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
+    return route.patch({ data: updatedItems, reason }).then(handle || (x => x));
   }
 }
 

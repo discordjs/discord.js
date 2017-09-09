@@ -8,7 +8,7 @@ class GuildRolesPositionUpdate extends Action {
     if (guild) {
       for (const partialRole of data.roles) {
         const role = guild.roles.get(partialRole.id);
-        if (role) role.position = partialRole.position;
+        if (role) role.rawPosition = partialRole.position;
       }
     }
 
