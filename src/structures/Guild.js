@@ -1132,10 +1132,9 @@ class Guild extends Base {
   }
 
   _sortedChannels(channel) {
-    if (channel.type === Constants.ChannelTypes.CATEGORY) {
-      return Util.discordSort(this.channels.filter(c => c.type === Constants.ChannelTypes.CATEGORY));
-    }
-    return Util.discordSort(this.channels.filter(c => c.parent === channel.parent));
+    const category = channel.type === Constants.ChannelTypes.CATEGORY;
+    return Util.discordSort(this.channels.filter(c =>
+      c.type === channel.type && (category ? true : c.parent === channel.parent)));
   }
 }
 
