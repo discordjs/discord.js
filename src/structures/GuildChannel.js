@@ -6,7 +6,7 @@ const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild channel (e.g. text channels and voice channels).
@@ -209,8 +209,8 @@ class GuildChannel extends Channel {
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */
-  permisionLock() {
-    if (!this.parent) return Promise.reject('No Parent');
+  permissionLock() {
+    if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
     const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
       deny: overwrite.deny.bitfield,
       allow: overwrite.allow.bitfield,
