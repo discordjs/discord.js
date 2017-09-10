@@ -252,6 +252,16 @@ class GuildChannel extends Channel {
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteData[]} [permissionOverwrites] An array of overwrites to set for the channel
+   */
+
+  /**
+   * The data for a permission overwrite
+   * @typedef {Object} OverwriteData
+   * @property {string} id The id of the overwrite
+   * @property {string} type The type of the overwrite, either role or member
+   * @property {number} allow The bitfield for the allowed permissions
+   * @property {number} deny The bitfield for the denied permissions
    */
 
   /**
