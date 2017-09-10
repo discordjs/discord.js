@@ -71,7 +71,14 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get permissionsLocked() {
-    return this.parent ? this.permissionOverwrites.equals(this.parent.permissionOverwrites) : null;
+    if (!this.parent) return null;
+    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
+    return !this.permissionOverwrites.find((value, key) => {
+      const testVal = this.parent.permissionOverwrites.get(key);
+      return testVal === undefined ||
+        testVal.denied.bitfield !== value.denied.bitfield ||
+        testVal.allowed.bitfield !== value.allowed.bitfield;
+    });
   }
 
   /**
