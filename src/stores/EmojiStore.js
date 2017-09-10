@@ -14,7 +14,7 @@ class EmojiStore extends DataStore {
   }
 
   create(data, cache) {
-    super.create(data, cache, { extras: [this.guild] });
+    return super.create(data, cache, { extras: [this.guild] });
   }
 
   /**
