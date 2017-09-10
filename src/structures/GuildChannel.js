@@ -263,7 +263,7 @@ class GuildChannel extends Channel {
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: data.position || this.position,
+        position: data.position || this.rawPosition,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
