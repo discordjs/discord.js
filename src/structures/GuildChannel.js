@@ -66,6 +66,15 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * If the permissionOverwrites match the parent channel, null if no parent
+   * @type {?boolean}
+   * @readonly
+   */
+  get permissionsLocked() {
+    return this.parent ? this.permissionOverwrites.equals(this.parent.permissionOverwrites) : null;
+  }
+
+  /**
    * The position of the channel
    * @type {number}
    * @readonly
