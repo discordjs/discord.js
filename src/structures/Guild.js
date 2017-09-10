@@ -1074,7 +1074,7 @@ class Guild {
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */
-    if (this.client.ws.connection.status === Constants.Status.READY && emitEvent && !existing) {
+    if (emitEvent && !existing && this.client.ws.connection.status === Constants.Status.READY) {
       this.client.emit(Constants.Events.GUILD_MEMBER_ADD, member);
     }
 
