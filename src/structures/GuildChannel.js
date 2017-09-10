@@ -209,7 +209,7 @@ class GuildChannel extends Channel {
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */
-  permissionLock() {
+  lockPermissions() {
     if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
     const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
       deny: overwrite.deny.bitfield,
