@@ -44,7 +44,7 @@ class DataResolver {
       return image;
     }
     const file = await this.resolveFile(image, browser);
-    return this.constructor.resolveBase64(file);
+    return DataResolver.resolveBase64(file);
   }
 
   /**
