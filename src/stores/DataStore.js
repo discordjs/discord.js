@@ -41,7 +41,7 @@ class DataStore extends Collection {
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof channel === 'string') return idOrInstance;
+    if (typeof idOrInstance === 'string') return idOrInstance;
     return null;
   }
 }
