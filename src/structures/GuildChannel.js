@@ -206,6 +206,21 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Locks in the permission overwrites from the parent channel.
+   * @returns {Promise<GuildChannel>}
+   */
+  permisionLock() {
+    if (!this.parent) return Promise.reject('No Parent');
+    const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
+      deny: overwrite.deny.bitfield,
+      allow: overwrite.allow.bitfield,
+      id: overwrite.id,
+      type: overwrite.type,
+    }));
+    return this.edit({ permissionOverwrites });
+  }
+
+  /**
    * A collection of members that can see this channel, mapped by their ID
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
@@ -253,6 +268,7 @@ class GuildChannel extends Channel {
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
+        permission_overwrites: data.permissionOverwrites,
       },
       reason,
     }).then(newData => {
