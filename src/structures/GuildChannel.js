@@ -6,7 +6,7 @@ const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild channel (e.g. text channels and voice channels).
@@ -63,6 +63,22 @@ class GuildChannel extends Channel {
    */
   get parent() {
     return this.guild.channels.get(this.parentID);
+  }
+
+  /**
+   * If the permissionOverwrites match the parent channel, null if no parent
+   * @type {?boolean}
+   * @readonly
+   */
+  get permissionsLocked() {
+    if (!this.parent) return null;
+    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
+    return !this.permissionOverwrites.find((value, key) => {
+      const testVal = this.parent.permissionOverwrites.get(key);
+      return testVal === undefined ||
+        testVal.denied.bitfield !== value.denied.bitfield ||
+        testVal.allowed.bitfield !== value.allowed.bitfield;
+    });
   }
 
   /**
@@ -197,6 +213,21 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Locks in the permission overwrites from the parent channel.
+   * @returns {Promise<GuildChannel>}
+   */
+  lockPermissions() {
+    if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
+    const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
+      deny: overwrite.denied.bitfield,
+      allow: overwrite.allowed.bitfield,
+      id: overwrite.id,
+      type: overwrite.type,
+    }));
+    return this.edit({ permissionOverwrites });
+  }
+
+  /**
    * A collection of members that can see this channel, mapped by their ID
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
@@ -221,6 +252,16 @@ class GuildChannel extends Channel {
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteData[]} [permissionOverwrites] An array of overwrites to set for the channel
+   */
+
+  /**
+   * The data for a permission overwrite
+   * @typedef {Object} OverwriteData
+   * @property {string} id The id of the overwrite
+   * @property {string} type The type of the overwrite, either role or member
+   * @property {number} allow The bitfield for the allowed permissions
+   * @property {number} deny The bitfield for the denied permissions
    */
 
   /**
@@ -239,11 +280,12 @@ class GuildChannel extends Channel {
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: data.position || this.position,
+        position: data.position || this.rawPosition,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
+        permission_overwrites: data.permissionOverwrites,
       },
       reason,
     }).then(newData => {
