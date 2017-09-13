@@ -13,8 +13,7 @@ class ReactionStore extends DataStore {
   }
 
   create(data, cache) {
-    data.emoji.id = data.emoji.id || decodeURIComponent(data.emoji.name);
-    return super.create(data, cache, { id: data.emoji.id, extras: [this.message] });
+    return super.create(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
   }
 
   /**
