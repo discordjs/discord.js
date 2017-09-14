@@ -26,6 +26,7 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
+  EMBED_AUTHOR_NAME: 'MessageEmbed author names may not exceed 256 characters or be empty.',
   EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
   EMBED_FIELD_NAME: 'MessageEmbed field names may not exceed 256 characters or be empty.',
   EMBED_FIELD_VALUE: 'MessageEmbed field values may not exceed 1024 characters or be empty.',

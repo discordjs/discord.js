@@ -214,7 +214,9 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setAuthor(name, iconURL, url) {
-    this.author = { name: Util.resolveString(name), iconURL, url };
+    name = Util.resolveString(name);
+    if (!String(name) || name.length > 256) throw new RangeError('EMBED_AUTHOR_NAME');
+    this.author = { name, iconURL, url };
     return this;
   }
 
