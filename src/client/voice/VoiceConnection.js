@@ -1,7 +1,7 @@
 const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
 const Util = require('../../util/Util');
-const Constants = require('../../util/Constants');
+const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events');
@@ -56,7 +56,7 @@ class VoiceConnection extends EventEmitter {
      * The current status of the voice connection
      * @type {VoiceStatus}
      */
-    this.status = Constants.VoiceStatus.AUTHENTICATING;
+    this.status = VoiceStatus.AUTHENTICATING;
 
     /**
      * Whether we're currently transmitting audio
@@ -134,10 +134,10 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
-    if (this.status !== Constants.VoiceStatus.CONNECTED) return;
+    if (this.status !== VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
-      op: Constants.VoiceOPCodes.SPEAKING,
+      op: VoiceOPCodes.SPEAKING,
       d: {
         speaking: true,
         delay: 0,
@@ -161,7 +161,7 @@ class VoiceConnection extends EventEmitter {
     }, options);
 
     this.client.ws.send({
-      op: Constants.OPCodes.VOICE_STATE_UPDATE,
+      op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
   }
@@ -191,7 +191,7 @@ class VoiceConnection extends EventEmitter {
       return;
     }
 
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       this.authentication.token = token;
       this.authentication.endpoint = endpoint;
       this.checkAuthenticated();
@@ -211,7 +211,7 @@ class VoiceConnection extends EventEmitter {
       return;
     }
 
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       this.authentication.sessionID = sessionID;
       this.checkAuthenticated();
     } else if (sessionID !== this.authentication.sessionID) {
@@ -234,7 +234,7 @@ class VoiceConnection extends EventEmitter {
 
     if (token && endpoint && sessionID) {
       clearTimeout(this.connectTimeout);
-      this.status = Constants.VoiceStatus.CONNECTING;
+      this.status = VoiceStatus.CONNECTING;
       /**
        * Emitted when we successfully initiate a voice connection.
        * @event VoiceConnection#authenticated
@@ -251,7 +251,7 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
        * @event VoiceConnection#failed
@@ -261,7 +261,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
-    this.status = Constants.VoiceStatus.DISCONNECTED;
+    this.status = VoiceStatus.DISCONNECTED;
   }
 
   /**
@@ -294,7 +294,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.token = token;
     this.authentication.endpoint = endpoint;
 
-    this.status = Constants.VoiceStatus.RECONNECTING;
+    this.status = VoiceStatus.RECONNECTING;
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
      * @event VoiceConnection#reconnecting
@@ -320,7 +320,7 @@ class VoiceConnection extends EventEmitter {
    */
   _disconnect() {
     this.cleanup();
-    this.status = Constants.VoiceStatus.DISCONNECTED;
+    this.status = VoiceStatus.DISCONNECTED;
     /**
      * Emitted when the voice connection disconnects.
      * @event VoiceConnection#disconnect
@@ -356,7 +356,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   connect() {
-    if (this.status !== Constants.VoiceStatus.RECONNECTING) {
+    if (this.status !== VoiceStatus.RECONNECTING) {
       if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
       if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
     }
@@ -407,7 +407,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.encryptionMode = mode;
     this.authentication.secretKey = secret;
 
-    this.status = Constants.VoiceStatus.CONNECTED;
+    this.status = VoiceStatus.CONNECTED;
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.
@@ -436,7 +436,7 @@ class VoiceConnection extends EventEmitter {
      * @param {User} user The user that has started/stopped speaking
      * @param {boolean} speaking Whether or not the user is speaking
      */
-    if (this.status === Constants.VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
+    if (this.status === VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
   }
 

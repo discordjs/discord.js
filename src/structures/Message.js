@@ -6,7 +6,7 @@ const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
-const Constants = require('../util/Constants');
+const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const GuildMember = require('./GuildMember');
 const Base = require('./Base');
@@ -40,7 +40,7 @@ class Message extends Base {
      * The type of the message
      * @type {MessageType}
      */
-    this.type = Constants.MessageTypes[data.type];
+    this.type = MessageTypes[data.type];
 
     /**
      * The content of the message

@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class MessageDeleteAction extends Action {
   handle(data) {
@@ -11,7 +11,7 @@ class MessageDeleteAction extends Action {
       message = channel.messages.get(data.id);
       if (message) {
         channel.messages.delete(message.id);
-        client.emit(Constants.Events.MESSAGE_DELETE, message);
+        client.emit(Events.MESSAGE_DELETE, message);
       }
     }
 

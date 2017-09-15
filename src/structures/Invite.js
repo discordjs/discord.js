@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { Endpoints } = require('../util/Constants');
 const Base = require('./Base');
 
 /**
@@ -127,7 +127,7 @@ class Invite extends Base {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.invite(this.client.options.http.invite, this.code);
+    return Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**

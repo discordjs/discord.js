@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { Package } = require('../util/Constants');
 
 class UserAgentManager {
   constructor() {
@@ -18,8 +18,8 @@ class UserAgentManager {
 }
 
 UserAgentManager.DEFAULT = {
-  url: Constants.Package.homepage.split('#')[0],
-  version: Constants.Package.version,
+  url: Package.homepage.split('#')[0],
+  version: Package.version,
 };
 
 module.exports = UserAgentManager;

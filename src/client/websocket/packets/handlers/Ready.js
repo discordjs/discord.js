@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
@@ -69,7 +69,7 @@ class ReadyHandler extends AbstractHandler {
 
     ws.sessionID = data.session_id;
     ws._trace = data._trace;
-    client.emit(Constants.Events.DEBUG, `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    client.emit(Events.DEBUG, `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }

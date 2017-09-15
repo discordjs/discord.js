@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { ActivityTypes } = require('../util/Constants');
 
 /**
  * Represents a user's presence.
@@ -67,7 +67,7 @@ class Activity {
      * The type of the activity status
      * @type {ActivityType}
      */
-    this.type = Constants.ActivityTypes[data.type];
+    this.type = ActivityTypes[data.type];
 
     /**
      * If the activity is being streamed, a link to the stream

@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Constants = require('../../util/Constants');
+const { DefaultOptions, Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocket = require('../../WebSocket');
 
@@ -42,7 +42,7 @@ class WebSocketConnection extends EventEmitter {
      * The current status of the client
      * @type {number}
      */
-    this.status = Constants.Status.IDLE;
+    this.status = Status.IDLE;
 
     /**
      * The Packet Manager of the connection
@@ -93,7 +93,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   triggerReady() {
-    if (this.status === Constants.Status.READY) {
+    if (this.status === Status.READY) {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
@@ -101,8 +101,8 @@ class WebSocketConnection extends EventEmitter {
      * Emitted when the client becomes ready to start working.
      * @event Client#ready
      */
-    this.status = Constants.Status.READY;
-    this.client.emit(Constants.Events.READY);
+    this.status = Status.READY;
+    this.client.emit(Events.READY);
     this.packetManager.handleQueue();
   }
 
@@ -111,13 +111,13 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   checkIfReady() {
-    if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
+    if (this.status === Status.READY || this.status === Status.NEARLY) return false;
     let unavailableGuilds = 0;
     for (const guild of this.client.guilds.values()) {
       if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
-      this.status = Constants.Status.NEARLY;
+      this.status = Status.NEARLY;
       if (!this.client.options.fetchAllMembers) return this.triggerReady();
       // Fetch all members before marking self as ready
       const promises = this.client.guilds.map(g => g.members.fetch());
@@ -208,12 +208,12 @@ class WebSocketConnection extends EventEmitter {
     this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
-    const ws = this.ws = WebSocket.create(gateway, { v: Constants.DefaultOptions.ws.version });
+    const ws = this.ws = WebSocket.create(gateway, { v: DefaultOptions.ws.version });
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
     ws.onclose = this.onClose.bind(this);
-    this.status = Constants.Status.CONNECTING;
+    this.status = Status.CONNECTING;
     return true;
   }
 
@@ -232,7 +232,7 @@ class WebSocketConnection extends EventEmitter {
     ws.close(1000);
     this.packetManager.handleQueue();
     this.ws = null;
-    this.status = Constants.Status.DISCONNECTED;
+    this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
     return true;
   }
@@ -273,18 +273,18 @@ class WebSocketConnection extends EventEmitter {
       return false;
     }
     switch (packet.op) {
-      case Constants.OPCodes.HELLO:
+      case OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
-      case Constants.OPCodes.RECONNECT:
+      case OPCodes.RECONNECT:
         return this.reconnect();
-      case Constants.OPCodes.INVALID_SESSION:
+      case OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
-      case Constants.OPCodes.HEARTBEAT_ACK:
+      case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
-      case Constants.OPCodes.HEARTBEAT:
+      case OPCodes.HEARTBEAT:
         return this.heartbeat();
       default:
         return this.packetManager.handle(packet);
@@ -310,7 +310,7 @@ class WebSocketConnection extends EventEmitter {
      * Emitted whenever the client tries to reconnect to the WebSocket.
      * @event Client#reconnecting
      */
-    this.client.emit(Constants.Events.RECONNECTING);
+    this.client.emit(Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
 
@@ -328,7 +328,7 @@ class WebSocketConnection extends EventEmitter {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    this.client.emit(Constants.Events.ERROR, error);
+    this.client.emit(Events.ERROR, error);
   }
 
   /**
@@ -347,15 +347,15 @@ class WebSocketConnection extends EventEmitter {
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (event.code === 1000 ? this.expectingClose : Constants.WSCodes[event.code]) {
+    if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       this.expectingClose = false;
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
        * @param {CloseEvent} event The WebSocket close event
        */
-      this.client.emit(Constants.Events.DISCONNECT, event);
-      this.debug(Constants.WSCodes[event.code]);
+      this.client.emit(Events.DISCONNECT, event);
+      this.debug(WSCodes[event.code]);
       this.destroy();
       return;
     }
@@ -392,7 +392,7 @@ class WebSocketConnection extends EventEmitter {
     this.debug('Sending a heartbeat');
     this.lastPingTimestamp = Date.now();
     this.send({
-      op: Constants.OPCodes.HEARTBEAT,
+      op: OPCodes.HEARTBEAT,
       d: this.sequence,
     });
   }
@@ -426,7 +426,7 @@ class WebSocketConnection extends EventEmitter {
 
     // Send the payload
     this.debug('Identifying as a new session');
-    this.send({ op: Constants.OPCodes.IDENTIFY, d });
+    this.send({ op: OPCodes.IDENTIFY, d });
   }
 
   /**
@@ -447,7 +447,7 @@ class WebSocketConnection extends EventEmitter {
     };
 
     return this.send({
-      op: Constants.OPCodes.RESUME,
+      op: OPCodes.RESUME,
       d,
     });
   }

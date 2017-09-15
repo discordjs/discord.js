@@ -1,6 +1,6 @@
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
 const lruable = ['group', 'dm'];
@@ -58,7 +58,7 @@ class ChannelStore extends DataStore {
     const channel = Channel.create(this.client, data, guild);
 
     if (!channel) {
-      this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
+      this.client.emit(Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
       return null;
     }
 

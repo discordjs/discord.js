@@ -1,5 +1,5 @@
 const Collection = require('../../util/Collection');
-const Constants = require('../../util/Constants');
+const { VoiceStatus } = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
 const { Error } = require('../../errors');
 
@@ -33,7 +33,7 @@ class ClientVoiceManager {
   onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
     const connection = this.connections.get(guild_id);
     if (!connection) return;
-    if (!channel_id && connection.status !== Constants.VoiceStatus.DISCONNECTED) {
+    if (!channel_id && connection.status !== VoiceStatus.DISCONNECTED) {
       connection._disconnect();
       return;
     }

@@ -3,7 +3,7 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const Constants = require('../util/Constants');
+const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
@@ -29,7 +29,7 @@ class RESTManager {
   }
 
   get cdn() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn);
+    return Endpoints.CDN(this.client.options.http.cdn);
   }
 
   destroy() {

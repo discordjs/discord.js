@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 class TypingStartHandler extends AbstractHandler {
   handle(packet) {
@@ -11,7 +11,7 @@ class TypingStartHandler extends AbstractHandler {
 
     if (channel && user) {
       if (channel.type === 'voice') {
-        client.emit(Constants.Events.WARN, `Discord sent a typing packet to voice channel ${channel.id}`);
+        client.emit(Events.WARN, `Discord sent a typing packet to voice channel ${channel.id}`);
         return;
       }
       if (channel._typing.has(user.id)) {
@@ -20,7 +20,7 @@ class TypingStartHandler extends AbstractHandler {
         typing.resetTimeout(tooLate(channel, user));
       } else {
         channel._typing.set(user.id, new TypingData(client, timestamp, timestamp, tooLate(channel, user)));
-        client.emit(Constants.Events.TYPING_START, channel, user);
+        client.emit(Events.TYPING_START, channel, user);
       }
     }
   }
@@ -46,7 +46,7 @@ class TypingData {
 
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
-    channel.client.emit(Constants.Events.TYPING_STOP, channel, user, channel._typing.get(user.id));
+    channel.client.emit(Events.TYPING_STOP, channel, user, channel._typing.get(user.id));
     channel._typing.delete(user.id);
   }, 6000);
 }

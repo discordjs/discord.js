@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 /*
 { t: 'CHANNEL_PINS_UPDATE',
@@ -16,7 +16,7 @@ class ChannelPinsUpdate extends AbstractHandler {
     const data = packet.d;
     const channel = client.channels.get(data.channel_id);
     const time = new Date(data.last_pin_timestamp);
-    if (channel && time) client.emit(Constants.Events.CHANNEL_PINS_UPDATE, channel, time);
+    if (channel && time) client.emit(Events.CHANNEL_PINS_UPDATE, channel, time);
   }
 }
 

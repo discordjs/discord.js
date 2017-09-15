@@ -1,7 +1,7 @@
 // ##untested handler##
 
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 class GuildBanAddHandler extends AbstractHandler {
   handle(packet) {
@@ -9,7 +9,7 @@ class GuildBanAddHandler extends AbstractHandler {
     const data = packet.d;
     const guild = client.guilds.get(data.guild_id);
     const user = client.users.get(data.user.id);
-    if (guild && user) client.emit(Constants.Events.GUILD_BAN_ADD, guild, user);
+    if (guild && user) client.emit(Events.GUILD_BAN_ADD, guild, user);
   }
 }
 

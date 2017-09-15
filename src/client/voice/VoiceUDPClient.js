@@ -1,6 +1,6 @@
 const udp = require('dgram');
 const dns = require('dns');
-const Constants = require('../../util/Constants');
+const { VoiceOPCodes } = require('../../util/Constants');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
 
@@ -113,7 +113,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
       this.localPort = packet.port;
 
       this.voiceConnection.sockets.ws.sendPacket({
-        op: Constants.VoiceOPCodes.SELECT_PROTOCOL,
+        op: VoiceOPCodes.SELECT_PROTOCOL,
         d: {
           protocol: 'udp',
           data: {

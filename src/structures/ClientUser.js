@@ -2,7 +2,7 @@ const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Guild = require('./Guild');
@@ -278,15 +278,15 @@ class ClientUser extends User {
 
             const handleGuild = guild => {
               if (guild.id === data.id) {
-                this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+                this.client.removeListener(Events.GUILD_CREATE, handleGuild);
                 this.client.clearTimeout(timeout);
                 resolve(guild);
               }
             };
-            this.client.on(Constants.Events.GUILD_CREATE, handleGuild);
+            this.client.on(Events.GUILD_CREATE, handleGuild);
 
             const timeout = this.client.setTimeout(() => {
-              this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               resolve(this.client.guilds.create(data));
             }, 10000);
             return undefined;
