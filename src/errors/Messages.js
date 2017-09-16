@@ -8,6 +8,7 @@ const Messages = {
 
   FEATURE_USER_ONLY: 'Only user accounts are able to make use of this feature.',
 
+  WS_CONNECTION_TIMEOUT: 'The connection to the gateway timed out.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
