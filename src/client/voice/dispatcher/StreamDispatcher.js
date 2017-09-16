@@ -1,6 +1,6 @@
 const VolumeInterface = require('../util/VolumeInterface');
 const VoiceBroadcast = require('../VoiceBroadcast');
-const Constants = require('../../../util/Constants');
+const { VoiceStatus } = require('../../../util/Constants');
 
 const secretbox = require('../util/Secretbox');
 
@@ -109,7 +109,7 @@ class StreamDispatcher extends VolumeInterface {
 
   setSpeaking(value) {
     if (this.speaking === value) return;
-    if (this.player.voiceConnection.status !== Constants.VoiceStatus.CONNECTED) return;
+    if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
     this.speaking = value;
     /**
      * Emitted when the dispatcher starts/stops speaking.

@@ -1,6 +1,6 @@
 const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
-const Constants = require('../util/Constants');
+const { Events, OPCodes } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const { Error } = require('../errors');
 
@@ -112,7 +112,7 @@ class GuildMemberStore extends DataStore {
         return;
       }
       this.guild.client.ws.send({
-        op: Constants.OPCodes.REQUEST_GUILD_MEMBERS,
+        op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,
           query,
@@ -128,13 +128,13 @@ class GuildMemberStore extends DataStore {
         if (this.guild.memberCount <= this.size ||
           ((query || limit) && members.size < 1000) ||
           (limit && fetchedMembers.size >= limit)) {
-          this.guild.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+          this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           resolve(query || limit ? fetchedMembers : this);
         }
       };
-      this.guild.client.on(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+      this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
       this.guild.client.setTimeout(() => {
-        this.guild.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
+        this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, 120e3);
     });

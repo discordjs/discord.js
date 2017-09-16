@@ -1,11 +1,11 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 class ChannelUpdateHandler extends AbstractHandler {
   handle(packet) {
     const { old, updated } = this.packetManager.client.actions.ChannelUpdate.handle(packet.d);
     if (old && updated) {
-      this.packetManager.client.emit(Constants.Events.CHANNEL_UPDATE, old, updated);
+      this.packetManager.client.emit(Events.CHANNEL_UPDATE, old, updated);
     }
   }
 }

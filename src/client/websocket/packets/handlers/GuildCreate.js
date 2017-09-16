@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events, Status } = require('../../../../util/Constants');
 
 class GuildCreateHandler extends AbstractHandler {
   async handle(packet) {
@@ -16,7 +16,7 @@ class GuildCreateHandler extends AbstractHandler {
     } else {
       // A new guild
       guild = client.guilds.create(data);
-      const emitEvent = client.ws.connection.status === Constants.Status.READY;
+      const emitEvent = client.ws.connection.status === Status.READY;
       if (emitEvent) {
         /**
          * Emitted whenever the client joins a guild.
@@ -24,7 +24,7 @@ class GuildCreateHandler extends AbstractHandler {
          * @param {Guild} guild The created guild
          */
         if (client.options.fetchAllMembers) await guild.members.fetch();
-        client.emit(Constants.Events.GUILD_CREATE, guild);
+        client.emit(Events.GUILD_CREATE, guild);
       }
     }
   }

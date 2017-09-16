@@ -3,7 +3,7 @@ const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
-const Constants = require('../util/Constants');
+const { ChannelTypes, Events } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -923,7 +923,7 @@ class Guild extends Base {
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
-        type: Constants.ChannelTypes[type.toUpperCase()],
+        type: ChannelTypes[type.toUpperCase()],
         permission_overwrites: overwrites,
       },
       reason,
@@ -1128,7 +1128,7 @@ class Guild extends Base {
        * @param {GuildMember} member The member that started/stopped speaking
        * @param {boolean} speaking Whether or not the member is speaking
        */
-      this.client.emit(Constants.Events.GUILD_MEMBER_SPEAKING, member, speaking);
+      this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
   }
 
@@ -1137,7 +1137,7 @@ class Guild extends Base {
   }
 
   _sortedChannels(channel) {
-    const category = channel.type === Constants.ChannelTypes.CATEGORY;
+    const category = channel.type === ChannelTypes.CATEGORY;
     return Util.discordSort(this.channels.filter(c =>
       c.type === channel.type && (category || c.parent === channel.parent)));
   }

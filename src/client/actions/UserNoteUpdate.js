@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class UserNoteUpdateAction extends Action {
   handle(data) {
@@ -10,7 +10,7 @@ class UserNoteUpdateAction extends Action {
 
     client.user.notes.set(data.id, note);
 
-    client.emit(Constants.Events.USER_NOTE_UPDATE, data.id, oldNote, note);
+    client.emit(Events.USER_NOTE_UPDATE, data.id, oldNote, note);
 
     return {
       old: oldNote,

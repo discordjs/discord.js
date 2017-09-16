@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events, Status } = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
   handle(data) {
@@ -11,7 +11,7 @@ class GuildMemberRemoveAction extends Action {
       if (member) {
         guild.memberCount--;
         guild.members.remove(member.id);
-        if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, member);
+        if (client.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }
     }
     return { guild, member };

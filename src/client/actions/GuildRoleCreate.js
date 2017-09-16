@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildRoleCreate extends Action {
   handle(data) {
@@ -9,7 +9,7 @@ class GuildRoleCreate extends Action {
     if (guild) {
       const already = guild.roles.has(data.role.id);
       role = guild.roles.create(data.role);
-      if (!already) client.emit(Constants.Events.GUILD_ROLE_CREATE, role);
+      if (!already) client.emit(Events.GUILD_ROLE_CREATE, role);
     }
     return { role };
   }

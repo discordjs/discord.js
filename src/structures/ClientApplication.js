@@ -1,5 +1,5 @@
 const Snowflake = require('../util/Snowflake');
-const Constants = require('../util/Constants');
+const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Base = require('./Base');
 
@@ -140,7 +140,7 @@ class ClientApplication extends Base {
    */
   coverImage({ format, size } = {}) {
     if (!this.cover) return null;
-    return Constants.Endpoints
+    return Endpoints
       .CDN(this.client.options.http.cdn)
       .AppIcon(this.id, this.cover, { format, size });
   }
@@ -154,7 +154,7 @@ class ClientApplication extends Base {
       .then(assets => assets.map(a => ({
         id: a.id,
         name: a.name,
-        type: Object.keys(Constants.ClientApplicationAssetTypes)[a.type - 1],
+        type: Object.keys(ClientApplicationAssetTypes)[a.type - 1],
       })));
   }
 
@@ -170,7 +170,7 @@ class ClientApplication extends Base {
       this.client.api.applications(this.id).assets.post({ data: {
         name,
         data: b64,
-        type: Constants.ClientApplicationAssetTypes[type.toUpperCase()],
+        type: ClientApplicationAssetTypes[type.toUpperCase()],
       } }));
   }
 

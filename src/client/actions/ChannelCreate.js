@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class ChannelCreateAction extends Action {
   handle(data) {
@@ -7,7 +7,7 @@ class ChannelCreateAction extends Action {
     const existing = client.channels.has(data.id);
     const channel = client.channels.create(data);
     if (!existing && channel) {
-      client.emit(Constants.Events.CHANNEL_CREATE, channel);
+      client.emit(Events.CHANNEL_CREATE, channel);
     }
     return { channel };
   }

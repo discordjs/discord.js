@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -22,7 +22,7 @@ class MessageCreateAction extends Action {
         member.lastMessage = message;
       }
 
-      client.emit(Constants.Events.MESSAGE_CREATE, message);
+      client.emit(Events.MESSAGE_CREATE, message);
       return { message };
     }
 

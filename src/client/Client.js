@@ -17,7 +17,7 @@ const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const EmojiStore = require('../stores/EmojiStore');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
@@ -334,7 +334,7 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
     }
     if (lifetime <= 0) {
-      this.emit(Constants.Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
+      this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -355,7 +355,7 @@ class Client extends BaseClient {
       }
     }
 
-    this.emit(Constants.Events.DEBUG,
+    this.emit(Events.DEBUG,
       `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }

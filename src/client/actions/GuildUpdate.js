@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildUpdateAction extends Action {
   handle(data) {
@@ -8,7 +8,7 @@ class GuildUpdateAction extends Action {
     const guild = client.guilds.get(data.id);
     if (guild) {
       const old = guild._update(data);
-      client.emit(Constants.Events.GUILD_UPDATE, old, guild);
+      client.emit(Events.GUILD_UPDATE, old, guild);
       return {
         old,
         updated: guild,

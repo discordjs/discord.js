@@ -5,7 +5,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
+const { MessageNotificationTypes } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
 
 /**
@@ -474,7 +474,7 @@ class GuildChannel extends Channel {
     try {
       return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
     } catch (err) {
-      return Constants.MessageNotificationTypes[3];
+      return MessageNotificationTypes[3];
     }
   }
 

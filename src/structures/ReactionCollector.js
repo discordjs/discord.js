@@ -1,5 +1,6 @@
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
+const { Events } = require('../util/Constants');
 
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions
@@ -41,14 +42,14 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
 
-    this.client.on('messageReactionAdd', this.handleCollect);
-    this.client.on('messageReactionRemove', this.handleDispose);
-    this.client.on('messageReactionRemoveAll', this.empty);
+    this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
+    this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
+    this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
 
     this.once('end', () => {
-      this.client.removeListener('messageReactionAdd', this.handleCollect);
-      this.client.removeListener('messageReactionRemove', this.handleDispose);
-      this.client.removeListener('messageReactionRemoveAll', this.empty);
+      this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
+      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
+      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
     });
 
     this.on('collect', (collected, reaction, user) => {

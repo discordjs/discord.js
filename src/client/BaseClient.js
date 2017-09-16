@@ -1,7 +1,7 @@
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
-const Constants = require('../util/Constants');
+const { DefaultOptions } = require('../util/Constants');
 
 /**
  * The base class for all clients.
@@ -15,7 +15,7 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
+    this.options = Util.mergeDefault(DefaultOptions, options);
 
     /**
      * The REST manager of the client
