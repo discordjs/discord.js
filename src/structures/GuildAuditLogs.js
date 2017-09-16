@@ -259,7 +259,7 @@ class GuildAuditLogsEntry {
     if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {TargetType}
+       * @type {?Object|Guild|User|Role|Emoji|Invite|Webhook}
        */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;
