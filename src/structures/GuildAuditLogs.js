@@ -96,6 +96,18 @@ class GuildAuditLogs {
    * * MESSAGE
    * @typedef {string} TargetType
    */
+  
+  /**
+   * The target for an audit log entry. It can be one of:
+   * * A guild
+   * * A user
+   * * A role
+   * * An emoji
+   * * An invite
+   * * A webhook
+   * * An object where the keys represent either the new value or the old value
+   * @typedef {?Object|Guild|User|Role|Emoji|Invite|Webhook} EntryTarget
+   */
 
   /**
    * Find target type from entry action.
@@ -259,7 +271,7 @@ class GuildAuditLogsEntry {
     if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {?Object|Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {EntryTarget}
        */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;
