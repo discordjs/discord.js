@@ -25,14 +25,14 @@ class BaseClient extends EventEmitter {
     this.rest = new RESTManager(this, options._tokenType);
 
     /**
-     * Timeouts set by {@link WebhookClient#setTimeout} that are still active
+     * Timeouts set by {@link BaseClient#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
      */
     this._timeouts = new Set();
 
     /**
-     * Intervals set by {@link WebhookClient#setInterval} that are still active
+     * Intervals set by {@link BaseClient#setInterval} that are still active
      * @type {Set<Timeout>}
      * @private
      */
