@@ -96,7 +96,7 @@ class GuildAuditLogs {
    * * MESSAGE
    * @typedef {string} TargetType
    */
-  
+
   /**
    * The target for an audit log entry. It can be one of:
    * * A guild
