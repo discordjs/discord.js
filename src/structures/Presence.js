@@ -109,7 +109,7 @@ class Activity {
      * Party of the activity
      * @type {?Object}
      * @prop {?string} id ID of the party
-     * @prop {Number[]} size Size of the party as `[current, max]`
+     * @prop {number[]} size Size of the party as `[current, max]`
      */
     this.party = data.party || null;
 
