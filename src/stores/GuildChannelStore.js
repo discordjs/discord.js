@@ -21,10 +21,10 @@ class GuildChannelStore extends DataStore {
   }
 
   /**
-   * Data that can be resolved to give a Channel object. This can be:
+   * Data that can be resolved to give a Guild Channel object. This can be:
    * * A GuildChannel object
    * * A Snowflake
-   * @typedef {Channel|Snowflake} GuildChannelResolvable
+   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
    */
 
   /**
