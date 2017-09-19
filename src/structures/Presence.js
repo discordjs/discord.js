@@ -23,6 +23,7 @@ class Presence {
 
     const activity = data.game || data.activity;
     /**
+     * The activity of the presence
      * @type {?Activity}
      */
     this.activity = activity ? new Activity(this, activity) : null;
