@@ -40,7 +40,7 @@
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
-    "erlpack": "hammerandchisel/erlpack",
+    "erlpack": "discordapp/erlpack",
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.3",
     "sodium": "^2.0.0",
