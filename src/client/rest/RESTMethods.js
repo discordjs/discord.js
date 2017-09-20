@@ -318,7 +318,7 @@ class RESTMethods {
     data.name = (_data.name || channel.name).trim();
     data.topic = _data.topic || channel.topic;
     data.position = _data.position || channel.position;
-    data.bitrate = _data.bitrate || channel.bitrate;
+    data.bitrate = _data.bitrate || channel.bitrate * 1000;
     data.user_limit = _data.userLimit || channel.userLimit;
     return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data, undefined, reason).then(newData =>
       this.client.actions.ChannelUpdate.handle(newData).updated
