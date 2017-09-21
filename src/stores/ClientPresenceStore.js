@@ -4,6 +4,11 @@ const { ActivityTypes, OPCodes } = require('../util/Constants');
 const { Presence } = require('../structures/Presence');
 const { TypeError } = require('../errors');
 
+/**
+ * Stores the client presence and other presences.
+ * @extends {PresenceStore}
+ * @private
+ */
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
     super(...args);

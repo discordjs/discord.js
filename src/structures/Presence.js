@@ -23,6 +23,7 @@ class Presence {
 
     const activity = data.game || data.activity;
     /**
+     * The activity of the presence
      * @type {?Activity}
      */
     this.activity = activity ? new Activity(this, activity) : null;
@@ -108,7 +109,7 @@ class Activity {
      * Party of the activity
      * @type {?Object}
      * @prop {?string} id ID of the party
-     * @prop {Number[]} size Size of the party as `[current, max]`
+     * @prop {number[]} size Size of the party as `[current, max]`
      */
     this.party = data.party || null;
 

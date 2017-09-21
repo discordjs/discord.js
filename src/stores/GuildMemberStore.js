@@ -22,7 +22,7 @@ class GuildMemberStore extends DataStore {
    * Data that resolves to give a GuildMember object. This can be:
    * * A GuildMember object
    * * A User resolvable
-   * @typedef {GuildMember|UserResolveable} GuildMemberResolvable
+   * @typedef {GuildMember|UserResolvable} GuildMemberResolvable
    */
 
   /**

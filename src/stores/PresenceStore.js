@@ -19,9 +19,9 @@ class PresenceStore extends DataStore {
   /**
    * Data that can be resolved to a Presence object. This can be:
    * * A Presence
-   * * A UserResolveable
+   * * A UserResolvable
    * * A Snowflake
-   * @typedef {Presence|UserResolveable|Snowflake} PresenceResolvable
+   * @typedef {Presence|UserResolvable|Snowflake} PresenceResolvable
    */
 
   /**
