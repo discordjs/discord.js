@@ -28,10 +28,10 @@ class PermissionOverwrites {
     this.type = data.type;
 
     /**
-     * The target of this overwrite, either a User or a Role
-     * @type {(User | Role)}
+     * The target of this overwrite, either a GuildMember or a Role
+     * @type {(GuildMember | Role)}
      */
-    this.target = this.channel.guild.roles.get(this.id) || this.channel.guild.roles.get(this.id);
+    this.target = this.channel.guild.roles.get(this.id) || this.channel.guild.members.get(this.id);
 
     this.deny = data.deny;
     this.allow = data.allow;
