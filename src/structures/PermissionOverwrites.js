@@ -28,6 +28,12 @@ class PermissionOverwrites {
      * @type {string}
      */
     this.type = data.type;
+    
+    /**
+     * The target of this overwrite, either a GuildMember or a Role
+     * @type {(GuildMember | Role)}
+     */
+    this.target = this.channel.guild.roles.get(this.id) || this.channel.guild.members.get(this.id);
 
     /**
      * The permissions that are denied for the user or role.
