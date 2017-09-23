@@ -8,7 +8,7 @@
     "node": true
   },
   "overrides": [
-    { "files": [ "browser.js", "*.browser.js" ], "env": { "browser": true } }
+    { "files": ["*.browser.js"], "env": { "browser": true } }
   ],
   "rules": {
     "no-await-in-loop": "warn",
