@@ -42,7 +42,7 @@ class ClientManager {
       const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
-      this.client.ws.connection.ws.once('error', reject);
+      this.client.ws.connection.once('error', reject);
       this.client.ws.connection.once('close', event => {
         if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
         if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
