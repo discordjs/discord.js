@@ -90,17 +90,18 @@ class GuildMemberStore extends DataStore {
    */
   fetch(options) {
     if (!options) return this._fetchMany();
-    const user = this.resolveID(options);
+    const user = this.client.users.resolveID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.resolveID(options.user);
+      options.user = this.client.users.resolveID(options.user);
       if (options.user) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
   }
 
   _fetchSingle({ user, cache }) {
-    if (this.has(user)) return Promise.resolve(this.get(user));
+    const existing = this.get(user);
+    if (existing) return Promise.resolve(existing);
     return this.client.api.guilds(this.guild.id).members(user).get()
       .then(data => this.create(data, cache));
   }
