@@ -132,39 +132,6 @@ class Role extends Base {
   }
 
   /**
-   * Get an object mapping permission names to whether or not the role enables that permission.
-   * @returns {Object<string, boolean>}
-   * @example
-   * // Print the serialized role permissions
-   * console.log(role.serialize());
-   */
-  serialize() {
-    return this.permissions.serialize();
-  }
-
-  /**
-   * Checks if the role has a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
-   * (takes priority over `explicit`)
-   * @returns {boolean}
-   * @example
-   * // See if a role can ban a member
-   * if (role.hasPermission('BAN_MEMBERS')) {
-   *   console.log('This role can ban members');
-   * } else {
-   *   console.log('This role can\'t ban members');
-   * }
-   */
-  hasPermission(permission, explicit = false, checkAdmin) {
-    return this.permissions.has(
-      permission, typeof checkAdmin !== 'undefined' ? checkAdmin : !explicit
-    );
-  }
-
-  /**
    * Compares this role's position to another role's.
    * @param {RoleResolvable} role Role to compare to this one
    * @returns {number} Negative number if the this role's position is lower (other role's is higher),
