@@ -24,8 +24,15 @@ class PermissionOverwrites {
     this.id = data.id;
 
     /**
+     * The type of a permission overwrite. It can be one of:
+     * * member
+     * * role
+     * @typedef {string} OverwriteType
+     */
+
+    /**
      * The type of this overwrite
-     * @type {string}
+     * @type {OverwriteType}
      */
     this.type = data.type;
 
