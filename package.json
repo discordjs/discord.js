@@ -59,7 +59,6 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "eslintIgnore": ["node_modules", "test"],
   "browser": {
     "ws": false,
     "uws": false,
