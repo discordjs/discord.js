@@ -306,7 +306,7 @@ class GuildMember extends Base {
     if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
     if (typeof checkOwner === 'undefined') checkOwner = !explicit;
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, undefined, checkAdmin));
+    return this.roles.some(r => r.permissions.has(permission, undefined, checkAdmin));
   }
 
   /**
