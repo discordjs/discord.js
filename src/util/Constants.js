@@ -95,7 +95,7 @@ const AllowedImageFormats = [
   'gif',
 ];
 
-const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 ** (i + 4));
+const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 * (i + 4));
 
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
