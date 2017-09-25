@@ -75,7 +75,7 @@
     "src/client/voice/ClientVoiceManager.js": false,
     "src/client/voice/VoiceConnection.js": false,
     "src/client/voice/VoiceUDPClient.js": false,
-    "src/client/voice/VoiceWebSocket.js": false
+    "src/client/voice/VoiceWebSocket.js": false,
     "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/opus/BaseOpusEngine.js": false,
     "src/client/voice/opus/NodeOpusEngine.js": false,
