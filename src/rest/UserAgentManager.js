@@ -13,8 +13,7 @@ class UserAgentManager {
   }
 
   build(ua) {
-    const platform = typeof process !== 'undefined' ? `Node.js/${process.platform}` : 'browser';
-    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) ${platform}`;
+    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.platform}`;
   }
 }
 
