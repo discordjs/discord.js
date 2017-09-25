@@ -13,7 +13,7 @@ class UserAgentManager {
   }
 
   build(ua) {
-    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.platform}`;
+    this.userAgent = `DiscordBot (${ua.url}, ${ua.version}) Node.js/${process.version}`;
   }
 }
 
