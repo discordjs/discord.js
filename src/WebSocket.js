@@ -35,7 +35,7 @@ exports.unpack = data => {
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');
   query.encoding = exports.encoding;
-  if (q) Object.assign(query, querystrng.parse(q), query);
+  if (q) query = Object.assign(querystrng.parse(q), query);
   const ws = new exports.WebSocket(`${g}?${querystring.stringify(query)}`, ...args);
   if (browser) ws.binaryType = 'arraybuffer';
   return ws;
