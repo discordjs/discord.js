@@ -161,7 +161,7 @@ class GroupDMChannel extends Channel {
    * @returns {Promise<GroupDMChannel>}
    */
   async setIcon(icon) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser) });
+    return this.edit({ icon: await DataResolver.resolveImage(icon) });
   }
 
   /**

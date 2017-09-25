@@ -178,7 +178,7 @@ class ClientUser extends User {
    *   .catch(console.error);
    */
   async setAvatar(avatar) {
-    return this.edit({ avatar: await DataResolver.resolveImage(avatar, this.client.browser) });
+    return this.edit({ avatar: await DataResolver.resolveImage(avatar) });
   }
 
   /**
@@ -294,7 +294,7 @@ class ClientUser extends User {
       );
     }
 
-    return DataResolver.resolveImage(icon, this.client.browser)
+    return DataResolver.resolveImage(icon)
       .then(data => this.createGuild(name, { region, icon: data || null }));
   }
 

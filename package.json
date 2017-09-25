@@ -71,6 +71,7 @@
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
+    "src/rest/UserAgentManager.js": false,
     "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/opus/BaseOpusEngine.js": false,
     "src/client/voice/opus/NodeOpusEngine.js": false,

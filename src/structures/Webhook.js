@@ -3,6 +3,7 @@ const DataResolver = require('../util/DataResolver');
 const Embed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
+const { browser } = require('../util/Constants');
 
 /**
  * Represents a webhook.
@@ -150,7 +151,7 @@ class Webhook {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
+        if (typeof file === 'string' || (browser && Buffer.isBuffer(file))) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
             file.name = Util.basename(file.attachment);
@@ -168,7 +169,7 @@ class Webhook {
       }
 
       return Promise.all(options.files.map(file =>
-        DataResolver.resolveFile(file.attachment, this.client.browser).then(resource => {
+        DataResolver.resolveFile(file.attachment).then(resource => {
           file.file = resource;
           return file;
         })
@@ -248,9 +249,7 @@ class Webhook {
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return DataResolver.resolveImage(avatar, this.client.browser).then(image =>
-        this.edit({ name, avatar: image }, reason)
-      );
+      return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
     return this.client.api.webhooks(this.id, this.token).patch({
       data: { name, avatar },

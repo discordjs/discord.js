@@ -17,7 +17,7 @@ const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const EmojiStore = require('../stores/EmojiStore');
-const { Events } = require('../util/Constants');
+const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
@@ -33,10 +33,10 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!this.browser && !this.options.shardId && 'SHARD_ID' in process.env) {
+    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
       this.options.shardId = Number(process.env.SHARD_ID);
     }
-    if (!this.browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
 
@@ -75,14 +75,14 @@ class Client extends BaseClient {
      * @type {?ClientVoiceManager}
      * @private
      */
-    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
+    this.voice = !browser ? new ClientVoiceManager(this) : null;
 
     /**
      * The shard helpers for the client
      * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = !this.browser && process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -112,7 +112,7 @@ class Client extends BaseClient {
     this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!this.browser && !this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
        * <warn>This should be kept private at all times.</warn>
@@ -209,7 +209,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get voiceConnections() {
-    if (this.browser) return new Collection();
+    if (browser) return new Collection();
     return this.voice.connections;
   }
 

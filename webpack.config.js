@@ -48,6 +48,7 @@ const createConfig = options => {
       __dirname: true,
       process: false,
       path: 'empty',
+      Buffer: false,
     },
     plugins,
   };

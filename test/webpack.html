@@ -16,6 +16,7 @@
       });
 
       client.on('error', console.error);
+      client.on('debug', console.info);
 
       client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
 

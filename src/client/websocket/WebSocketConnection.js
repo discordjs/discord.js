@@ -247,7 +247,7 @@ class WebSocketConnection extends EventEmitter {
     try {
       data = WebSocket.unpack(event.data);
     } catch (err) {
-      this.emit('debug', err);
+      this.client.emit('debug', err);
     }
     const ret = this.onPacket(data);
     this.client.emit('raw', data);
