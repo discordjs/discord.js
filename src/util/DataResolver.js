@@ -97,7 +97,7 @@ class DataResolver {
               return resolve(res.body);
             });
         } else {
-          const file = path.resolve(resource);
+          const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
             if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));

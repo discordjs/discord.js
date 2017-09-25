@@ -33,8 +33,10 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!this.options.shardId && 'SHARD_ID' in process.env) this.options.shardId = Number(process.env.SHARD_ID);
-    if (!this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!this.browser && !this.options.shardId && 'SHARD_ID' in process.env) {
+      this.options.shardId = Number(process.env.SHARD_ID);
+    }
+    if (!this.browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
 
@@ -80,7 +82,7 @@ class Client extends BaseClient {
      * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !this.browser && process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -110,7 +112,7 @@ class Client extends BaseClient {
     this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!this.browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
        * <warn>This should be kept private at all times.</warn>
