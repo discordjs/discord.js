@@ -60,6 +60,7 @@
     "node": ">=8.0.0"
   },
   "browser": {
+    "https": false,
     "ws": false,
     "uws": false,
     "erlpack": false,

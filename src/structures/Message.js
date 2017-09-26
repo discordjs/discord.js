@@ -427,7 +427,7 @@ class Message extends Base {
 
   /**
    * Add a reaction to the message.
-   * @param {EmojiIdentifierResolveable} emoji The emoji to react with
+   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
