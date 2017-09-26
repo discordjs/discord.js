@@ -319,7 +319,6 @@ class MessageEmbed {
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
       fields: this.fields,
-      files: this.files,
       thumbnail: this.thumbnail,
       image: this.image,
       author: this.author ? {
