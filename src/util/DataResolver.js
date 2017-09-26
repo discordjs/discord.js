@@ -3,6 +3,7 @@ const fs = require('fs');
 const snekfetch = require('snekfetch');
 const Util = require('../util/Util');
 const { Error, TypeError } = require('../errors');
+const { browser } = require('../util/Constants');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -35,15 +36,14 @@ class DataResolver {
   /**
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
-   * @param {boolean} browser Whether this should resolve for a browser
    * @returns {Promise<?string>}
    */
-  static async resolveImage(image, browser) {
+  static async resolveImage(image) {
     if (!image) return null;
     if (typeof image === 'string' && image.startsWith('data:')) {
       return image;
     }
-    const file = await this.resolveFile(image, browser);
+    const file = await this.resolveFile(image);
     return DataResolver.resolveBase64(file);
   }
 
@@ -80,10 +80,9 @@ class DataResolver {
   /**
    * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @param {boolean} browser Whether this should resolve for a browser
    * @returns {Promise<Buffer>}
    */
-  static resolveFile(resource, browser) {
+  static resolveFile(resource) {
     if (resource instanceof Buffer) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
@@ -97,7 +96,7 @@ class DataResolver {
               return resolve(res.body);
             });
         } else {
-          const file = path.resolve(resource);
+          const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
             if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));

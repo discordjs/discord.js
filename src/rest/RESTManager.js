@@ -3,13 +3,13 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
+const { Endpoints, browser } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = {};
-    this.userAgentManager = new UserAgentManager(this);
+    if (!browser) this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;

@@ -46,6 +46,9 @@ const createConfig = options => {
       dgram: 'empty',
       zlib: 'empty',
       __dirname: true,
+      process: false,
+      path: 'empty',
+      Buffer: false,
     },
     plugins,
   };

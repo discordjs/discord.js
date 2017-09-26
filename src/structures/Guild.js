@@ -3,7 +3,7 @@ const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, Events } = require('../util/Constants');
+const { ChannelTypes, Events, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -315,7 +315,7 @@ class Guild extends Base {
    * @readonly
    */
   get voiceConnection() {
-    if (this.client.browser) return null;
+    if (browser) return null;
     return this.client.voice.connections.get(this.id) || null;
   }
 
@@ -717,7 +717,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon, this.client.browser), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon), reason });
   }
 
   /**
@@ -747,7 +747,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await DataResolver.resolveImage(splash, this.client.browser), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
   }
 
   /**
@@ -1036,7 +1036,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return DataResolver.resolveImage(attachment, this.client.browser)
+    return DataResolver.resolveImage(attachment)
       .then(image => this.createEmoji(image, name, { roles, reason }));
   }
 

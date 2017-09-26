@@ -40,15 +40,6 @@ class BaseClient extends EventEmitter {
   }
 
   /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return typeof window !== 'undefined';
-  }
-
-  /**
    * API shortcut
    * @type {Object}
    * @private

@@ -1,5 +1,6 @@
 exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
+exports.browser = typeof window !== 'undefined';
 
 /**
  * Options for a client.
@@ -56,9 +57,9 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: require('os').platform() !== 'browser',
+    compress: !exports.browser,
     properties: {
-      $os: process ? process.platform : 'discord.js',
+      $os: exports.browser ? 'browser' : process.platform,
       $browser: 'discord.js',
       $device: 'discord.js',
     },

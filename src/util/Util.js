@@ -3,6 +3,7 @@ const snekfetch = require('snekfetch');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -306,6 +307,14 @@ class Util {
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
     return route.patch({ data: updatedItems, reason });
+  }
+
+  static basename(path, ext) {
+    let f = splitPathRe.exec(path).slice(1)[2];
+    if (ext && f.substr(-1 * ext.length) === ext) {
+      f = f.substr(0, f.length - ext.length);
+    }
+    return f;
   }
 }
 

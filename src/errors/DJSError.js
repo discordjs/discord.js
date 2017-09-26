@@ -2,8 +2,6 @@
 
 const kCode = Symbol('code');
 const messages = new Map();
-const assert = require('assert');
-const util = require('util');
 
 /**
  * Extend an error of some sort into a DiscordjsError.
@@ -35,17 +33,13 @@ function makeDiscordjsError(Base) {
  * @returns {string} Formatted string
  */
 function message(key, args) {
-  assert.strictEqual(typeof key, 'string');
+  if (typeof key !== 'string') throw new Error('Error message key must be a string');
   const msg = messages.get(key);
-  assert(msg, `An invalid error message key was used: ${key}.`);
-  let fmt = util.format;
-  if (typeof msg === 'function') {
-    fmt = msg;
-  } else {
-    if (args === undefined || args.length === 0) return msg;
-    args.unshift(msg);
-  }
-  return String(fmt(...args));
+  if (!msg) throw new Error(`An invalid error message key was used: ${key}.`);
+  if (typeof msg === 'function') return msg(...args);
+  if (args === undefined || args.length === 0) return msg;
+  args.unshift(msg);
+  return String(...args);
 }
 
 /**

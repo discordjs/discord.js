@@ -1,6 +1,7 @@
-const path = require('path');
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
+const Util = require('../../util/Util');
+const { browser } = require('../../util/Constants');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const DataResolver = require('../../util/DataResolver');
@@ -106,14 +107,14 @@ class TextBasedChannel {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
+        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
-            file.name = path.basename(file.attachment);
+            file.name = Util.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
-            file.name = path.basename(file.attachment.path);
+            file.name = Util.basename(file.attachment.path);
           } else if (file instanceof MessageAttachment) {
-            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
+            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
@@ -124,7 +125,7 @@ class TextBasedChannel {
       }
 
       return Promise.all(options.files.map(file =>
-        DataResolver.resolveFile(file.attachment, this.client.browser).then(resource => {
+        DataResolver.resolveFile(file.attachment).then(resource => {
           file.file = resource;
           return file;
         })
