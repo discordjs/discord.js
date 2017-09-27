@@ -885,8 +885,12 @@ class Guild extends Base {
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
    * @param {Object} [options] Options
+   * @param {boolean} [options.nsfw] Whether the new channel is nsfw
+   * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
+   * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @param {ChannelResolvable} [options.parent] Parent of the new channel
    * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
-   * @param {string} [options.reason] Reason for creating this channel
+   * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
@@ -894,11 +898,11 @@ class Guild extends Base {
    *   .then(channel => console.log(`Created new channel ${channel}`))
    *   .catch(console.error);
    */
-  createChannel(name, type, { overwrites, reason } = {}) {
+  createChannel(name, type, { nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => {
-        let allow = overwrite.allow || overwrite.allowed.bitfield;
-        let deny = overwrite.deny || overwrite.denied.bitfield;
+        let allow = overwrite.allow || (overwrite.allowed ? overwrite.allowed.bitfield : 0);
+        let deny = overwrite.deny || (overwrite.denied ? overwrite.denied.bitfield : 0);
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
@@ -920,10 +924,15 @@ class Guild extends Base {
       });
     }
 
+    if (parent) parent = this.client.channels.resolveID(parent);
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
         type: ChannelTypes[type.toUpperCase()],
+        nsfw,
+        bitrate,
+        user_limit: userLimit,
+        parent_id: parent,
         permission_overwrites: overwrites,
       },
       reason,
