@@ -37,6 +37,7 @@ class VoiceChannel extends GuildChannel {
   /**
    * The bitrate of this voice channel (in kbps)
    * @type {number}
+   * @readonly
    */
   get bitrate() {
     return this.rawBitrate * 0.001;
