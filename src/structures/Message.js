@@ -8,9 +8,9 @@ const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
 const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const GuildMember = require('./GuildMember');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
+const createMessage = require('./shared/createMessage');
 
 /**
  * Represents a message on Discord.
@@ -375,34 +375,14 @@ class Message extends Base {
     } else if (!options) {
       options = {};
     }
-    if (options instanceof Embed) options = { embed: options };
 
-    if (typeof options.content !== 'undefined') content = options.content;
-
-    if (typeof content !== 'undefined') content = Util.resolveString(content);
-
-    let { embed, code, reply } = options;
-
-    if (embed) embed = new Embed(embed)._apiTransform();
-
-    // Wrap everything in a code block
-    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(Util.resolveString(content), true);
-      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-    }
-
-    // Add the reply prefix
-    if (reply && this.channel.type !== 'dm') {
-      const id = this.client.users.resolveID(reply);
-      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
-      content = `${mention}${content ? `, ${content}` : ''}`;
-    }
+    const { data, files } = createMessage(this, options);
 
     return this.client.api.channels[this.channel.id].messages[this.id]
-      .patch({ data: { content, embed } })
-      .then(data => {
+      .patch({ data, files })
+      .then(d => {
         const clone = this._clone();
-        clone._patch(data);
+        clone._patch(d);
         return clone;
       });
   }
