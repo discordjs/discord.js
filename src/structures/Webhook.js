@@ -98,10 +98,11 @@ class Webhook {
   async send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
+    if (!options.content) options.content = content;
 
     const { data, files } = await createMessage(this, options);
 
@@ -111,7 +112,7 @@ class Webhook {
       auth: false,
     }).then(d => {
       if (!this.client.channels) return d;
-      return this.client.channels.get(data.channel_id).messages.create(d, false);
+      return this.client.channels.get(d.channel_id).messages.create(d, false);
     });
   }
 

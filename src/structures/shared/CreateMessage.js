@@ -18,7 +18,7 @@ module.exports = async function createMessage(channel, options) {
     if (isNaN(options.nonce) || options.nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
-  if (options instanceof MessageEmbed) options = webhook ? { embed: options } : { embeds: [options] };
+  if (options instanceof MessageEmbed) options = webhook ? { embeds: [options] } : { embed: options };
   if (options instanceof MessageAttachment) options = { files: [options.file] };
 
   if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {

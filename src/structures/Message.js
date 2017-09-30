@@ -368,15 +368,16 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *   .catch(console.error);
    */
-  edit(content, options) {
+  async edit(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
+    if (!options.content) options.content = content;
 
-    const { data, files } = createMessage(this, options);
+    const { data, files } = await createMessage(this, options);
 
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data, files })

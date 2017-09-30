@@ -75,10 +75,11 @@ class TextBasedChannel {
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
+    if (!options.content) options.content = content;
 
     return Shared.sendMessage(this, options);
   }
