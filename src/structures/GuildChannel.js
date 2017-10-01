@@ -275,18 +275,23 @@ class GuildChannel extends Channel {
    *   .then(c => console.log(`Edited channel ${c}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  edit(editData, reason) {
+    let data = {
+      name: (editData.name || this.name).trim(),
+      topic: editData.topic,
+      position: this.rawPosition,
+      bitrate: editData.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
+      user_limit: editData.userLimit != null ? editData.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+      parent_id: editData.parentID,
+      lock_permissions: editData.lockPermissions,
+      permission_overwrites: editData.permissionOverwrites,
+    };
+
+    if (typeof editData.position !== "undefined" && editData.position === 0) data.position = 0;
+    else data.position = editData.position || this.rawPosition;
+
     return this.client.api.channels(this.id).patch({
-      data: {
-        name: (data.name || this.name).trim(),
-        topic: data.topic,
-        position: data.position || this.rawPosition,
-        bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
-        parent_id: data.parentID,
-        lock_permissions: data.lockPermissions,
-        permission_overwrites: data.permissionOverwrites,
-      },
+      data,
       reason,
     }).then(newData => {
       const clone = this._clone();
