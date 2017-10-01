@@ -1,4 +1,4 @@
-const Util = require('../util/Util.js');
+const Util = require('../util/Util');
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;

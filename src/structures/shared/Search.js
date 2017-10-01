@@ -1,4 +1,4 @@
-const Util = require('../../util/Util.js');
+const Util = require('../../util/Util');
 const { TypeError } = require('../../errors');
 
 /**
