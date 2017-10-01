@@ -42,7 +42,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 
 ### Optional packages
 - [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
-- [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
+- [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack --save`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium --save`)
     - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers --save`)
