@@ -357,7 +357,7 @@ class GuildChannel extends Channel {
       this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
       .then(updatedChannels => {
         this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
+          guild_id: this.guild.id,
           channels: updatedChannels,
         });
         return this;
