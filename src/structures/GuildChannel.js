@@ -266,7 +266,7 @@ class GuildChannel extends Channel {
 
   /**
    * Edits the channel.
-   * @param {ChannelData} data The new data for the channel
+   * @param {ChannelData} editData The new data for the channel
    * @param {string} [reason] Reason for editing this channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -287,7 +287,7 @@ class GuildChannel extends Channel {
       permission_overwrites: editData.permissionOverwrites,
     };
 
-    if (typeof editData.position !== "undefined" && editData.position === 0) data.position = 0;
+    if (typeof editData.position !== 'undefined' && editData.position === 0) data.position = 0;
     else data.position = editData.position || this.rawPosition;
 
     return this.client.api.channels(this.id).patch({
