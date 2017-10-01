@@ -1,4 +1,3 @@
-const Long = require('long');
 const snekfetch = require('snekfetch');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -299,7 +298,9 @@ class Util {
    */
   static discordSort(collection) {
     return collection
-      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+      .sort((a, b) => a.rawPosition - b.rawPosition ||
+			parseInt(a.id.slice(0, -10)) - parseInt(b.id.slice(0, -10)) ||
+			parseInt(a.id.slice(10)) - parseInt(b.id.slice(10)));
   }
 
   static setPosition(item, position, relative, sorted, route, reason) {
@@ -315,6 +316,59 @@ class Util {
       f = f.substr(0, f.length - ext.length);
     }
     return f;
+  }
+
+  /**
+   * Transform a snowflake from a decimal string to a bit string
+   * @param  {string} num Snowflake to be transformed
+   * @returns {string}
+   * @private
+   */
+  static idToBinary(num) {
+    let bin = '';
+
+    while (num.length > 15) {
+      const first = num.slice(0, -10);
+      const second = (first & 1).toString() + num.slice(-10);
+
+      bin = String(num.slice(-1) & 1) + bin;
+      num = Math.floor(first / 2).toString() + Math.floor(second / 2).toString().padStart(10, '0');
+    }
+
+    num = parseInt(num);
+    while (num > 0) {
+      bin = (num & 1).toString() + bin;
+      num = Math.floor(num / 2);
+    }
+
+    return bin;
+  }
+
+
+  /**
+   * Transform a snowflake from a bit string to a decimal string
+   * @param  {string} num Bit string to be transformed
+   * @returns {string}
+   * @private
+   */
+  static binaryToID(num) {
+    let dec = '';
+
+    while (num.length > 33) {
+      const first = parseInt(num.slice(0, -32), 2);
+      const second = parseInt((first % 10).toString(2) + num.slice(-32), 2);
+
+      dec = (second % 10).toString() + dec;
+      num = Math.floor(first / 10).toString(2) + Math.floor(second / 10).toString(2).padStart(32, '0');
+    }
+
+    num = parseInt(num, 2);
+    while (num > 0) {
+      dec = (num % 10).toString() + dec;
+      num = Math.floor(num / 10);
+    }
+
+    return dec;
   }
 }
 
