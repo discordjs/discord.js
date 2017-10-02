@@ -280,7 +280,7 @@ class GuildChannel extends Channel {
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: data.position || this.rawPosition,
+        position: typeof data.position === 'number' ? data.position : this.rawPosition,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
@@ -357,7 +357,7 @@ class GuildChannel extends Channel {
       this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
       .then(updatedChannels => {
         this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
+          guild_id: this.guild.id,
           channels: updatedChannels,
         });
         return this;
