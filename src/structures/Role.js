@@ -280,7 +280,7 @@ class Role extends Base {
       .then(updatedRoles => {
         this.client.actions.GuildRolesPositionUpdate.handle({
           guild_id: this.guild.id,
-          channels: updatedRoles,
+          roles: updatedRoles,
         });
         return this;
       });
