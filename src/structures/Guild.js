@@ -232,7 +232,7 @@ class Guild extends Base {
   }
 
   /**
-   * The time the guild was created
+   * The time the guild was created at
    * @type {Date}
    * @readonly
    */

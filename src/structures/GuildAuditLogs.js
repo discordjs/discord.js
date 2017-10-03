@@ -313,7 +313,7 @@ class GuildAuditLogsEntry {
   }
 
   /**
-   * The time this entry was created
+   * The time this entry was created at
    * @type {Date}
    * @readonly
    */

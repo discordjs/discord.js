@@ -58,7 +58,7 @@ class Emoji extends Base {
   }
 
   /**
-   * The time the emoji was created
+   * The time the emoji was created at
    * @type {Date}
    * @readonly
    */

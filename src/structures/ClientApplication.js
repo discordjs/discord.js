@@ -111,7 +111,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * The time the app was created
+   * The time the app was created at
    * @type {Date}
    * @readonly
    */

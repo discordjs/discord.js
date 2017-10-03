@@ -202,7 +202,7 @@ class Message extends Base {
   }
 
   /**
-   * The time the message was sent
+   * The time the message was sent at
    * @type {Date}
    * @readonly
    */

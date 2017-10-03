@@ -81,7 +81,7 @@ class Role extends Base {
   }
 
   /**
-   * The time the role was created
+   * The time the role was created at
    * @type {Date}
    * @readonly
    */

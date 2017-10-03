@@ -77,7 +77,7 @@ class User extends Base {
   }
 
   /**
-   * The time the user was created
+   * The time the user was created at
    * @type {Date}
    * @readonly
    */
