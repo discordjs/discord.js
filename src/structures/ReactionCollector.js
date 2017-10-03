@@ -23,13 +23,13 @@ class ReactionCollector extends Collector {
     super(message.client, filter, options);
 
     /**
-     * The message
+     * The message upon which to collect reactions
      * @type {Message}
      */
     this.message = message;
 
     /**
-     * The users which have reacted
+     * The users which have reacted to this message
      * @type {Collection}
      */
     this.users = new Collection();

@@ -25,7 +25,7 @@ class Collector extends EventEmitter {
     super();
 
     /**
-     * The client
+     * The client that instantiated this Collector
      * @name Collector#client
      * @type {Client}
      * @readonly

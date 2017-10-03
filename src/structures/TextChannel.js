@@ -27,7 +27,7 @@ class TextChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * If the Discord considers this channel NSFW
+     * If the guild considers this channel NSFW
      * @type {boolean}
      * @readonly
      */
