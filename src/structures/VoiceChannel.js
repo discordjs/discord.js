@@ -22,16 +22,25 @@ class VoiceChannel extends GuildChannel {
   _patch(data) {
     super._patch(data);
     /**
-     * The bitrate of this voice channel
+     * The raw bitrate of this voice channel (in bps)
      * @type {number}
      */
-    this.bitrate = data.bitrate * 0.001;
+    this.rawBitrate = data.bitrate;
 
     /**
      * The maximum amount of users allowed in this channel - 0 means unlimited.
      * @type {number}
      */
     this.userLimit = data.user_limit;
+  }
+
+  /**
+   * The bitrate of this voice channel (in kbps)
+   * @type {number}
+   * @readonly
+   */
+  get bitrate() {
+    return this.rawBitrate * 0.001;
   }
 
   /**
