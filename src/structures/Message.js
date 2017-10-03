@@ -358,7 +358,7 @@ class Message extends Base {
    */
 
   /**
-   * Edit the content of the message.
+   * Edits the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
@@ -426,7 +426,7 @@ class Message extends Base {
   }
 
   /**
-   * Add a reaction to the message.
+   * Adds a reaction to the message.
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
@@ -445,7 +445,7 @@ class Message extends Base {
   }
 
   /**
-   * Remove all reactions from a message.
+   * Removes all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -484,7 +484,7 @@ class Message extends Base {
   }
 
   /**
-   * Reply to the message.
+   * Replies to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}

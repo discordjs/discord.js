@@ -121,8 +121,8 @@ class StreamDispatcher extends VolumeInterface {
 
 
   /**
-   * Set the bitrate of the current Opus encoder.
-   * @param {number} bitrate New bitrate, in kbps
+   * Sets the bitrate of the current Opus encoder.
+   * @param {number} bitrate New bitrate, in kbps.
    * If set to 'auto', the voice channel's bitrate will be used
    */
   setBitrate(bitrate) {

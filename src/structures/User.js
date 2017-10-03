@@ -153,7 +153,7 @@ class User extends Base {
   }
 
   /**
-   * Check whether the user is typing in a channel.
+   * Checks whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
    */
@@ -163,7 +163,7 @@ class User extends Base {
   }
 
   /**
-   * Get the time that the user started typing.
+   * Gets the time that the user started typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {?Date}
    */
@@ -173,7 +173,7 @@ class User extends Base {
   }
 
   /**
-   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * Gets the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {number}
    */
@@ -214,7 +214,7 @@ class User extends Base {
   }
 
   /**
-   * Get the profile of the user.
+   * Gets the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */

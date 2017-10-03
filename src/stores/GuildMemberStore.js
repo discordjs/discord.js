@@ -65,7 +65,7 @@ class GuildMemberStore extends DataStore {
    */
 
   /**
-   * Fetch member(s) from Discord, even if they're offline.
+   * Fetches member(s) from Discord, even if they're offline.
    * @param {UserResolvable|FetchMemberOptions|FetchMembersOptions} [options] If a UserResolvable, the user to fetch.
    * If undefined, fetches all members.
    * If a query, it limits the results to users with similar usernames.

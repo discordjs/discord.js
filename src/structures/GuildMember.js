@@ -330,7 +330,7 @@ class GuildMember extends Base {
    */
 
   /**
-   * Edit a guild member.
+   * Edits a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
@@ -362,7 +362,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mute/unmute a user.
+   * Mute/unmutes a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -372,7 +372,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deafen/undeafen a user.
+   * Deafen/undeafens a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
@@ -479,7 +479,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Set the nickname for the guild member.
+   * Sets the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
@@ -505,7 +505,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Kick this member from the guild.
+   * Kicks this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
@@ -520,7 +520,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Ban this guild member.
+   * Bans this guild member.
    * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete

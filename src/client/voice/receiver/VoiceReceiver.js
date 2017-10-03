@@ -73,7 +73,7 @@ class VoiceReceiver extends EventEmitter {
   }
 
   /**
-   * Destroy this VoiceReceiver, also ending any streams that it may be controlling.
+   * Destroys this VoiceReceiver, also ending any streams that it may be controlling.
    */
   destroy() {
     this.voiceConnection.sockets.udp.socket.removeListener('message', this._listener);

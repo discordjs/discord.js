@@ -49,7 +49,7 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Handle a message for possible collection.
+   * Handles a message for possible collection.
    * @param {Message} message The message that could be collected
    * @returns {?{key: Snowflake, value: Message}}
    * @private
@@ -64,7 +64,7 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Handle a message for possible disposal.
+   * Handles a message for possible disposal.
    * @param {Message} message The message that could be disposed
    * @returns {?string}
    */
@@ -73,7 +73,7 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Check after un/collection to see if the collector is done.
+   * Checks after un/collection to see if the collector is done.
    * @returns {?string}
    * @private
    */

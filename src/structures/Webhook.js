@@ -88,7 +88,7 @@ class Webhook {
 
   /* eslint-disable max-len */
   /**
-   * Send a message with this webhook.
+   * Sends a message with this webhook.
    * @param {StringResolvable} [content] The content to send
    * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
@@ -212,7 +212,7 @@ class Webhook {
   }
 
   /**
-   * Send a raw slack message with this webhook.
+   * Sends a raw slack message with this webhook.
    * @param {Object} body The raw body to send
    * @returns {Promise<Message|Object>}
    * @example
@@ -240,7 +240,7 @@ class Webhook {
   }
 
   /**
-   * Edit the webhook.
+   * Edits the webhook.
    * @param {Object} options Options
    * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
@@ -262,7 +262,7 @@ class Webhook {
   }
 
   /**
-   * Delete the webhook.
+   * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */

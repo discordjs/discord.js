@@ -304,7 +304,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Disconnect the voice connection, causing a disconnect and closing event to be emitted.
+   * Disconnects the voice connection, causing a disconnect and closing event to be emitted.
    */
   disconnect() {
     this.emit('closing');
@@ -451,7 +451,7 @@ class VoiceConnection extends EventEmitter {
    */
 
   /**
-   * Play the given file in the voice connection.
+   * Plays the given file in the voice connection.
    * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -468,7 +468,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
    * @param {string} input the arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}

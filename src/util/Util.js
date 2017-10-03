@@ -293,7 +293,7 @@ class Util {
   }
 
   /**
-   * Sort by discord's position then ID thing
+   * Sorts by Discord's position and then by ID.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
