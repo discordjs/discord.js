@@ -99,7 +99,8 @@ class Client extends BaseClient {
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+	 * is a member of, and all DM channels
      * @type {ChannelStore<Snowflake, Channel>}
      */
     this.channels = new ChannelStore(this);
