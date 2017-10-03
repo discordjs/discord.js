@@ -281,13 +281,7 @@ class GuildAuditLogsEntry {
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = logs.webhooks.get(data.target_id) || null;
-      if (!this.target) {
-        guild.fetchWebhooks()
-          .then(hooks => {
-            this.target = hooks.find(h => h.id === data.target_id);
-          });
-      }
+      this.target = logs.webhooks.get(data.target_id) || new Webhook(guild.client, { id: data.target_id, guild_id: guild.id });
     } else if (targetType === Targets.INVITE) {
       if (guild.me.permissions.has('MANAGE_GUILD')) {
         const change = this.changes.find(c => c.key === 'code');
