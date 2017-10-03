@@ -55,7 +55,7 @@ class Message extends Base {
     this.author = this.client.users.create(data.author, !data.webhook_id);
 
     /**
-     * Represents the author of the message as a guild member
+     * Represents the author of the message as a guild member.
      * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */

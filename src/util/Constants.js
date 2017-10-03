@@ -370,8 +370,8 @@ exports.MessageNotificationTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji
-   * For example, when you type `:-)` Discord will convert it to 😃
+   * Automatically convert emoticons in your messages to emoji,
+   * for example when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}
    */
@@ -434,7 +434,7 @@ exports.UserSettingsMap = {
   inline_attachment_media: 'inlineAttachmentMedia',
 
   /**
-   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * Display images, videos, and lolcats when posted as links in chat
    * @name ClientUserSettings#inlineEmbedMedia
    * @type {boolean}
    */
