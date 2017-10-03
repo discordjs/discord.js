@@ -291,7 +291,7 @@ class Message extends Base {
    */
 
   /**
-   * Similar to createMessageCollector but in promise form.
+   * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
