@@ -70,7 +70,7 @@ class GuildAuditLogs {
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(guild, item);
+      const entry = new GuildAuditLogsEntry(this, guild, item);
       this.entries.set(entry.id, entry);
     }
   }
@@ -183,7 +183,7 @@ class GuildAuditLogs {
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
-  constructor(guild, data) {
+  constructor(logs, guild, data) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
@@ -281,7 +281,13 @@ class GuildAuditLogsEntry {
     } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = this.webhooks.get(data.target_id);
+      this.target = logs.webhooks.get(data.target_id) || null;
+      if (!this.target) {
+        guild.fetchWebhooks()
+          .then(hooks => {
+            this.target = hooks.find(h => h.id === data.target_id);
+          });
+      }
     } else if (targetType === Targets.INVITE) {
       if (guild.me.permissions.has('MANAGE_GUILD')) {
         const change = this.changes.find(c => c.key === 'code');
