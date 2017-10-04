@@ -282,7 +282,14 @@ class GuildAuditLogsEntry {
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target = logs.webhooks.get(data.target_id) ||
-        new Webhook(guild.client, { id: data.target_id, guild_id: guild.id });
+        new Webhook(guild.client,
+          this.changes.reduce((o, c) => {
+            o[c.key] = c.new || c.old;
+            return o;
+          }, {
+            id: data.target_id,
+            guild_id: guild.id,
+          }));
     } else if (targetType === Targets.INVITE) {
       if (guild.me.permissions.has('MANAGE_GUILD')) {
         const change = this.changes.find(c => c.key === 'code');
