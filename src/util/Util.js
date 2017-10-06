@@ -306,8 +306,7 @@ class Util {
     let updatedItems = sorted.array();
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    route.patch({ data: updatedItems, reason });
-    return Promise.resolve(updatedItems);
+    return route.patch({ data: updatedTiems, reason }).then(() => updatedItems);
   }
 
   static basename(path, ext) {
