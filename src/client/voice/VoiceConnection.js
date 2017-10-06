@@ -139,7 +139,7 @@ class VoiceConnection extends EventEmitter {
     this.sockets.ws.sendPacket({
       op: VoiceOPCodes.SPEAKING,
       d: {
-        speaking: true,
+        speaking: this.speaking,
         delay: 0,
       },
     }).catch(e => {
