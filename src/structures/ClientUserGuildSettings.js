@@ -15,7 +15,7 @@ class ClientUserGuildSettings {
      */
     Object.defineProperty(this, 'client', { value: client });
     /**
-     * The ID of the guild this settings are for
+     * The ID of the guild these settings are for
      * @type {Snowflake}
      */
     this.guildID = data.guild_id;

@@ -116,7 +116,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the username of the logged in client.
+   * Sets the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
@@ -168,7 +168,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the avatar of the logged in client.
+   * Sets the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example

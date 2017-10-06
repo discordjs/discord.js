@@ -160,7 +160,7 @@ class GuildChannel extends Channel {
   /**
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
@@ -296,7 +296,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the guild channel.
+   * Sets a new name for the guild channel.
    * @param {string} name The new name for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
@@ -311,7 +311,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set the category parent of this channel.
+   * Sets the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
    * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
@@ -325,7 +325,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the guild channel.
+   * Sets a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
@@ -340,11 +340,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel.
+   * Sets a new position for the guild channel.
    * @param {number} position The new position for the guild channel
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reasion for changing the position
+   * @param {boolean} [options.reason] Reason for changing the position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
@@ -365,7 +365,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Create an invite to this guild channel.
+   * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
@@ -383,7 +383,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Clone this channel.
+   * Clones this channel.
    * @param {Object} [options] The options
    * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
    * of this channel

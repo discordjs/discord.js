@@ -81,7 +81,7 @@ class Role extends Base {
   }
 
   /**
-   * The time the role was created
+   * The time the role was created at
    * @type {Date}
    * @readonly
    */
@@ -187,7 +187,7 @@ class Role extends Base {
   }
 
   /**
-   * Set a new name for the role.
+   * Sets a new name for the role.
    * @param {string} name The new name of the role
    * @param {string} [reason] Reason for changing the role's name
    * @returns {Promise<Role>}
@@ -202,7 +202,7 @@ class Role extends Base {
   }
 
   /**
-   * Set a new color for the role.
+   * Sets a new color for the role.
    * @param {ColorResolvable} color The color of the role
    * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
@@ -217,7 +217,7 @@ class Role extends Base {
   }
 
   /**
-   * Set whether or not the role should be hoisted.
+   * Sets whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
    * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
@@ -232,7 +232,7 @@ class Role extends Base {
   }
 
   /**
-   * Set the permissions of the role.
+   * Sets the permissions of the role.
    * @param {PermissionResolvable[]} permissions The permissions of the role
    * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
@@ -247,7 +247,7 @@ class Role extends Base {
   }
 
   /**
-   * Set whether this role is mentionable.
+   * Sets whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
    * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
@@ -262,11 +262,11 @@ class Role extends Base {
   }
 
   /**
-   * Set the position of the role.
+   * Sets the position of the role.
    * @param {number} position The position of the role
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reasion for changing the position
+   * @param {boolean} [options.reason] Reason for changing the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role

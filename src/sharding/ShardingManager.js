@@ -155,7 +155,7 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Send a message to all shards.
+   * Sends a message to all shards.
    * @param {*} message Message to be sent to the shards
    * @returns {Promise<Shard[]>}
    */

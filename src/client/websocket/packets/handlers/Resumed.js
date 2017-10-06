@@ -20,7 +20,7 @@ class ResumedHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a WebSocket resumed.
+ * Emitted whenever a WebSocket resumes.
  * @event Client#resumed
  * @param {number} replayed The number of events that were replayed
  */

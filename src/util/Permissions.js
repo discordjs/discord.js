@@ -41,17 +41,17 @@ class Permissions {
   }
 
   /**
-   * Freezes the permission making it immutable.
-   * @returns {Permissions} This permissions
+   * Freezes these permissions, making them immutable.
+   * @returns {Permissions} These permissions
    */
   freeze() {
     return Object.freeze(this);
   }
 
   /**
-   * Adds permissions to this one.
+   * Adds permissions to these ones.
    * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
+   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
    */
   add(...permissions) {
     let total = 0;
@@ -65,9 +65,9 @@ class Permissions {
   }
 
   /**
-   * Removes permissions from this one.
+   * Removes permissions from these.
    * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions} This permissions or new permissions if the instance is frozen.
+   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
    */
   remove(...permissions) {
     let total = 0;

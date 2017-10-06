@@ -67,12 +67,12 @@ class TextBasedChannel {
    */
 
   /**
-   * Send a message to this channel.
+   * Sends a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // Send a message
+   * // Sends a message
    * channel.send('hello!')
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
@@ -274,7 +274,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages that are newer than two weeks.
+   * Bulk deletes given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
    * Messages or number of messages to delete

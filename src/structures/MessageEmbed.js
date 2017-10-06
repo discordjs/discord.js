@@ -148,7 +148,7 @@ class MessageEmbed {
   }
 
   /**
-   * The date this embed was created
+   * The date this embed was created at
    * @type {?Date}
    * @readonly
    */
@@ -254,7 +254,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the image of this embed.
+   * Sets the image of this embed.
    * @param {string} url The URL of the image
    * @returns {MessageEmbed}
    */
@@ -264,7 +264,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed.
+   * Sets the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {MessageEmbed}
    */

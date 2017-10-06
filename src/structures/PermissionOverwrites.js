@@ -50,7 +50,7 @@ class PermissionOverwrites {
   }
 
   /**
-   * Delete this Permission Overwrite.
+   * Deletes this Permission Overwrite.
    * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */

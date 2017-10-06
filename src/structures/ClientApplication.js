@@ -111,7 +111,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * The time the app was created
+   * The time the app was created at
    * @type {Date}
    * @readonly
    */
@@ -159,7 +159,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Create a rich presence asset.
+   * Creates a rich presence asset.
    * @param {string} name Name of the asset
    * @param {Base64Resolvable} data Data of the asset
    * @param {string} type Type of the asset. `big`, or `small`
@@ -175,7 +175,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Reset the app's secret.
+   * Resets the app's secret.
    * <warn>This is only available when using a user account.</warn>
    * @returns {ClientApplication}
    */
@@ -185,7 +185,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Reset the app's bot token.
+   * Resets the app's bot token.
    * <warn>This is only available when using a user account.</warn>
    * @returns {ClientApplication}
    */
