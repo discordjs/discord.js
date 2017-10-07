@@ -259,7 +259,7 @@ class Client extends BaseClient {
    */
   login(token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      if (typeof token !== 'string') return reject(new Error('TOKEN_INVALID'));
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
     }).catch(e => {
