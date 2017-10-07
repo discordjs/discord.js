@@ -165,12 +165,18 @@ class Role extends Base {
    *   .then(r => console.log(`Edited role ${r}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
     if (typeof data.position !== 'undefined') {
-      Util.editPosition(this, data.position, this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles, 'role', reason).catch(err => Promise.reject(err));
+      await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles, reason)
+        .then(updatedRoles => {
+          this.client.actions.GuildRolesPositionUpdate.handle({
+            guild_id: this.guild.id,
+            roles: updatedRoles,
+          });
+        });
     }
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {

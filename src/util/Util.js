@@ -316,30 +316,6 @@ class Util {
     }
     return f;
   }
-
-  static editPosition(item, position, sorted, route, type, reason) {
-    let updatedItems = sorted.array();
-    Util.moveElementInArray(updatedItems, item, position, false);
-    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    return route.patch({ data: updatedItems, reason }).then(() => {
-      switch (type.toLowerCase()) {
-        case 'channel': {
-          item.client.actions.GuildChannelsPositionUpdate.handle({
-            guild_id: item.guild.id,
-            channels: updatedItems,
-          });
-          break;
-        }
-        case 'role': {
-          item.client.actions.GuildRolesPositionUpdate.handle({
-            guild_id: item.guild.id,
-            roles: updatedItems,
-          });
-          break;
-        }
-      }
-    });
-  }
 }
 
 module.exports = Util;
