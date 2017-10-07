@@ -168,12 +168,15 @@ class Role extends Base {
   edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
+    if (typeof data.position !== 'undefined') {
+      Util.editPosition(this, data.position, this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles, 'role', reason).catch(err => Promise.reject(err));
+    }
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
         color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-        position: typeof data.position !== 'undefined' ? data.position : this.position,
         permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },

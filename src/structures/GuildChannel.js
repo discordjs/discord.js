@@ -276,11 +276,14 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   edit(data, reason) {
+    if (typeof data.position !== 'undefined') {
+      Util.editPosition(this, data.position, this.guild._sortedChannels(this),
+        this.client.api.guilds(this.guild.id).channels, 'channel', reason).catch(err => Promise.reject(err));
+    }
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: typeof data.position === 'number' ? data.position : this.rawPosition,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
