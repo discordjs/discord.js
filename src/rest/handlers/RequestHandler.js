@@ -39,6 +39,8 @@ class RequestHandler {
           if (this.client.listenerCount(RATELIMITED)) {
             this.client.emit(RATELIMITED, {
               timeout,
+              limit: this.limit,
+              timeDifference: this.timeDifference,
               method: item.request.method,
               path: item.request.path,
               route: item.request.route,
