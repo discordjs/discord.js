@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const RESTManager = require('../rest/RESTManager');
 const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -41,13 +40,6 @@ class Client extends BaseClient {
     }
 
     this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
 
     /**
      * The manager of the client
