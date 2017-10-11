@@ -3,13 +3,13 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const Constants = require('../util/Constants');
+const { Endpoints, browser } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = {};
-    this.userAgentManager = new UserAgentManager(this);
+    if (!browser) this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
@@ -29,13 +29,7 @@ class RESTManager {
   }
 
   get cdn() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn);
-  }
-
-  destroy() {
-    for (const handler of Object.values(this.handlers)) {
-      if (handler.destroy) handler.destroy();
-    }
+    return Endpoints.CDN(this.client.options.http.cdn);
   }
 
   push(handler, apiRequest) {

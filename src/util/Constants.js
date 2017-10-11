@@ -1,5 +1,6 @@
 exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
+exports.browser = typeof window !== 'undefined';
 
 /**
  * Options for a client.
@@ -56,9 +57,9 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: require('os').platform() !== 'browser',
+    compress: !exports.browser,
     properties: {
-      $os: process ? process.platform : 'discord.js',
+      $os: exports.browser ? 'browser' : process.platform,
       $browser: 'discord.js',
       $device: 'discord.js',
     },
@@ -131,12 +132,12 @@ exports.Endpoints = {
 
 /**
  * The current status of the client. Here are the available statuses:
- * * READY
- * * CONNECTING
- * * RECONNECTING
- * * IDLE
- * * NEARLY
- * * DISCONNECTED
+ * * READY: 0
+ * * CONNECTING: 1
+ * * RECONNECTING: 2
+ * * IDLE: 3
+ * * NEARLY: 4
+ * * DISCONNECTED: 5
  * @typedef {number} Status
  */
 exports.Status = {
@@ -150,11 +151,11 @@ exports.Status = {
 
 /**
  * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED
- * * CONNECTING
- * * AUTHENTICATING
- * * RECONNECTING
- * * DISCONNECTED
+ * * CONNECTED: 0
+ * * CONNECTING: 1
+ * * AUTHENTICATING: 2
+ * * RECONNECTING: 3
+ * * DISCONNECTED: 4
  * @typedef {number} VoiceStatus
  */
 exports.VoiceStatus = {
@@ -163,13 +164,6 @@ exports.VoiceStatus = {
   AUTHENTICATING: 2,
   RECONNECTING: 3,
   DISCONNECTED: 4,
-};
-
-exports.ChannelTypes = {
-  TEXT: 0,
-  DM: 1,
-  VOICE: 2,
-  GROUP: 3,
 };
 
 exports.OPCodes = {
@@ -376,8 +370,8 @@ exports.MessageNotificationTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji
-   * For example, when you type `:-)` Discord will convert it to 😃
+   * Automatically convert emoticons in your messages to emoji,
+   * for example when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}
    */
@@ -440,7 +434,7 @@ exports.UserSettingsMap = {
   inline_attachment_media: 'inlineAttachmentMedia',
 
   /**
-   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * Display images, videos, and lolcats when posted as links in chat
    * @name ClientUserSettings#inlineEmbedMedia
    * @type {boolean}
    */
@@ -572,6 +566,14 @@ exports.UserFlags = {
   STAFF: 1 << 0,
   PARTNER: 1 << 1,
   HYPESQUAD: 1 << 2,
+};
+
+exports.ChannelTypes = {
+  TEXT: 0,
+  DM: 1,
+  VOICE: 2,
+  GROUP: 3,
+  CATEGORY: 4,
 };
 
 exports.ClientApplicationAssetTypes = {

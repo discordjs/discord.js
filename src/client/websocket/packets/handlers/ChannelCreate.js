@@ -6,10 +6,10 @@ class ChannelCreateHandler extends AbstractHandler {
   }
 }
 
+module.exports = ChannelCreateHandler;
+
 /**
  * Emitted whenever a channel is created.
  * @event Client#channelCreate
- * @param {Channel} channel The channel that was created
+ * @param {DMChannel|GroupDMChannel|GuildChannel} channel The channel that was created
  */
-
-module.exports = ChannelCreateHandler;

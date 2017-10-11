@@ -2,8 +2,9 @@ const User = require('./User');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Guild = require('./Guild');
 
 /**
@@ -115,7 +116,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the username of the logged in client.
+   * Sets the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
@@ -167,7 +168,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the avatar of the logged in client.
+   * Sets the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
@@ -177,7 +178,7 @@ class ClientUser extends User {
    *   .catch(console.error);
    */
   async setAvatar(avatar) {
-    return this.edit({ avatar: await this.client.resolver.resolveImage(avatar) });
+    return this.edit({ avatar: await DataResolver.resolveImage(avatar) });
   }
 
   /**
@@ -244,6 +245,7 @@ class ClientUser extends User {
 
   /**
    * Fetches messages that mentioned the client's user.
+   * <warn>This is only available when using a user account.</warn>
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -277,15 +279,15 @@ class ClientUser extends User {
 
             const handleGuild = guild => {
               if (guild.id === data.id) {
-                this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+                this.client.removeListener(Events.GUILD_CREATE, handleGuild);
                 this.client.clearTimeout(timeout);
                 resolve(guild);
               }
             };
-            this.client.on(Constants.Events.GUILD_CREATE, handleGuild);
+            this.client.on(Events.GUILD_CREATE, handleGuild);
 
             const timeout = this.client.setTimeout(() => {
-              this.client.removeListener(Constants.Events.GUILD_CREATE, handleGuild);
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               resolve(this.client.guilds.create(data));
             }, 10000);
             return undefined;
@@ -293,7 +295,7 @@ class ClientUser extends User {
       );
     }
 
-    return this.client.resolver.resolveImage(icon)
+    return DataResolver.resolveImage(icon)
       .then(data => this.createGuild(name, { region, icon: data || null }));
   }
 
@@ -320,7 +322,7 @@ class ClientUser extends User {
         if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
         return o;
       }, {}),
-    } : { recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user || u.id)) };
+    } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => this.client.channels.create(res));
   }

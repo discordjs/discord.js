@@ -1,10 +1,8 @@
-const util = require('util');
-
 const noop = () => {}; // eslint-disable-line no-empty-function
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
 const reflectors = [
   'toString', 'valueOf', 'inspect', 'constructor',
-  Symbol.toPrimitive, util.inspect.custom,
+  Symbol.toPrimitive, Symbol.for('util.inspect.custom'),
 ];
 
 function buildRoute(manager) {

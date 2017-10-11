@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Constants = require('../../util/Constants');
+const { Events, Status } = require('../../util/Constants');
 const WebSocketConnection = require('./WebSocketConnection');
 
 /**
@@ -37,7 +37,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {void}
    */
   debug(message) {
-    return this.client.emit(Constants.Events.DEBUG, `[ws] ${message}`);
+    return this.client.emit(Events.DEBUG, `[ws] ${message}`);
   }
 
   /**
@@ -76,8 +76,8 @@ class WebSocketManager extends EventEmitter {
       return true;
     }
     switch (this.connection.status) {
-      case Constants.Status.IDLE:
-      case Constants.Status.DISCONNECTED:
+      case Status.IDLE:
+      case Status.DISCONNECTED:
         this.connection.connect(gateway, 5500);
         return true;
       default:

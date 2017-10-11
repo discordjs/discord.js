@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { Events, Status } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
@@ -25,7 +25,7 @@ class ClientManager {
    * @type {number}
    */
   get status() {
-    return this.connection ? this.connection.status : Constants.Status.IDLE;
+    return this.connection ? this.connection.status : Status.IDLE;
   }
 
   /**
@@ -35,19 +35,20 @@ class ClientManager {
    * @param {Function} reject Function to run when connection fails
    */
   connectToWebSocket(token, resolve, reject) {
-    this.client.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
+    this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error('TOKEN_INVALID')), 1000 * 300);
+    const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
     this.client.api.gateway.get().then(res => {
       const gateway = `${res.url}/`;
-      this.client.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
+      this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
+      this.client.ws.connection.once('error', reject);
       this.client.ws.connection.once('close', event => {
         if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
         if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
         if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
-      this.client.once(Constants.Events.READY, () => {
+      this.client.once(Events.READY, () => {
         resolve(token);
         this.client.clearTimeout(timeout);
       });
@@ -56,7 +57,6 @@ class ClientManager {
 
   destroy() {
     this.client.ws.destroy();
-    this.client.rest.destroy();
     if (!this.client.user) return Promise.resolve();
     if (this.client.user.bot) {
       this.client.token = null;

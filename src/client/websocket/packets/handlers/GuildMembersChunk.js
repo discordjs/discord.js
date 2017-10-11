@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 const Collection = require('../../../../util/Collection');
 
 class GuildMembersChunkHandler extends AbstractHandler {
@@ -12,7 +12,7 @@ class GuildMembersChunkHandler extends AbstractHandler {
 
     for (const member of data.members) members.set(member.user.id, guild.members.create(member));
 
-    client.emit(Constants.Events.GUILD_MEMBERS_CHUNK, members, guild);
+    client.emit(Events.GUILD_MEMBERS_CHUNK, members, guild);
 
     client.ws.lastHeartbeatAck = true;
   }

@@ -67,7 +67,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * Set the volume in decibels.
+   * Sets the volume in decibels.
    * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
@@ -75,7 +75,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * Sets the volume so that a perceived value of 0.5 is half the perceived volume etc.
    * @param {number} value The value for the volume
    */
   setVolumeLogarithmic(value) {

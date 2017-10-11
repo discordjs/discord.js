@@ -54,7 +54,7 @@ class MessageEmbed {
      * @property {string} value The value of this field
      * @property {boolean} inline If this field will be displayed inline
      */
-    this.fields = data.fields || [];
+    this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
 
     /**
      * The thumbnail of this embed (if there is one)
@@ -138,12 +138,17 @@ class MessageEmbed {
      * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
      */
     if (data.files) {
-      for (let file of data.files) if (file instanceof MessageAttachment) file = file.file;
-    } else { data.files = null; }
+      this.files = data.files.map(file => {
+        if (file instanceof MessageAttachment) {
+          return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
+        }
+        return file;
+      });
+    }
   }
 
   /**
-   * The date this embed was created
+   * The date this embed was created at
    * @type {?Date}
    * @readonly
    */
@@ -249,7 +254,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the image of this embed.
+   * Sets the image of this embed.
    * @param {string} url The URL of the image
    * @returns {MessageEmbed}
    */
@@ -259,7 +264,7 @@ class MessageEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed.
+   * Sets the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
    * @returns {MessageEmbed}
    */
@@ -318,7 +323,6 @@ class MessageEmbed {
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
       fields: this.fields,
-      files: this.files,
       thumbnail: this.thumbnail,
       image: this.image,
       author: this.author ? {

@@ -1,9 +1,14 @@
 const PresenceStore = require('./PresenceStore');
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
+const { ActivityTypes, OPCodes } = require('../util/Constants');
 const { Presence } = require('../structures/Presence');
 const { TypeError } = require('../errors');
 
+/**
+ * Stores the client presence and other presences.
+ * @extends {PresenceStore}
+ * @private
+ */
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
     super(...args);
@@ -34,7 +39,7 @@ class ClientPresenceStore extends PresenceStore {
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.clientPresence.status,
       game: activity ? {
-        type: typeof activity.type === 'number' ? activity.type : Constants.ActivityTypes.indexOf(activity.type),
+        type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
         name: activity.name,
         url: activity.url,
         details: activity.details || undefined,
@@ -54,7 +59,7 @@ class ClientPresenceStore extends PresenceStore {
     };
 
     this.clientPresence.patch(packet);
-    this.client.ws.send({ op: Constants.OPCodes.STATUS_UPDATE, d: packet });
+    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
     return this.clientPresence;
   }
 }

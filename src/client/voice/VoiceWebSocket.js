@@ -1,4 +1,4 @@
-const Constants = require('../../util/Constants');
+const { OPCodes, VoiceOPCodes } = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
@@ -109,7 +109,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onOpen() {
     this.sendPacket({
-      op: Constants.OPCodes.DISPATCH,
+      op: OPCodes.DISPATCH,
       d: {
         server_id: this.voiceConnection.channel.guild.id,
         user_id: this.client.user.id,
@@ -155,7 +155,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onPacket(packet) {
     switch (packet.op) {
-      case Constants.VoiceOPCodes.READY:
+      case VoiceOPCodes.READY:
         this.setHeartbeat(packet.d.heartbeat_interval);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
@@ -164,7 +164,7 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('ready', packet.d);
         break;
-      case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
+      case VoiceOPCodes.SESSION_DESCRIPTION:
         /**
          * Emitted once the Voice Websocket receives a description of this voice session.
          * @param {string} encryptionMode The type of encryption being used
@@ -173,7 +173,7 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
         break;
-      case Constants.VoiceOPCodes.SPEAKING:
+      case VoiceOPCodes.SPEAKING:
         /**
          * Emitted whenever a speaking packet is received.
          * @param {Object} data
@@ -229,7 +229,7 @@ class VoiceWebSocket extends EventEmitter {
    * Sends a heartbeat packet.
    */
   sendHeartbeat() {
-    this.sendPacket({ op: Constants.VoiceOPCodes.HEARTBEAT, d: null }).catch(() => {
+    this.sendPacket({ op: VoiceOPCodes.HEARTBEAT, d: null }).catch(() => {
       this.emit('warn', 'Tried to send heartbeat, but connection is not open');
       this.clearHeartbeat();
     });

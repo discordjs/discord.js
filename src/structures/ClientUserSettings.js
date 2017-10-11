@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { UserSettingsMap } = require('../util/Constants');
 const Util = require('../util/Util');
 const { Error } = require('../errors');
 
@@ -17,7 +17,7 @@ class ClientUserSettings {
    * @private
    */
   patch(data) {
-    for (const [key, value] of Object.entries(Constants.UserSettingsMap)) {
+    for (const [key, value] of Object.entries(UserSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (typeof value === 'function') {
         this[value.name] = value(data[key]);
@@ -52,7 +52,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Add a guild to the list of restricted guilds.
+   * Adds a guild to the list of restricted guilds.
    * @param {Guild} guild The guild to add
    * @returns {Promise<Guild>}
    */
@@ -64,7 +64,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Remove a guild from the list of restricted guilds.
+   * Removes a guild from the list of restricted guilds.
    * @param {Guild} guild The guild to remove
    * @returns {Promise<Guild>}
    */

@@ -1,8 +1,9 @@
-const path = require('path');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Embed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
+const { browser } = require('../util/Constants');
 
 /**
  * Represents a webhook.
@@ -87,7 +88,7 @@ class Webhook {
 
   /* eslint-disable max-len */
   /**
-   * Send a message with this webhook.
+   * Sends a message with this webhook.
    * @param {StringResolvable} [content] The content to send
    * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
@@ -150,14 +151,14 @@ class Webhook {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
+        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
-            file.name = path.basename(file.attachment);
+            file.name = Util.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
-            file.name = path.basename(file.attachment.path);
+            file.name = Util.basename(file.attachment.path);
           } else if (file instanceof MessageAttachment) {
-            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
+            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
@@ -168,7 +169,7 @@ class Webhook {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveFile(file.attachment).then(resource => {
+        DataResolver.resolveFile(file.attachment).then(resource => {
           file.file = resource;
           return file;
         })
@@ -211,7 +212,7 @@ class Webhook {
   }
 
   /**
-   * Send a raw slack message with this webhook.
+   * Sends a raw slack message with this webhook.
    * @param {Object} body The raw body to send
    * @returns {Promise<Message|Object>}
    * @example
@@ -239,7 +240,7 @@ class Webhook {
   }
 
   /**
-   * Edit the webhook.
+   * Edits the webhook.
    * @param {Object} options Options
    * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
@@ -248,9 +249,7 @@ class Webhook {
    */
   edit({ name = this.name, avatar }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveImage(avatar).then(image =>
-        this.edit({ name, avatar: image }, reason)
-      );
+      return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
     return this.client.api.webhooks(this.id, this.token).patch({
       data: { name, avatar },
@@ -263,7 +262,7 @@ class Webhook {
   }
 
   /**
-   * Delete the webhook.
+   * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */

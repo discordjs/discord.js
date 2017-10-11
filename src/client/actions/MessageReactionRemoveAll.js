@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class MessageReactionRemoveAll extends Action {
   handle(data) {
@@ -10,7 +10,7 @@ class MessageReactionRemoveAll extends Action {
     if (!message) return false;
 
     message.reactions.clear();
-    this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE_ALL, message);
+    this.client.emit(Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
     return { message };
   }

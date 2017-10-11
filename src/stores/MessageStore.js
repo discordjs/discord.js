@@ -1,6 +1,7 @@
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
-let Message;
+const Message = require('../structures/Message');
+const { Error } = require('../errors');
 
 /**
  * Stores messages for text-based channels.
@@ -8,19 +9,12 @@ let Message;
  */
 class MessageStore extends DataStore {
   constructor(channel, iterable) {
-    super(channel.client, iterable);
+    super(channel.client, iterable, Message);
     this.channel = channel;
-    Message = require('../structures/Message');
   }
 
-  create(data, cache = true) {
-    const existing = this.get(data.id);
-    if (existing) return existing;
-
-    const message = new Message(this.client.channels.get(data.channel_id), data, this.client);
-
-    if (cache) this.set(message.id, message);
-    return message;
+  create(data, cache) {
+    return super.create(data, cache, { extras: [this.channel] });
   }
 
   set(key, value) {
@@ -61,7 +55,7 @@ class MessageStore extends DataStore {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain the reactions of the messages. 
+   * <info>The returned Collection does not contain the reactions of the messages.
    * Those need to be fetched seperately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
@@ -94,6 +88,32 @@ class MessageStore extends DataStore {
         return messages;
       });
   }
+
+
+  /**
+   * Data that can be resolved to a Message object. This can be:
+   * * A Message
+   * * A Snowflake
+   * @typedef {Message|Snowflake} MessageResolvable
+   */
+
+  /**
+    * Resolves a MessageResolvable to a Message object.
+    * @method resolve
+    * @memberof MessageStore
+    * @instance
+    * @param {MessageResolvable} message The message resolvable to resolve
+    * @returns {?Message}
+    */
+
+  /**
+    * Resolves a MessageResolvable to a Message ID string.
+    * @method resolveID
+    * @memberof MessageStore
+    * @instance
+    * @param {MessageResolvable} message The message resolvable to resolve
+    * @returns {?string}
+    */
 }
 
 module.exports = MessageStore;

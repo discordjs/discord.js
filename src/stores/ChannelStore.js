@@ -1,6 +1,6 @@
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
 const lruable = ['group', 'dm'];
@@ -16,7 +16,7 @@ class ChannelStore extends DataStore {
       options = iterableOrOptions;
       iterableOrOptions = undefined;
     }
-    super(client, iterableOrOptions);
+    super(client, iterableOrOptions, Channel);
 
     if (options.lru) {
       const lru = this[kLru] = [];
@@ -58,7 +58,7 @@ class ChannelStore extends DataStore {
     const channel = Channel.create(this.client, data, guild);
 
     if (!channel) {
-      this.client.emit(Constants.Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
+      this.client.emit(Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
       return null;
     }
 
@@ -72,6 +72,31 @@ class ChannelStore extends DataStore {
     if (channel.guild) channel.guild.channels.remove(id);
     super.remove(id);
   }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A Channel object
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?string}
+   */
 }
 
 module.exports = ChannelStore;

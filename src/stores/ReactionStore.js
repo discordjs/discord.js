@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const MessageReaction = require('../structures/MessageReaction');
+
 /**
  * Stores reactions.
  * @private
@@ -7,21 +8,38 @@ const MessageReaction = require('../structures/MessageReaction');
  */
 class ReactionStore extends DataStore {
   constructor(message, iterable) {
-    super(message.client, iterable);
+    super(message.client, iterable, MessageReaction);
     this.message = message;
   }
 
-  create(data) {
-    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
-
-    const existing = this.get(emojiID);
-    if (existing) return existing;
-
-    const reaction = new MessageReaction(this.message, data.emoji, data.count, data.me);
-    this.set(emojiID, reaction);
-
-    return reaction;
+  create(data, cache) {
+    return super.create(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
   }
+
+  /**
+   * Data that can be resolved to a MessageReaction object. This can be:
+   * * A MessageReaction
+   * * A Snowflake
+   * @typedef {MessageReaction|Snowflake} MessageReactionResolvable
+   */
+
+  /**
+    * Resolves a MessageReactionResolvable to a MessageReaction object.
+    * @method resolve
+    * @memberof ReactionStore
+    * @instance
+    * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
+    * @returns {?MessageReaction}
+    */
+
+  /**
+    * Resolves a MessageReactionResolvable to a MessageReaction ID string.
+    * @method resolveID
+    * @memberof ReactionStore
+    * @instance
+    * @param {MessageReactionResolvable} role The role resolvable to resolve
+    * @returns {?string}
+    */
 }
 
 module.exports = ReactionStore;

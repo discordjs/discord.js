@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const RESTManager = require('../rest/RESTManager');
 const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -16,7 +15,9 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
-const Constants = require('../util/Constants');
+const EmojiStore = require('../stores/EmojiStore');
+const { Events, browser } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -31,19 +32,14 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!this.options.shardId && 'SHARD_ID' in process.env) this.options.shardId = Number(process.env.SHARD_ID);
-    if (!this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
+      this.options.shardId = Number(process.env.SHARD_ID);
+    }
+    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
 
     this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
 
     /**
      * The manager of the client
@@ -71,14 +67,14 @@ class Client extends BaseClient {
      * @type {?ClientVoiceManager}
      * @private
      */
-    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
+    this.voice = !browser ? new ClientVoiceManager(this) : null;
 
     /**
      * The shard helpers for the client
      * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -95,7 +91,8 @@ class Client extends BaseClient {
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+     * is a member of, and all DM channels
      * @type {ChannelStore<Snowflake, Channel>}
      */
     this.channels = new ChannelStore(this);
@@ -108,7 +105,7 @@ class Client extends BaseClient {
     this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
        * <warn>This should be kept private at all times.</warn>
@@ -205,17 +202,17 @@ class Client extends BaseClient {
    * @readonly
    */
   get voiceConnections() {
-    if (this.browser) return new Collection();
+    if (browser) return new Collection();
     return this.voice.connections;
   }
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {Collection<Snowflake, Emoji>}
+   * @type {EmojiStore<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
-    const emojis = new Collection();
+    const emojis = new EmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
       if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
@@ -254,7 +251,7 @@ class Client extends BaseClient {
    */
   login(token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
     }).catch(e => {
@@ -292,7 +289,7 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
+    const code = DataResolver.resolveInviteCode(invite);
     return this.api.invites(code).get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
@@ -332,7 +329,7 @@ class Client extends BaseClient {
       throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
     }
     if (lifetime <= 0) {
-      this.emit(Constants.Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
+      this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -353,7 +350,7 @@ class Client extends BaseClient {
       }
     }
 
-    this.emit(Constants.Events.DEBUG,
+    this.emit(Events.DEBUG,
       `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }

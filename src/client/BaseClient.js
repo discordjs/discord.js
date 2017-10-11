@@ -1,8 +1,7 @@
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
-const ClientDataResolver = require('./ClientDataResolver');
 const Util = require('../util/Util');
-const Constants = require('../util/Constants');
+const { DefaultOptions } = require('../util/Constants');
 
 /**
  * The base class for all clients.
@@ -16,7 +15,7 @@ class BaseClient extends EventEmitter {
      * The options the client was instantiated with
      * @type {ClientOptions}
      */
-    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
+    this.options = Util.mergeDefault(DefaultOptions, options);
 
     /**
      * The REST manager of the client
@@ -26,34 +25,18 @@ class BaseClient extends EventEmitter {
     this.rest = new RESTManager(this, options._tokenType);
 
     /**
-     * The data resolver of the client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
-
-    /**
-     * Timeouts set by {@link WebhookClient#setTimeout} that are still active
+     * Timeouts set by {@link BaseClient#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
      */
     this._timeouts = new Set();
 
     /**
-     * Intervals set by {@link WebhookClient#setInterval} that are still active
+     * Intervals set by {@link BaseClient#setInterval} that are still active
      * @type {Set<Timeout>}
      * @private
      */
     this._intervals = new Set();
-  }
-
-  /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return typeof window !== 'undefined';
   }
 
   /**
@@ -103,7 +86,7 @@ class BaseClient extends EventEmitter {
   /**
    * Sets an interval that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
+   * @param {number} delay Time to wait between executions (in milliseconds)
    * @param {...*} args Arguments for the function
    * @returns {Timeout}
    */

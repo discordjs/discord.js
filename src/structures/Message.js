@@ -6,18 +6,18 @@ const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
-const Constants = require('../util/Constants');
+const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const GuildMember = require('./GuildMember');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-let GuildMember;
 
 /**
  * Represents a message on Discord.
  * @extends {Base}
  */
 class Message extends Base {
-  constructor(channel, data, client) {
+  constructor(client, data, channel) {
     super(client);
 
     /**
@@ -40,7 +40,7 @@ class Message extends Base {
      * The type of the message
      * @type {MessageType}
      */
-    this.type = Constants.MessageTypes[data.type];
+    this.type = MessageTypes[data.type];
 
     /**
      * The content of the message
@@ -52,10 +52,10 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.create(data.author);
+    this.author = this.client.users.create(data.author, !data.webhook_id);
 
     /**
-     * Represents the author of the message as a guild member
+     * Represents the author of the message as a guild member.
      * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */
@@ -202,7 +202,7 @@ class Message extends Base {
   }
 
   /**
-   * The time the message was sent
+   * The time the message was sent at
    * @type {Date}
    * @readonly
    */
@@ -291,7 +291,7 @@ class Message extends Base {
    */
 
   /**
-   * Similar to createMessageCollector but in promise form.
+   * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
@@ -358,7 +358,7 @@ class Message extends Base {
    */
 
   /**
-   * Edit the content of the message.
+   * Edits the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
@@ -393,7 +393,7 @@ class Message extends Base {
 
     // Add the reply prefix
     if (reply && this.channel.type !== 'dm') {
-      const id = this.client.resolver.resolveUserID(reply);
+      const id = this.client.users.resolveID(reply);
       const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
@@ -426,12 +426,12 @@ class Message extends Base {
   }
 
   /**
-   * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * Adds a reaction to the message.
+   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
   react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
     return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
@@ -445,7 +445,7 @@ class Message extends Base {
   }
 
   /**
-   * Remove all reactions from a message.
+   * Removes all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -484,7 +484,7 @@ class Message extends Base {
   }
 
   /**
-   * Reply to the message.
+   * Replies to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}

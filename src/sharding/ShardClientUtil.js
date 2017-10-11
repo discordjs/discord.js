@@ -1,5 +1,5 @@
 const Util = require('../util/Util');
-const Constants = require('../util/Constants');
+const { Events } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
@@ -124,7 +124,7 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
-      this.client.emit(Constants.Events.ERROR, err);
+      this.client.emit(Events.ERROR, err);
     });
   }
 
@@ -137,7 +137,7 @@ class ShardClientUtil {
     if (!this._singleton) {
       this._singleton = new this(client);
     } else {
-      client.emit(Constants.Events.WARN,
+      client.emit(Events.WARN,
         'Multiple clients created in child process; only the first will handle sharding helpers.');
     }
     return this._singleton;

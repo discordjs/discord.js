@@ -1,9 +1,10 @@
-const path = require('path');
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
-const MessageStore = require('../../stores/MessageStore');
+const Util = require('../../util/Util');
+const { browser } = require('../../util/Constants');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
+const DataResolver = require('../../util/DataResolver');
 const MessageAttachment = require('../../structures/MessageAttachment');
 const MessageEmbed = require('../../structures/MessageEmbed');
 const { RangeError, TypeError } = require('../../errors');
@@ -66,12 +67,12 @@ class TextBasedChannel {
    */
 
   /**
-   * Send a message to this channel.
+   * Sends a message to this channel.
    * @param {StringResolvable} [content] Text for the message
    * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // Send a message
+   * // Sends a message
    * channel.send('hello!')
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
@@ -106,14 +107,14 @@ class TextBasedChannel {
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string' || Buffer.isBuffer(file)) file = { attachment: file };
+        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
-            file.name = path.basename(file.attachment);
+            file.name = Util.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
-            file.name = path.basename(file.attachment.path);
+            file.name = Util.basename(file.attachment.path);
           } else if (file instanceof MessageAttachment) {
-            file = { attachment: file.file, name: path.basename(file.file) || 'file.jpg' };
+            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
@@ -124,7 +125,7 @@ class TextBasedChannel {
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveFile(file.attachment).then(resource => {
+        DataResolver.resolveFile(file.attachment).then(resource => {
           file.file = resource;
           return file;
         })
@@ -273,31 +274,41 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk delete given messages that are newer than two weeks.
+   * Bulk deletes given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
+   * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
-  bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) {
-      return this.messages.fetch({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
-    }
+  async bulkDelete(messages, filterOld = false) {
     if (messages instanceof Array || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id =>
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
         );
       }
-      return this.client.api.channels[this.id].messages['bulk-delete']
-        .post({ data: { messages: messageIDs } })
-        .then(() =>
-          this.client.actions.MessageDeleteBulk.handle({
-            channel_id: this.id,
-            ids: messageIDs,
-          }).messages
-        );
+      if (messageIDs.length === 0) return new Collection();
+      if (messageIDs.length === 1) {
+        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
+        const message = this.client.actions.MessageDelete.handle({
+          channel_id: this.id,
+          id: messageIDs[0],
+        }).message;
+        if (message) return new Collection([[message.id, message]]);
+        return new Collection();
+      }
+      await this.client.api.channels[this.id].messages['bulk-delete']
+        .post({ data: { messages: messageIDs } });
+      return this.client.actions.MessageDeleteBulk.handle({
+        channel_id: this.id,
+        ids: messageIDs,
+      }).messages;
+    }
+    if (!isNaN(messages)) {
+      const msgs = await this.messages.fetch({ limit: messages });
+      return this.bulkDelete(msgs, filterOld);
     }
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
@@ -341,3 +352,6 @@ class TextBasedChannel {
 }
 
 module.exports = TextBasedChannel;
+
+// Fixes Circular
+const MessageStore = require('../../stores/MessageStore');

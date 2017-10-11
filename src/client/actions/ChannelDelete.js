@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class ChannelDeleteAction extends Action {
   constructor(client) {
@@ -13,7 +13,7 @@ class ChannelDeleteAction extends Action {
 
     if (channel) {
       client.channels.remove(channel.id);
-      client.emit(Constants.Events.CHANNEL_DELETE, channel);
+      client.emit(Events.CHANNEL_DELETE, channel);
     }
 
     return { channel };
@@ -23,7 +23,7 @@ class ChannelDeleteAction extends Action {
 /**
  * Emitted whenever a channel is deleted.
  * @event Client#channelDelete
- * @param {Channel} channel The channel that was deleted
+ * @param {GroupDMChannel|GuildChannel} channel The channel that was deleted
  */
 
 module.exports = ChannelDeleteAction;

@@ -1,4 +1,4 @@
-const Constants = require('../util/Constants');
+const { UserGuildSettingsMap } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const ClientUserChannelOverride = require('./ClientUserChannelOverride');
 
@@ -15,7 +15,7 @@ class ClientUserGuildSettings {
      */
     Object.defineProperty(this, 'client', { value: client });
     /**
-     * The ID of the guild this settings are for
+     * The ID of the guild these settings are for
      * @type {Snowflake}
      */
     this.guildID = data.guild_id;
@@ -29,7 +29,7 @@ class ClientUserGuildSettings {
    * @private
    */
   patch(data) {
-    for (const [key, value] of Object.entries(Constants.UserGuildSettingsMap)) {
+    for (const [key, value] of Object.entries(UserGuildSettingsMap)) {
       if (!data.hasOwnProperty(key)) continue;
       if (key === 'channel_overrides') {
         for (const channel of data[key]) {

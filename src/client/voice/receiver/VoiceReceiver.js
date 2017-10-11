@@ -73,7 +73,7 @@ class VoiceReceiver extends EventEmitter {
   }
 
   /**
-   * Destroy this VoiceReceiver, also ending any streams that it may be controlling.
+   * Destroys this VoiceReceiver, also ending any streams that it may be controlling.
    */
   destroy() {
     this.voiceConnection.sockets.udp.socket.removeListener('message', this._listener);
@@ -123,7 +123,7 @@ class VoiceReceiver extends EventEmitter {
    * @returns {ReadableStream}
    */
   createOpusStream(user) {
-    user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
+    user = this.voiceConnection.voiceManager.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
     if (this.opusStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();
@@ -138,7 +138,7 @@ class VoiceReceiver extends EventEmitter {
    * @returns {ReadableStream}
    */
   createPCMStream(user) {
-    user = this.voiceConnection.voiceManager.client.resolver.resolveUser(user);
+    user = this.voiceConnection.voiceManager.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
     if (this.pcmStreams.get(user.id)) throw new Error('VOICE_STREAM_EXISTS');
     const stream = new Readable();

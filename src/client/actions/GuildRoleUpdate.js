@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildRoleUpdateAction extends Action {
   handle(data) {
@@ -12,7 +12,7 @@ class GuildRoleUpdateAction extends Action {
       const role = guild.roles.get(data.role.id);
       if (role) {
         old = role._update(data.role);
-        client.emit(Constants.Events.GUILD_ROLE_UPDATE, old, role);
+        client.emit(Events.GUILD_ROLE_UPDATE, old, role);
       }
 
       return {

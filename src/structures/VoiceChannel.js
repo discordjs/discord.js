@@ -1,5 +1,6 @@
 const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
+const { browser } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
@@ -59,7 +60,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get joinable() {
-    if (this.client.browser) return false;
+    if (browser) return false;
     if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
     if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
     return true;
@@ -115,7 +116,7 @@ class VoiceChannel extends GuildChannel {
    *   .catch(console.error);
    */
   join() {
-    if (this.client.browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));
+    if (browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));
     return this.client.voice.joinChannel(this);
   }
 
@@ -126,7 +127,7 @@ class VoiceChannel extends GuildChannel {
    * voiceChannel.leave();
    */
   leave() {
-    if (this.client.browser) return;
+    if (browser) return;
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }

@@ -1,6 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 class VoiceStateUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -20,7 +20,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
 
         guild.voiceStates.set(member.user.id, data);
 
-        client.emit(Constants.Events.VOICE_STATE_UPDATE, oldMember, member);
+        client.emit(Events.VOICE_STATE_UPDATE, oldMember, member);
       }
     }
   }

@@ -1,5 +1,4 @@
-const Constants = require('../util/Constants');
-const Util = require('../util/Util');
+const { ActivityTypes } = require('../util/Constants');
 
 /**
  * Represents a user's presence.
@@ -24,9 +23,12 @@ class Presence {
 
     const activity = data.game || data.activity;
     /**
+     * The activity of the presence
      * @type {?Activity}
      */
     this.activity = activity ? new Activity(this, activity) : null;
+
+    return this;
   }
 
   _clone() {
@@ -70,7 +72,7 @@ class Activity {
      * The type of the activity status
      * @type {ActivityType}
      */
-    this.type = Constants.ActivityTypes[data.type];
+    this.type = ActivityTypes[data.type];
 
     /**
      * If the activity is being streamed, a link to the stream
@@ -111,7 +113,7 @@ class Activity {
      * Party of the activity
      * @type {?Object}
      * @prop {?string} id ID of the party
-     * @prop {Number[]} size Size of the party as `[current, max]`
+     * @prop {number[]} size Size of the party as `[current, max]`
      */
     this.party = data.party || null;
 
@@ -149,34 +151,35 @@ class RichPresenceAssets {
     Object.defineProperty(this, 'activity', { value: activity });
 
     /**
-     * Hover text for large image
+     * Hover text for the large image
      * @type {?string}
      */
     this.largeText = assets.large_text || null;
 
     /**
-     * Hover text for small image
+     * Hover text for the small image
      * @type {?string}
      */
     this.smallText = assets.small_text || null;
 
     /**
-     * ID of large image asset
+     * ID of the large image asset
      * @type {?string}
      */
     this.largeImage = assets.large_image || null;
 
     /**
-     * ID of small image asset
+     * ID of the small image asset
      * @type {?string}
      */
     this.smallImage = assets.small_image || null;
   }
 
   /**
+   * Gets the URL of the small image asset
    * @param  {string} format Format of the image
-   * @param  {number} size Size of the iamge
-   * @returns {?string} small image url
+   * @param  {number} size Size of the image
+   * @returns {?string} The small image URL
    */
   smallImageURL({ format, size } = {}) {
     if (!this.smallImage) return null;
@@ -185,9 +188,10 @@ class RichPresenceAssets {
   }
 
   /**
+   * Gets the URL of the large image asset
    * @param  {string} format Format of the image
-   * @param  {number} size Size of the iamge
-   * @returns {?string} large image url
+   * @param  {number} size Size of the image
+   * @returns {?string} The large image URL
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;

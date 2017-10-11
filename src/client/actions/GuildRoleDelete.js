@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildRoleDeleteAction extends Action {
   handle(data) {
@@ -11,7 +11,7 @@ class GuildRoleDeleteAction extends Action {
       role = guild.roles.get(data.role_id);
       if (role) {
         guild.roles.remove(data.role_id);
-        client.emit(Constants.Events.GUILD_ROLE_DELETE, role);
+        client.emit(Events.GUILD_ROLE_DELETE, role);
       }
     }
 

@@ -2,6 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
 
 /**
@@ -26,7 +27,7 @@ class TextChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * If the Discord considers this channel NSFW
+     * If the guild considers this channel NSFW
      * @type {boolean}
      * @readonly
      */
@@ -38,7 +39,7 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Fetch all webhooks for the channel.
+   * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
@@ -50,7 +51,7 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Create a webhook for the channel.
+   * Creates a webhook for the channel.
    * @param {string} name The name of the webhook
    * @param {Object} [options] Options for creating the webhook
    * @param {BufferResolvable|Base64Resolvable} [options.avatar] Avatar for the webhook
@@ -63,7 +64,7 @@ class TextChannel extends GuildChannel {
    */
   async createWebhook(name, { avatar, reason } = {}) {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await this.client.resolver.resolveImage(avatar);
+      avatar = await DataResolver.resolveImage(avatar);
     }
     return this.client.api.channels[this.id].webhooks.post({ data: {
       name, avatar,

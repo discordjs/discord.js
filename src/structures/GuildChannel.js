@@ -2,13 +2,14 @@ const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
+const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
-const { TypeError } = require('../errors');
+const { MessageNotificationTypes } = require('../util/Constants');
+const { Error, TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (i.e. text channels and voice channels).
+ * Represents a guild channel (e.g. text channels and voice channels).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -32,10 +33,16 @@ class GuildChannel extends Channel {
     this.name = data.name;
 
     /**
-     * The position of the channel in the list
+     * The raw position of the channel from discord
      * @type {number}
      */
-    this.position = data.position;
+    this.rawPosition = data.position;
+
+    /**
+     * The ID of the category parent of this channel
+     * @type {?Snowflake}
+     */
+    this.parentID = data.parent_id;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -50,12 +57,37 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * The category parent of this channel
+   * @type {?CategoryChannel}
+   * @readonly
+   */
+  get parent() {
+    return this.guild.channels.get(this.parentID);
+  }
+
+  /**
+   * If the permissionOverwrites match the parent channel, null if no parent
+   * @type {?boolean}
+   * @readonly
+   */
+  get permissionsLocked() {
+    if (!this.parent) return null;
+    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
+    return !this.permissionOverwrites.find((value, key) => {
+      const testVal = this.parent.permissionOverwrites.get(key);
+      return testVal === undefined ||
+        testVal.denied.bitfield !== value.denied.bitfield ||
+        testVal.allowed.bitfield !== value.allowed.bitfield;
+    });
+  }
+
+  /**
    * The position of the channel
    * @type {number}
    * @readonly
    */
-  get calculatedPosition() {
-    const sorted = this.guild._sortedChannels(this.type);
+  get position() {
+    const sorted = this.guild._sortedChannels(this);
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
@@ -66,42 +98,29 @@ class GuildChannel extends Channel {
    * @returns {?Permissions}
    */
   permissionsFor(member) {
-    member = this.client.resolver.resolveGuildMember(this.guild, member);
+    member = this.guild.members.resolve(member);
     if (!member) return null;
-    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
-
-    let permissions = 0;
+    if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
     const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
+    const permissions = new Permissions(roles.map(role => role.permissions));
+
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
     const overwrites = this.overwritesFor(member, true, roles);
 
-    if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone._denied;
-      permissions |= overwrites.everyone._allowed;
-    }
-
-    let allow = 0;
-    for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite._denied;
-      allow |= overwrite._allowed;
-    }
-    permissions |= allow;
-
-    if (overwrites.member) {
-      permissions &= ~overwrites.member._denied;
-      permissions |= overwrites.member._allowed;
-    }
-
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) permissions = Permissions.ALL;
-
-    return new Permissions(permissions);
+    return permissions
+      .remove(overwrites.everyone ? overwrites.everyone.denied : 0)
+      .add(overwrites.everyone ? overwrites.everyone.allowed : 0)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.denied) : 0)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allowed) : 0)
+      .remove(overwrites.member ? overwrites.member.denied : 0)
+      .add(overwrites.member ? overwrites.member.allowed : 0)
+      .freeze();
   }
 
   overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.client.resolver.resolveGuildMember(this.guild, member);
+    if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
     roles = roles || member.roles;
@@ -141,7 +160,7 @@ class GuildChannel extends Channel {
   /**
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
@@ -153,47 +172,59 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
-    const payload = {
-      allow: 0,
-      deny: 0,
-    };
+    const allow = new Permissions(0);
+    const deny = new Permissions(0);
+    let type;
 
-    if (userOrRole instanceof Role) {
-      payload.type = 'role';
-    } else if (this.guild.roles.has(userOrRole)) {
-      userOrRole = this.guild.roles.get(userOrRole);
-      payload.type = 'role';
+    const role = this.guild.roles.get(userOrRole);
+
+    if (role || userOrRole instanceof Role) {
+      userOrRole = role || userOrRole;
+      type = 'role';
     } else {
-      userOrRole = this.client.resolver.resolveUser(userOrRole);
-      payload.type = 'member';
+      userOrRole = this.client.users.resolve(userOrRole);
+      type = 'member';
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
     }
-
-    payload.id = userOrRole.id;
 
     const prevOverwrite = this.permissionOverwrites.get(userOrRole.id);
 
     if (prevOverwrite) {
-      payload.allow = prevOverwrite._allowed;
-      payload.deny = prevOverwrite._denied;
+      allow.add(prevOverwrite.allowed);
+      deny.add(prevOverwrite.denied);
     }
 
     for (const perm in options) {
       if (options[perm] === true) {
-        payload.allow |= Permissions.FLAGS[perm] || 0;
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.add(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === false) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny |= Permissions.FLAGS[perm] || 0;
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.add(Permissions.FLAGS[perm] || 0);
       } else if (options[perm] === null) {
-        payload.allow &= ~(Permissions.FLAGS[perm] || 0);
-        payload.deny &= ~(Permissions.FLAGS[perm] || 0);
+        allow.remove(Permissions.FLAGS[perm] || 0);
+        deny.remove(Permissions.FLAGS[perm] || 0);
       }
     }
 
-    return this.client.api.channels(this.id).permissions[payload.id]
-      .put({ data: payload, reason })
+    return this.client.api.channels(this.id).permissions[userOrRole.id]
+      .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
+  }
+
+  /**
+   * Locks in the permission overwrites from the parent channel.
+   * @returns {Promise<GuildChannel>}
+   */
+  lockPermissions() {
+    if (!this.parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
+    const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
+      deny: overwrite.denied.bitfield,
+      allow: overwrite.allowed.bitfield,
+      id: overwrite.id,
+      type: overwrite.type,
+    }));
+    return this.edit({ permissionOverwrites });
   }
 
   /**
@@ -219,6 +250,18 @@ class GuildChannel extends Channel {
    * @property {string} [topic] The topic of the text channel
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
+   * @property {Snowflake} [parentID] The parent ID of the channel
+   * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteData[]} [permissionOverwrites] An array of overwrites to set for the channel
+   */
+
+  /**
+   * The data for a permission overwrite
+   * @typedef {Object} OverwriteData
+   * @property {string} id The id of the overwrite
+   * @property {string} type The type of the overwrite, either role or member
+   * @property {number} allow The bitfield for the allowed permissions
+   * @property {number} deny The bitfield for the denied permissions
    */
 
   /**
@@ -236,10 +279,13 @@ class GuildChannel extends Channel {
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        topic: data.topic || this.topic,
-        position: data.position || this.position,
+        topic: data.topic,
+        position: typeof data.position === 'number' ? data.position : this.rawPosition,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit || this.userLimit,
+        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        parent_id: data.parentID,
+        lock_permissions: data.lockPermissions,
+        permission_overwrites: data.permissionOverwrites,
       },
       reason,
     }).then(newData => {
@@ -250,7 +296,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the guild channel.
+   * Sets a new name for the guild channel.
    * @param {string} name The new name for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
@@ -265,22 +311,21 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel.
-   * @param {number} position The new position for the guild channel
-   * @param {boolean} [relative=false] Move the position relative to its current value
+   * Sets the category parent of this channel.
+   * @param {GuildChannel|Snowflake} channel Parent channel
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
-   * @example
-   * // Set a new channel position
-   * channel.setPosition(2)
-   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
-   *   .catch(console.error);
    */
-  setPosition(position, relative) {
-    return this.guild.setChannelPosition(this, position, relative).then(() => this);
+  setParent(channel, { lockPermissions = true, reason } = {}) {
+    return this.edit({
+      parentID: channel.id ? channel.id : channel,
+      lockPermissions,
+    }, reason);
   }
 
   /**
-   * Set a new topic for the guild channel.
+   * Sets a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
@@ -295,7 +340,32 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Create an invite to this guild channel.
+   * Sets a new position for the guild channel.
+   * @param {number} position The new position for the guild channel
+   * @param {Object} [options] Options for setting position
+   * @param {boolean} [options.relative=false] Change the position relative to its current value
+   * @param {boolean} [options.reason] Reason for changing the position
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Set a new channel position
+   * channel.setPosition(2)
+   *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
+   *   .catch(console.error);
+   */
+  setPosition(position, { relative, reason } = {}) {
+    return Util.setPosition(this, position, relative,
+      this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
+      .then(updatedChannels => {
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.guild.id,
+          channels: updatedChannels,
+        });
+        return this;
+      });
+  }
+
+  /**
+   * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
@@ -313,7 +383,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Clone this channel.
+   * Clones this channel.
    * @param {Object} [options] The options
    * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
    * of this channel
@@ -360,8 +430,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get deletable() {
-    return this.id !== this.guild.id &&
-      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
+    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
   }
 
   /**
@@ -405,7 +474,7 @@ class GuildChannel extends Channel {
     try {
       return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
     } catch (err) {
-      return Constants.MessageNotificationTypes[3];
+      return MessageNotificationTypes[3];
     }
   }
 

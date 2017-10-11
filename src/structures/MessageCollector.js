@@ -1,4 +1,5 @@
 const Collector = require('./interfaces/Collector');
+const { Events } = require('../util/Constants');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -36,19 +37,19 @@ class MessageCollector extends Collector {
       for (const message of messages.values()) this.handleDispose(message);
     }).bind(this);
 
-    this.client.on('message', this.handleCollect);
-    this.client.on('messageDelete', this.handleDispose);
-    this.client.on('messageDeleteBulk', bulkDeleteListener);
+    this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
+    this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
+    this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
 
     this.once('end', () => {
-      this.client.removeListener('message', this.handleCollect);
-      this.client.removeListener('messageDelete', this.handleDispose);
-      this.client.removeListener('messageDeleteBulk', bulkDeleteListener);
+      this.client.removeListener(Events.MESSAGE_CREATE, this.handleCollect);
+      this.client.removeListener(Events.MESSAGE_DELETE, this.handleDispose);
+      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
     });
   }
 
   /**
-   * Handle a message for possible collection.
+   * Handles a message for possible collection.
    * @param {Message} message The message that could be collected
    * @returns {?{key: Snowflake, value: Message}}
    * @private
@@ -63,7 +64,7 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Handle a message for possible disposal.
+   * Handles a message for possible disposal.
    * @param {Message} message The message that could be disposed
    * @returns {?string}
    */
@@ -72,7 +73,7 @@ class MessageCollector extends Collector {
   }
 
   /**
-   * Check after un/collection to see if the collector is done.
+   * Checks after un/collection to see if the collector is done.
    * @returns {?string}
    * @private
    */

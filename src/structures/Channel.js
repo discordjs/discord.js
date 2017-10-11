@@ -1,6 +1,6 @@
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
-const Constants = require('../util/Constants');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
@@ -10,13 +10,14 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    const type = Object.keys(Constants.ChannelTypes)[data.type];
+    const type = Object.keys(ChannelTypes)[data.type];
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
+     * * `category` - a guild category channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
@@ -43,7 +44,7 @@ class Channel extends Base {
   }
 
   /**
-   * The time the channel was created
+   * The time the channel was created at
    * @type {Date}
    * @readonly
    */
@@ -69,22 +70,25 @@ class Channel extends Base {
     const GroupDMChannel = require('./GroupDMChannel');
     const TextChannel = require('./TextChannel');
     const VoiceChannel = require('./VoiceChannel');
+    const CategoryChannel = require('./CategoryChannel');
     const GuildChannel = require('./GuildChannel');
-    const types = Constants.ChannelTypes;
     let channel;
-    if (data.type === types.DM) {
+    if (data.type === ChannelTypes.DM) {
       channel = new DMChannel(client, data);
-    } else if (data.type === types.GROUP) {
+    } else if (data.type === ChannelTypes.GROUP) {
       channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
         switch (data.type) {
-          case types.TEXT:
+          case ChannelTypes.TEXT:
             channel = new TextChannel(guild, data);
             break;
-          case types.VOICE:
+          case ChannelTypes.VOICE:
             channel = new VoiceChannel(guild, data);
+            break;
+          case ChannelTypes.CATEGORY:
+            channel = new CategoryChannel(guild, data);
             break;
           default:
             channel = new GuildChannel(guild, data);

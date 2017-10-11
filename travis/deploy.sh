@@ -8,14 +8,13 @@ if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   exit 0
 fi
 
-# For PRs, do nothing
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - doing nothing."
-  exit 0
-fi
+DONT_COMMIT=false
 
-# Figure out the source of the build
-if [ -n "$TRAVIS_TAG" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - not commiting"
+  SOURCE_TYPE="pr"
+  DONT_COMMIT=true
+elif [ -n "$TRAVIS_TAG" ]; then
   echo -e "\e[36m\e[1mBuild triggered for tag \"${TRAVIS_TAG}\"."
   SOURCE=$TRAVIS_TAG
   SOURCE_TYPE="tag"
@@ -35,6 +34,9 @@ fi
 npm run docs
 VERSIONED=false npm run webpack
 
+if [ $DONT_COMMIT ]; then
+  exit 0
+fi
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
@@ -85,3 +87,4 @@ git config user.name "Travis CI"
 git config user.email "$COMMIT_AUTHOR_EMAIL"
 git commit -m "Webpack build for ${SOURCE_TYPE} ${SOURCE}: ${SHA}" || true
 git push $SSH_REPO $TARGET_BRANCH
+

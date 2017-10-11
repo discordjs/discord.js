@@ -32,7 +32,7 @@ class MessageAttachment {
   }
 
   /**
-    * Set the file of this attachment.
+    * Sets the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
     * @param {string} name The name of the file
     * @returns {MessageAttachment} This attachment
@@ -43,7 +43,7 @@ class MessageAttachment {
   }
 
   /**
-    * Set the file of this attachment.
+    * Sets the file of this attachment.
     * @param {BufferResolvable|Stream} attachment The file
     * @returns {MessageAttachment} This attachment
     */
@@ -53,7 +53,7 @@ class MessageAttachment {
   }
 
   /**
-    * Set the name of this attachment.
+    * Sets the name of this attachment.
     * @param {string} name The name of the image
     * @returns {MessageAttachment} This attachment
     */
@@ -63,7 +63,7 @@ class MessageAttachment {
   }
 
   /**
-    * Set the file of this attachment.
+    * Sets the file of this attachment.
     * @param {BufferResolvable|Stream} file The file
     * @param {string} name The name of the file
     * @private

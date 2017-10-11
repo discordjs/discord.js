@@ -12,8 +12,8 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(client, data, guild) {
+    super(client);
 
     /**
      * The guild that this member is part of
@@ -249,13 +249,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get permissions() {
-    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL);
-
-    let permissions = 0;
-    const roles = this.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
-
-    return new Permissions(permissions);
+    if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
+    return new Permissions(this.roles.map(role => role.permissions)).freeze();
   }
 
   /**
@@ -291,7 +286,7 @@ class GuildMember extends Base {
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.permissionsFor(this);
   }
@@ -311,7 +306,7 @@ class GuildMember extends Base {
     if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
     if (typeof checkOwner === 'undefined') checkOwner = !explicit;
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.hasPermission(permission, undefined, checkAdmin));
+    return this.roles.some(r => r.permissions.has(permission, undefined, checkAdmin));
   }
 
   /**
@@ -321,7 +316,7 @@ class GuildMember extends Base {
    * @returns {PermissionResolvable[]}
    */
   missingPermissions(permissions, explicit = false) {
-    return permissions.missing(permissions, explicit);
+    return this.permissions.missing(permissions, explicit);
   }
 
   /**
@@ -335,14 +330,14 @@ class GuildMember extends Base {
    */
 
   /**
-   * Edit a guild member.
+   * Edits a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
   edit(data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      data.channel_id = this.client.channels.resolve(data.channel).id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
@@ -367,7 +362,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mute/unmute a user.
+   * Mute/unmutes a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -377,7 +372,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deafen/undeafen a user.
+   * Deafen/undeafens a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
@@ -412,7 +407,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   addRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
@@ -433,7 +428,7 @@ class GuildMember extends Base {
   addRoles(roles, reason) {
     let allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -450,7 +445,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   removeRole(role, reason) {
-    role = this.client.resolver.resolveRole(this.guild, role);
+    role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (!this._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
@@ -472,7 +467,7 @@ class GuildMember extends Base {
   removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.client.resolver.resolveRole(this.guild, role);
+      role = this.guild.roles.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -484,7 +479,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Set the nickname for the guild member.
+   * Sets the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
@@ -510,7 +505,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Kick this member from the guild.
+   * Kicks this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
@@ -525,7 +520,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Ban this guild member.
+   * Bans this guild member.
    * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete

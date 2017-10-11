@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Collection = require('../../util/Collection');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
@@ -15,7 +15,7 @@ class MessageDeleteBulkAction extends Action {
         if (message) messages.set(message.id, message);
       }
 
-      if (messages.size > 0) client.emit(Constants.Events.MESSAGE_BULK_DELETE, messages);
+      if (messages.size > 0) client.emit(Events.MESSAGE_BULK_DELETE, messages);
       return { messages };
     }
     return {};

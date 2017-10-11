@@ -8,7 +8,7 @@ const { Error } = require('../errors');
  * Represents a reaction to a message.
  */
 class MessageReaction {
-  constructor(message, emoji, count, me) {
+  constructor(client, data, message) {
     /**
      * The message that this reaction refers to
      * @type {Message}
@@ -19,13 +19,13 @@ class MessageReaction {
      * Whether the client has given this reaction
      * @type {boolean}
      */
-    this.me = me;
+    this.me = data.me;
 
     /**
      * The number of people that have given the same reaction
      * @type {number}
      */
-    this.count = count || 0;
+    this.count = data.count || 0;
 
     /**
      * The users that have given this reaction, mapped by their ID
@@ -33,7 +33,7 @@ class MessageReaction {
      */
     this.users = new Collection();
 
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+    this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
   }
 
   /**
@@ -63,7 +63,7 @@ class MessageReaction {
    * @returns {Promise<MessageReaction>}
    */
   remove(user = this.message.client.user) {
-    const userID = this.message.client.resolver.resolveUserID(user);
+    const userID = this.message.client.users.resolveID(user);
     if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
     return this.message.client.api.channels[this.message.channel.id].messages[this.message.id]
       .reactions[this.emoji.identifier][userID === this.message.client.user.id ? '@me' : userID]
@@ -79,7 +79,7 @@ class MessageReaction {
   }
 
   /**
-   * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
+   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {Object} [options] Options for fetching the users
    * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
    * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
