@@ -44,11 +44,11 @@ const createConfig = options => {
       tls: 'mock',
       child_process: 'empty',
       dgram: 'empty',
-      zlib: 'empty',
       __dirname: true,
       process: false,
       path: 'empty',
       Buffer: false,
+      zlib: 'empty',
     },
     plugins,
   };
