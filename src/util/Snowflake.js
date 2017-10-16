@@ -29,9 +29,14 @@ class SnowflakeUtil {
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    * @returns {Snowflake} The generated snowflake
    */
-  static generate() {
+  static generate(time = null) {
     if (INCREMENT >= 4095) INCREMENT = 0;
-    const BINARY = `${pad((Date.now() - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
+    var timestamp = + new Date(); // Date to Timestamp conversion
+    if (time !== null) {
+        timestamp = Date.parse(time) // Test if time string is valid
+        if (!timestamp) return false;
+    }
+    const BINARY = `${pad((timestamp - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
     return Long.fromString(BINARY, 2).toString();
   }
 
