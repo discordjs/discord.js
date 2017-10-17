@@ -32,7 +32,7 @@ class SnowflakeUtil {
    */
   static generate(time = Date.now()) {
     if (INCREMENT >= 4095) INCREMENT = 0;
-    if (isNaN((new Date(time)).getTime()) and typeof time === "number") { // Test for valid timestamp
+    if (isNaN((new Date(time)).getTime()) && typeof time === "number") { // Test for valid timestamp
         return false;
     }
     const BINARY = `${pad((timestamp - EPOCH).toString(2), 42)}0000100000${pad((INCREMENT++).toString(2), 12)}`;
