@@ -69,7 +69,6 @@
     "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
-    "src/rest/UserAgentManager.js": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
