@@ -275,11 +275,11 @@ class MessageEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=current date] The timestamp
+   * @param {Date|number} [timestamp=current date] The timestamp
    * @returns {MessageEmbed}
    */
   setTimestamp(timestamp = new Date()) {
-    this.timestamp = timestamp.getTime();
+    this.timestamp = timestamp instanceof Date ? timestamp.getTime() : timestamp;
     return this;
   }
 
