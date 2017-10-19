@@ -28,7 +28,7 @@ class DMChannel extends Channel {
 
   /**
    * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
+   * DMChannel object.
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!

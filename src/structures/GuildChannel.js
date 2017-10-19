@@ -488,7 +488,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * When concatenated with a string, this automatically concatenates the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
    * // Logs: Hello from <#123456789012345678>!

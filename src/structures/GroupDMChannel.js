@@ -203,7 +203,8 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
+   * When concatenated with a string, this automatically concatenates the channel's name instead of the
+   * GroupDMChannel object.
    * @returns {string}
    * @example
    * // Logs: Hello from My Group DM!
