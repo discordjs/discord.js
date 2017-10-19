@@ -267,6 +267,15 @@ class Guild {
   }
 
   /**
+   * If this guild is verified
+   * @type {boolean}
+   * @readonly
+   */
+  get verified() {
+    return this.features.includes('VERIFIED');
+  }
+
+  /**
    * The URL to this guild's icon
    * @type {?string}
    * @readonly
