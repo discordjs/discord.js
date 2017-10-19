@@ -199,7 +199,7 @@ class ClientApplication extends Base {
    * @returns {string}
    * @example
    * // Logs: Application name: My App
-   * console.log(`Application name: ${application}!`);
+   * console.log(`Application name: ${application}`);
    */
   toString() {
     return this.name;
