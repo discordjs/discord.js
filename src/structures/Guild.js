@@ -1128,9 +1128,6 @@ class Guild extends Base {
    * @example
    * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
-   * @example
-   * // Logs: Hello from My Guild!
-   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;

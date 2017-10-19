@@ -208,9 +208,6 @@ class GroupDMChannel extends Channel {
    * @example
    * // Logs: Hello from My Group DM!
    * console.log(`Hello from ${channel}!`);
-   * @example
-   * // Logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
    */
   toString() {
     return this.name;
