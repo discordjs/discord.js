@@ -34,7 +34,8 @@ fi
 npm run docs
 VERSIONED=false npm run webpack
 
-if [ $DONT_COMMIT ]; then
+if [ $DONT_COMMIT == true]; then
+  echo -e "\e[36m\e1mSkipping commits"
   exit 0
 fi
 
