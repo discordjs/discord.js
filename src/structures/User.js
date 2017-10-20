@@ -250,7 +250,7 @@ class User extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!

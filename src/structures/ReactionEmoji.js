@@ -35,8 +35,8 @@ class ReactionEmoji {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the text required to form a graphical emoji
-   * on Discord instead of the ReactionEmoji object.
+   * When concatenated with a string, this automatically returns the text required to form a graphical emoji on Discord
+   * instead of the ReactionEmoji object.
    * @returns {string}
    * @example
    * // Send the emoji used in a reaction to the channel the reaction is part of

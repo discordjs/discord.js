@@ -27,7 +27,7 @@ class DMChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
+   * When concatenated with a string, this automatically returns the recipient's mention instead of the
    * DMChannel object.
    * @returns {string}
    * @example
