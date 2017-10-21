@@ -39,6 +39,16 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * Sets whether this channel is flagged as NSFW.
+   * @param {string} nsfw Whether the channel should be considered NSFW
+   * @param {string} [reason] Reason for changing the channel's NSFW flag
+   * @returns {Promise<TextChannel>}
+   */
+  setNSFW(nsfw, reason) {
+    return this.edit({ nsfw }, reason);
+  }
+
+  /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
