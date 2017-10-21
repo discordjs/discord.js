@@ -167,29 +167,28 @@ class TextBasedChannel {
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
     if (!this.client.user._typing.has(this.id)) {
-      let resolve;
-      let reject;
-      const promise = new Promise((res, rej) => { [resolve, reject] = [res, rej]; });
-      const endpoint = this.client.api.channels[this.id].typing;
-      const entry = {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          endpoint.post().catch(error => {
-            this.client.clearInterval(entry.interval);
-            this.client.user._typing.delete(this.id);
-            reject(error);
-          });
-        }, 9000),
-        promise,
-        resolve,
-      };
-      endpoint.post().catch(error => {
-        this.client.clearInterval(entry.interval);
-        this.client.user._typing.delete(this.id);
-        reject(error);
+      const entry = {};
+      entry.promise = new Promise((resolve, reject) => {
+        const endpoint = this.client.api.channels[this.id].typing;
+        Object.assign(entry, {
+          count: count || 1,
+          interval: this.client.setInterval(() => {
+            endpoint.post().catch(error => {
+              this.client.clearInterval(entry.interval);
+              this.client.user._typing.delete(this.id);
+              reject(error);
+            });
+          }, 9000),
+          resolve,
+        });
+        endpoint.post().catch(error => {
+          this.client.clearInterval(entry.interval);
+          this.client.user._typing.delete(this.id);
+          reject(error);
+        });
+        this.client.user._typing.set(this.id, entry);
       });
-      this.client.user._typing.set(this.id, entry);
-      return promise;
+      return entry.promise;
     }
 
     const entry = this.client.user._typing.get(this.id);
