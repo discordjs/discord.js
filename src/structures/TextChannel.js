@@ -40,7 +40,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Sets whether this channel is flagged as NSFW.
-   * @param {string} nsfw Whether the channel should be considered NSFW
+   * @param {boolean} nsfw Whether the channel should be considered NSFW
    * @param {string} [reason] Reason for changing the channel's NSFW flag
    * @returns {Promise<TextChannel>}
    */
