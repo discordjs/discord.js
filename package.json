@@ -42,7 +42,7 @@
     "bufferutil": "^3.0.0",
     "erlpack": "discordapp/erlpack",
     "node-opus": "^0.2.0",
-    "opusscript": "^0.0.3",
+    "opusscript": "^0.0.4",
     "sodium": "^2.0.0",
     "libsodium-wrappers": "^0.7.0",
     "uws": "^8.14.0"
