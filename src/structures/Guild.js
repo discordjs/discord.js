@@ -1000,7 +1000,7 @@ class Guild extends Base {
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   *   .catch(console.error);
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
