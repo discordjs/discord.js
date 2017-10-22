@@ -33,7 +33,7 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "long": "^3.0.0",
-    "prism-media": "^0.0.1",
+    "prism-media": "^0.0.2",
     "snekfetch": "^3.0.0",
     "tweetnacl": "^1.0.0",
     "ws": "^3.0.0"
