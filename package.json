@@ -44,7 +44,7 @@
     "node-opus": "^0.2.0",
     "opusscript": "^0.0.3",
     "sodium": "^2.0.0",
-    "libsodium-wrappers": "^0.5.0",
+    "libsodium-wrappers": "^0.7.0",
     "uws": "^8.14.0"
   },
   "devDependencies": {
