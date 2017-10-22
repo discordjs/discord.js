@@ -18,7 +18,7 @@ const ffmpegArguments = [
  * ```js
  * const broadcast = client.createVoiceBroadcast();
  * broadcast.playFile('./music.mp3');
- * // play "music.mp3" in all voice connections that the client is in
+ * // Play "music.mp3" in all voice connections that the client is in
  * for (const connection of client.voiceConnections.values()) {
  *   connection.playBroadcast(broadcast);
  * }
@@ -35,6 +35,11 @@ class VoiceBroadcast extends VolumeInterface {
     this.client = client;
     this._dispatchers = new Collection();
     this._encoders = new Collection();
+    /**
+     * Whether playing is paused
+     * @type {boolean}
+     */
+    this.paused = false;
     /**
      * The audio transcoder that this broadcast uses
      * @type {Prism}
@@ -136,20 +141,20 @@ class VoiceBroadcast extends VolumeInterface {
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
-   *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *    broadcast.playStream(stream);
-   *    const dispatcher = connection.playBroadcast(broadcast);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
+   *     broadcast.playStream(stream);
+   *     const dispatcher = connection.playBroadcast(broadcast);
+   *   })
+   *   .catch(console.error);
    */
-  playStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes, stream };
+  playStream(stream, options = {}) {
+    this.setVolume(options.volume || 1);
     return this._playTranscodable(stream, options);
   }
 
   /**
-   * Play the given file in the voice connection.
+   * Plays the given file in the voice connection.
    * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -158,25 +163,23 @@ class VoiceBroadcast extends VolumeInterface {
    * const broadcast = client.createVoiceBroadcast();
    *
    * voiceChannel.join()
-   *  .then(connection => {
-   *    broadcast.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *    const dispatcher = connection.playBroadcast(broadcast);
-   *  })
-   *  .catch(console.error);
+   *   .then(connection => {
+   *     broadcast.playFile('C:/Users/Discord/Desktop/music.mp3');
+   *     const dispatcher = connection.playBroadcast(broadcast);
+   *   })
+   *   .catch(console.error);
    */
-  playFile(file, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  playFile(file, options = {}) {
+    this.setVolume(options.volume || 1);
     return this._playTranscodable(`file:${file}`, options);
   }
 
   _playTranscodable(media, options) {
-    OpusEncoders.guaranteeOpusEngine();
-
     this.killCurrentTranscoder();
     const transcoder = this.prism.transcode({
       type: 'ffmpeg',
       media,
-      ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek)]),
+      ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek || 0)]),
     });
     /**
      * Emitted whenever an error occurs.
@@ -206,48 +209,46 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
+   * Plays a stream of 16-bit signed stereo PCM.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
-  playConvertedStream(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    OpusEncoders.guaranteeOpusEngine();
-
+  playConvertedStream(stream, options = {}) {
     this.killCurrentTranscoder();
-    const options = { seek, volume, passes, stream };
-    this.currentTranscoder = { options };
+    this.setVolume(options.volume || 1);
+    this.currentTranscoder = { options: { stream } };
     stream.once('readable', () => this._startPlaying());
     return this;
   }
 
   /**
-   * Plays an Opus encoded stream at 48KHz.
+   * Plays an Opus encoded stream.
    * <warn>Note that inline volume is not compatible with this method.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
    */
-  playOpusStream(stream, { seek = 0, passes = 1 } = {}) {
-    const options = { seek, passes, stream };
-    this.currentTranscoder = { options, opus: true };
+  playOpusStream(stream) {
+    this.currentTranscoder = { options: { stream }, opus: true };
     stream.once('readable', () => this._startPlaying());
     return this;
   }
 
   /**
-   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
    * @param {string} input The arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
    */
-  playArbitraryInput(input, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes, input };
+  playArbitraryInput(input, options = {}) {
+    this.setVolume(options.volume || 1);
+    options.input = input;
     return this._playTranscodable(input, options);
   }
 
   /**
-   * Pauses the entire broadcast - all dispatchers also pause.
+   * Pauses the entire broadcast - all dispatchers are also paused.
    */
   pause() {
     this.paused = true;
@@ -259,7 +260,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Resumes the entire broadcast - all dispatchers also resume.
+   * Resumes the entire broadcast - all dispatchers are also resumed.
    */
   resume() {
     this.paused = false;
@@ -348,14 +349,14 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Stop the current stream from playing without unsubscribing dispatchers.
+   * Stops the current stream from playing without unsubscribing dispatchers.
    */
   end() {
     this.killCurrentTranscoder();
   }
 
   /**
-   * End the current broadcast, all subscribed dispatchers will also end.
+   * Ends the current broadcast, all subscribed dispatchers will also end.
    */
   destroy() {
     this.end();

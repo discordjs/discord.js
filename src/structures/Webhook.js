@@ -1,29 +1,26 @@
-const path = require('path');
 const Util = require('../util/Util');
+const DataResolver = require('../util/DataResolver');
 const Embed = require('./MessageEmbed');
+const MessageAttachment = require('./MessageAttachment');
+const MessageEmbed = require('./MessageEmbed');
+const { browser } = require('../util/Constants');
 
 /**
  * Represents a webhook.
  */
 class Webhook {
-  constructor(client, dataOrID, token) {
-    if (client) {
-      /**
-       * The client that instantiated the webhook
-       * @name Webhook#client
-       * @type {Client}
-       * @readonly
-       */
-      Object.defineProperty(this, 'client', { value: client });
-      if (dataOrID) this.setup(dataOrID);
-    } else {
-      this.id = dataOrID;
-      this.token = token;
-      Object.defineProperty(this, 'client', { value: this });
-    }
+  constructor(client, data) {
+    /**
+     * The client that instantiated the webhook
+     * @name Webhook#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The name of the webhook
      * @type {string}
@@ -38,7 +35,7 @@ class Webhook {
 
     /**
      * The avatar for the webhook
-     * @type {string}
+     * @type {?string}
      */
     this.avatar = data.avatar;
 
@@ -82,25 +79,27 @@ class Webhook {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|string} [file] A file to send with the message
+   * @property {FileOptions|BufferResolvable} [file] A file to send with the message
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
+  /* eslint-disable max-len */
   /**
-   * Send a message with this webhook.
+   * Sends a message with this webhook.
    * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions} [options={}] The options to provide
+   * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a message
    * webhook.send('hello!')
-   *  .then(message => console.log(`Sent message: ${message.content}`))
-   *  .catch(console.error);
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
    */
-  send(content, options) {
+  /* eslint-enable max-len */
+  send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = '';
@@ -108,52 +107,73 @@ class Webhook {
       options = {};
     }
 
-    if (!options.username) options.username = this.name;
+    if (options instanceof MessageAttachment) options = { files: [options.file] };
+    if (options instanceof MessageEmbed) options = { embeds: [options] };
+    if (options.embed) options = { embeds: [options.embed] };
 
+    if (content instanceof Array || options instanceof Array) {
+      const which = content instanceof Array ? content : options;
+      const attachments = which.filter(item => item instanceof MessageAttachment);
+      const embeds = which.filter(item => item instanceof MessageEmbed);
+      if (attachments.length) options = { files: attachments };
+      if (embeds.length) options = { embeds };
+      if ((embeds.length || attachments.length) && content instanceof Array) content = '';
+    }
+
+    if (!options.username) options.username = this.name;
     if (options.avatarURL) {
       options.avatar_url = options.avatarURL;
       options.avatarURL = null;
     }
 
-    if (typeof content !== 'undefined') content = Util.resolveString(content);
     if (content) {
-      if (options.disableEveryone ||
-        (typeof options.disableEveryone === 'undefined' && this.client.options.disableEveryone)
-      ) {
+      content = Util.resolveString(content);
+      let { split, code, disableEveryone } = options;
+      if (split && typeof split !== 'object') split = {};
+      if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
+        content = Util.escapeMarkdown(content, true);
+        content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
+        if (split) {
+          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
+          split.append = '\n```';
+        }
+      }
+      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
         content = content.replace(/@(everyone|here)/g, '@\u200b$1');
       }
+
+      if (split) content = Util.splitMessage(content, split);
     }
     options.content = content;
 
     if (options.embeds) options.embeds = options.embeds.map(embed => new Embed(embed)._apiTransform());
 
-    if (options.file) {
-      if (options.files) options.files.push(options.file);
-      else options.files = [options.file];
-    }
-
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
-        if (typeof file === 'string') file = { attachment: file };
+        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
         if (!file.name) {
           if (typeof file.attachment === 'string') {
-            file.name = path.basename(file.attachment);
+            file.name = Util.basename(file.attachment);
           } else if (file.attachment && file.attachment.path) {
-            file.name = path.basename(file.attachment.path);
+            file.name = Util.basename(file.attachment.path);
+          } else if (file instanceof MessageAttachment) {
+            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
           } else {
             file.name = 'file.jpg';
           }
+        } else if (file instanceof MessageAttachment) {
+          file = file.file;
         }
         options.files[i] = file;
       }
 
       return Promise.all(options.files.map(file =>
-        this.client.resolver.resolveBuffer(file.attachment).then(buffer => {
-          file.file = buffer;
+        DataResolver.resolveFile(file.attachment).then(resource => {
+          file.file = resource;
           return file;
         })
-      )).then(files => this.client.api.webhooks.opts(this.id, this.token).post({
+      )).then(files => this.client.api.webhooks(this.id, this.token).post({
         data: options,
         query: { wait: true },
         files,
@@ -161,19 +181,38 @@ class Webhook {
       }));
     }
 
-    return this.client.api.webhooks.opts(this.id, this.token).post({
+    if (content instanceof Array) {
+      return new Promise((resolve, reject) => {
+        const messages = [];
+        (function sendChunk() {
+          const opt = content.length ? null : { embeds: options.embeds, files: options.files };
+          this.client.api.webhooks(this.id, this.token).post({
+            data: { content: content.shift(), opt },
+            query: { wait: true },
+            auth: false,
+          })
+            .then(message => {
+              messages.push(message);
+              if (content.length === 0) return resolve(messages);
+              return sendChunk.call(this);
+            })
+            .catch(reject);
+        }.call(this));
+      });
+    }
+
+    return this.client.api.webhooks(this.id, this.token).post({
       data: options,
       query: { wait: true },
       auth: false,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
   /**
-   * Send a raw slack message with this webhook.
+   * Sends a raw slack message with this webhook.
    * @param {Object} body The raw body to send
    * @returns {Promise<Message|Object>}
    * @example
@@ -190,49 +229,60 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.api.webhooks.opts(this.id, this.token).slack.post({
+    return this.client.api.webhooks(this.id, this.token).slack.post({
       query: { wait: true },
       auth: false,
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
-      const Message = require('./Message');
-      return new Message(this.client.channels.get(data.channel_id), data, this.client);
+      return this.client.channels.get(data.channel_id).messages.create(data, false);
     });
   }
 
   /**
-   * Edit the webhook.
+   * Edits the webhook.
    * @param {Object} options Options
-   * @param {string} [options.name] New name for this webhook
+   * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
+   * @param {ChannelResolvable} [options.channel] New channel for this webhook
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit({ name = this.name, avatar }, reason) {
+  edit({ name = this.name, avatar, channel }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return this.client.resolver.resolveBuffer(avatar).then(file => {
-        const dataURI = this.client.resolver.resolveBase64(file);
-        return this.edit({ name, avatar: dataURI }, reason);
-      });
+      return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
-    return this.client.api.webhooks.opts(this.id, this.token).patch({
-      data: { name, avatar },
+    if (channel) channel = this.client.channels.resolveID(channel);
+    return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+      data: { name, avatar, channel_id: channel },
       reason,
     }).then(data => {
       this.name = data.name;
       this.avatar = data.avatar;
+      this.channelID = data.channel_id;
       return this;
     });
   }
 
   /**
-   * Delete the webhook.
+   * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */
   delete(reason) {
-    return this.client.api.webhooks.opts(this.id, this.token).delete({ reason });
+    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  }
+
+  static applyToClass(structure) {
+    for (const prop of [
+      'send',
+      'sendSlackMessage',
+      'edit',
+      'delete',
+    ]) {
+      Object.defineProperty(structure.prototype, prop,
+        Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
+    }
   }
 }
 

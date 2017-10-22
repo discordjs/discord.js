@@ -2,16 +2,14 @@ const AbstractHandler = require('./AbstractHandler');
 
 class ChannelCreateHandler extends AbstractHandler {
   handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
-    client.actions.ChannelCreate.handle(data);
+    this.packetManager.client.actions.ChannelCreate.handle(packet.d);
   }
 }
+
+module.exports = ChannelCreateHandler;
 
 /**
  * Emitted whenever a channel is created.
  * @event Client#channelCreate
- * @param {Channel} channel The channel that was created
+ * @param {DMChannel|GroupDMChannel|GuildChannel} channel The channel that was created
  */
-
-module.exports = ChannelCreateHandler;

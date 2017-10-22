@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const GuildMember = require('./GuildMember');
 
 /**
  * Keeps track of mentions in a {@link Message}.
@@ -21,8 +22,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.get(mention.id);
-          if (!user) user = message.client.dataManager.newUser(mention);
+          let user = message.client.users.create(mention);
           this.users.set(user.id, user);
         }
       }
@@ -102,7 +102,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get channels() {
@@ -114,6 +114,22 @@ class MessageMentions {
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
+  }
+
+  /**
+   * Check if a user is mentioned.
+   * Takes into account user mentions, role mentions, and @everyone/@here mentions.
+   * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
+   * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
+   * @returns {boolean}
+   */
+  has(data, strict = true) {
+    if (strict && this.everyone) return true;
+    if (strict && data instanceof GuildMember) {
+      for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
+    }
+    const id = data.id || data;
+    return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
   }
 }
 
@@ -127,18 +143,18 @@ MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
  * Regular expression that globally matches user mentions like `<@81440962496172032>`
  * @type {RegExp}
  */
-MessageMentions.USERS_PATTERN = /<@!?[0-9]+>/g;
+MessageMentions.USERS_PATTERN = /<@!?(1|\d{17,19})>/g;
 
 /**
  * Regular expression that globally matches role mentions like `<@&297577916114403338>`
  * @type {RegExp}
  */
-MessageMentions.ROLES_PATTERN = /<@&[0-9]+>/g;
+MessageMentions.ROLES_PATTERN = /<@&(\d{17,19})>/g;
 
 /**
  * Regular expression that globally matches channel mentions like `<#222079895583457280>`
  * @type {RegExp}
  */
-MessageMentions.CHANNELS_PATTERN = /<#([0-9]+)>/g;
+MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})>/g;
 
 module.exports = MessageMentions;

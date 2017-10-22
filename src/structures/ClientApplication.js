@@ -1,23 +1,19 @@
 const Snowflake = require('../util/Snowflake');
-const Constants = require('../util/Constants');
+const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
+const Base = require('./Base');
 
 /**
- * Represents an OAuth2 Application.
+ * Represents a Client OAuth2 Application.
+ * @extends {Base}
  */
-class OAuth2Application {
+class ClientApplication extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the application
-     * @name OAuth2Application#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
+    super(client);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of the app
      * @type {Snowflake}
@@ -41,6 +37,12 @@ class OAuth2Application {
      * @type {string}
      */
     this.icon = data.icon;
+
+    /**
+     * The app's cover image hash
+     * @type {?string}
+     */
+    this.cover = data.cover_image;
 
     /**
      * The app's RPC origins
@@ -86,7 +88,7 @@ class OAuth2Application {
 
     /**
      * OAuth2 secret for the application
-     * @type {boolean}
+     * @type {string}
      */
     this.secret = data.secret;
 
@@ -95,7 +97,7 @@ class OAuth2Application {
        * The owner of this OAuth application
        * @type {?User}
        */
-      this.owner = this.client.dataManager.newUser(data.owner);
+      this.owner = this.client.users.create(data.owner);
     }
   }
 
@@ -109,7 +111,7 @@ class OAuth2Application {
   }
 
   /**
-   * The time the app was created
+   * The time the app was created at
    * @type {Date}
    * @readonly
    */
@@ -118,35 +120,78 @@ class OAuth2Application {
   }
 
   /**
-   * A link to the application's icon
+   * A link to the application's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
   }
 
   /**
-   * Reset the app's secret.
+   * A link to this application's cover image.
+   * @param {Object} [options={}] Options for the cover image url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string} URL to the cover image
+   */
+  coverImage({ format, size } = {}) {
+    if (!this.cover) return null;
+    return Endpoints
+      .CDN(this.client.options.http.cdn)
+      .AppIcon(this.id, this.cover, { format, size });
+  }
+
+  /**
+   * Get rich presence assets.
+   * @returns {Promise<Object>}
+   */
+  fetchAssets() {
+    return this.client.api.applications(this.id).assets.get()
+      .then(assets => assets.map(a => ({
+        id: a.id,
+        name: a.name,
+        type: Object.keys(ClientApplicationAssetTypes)[a.type - 1],
+      })));
+  }
+
+  /**
+   * Creates a rich presence asset.
+   * @param {string} name Name of the asset
+   * @param {Base64Resolvable} data Data of the asset
+   * @param {string} type Type of the asset. `big`, or `small`
+   * @returns {Promise}
+   */
+  createAsset(name, data, type) {
+    return DataResolver.resolveBase64(data).then(b64 =>
+      this.client.api.applications(this.id).assets.post({ data: {
+        name,
+        data: b64,
+        type: ClientApplicationAssetTypes[type.toUpperCase()],
+      } }));
+  }
+
+  /**
+   * Resets the app's secret.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
+   * @returns {ClientApplication}
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new OAuth2Application(this.client, app));
+      .then(app => new ClientApplication(this.client, app));
   }
 
   /**
-   * Reset the app's bot token.
+   * Resets the app's bot token.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {OAuth2Application}
+   * @returns {ClientApplication}
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new OAuth2Application(this.client, Object.assign({}, this, { bot: app })));
+      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**
@@ -158,4 +203,4 @@ class OAuth2Application {
   }
 }
 
-module.exports = OAuth2Application;
+module.exports = ClientApplication;

@@ -13,10 +13,10 @@ class PermissionOverwrites {
      */
     Object.defineProperty(this, 'channel', { value: guildChannel });
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The ID of this overwrite, either a user ID or a role ID
      * @type {Snowflake}
@@ -24,29 +24,33 @@ class PermissionOverwrites {
     this.id = data.id;
 
     /**
+     * The type of a permission overwrite. It can be one of:
+     * * member
+     * * role
+     * @typedef {string} OverwriteType
+     */
+
+    /**
      * The type of this overwrite
-     * @type {string}
+     * @type {OverwriteType}
      */
     this.type = data.type;
-
-    this._denied = data.deny;
-    this._allowed = data.allow;
 
     /**
      * The permissions that are denied for the user or role.
      * @type {Permissions}
      */
-    this.denied = new Permissions(this._denied);
+    this.denied = new Permissions(data.deny).freeze();
 
     /**
      * The permissions that are allowed for the user or role.
      * @type {Permissions}
      */
-    this.allowed = new Permissions(this._allowed);
+    this.allowed = new Permissions(data.allow).freeze();
   }
 
   /**
-   * Delete this Permission Overwrite.
+   * Deletes this Permission Overwrite.
    * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */

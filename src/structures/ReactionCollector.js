@@ -1,5 +1,6 @@
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
+const { Events } = require('../util/Constants');
 
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions
@@ -22,13 +23,13 @@ class ReactionCollector extends Collector {
     super(message.client, filter, options);
 
     /**
-     * The message
+     * The message upon which to collect reactions
      * @type {Message}
      */
     this.message = message;
 
     /**
-     * The users which have reacted
+     * The users which have reacted to this message
      * @type {Collection}
      */
     this.users = new Collection();
@@ -39,44 +40,76 @@ class ReactionCollector extends Collector {
      */
     this.total = 0;
 
-    this.client.on('messageReactionAdd', this.listener);
+    this.empty = this.empty.bind(this);
+
+    this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
+    this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
+    this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
+
+    this.once('end', () => {
+      this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
+      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
+      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
+    });
+
+    this.on('collect', (collected, reaction, user) => {
+      this.total++;
+      this.users.set(user.id, user);
+    });
+
+    this.on('dispose', (disposed, reaction, user) => {
+      this.total--;
+      if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
+    });
   }
 
   /**
-   * Handle an incoming reaction for possible collection.
+   * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @returns {?{key: Snowflake, value: MessageReaction}} Reaction data to collect
+   * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
    */
-  handle(reaction) {
+  collect(reaction) {
     if (reaction.message.id !== this.message.id) return null;
     return {
-      key: reaction.emoji.id || reaction.emoji.name,
+      key: ReactionCollector.key(reaction),
       value: reaction,
     };
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @param {MessageReaction} reaction The reaction that was collected
-   * @param {User} user The user that reacted
-   * @returns {?string} Reason to end the collector, if any
-   * @private
+   * Handles a reaction deletion for possible disposal.
+   * @param {MessageReaction} reaction The reaction to possibly dispose
+   * @returns {?Snowflake|string}
    */
-  postCheck(reaction, user) {
-    this.users.set(user.id, user);
-    if (this.options.max && ++this.total >= this.options.max) return 'limit';
+  dispose(reaction) {
+    return reaction.message.id === this.message.id && !reaction.count ? ReactionCollector.key(reaction) : null;
+  }
+
+  /**
+   * Empties this reaction collector.
+   */
+  empty() {
+    this.total = 0;
+    this.collected.clear();
+    this.users.clear();
+    this.checkEnd();
+  }
+
+  endReason() {
+    if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
   }
 
   /**
-   * Remove event listeners.
-   * @private
+   * Gets the collector key for a reaction.
+   * @param {MessageReaction} reaction The message reaction to get the key for
+   * @returns {Snowflake|string}
    */
-  cleanup() {
-    this.client.removeListener('messageReactionAdd', this.listener);
+  static key(reaction) {
+    return reaction.emoji.id || reaction.emoji.name;
   }
 }
 

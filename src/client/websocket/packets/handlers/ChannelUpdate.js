@@ -1,11 +1,20 @@
 const AbstractHandler = require('./AbstractHandler');
+const { Events } = require('../../../../util/Constants');
 
 class ChannelUpdateHandler extends AbstractHandler {
   handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
-    client.actions.ChannelUpdate.handle(data);
+    const { old, updated } = this.packetManager.client.actions.ChannelUpdate.handle(packet.d);
+    if (old && updated) {
+      this.packetManager.client.emit(Events.CHANNEL_UPDATE, old, updated);
+    }
   }
 }
 
 module.exports = ChannelUpdateHandler;
+
+/**
+ * Emitted whenever a channel is updated - e.g. name change, topic change.
+ * @event Client#channelUpdate
+ * @param {DMChannel|GroupDMChannel|GuildChannel} oldChannel The channel before the update
+ * @param {DMChannel|GroupDMChannel|GuildChannel} newChannel The channel after the update
+ */

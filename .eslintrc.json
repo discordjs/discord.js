@@ -7,6 +7,9 @@
     "es6": true,
     "node": true
   },
+  "overrides": [
+    { "files": ["*.browser.js"], "env": { "browser": true } }
+  ],
   "rules": {
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",

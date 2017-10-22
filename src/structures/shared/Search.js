@@ -52,9 +52,9 @@ module.exports = function search(target, options) {
     options.minID = long.fromNumber(t).shiftLeft(22).toString();
     options.maxID = long.fromNumber(t + 864e5).shiftLeft(22).toString();
   }
-  if (options.channel) options.channel = target.client.resolver.resolveChannelID(options.channel);
-  if (options.author) options.author = target.client.resolver.resolveUserID(options.author);
-  if (options.mentions) options.mentions = target.client.resolver.resolveUserID(options.options.mentions);
+  if (options.channel) options.channel = target.client.channels.resolveID(options.channel);
+  if (options.author) options.author = target.client.users.resolveID(options.author);
+  if (options.mentions) options.mentions = target.client.users.resolveID(options.options.mentions);
   if (options.sortOrder) {
     options.sortOrder = { ascending: 'asc', descending: 'desc' }[options.sortOrder] || options.sortOrder;
   }
@@ -84,14 +84,13 @@ module.exports = function search(target, options) {
   // Lazy load these because some of them use util
   const Channel = require('../Channel');
   const Guild = require('../Guild');
-  const Message = require('../Message');
 
   if (!(target instanceof Channel || target instanceof Guild)) throw new TypeError('SEARCH_CHANNEL_TYPE');
 
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
     const results = body.messages.map(x =>
-      x.map(m => new Message(target.client.channels.get(m.channel_id), m, target.client))
+      x.map(m => target.client.channels.get(m.channel_id).messages.create(m, false))
     );
     return {
       total: body.total_results,

@@ -1,4 +1,5 @@
 const Util = require('../util/Util');
+const { Events } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
@@ -50,9 +51,11 @@ class ShardClientUtil {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array>}
    * @example
-   * client.shard.fetchClientValues('guilds.size').then(results => {
-   *   console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-   * }).catch(console.error);
+   * client.shard.fetchClientValues('guilds.size')
+   *   .then(results => {
+   *     console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
+   *   })
+   *   .catch(console.error);
    */
   fetchClientValues(prop) {
     return new Promise((resolve, reject) => {
@@ -121,7 +124,7 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
-      this.client.emit('error', err);
+      this.client.emit(Events.ERROR, err);
     });
   }
 
@@ -134,7 +137,8 @@ class ShardClientUtil {
     if (!this._singleton) {
       this._singleton = new this(client);
     } else {
-      client.emit('warn', 'Multiple clients created in child process; only the first will handle sharding helpers.');
+      client.emit(Events.WARN,
+        'Multiple clients created in child process; only the first will handle sharding helpers.');
     }
     return this._singleton;
   }

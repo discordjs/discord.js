@@ -25,6 +25,7 @@ const commands = {
     }
     message.channel.send(res, { code: 'js' });
   },
+  ping: message => message.reply('pong'),
 };
 
 client.on('message', message => {

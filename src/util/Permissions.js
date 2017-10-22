@@ -41,35 +41,47 @@ class Permissions {
   }
 
   /**
-   * Adds permissions to this one, creating a new instance to represent the new bitfield.
+   * Freezes these permissions, making them immutable.
+   * @returns {Permissions} These permissions
+   */
+  freeze() {
+    return Object.freeze(this);
+  }
+
+  /**
+   * Adds permissions to these ones.
    * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions}
+   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
    */
   add(...permissions) {
     let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) !== perm) total |= perm;
+      total |= perm;
     }
-    return new this.constructor(this.member, this.bitfield | total);
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
+    this.bitfield |= total;
+    return this;
   }
 
   /**
-   * Removes permissions to this one, creating a new instance to represent the new bitfield.
+   * Removes permissions from these.
    * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions}
+   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
    */
   remove(...permissions) {
     let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) === perm) total |= perm;
+      total |= perm;
     }
-    return new this.constructor(this.member, this.bitfield & ~total);
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
+    this.bitfield &= ~total;
+    return this;
   }
 
   /**
-   * Gets an object mapping permission name (like `READ_MESSAGES`) to a {@link boolean} indicating whether the
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
    * permission is available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {Object}
@@ -82,9 +94,10 @@ class Permissions {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * - A string (see {@link Permissions.FLAGS})
-   * - A permission number
-   * @typedef {string|number} PermissionResolvable
+   * * A string (see {@link Permissions.FLAGS})
+   * * A permission number
+   * * An instance of Permissions
+   * @typedef {string|number|Permissions} PermissionResolvable
    */
 
   /**
@@ -93,43 +106,44 @@ class Permissions {
    * @returns {number}
    */
   static resolve(permission) {
+    if (typeof permission === 'number' && permission >= 0) return permission;
+    if (permission instanceof Permissions) return permission.bitfield;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (typeof permission === 'string') permission = this.FLAGS[permission];
-    if (typeof permission !== 'number' || permission < 1) throw new RangeError('PERMISSION_INVALID');
-    return permission;
+    if (typeof permission === 'string') return this.FLAGS[permission];
+    throw new RangeError('PERMISSIONS_INVALID');
   }
 }
 
 /**
  * Numeric permission flags. All available properties:
- * - `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
- * - `CREATE_INSTANT_INVITE` (create invitations to the guild)
- * - `KICK_MEMBERS`
- * - `BAN_MEMBERS`
- * - `MANAGE_CHANNELS` (edit and reorder channels)
- * - `MANAGE_GUILD` (edit the guild information, region, etc.)
- * - `ADD_REACTIONS` (add new reactions to messages)
- * - `VIEW_AUDIT_LOG`
- * - `READ_MESSAGES`
- * - `SEND_MESSAGES`
- * - `SEND_TTS_MESSAGES`
- * - `MANAGE_MESSAGES` (delete messages and reactions)
- * - `EMBED_LINKS` (links posted will have a preview embedded)
- * - `ATTACH_FILES`
- * - `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
- * - `MENTION_EVERYONE`
- * - `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
- * - `CONNECT` (connect to a voice channel)
- * - `SPEAK` (speak in a voice channel)
- * - `MUTE_MEMBERS` (mute members across all voice channels)
- * - `DEAFEN_MEMBERS` (deafen members across all voice channels)
- * - `MOVE_MEMBERS` (move members between voice channels)
- * - `USE_VAD` (use voice activity detection)
- * - `CHANGE_NICKNAME`
- * - `MANAGE_NICKNAMES` (change other members' nicknames)
- * - `MANAGE_ROLES`
- * - `MANAGE_WEBHOOKS`
- * - `MANAGE_EMOJIS`
+ * * `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
+ * * `CREATE_INSTANT_INVITE` (create invitations to the guild)
+ * * `KICK_MEMBERS`
+ * * `BAN_MEMBERS`
+ * * `MANAGE_CHANNELS` (edit and reorder channels)
+ * * `MANAGE_GUILD` (edit the guild information, region, etc.)
+ * * `ADD_REACTIONS` (add new reactions to messages)
+ * * `VIEW_AUDIT_LOG`
+ * * `VIEW_CHANNEL`
+ * * `SEND_MESSAGES`
+ * * `SEND_TTS_MESSAGES`
+ * * `MANAGE_MESSAGES` (delete messages and reactions)
+ * * `EMBED_LINKS` (links posted will have a preview embedded)
+ * * `ATTACH_FILES`
+ * * `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
+ * * `MENTION_EVERYONE`
+ * * `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
+ * * `CONNECT` (connect to a voice channel)
+ * * `SPEAK` (speak in a voice channel)
+ * * `MUTE_MEMBERS` (mute members across all voice channels)
+ * * `DEAFEN_MEMBERS` (deafen members across all voice channels)
+ * * `MOVE_MEMBERS` (move members between voice channels)
+ * * `USE_VAD` (use voice activity detection)
+ * * `CHANGE_NICKNAME`
+ * * `MANAGE_NICKNAMES` (change other members' nicknames)
+ * * `MANAGE_ROLES`
+ * * `MANAGE_WEBHOOKS`
+ * * `MANAGE_EMOJIS`
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/permissions}
  */
@@ -143,7 +157,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
 
-  READ_MESSAGES: 1 << 10,
+  VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
   MANAGE_MESSAGES: 1 << 13,

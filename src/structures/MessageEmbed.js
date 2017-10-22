@@ -1,3 +1,4 @@
+const MessageAttachment = require('./MessageAttachment');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -53,10 +54,10 @@ class MessageEmbed {
      * @property {string} value The value of this field
      * @property {boolean} inline If this field will be displayed inline
      */
-    this.fields = data.fields || [];
+    this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
 
     /**
-     * The thumbnail of this embed, if there is one
+     * The thumbnail of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
@@ -86,16 +87,17 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The video of this embed, if there is one
+     * The video of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL of this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
+     * @readonly
      */
     this.video = data.video;
 
     /**
-     * The author of this embed, if there is one
+     * The author of this embed (if there is one)
      * @type {?Object}
      * @property {string} name The name of this author
      * @property {string} url URL of this author
@@ -110,7 +112,7 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The provider of this embed, if there is one
+     * The provider of this embed (if there is one)
      * @type {?Object}
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
@@ -129,10 +131,24 @@ class MessageEmbed {
       iconURL: data.footer.iconURL || data.footer.icon_url,
       proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
     } : null;
+
+    /**
+     * The files of this embed
+     * @type {?Object}
+     * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
+     */
+    if (data.files) {
+      this.files = data.files.map(file => {
+        if (file instanceof MessageAttachment) {
+          return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
+        }
+        return file;
+      });
+    }
   }
 
   /**
-   * The date this embed was created
+   * The date this embed was created at
    * @type {?Date}
    * @readonly
    */
@@ -154,14 +170,14 @@ class MessageEmbed {
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     name = Util.resolveString(name);
     if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!String(name) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!String(value) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
     this.fields.push({ name, value, inline });
     return this;
   }
@@ -169,7 +185,7 @@ class MessageEmbed {
   /**
    * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
    * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   addBlankField(inline = false) {
     return this.addField('\u200B', '\u200B', inline);
@@ -178,12 +194,15 @@ class MessageEmbed {
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
    * setting an embed image or author/footer icons. Only one file may be attached.
-   * @param {Array<FileOptions|string>} files Files to attach
-   * @returns {MessageEmbed} This embed
+   * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
+   * @returns {MessageEmbed}
    */
   attachFiles(files) {
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
+    for (let file of files) {
+      if (file instanceof MessageAttachment) file = file.file;
+    }
     return this;
   }
 
@@ -192,7 +211,7 @@ class MessageEmbed {
    * @param {StringResolvable} name The name of the author
    * @param {string} [iconURL] The icon URL of the author
    * @param {string} [url] The URL of the author
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setAuthor(name, iconURL, url) {
     this.author = { name: Util.resolveString(name), iconURL, url };
@@ -202,7 +221,7 @@ class MessageEmbed {
   /**
    * Sets the color of this embed.
    * @param {ColorResolvable} color The color of the embed
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setColor(color) {
     this.color = Util.resolveColor(color);
@@ -212,7 +231,7 @@ class MessageEmbed {
   /**
    * Sets the description of this embed.
    * @param {StringResolvable} description The description
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setDescription(description) {
     description = Util.resolveString(description);
@@ -225,7 +244,7 @@ class MessageEmbed {
    * Sets the footer of this embed.
    * @param {StringResolvable} text The text of the footer
    * @param {string} [iconURL] The icon URL of the footer
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
@@ -235,9 +254,9 @@ class MessageEmbed {
   }
 
   /**
-   * Set the image of this embed.
+   * Sets the image of this embed.
    * @param {string} url The URL of the image
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setImage(url) {
     this.image = { url };
@@ -245,9 +264,9 @@ class MessageEmbed {
   }
 
   /**
-   * Set the thumbnail of this embed.
+   * Sets the thumbnail of this embed.
    * @param {string} url The URL of the thumbnail
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setThumbnail(url) {
     this.thumbnail = { url };
@@ -257,7 +276,7 @@ class MessageEmbed {
   /**
    * Sets the timestamp of this embed.
    * @param {Date} [timestamp=current date] The timestamp
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setTimestamp(timestamp = new Date()) {
     this.timestamp = timestamp.getTime();
@@ -267,7 +286,7 @@ class MessageEmbed {
   /**
    * Sets the title of this embed.
    * @param {StringResolvable} title The title
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setTitle(title) {
     title = Util.resolveString(title);
@@ -279,13 +298,18 @@ class MessageEmbed {
   /**
    * Sets the URL of this embed.
    * @param {string} url The URL
-   * @returns {MessageEmbed} This embed
+   * @returns {MessageEmbed}
    */
   setURL(url) {
     this.url = url;
     return this;
   }
 
+  /**
+   * Transforms the embed object to be processed.
+   * @returns {Object} The raw data of this embed
+   * @private
+   */
   _apiTransform() {
     return {
       title: this.title,
@@ -295,7 +319,6 @@ class MessageEmbed {
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
       fields: this.fields,
-      files: this.files,
       thumbnail: this.thumbnail,
       image: this.image,
       author: this.author ? {

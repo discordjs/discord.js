@@ -1,14 +1,8 @@
-const Constants = require('../../util/Constants');
+const { OPCodes, VoiceOPCodes } = require('../../util/Constants');
 const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
-
-let WebSocket;
-try {
-  WebSocket = require('uws');
-} catch (err) {
-  WebSocket = require('ws');
-}
+const WebSocket = require('../../WebSocket');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -65,7 +59,7 @@ class VoiceWebSocket extends EventEmitter {
     if (this.dead) return;
     if (this.ws) this.reset();
     if (this.attempts >= 5) {
-      this.emit('debug', new Error(`Too many connection attempts (${this.attempts}).`));
+      this.emit('debug', new Error('VOICE_CONNECTION_ATTEMPTS_EXCEEDED', this.attempts));
       return;
     }
 
@@ -75,7 +69,7 @@ class VoiceWebSocket extends EventEmitter {
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
-    this.ws = new WebSocket(`wss://${this.voiceConnection.authentication.endpoint}`);
+    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 3 });
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -115,7 +109,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onOpen() {
     this.sendPacket({
-      op: Constants.OPCodes.DISPATCH,
+      op: OPCodes.DISPATCH,
       d: {
         server_id: this.voiceConnection.channel.guild.id,
         user_id: this.client.user.id,
@@ -123,7 +117,7 @@ class VoiceWebSocket extends EventEmitter {
         session_id: this.voiceConnection.authentication.sessionID,
       },
     }).catch(() => {
-      this.emit('error', new Error('Tried to send join packet, but the WebSocket is not open.'));
+      this.emit('error', new Error('VOICE_JOIN_SOCKET_CLOSED'));
     });
   }
 
@@ -134,7 +128,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(JSON.parse(event.data));
+      return this.onPacket(WebSocket.unpack(event.data));
     } catch (error) {
       return this.onError(error);
     }
@@ -161,7 +155,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onPacket(packet) {
     switch (packet.op) {
-      case Constants.VoiceOPCodes.READY:
+      case VoiceOPCodes.READY:
         this.setHeartbeat(packet.d.heartbeat_interval);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
@@ -170,7 +164,7 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('ready', packet.d);
         break;
-      case Constants.VoiceOPCodes.SESSION_DESCRIPTION:
+      case VoiceOPCodes.SESSION_DESCRIPTION:
         /**
          * Emitted once the Voice Websocket receives a description of this voice session.
          * @param {string} encryptionMode The type of encryption being used
@@ -179,7 +173,7 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
         break;
-      case Constants.VoiceOPCodes.SPEAKING:
+      case VoiceOPCodes.SPEAKING:
         /**
          * Emitted whenever a speaking packet is received.
          * @param {Object} data
@@ -204,7 +198,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   setHeartbeat(interval) {
     if (!interval || isNaN(interval)) {
-      this.onError(new Error('Tried to set voice heartbeat but no valid interval was specified.'));
+      this.onError(new Error('VOICE_INVALID_HEARTBEAT'));
       return;
     }
     if (this.heartbeatInterval) {
@@ -235,7 +229,7 @@ class VoiceWebSocket extends EventEmitter {
    * Sends a heartbeat packet.
    */
   sendHeartbeat() {
-    this.sendPacket({ op: Constants.VoiceOPCodes.HEARTBEAT, d: null }).catch(() => {
+    this.sendPacket({ op: VoiceOPCodes.HEARTBEAT, d: null }).catch(() => {
       this.emit('warn', 'Tried to send heartbeat, but connection is not open');
       this.clearHeartbeat();
     });

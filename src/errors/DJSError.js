@@ -2,11 +2,9 @@
 
 const kCode = Symbol('code');
 const messages = new Map();
-const assert = require('assert');
-const util = require('util');
 
 /**
- * Extend an error of some sort into a DiscordjsError
+ * Extend an error of some sort into a DiscordjsError.
  * @param {Error} Base Base error to extend
  * @returns {DiscordjsError}
  */
@@ -29,27 +27,23 @@ function makeDiscordjsError(Base) {
 }
 
 /**
- * Format the message for an error
+ * Format the message for an error.
  * @param {string} key Error key
  * @param {Array<*>} args Arguments to pass for util format or as function args
  * @returns {string} Formatted string
  */
 function message(key, args) {
-  assert.strictEqual(typeof key, 'string');
+  if (typeof key !== 'string') throw new Error('Error message key must be a string');
   const msg = messages.get(key);
-  assert(msg, `An invalid error message key was used: ${key}.`);
-  let fmt = util.format;
-  if (typeof msg === 'function') {
-    fmt = msg;
-  } else {
-    if (args === undefined || args.length === 0) return msg;
-    args.unshift(msg);
-  }
-  return String(fmt(...args));
+  if (!msg) throw new Error(`An invalid error message key was used: ${key}.`);
+  if (typeof msg === 'function') return msg(...args);
+  if (args === undefined || args.length === 0) return msg;
+  args.unshift(msg);
+  return String(...args);
 }
 
 /**
- * Register an error code and message
+ * Register an error code and message.
  * @param {string} sym Unique name for the error
  * @param {*} val Value of the error
  */

@@ -1,31 +1,23 @@
-const PartialGuild = require('./PartialGuild');
-const PartialGuildChannel = require('./PartialGuildChannel');
-const Constants = require('../util/Constants');
+const { Endpoints } = require('../util/Constants');
+const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
  * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ * @extends {Base}
  */
-class Invite {
+class Invite extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the invite
-     * @name Invite#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
+    super(client);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
-     * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
-     * unknown, this will be a PartialGuild object
-     * @type {Guild|PartialGuild}
+     * The guild the invite is for
+     * @type {Guild}
      */
-    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
+    this.guild = this.client.guilds.create(data.guild, false);
 
     /**
      * The code for this invite
@@ -86,15 +78,14 @@ class Invite {
        * The user who created this invite
        * @type {User}
        */
-      this.inviter = this.client.dataManager.newUser(data.inviter);
+      this.inviter = this.client.users.create(data.inviter);
     }
 
     /**
-     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
-     * If the channel is unknown, this will be a PartialGuildChannel object.
-     * @type {GuildChannel|PartialGuildChannel}
+     * The channel the invite is for
+     * @type {GuildChannel}
      */
-    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+    this.channel = this.client.channels.create(data.channel, this.guild, false);
 
     /**
      * The timestamp the invite was created at
@@ -104,7 +95,7 @@ class Invite {
   }
 
   /**
-   * The time the invite was created
+   * The time the invite was created at
    * @type {Date}
    * @readonly
    */
@@ -122,7 +113,7 @@ class Invite {
   }
 
   /**
-   * The time the invite will expire
+   * The time the invite will expire at
    * @type {Date}
    * @readonly
    */
@@ -136,7 +127,7 @@ class Invite {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.invite(this.client.options.http.invite, this.code);
+    return Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**

@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-
+const { Events } = require('../../../../util/Constants');
 const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
@@ -10,17 +10,18 @@ class ReadyHandler extends AbstractHandler {
     client.ws.heartbeat();
 
     data.user.user_settings = data.user_settings;
+    data.user.user_guild_settings = data.user_guild_settings;
 
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
-    for (const guild of data.guilds) client.dataManager.newGuild(guild);
-    for (const privateDM of data.private_channels) client.dataManager.newChannel(privateDM);
+    for (const guild of data.guilds) client.guilds.create(guild);
+    for (const privateDM of data.private_channels) client.channels.create(privateDM);
 
     for (const relation of data.relationships) {
-      const user = client.dataManager.newUser(relation.user);
+      const user = client.users.create(relation.user);
       if (relation.type === 1) {
         client.user.friends.set(user.id, user);
       } else if (relation.type === 2) {
@@ -28,11 +29,7 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    data.presences = data.presences || [];
-    for (const presence of data.presences) {
-      client.dataManager.newUser(presence.user);
-      client._setPresence(presence.user.id, presence);
-    }
+    for (const presence of data.presences || []) client.presences.create(presence);
 
     if (data.notes) {
       for (const user in data.notes) {
@@ -43,17 +40,15 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    if (!client.user.bot && client.options.sync) client.setInterval(client.syncGuilds.bind(client), 30000);
-
     if (!client.users.has('1')) {
-      client.dataManager.newUser({
+      client.users.create({
         id: '1',
         username: 'Clyde',
         discriminator: '0000',
         avatar: 'https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png',
         bot: true,
         status: 'online',
-        game: null,
+        activity: null,
         verified: true,
       });
     }
@@ -74,7 +69,7 @@ class ReadyHandler extends AbstractHandler {
 
     ws.sessionID = data.session_id;
     ws._trace = data._trace;
-    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    client.emit(Events.DEBUG, `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }

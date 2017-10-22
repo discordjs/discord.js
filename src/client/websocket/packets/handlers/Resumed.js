@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events, Status } = require('../../../../util/Constants');
 
 class ResumedHandler extends AbstractHandler {
   handle(packet) {
@@ -8,20 +8,20 @@ class ResumedHandler extends AbstractHandler {
 
     ws._trace = packet.d._trace;
 
-    ws.status = Constants.Status.READY;
+    ws.status = Status.READY;
     this.packetManager.handleQueue();
 
     const replayed = ws.sequence - ws.closeSequence;
 
     ws.debug(`RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events.`);
-    client.emit('resume', replayed);
+    client.emit(Events.RESUMED, replayed);
     ws.heartbeat();
   }
 }
 
 /**
  * Emitted whenever a WebSocket resumes.
- * @event Client#resume
+ * @event Client#resumed
  * @param {number} replayed The number of events that were replayed
  */
 

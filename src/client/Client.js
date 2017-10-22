@@ -1,61 +1,45 @@
-const os = require('os');
-const EventEmitter = require('events');
-const Constants = require('../util/Constants');
+const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
-const RESTManager = require('./rest/RESTManager');
-const ClientDataManager = require('./ClientDataManager');
 const ClientManager = require('./ClientManager');
-const ClientDataResolver = require('./ClientDataResolver');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const { Presence } = require('../structures/Presence');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
-const User = require('../structures/User');
 const Invite = require('../structures/Invite');
-const OAuth2Application = require('../structures/OAuth2Application');
+const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
+const UserStore = require('../stores/UserStore');
+const ChannelStore = require('../stores/ChannelStore');
+const GuildStore = require('../stores/GuildStore');
+const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const EmojiStore = require('../stores/EmojiStore');
+const { Events, browser } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
- * @extends {EventEmitter}
+ * @extends {BaseClient}
  */
-class Client extends EventEmitter {
+class Client extends BaseClient {
   /**
    * @param {ClientOptions} [options] Options for the client
    */
   constructor(options = {}) {
-    super();
+    super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!options.shardId && 'SHARD_ID' in process.env) options.shardId = Number(process.env.SHARD_ID);
-    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
+      this.options.shardId = Number(process.env.SHARD_ID);
+    }
+    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    }
 
-    /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
     this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
-
-    /**
-     * The data manager of the client
-     * @type {ClientDataManager}
-     * @private
-     */
-    this.dataManager = new ClientDataManager(this);
 
     /**
      * The manager of the client
@@ -72,13 +56,6 @@ class Client extends EventEmitter {
     this.ws = new WebSocketManager(this);
 
     /**
-     * The data resolver of the client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
-
-    /**
      * The action manager of the client
      * @type {ActionsManager}
      * @private
@@ -90,44 +67,45 @@ class Client extends EventEmitter {
      * @type {?ClientVoiceManager}
      * @private
      */
-    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
+    this.voice = !browser ? new ClientVoiceManager(this) : null;
 
     /**
      * The shard helpers for the client
      * (only if the process was spawned as a child, such as from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.send ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {Collection<Snowflake, User>}
+     * @type {UserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {Collection<Snowflake, Guild>}
+     * @type {GuildStore<Snowflake, Guild>}
      */
-    this.guilds = new Collection();
+    this.guilds = new GuildStore(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
-     * @type {Collection<Snowflake, Channel>}
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+     * is a member of, and all DM channels
+     * @type {ChannelStore<Snowflake, Channel>}
      */
-    this.channels = new Collection();
+    this.channels = new ChannelStore(this);
 
     /**
      * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, Presence>}
+     * @type {ClientPresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
        * <warn>This should be kept private at all times.</warn>
@@ -192,21 +170,12 @@ class Client extends EventEmitter {
   }
 
   /**
-   * API shortcut
-   * @type {Object}
-   * @private
-   */
-  get api() {
-    return this.rest.api;
-  }
-
-  /**
    * Current status of the client's connection to Discord
    * @type {?Status}
    * @readonly
    */
   get status() {
-    return this.ws.connection.status;
+    return this.ws.connection ? this.ws.connection.status : null;
   }
 
   /**
@@ -233,19 +202,19 @@ class Client extends EventEmitter {
    * @readonly
    */
   get voiceConnections() {
-    if (this.browser) return new Collection();
+    if (browser) return new Collection();
     return this.voice.connections;
   }
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {Collection<Snowflake, Emoji>}
+   * @type {EmojiStore<Snowflake, Emoji>}
    * @readonly
    */
   get emojis() {
-    const emojis = new Collection();
+    const emojis = new EmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
-      for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
+      if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
     return emojis;
   }
@@ -257,15 +226,6 @@ class Client extends EventEmitter {
    */
   get readyTimestamp() {
     return this.readyAt ? this.readyAt.getTime() : null;
-  }
-
-  /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return os.platform() === 'browser';
   }
 
   /**
@@ -291,9 +251,12 @@ class Client extends EventEmitter {
    */
   login(token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
+    }).catch(e => {
+      this.destroy();
+      return Promise.reject(e);
     });
   }
 
@@ -302,10 +265,7 @@ class Client extends EventEmitter {
    * @returns {Promise}
    */
   destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
-    this._timeouts.clear();
-    this._intervals.clear();
+    super.destroy();
     return this.manager.destroy();
   }
 
@@ -324,27 +284,13 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @returns {Promise<User>}
-   */
-  fetchUser(id, cache = true) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users[id].get().then(data =>
-      cache ? this.dataManager.newUser(data) : new User(this, data)
-    );
-  }
-
-  /**
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
-    return this.api.invites[code].get({ query: { with_counts: true } })
+    const code = DataResolver.resolveInviteCode(invite);
+    return this.api.invites(code).get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
 
@@ -355,7 +301,7 @@ class Client extends EventEmitter {
    * @returns {Promise<Webhook>}
    */
   fetchWebhook(id, token) {
-    return this.api.webhooks.opts(id, token).get().then(data => new Webhook(this, data));
+    return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -383,7 +329,7 @@ class Client extends EventEmitter {
       throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
     }
     if (lifetime <= 0) {
-      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -404,18 +350,19 @@ class Client extends EventEmitter {
       }
     }
 
-    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    this.emit(Events.DEBUG,
+      `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
-   * @returns {Promise<OAuth2Application>}
+   * @returns {Promise<ClientApplication>}
    */
   fetchApplication(id = '@me') {
-    return this.api.oauth2.applications[id].get()
-      .then(app => new OAuth2Application(this, app));
+    return this.api.oauth2.applications(id).get()
+      .then(app => new ClientApplication(this, app));
   }
 
   /**
@@ -441,53 +388,6 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setTimeout(fn, delay, ...args) {
-    const timeout = setTimeout(() => {
-      fn(...args);
-      this._timeouts.delete(timeout);
-    }, delay);
-    this._timeouts.add(timeout);
-    return timeout;
-  }
-
-  /**
-   * Clears a timeout.
-   * @param {Timeout} timeout Timeout to cancel
-   */
-  clearTimeout(timeout) {
-    clearTimeout(timeout);
-    this._timeouts.delete(timeout);
-  }
-
-  /**
-   * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setInterval(fn, delay, ...args) {
-    const interval = setInterval(fn, delay, ...args);
-    this._intervals.add(interval);
-    return interval;
-  }
-
-  /**
-   * Clears an interval.
-   * @param {Timeout} interval Interval to cancel
-   */
-  clearInterval(interval) {
-    clearInterval(interval);
-    this._intervals.delete(interval);
-  }
-
-  /**
    * Adds a ping to {@link Client#pings}.
    * @param {number} startTime Starting time of the ping
    * @private
@@ -496,20 +396,6 @@ class Client extends EventEmitter {
     this.pings.unshift(Date.now() - startTime);
     if (this.pings.length > 3) this.pings.length = 3;
     this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
-   * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {Snowflake} id ID of the user
-   * @param {Object} presence Raw presence object from Discord
-   * @private
-   */
-  _setPresence(id, presence) {
-    if (this.presences.has(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
   }
 
   /**

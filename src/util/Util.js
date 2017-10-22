@@ -1,8 +1,9 @@
+const Long = require('long');
 const snekfetch = require('snekfetch');
-const Constants = require('./Constants');
-const ConstantsHttp = Constants.DefaultOptions.http;
-const { RangeError, TypeError } = require('../errors');
+const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -58,8 +59,8 @@ class Util {
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
-      if (!token) throw new Error('TOKEN_MISSING');
-      snekfetch.get(`${ConstantsHttp.api}/v${ConstantsHttp.version}${Constants.Endpoints.botGateway}`)
+      if (!token) throw new DiscordError('TOKEN_MISSING');
+      snekfetch.get(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`)
         .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
         .end((err, res) => {
           if (err) reject(err);
@@ -70,9 +71,9 @@ class Util {
 
   /**
    * Parses emoji info out of a string. The string must be one of:
-   * - A UTF-8 emoji (no ID)
-   * - A URL-encoded UTF-8 emoji (no ID)
-   * - A Discord custom emoji (`<:name:id>`)
+   * * A UTF-8 emoji (no ID)
+   * * A URL-encoded UTF-8 emoji (no ID)
+   * * A Discord custom emoji (`<:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {Object} Object with `name` and `id` properties
    * @private
@@ -277,7 +278,7 @@ class Util {
   static resolveColor(color) {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
-      color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
+      color = Colors[color] || parseInt(color.replace('#', ''), 16);
     } else if (color instanceof Array) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
@@ -289,6 +290,31 @@ class Util {
     }
 
     return color;
+  }
+
+  /**
+   * Sorts by Discord's position and then by ID.
+   * @param  {Collection} collection Collection of objects to sort
+   * @returns {Collection}
+   */
+  static discordSort(collection) {
+    return collection
+      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+  }
+
+  static setPosition(item, position, relative, sorted, route, reason) {
+    let updatedItems = sorted.array();
+    Util.moveElementInArray(updatedItems, item, position, relative);
+    updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
+    return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
+  }
+
+  static basename(path, ext) {
+    let f = splitPathRe.exec(path).slice(1)[2];
+    if (ext && f.substr(-1 * ext.length) === ext) {
+      f = f.substr(0, f.length - ext.length);
+    }
+    return f;
   }
 }
 
