@@ -979,7 +979,7 @@ class Guild extends Base {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
