@@ -1,5 +1,5 @@
 const DiscordAPIError = require('../DiscordAPIError');
-const { Events: { RATELIMITED } } = require('../../util/Constants');
+const { Events: { RATE_LIMIT } } = require('../../util/Constants');
 
 class RequestHandler {
   constructor(manager, handler) {
@@ -36,8 +36,18 @@ class RequestHandler {
           }
           // eslint-disable-next-line prefer-promise-reject-errors
           reject({ timeout });
-          if (this.client.listenerCount(RATELIMITED)) {
-            this.client.emit(RATELIMITED, {
+          if (this.client.listenerCount(RATE_LIMIT)) {
+            /**
+             * Emitted when the client hits a rate limit while making a request
+             * @event Client#rateLimit
+             * @prop {number} timeout Timeout in ms
+             * @prop {number} limit Number of requests that can be made to this endpoint
+             * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
+             * @prop {string} method Method used for request that triggered this event
+             * @prop {string} path Path used for request that triggered this event
+             * @prop {string} route Route used for request that triggered this event
+             */
+            this.client.emit(RATE_LIMIT, {
               timeout,
               limit: this.limit,
               timeDifference: this.timeDifference,
