@@ -43,7 +43,7 @@ class RequestHandler {
              * @prop {number} timeout Timeout in ms
              * @prop {number} limit Number of requests that can be made to this endpoint
              * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
-             * @prop {string} method Method used for request that triggered this event
+             * @prop {string} method HTTP method used for request that triggered this event
              * @prop {string} path Path used for request that triggered this event
              * @prop {string} route Route used for request that triggered this event
              */
