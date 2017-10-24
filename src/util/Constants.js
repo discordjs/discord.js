@@ -191,7 +191,7 @@ exports.VoiceOPCodes = {
 };
 
 exports.Events = {
-  RATELIMITED: 'ratelimited',
+  RATE_LIMIT: 'rateLimit',
   READY: 'ready',
   RESUMED: 'resumed',
   GUILD_CREATE: 'guildCreate',
