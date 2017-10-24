@@ -12,7 +12,10 @@ class MessageDeleteBulkAction extends Action {
       const messages = new Collection();
       for (const id of ids) {
         const message = channel.messages.get(id);
-        if (message) messages.set(message.id, message);
+        if (message) {
+          messages.set(message.id, message);
+          channel.messages.delete(id);
+        }
       }
 
       if (messages.size > 0) client.emit(Events.MESSAGE_BULK_DELETE, messages);

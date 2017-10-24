@@ -244,19 +244,22 @@ class Webhook {
    * @param {Object} options Options
    * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
+   * @param {ChannelResolvable} [options.channel] New channel for this webhook
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit({ name = this.name, avatar }, reason) {
+  edit({ name = this.name, avatar, channel }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
-    return this.client.api.webhooks(this.id, this.token).patch({
-      data: { name, avatar },
+    if (channel) channel = this.client.channels.resolveID(channel);
+    return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+      data: { name, avatar, channel_id: channel },
       reason,
     }).then(data => {
       this.name = data.name;
       this.avatar = data.avatar;
+      this.channelID = data.channel_id;
       return this;
     });
   }

@@ -64,7 +64,7 @@ class GuildMember extends Base {
      * @type {number}
      * @name GuildMember#joinedTimestamp
      */
-    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     this.user = this.guild.client.users.create(data.user);
     if (data.roles) this._roles = data.roles;

@@ -54,6 +54,7 @@
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
     "eslint": "^4.0.0",
     "jsdoc-strip-async-await": "^0.1.0",
+    "json-filter-loader": "^1.0.0",
     "parallel-webpack": "^2.0.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
     "webpack": "^3.0.0"
