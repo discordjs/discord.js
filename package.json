@@ -34,7 +34,7 @@
   "dependencies": {
     "long": "^3.0.0",
     "pako": "^1.0.0",
-    "prism-media": "^0.0.2",
+    "prism-media": "github:hydrabolt/prism-media#indev",
     "snekfetch": "^3.0.0",
     "tweetnacl": "^1.0.0",
     "ws": "^3.0.0"
@@ -42,8 +42,6 @@
   "peerDependencies": {
     "bufferutil": "^3.0.0",
     "erlpack": "discordapp/erlpack",
-    "node-opus": "^0.2.0",
-    "opusscript": "^0.0.4",
     "sodium": "^2.0.0",
     "libsodium-wrappers": "^0.7.0",
     "uws": "^8.14.0",

@@ -41,11 +41,6 @@ class VoiceBroadcast extends VolumeInterface {
      */
     this.paused = false;
     /**
-     * The audio transcoder that this broadcast uses
-     * @type {Prism}
-     */
-    this.prism = new Prism();
-    /**
      * The current audio transcoder that is being used
      * @type {Object}
      */

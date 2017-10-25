@@ -6,7 +6,7 @@ const ytdl = require('ytdl-core');
 
 const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
-const auth = require('./auth.json');
+const auth = require('./auth.js');
 
 client.login(auth.token).then(() => console.log('logged')).catch(console.error);
 
@@ -14,8 +14,12 @@ const connections = new Map();
 
 let broadcast;
 
+client.on('debug', console.log);
+client.on('error', console.log);
+
 client.on('message', m => {
   if (!m.guild) return;
+  if (m.author.id !== '66564597481480192') return;
   if (m.content.startsWith('/join')) {
     const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voiceChannel;
     if (channel && channel.type === 'voice') {
@@ -23,23 +27,18 @@ client.on('message', m => {
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
+        conn.playStream(ytdl('https://www.youtube.com/watch?v=i3Jv9fNPjgk'));
       });
     } else {
       m.reply('Specify a voice channel!');
     }
   } else if (m.content.startsWith('/play')) {
     if (connections.has(m.guild.id)) {
-      const connData = connections.get(m.guild.id);
-      const queue = connData.queue;
       const url = m.content.split(' ').slice(1).join(' ')
         .replace(/</g, '')
         .replace(/>/g, '');
-      queue.push({ url, m });
-      if (queue.length > 1) {
-        m.reply(`OK, that's going to play after ${queue.length - 1} songs`);
-        return;
-      }
-      doQueue(connData);
+      const stream = ytdl(item.url, { filter: 'audioonly' }, { passes: 3 });
+      m.guild.voiceConnection.playStream(stream);
     }
   } else if (m.content.startsWith('/skip')) {
     if (connections.has(m.guild.id)) {

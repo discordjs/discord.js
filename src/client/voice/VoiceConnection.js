@@ -36,17 +36,6 @@ class VoiceConnection extends EventEmitter {
     this.client = voiceManager.client;
 
     /**
-     * @external Prism
-     * @see {@link https://github.com/hydrabolt/prism-media}
-     */
-
-    /**
-     * The audio transcoder for this connection
-     * @type {Prism}
-     */
-    this.prism = new Prism();
-
-    /**
      * The voice channel this connection is currently serving
      * @type {VoiceChannel}
      */
@@ -494,6 +483,7 @@ class VoiceConnection extends EventEmitter {
    *   .catch(console.error);
    */
   playStream(stream, options) {
+    console.log('VC!');
     return this.player.playUnknownStream(stream, options);
   }
 
