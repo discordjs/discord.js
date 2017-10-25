@@ -159,7 +159,7 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @returns {Promise}
+   * @returns {Promise} Resolves once the bot stops typing gracefully, or rejects when an error occurs
    * @example
    * // Start typing in a channel
    * channel.startTyping();
