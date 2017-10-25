@@ -102,6 +102,7 @@ class StreamDispatcher extends Writable {
   }
 
   destroy() {
+    if (this.player.dispatcher !== this) return;
     const streams = this.player.streams;
     if (streams.opus) streams.opus.unpipe(this);
     if (streams.ffmpeg) streams.ffmpeg.destroy();
