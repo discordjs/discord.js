@@ -32,7 +32,7 @@ const createConfig = options => {
       path: path.resolve('./webpack'),
       filename,
       library: 'Discord',
-      libraryTarget: 'window',
+      libraryTarget: 'umd',
     },
     module: {
       rules: [
