@@ -14,8 +14,6 @@ deploy/
 .vscode/
 docs/
 
-webpack/
-
 # NPM ignore
 .eslintrc.json
 .gitattributes

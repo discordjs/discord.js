@@ -10,7 +10,8 @@
     "docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
     "lint": "eslint src *.js",
     "lint:fix": "eslint --fix src",
-    "webpack": "parallel-webpack"
+    "build:browser": "webpack",
+    "prepublishOnly": "npm run test && npm run build:browser"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   },
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
+  "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "long": "^3.0.0",
     "pako": "^1.0.0",
@@ -55,7 +57,6 @@
     "eslint": "^4.0.0",
     "jsdoc-strip-async-await": "^0.1.0",
     "json-filter-loader": "^1.0.0",
-    "parallel-webpack": "^2.0.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
     "webpack": "^3.0.0"
   },

@@ -32,7 +32,7 @@ fi
 
 # Run the build
 npm run docs
-VERSIONED=false npm run webpack
+NODE_ENV=production npm run webpack
 
 if [ $DONT_COMMIT == true ]; then
   echo -e "\e[36m\e[1mNot commiting - exiting early"
@@ -78,7 +78,6 @@ TARGET_BRANCH="webpack"
 git clone $REPO out -b $TARGET_BRANCH
 
 # Move the generated webpack over
-mv webpack/discord.js out/discord.$SOURCE.js
 mv webpack/discord.min.js out/discord.$SOURCE.min.js
 
 # Commit and push
