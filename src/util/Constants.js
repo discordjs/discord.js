@@ -57,7 +57,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: !browser,
+    compress: false,
     properties: {
       $os: browser ? 'browser' : process.platform,
       $browser: 'discord.js',
