@@ -24,7 +24,6 @@ class AudioPlayer extends EventEmitter {
      */
     this.voiceConnection = voiceConnection;
 
-    this.streams = {};
     this.dispatcher = null;
 
     this.streamingData = {
@@ -47,45 +46,33 @@ class AudioPlayer extends EventEmitter {
     }
   }
 
-  /**
-   * Set the bitrate of the current Opus encoder.
-   * @param {number} value New bitrate, in kbps
-   * If set to 'auto', the voice channel's bitrate will be used
-   * @returns {boolean} true if the bitrate has been successfully changed.
-   */
-  setBitrate(value) {
-    if (!value || !this.streams.opus || !this.streams.opus.setBitrate) return false;
-    const bitrate = value === 'auto' ? this.voiceConnection.channel.bitrate : value;
-    this.streams.opus.setBitrate(bitrate * 1000);
-    return true;
-  }
-
   playUnknownStream(stream, options = {}) {
     this.destroyDispatcher();
-    const ffmpeg = this.streams.ffmpeg = new prism.FFmpeg({ args: FFMPEG_ARGUMENTS });
+    const ffmpeg = new prism.FFmpeg({ args: FFMPEG_ARGUMENTS });
     stream.pipe(ffmpeg);
-    return this.playPCMStream(ffmpeg, options);
+    return this.playPCMStream(ffmpeg, options, { ffmpeg });
   }
 
-  playPCMStream(stream, options = {}) {
+  playPCMStream(stream, options = {}, streams = {}) {
     this.destroyDispatcher();
-    const volume = this.streams.volume = new prism.VolumeTransformer16LE(null, { volume: 0.2 });
-    const opus = this.streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
+    const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: 0.2 });
+    const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
     stream.pipe(volume).pipe(opus);
-    return this.playOpusStream(opus, options);
+    return this.playOpusStream(opus, options, streams);
   }
 
-  playOpusStream(stream, options = {}) {
+  playOpusStream(stream, options = {}, streams = {}) {
     this.destroyDispatcher();
-    const dispatcher = this.dispatcher = this.createDispatcher(options);
+    streams.opus = stream;
+    const dispatcher = this.dispatcher = this.createDispatcher(options, streams);
     stream.pipe(dispatcher);
     return dispatcher;
   }
 
-  createDispatcher({ seek = 0, volume = 1, passes = 1 } = {}) {
+  createDispatcher({ seek = 0, volume = 1, passes = 1 } = {}, streams) {
     this.destroyDispatcher();
     const options = { seek, volume, passes };
-    const dispatcher = new StreamDispatcher(this, options);
+    const dispatcher = new StreamDispatcher(this, options, streams);
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     return dispatcher;
   }

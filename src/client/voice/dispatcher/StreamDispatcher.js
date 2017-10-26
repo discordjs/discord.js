@@ -29,7 +29,7 @@ nonce.fill(0);
  * @extends {stream.Writable}
  */
 class StreamDispatcher extends Writable {
-  constructor(player, streamOptions) {
+  constructor(player, streamOptions, streams) {
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
@@ -37,6 +37,7 @@ class StreamDispatcher extends Writable {
      */
     this.player = player;
     this.streamOptions = streamOptions;
+    this.streams = streams;
 
     /**
      * The time that the stream was paused at (null if not paused)
@@ -67,9 +68,8 @@ class StreamDispatcher extends Writable {
   }
 
   _destroy(err, cb) {
-    if (this.player.dispatcher !== this) return;
-    this.player.dispatcher = null;
-    const streams = this.player.streams;
+    if (this.player.dispatcher === this) this.player.dispatcher = null;
+    const { streams } = this;
     if (streams.opus) streams.opus.unpipe(this);
     if (streams.ffmpeg) streams.ffmpeg.destroy();
     super._destroy(err, cb);
@@ -123,7 +123,12 @@ class StreamDispatcher extends Writable {
    * If set to 'auto', the voice channel's bitrate will be used
    * @returns {boolean} true if the bitrate has been successfully changed.
    */
-  setBitrate(value) { return this.player.setBitrate(value); }
+  setBitrate(value) {
+    if (!value || !this.streams.opus || !this.streams.opus.setBitrate) return false;
+    const bitrate = value === 'auto' ? this.player.voiceConnection.channel.bitrate : value;
+    this.streams.opus.setBitrate(bitrate * 1000);
+    return true;
+  }
 
   _step(done) {
     if (this.pausedSince) {
@@ -191,7 +196,7 @@ class StreamDispatcher extends Writable {
     this.emit('speaking', value);
   }
 
-  get volumeEditable() { return Boolean(this.player.streams.volume); }
+  get volumeEditable() { return Boolean(this.streams.volume); }
 
   /**
    * Whether or not the Opus bitrate of this stream is editable
@@ -200,12 +205,12 @@ class StreamDispatcher extends Writable {
 
   // Volume
   get volume() {
-    return this.player.streams.volume ? this.player.streams.volume.volume : 1;
+    return this.streams.volume ? this.streams.volume.volume : 1;
   }
 
   setVolume(value) {
-    if (!this.player.streams.volume) return false;
-    this.player.streams.volume.setVolume(value);
+    if (!this.streams.volume) return false;
+    this.streams.volume.setVolume(value);
     return true;
   }
 
