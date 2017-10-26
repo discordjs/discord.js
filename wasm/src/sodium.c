@@ -1,7 +1,6 @@
-#include <webassembly.h>
 #include <sodium.h>
 
-export int secretbox_easy(
+int secretbox_easy(
   unsigned char* ciphertext,
   unsigned char* message,
   int message_len,
