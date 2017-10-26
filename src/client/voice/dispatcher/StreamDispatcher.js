@@ -1,5 +1,3 @@
-const VolumeInterface = require('../util/VolumeInterface');
-const VoiceBroadcast = require('../VoiceBroadcast');
 const { VoiceStatus } = require('../../../util/Constants');
 const { Writable } = require('stream');
 

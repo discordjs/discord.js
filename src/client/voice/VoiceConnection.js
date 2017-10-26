@@ -5,7 +5,6 @@ const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events');
-const Prism = require('prism-media');
 const { Error } = require('../../errors');
 
 /**
@@ -483,7 +482,6 @@ class VoiceConnection extends EventEmitter {
    *   .catch(console.error);
    */
   playStream(stream, options) {
-    console.log('VC!');
     return this.player.playUnknownStream(stream, options);
   }
 

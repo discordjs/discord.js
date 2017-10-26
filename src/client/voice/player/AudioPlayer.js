@@ -80,10 +80,6 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  playBroadcast(broadcast, options) {
-    
-  }
-
   createDispatcher({ seek = 0, volume = 1, passes = 1 } = {}) {
     this.destroyDispatcher();
     const options = { seek, volume, passes };
