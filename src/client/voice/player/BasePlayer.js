@@ -48,7 +48,7 @@ class BasePlayer extends EventEmitter {
 
   playPCMStream(stream, options, streams = {}) {
     this.destroyDispatcher();
-    const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
+    const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 1920 });
     if (options && options.volume === false) {
       stream.pipe(opus);
       return this.playOpusStream(opus, options, streams);
