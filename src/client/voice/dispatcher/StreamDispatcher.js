@@ -81,7 +81,7 @@ class StreamDispatcher extends Writable {
   /**
    * Resumes playback
    */
-  unpause() {
+  resume() {
     this.pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
     if (this._writeCallback) this._writeCallback();
