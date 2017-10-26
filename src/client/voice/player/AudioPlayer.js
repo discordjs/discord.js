@@ -32,7 +32,7 @@ class AudioPlayer extends EventEmitter {
       timestamp: 0,
     };
 
-    this.voiceConnection.once('closing', () => this.destroyCurrentStream());
+    this.voiceConnection.once('closing', () => this.destroy());
   }
 
   destroy() {
