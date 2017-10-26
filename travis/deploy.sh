@@ -32,7 +32,7 @@ fi
 
 # Run the build
 npm run docs
-NODE_ENV=production npm run webpack
+NODE_ENV=production npm run build:browser
 
 if [ $DONT_COMMIT == true ]; then
   echo -e "\e[36m\e[1mNot commiting - exiting early"
