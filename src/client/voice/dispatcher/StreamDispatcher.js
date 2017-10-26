@@ -1,4 +1,5 @@
 const { VoiceStatus } = require('../../../util/Constants');
+const VolumeInterface = require('../util/VolumeInterface');
 const { Writable } = require('stream');
 
 const secretbox = require('../util/Secretbox');
@@ -159,6 +160,18 @@ class StreamDispatcher extends Writable {
      */
     this.emit('speaking', value);
   }
+
+  get volume() {
+    return this.player.streams.volume ? this.player.streams.volume.volume : 1;
+  }
+
+  setVolume(value) {
+    if (!this.player.streams.volume) return false;
+    this.player.streams.volume.setVolume(value);
+    return true;
+  }
 }
+
+VolumeInterface.applyToClass(StreamDispatcher);
 
 module.exports = StreamDispatcher;

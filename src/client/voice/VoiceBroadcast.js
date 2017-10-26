@@ -1,4 +1,4 @@
-const VolumeInterface = require('./util/VolumeInterface');
+class VolumeInterface {}
 const OpusEncoders = require('./opus/OpusEngineList');
 const Collection = require('../../util/Collection');
 

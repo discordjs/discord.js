@@ -69,8 +69,9 @@ class AudioPlayer extends EventEmitter {
 
   playPCMStream(stream, options = {}) {
     this.destroyDispatcher();
+    const volume = this.streams.volume = new prism.VolumeTransformer16LE(null, { volume: 0.2 });
     const opus = this.streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
-    stream.pipe(opus);
+    stream.pipe(volume).pipe(opus);
     return this.playOpusStream(opus, options);
   }
 
@@ -85,7 +86,6 @@ class AudioPlayer extends EventEmitter {
     this.destroyDispatcher();
     const options = { seek, volume, passes };
     const dispatcher = new StreamDispatcher(this, options);
-    this.streamingData.count = 0;
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     return dispatcher;
   }

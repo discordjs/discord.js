@@ -25,7 +25,7 @@ class VolumeInterface extends EventEmitter {
    * @type {number}
    */
   get volumeDecibels() {
-    return Math.log10(this._volume) * 20;
+    return Math.log10(this.volume) * 20;
   }
 
   /**
@@ -34,7 +34,7 @@ class VolumeInterface extends EventEmitter {
    * @type {number}
    */
   get volumeLogarithmic() {
-    return Math.pow(this._volume, 1 / 1.660964);
+    return Math.pow(this.volume, 1 / 1.660964);
   }
 
   applyVolume(buffer, volume) {
@@ -83,4 +83,19 @@ class VolumeInterface extends EventEmitter {
   }
 }
 
-module.exports = VolumeInterface;
+const props = [
+  'volumeDecibels',
+  'volumeLogarithmic',
+  'setVolumeDecibels',
+  'setVolumeLogarithmic',
+];
+
+exports.applyToClass = function applyToClass(structure) {
+  for (const prop of props) {
+    Object.defineProperty(
+      structure.prototype,
+      prop,
+      Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop)
+    );
+  }
+};
