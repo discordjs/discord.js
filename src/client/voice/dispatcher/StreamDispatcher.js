@@ -161,6 +161,13 @@ class StreamDispatcher extends Writable {
     this.emit('speaking', value);
   }
 
+  get volumeEditable() { return Boolean(this.player.streams.volume); }
+
+  /**
+   * Whether or not the Opus bitrate of this stream is editable
+   */
+  get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
+
   get volume() {
     return this.player.streams.volume ? this.player.streams.volume.volume : 1;
   }
