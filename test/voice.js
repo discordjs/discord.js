@@ -3,6 +3,8 @@
 
 const Discord = require('../');
 const ytdl = require('ytdl-core');
+const prism = require('prism-media');
+const fs = require('fs');
 
 const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
 
@@ -27,7 +29,9 @@ client.on('message', m => {
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
-        conn.playStream(ytdl('https://www.youtube.com/watch?v=i3Jv9fNPjgk'));
+        const d = conn.playOpusStream(
+          fs.createReadStream('C:/users/amish/downloads/s.ogg').pipe(new prism.OggOpusDemuxer())
+        );
       });
     } else {
       m.reply('Specify a voice channel!');
@@ -37,7 +41,7 @@ client.on('message', m => {
       const url = m.content.split(' ').slice(1).join(' ')
         .replace(/</g, '')
         .replace(/>/g, '');
-      const stream = ytdl(item.url, { filter: 'audioonly' }, { passes: 3 });
+      const stream = ytdl(url, { filter: 'audioonly' }, { passes: 3 });
       m.guild.voiceConnection.playStream(stream);
     }
   } else if (m.content.startsWith('/skip')) {

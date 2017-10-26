@@ -11,6 +11,11 @@ const nonce = Buffer.alloc(24);
 nonce.fill(0);
 
 /**
+ * @external Stream.writable
+ * @see {@link https://nodejs.org/api/stream.html#stream_class_stream_writable}
+ */
+
+/**
  * The class that sends voice packet data to the voice connection.
  * ```js
  * // Obtained using:
@@ -20,6 +25,7 @@ nonce.fill(0);
  * });
  * ```
  * @implements {VolumeInterface}
+ * @extends {stream.Writable}
  */
 class StreamDispatcher extends Writable {
   constructor(player, streamOptions) {
@@ -64,10 +70,16 @@ class StreamDispatcher extends Writable {
     super._destroy(err, cb);
   }
 
+  /**
+   * Pauses playback
+   */
   pause() {
     this.pausedSince = Date.now();
   }
 
+  /**
+   * Resumes playback
+   */
   unpause() {
     this.pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
@@ -90,11 +102,11 @@ class StreamDispatcher extends Writable {
 
   _playChunk(chunk) {
     if (this.player.dispatcher !== this) return;
-    this.setSpeaking(true);
-    this.sendPacket(this.createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
+    this._setSpeaking(true);
+    this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
-  createPacket(sequence, timestamp, buffer) {
+  _createPacket(sequence, timestamp, buffer) {
     const packetBuffer = Buffer.alloc(buffer.length + 28);
     packetBuffer.fill(0);
     packetBuffer[0] = 0x80;
@@ -111,24 +123,24 @@ class StreamDispatcher extends Writable {
     return packetBuffer;
   }
 
-  sendPacket(packet) {
+  _sendPacket(packet) {
     let repeats = 1;
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
      * @param {string} info The debug info
      */
-    this.setSpeaking(true);
+    this._setSpeaking(true);
     while (repeats--) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
-          this.setSpeaking(false);
+          this._setSpeaking(false);
           this.emit('debug', `Failed to send a packet ${e}`);
         });
     }
   }
 
-  setSpeaking(value) {
+  _setSpeaking(value) {
     if (this.speaking === value) return;
     if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
     this.speaking = value;
