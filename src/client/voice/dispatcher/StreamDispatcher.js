@@ -86,6 +86,14 @@ class StreamDispatcher extends Writable {
     if (this._writeCallback) this._writeCallback();
   }
 
+  /**
+   * Set the bitrate of the current Opus encoder.
+   * @param {number} value New bitrate, in kbps
+   * If set to 'auto', the voice channel's bitrate will be used
+   * @returns {boolean} true if the bitrate has been successfully changed.
+   */
+  setBitrate(value) { return this.player.setBitrate(value); }
+
   _step(done) {
     if (this.pausedSince) {
       this._writeCallback = done;
