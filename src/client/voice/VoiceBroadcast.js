@@ -41,7 +41,7 @@ class VoiceBroadcast extends EventEmitter {
    *   .catch(console.error);
    */
   playFile(file, options) {
-    return this.player.playUnknownStream(`file:${file}`, options);
+    return this.player.playUnknown(`file:${file}`, options);
   }
 
   /**
@@ -51,7 +51,7 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {StreamDispatcher}
    */
   playArbitraryInput(input, options) {
-    return this.player.playUnknownStream(input, options);
+    return this.player.playUnknown(input, options);
   }
 
   /**
@@ -71,7 +71,7 @@ class VoiceBroadcast extends EventEmitter {
    *   .catch(console.error);
    */
   playStream(stream, options) {
-    return this.player.playUnknownStream(stream, options);
+    return this.player.playUnknown(stream, options);
   }
 
   /**

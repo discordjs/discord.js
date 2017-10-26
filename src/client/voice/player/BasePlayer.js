@@ -40,13 +40,13 @@ class BasePlayer extends EventEmitter {
     }
   }
 
-  playUnknownStream(stream, options) {
+  playUnknown(input, options) {
     this.destroyDispatcher();
 
-    const isStream = stream instanceof ReadableStream;
-    const args = isStream ? FFMPEG_ARGUMENTS : ['-i', stream, ...FFMPEG_ARGUMENTS];
+    const isStream = input instanceof ReadableStream;
+    const args = isStream ? FFMPEG_ARGUMENTS : ['-i', input, ...FFMPEG_ARGUMENTS];
     const ffmpeg = new prism.FFmpeg({ args });
-    if (isStream) stream.pipe(ffmpeg);
+    if (isStream) input.pipe(ffmpeg);
 
     return this.playPCMStream(ffmpeg, options, { ffmpeg });
   }
