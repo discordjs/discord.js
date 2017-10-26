@@ -29,10 +29,8 @@ class AudioPlayer extends EventEmitter {
 
     this.streamingData = {
       channels: 2,
-      count: 0,
       sequence: 0,
       timestamp: 0,
-      pausedTime: 0,
     };
 
     this.voiceConnection.once('closing', () => this.destroyCurrentStream());
