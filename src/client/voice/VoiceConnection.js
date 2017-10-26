@@ -432,7 +432,8 @@ class VoiceConnection extends EventEmitter {
    * Options that can be passed to stream-playing methods:
    * @typedef {Object} StreamOptions
    * @property {number} [seek=0] The time to seek to
-   * @property {number} [volume=1] The volume to play at
+   * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
+   * this stream to improve performance.
    * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
    * @property {number} [plp] Expected packet loss percentage
    * @property {boolean} [fec] Enabled forward error correction
