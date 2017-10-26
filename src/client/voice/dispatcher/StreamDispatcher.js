@@ -38,10 +38,14 @@ class StreamDispatcher extends Writable {
     this.player = player;
     this.streamOptions = streamOptions;
 
+    /**
+     * The time that the stream was paused at (null if not paused)
+     * @type {?number}
+     */
     this.pausedSince = null;
     this._writeCallback = null;
 
-    this.pausedTime = 0;
+    this._pausedTime = 0;
     this.count = 0;
 
     this.on('error', this.destroy.bind(this));
@@ -79,12 +83,38 @@ class StreamDispatcher extends Writable {
   }
 
   /**
+   * Whether or not playback is paused
+   */
+  get paused() { return Boolean(this.pausedSince); }
+
+  /**
+   * Total time that this dispatcher has been paused
+   */
+  get pausedTime() { return this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0); }
+
+  /**
    * Resumes playback
    */
   resume() {
-    this.pausedTime += Date.now() - this.pausedSince;
+    this._pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
     if (this._writeCallback) this._writeCallback();
+  }
+
+  /**
+   * The time (in milliseconds) that the dispatcher has actually been playing audio for
+   * @type {number}
+   */
+  get streamTime() {
+    return this.count * FRAME_LENGTH;
+  }
+
+  /**
+   * The time (in milliseconds) that the dispatcher has been playing audio for, taking into account skips and pauses
+   * @type {number}
+   */
+  get totalStreamTime() {
+    return Date.now() - this.startTime;
   }
 
   /**
