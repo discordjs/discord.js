@@ -33,7 +33,8 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "long": "^3.0.0",
-    "prism-media": "^0.0.1",
+    "pako": "^1.0.0",
+    "prism-media": "^0.0.2",
     "snekfetch": "^3.0.0",
     "tweetnacl": "^1.0.0",
     "ws": "^3.0.0"
@@ -42,10 +43,11 @@
     "bufferutil": "^3.0.0",
     "erlpack": "discordapp/erlpack",
     "node-opus": "^0.2.0",
-    "opusscript": "^0.0.3",
+    "opusscript": "^0.0.4",
     "sodium": "^2.0.0",
-    "libsodium-wrappers": "^0.5.0",
-    "uws": "^8.14.0"
+    "libsodium-wrappers": "^0.7.0",
+    "uws": "^8.14.0",
+    "zlib-sync": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^8.0.0",
@@ -70,6 +72,7 @@
     "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
+    "zlib-sync": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,

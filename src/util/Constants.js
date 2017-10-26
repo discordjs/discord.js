@@ -57,7 +57,7 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: !browser,
+    compress: false,
     properties: {
       $os: browser ? 'browser' : process.platform,
       $browser: 'discord.js',
@@ -194,6 +194,7 @@ exports.VoiceOPCodes = {
 };
 
 exports.Events = {
+  RATE_LIMIT: 'rateLimit',
   READY: 'ready',
   RESUMED: 'resumed',
   GUILD_CREATE: 'guildCreate',
