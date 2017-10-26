@@ -1,4 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
+const { Readable: ReadableStream } = require('stream');
 const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
@@ -16,7 +17,7 @@ const FFMPEG_ARGUMENTS = [
  * @extends {EventEmitter}
  */
 class BasePlayer extends EventEmitter {
-  constructor(voiceConnection) {
+  constructor() {
     super();
 
     this.dispatcher = null;
@@ -41,8 +42,12 @@ class BasePlayer extends EventEmitter {
 
   playUnknownStream(stream, options) {
     this.destroyDispatcher();
-    const ffmpeg = new prism.FFmpeg({ args: FFMPEG_ARGUMENTS });
-    stream.pipe(ffmpeg);
+
+    const isStream = stream instanceof ReadableStream;
+    const args = isStream ? FFMPEG_ARGUMENTS : ['-i', stream, ...FFMPEG_ARGUMENTS];
+    const ffmpeg = new prism.FFmpeg({ args });
+    if (isStream) stream.pipe(ffmpeg);
+
     return this.playPCMStream(ffmpeg, options, { ffmpeg });
   }
 
