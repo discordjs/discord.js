@@ -1,5 +1,4 @@
 const VolumeInterface = require('./util/VolumeInterface');
-const Prism = require('prism-media');
 const OpusEncoders = require('./opus/OpusEngineList');
 const Collection = require('../../util/Collection');
 
