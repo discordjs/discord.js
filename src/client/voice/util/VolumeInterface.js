@@ -12,6 +12,7 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * Whether or not the volume of this stream is editable
+   * @type {boolean}
    */
   get volumeEditable() {
     return true;

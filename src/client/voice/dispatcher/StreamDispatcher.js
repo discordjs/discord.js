@@ -84,11 +84,13 @@ class StreamDispatcher extends Writable {
 
   /**
    * Whether or not playback is paused
+   * @type {boolean}
    */
   get paused() { return Boolean(this.pausedSince); }
 
   /**
    * Total time that this dispatcher has been paused
+   * @type {number}
    */
   get pausedTime() { return this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0); }
 
@@ -200,6 +202,7 @@ class StreamDispatcher extends Writable {
 
   /**
    * Whether or not the Opus bitrate of this stream is editable
+   * @type {boolean}
    */
   get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
 
