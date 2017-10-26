@@ -168,6 +168,7 @@ class StreamDispatcher extends Writable {
    */
   get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
 
+  // Volume
   get volume() {
     return this.player.streams.volume ? this.player.streams.volume.volume : 1;
   }
@@ -177,6 +178,13 @@ class StreamDispatcher extends Writable {
     this.player.streams.volume.setVolume(value);
     return true;
   }
+
+  // Volume stubs for docs
+  /* eslint-disable no-empty-function*/
+  get volumeDecibels() {}
+  get volumeLogarithmic() {}
+  setVolumeDecibels() {}
+  setVolumeLogarithmic() {}
 }
 
 VolumeInterface.applyToClass(StreamDispatcher);

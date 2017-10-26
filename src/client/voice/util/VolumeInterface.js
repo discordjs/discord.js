@@ -18,7 +18,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * The current volume of the broadcast
+   * The current volume of the stream
    * @readonly
    * @type {number}
    */
@@ -27,7 +27,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * The current volume of the broadcast in decibels
+   * The current volume of the stream in decibels
    * @readonly
    * @type {number}
    */
@@ -36,7 +36,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * The current volume of the broadcast from a logarithmic scale
+   * The current volume of the stream from a logarithmic scale
    * @readonly
    * @type {number}
    */
