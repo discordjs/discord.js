@@ -14,7 +14,7 @@ client.login(auth.token).then(() => console.log('logged')).catch(console.error);
 
 const connections = new Map();
 
-var d;
+var d, b;
 
 client.on('debug', console.log);
 client.on('error', console.log);
@@ -29,7 +29,8 @@ client.on('message', m => {
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
-        d = conn.playStream(ytdl('https://www.youtube.com/watch?v=EUoe7cf0HYw', { filter: 'audioonly' }, { passes: 3 }));
+        // conn.playOpusStream(fs.createReadStream('C:/users/amish/downloads/z.ogg').pipe(new prism.OggOpusDemuxer()));
+        d = conn.playStream(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
       });
     } else {
       m.reply('Specify a voice channel!');
@@ -59,6 +60,11 @@ client.on('message', m => {
       console.log(e);
       m.channel.send(e, { code: true });
     }
+  } else if (m.content === 'mb') {
+    b = client.createVoiceBroadcast();
+    b.playStream(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
+  } else if (m.content === 'subscribe!') {
+    m.guild.voiceConnection.playBroadcast(b);
   }
 });
 
