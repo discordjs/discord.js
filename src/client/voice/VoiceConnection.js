@@ -89,6 +89,8 @@ class VoiceConnection extends EventEmitter {
       this.emit('warn', e);
     });
 
+    this.once('closing', () => this.player.destroy());
+
     /**
      * Map SSRC to speaking values
      * @type {Map<number, boolean>}

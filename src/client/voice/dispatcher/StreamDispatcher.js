@@ -47,6 +47,12 @@ class StreamDispatcher extends Writable {
     this.pausedSince = null;
     this._writeCallback = null;
 
+    /**
+     * The broadcast controlling this dispatcher, if any
+     * @type {?VoiceBroadcast}
+     */
+    this.broadcast = this.streams.broadcast;
+
     this._pausedTime = 0;
     this.count = 0;
 
@@ -165,8 +171,10 @@ class StreamDispatcher extends Writable {
       this._writeCallback = done;
       return;
     }
-    const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
-    setTimeout(done.bind(this), next);
+    if (!this.streams.broadcast) {
+      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
+      setTimeout(done.bind(this), next);
+    }
     if (this._sdata.sequence === (2 ** 16) - 1) this._sdata.sequence = -1;
     if (this._sdata.timestamp === (2 ** 32) - 1) this._sdata.timestamp = -TIMESTAMP_INC;
     this._sdata.sequence++;
@@ -218,6 +226,7 @@ class StreamDispatcher extends Writable {
     if (this.speaking === value) return;
     if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
     this.speaking = value;
+    this.player.voiceConnection.setSpeaking(value);
     /**
      * Emitted when the dispatcher starts/stops speaking.
      * @event StreamDispatcher#speaking
