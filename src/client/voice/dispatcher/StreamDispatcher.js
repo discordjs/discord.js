@@ -6,6 +6,8 @@ const { Writable } = require('stream');
 const secretbox = require('../util/Secretbox');
 
 const FRAME_LENGTH = 20;
+const CHANNELS = 2;
+const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
 
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
@@ -30,10 +32,17 @@ class StreamDispatcher extends Writable {
      */
     this.player = player;
     this.streamOptions = streamOptions;
-    this.startTime = null;
+
+    this.pausedSince = null;
+    this._writeCallback = null;
+
+    this.pausedTime = 0;
+    this.count = 0;
+
     this.on('error', this.destroy.bind(this));
     this.on('finish', () => {
       this.destroy.bind(this);
+      // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
     });
   }
@@ -44,16 +53,47 @@ class StreamDispatcher extends Writable {
 
   _write(chunk, enc, done) {
     if (!this.startTime) this.startTime = Date.now();
-    this.setSpeaking(true);
-    const packet = this.createPacket(this._sdata.sequence, this._sdata.timestamp, chunk);
-    this.sendPacket(packet);
-    const next = FRAME_LENGTH + (this.startTime + (this._sdata.count * FRAME_LENGTH) - Date.now());
+    this._playChunk(chunk);
+    this._step(done);
+  }
+
+  _destroy(err, cb) {
+    if (this.player.dispatcher !== this) return;
+    this.player.dispatcher = null;
+    const streams = this.player.streams;
+    if (streams.opus) streams.opus.unpipe(this);
+    if (streams.ffmpeg) streams.ffmpeg.destroy();
+    super._destroy(err, cb);
+  }
+
+  pause() {
+    this.pausedSince = Date.now();
+  }
+
+  unpause() {
+    this.pausedTime += Date.now() - this.pausedSince;
+    this.pausedSince = null;
+    if (this._writeCallback) this._writeCallback();
+  }
+
+  _step(done) {
+    if (this.pausedSince) {
+      this._writeCallback = done;
+      return;
+    }
+    const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
     setTimeout(done.bind(this), next);
     if (this._sdata.sequence === (2 ** 16) - 1) this._sdata.sequence = -1;
-    if (this._sdata.timestamp === (2 ** 32) - 1) this._sdata.timestamp = -960;
+    if (this._sdata.timestamp === (2 ** 32) - 1) this._sdata.timestamp = -TIMESTAMP_INC;
     this._sdata.sequence++;
-    this._sdata.timestamp += 960;
-    this._sdata.count++;
+    this._sdata.timestamp += TIMESTAMP_INC;
+    this.count++;
+  }
+
+  _playChunk(chunk) {
+    if (this.player.dispatcher !== this) return;
+    this.setSpeaking(true);
+    this.sendPacket(this.createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
   createPacket(sequence, timestamp, buffer) {
@@ -100,15 +140,6 @@ class StreamDispatcher extends Writable {
      * @param {boolean} value Whether or not the dispatcher is speaking
      */
     this.emit('speaking', value);
-  }
-
-  destroy() {
-    if (this.player.dispatcher !== this) return;
-    this.player.dispatcher = null;
-    const streams = this.player.streams;
-    this.end();
-    if (streams.opus) streams.opus.unpipe(this);
-    if (streams.ffmpeg) streams.ffmpeg.destroy();
   }
 }
 

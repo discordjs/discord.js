@@ -1,8 +1,6 @@
 const EventEmitter = require('events').EventEmitter;
 const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
-const Collection = require('../../../util/Collection');
-const OpusEncoders = require('../opus/OpusEngineList');
 
 const FFMPEG_ARGUMENTS = [
   '-analyzeduration', '0',
