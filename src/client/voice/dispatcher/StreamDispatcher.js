@@ -120,7 +120,7 @@ class StreamDispatcher extends Writable {
   }
 
   /**
-   * Set the bitrate of the current Opus encoder.
+   * Set the bitrate of the current Opus encoder if using a compatible Opus stream.
    * @param {number} value New bitrate, in kbps
    * If set to 'auto', the voice channel's bitrate will be used
    * @returns {boolean} true if the bitrate has been successfully changed.
@@ -129,6 +129,28 @@ class StreamDispatcher extends Writable {
     if (!value || !this.streams.opus || !this.streams.opus.setBitrate) return false;
     const bitrate = value === 'auto' ? this.player.voiceConnection.channel.bitrate : value;
     this.streams.opus.setBitrate(bitrate * 1000);
+    return true;
+  }
+
+  /**
+   * Sets the expected packet loss percentage if using a compatible Opus stream.
+   * @param {number} value between 0 and 1 
+   * @returns {boolean} Returns true if it was successfully set.
+   */
+  setPLP(value) {
+    if (!this.bitrateEditable) return false;
+    this.streams.opus.setPLP(value);
+    return true;
+  }
+
+  /**
+   * Enables or disables forward error correction if using a compatible Opus stream.
+   * @param {boolean} enabled true to enable 
+   * @returns {boolean} Returns true if it was successfully set.
+   */
+  setFEC(enabled) {
+    if (!this.bitrateEditable) return false;
+    this.streams.opus.setPLP(enabled);
     return true;
   }
 
