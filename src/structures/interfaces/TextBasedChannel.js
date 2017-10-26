@@ -158,41 +158,44 @@ class TextBasedChannel {
 
   /**
    * Starts a typing indicator in the channel.
-   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @param {number} [count=1] The number of times startTyping should be considered to have been called
    * @returns {Promise} Resolves once the bot stops typing gracefully, or rejects when an error occurs
    * @example
-   * // Start typing in a channel
+   * // Start typing in a channel, or increase the typing count by one
    * channel.startTyping();
+   * @example
+   * // Start typing in a channel with a typing count of five, or set it to five
+   * channel.startTyping(5);
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
-    if (!this.client.user._typing.has(this.id)) {
-      const entry = {};
-      entry.promise = new Promise((resolve, reject) => {
-        const endpoint = this.client.api.channels[this.id].typing;
-        Object.assign(entry, {
-          count: count || 1,
-          interval: this.client.setInterval(() => {
-            endpoint.post().catch(error => {
-              this.client.clearInterval(entry.interval);
-              this.client.user._typing.delete(this.id);
-              reject(error);
-            });
-          }, 9000),
-          resolve,
-        });
-        endpoint.post().catch(error => {
-          this.client.clearInterval(entry.interval);
-          this.client.user._typing.delete(this.id);
-          reject(error);
-        });
-        this.client.user._typing.set(this.id, entry);
-      });
+    if (this.client.user._typing.has(this.id)) {
+      const entry = this.client.user._typing.get(this.id);
+      entry.count = count || entry.count + 1;
       return entry.promise;
     }
 
-    const entry = this.client.user._typing.get(this.id);
-    entry.count = count || entry.count + 1;
+    const entry = {};
+    entry.promise = new Promise((resolve, reject) => {
+      const endpoint = this.client.api.channels[this.id].typing;
+      Object.assign(entry, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          endpoint.post().catch(error => {
+            this.client.clearInterval(entry.interval);
+            this.client.user._typing.delete(this.id);
+            reject(error);
+          });
+        }, 9000),
+        resolve,
+      });
+      endpoint.post().catch(error => {
+        this.client.clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+        reject(error);
+      });
+      this.client.user._typing.set(this.id, entry);
+    });
     return entry.promise;
   }
 
@@ -202,10 +205,10 @@ class TextBasedChannel {
    * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
-   * // Stop typing in a channel
+   * // Reduce the typing count by one and stop typing if it reached 0
    * channel.stopTyping();
    * @example
-   * // Force typing to fully stop in a channel
+   * // Force typing to fully stop regardless of typing count
    * channel.stopTyping(true);
    */
   stopTyping(force = false) {
