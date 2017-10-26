@@ -542,7 +542,7 @@ class Guild extends Base {
       }
     }
     return this.client.api.guilds(this.id).members(user.id).put({ data: options })
-      .then(data => this.client.actions.GuildMemberGet.handle(this, data).member);
+      .then(data => this.members.create(data));
   }
 
   /**
