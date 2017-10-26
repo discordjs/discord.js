@@ -14,7 +14,7 @@ client.login(auth.token).then(() => console.log('logged')).catch(console.error);
 
 const connections = new Map();
 
-let broadcast;
+var d;
 
 client.on('debug', console.log);
 client.on('error', console.log);
@@ -29,9 +29,7 @@ client.on('message', m => {
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
-        const d = conn.playOpusStream(
-          fs.createReadStream('C:/users/amish/downloads/s.ogg').pipe(new prism.OggOpusDemuxer())
-        );
+        d = conn.playStream(ytdl('https://www.youtube.com/watch?v=EUoe7cf0HYw', { filter: 'audioonly' }, { passes: 3 }));
       });
     } else {
       m.reply('Specify a voice channel!');
@@ -42,7 +40,9 @@ client.on('message', m => {
         .replace(/</g, '')
         .replace(/>/g, '');
       const stream = ytdl(url, { filter: 'audioonly' }, { passes: 3 });
-      m.guild.voiceConnection.playStream(stream);
+      d = m.guild.voiceConnection.playStream(stream);
+      d.setBitrate(1);
+      setTimeout(() => d.setBitrate(320), 5000);
     }
   } else if (m.content.startsWith('/skip')) {
     if (connections.has(m.guild.id)) {

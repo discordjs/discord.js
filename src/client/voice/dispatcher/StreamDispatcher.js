@@ -29,7 +29,8 @@ nonce.fill(0);
  * @extends {stream.Writable}
  */
 class StreamDispatcher extends Writable {
-  constructor(player, streamOptions, streams) {
+  constructor(player, { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96 } = {}, streams) {
+    const streamOptions = { seek, volume, passes, fec, plp, bitrate };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
@@ -55,6 +56,11 @@ class StreamDispatcher extends Writable {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
     });
+
+    if (typeof volume !== 'undefined') this.setVolume(volume);
+    if (typeof fec !== 'undefined') this.setFEC(fec);
+    if (typeof plp !== 'undefined') this.setPLP(plp);
+    if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
   }
 
   get _sdata() {

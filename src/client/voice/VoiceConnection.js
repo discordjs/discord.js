@@ -434,7 +434,9 @@ class VoiceConnection extends EventEmitter {
    * @property {number} [seek=0] The time to seek to
    * @property {number} [volume=1] The volume to play at
    * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
-   * @property {number|string} [bitrate=48000] The bitrate (quality) of the audio.
+   * @property {number} [plp] Expected packet loss percentage
+   * @property {boolean} [fec] Enabled forward error correction
+   * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps
    * If set to 'auto', the voice channel's bitrate will be used
    */
 

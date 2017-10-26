@@ -46,14 +46,14 @@ class AudioPlayer extends EventEmitter {
     }
   }
 
-  playUnknownStream(stream, options = {}) {
+  playUnknownStream(stream, options) {
     this.destroyDispatcher();
     const ffmpeg = new prism.FFmpeg({ args: FFMPEG_ARGUMENTS });
     stream.pipe(ffmpeg);
     return this.playPCMStream(ffmpeg, options, { ffmpeg });
   }
 
-  playPCMStream(stream, options = {}, streams = {}) {
+  playPCMStream(stream, options, streams = {}) {
     this.destroyDispatcher();
     const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: 0.2 });
     const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
@@ -61,7 +61,7 @@ class AudioPlayer extends EventEmitter {
     return this.playOpusStream(opus, options, streams);
   }
 
-  playOpusStream(stream, options = {}, streams = {}) {
+  playOpusStream(stream, options, streams = {}) {
     this.destroyDispatcher();
     streams.opus = stream;
     const dispatcher = this.dispatcher = this.createDispatcher(options, streams);
@@ -69,9 +69,8 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  createDispatcher({ seek = 0, volume = 1, passes = 1 } = {}, streams) {
+  createDispatcher(options, streams) {
     this.destroyDispatcher();
-    const options = { seek, volume, passes };
     const dispatcher = new StreamDispatcher(this, options, streams);
     dispatcher.on('speaking', value => this.voiceConnection.setSpeaking(value));
     return dispatcher;
