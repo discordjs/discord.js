@@ -49,9 +49,8 @@ class StreamDispatcher extends Writable {
     this.sendPacket(packet);
     const next = FRAME_LENGTH + (this.startTime + (this._sdata.count * FRAME_LENGTH) - Date.now());
     setTimeout(done.bind(this), next);
-    // Do overflow checks here!
     if (this._sdata.sequence === (2 ** 16) - 1) this._sdata.sequence = -1;
-    if (this._sdata.timestamp === (2 ** 32) - 1) this._sdata.timestamp = -1;
+    if (this._sdata.timestamp === (2 ** 32) - 1) this._sdata.timestamp = -960;
     this._sdata.sequence++;
     this._sdata.timestamp += 960;
     this._sdata.count++;
