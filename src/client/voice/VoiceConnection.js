@@ -39,6 +39,12 @@ class VoiceConnection extends EventEmitter {
      * @type {VoiceChannel}
      */
     this.channel = channel;
+    
+    /**
+     * The guild this connection is present in
+     * @type {Guild}
+     */
+    this.guild = channel.guild;
 
     /**
      * The current status of the voice connection
