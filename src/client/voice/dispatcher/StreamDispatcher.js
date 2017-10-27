@@ -146,7 +146,7 @@ class StreamDispatcher extends Writable {
 
   /**
    * Sets the expected packet loss percentage if using a compatible Opus stream.
-   * @param {number} value between 0 and 1 
+   * @param {number} value between 0 and 1
    * @returns {boolean} Returns true if it was successfully set.
    */
   setPLP(value) {
@@ -157,7 +157,7 @@ class StreamDispatcher extends Writable {
 
   /**
    * Enables or disables forward error correction if using a compatible Opus stream.
-   * @param {boolean} enabled true to enable 
+   * @param {boolean} enabled true to enable
    * @returns {boolean} Returns true if it was successfully set.
    */
   setFEC(enabled) {
