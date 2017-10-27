@@ -457,7 +457,7 @@ class VoiceConnection extends EventEmitter {
    *   .catch(console.error);
    */
   playFile(file, options) {
-    return this.player.playUnknownStream(`file:${file}`, options);
+    return this.player.playUnknown(file, options);
   }
 
   /**
@@ -467,7 +467,7 @@ class VoiceConnection extends EventEmitter {
    * @returns {StreamDispatcher}
    */
   playArbitraryInput(input, options) {
-    return this.player.playUnknownStream(input, options);
+    return this.player.playUnknown(input, options);
   }
 
   /**
@@ -487,7 +487,7 @@ class VoiceConnection extends EventEmitter {
    *   .catch(console.error);
    */
   playStream(stream, options) {
-    return this.player.playUnknownStream(stream, options);
+    return this.player.playUnknown(stream, options);
   }
 
   /**

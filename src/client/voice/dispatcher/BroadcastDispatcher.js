@@ -1,4 +1,3 @@
-const Collection = require('../../../util/Collection');
 const StreamDispatcher = require('./StreamDispatcher');
 
 /**
