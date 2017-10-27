@@ -41,7 +41,7 @@ class VoiceBroadcast extends EventEmitter {
    *   .catch(console.error);
    */
   playFile(file, options) {
-    return this.player.playUnknown(`file:${file}`, options);
+    return this.player.playUnknown(file, options);
   }
 
   /**
