@@ -39,7 +39,7 @@ class VoiceConnection extends EventEmitter {
      * @type {VoiceChannel}
      */
     this.channel = channel;
-    
+
     /**
      * The guild this connection is present in
      * @type {Guild}
