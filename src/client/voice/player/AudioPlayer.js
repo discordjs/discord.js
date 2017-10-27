@@ -1,5 +1,3 @@
-const prism = require('prism-media');
-const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const BasePlayer = require('./BasePlayer');
 
 /**
@@ -19,7 +17,7 @@ class AudioPlayer extends BasePlayer {
 
   playBroadcast(broadcast, options) {
     const dispatcher = this.createDispatcher(options, { broadcast });
-    broadcast.dispatchers.push(dispatcher);
+    broadcast.dispatchers.add(dispatcher);
     return dispatcher;
   }
 }
