@@ -95,7 +95,7 @@ class ChannelStore extends DataStore {
    * @memberof ChannelStore
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
 }
 

@@ -11,7 +11,7 @@ import { TypeError } from '../../errors';
  * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
  * @property {UserResolvable} [author] Author to limit search
  * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
- * @property {string} [sortBy='recent'] `recent` or `relevant`
+ * @property {string} [sortBy='timestamp'] `timestamp` or `relevant`
  * @property {string} [sortOrder='descending'] `ascending` or `descending`
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)

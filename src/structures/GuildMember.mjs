@@ -125,7 +125,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(this.client);
   }
 
   /**
@@ -294,19 +294,13 @@ class GuildMember extends Base {
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
-   * (takes priority over `explicit`)
-   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
-   * (takes priority over `explicit`)
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
-    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
-    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+  hasPermission(permission, checkAdmin = true, checkOwner = true) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.permissions.has(permission, undefined, checkAdmin));
+    return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
 
   /**
@@ -521,7 +515,7 @@ class GuildMember extends Base {
 
   /**
    * Bans this guild member.
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
@@ -535,10 +529,10 @@ class GuildMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {

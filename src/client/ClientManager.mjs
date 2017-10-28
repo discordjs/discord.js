@@ -22,6 +22,7 @@ class ClientManager {
 
   /**
    * The status of the client
+   * @readonly
    * @type {number}
    */
   get status() {

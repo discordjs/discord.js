@@ -33,7 +33,7 @@ class GuildStore extends DataStore {
    * @memberof GuildStore
    * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
 }
 

@@ -236,7 +236,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description).
    * @param {string} input The arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}

@@ -19,7 +19,7 @@ export default class Presence {
      * * **`dnd`** - user is in Do Not Disturb
      * @type {string}
      */
-    this.status = data.status || this.status;
+    this.status = data.status || this.status || 'offline';
 
     const activity = data.game || data.activity;
     /**
@@ -38,7 +38,7 @@ export default class Presence {
   }
 
   /**
-   * Whether this presence is equal to another
+   * Whether this presence is equal to another.
    * @param {Presence} presence The presence to compare with
    * @returns {boolean}
    */
@@ -160,21 +160,22 @@ export class RichPresenceAssets {
 
     /**
      * ID of the large image asset
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.largeImage = assets.large_image || null;
 
     /**
      * ID of the small image asset
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.smallImage = assets.small_image || null;
   }
 
   /**
    * Gets the URL of the small image asset
-   * @param  {string} format Format of the image
-   * @param  {number} size Size of the image
+   * @param {Object} [options] Options for the image url
+   * @param {string} [options.format] Format of the image
+   * @param {number} [options.size] Size of the image
    * @returns {?string} The small image URL
    */
   smallImageURL({ format, size } = {}) {
@@ -185,8 +186,9 @@ export class RichPresenceAssets {
 
   /**
    * Gets the URL of the large image asset
-   * @param  {string} format Format of the image
-   * @param  {number} size Size of the image
+   * @param {Object} [options] Options for the image url
+   * @param {string} [options.format] Format of the image
+   * @param {number} [options.size] Size of the image
    * @returns {?string} The large image URL
    */
   largeImageURL({ format, size } = {}) {

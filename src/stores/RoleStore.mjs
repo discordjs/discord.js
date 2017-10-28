@@ -38,7 +38,7 @@ class RoleStore extends DataStore {
     * @memberof RoleStore
     * @instance
     * @param {RoleResolvable} role The role resolvable to resolve
-    * @returns {?string}
+    * @returns {?Snowflake}
     */
 }
 

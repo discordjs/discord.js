@@ -190,7 +190,7 @@ class Emoji extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the emoji mention rather than the object.
+   * When concatenated with a string, this automatically concatenates the emoji's mention instead of the Emoji object.
    * @returns {string}
    * @example
    * // Send an emoji:

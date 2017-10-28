@@ -25,9 +25,20 @@ export { Util, Util as util };
 import Package from '../package.json';
 export const version = Package.version;
 
+// Stores
+export { default as ChannelStore } from './stores/ChannelStore';
+export { default as ChannelPresenceStore } from './stores/ChannelPresenceStore';
+export { default as GuildMemberStore } from './stores/GuildMemberStore';
+export { default as GuildStore } from './stores/GuildStore';
+export { default as MessageStore } from './stores/MessageStore';
+export { default as PresenceStore } from './stores/PresenceStore';
+export { default as RoleStore } from './stores/RoleStore';
+export { default as UserStore } from './stores/UserStore';
+
 // Structures
 export { Activity } from './structures/Presence';
 export { default as Channel } from './structures/Channel';
+export { default as CategoryChannel } from './structures/CategoryChannel';
 export { default as ClientUser } from './structures/ClientUser';
 export { default as ClientUserSettings } from './structures/ClientUserSettings';
 export { default as Collector } from './structures/interfaces/Collector';
@@ -53,7 +64,9 @@ export { default as ReactionCollector } from './structures/ReactionCollector';
 export { default as Role } from './structures/Role';
 export { default as TextChannel } from './structures/TextChannel';
 export { default as User } from './structures/User';
+export { default as UserConnection } from './structures/UserConnection';
 export { default as VoiceChannel } from './structures/VoiceChannel';
+export { default as VoiceRegion } from './structures/VoiceRegion';
 export { default as Webhook } from './structures/Webhook';
 
 export { WebSocket } from './WebSocket';
