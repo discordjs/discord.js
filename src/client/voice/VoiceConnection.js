@@ -510,6 +510,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Plays an Opus encoded stream.
    * <warn>Note that inline volume is not compatible with this method.</warn>
+   * <warn>Note that options.bitrate must correspond to your stream.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
