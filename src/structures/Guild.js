@@ -401,7 +401,7 @@ class Guild extends Base {
     }
   }
 
-  /*
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
