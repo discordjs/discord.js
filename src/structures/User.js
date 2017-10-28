@@ -63,8 +63,6 @@ class User extends Base {
      * @type {?Message}
      */
     this.lastMessage = null;
-
-    if (data.token) this.client.token = data.token;
   }
 
   /**
