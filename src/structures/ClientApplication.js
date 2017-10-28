@@ -195,8 +195,12 @@ class ClientApplication extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * When concatenated with a string, this automatically returns the application's name instead of the
+   * ClientApplication object.
    * @returns {string}
+   * @example
+   * // Logs: Application name: My App
+   * console.log(`Application name: ${application}`);
    */
   toString() {
     return this.name;
