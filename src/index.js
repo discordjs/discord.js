@@ -68,7 +68,7 @@ module.exports = {
   Presence: require('./structures/Presence').Presence,
   ReactionCollector: require('./structures/ReactionCollector'),
   ReactionEmoji: require('./structures/ReactionEmoji'),
-  RichPresenceAssets: require('./structures/RichPresenceAssets'),
+  RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
