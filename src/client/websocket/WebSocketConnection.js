@@ -272,7 +272,7 @@ class WebSocketConnection extends EventEmitter {
     try {
       const packet = WebSocket.unpack(this.inflate.result);
       this.onPacket(packet);
-      if (this.client.listenerCount('raw')) this.client.emit('raw', data);
+      if (this.client.listenerCount('raw')) this.client.emit('raw', packet);
     } catch (err) {
       this.client.emit('debug', err);
     }
