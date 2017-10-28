@@ -1,6 +1,6 @@
-const Util = require('./util/Util');
+import Util from './util/Util';
 
-module.exports = {
+export default {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),

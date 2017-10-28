@@ -8,7 +8,7 @@
     "test": "npm run lint && npm run docs:test",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
     "docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
-    "lint": "eslint src *.js",
+    "lint": "eslint -c .eslintrc.json *.js src/**.mjs src/**.js",
     "lint:fix": "eslint --fix src",
     "webpack": "parallel-webpack"
   },
