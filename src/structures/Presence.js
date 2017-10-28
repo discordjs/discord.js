@@ -38,7 +38,7 @@ class Presence {
   }
 
   /**
-   * Whether this presence is equal to another
+   * Whether this presence is equal to another.
    * @param {Presence} presence The presence to compare with
    * @returns {boolean}
    */
