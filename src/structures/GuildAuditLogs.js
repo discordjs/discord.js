@@ -2,6 +2,24 @@ const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
 
+/**
+ * The target type of an entry, e.g. `GUILD`. Here are the available types:
+ * * GUILD
+ * * CHANNEL
+ * * USER
+ * * ROLE
+ * * INVITE
+ * * WEBHOOK
+ * * EMOJI
+ * * MESSAGE
+ * @typedef {string} AuditLogTargetType
+ */
+
+/**
+ * Key mirror of all available audit log targets.
+ * @name GuildAuditLogs.Targets
+ * @type {AuditLogTargetType}
+ */
 const Targets = {
   ALL: 'ALL',
   GUILD: 'GUILD',
@@ -15,6 +33,43 @@ const Targets = {
   UNKNOWN: 'UNKNOWN',
 };
 
+/**
+ * The action of an entry. Here are the available actions:
+ * * ALL: null
+ * * GUILD_UPDATE: 1
+ * * CHANNEL_CREATE: 10
+ * * CHANNEL_UPDATE: 11
+ * * CHANNEL_DELETE: 12
+ * * CHANNEL_OVERWRITE_CREATE: 13
+ * * CHANNEL_OVERWRITE_UPDATE: 14
+ * * CHANNEL_OVERWRITE_DELETE: 15
+ * * MEMBER_KICK: 20
+ * * MEMBER_PRUNE: 21
+ * * MEMBER_BAN_ADD: 22
+ * * MEMBER_BAN_REMOVE: 23
+ * * MEMBER_UPDATE: 24
+ * * MEMBER_ROLE_UPDATE: 25
+ * * ROLE_CREATE: 30
+ * * ROLE_UPDATE: 31
+ * * ROLE_DELETE: 32
+ * * INVITE_CREATE: 40
+ * * INVITE_UPDATE: 41
+ * * INVITE_DELETE: 42
+ * * WEBHOOK_CREATE: 50
+ * * WEBHOOK_UPDATE: 51
+ * * WEBHOOK_DELETE: 50
+ * * EMOJI_CREATE: 60
+ * * EMOJI_UPDATE: 61
+ * * EMOJI_DELETE: 62
+ * * MESSAGE_DELETE: 72
+ * @typedef {?number|string} AuditLogAction
+ */
+
+/**
+ * All available actions keyed under their names to their numeric values.
+ * @name GuildAuditLogs.Actions
+ * @type {AuditLogAction}
+ */
 const Actions = {
   ALL: null,
   GUILD_UPDATE: 1,
@@ -85,20 +140,7 @@ class GuildAuditLogs {
   }
 
   /**
-   * The target type of an entry, e.g. `GUILD`. Here are the available types:
-   * * GUILD
-   * * CHANNEL
-   * * USER
-   * * ROLE
-   * * INVITE
-   * * WEBHOOK
-   * * EMOJI
-   * * MESSAGE
-   * @typedef {string} TargetType
-   */
-
-  /**
-   * The target for an audit log entry. It can be one of:
+   * The target of an entry. It can be one of:
    * * A guild
    * * A user
    * * A role
@@ -106,13 +148,13 @@ class GuildAuditLogs {
    * * An invite
    * * A webhook
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?Object|Guild|User|Role|Emoji|Invite|Webhook} EntryTarget
+   * @typedef {?Object|Guild|User|Role|Emoji|Invite|Webhook} AuditLogEntryTarget
    */
 
   /**
    * Finds the target type from the entry action.
-   * @param {number} target The action target
-   * @returns {?string}
+   * @param {AuditLogAction} target The action target
+   * @returns {AuditLogTargetType}
    */
   static targetType(target) {
     if (target < 10) return Targets.GUILD;
@@ -132,13 +174,13 @@ class GuildAuditLogs {
    * * DELETE
    * * UPDATE
    * * ALL
-   * @typedef {string} ActionType
+   * @typedef {string} AuditLogActionType
    */
 
   /**
    * Finds the action type from the entry action.
-   * @param {string} action The action target
-   * @returns {string}
+   * @param {AuditLogAction} action The action target
+   * @returns {AuditLogActionType}
    */
   static actionType(action) {
     if ([
@@ -188,19 +230,19 @@ class GuildAuditLogsEntry {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
-     * @type {TargetType}
+     * @type {AuditLogTargetType}
      */
     this.targetType = targetType;
 
     /**
      * The action type of this entry
-     * @type {ActionType}
+     * @type {AuditLogActionType}
      */
     this.actionType = GuildAuditLogs.actionType(data.action_type);
 
     /**
-     * Specific action type of this entry
-     * @type {string}
+     * Specific action type of this entry in its string presentation
+     * @type {AuditLogAction}
      */
     this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
@@ -272,7 +314,7 @@ class GuildAuditLogsEntry {
     if (targetType === Targets.UNKNOWN) {
       /**
        * The target of this entry
-       * @type {EntryTarget}
+       * @type {AuditLogEntryTarget}
        */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;
