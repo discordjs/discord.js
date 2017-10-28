@@ -1,0 +1,20 @@
+import AbstractHandler from './AbstractHandler';
+import { Events } from '../../../../util/Constants';
+
+class MessageUpdateHandler extends AbstractHandler {
+  handle(packet) {
+    const { old, updated } = this.packetManager.client.actions.MessageUpdate.handle(packet.d);
+    if (old && updated) {
+      this.packetManager.client.emit(Events.MESSAGE_UPDATE, old, updated);
+    }
+  }
+}
+
+export default MessageUpdateHandler;
+
+/**
+ * Emitted whenever a message is updated - e.g. embed or content change.
+ * @event Client#messageUpdate
+ * @param {Message} oldMessage The message before the update
+ * @param {Message} newMessage The message after the update
+ */

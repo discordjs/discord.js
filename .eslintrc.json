@@ -8,6 +8,7 @@
     "node": true
   },
   "overrides": [
+    { "files": ["*.mjs"], "parserOptions": { "sourceType": "module" } },
     { "files": ["*.browser.js"], "env": { "browser": true } }
   ],
   "rules": {
