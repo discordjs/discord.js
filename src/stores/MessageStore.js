@@ -112,7 +112,7 @@ class MessageStore extends DataStore {
     * @memberof MessageStore
     * @instance
     * @param {MessageResolvable} message The message resolvable to resolve
-    * @returns {?string}
+    * @returns {?Snowflake}
     */
 }
 

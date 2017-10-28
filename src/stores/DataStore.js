@@ -37,7 +37,7 @@ class DataStore extends Collection {
   /**
    * Resolves a data entry to a instance ID.
    * @param {string|Instance} idOrInstance The id or instance of something in this DataStore
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;

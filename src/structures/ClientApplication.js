@@ -177,7 +177,7 @@ class ClientApplication extends Base {
   /**
    * Resets the app's secret.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
@@ -187,7 +187,7 @@ class ClientApplication extends Base {
   /**
    * Resets the app's bot token.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
