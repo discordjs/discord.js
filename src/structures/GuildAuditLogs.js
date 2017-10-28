@@ -131,6 +131,7 @@ class GuildAuditLogs {
    * * CREATE
    * * DELETE
    * * UPDATE
+   * * ALL
    * @typedef {string} ActionType
    */
 
