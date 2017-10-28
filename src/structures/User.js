@@ -47,7 +47,7 @@ class User extends Base {
 
     /**
      * The ID of the user's avatar
-     * @type {string}
+     * @type {?string}
      * @name User#avatar
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
