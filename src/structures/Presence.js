@@ -19,7 +19,7 @@ class Presence {
      * * **`dnd`** - user is in Do Not Disturb
      * @type {string}
      */
-    this.status = data.status || this.status;
+    this.status = data.status || this.status || 'offline';
 
     const activity = data.game || data.activity;
     /**
