@@ -115,7 +115,7 @@ class Guild extends Base {
 
     /**
      * An array of guild features
-     * @type {Object[]}
+     * @type {string[]}
      */
     this.features = data.features;
 
@@ -232,7 +232,7 @@ class Guild extends Base {
   }
 
   /**
-   * The time the guild was created
+   * The time the guild was created at
    * @type {Date}
    * @readonly
    */
@@ -247,6 +247,15 @@ class Guild extends Base {
    */
   get joinedAt() {
     return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * If this guild is verified
+   * @type {boolean}
+   * @readonly
+   */
+  get verified() {
+    return this.features.includes('VERIFIED');
   }
 
   /**
@@ -392,7 +401,7 @@ class Guild extends Base {
     }
   }
 
-  /*
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -423,7 +432,7 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch a collection of banned users in this guild.
+   * Fetches a collection of banned users in this guild.
    * The returned collection contains user objects keyed under `user` and reasons keyed under `reason`.
    * @returns {Promise<Collection<Snowflake, Object>>}
    */
@@ -440,7 +449,7 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch a collection of invites to this guild.
+   * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
    */
@@ -457,7 +466,7 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch all webhooks for the guild.
+   * Fetches all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
@@ -469,7 +478,7 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch available voice regions.
+   * Fetches available voice regions.
    * @returns {Promise<Collection<string, VoiceRegion>>}
    */
   fetchVoiceRegions() {
@@ -481,7 +490,7 @@ class Guild extends Base {
   }
 
   /**
-   * Fetch audit logs for this guild.
+   * Fetches audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
@@ -533,7 +542,7 @@ class Guild extends Base {
       }
     }
     return this.client.api.guilds(this.id).members(user.id).put({ data: options })
-      .then(data => this.client.actions.GuildMemberGet.handle(this, data).member);
+      .then(data => this.members.create(data));
   }
 
   /**
@@ -606,7 +615,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the level of the explicit content filter.
+   * Edits the level of the explicit content filter.
    * @param {number} explicitContentFilter The new level of the explicit content filter
    * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
@@ -616,7 +625,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the name of the guild.
+   * Edits the name of the guild.
    * @param {string} name The new name of the guild
    * @param {string} [reason] Reason for changing the guild's name
    * @returns {Promise<Guild>}
@@ -631,7 +640,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the region of the guild.
+   * Edits the region of the guild.
    * @param {string} region The new region of the guild
    * @param {string} [reason] Reason for changing the guild's region
    * @returns {Promise<Guild>}
@@ -646,7 +655,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the verification level of the guild.
+   * Edits the verification level of the guild.
    * @param {number} verificationLevel The new verification level of the guild
    * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
@@ -661,7 +670,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the AFK channel of the guild.
+   * Edits the AFK channel of the guild.
    * @param {ChannelResolvable} afkChannel The new AFK channel
    * @param {string} [reason] Reason for changing the guild's AFK channel
    * @returns {Promise<Guild>}
@@ -676,7 +685,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the system channel of the guild.
+   * Edits the system channel of the guild.
    * @param {ChannelResolvable} systemChannel The new system channel
    * @param {string} [reason] Reason for changing the guild's system channel
    * @returns {Promise<Guild>}
@@ -691,7 +700,7 @@ class Guild extends Base {
   }
 
   /**
-   * Edit the AFK timeout of the guild.
+   * Edits the AFK timeout of the guild.
    * @param {number} afkTimeout The time in seconds that a user must be idle to be considered AFK
    * @param {string} [reason] Reason for changing the guild's AFK timeout
    * @returns {Promise<Guild>}
@@ -706,7 +715,7 @@ class Guild extends Base {
   }
 
   /**
-   * Set a new guild icon.
+   * Sets a new guild icon.
    * @param {Base64Resolvable|BufferResolvable} icon The new icon of the guild
    * @param {string} [reason] Reason for changing the guild's icon
    * @returns {Promise<Guild>}
@@ -736,7 +745,7 @@ class Guild extends Base {
   }
 
   /**
-   * Set a new guild splash screen.
+   * Sets a new guild splash screen.
    * @param {Base64Resolvable|BufferResolvable} splash The new splash screen of the guild
    * @param {string} [reason] Reason for changing the guild's splash screen
    * @returns {Promise<Guild>}
@@ -779,7 +788,7 @@ class Guild extends Base {
   }
 
   /**
-   * Allow direct messages from guild members.
+   * Whether to allow direct messages from guild members.
    * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
@@ -793,7 +802,7 @@ class Guild extends Base {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
@@ -970,7 +979,7 @@ class Guild extends Base {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
@@ -991,7 +1000,7 @@ class Guild extends Base {
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   *   .catch(console.error);
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
@@ -1050,7 +1059,7 @@ class Guild extends Base {
   }
 
   /**
-   * Causes the client to leave the guild.
+   * Leaves the guild.
    * @returns {Promise<Guild>}
    * @example
    * // Leave a guild
@@ -1065,7 +1074,7 @@ class Guild extends Base {
   }
 
   /**
-   * Causes the client to delete the guild.
+   * Deletes the guild.
    * @returns {Promise<Guild>}
    * @example
    * // Delete a guild
@@ -1114,14 +1123,11 @@ class Guild extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the guild object.
+   * When concatenated with a string, this automatically returns the guild's name instead of the Guild object.
    * @returns {string}
    * @example
    * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
-   * @example
-   * // Logs: Hello from My Guild!
-   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;

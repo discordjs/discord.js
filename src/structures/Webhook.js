@@ -79,7 +79,6 @@ class Webhook {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|BufferResolvable} [file] A file to send with the message
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -88,7 +87,7 @@ class Webhook {
 
   /* eslint-disable max-len */
   /**
-   * Send a message with this webhook.
+   * Sends a message with this webhook.
    * @param {StringResolvable} [content] The content to send
    * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
@@ -212,7 +211,7 @@ class Webhook {
   }
 
   /**
-   * Send a raw slack message with this webhook.
+   * Sends a raw slack message with this webhook.
    * @param {Object} body The raw body to send
    * @returns {Promise<Message|Object>}
    * @example
@@ -240,29 +239,32 @@ class Webhook {
   }
 
   /**
-   * Edit the webhook.
+   * Edits the webhook.
    * @param {Object} options Options
    * @param {string} [options.name=this.name] New name for this webhook
    * @param {BufferResolvable} [options.avatar] New avatar for this webhook
+   * @param {ChannelResolvable} [options.channel] New channel for this webhook
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit({ name = this.name, avatar }, reason) {
+  edit({ name = this.name, avatar, channel }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
-    return this.client.api.webhooks(this.id, this.token).patch({
-      data: { name, avatar },
+    if (channel) channel = this.client.channels.resolveID(channel);
+    return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+      data: { name, avatar, channel_id: channel },
       reason,
     }).then(data => {
       this.name = data.name;
       this.avatar = data.avatar;
+      this.channelID = data.channel_id;
       return this;
     });
   }
 
   /**
-   * Delete the webhook.
+   * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
    */

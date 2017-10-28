@@ -52,7 +52,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Add a guild to the list of restricted guilds.
+   * Adds a guild to the list of restricted guilds.
    * @param {Guild} guild The guild to add
    * @returns {Promise<Guild>}
    */
@@ -64,7 +64,7 @@ class ClientUserSettings {
   }
 
   /**
-   * Remove a guild from the list of restricted guilds.
+   * Removes a guild from the list of restricted guilds.
    * @param {Guild} guild The guild to remove
    * @returns {Promise<Guild>}
    */

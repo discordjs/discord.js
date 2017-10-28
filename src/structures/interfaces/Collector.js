@@ -25,7 +25,7 @@ class Collector extends EventEmitter {
     super();
 
     /**
-     * The client
+     * The client that instantiated this Collector
      * @name Collector#client
      * @type {Client}
      * @readonly
@@ -115,7 +115,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Return a promise that resolves with the next collected element;
+   * Returns a promise that resolves with the next collected element;
    * rejects with collected elements if the collector finishes without receving a next element
    * @type {Promise}
    * @readonly
@@ -148,7 +148,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Stop this collector and emit the `end` event.
+   * Stops this collector and emits the `end` event.
    * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end
    */
@@ -168,7 +168,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Check whether the collector should end, and if so, end it.
+   * Checks whether the collector should end, and if so, ends it.
    */
   checkEnd() {
     const reason = this.endReason();

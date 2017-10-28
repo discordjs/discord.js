@@ -88,6 +88,8 @@ class ClientUser extends User {
         this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
       }
     }
+
+    if (data.token) this.client.token = data.token;
   }
 
   /**
@@ -116,7 +118,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the username of the logged in client.
+   * Sets the username of the logged in client.
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
@@ -168,7 +170,7 @@ class ClientUser extends User {
   }
 
   /**
-   * Set the avatar of the logged in client.
+   * Sets the avatar of the logged in client.
    * @param {BufferResolvable|Base64Resolvable} avatar The new avatar
    * @returns {Promise<ClientUser>}
    * @example
@@ -245,6 +247,7 @@ class ClientUser extends User {
 
   /**
    * Fetches messages that mentioned the client's user.
+   * <warn>This is only available when using a user account.</warn>
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions

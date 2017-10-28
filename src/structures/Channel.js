@@ -44,7 +44,7 @@ class Channel extends Base {
   }
 
   /**
-   * The time the channel was created
+   * The time the channel was created at
    * @type {Date}
    * @readonly
    */

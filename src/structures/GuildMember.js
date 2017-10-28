@@ -64,7 +64,7 @@ class GuildMember extends Base {
      * @type {number}
      * @name GuildMember#joinedTimestamp
      */
-    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     this.user = this.guild.client.users.create(data.user);
     if (data.roles) this._roles = data.roles;
@@ -125,7 +125,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(this.client);
   }
 
   /**
@@ -294,19 +294,13 @@ class GuildMember extends Base {
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
-   * (takes priority over `explicit`)
-   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
-   * (takes priority over `explicit`)
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
-    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
-    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+  hasPermission(permission, checkAdmin = true, checkOwner = true) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.permissions.has(permission, undefined, checkAdmin));
+    return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
 
   /**
@@ -330,7 +324,7 @@ class GuildMember extends Base {
    */
 
   /**
-   * Edit a guild member.
+   * Edits a guild member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
@@ -362,7 +356,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mute/unmute a user.
+   * Mute/unmutes a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -372,7 +366,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deafen/undeafen a user.
+   * Deafen/undeafens a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
@@ -479,7 +473,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Set the nickname for the guild member.
+   * Sets the nickname for the guild member.
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
@@ -505,7 +499,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Kick this member from the guild.
+   * Kicks this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
    */
@@ -520,8 +514,8 @@ class GuildMember extends Base {
   }
 
   /**
-   * Ban this guild member.
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * Bans this guild member.
+   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
@@ -535,10 +529,10 @@ class GuildMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {

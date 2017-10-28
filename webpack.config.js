@@ -3,6 +3,7 @@
   DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
 */
 
+const path = require('path');
 const webpack = require('webpack');
 const createVariants = require('parallel-webpack').createVariants;
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -10,7 +11,6 @@ const version = require('./package.json').version;
 
 const createConfig = options => {
   const plugins = [
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new webpack.optimize.ModuleConcatenationPlugin(),
   ];
 
@@ -23,12 +23,13 @@ const createConfig = options => {
     }));
   }
 
-  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
+  // eslint-disable-next-line max-len
+  const filename = `discord${process.env.VERSIONED === 'false' ? '' : `.${version}`}${options.minify ? '.min' : ''}.js`;
 
   return {
     entry: './src/index.js',
     output: {
-      path: __dirname,
+      path: path.resolve('./webpack'),
       filename,
       library: 'Discord',
       libraryTarget: 'window',
@@ -36,6 +37,16 @@ const createConfig = options => {
     module: {
       rules: [
         { test: /\.md$/, loader: 'ignore-loader' },
+        {
+          test: require.resolve('./package.json'),
+          use: {
+            loader: 'json-filter-loader',
+            options: {
+              used: ['version', 'homepage'],
+            },
+          },
+        },
+        ...require('snekfetch/webpack.supplemental').rules,
       ],
     },
     node: {
@@ -44,11 +55,11 @@ const createConfig = options => {
       tls: 'mock',
       child_process: 'empty',
       dgram: 'empty',
-      zlib: 'empty',
       __dirname: true,
       process: false,
       path: 'empty',
       Buffer: false,
+      zlib: 'empty',
     },
     plugins,
   };

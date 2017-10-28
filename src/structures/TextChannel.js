@@ -27,7 +27,7 @@ class TextChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * If the Discord considers this channel NSFW
+     * If the guild considers this channel NSFW
      * @type {boolean}
      * @readonly
      */
@@ -39,7 +39,17 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Fetch all webhooks for the channel.
+   * Sets whether this channel is flagged as NSFW.
+   * @param {boolean} nsfw Whether the channel should be considered NSFW
+   * @param {string} [reason] Reason for changing the channel's NSFW flag
+   * @returns {Promise<TextChannel>}
+   */
+  setNSFW(nsfw, reason) {
+    return this.edit({ nsfw }, reason);
+  }
+
+  /**
+   * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */
   fetchWebhooks() {
@@ -51,7 +61,7 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Create a webhook for the channel.
+   * Creates a webhook for the channel.
    * @param {string} name The name of the webhook
    * @param {Object} [options] Options for creating the webhook
    * @param {BufferResolvable|Base64Resolvable} [options.avatar] Avatar for the webhook

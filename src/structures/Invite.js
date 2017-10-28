@@ -95,7 +95,7 @@ class Invite extends Base {
   }
 
   /**
-   * The time the invite was created
+   * The time the invite was created at
    * @type {Date}
    * @readonly
    */
@@ -113,7 +113,7 @@ class Invite extends Base {
   }
 
   /**
-   * The time the invite will expire
+   * The time the invite will expire at
    * @type {Date}
    * @readonly
    */

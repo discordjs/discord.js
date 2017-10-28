@@ -1,6 +1,6 @@
-exports.Package = require('../../package.json');
+const Package = exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
-exports.browser = typeof window !== 'undefined';
+const browser = exports.browser = typeof window !== 'undefined';
 
 /**
  * Options for a client.
@@ -57,9 +57,9 @@ exports.DefaultOptions = {
    */
   ws: {
     large_threshold: 250,
-    compress: !exports.browser,
+    compress: false,
     properties: {
-      $os: exports.browser ? 'browser' : process.platform,
+      $os: browser ? 'browser' : process.platform,
       $browser: 'discord.js',
       $device: 'discord.js',
     },
@@ -81,6 +81,9 @@ exports.DefaultOptions = {
     invite: 'https://discord.gg',
   },
 };
+
+exports.UserAgent = browser ? null :
+  `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'Connection gracefully closed',
@@ -111,6 +114,7 @@ exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
+        if (userID === '1') return hash;
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
@@ -191,6 +195,7 @@ exports.VoiceOPCodes = {
 };
 
 exports.Events = {
+  RATE_LIMIT: 'rateLimit',
   READY: 'ready',
   RESUMED: 'resumed',
   GUILD_CREATE: 'guildCreate',
@@ -370,8 +375,8 @@ exports.MessageNotificationTypes = [
 
 exports.UserSettingsMap = {
   /**
-   * Automatically convert emoticons in your messages to emoji
-   * For example, when you type `:-)` Discord will convert it to 😃
+   * Automatically convert emoticons in your messages to emoji,
+   * for example when you type `:-)` Discord will convert it to 😃
    * @name ClientUserSettings#convertEmoticons
    * @type {boolean}
    */
@@ -434,7 +439,7 @@ exports.UserSettingsMap = {
   inline_attachment_media: 'inlineAttachmentMedia',
 
   /**
-   * Display images, videos, and lolcats when uploaded posted as links in chat
+   * Display images, videos, and lolcats when posted as links in chat
    * @name ClientUserSettings#inlineEmbedMedia
    * @type {boolean}
    */

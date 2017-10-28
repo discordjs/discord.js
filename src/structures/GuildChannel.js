@@ -160,7 +160,7 @@ class GuildChannel extends Channel {
   /**
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The configuration for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
@@ -248,6 +248,7 @@ class GuildChannel extends Channel {
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
+   * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
@@ -275,12 +276,22 @@ class GuildChannel extends Channel {
    *   .then(c => console.log(`Edited channel ${c}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
+    if (typeof data.position !== 'undefined') {
+      await Util.setPosition(this, data.position, false,
+        this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
+        .then(updatedChannels => {
+          this.client.actions.GuildChannelsPositionUpdate.handle({
+            guild_id: this.guild.id,
+            channels: updatedChannels,
+          });
+        });
+    }
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: data.position || this.rawPosition,
+        nsfw: data.nsfw,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
         user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
@@ -296,7 +307,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new name for the guild channel.
+   * Sets a new name for the guild channel.
    * @param {string} name The new name for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
@@ -311,7 +322,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set the category parent of this channel.
+   * Sets the category parent of this channel.
    * @param {GuildChannel|Snowflake} channel Parent channel
    * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
@@ -325,7 +336,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new topic for the guild channel.
+   * Sets a new topic for the guild channel.
    * @param {string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
@@ -340,11 +351,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Set a new position for the guild channel.
+   * Sets a new position for the guild channel.
    * @param {number} position The new position for the guild channel
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reasion for changing the position
+   * @param {boolean} [options.reason] Reason for changing the position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
@@ -357,7 +368,7 @@ class GuildChannel extends Channel {
       this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
       .then(updatedChannels => {
         this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.id,
+          guild_id: this.guild.id,
           channels: updatedChannels,
         });
         return this;
@@ -365,7 +376,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Create an invite to this guild channel.
+   * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
@@ -383,7 +394,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Clone this channel.
+   * Clones this channel.
    * @param {Object} [options] The options
    * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
    * of this channel
@@ -482,11 +493,8 @@ class GuildChannel extends Channel {
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
+   * // Logs: Hello from <#123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
    */
   toString() {
     return `<#${this.id}>`;

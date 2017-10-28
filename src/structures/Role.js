@@ -81,7 +81,7 @@ class Role extends Base {
   }
 
   /**
-   * The time the role was created
+   * The time the role was created at
    * @type {Date}
    * @readonly
    */
@@ -165,15 +165,24 @@ class Role extends Base {
    *   .then(r => console.log(`Edited role ${r}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
+    if (typeof data.position !== 'undefined') {
+      await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles, reason)
+        .then(updatedRoles => {
+          this.client.actions.GuildRolesPositionUpdate.handle({
+            guild_id: this.guild.id,
+            roles: updatedRoles,
+          });
+        });
+    }
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
         color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-        position: typeof data.position !== 'undefined' ? data.position : this.position,
         permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },
@@ -187,7 +196,7 @@ class Role extends Base {
   }
 
   /**
-   * Set a new name for the role.
+   * Sets a new name for the role.
    * @param {string} name The new name of the role
    * @param {string} [reason] Reason for changing the role's name
    * @returns {Promise<Role>}
@@ -202,7 +211,7 @@ class Role extends Base {
   }
 
   /**
-   * Set a new color for the role.
+   * Sets a new color for the role.
    * @param {ColorResolvable} color The color of the role
    * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
@@ -217,7 +226,7 @@ class Role extends Base {
   }
 
   /**
-   * Set whether or not the role should be hoisted.
+   * Sets whether or not the role should be hoisted.
    * @param {boolean} hoist Whether or not to hoist the role
    * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
@@ -232,7 +241,7 @@ class Role extends Base {
   }
 
   /**
-   * Set the permissions of the role.
+   * Sets the permissions of the role.
    * @param {PermissionResolvable[]} permissions The permissions of the role
    * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
@@ -247,7 +256,7 @@ class Role extends Base {
   }
 
   /**
-   * Set whether this role is mentionable.
+   * Sets whether this role is mentionable.
    * @param {boolean} mentionable Whether this role should be mentionable
    * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
@@ -262,11 +271,11 @@ class Role extends Base {
   }
 
   /**
-   * Set the position of the role.
+   * Sets the position of the role.
    * @param {number} position The position of the role
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reasion for changing the position
+   * @param {boolean} [options.reason] Reason for changing the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role
@@ -279,8 +288,8 @@ class Role extends Base {
       this.guild._sortedRoles(), this.client.api.guilds(this.guild.id).roles, reason)
       .then(updatedRoles => {
         this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.id,
-          channels: updatedRoles,
+          guild_id: this.guild.id,
+          roles: updatedRoles,
         });
         return this;
       });
@@ -323,8 +332,11 @@ class Role extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the role mention rather than the Role object.
+   * When concatenated with a string, this automatically returns the role's mention instead of the Role object.
    * @returns {string}
+   * @example
+   * // Logs: Role: <@&123456789012345678>
+   * console.log(`Role: ${role}`);
    */
   toString() {
     if (this.id === this.guild.id) return '@everyone';

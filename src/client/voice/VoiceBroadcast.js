@@ -154,7 +154,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Play the given file in the voice connection.
+   * Plays the given file in the voice connection.
    * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {StreamDispatcher}
@@ -236,7 +236,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
+   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description).
    * @param {string} input The arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
    * @returns {VoiceBroadcast}
@@ -248,7 +248,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Pauses the entire broadcast - all dispatchers also pause.
+   * Pauses the entire broadcast - all dispatchers are also paused.
    */
   pause() {
     this.paused = true;
@@ -260,7 +260,7 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Resumes the entire broadcast - all dispatchers also resume.
+   * Resumes the entire broadcast - all dispatchers are also resumed.
    */
   resume() {
     this.paused = false;
@@ -349,14 +349,14 @@ class VoiceBroadcast extends VolumeInterface {
   }
 
   /**
-   * Stop the current stream from playing without unsubscribing dispatchers.
+   * Stops the current stream from playing without unsubscribing dispatchers.
    */
   end() {
     this.killCurrentTranscoder();
   }
 
   /**
-   * End the current broadcast, all subscribed dispatchers will also end.
+   * Ends the current broadcast, all subscribed dispatchers will also end.
    */
   destroy() {
     this.end();

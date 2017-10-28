@@ -1,7 +1,13 @@
 const EventEmitter = require('events');
-const { DefaultOptions, Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
+const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocket = require('../../WebSocket');
+try {
+  var zlib = require('zlib-sync');
+  if (!zlib.Inflate) zlib = require('pako');
+} catch (err) {
+  zlib = require('pako');
+}
 
 /**
  * Abstracts a WebSocket connection with decoding/encoding for the Discord gateway.
@@ -62,17 +68,18 @@ class WebSocketConnection extends EventEmitter {
      */
     this.ratelimit = {
       queue: [],
-      remaining: 60,
-      total: 60,
+      remaining: 120,
+      total: 120,
+      time: 60e3,
       resetTimer: null,
     };
-    this.connect(gateway);
 
     /**
      * Events that are disabled (will not be processed)
      * @type {Object}
      */
     this.disabledEvents = {};
+    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
 
     /**
      * The sequence on WebSocket close
@@ -85,7 +92,9 @@ class WebSocketConnection extends EventEmitter {
      * @type {boolean}
      */
     this.expectingClose = false;
-    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
+
+    this.inflate = null;
+    this.connect(gateway);
   }
 
   /**
@@ -152,7 +161,7 @@ class WebSocketConnection extends EventEmitter {
       this.ratelimit.resetTimer = this.client.setTimeout(() => {
         this.ratelimit.remaining = this.ratelimit.total;
         this.processQueue();
-      }, 120e3);
+      }, this.ratelimit.time);
     }
     while (this.ratelimit.remaining > 0) {
       const item = this.ratelimit.queue.shift();
@@ -205,10 +214,18 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
       return false;
     }
+    this.inflate = new zlib.Inflate({
+      chunkSize: 65535,
+      flush: zlib.Z_SYNC_FLUSH,
+      to: WebSocket.encoding === 'json' ? 'string' : '',
+    });
     this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
-    const ws = this.ws = WebSocket.create(gateway, { v: DefaultOptions.ws.version });
+    const ws = this.ws = WebSocket.create(gateway, {
+      v: this.client.options.ws.version,
+      compress: 'zlib-stream',
+    });
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
@@ -240,18 +257,25 @@ class WebSocketConnection extends EventEmitter {
   /**
    * Called whenever a message is received.
    * @param {Event} event Event received
-   * @returns {boolean}
    */
-  onMessage(event) {
-    let data;
+  onMessage({ data }) {
+    if (data instanceof ArrayBuffer) data = new Uint8Array(data);
+    const l = data.length;
+    const flush = l >= 4 &&
+      data[l - 4] === 0x00 &&
+      data[l - 3] === 0x00 &&
+      data[l - 2] === 0xFF &&
+      data[l - 1] === 0xFF;
+
+    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+    if (!flush) return;
     try {
-      data = WebSocket.unpack(event.data);
+      const packet = WebSocket.unpack(this.inflate.result);
+      this.onPacket(packet);
+      if (this.client.listenerCount('raw')) this.client.emit('raw', packet);
     } catch (err) {
       this.client.emit('debug', err);
     }
-    const ret = this.onPacket(data);
-    this.client.emit('raw', data);
-    return ret;
   }
 
   /**

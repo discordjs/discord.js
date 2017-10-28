@@ -55,7 +55,7 @@ class Message extends Base {
     this.author = this.client.users.create(data.author, !data.webhook_id);
 
     /**
-     * Represents the author of the message as a guild member
+     * Represents the author of the message as a guild member.
      * Only available if the message comes from a guild where the author is still a member
      * @type {?GuildMember}
      */
@@ -202,7 +202,7 @@ class Message extends Base {
   }
 
   /**
-   * The time the message was sent
+   * The time the message was sent at
    * @type {Date}
    * @readonly
    */
@@ -291,7 +291,7 @@ class Message extends Base {
    */
 
   /**
-   * Similar to createMessageCollector but in promise form.
+   * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
@@ -358,7 +358,7 @@ class Message extends Base {
    */
 
   /**
-   * Edit the content of the message.
+   * Edits the content of the message.
    * @param {StringResolvable} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
@@ -426,7 +426,7 @@ class Message extends Base {
   }
 
   /**
-   * Add a reaction to the message.
+   * Adds a reaction to the message.
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    */
@@ -445,7 +445,7 @@ class Message extends Base {
   }
 
   /**
-   * Remove all reactions from a message.
+   * Removes all reactions from a message.
    * @returns {Promise<Message>}
    */
   clearReactions() {
@@ -484,7 +484,7 @@ class Message extends Base {
   }
 
   /**
-   * Reply to the message.
+   * Replies to the message.
    * @param {StringResolvable} [content] The content for the message
    * @param {MessageOptions} [options] The options to provide
    * @returns {Promise<Message|Message[]>}

@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const RESTManager = require('../rest/RESTManager');
 const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -41,13 +40,6 @@ class Client extends BaseClient {
     }
 
     this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
 
     /**
      * The manager of the client
@@ -99,7 +91,8 @@ class Client extends BaseClient {
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+     * is a member of, and all DM channels
      * @type {ChannelStore<Snowflake, Channel>}
      */
     this.channels = new ChannelStore(this);
@@ -256,9 +249,9 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
     }).catch(e => {

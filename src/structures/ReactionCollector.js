@@ -23,13 +23,13 @@ class ReactionCollector extends Collector {
     super(message.client, filter, options);
 
     /**
-     * The message
+     * The message upon which to collect reactions
      * @type {Message}
      */
     this.message = message;
 
     /**
-     * The users which have reacted
+     * The users which have reacted to this message
      * @type {Collection}
      */
     this.users = new Collection();
@@ -64,7 +64,7 @@ class ReactionCollector extends Collector {
   }
 
   /**
-   * Handle an incoming reaction for possible collection.
+   * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
    * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
@@ -78,7 +78,7 @@ class ReactionCollector extends Collector {
   }
 
   /**
-   * Handle a reaction deletion for possible disposal.
+   * Handles a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose
    * @returns {?Snowflake|string}
    */
@@ -87,7 +87,7 @@ class ReactionCollector extends Collector {
   }
 
   /**
-   * Empty this reaction collector.
+   * Empties this reaction collector.
    */
   empty() {
     this.total = 0;
@@ -104,7 +104,7 @@ class ReactionCollector extends Collector {
   }
 
   /**
-   * Get the collector key for a reaction.
+   * Gets the collector key for a reaction.
    * @param {MessageReaction} reaction The message reaction to get the key for
    * @returns {Snowflake|string}
    */

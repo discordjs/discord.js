@@ -292,7 +292,7 @@ class Util {
   }
 
   /**
-   * Sort by discord's position then ID thing
+   * Sorts by Discord's position and then by ID.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
@@ -307,7 +307,7 @@ class Util {
     let updatedItems = sorted.array();
     Util.moveElementInArray(updatedItems, item, position, relative);
     updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
-    return route.patch({ data: updatedItems, reason });
+    return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
   }
 
   static basename(path, ext) {

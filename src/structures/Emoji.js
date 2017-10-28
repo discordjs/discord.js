@@ -58,7 +58,7 @@ class Emoji extends Base {
   }
 
   /**
-   * The time the emoji was created
+   * The time the emoji was created at
    * @type {Date}
    * @readonly
    */
@@ -126,7 +126,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Set the name of the emoji.
+   * Sets the name of the emoji.
    * @param {string} name The new name for the emoji
    * @param {string} [reason] Reason for changing the emoji's name
    * @returns {Promise<Emoji>}
@@ -136,7 +136,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Add a role to the list of roles that can use this emoji.
+   * Adds a role to the list of roles that can use this emoji.
    * @param {Role} role The role to add
    * @returns {Promise<Emoji>}
    */
@@ -145,7 +145,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Add multiple roles to the list of roles that can use this emoji.
+   * Adds multiple roles to the list of roles that can use this emoji.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to add
    * @returns {Promise<Emoji>}
    */
@@ -163,7 +163,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Remove a role from the list of roles that can use this emoji.
+   * Removes a role from the list of roles that can use this emoji.
    * @param {Role} role The role to remove
    * @returns {Promise<Emoji>}
    */
@@ -172,7 +172,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Remove multiple roles from the list of roles that can use this emoji.
+   * Removes multiple roles from the list of roles that can use this emoji.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to remove
    * @returns {Promise<Emoji>}
    */
@@ -190,7 +190,7 @@ class Emoji extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the emoji mention rather than the object.
+   * When concatenated with a string, this automatically concatenates the emoji's mention instead of the Emoji object.
    * @returns {string}
    * @example
    * // Send an emoji:
@@ -202,7 +202,7 @@ class Emoji extends Base {
   }
 
   /**
-   * Delete the emoji.
+   * Deletes the emoji.
    * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise<Emoji>}
    */

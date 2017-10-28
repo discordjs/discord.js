@@ -22,6 +22,7 @@ class ClientManager {
 
   /**
    * The status of the client
+   * @readonly
    * @type {number}
    */
   get status() {
@@ -57,7 +58,6 @@ class ClientManager {
 
   destroy() {
     this.client.ws.destroy();
-    this.client.rest.destroy();
     if (!this.client.user) return Promise.resolve();
     if (this.client.user.bot) {
       this.client.token = null;

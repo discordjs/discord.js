@@ -20,6 +20,13 @@ class User extends Base {
      */
     this.id = data.id;
 
+    /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
+
     this._patch(data);
   }
 
@@ -40,17 +47,10 @@ class User extends Base {
 
     /**
      * The ID of the user's avatar
-     * @type {string}
+     * @type {?string}
      * @name User#avatar
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
-
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     * @name User#bot
-     */
-    if (typeof this.bot === 'undefined' && typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -63,8 +63,6 @@ class User extends Base {
      * @type {?Message}
      */
     this.lastMessage = null;
-
-    if (data.token) this.client.token = data.token;
   }
 
   /**
@@ -77,7 +75,7 @@ class User extends Base {
   }
 
   /**
-   * The time the user was created
+   * The time the user was created at
    * @type {Date}
    * @readonly
    */
@@ -95,7 +93,7 @@ class User extends Base {
     for (const guild of this.client.guilds.values()) {
       if (guild.presences.has(this.id)) return guild.presences.get(this.id);
     }
-    return new Presence();
+    return new Presence(this.client);
   }
 
   /**
@@ -134,7 +132,7 @@ class User extends Base {
   }
 
   /**
-   * The Discord "tag" for this user
+   * The Discord "tag" (e.g. `hydrabolt#0086`) for this user
    * @type {string}
    * @readonly
    */
@@ -153,7 +151,7 @@ class User extends Base {
   }
 
   /**
-   * Check whether the user is typing in a channel.
+   * Checks whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
    */
@@ -163,7 +161,7 @@ class User extends Base {
   }
 
   /**
-   * Get the time that the user started typing.
+   * Gets the time that the user started typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {?Date}
    */
@@ -173,7 +171,7 @@ class User extends Base {
   }
 
   /**
-   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * Gets the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {number}
    */
@@ -214,7 +212,7 @@ class User extends Base {
   }
 
   /**
-   * Get the profile of the user.
+   * Gets the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
@@ -250,10 +248,10 @@ class User extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${user}!`);
    */
   toString() {

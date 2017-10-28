@@ -38,7 +38,7 @@ class EmojiStore extends DataStore {
   /**
    * Resolves a EmojiResolvable to a Emoji ID string.
    * @param {EmojiResolvable} emoji The Emoji resolvable to identify
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(emoji) {
     if (emoji instanceof ReactionEmoji) return emoji.id;

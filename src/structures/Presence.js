@@ -19,7 +19,7 @@ class Presence {
      * * **`dnd`** - user is in Do Not Disturb
      * @type {string}
      */
-    this.status = data.status || this.status;
+    this.status = data.status || this.status || 'offline';
 
     const activity = data.game || data.activity;
     /**
@@ -38,7 +38,7 @@ class Presence {
   }
 
   /**
-   * Whether this presence is equal to another
+   * Whether this presence is equal to another.
    * @param {Presence} presence The presence to compare with
    * @returns {boolean}
    */
@@ -147,34 +147,36 @@ class RichPresenceAssets {
     Object.defineProperty(this, 'activity', { value: activity });
 
     /**
-     * Hover text for large image
+     * Hover text for the large image
      * @type {?string}
      */
     this.largeText = assets.large_text || null;
 
     /**
-     * Hover text for small image
+     * Hover text for the small image
      * @type {?string}
      */
     this.smallText = assets.small_text || null;
 
     /**
-     * ID of large image asset
-     * @type {?string}
+     * ID of the large image asset
+     * @type {?Snowflake}
      */
     this.largeImage = assets.large_image || null;
 
     /**
-     * ID of small image asset
-     * @type {?string}
+     * ID of the small image asset
+     * @type {?Snowflake}
      */
     this.smallImage = assets.small_image || null;
   }
 
   /**
-   * @param  {string} format Format of the image
-   * @param  {number} size Size of the iamge
-   * @returns {?string} small image url
+   * Gets the URL of the small image asset
+   * @param {Object} [options] Options for the image url
+   * @param {string} [options.format] Format of the image
+   * @param {number} [options.size] Size of the image
+   * @returns {?string} The small image URL
    */
   smallImageURL({ format, size } = {}) {
     if (!this.smallImage) return null;
@@ -183,9 +185,11 @@ class RichPresenceAssets {
   }
 
   /**
-   * @param  {string} format Format of the image
-   * @param  {number} size Size of the iamge
-   * @returns {?string} large image url
+   * Gets the URL of the large image asset
+   * @param {Object} [options] Options for the image url
+   * @param {string} [options.format] Format of the image
+   * @param {number} [options.size] Size of the image
+   * @returns {?string} The large image URL
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;

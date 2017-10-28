@@ -111,7 +111,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * The time the app was created
+   * The time the app was created at
    * @type {Date}
    * @readonly
    */
@@ -159,7 +159,7 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Create a rich presence asset.
+   * Creates a rich presence asset.
    * @param {string} name Name of the asset
    * @param {Base64Resolvable} data Data of the asset
    * @param {string} type Type of the asset. `big`, or `small`
@@ -175,9 +175,9 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Reset the app's secret.
+   * Resets the app's secret.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
@@ -185,9 +185,9 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Reset the app's bot token.
+   * Resets the app's bot token.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
@@ -195,8 +195,12 @@ class ClientApplication extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * When concatenated with a string, this automatically returns the application's name instead of the
+   * ClientApplication object.
    * @returns {string}
+   * @example
+   * // Logs: Application name: My App
+   * console.log(`Application name: ${application}`);
    */
   toString() {
     return this.name;
