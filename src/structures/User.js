@@ -20,6 +20,13 @@ class User extends Base {
      */
     this.id = data.id;
 
+    /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
+
     this._patch(data);
   }
 
@@ -44,13 +51,6 @@ class User extends Base {
      * @name User#avatar
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
-
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     * @name User#bot
-     */
-    if (typeof this.bot === 'undefined' && typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * The ID of the last message sent by the user, if one was sent
