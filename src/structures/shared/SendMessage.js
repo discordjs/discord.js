@@ -1,4 +1,4 @@
-const createMessage = require('./createMessage');
+const createMessage = require('./CreateMessage');
 
 module.exports = async function sendMessage(channel, options) { // eslint-disable-line complexity
   const User = require('../User');
