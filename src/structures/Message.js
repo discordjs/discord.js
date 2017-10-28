@@ -10,7 +10,7 @@ const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const createMessage = require('./shared/createMessage');
+const createMessage = require('./shared/CreateMessage');
 
 /**
  * Represents a message on Discord.
