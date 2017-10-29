@@ -115,7 +115,7 @@ class Guild extends Base {
 
     /**
      * An array of guild features
-     * @type {Object[]}
+     * @type {string[]}
      */
     this.features = data.features;
 
@@ -401,7 +401,7 @@ class Guild extends Base {
     }
   }
 
-  /*
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -802,7 +802,7 @@ class Guild extends Base {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
+   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
@@ -979,7 +979,7 @@ class Guild extends Base {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
@@ -1000,7 +1000,7 @@ class Guild extends Base {
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   *   .catch(console.error);
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
@@ -1123,14 +1123,11 @@ class Guild extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the guild object.
+   * When concatenated with a string, this automatically returns the guild's name instead of the Guild object.
    * @returns {string}
    * @example
    * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
-   * @example
-   * // Logs: Hello from My Guild!
-   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;
