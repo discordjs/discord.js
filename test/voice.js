@@ -1,6 +1,11 @@
 /* eslint no-console: 0 */
 'use strict';
 
+var profiler = require('gc-profiler');
+profiler.on('gc', function (info) {
+  console.log(info);
+});
+
 const Discord = require('../');
 const ytdl = require('ytdl-core');
 const prism = require('prism-media');
@@ -19,6 +24,32 @@ var d, b;
 client.on('debug', console.log);
 client.on('error', console.log);
 
+async function wait(time = 1000) {
+  return new Promise(resolve => {
+    setTimeout(resolve, time);
+  });
+}
+
+var count = 0;
+
+client.on('ready', async () => {
+  for (const guild of client.guilds.values()) {
+    const channels = guild.channels.filter(c => c.type === 'voice' && c.joinable && c.members.size === 0);
+    const channel = channels.first();
+    if (channel) {
+      channel.join().then(conn => {
+        conn.playOpusStream(fs.createReadStream('C:/users/amish/downloads/z.ogg').pipe(new prism.OggOpusDemuxer()));
+      });
+      count++;
+      console.log(`Playing in ${channel.name} in ${channel.guild.name} at count ${count} ${process.memoryUsage().rss / (1024 * 1024)}`);
+      await wait();
+    }
+  }
+  console.log('done!');
+});
+
+process.on('unhandledRejection', console.log);
+
 client.on('message', m => {
   if (!m.guild) return;
   if (m.author.id !== '66564597481480192') return;
@@ -35,23 +66,6 @@ client.on('message', m => {
     } else {
       m.reply('Specify a voice channel!');
     }
-  } else if (m.content.startsWith('/play')) {
-    if (connections.has(m.guild.id)) {
-      const url = m.content.split(' ').slice(1).join(' ')
-        .replace(/</g, '')
-        .replace(/>/g, '');
-      const stream = ytdl(url, { filter: 'audioonly' }, { passes: 3 });
-      d = m.guild.voiceConnection.playStream(stream);
-      d.setBitrate(1);
-      setTimeout(() => d.setBitrate(320), 5000);
-    }
-  } else if (m.content.startsWith('/skip')) {
-    if (connections.has(m.guild.id)) {
-      const connData = connections.get(m.guild.id);
-      if (connData.dispatcher) {
-        connData.dispatcher.end();
-      }
-    }
   } else if (m.content.startsWith('#eval') && m.author.id === '66564597481480192') {
     try {
       const com = eval(m.content.split(' ').slice(1).join(' '));
@@ -60,28 +74,5 @@ client.on('message', m => {
       console.log(e);
       m.channel.send(e, { code: true });
     }
-  } else if (m.content === 'mb') {
-    b = client.createVoiceBroadcast();
-    b.playStream(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
-  } else if (m.content === 'subscribe!') {
-    m.guild.voiceConnection.playBroadcast(b);
   }
 });
-
-function doQueue(connData) {
-  const conn = connData.conn;
-  const queue = connData.queue;
-  const item = queue[0];
-  if (!item) return;
-  const stream = ytdl(item.url, { filter: 'audioonly' }, { passes: 3 });
-  const dispatcher = conn.playStream(stream);
-  stream.on('info', info => {
-    item.m.reply(`OK, playing **${info.title}**`);
-  });
-  dispatcher.on('end', () => {
-    queue.shift();
-    doQueue(connData);
-  });
-  dispatcher.on('error', (...e) => console.log('dispatcher', ...e));
-  connData.dispatcher = dispatcher;
-}

@@ -1,4 +1,3 @@
-const prism = require('prism-media');
 const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 const BasePlayer = require('./BasePlayer');
 

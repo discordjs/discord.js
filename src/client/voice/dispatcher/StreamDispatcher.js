@@ -29,8 +29,8 @@ nonce.fill(0);
  * @extends {stream.Writable}
  */
 class StreamDispatcher extends Writable {
-  constructor(player, { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 4096 } = {}, streams) {
-    const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
+  constructor(player, { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96 } = {}, streams) {
+    const streamOptions = { seek, volume, passes, fec, plp, bitrate };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
@@ -67,6 +67,15 @@ class StreamDispatcher extends Writable {
     if (typeof fec !== 'undefined') this.setFEC(fec);
     if (typeof plp !== 'undefined') this.setPLP(plp);
     if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
+
+    const streamError = err => {
+      this.emit('warn', err);
+      this.destroy();
+    };
+
+    if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', streamError);
+    if (this.streams.opus) this.streams.opus.on('error', streamError);
+    if (this.streams.volume) this.streams.volume.on('error', streamError);
   }
 
   get _sdata() {

@@ -16,7 +16,7 @@ const FFMPEG_ARGUMENTS = [
  * @extends {EventEmitter}
  */
 class BasePlayer extends EventEmitter {
-  constructor(voiceConnection) {
+  constructor() {
     super();
 
     this.dispatcher = null;
