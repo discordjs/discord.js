@@ -11,7 +11,7 @@
     "lint": "eslint src *.js",
     "lint:fix": "eslint --fix src",
     "build:browser": "webpack",
-    "prepublishOnly": "npm run test && npm run build:browser"
+    "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
   "repository": {
     "type": "git",
