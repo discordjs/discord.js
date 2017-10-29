@@ -4,7 +4,7 @@ const BasePlayer = require('./BasePlayer');
 /**
  * An Audio Player for a Voice Connection.
  * @private
- * @extends {EventEmitter}
+ * @extends {BasePlayer}
  */
 class AudioPlayer extends BasePlayer {
   constructor(broadcast) {

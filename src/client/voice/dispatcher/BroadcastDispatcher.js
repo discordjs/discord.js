@@ -3,6 +3,7 @@ const StreamDispatcher = require('./StreamDispatcher');
 /**
  * The class that sends voice packet data to the voice connection.
  * @implements {VolumeInterface}
+ * @extends {StreamDispatcher}
  */
 class BroadcastDispatcher extends StreamDispatcher {
   constructor(player, options, streams) {
