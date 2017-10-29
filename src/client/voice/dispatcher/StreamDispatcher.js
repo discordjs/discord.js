@@ -29,8 +29,11 @@ nonce.fill(0);
  * @extends {stream.Writable}
  */
 class StreamDispatcher extends Writable {
-  constructor(player, { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96 } = {}, streams) {
-    const streamOptions = { seek, volume, passes, fec, plp, bitrate };
+  constructor(
+    player,
+    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 8 } = {},
+    streams) {
+    const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher

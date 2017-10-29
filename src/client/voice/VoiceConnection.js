@@ -439,8 +439,11 @@ class VoiceConnection extends EventEmitter {
    * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
    * @property {number} [plp] Expected packet loss percentage
    * @property {boolean} [fec] Enabled forward error correction
-   * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps
+   * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps.
    * If set to 'auto', the voice channel's bitrate will be used
+   * @property {number} [highWaterMark=8] The maximum number of opus packets to make and store before they are
+   * actually needed. See https://nodejs.org/en/docs/guides/backpressuring-in-streams/. Setting this value to
+   * 1 means that changes in volume will be more instant.
    */
 
   /**
