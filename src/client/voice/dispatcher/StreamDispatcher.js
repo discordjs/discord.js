@@ -59,9 +59,9 @@ class StreamDispatcher extends Writable {
     this._pausedTime = 0;
     this.count = 0;
 
-    this.on('error', this.destroy.bind(this));
+    this.on('error', err => this.destroy(err));
     this.on('finish', () => {
-      this.destroy.bind(this);
+      this.end.bind(this);
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
     });
@@ -73,7 +73,7 @@ class StreamDispatcher extends Writable {
 
     const streamError = err => {
       this.emit('warn', err);
-      this.destroy();
+      this.destroy(err);
     };
 
     if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', streamError);
