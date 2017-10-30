@@ -1,6 +1,6 @@
-const Collection = require('../util/Collection');
 const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
+const MessageReactionUserStore = require('../stores/MessageReactionUserStore');
 const { Error } = require('../errors');
 
 /**
@@ -28,9 +28,9 @@ class MessageReaction {
 
     /**
      * The users that have given this reaction, mapped by their ID
-     * @type {Collection<Snowflake, User>}
+     * @type {MessageReactionUserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new MessageReactionUserStore(client, undefined, this);
 
     this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
   }
@@ -77,29 +77,9 @@ class MessageReaction {
       );
   }
 
-  /**
-   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {Object} [options] Options for fetching the users
-   * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
-   * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
-   * @returns {Promise<Collection<Snowflake, User>>}
-   */
-  async fetchUsers({ limit = 100, after } = {}) {
-    const message = this.message;
-    const users = await message.client.api.channels[message.channel.id].messages[message.id]
-      .reactions[this.emoji.identifier]
-      .get({ query: { limit, after } });
-    for (const rawUser of users) {
-      const user = message.client.users.create(rawUser);
-      this.users.set(user.id, user);
-    }
-    this.count = this.users.size;
-    return this.users;
-  }
-
   _add(user) {
     if (!this.users.has(user.id)) {
-      this.users.set(user.id, user);
+      this.users.create(user);
       this.count++;
     }
     if (!this.me) this.me = user.id === this.message.client.user.id;
