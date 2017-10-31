@@ -12,7 +12,7 @@ const nonce = Buffer.alloc(24);
 nonce.fill(0);
 
 /**
- * @external Stream.writable
+ * @external WritableStream
  * @see {@link https://nodejs.org/api/stream.html#stream_class_stream_writable}
  */
 
@@ -26,7 +26,7 @@ nonce.fill(0);
  * });
  * ```
  * @implements {VolumeInterface}
- * @extends {stream.Writable}
+ * @extends {WritableStream}
  */
 class StreamDispatcher extends Writable {
   constructor(
