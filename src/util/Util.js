@@ -81,7 +81,7 @@ class Util {
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (text.includes(':')) {
-      const [, name, id] = text.match(/<:([\w_]{2,32}):(\d+)>/);
+      const [, name, id] = text.match(/(?:<:)?([\w_]{2,32}):(\d+)>?/);
       return { name, id };
     } else {
       return {
