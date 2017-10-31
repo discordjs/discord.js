@@ -151,7 +151,7 @@ class StreamDispatcher extends Writable {
    * @returns {boolean} true if the bitrate has been successfully changed.
    */
   setBitrate(value) {
-    if (!value || !this.streams.opus || !this.streams.opus.setBitrate) return false;
+    if (!value || !this.bitrateEditable) return false;
     const bitrate = value === 'auto' ? this.player.voiceConnection.channel.bitrate : value;
     this.streams.opus.setBitrate(bitrate * 1000);
     return true;
@@ -175,7 +175,7 @@ class StreamDispatcher extends Writable {
    */
   setFEC(enabled) {
     if (!this.bitrateEditable) return false;
-    this.streams.opus.setPLP(enabled);
+    this.streams.opus.setFEC(enabled);
     return true;
   }
 
