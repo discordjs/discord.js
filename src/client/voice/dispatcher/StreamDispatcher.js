@@ -31,7 +31,7 @@ nonce.fill(0);
 class StreamDispatcher extends Writable {
   constructor(
     player,
-    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 8 } = {},
+    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {},
     streams) {
     const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
     super(streamOptions);
@@ -219,7 +219,7 @@ class StreamDispatcher extends Writable {
   }
 
   _sendPacket(packet) {
-    let repeats = 1;
+    let repeats = this.streamOptions.passes;
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
