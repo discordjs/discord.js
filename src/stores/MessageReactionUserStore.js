@@ -6,14 +6,14 @@ let User;
  * @extends {DataStore}
  */
 class MessageReactionUserStore extends DataStore {
-  constructor(client, iterable, data) {
+  constructor(client, iterable, reaction) {
     if (!User) User = require('../structures/User');
     super(client, iterable, User);
-    this.data = data;
+    this.reaction = reaction;
   }
 
   create(data, cache) {
-    return super.create(data, cache, { extras: [this.data.message] });
+    return super.create(data, cache, { extras: [this.reaction.message] });
   }
 
   /**
@@ -24,17 +24,16 @@ class MessageReactionUserStore extends DataStore {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ limit = 100, after } = {}) {
-    const message = this.data.message;
-    const reaction = message.reactions.get(this.data.emoji.id || this.data.emoji.name);
-    const users = await message.client.api.channels[message.channel.id].messages[message.id]
-      .reactions[this.data.emoji.identifier]
+    const message = this.reaction.message;
+    const users = await this.client.api.channels[message.channel.id].messages[message.id]
+      .reactions[this.reaction.emoji.identifier]
       .get({ query: { limit, after } });
     for (const rawUser of users) {
-      const user = message.client.users.create(rawUser);
-      reaction.users.set(user.id, user);
+      const user = this.client.users.create(rawUser);
+      this.reaction.users.set(user.id, user);
     }
-    reaction.count = reaction.users.size;
-    return reaction.users;
+    this.reaction.count = this.reaction.users.size;
+    return this.reaction.users;
   }
 }
 
