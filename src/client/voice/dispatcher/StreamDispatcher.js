@@ -70,7 +70,11 @@ class StreamDispatcher extends Writable {
     if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
 
     const streamError = err => {
-      this.emit('warn', err);
+      /**
+       * Emitted when the dispatcher encounters an error.
+       * @event StreamDispatcher#error
+       */
+      this.emit(this.listenerCount('error') > 0 ? 'error' : 'warn', err);
       this.destroy();
     };
 
@@ -86,7 +90,14 @@ class StreamDispatcher extends Writable {
   }
 
   _write(chunk, enc, done) {
-    if (!this.startTime) this.startTime = Date.now();
+    if (!this.startTime) {
+      /**
+       * Emitted once the stream has started to play.
+       * @event StreamDispatcher#start
+       */
+      this.emit('start');
+      this.startTime = Date.now();
+    }
     this._playChunk(chunk);
     this._step(done);
   }
