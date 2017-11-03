@@ -1,7 +1,7 @@
 const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
-const { Error } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -103,6 +103,7 @@ class VoiceChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
+    if (typeof userLimit !== 'number' || userLimit === null) return Promise.reject(new TypeError('USERLIMIT_INVALID_TYPE', 'userLimit', 'an intenger')); // eslint-disable-line max-len
     return this.edit({ userLimit }, reason);
   }
 
