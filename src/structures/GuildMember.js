@@ -296,6 +296,7 @@ class GuildMember extends Base {
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
+   * @deprecated
    * @returns {boolean}
    */
   hasPermission(permission, checkAdmin = true, checkOwner = true) {
