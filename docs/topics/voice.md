@@ -4,10 +4,10 @@ Voice in discord.js can be used for many things, such as music bots, recording o
 In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `VoiceConnection`, where you can start streaming and receiving audio.
 
 To get started, make sure you have:
-* ffmpeg - `npm install ffmpeg-binaries`
+* FFmpeg - `npm i -g ffmpeg-binaries`
 * an opus encoder, choose one from below:
-  * `npm install opusscript`
-  * `npm install node-opus`
+  * `npm i opusscript`
+  * `npm i node-opus`
 * a good network connection
 
 ## Joining a voice channel
@@ -57,7 +57,7 @@ const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
 const dispatcher = connection.playFile('./myfile.mp3');
 ```
 
-Your file doesn't have to be just an mp3; ffmpeg can convert videos and audios of many formats.
+Your file doesn't have to be just an mp3; FFmpeg can convert videos and audios of many formats.
 
 The `dispatcher` variable is an instance of a `StreamDispatcher`, which manages streaming a specific resource to a voice
 channel. We can do many things with the dispatcher, such as finding out when the stream ends or changing the volume:
@@ -101,7 +101,7 @@ It's important to note that creating a readable stream to a file is less efficie
 
 **Playing anything else:**
 
-For anything else, such as a URL to a file, you can use `connection.playArbitraryInput()`. You should consult the [ffmpeg protocol documentation](https://ffmpeg.org/ffmpeg-protocols.html) to see what you can use this for.
+For anything else, such as a URL to a file, you can use `connection.playArbitraryInput()`. You should consult the [FFmpeg protocol documentation](https://ffmpeg.org/ffmpeg-protocols.html) to see what you can use this for.
 
 ```js
 // Play an mp3 from a URL
@@ -111,4 +111,4 @@ connection.playArbitraryInput('http://mysite.com/sound.mp3');
 Again, playing a file from a URL like this is more performant than creating a ReadableStream to the file.
 
 ## Advanced Topics
-soon:tm:
+soon™️
