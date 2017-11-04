@@ -74,11 +74,11 @@ class StreamDispatcher extends Writable {
        * Emitted when the dispatcher encounters an error.
        * @event StreamDispatcher#error
        */
-      this.emit(this.listenerCount('error') > 0 ? 'error' : 'warn', err);
+      if (err) this.emit('error', err);
       this.destroy();
     };
 
-    this.on('error', streamError);
+    this.on('error', () => streamError());
     if (this.streams.input) this.streams.input.on('error', streamError);
     if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', streamError);
     if (this.streams.opus) this.streams.opus.on('error', streamError);
