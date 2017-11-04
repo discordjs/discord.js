@@ -1,19 +1,16 @@
 const DataStore = require('./DataStore');
-let User;
-
 /**
  * A data store to store User models who reacted to a MessageReaction.
  * @extends {DataStore}
  */
-class MessageReactionUserStore extends DataStore {
+class ReactionUserStore extends DataStore {
   constructor(client, iterable, reaction) {
-    if (!User) User = require('../structures/User');
-    super(client, iterable, User);
+    super(client, iterable, require('../structures/User'));
     this.reaction = reaction;
   }
 
   create(data, cache) {
-    return super.create(data, cache, { extras: [this.reaction.message] });
+    return super.create(data, cache);
   }
 
   /**
@@ -30,11 +27,11 @@ class MessageReactionUserStore extends DataStore {
       .get({ query: { limit, after } });
     for (const rawUser of users) {
       const user = this.client.users.create(rawUser);
-      this.reaction.users.set(user.id, user);
+      this.set(user.id, user);
     }
-    this.reaction.count = this.reaction.users.size;
-    return this.reaction.users;
+    this.reaction.count = this.size;
+    return this;
   }
 }
 
-module.exports = MessageReactionUserStore;
+module.exports = ReactionUserStore;

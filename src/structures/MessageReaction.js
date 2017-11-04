@@ -1,6 +1,6 @@
 const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
-const MessageReactionUserStore = require('../stores/MessageReactionUserStore');
+const ReactionUserStore = require('../stores/ReactionUserStore');
 const { Error } = require('../errors');
 
 /**
@@ -28,9 +28,9 @@ class MessageReaction {
 
     /**
      * The users that have given this reaction, mapped by their ID
-     * @type {MessageReactionUserStore<Snowflake, User>}
+     * @type {ReactionUserStore<Snowflake, User>}
      */
-    this.users = new MessageReactionUserStore(client, undefined, this);
+    this.users = new ReactionUserStore(client, undefined, this);
 
     this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
   }
@@ -79,7 +79,7 @@ class MessageReaction {
 
   _add(user) {
     if (!this.users.has(user.id)) {
-      this.users.create(user);
+      this.users.set(user.id, user);
       this.count++;
     }
     if (!this.me) this.me = user.id === this.message.client.user.id;
