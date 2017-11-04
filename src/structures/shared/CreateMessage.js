@@ -10,8 +10,9 @@ module.exports = async function createMessage(channel, options) {
   const User = require('../User');
   const GuildMember = require('../GuildMember');
   const Webhook = require('../Webhook');
+  const WebhookClient = require('../../client/WebhookClient');
 
-  const webhook = channel instanceof Webhook;
+  const webhook = channel instanceof Webhook || channel instanceof WebhookClient;
 
   if (typeof options.nonce !== 'undefined') {
     options.nonce = parseInt(options.nonce);
@@ -88,15 +89,11 @@ module.exports = async function createMessage(channel, options) {
         return file;
       })
     ));
-    delete options.files;
   }
 
   if (webhook) {
     if (!options.username) options.username = this.name;
-    if (options.avatarURL) {
-      options.avatar_url = options.avatarURL;
-      options.avatarURL = null;
-    }
+    if (options.avatarURL) options.avatar_url = options.avatarURL;
   }
 
   return { data: {
@@ -106,6 +103,6 @@ module.exports = async function createMessage(channel, options) {
     embed: options.embed,
     embeds: options.embeds,
     username: options.username,
-    avatar_url: options.avatarURL,
+    avatar_url: options.avatar_url,
   }, files };
 };
