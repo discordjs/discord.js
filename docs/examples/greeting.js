@@ -24,7 +24,7 @@ client.on('guildMemberAdd', member => {
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
   // Send the message, mentioning the new member
-  channel.send(`New Member! Welcome to the server ${member}!`);
+  channel.send(`Welcome to the server, ${member}`);
 });
 
 // Log our bot in
