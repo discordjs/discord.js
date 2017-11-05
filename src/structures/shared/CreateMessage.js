@@ -10,8 +10,9 @@ module.exports = async function createMessage(channel, options) {
   const User = require('../User');
   const GuildMember = require('../GuildMember');
   const Webhook = require('../Webhook');
+  const WebhookClient = require('../../client/WebhookClient');
 
-  const webhook = channel instanceof Webhook;
+  const webhook = channel instanceof Webhook || channel instanceof WebhookClient;
 
   if (typeof options.nonce !== 'undefined') {
     options.nonce = parseInt(options.nonce);
