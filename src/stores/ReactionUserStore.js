@@ -29,7 +29,6 @@ class ReactionUserStore extends DataStore {
       const user = this.client.users.create(rawUser);
       this.set(user.id, user);
     }
-    this.reaction.count = this.size;
     return this;
   }
 }
