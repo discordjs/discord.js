@@ -1,8 +1,8 @@
 /*
-  A bot that welcomes new guild members when they join
+  A bot that welcomes new guild members when they join the guild.
 */
 
-// Import the discord.js module
+// Import the Discord.JS module
 const Discord = require('discord.js');
 
 // Create an instance of a Discord client
@@ -23,8 +23,8 @@ client.on('guildMemberAdd', member => {
   const channel = member.guild.channels.find('name', 'member-log');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
-  // Send the message, mentioning the member
-  channel.send(`Welcome to the server, ${member}`);
+  // Send the message, mentioning the new member
+  channel.send(`New Member! Welcome to the server ${member}!`);
 });
 
 // Log our bot in
