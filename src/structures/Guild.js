@@ -794,7 +794,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   allowDMs(allow) {
-    if (this.client.user.bot) return this;
+    if (this.client.user.bot) return Promise.reject(new Error('FEATURE_USER_ONLY'));
     const settings = this.client.user.settings;
     if (allow) return settings.removeRestrictedGuild(this);
     else return settings.addRestrictedGuild(this);
