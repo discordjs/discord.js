@@ -22,3 +22,5 @@
       path: greeting.js
     - name: Webhook
       path: webhook.js
+    - name: Message Embeds
+      path: embed.js

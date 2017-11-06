@@ -12,12 +12,12 @@ Update to Node.js 8.0.0 or newer.
   node-opus is greatly preferred, due to it having significantly better performance.
 
 ## How do I install FFMPEG?
-- **npm:** `npm install --save ffmpeg-binaries`
+- **npm:** `npm install ffmpeg-binaries`
 - **Ubuntu 16.04:** `sudo apt install ffmpeg`
 - **Ubuntu 14.04:** `sudo apt-get install libav-tools`
-- **Windows:** See the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
+- **Windows:** Use the npm version or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
 
 ## How do I set up node-opus?
 - **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!
-- **Windows:** Run `npm install --global --production windows-build-tools` in an admin command prompt or PowerShell.
+- **Windows:** Run `npm install -g --production windows-build-tools` in an admin command prompt or PowerShell.
   Then, running `npm install node-opus` in your bot's directory should successfully build it. Woo!
