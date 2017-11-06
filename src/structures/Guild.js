@@ -311,7 +311,7 @@ class Guild extends Base {
 
   /**
    * System channel for this guild
-   * @type {?GuildChannel}
+   * @type {?TextChannel}
    * @readonly
    */
   get systemChannel() {
@@ -796,6 +796,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   allowDMs(allow) {
+    if (this.client.user.bot) return Promise.reject(new Error('FEATURE_USER_ONLY'));
     const settings = this.client.user.settings;
     if (allow) return settings.removeRestrictedGuild(this);
     else return settings.addRestrictedGuild(this);
@@ -808,7 +809,7 @@ class Guild extends Base {
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
-   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
