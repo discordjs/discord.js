@@ -105,6 +105,19 @@ class Webhook {
 
     const { data, files } = await createMessage(this, options);
 
+    if (data.content instanceof Array) {
+      const messages = [];
+      for (let i = 0; i < data.content.length; i++) {
+        const opt = i === data.content.length - 1 ? { embeds: data.embeds, files } : {};
+        Object.assign(opt, { avatarURL: data.avatar_url, content: data.content[i], username: data.username });
+        // eslint-disable-next-line no-await-in-loop
+        const message = await this.send(data.content[i], opt);
+        messages.push(message);
+      }
+      return messages;
+    }
+
+
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,
       query: { wait: true },
