@@ -17,7 +17,7 @@
   </p>
 </div>
 
-# Welcome
+# Welcome!
 Welcome to the discord.js v12.0.0 documentation.
 
 ## About
