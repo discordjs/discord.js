@@ -20,7 +20,7 @@
       path: avatars.js
     - name: Server greeting
       path: greeting.js
+    - name: Message Embed
+      path: embed.js
     - name: Webhook
       path: webhook.js
-    - name: Message Embeds
-      path: embed.js

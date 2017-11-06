@@ -10,9 +10,9 @@ To get started, make sure you have:
   * `npm install opusscript`
 * a good network connection
 
-The preferred opus engine is `node-opus`, as it performs significantly better than `opusscript`. When both are available, discord.js will automatically choose `node-opus`.
-Using `opusscript` is only recommended for development environments where node-opus is tough to get working.
-For production bots, using `node-opus` should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred opus engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
+Using opusscript is only recommended for development environments where node-opus is tough to get working.
+For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ## Joining a voice channel
 The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
@@ -115,4 +115,4 @@ connection.playArbitraryInput('http://mysite.com/sound.mp3');
 Again, playing a file from a URL like this is more performant than creating a ReadableStream to the file.
 
 ## Advanced Topics
-soon™️
+soon&trade;

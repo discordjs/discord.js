@@ -34,13 +34,13 @@ discord.js is a powerful [node.js](https://nodejs.org) module that allows you to
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discord.js`  
-- With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
-- With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
 
 ### Audio engines
-The preferred audio engine is `node-opus`, as it performs significantly better than `opusscript`. When both are available, discord.js will automatically choose `node-opus`.
-Using `opusscript` is only recommended for development environments where node-opus is tough to get working.
-For production bots, using `node-opus` should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
+Using opusscript is only recommended for development environments where node-opus is tough to get working.
+For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`) 
@@ -72,8 +72,8 @@ client.login('your token');
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
 * [Documentation](https://discord.js.org/#/docs)
-* [Discord.js Discord server](https://discord.gg/bRCvFy9)
-* [Discord API Discord server](https://discord.gg/discord-api)
+* [Discord.js server](https://discord.gg/bRCvFy9)
+* [Discord API server](https://discord.gg/discord-api)
 * [GitHub](https://github.com/hydrabolt/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Related libraries](https://discordapi.com/unofficial/libs.html)

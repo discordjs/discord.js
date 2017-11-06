@@ -19,5 +19,5 @@ Update to Node.js 8.0.0 or newer.
 
 ## How do I set up node-opus?
 - **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!
-- **Windows:** Run `npm install -g --production windows-build-tools` in an admin command prompt or PowerShell.
+- **Windows:** Run `npm install --global --production windows-build-tools` in an admin command prompt or PowerShell.
   Then, running `npm install node-opus` in your bot's directory should successfully build it. Woo!
