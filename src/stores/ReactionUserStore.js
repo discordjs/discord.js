@@ -9,22 +9,19 @@ class ReactionUserStore extends DataStore {
     this.reaction = reaction;
   }
 
-  create(data, cache) {
-    return super.create(data, cache);
-  }
-
   /**
    * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {Object} [options] Options for fetching the users
    * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
+   * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
    * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
-   * @returns {Promise<Collection<Snowflake, User>>}
+   * @returns {Promise<ReactionUserStore<Snowflake, User>>}
    */
-  async fetch({ limit = 100, after } = {}) {
+  async fetch({ limit = 100, after, before } = {}) {
     const message = this.reaction.message;
     const users = await this.client.api.channels[message.channel.id].messages[message.id]
       .reactions[this.reaction.emoji.identifier]
-      .get({ query: { limit, after } });
+      .get({ query: { limit, before, after } });
     for (const rawUser of users) {
       const user = this.client.users.create(rawUser);
       this.set(user.id, user);
