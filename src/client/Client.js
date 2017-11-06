@@ -163,6 +163,7 @@ class Client extends BaseClient {
   /**
    * Timestamp of the latest ping's start time
    * @type {number}
+   * @readonly
    * @private
    */
   get _pingTimestamp() {

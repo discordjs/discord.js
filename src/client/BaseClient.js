@@ -42,6 +42,7 @@ class BaseClient extends EventEmitter {
   /**
    * API shortcut
    * @type {Object}
+   * @readonly
    * @private
    */
   get api() {
