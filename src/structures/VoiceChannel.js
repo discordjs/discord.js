@@ -103,6 +103,7 @@ class VoiceChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setUserLimit(userLimit, reason) {
+    if (userLimit === null) userLimit = 0;
     return this.edit({ userLimit }, reason);
   }
 

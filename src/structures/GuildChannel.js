@@ -293,7 +293,7 @@ class GuildChannel extends Channel {
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit !== undefined ? data.userLimit : this.userLimit,
+        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         permission_overwrites: data.permissionOverwrites,
