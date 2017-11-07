@@ -27,10 +27,10 @@ client.on('message', message => {
     message.channel.send(embed);
     // Otherwise, if the message is "how to embed using objects"
   } else if (message.content === 'how to embed using objects') {
-    // Send an embed to the same channel as the message
+    // Send an embed to the same channel as the message, replying to the message author
     // All properties in the embed are optional, but at least one must be present to be able to send the message
     // See all the properties an embed can have @ https://discordapp.com/developers/docs/resources/channel#embed-object
-    message.channel.send({
+    message.reply({
       embed: {
         // Sets the color, either in format "0xXXXXXX" or in number form
         color: 0xFF00FF,
