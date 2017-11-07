@@ -2,14 +2,11 @@
 	An example of how you can send embeds
 */
 
-// Extract the required objects from the discord.js module
+// Extract the required classes from the discord.js module
 const { Client, MessageEmbed } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client();
-
-// The token of your bot - https://discordapp.com/developers/applications/me
-const token = 'your bot token here';
 
 // The ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted
@@ -27,7 +24,7 @@ client.on('message', message => {
       .setColor('RANDOM') // Set the color of the embed
       .setDescription(`Hello, this is a slick embed!`); // Set the main content of the embed
     // Send the embed to the same channel as the message
-    message.channel.send({ embed });
+    message.channel.send(embed);
     // Otherwise, if the message is "how to embed using objects"
   } else if (message.content === 'how to embed using objects') {
     // Send an embed to the same channel as the message
@@ -61,5 +58,5 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in
-client.login(token);
+// Log our bot in using the token from https://discordapp.com/developers/applications/me
+client.login(`your token here`);
