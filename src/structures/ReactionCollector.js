@@ -92,7 +92,7 @@ class ReactionCollector extends Collector {
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      */
-    this.emit('remove', reaction);
+    if (this.collected.has(reaction)) this.emit('remove', reaction);
     return reaction.count ? null : ReactionCollector.key(reaction);
   }
 
