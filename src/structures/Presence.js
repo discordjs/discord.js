@@ -1,4 +1,5 @@
 const { ActivityTypes } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * Represents a user's presence.
