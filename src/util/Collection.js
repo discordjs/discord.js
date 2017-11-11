@@ -154,19 +154,28 @@ class Collection extends Map {
 
   /**
    * Searches for all items where their specified property's value is identical to the given value
-   * (`item[prop] === value`).
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * (`item[prop] === value`), or the given function returns a truthy value.
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {Array}
    * @example
    * collection.findAll('username', 'Bob');
+   * @example
+   * collection.findAll(val => val.username === 'Bob')
    */
-  findAll(prop, value) {
-    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
+  findAll(propOrFn, value) {
     if (typeof value === 'undefined') throw new Error('Value must be specified.');
     const results = [];
-    for (const item of this.values()) {
-      if (item[prop] === value) results.push(item);
+    if (typeof prop === 'string') {
+      for (const item of this.values()) {
+        if (item[propOrFn] === value) results.push(item);
+      }
+    } else if (typeof propOrFn === 'function') {
+      for (const [key, val] of this) {
+        if (propOrFn(val, key, this)) results.push(val);
+      }
+    } else {
+      throw new Error('First argument must be a property string or a function.');
     }
     return results;
   }
