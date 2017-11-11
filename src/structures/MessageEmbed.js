@@ -132,12 +132,12 @@ class MessageEmbed {
       proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
     } : null;
 
-    /**
-     * The files of this embed
-     * @type {?Object}
-     * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
-     */
     if (data.files) {
+      /**
+       * The files of this embed
+       * @type {?Object}
+       * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
+       */
       this.files = data.files.map(file => {
         if (file instanceof MessageAttachment) {
           return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
@@ -158,7 +158,7 @@ class MessageEmbed {
 
   /**
    * The hexadecimal version of the embed color, with a leading hash
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get hexColor() {

@@ -20,6 +20,13 @@ class User extends Base {
      */
     this.id = data.id;
 
+    /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
+
     this._patch(data);
   }
 
@@ -40,17 +47,10 @@ class User extends Base {
 
     /**
      * The ID of the user's avatar
-     * @type {string}
+     * @type {?string}
      * @name User#avatar
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
-
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     * @name User#bot
-     */
-    if (typeof this.bot === 'undefined' && typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -63,8 +63,6 @@ class User extends Base {
      * @type {?Message}
      */
     this.lastMessage = null;
-
-    if (data.token) this.client.token = data.token;
   }
 
   /**
@@ -95,7 +93,7 @@ class User extends Base {
     for (const guild of this.client.guilds.values()) {
       if (guild.presences.has(this.id)) return guild.presences.get(this.id);
     }
-    return new Presence();
+    return new Presence(this.client);
   }
 
   /**
@@ -250,10 +248,10 @@ class User extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${user}!`);
    */
   toString() {

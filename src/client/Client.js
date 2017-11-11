@@ -249,7 +249,7 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return new Promise((resolve, reject) => {
       if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');

@@ -88,6 +88,8 @@ class ClientUser extends User {
         this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
       }
     }
+
+    if (data.token) this.client.token = data.token;
   }
 
   /**

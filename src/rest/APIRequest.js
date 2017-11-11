@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const https = require('https');
-const { browser } = require('../util/Constants');
+const { browser, UserAgent } = require('../util/Constants');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
@@ -28,7 +28,7 @@ class APIRequest {
 
     if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
     if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
-    if (!browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!browser) request.set('User-Agent', UserAgent);
     if (this.options.headers) request.set(this.options.headers);
 
     if (this.options.files) {
