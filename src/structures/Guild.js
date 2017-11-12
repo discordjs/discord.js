@@ -1214,6 +1214,7 @@ class Guild {
  * @name Guild#defaultChannel
  * @type {TextChannel}
  * @readonly
+ * @deprecated
  */
 Object.defineProperty(Guild.prototype, 'defaultChannel', {
   get: util.deprecate(function defaultChannel() {
