@@ -21,7 +21,7 @@ class ClientPresenceStore extends PresenceStore {
   }
 
   async setClientPresence({ status, since, afk, activity }) { // eslint-disable-line complexity
-    const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
+    const applicationID = activity ? activity.applicationID || activity.application : null;
     let assets = new Collection();
     if (activity) {
       if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string');
