@@ -115,10 +115,11 @@ class Guild extends Base {
 
     /**
      * An array of enabled guild features, here are the possible values:
-     * VERIFIED
-     * VIP_REGIONS
-     * VANITY_URL
-     * INVITE_SPLASH 
+     * * INVITE_SPLASH 
+     * * MORE_EMOJI
+     * * VERIFIED
+     * * VIP_REGIONS
+     * * VANITY_URL
      * @typedef {string} Features
      */
 
