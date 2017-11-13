@@ -114,13 +114,13 @@ class Guild extends Base {
     this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
-	 * An array of enabled guild features, here are the possible values:
+     * An array of enabled guild features, here are the possible values:
      * VERIFIED
-	 * VIP_REGIONS
-	 * VANITY_URL
-	 * INVITE_SPLASH 
-	 * @typedef {string} Features
-	 */
+     * VIP_REGIONS
+     * VANITY_URL
+     * INVITE_SPLASH 
+     * @typedef {string} Features
+     */
 
     /**
      * An array of guild features partnered guilds have enabled
