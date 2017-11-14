@@ -432,9 +432,15 @@ class Guild extends Base {
   }
 
   /**
+ * A Discord Guild Ban.
+ * @typedef {Object} Ban
+ * @property {User} user the banned user.
+ * @property {?string} reason the reason of the ban.
+ */
+
+  /**
    * Fetches a collection of banned users in this guild.
-   * The returned collection contains user objects keyed under `user` and reasons keyed under `reason`.
-   * @returns {Promise<Collection<Snowflake, Object>>}
+   * @returns {Promise<Collection<Snowflake, Ban>>}
    */
   fetchBans() {
     return this.client.api.guilds(this.id).bans.get().then(bans =>
@@ -496,7 +502,7 @@ class Guild extends Base {
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
-   * @param {ActionType|number} [options.type] Only show entries involving this action type
+   * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    */
   fetchAuditLogs(options = {}) {
