@@ -432,11 +432,11 @@ class Guild extends Base {
   }
 
   /**
- * A Discord Ban Object.
- * @typedef {Object} Ban
- * @property {User} user the banned user.
- * @property {?string} reason the reason of the ban.
- */
+   * A Discord Ban Object.
+   * @typedef {Object} Ban
+   * @property {User} user the banned user.
+   * @property {?string} reason the reason of the ban.
+   */
 
   /**
    * Fetches a collection of banned users in this guild.
