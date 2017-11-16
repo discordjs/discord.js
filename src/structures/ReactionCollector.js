@@ -83,7 +83,17 @@ class ReactionCollector extends Collector {
    * @returns {?Snowflake|string}
    */
   dispose(reaction) {
-    return reaction.message.id === this.message.id && !reaction.count ? ReactionCollector.key(reaction) : null;
+    if (reaction.message.id !== this.message.id) return null;
+
+    /**
+     * Emitted whenever a reaction is removed from a message. Will emit on all reaction removals,
+     * as opposed to {@link Collector#dispose} which will only be emitted when the entire reaction
+     * is removed.
+     * @event ReactionCollector#remove
+     * @param {MessageReaction} reaction The reaction that was removed
+     */
+    if (this.collected.has(reaction)) this.emit('remove', reaction);
+    return reaction.count ? null : ReactionCollector.key(reaction);
   }
 
   /**
