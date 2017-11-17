@@ -47,6 +47,7 @@ exports.DefaultOptions = {
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
+  customStructures: {},
 
   /**
    * WebSocket options (these are left as snake_case to match the API)
