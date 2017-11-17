@@ -7,11 +7,14 @@ const { Error } = require('../errors');
  */
 class ShardClientUtil {
   /**
-   * @param {Client} client The client of the current shard
+   * @param {Client} client Client of the current shard
    */
   constructor(client) {
     this.client = client;
     process.on('message', this._handleMessage.bind(this));
+    client.on('ready', () => { process.send({ _ready: true }); });
+    client.on('disconnect', () => { process.send({ _disconnect: true }); });
+    client.on('reconnecting', () => { process.send({ _reconnecting: true }); });
   }
 
   /**
@@ -49,7 +52,7 @@ class ShardClientUtil {
   /**
    * Fetches a client property value of each shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
-   * @returns {Promise<Array>}
+   * @returns {Promise<Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.size')
    *   .then(results => {
@@ -76,7 +79,7 @@ class ShardClientUtil {
   /**
    * Evaluates a script on all shards, in the context of the Clients.
    * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array>} Results of the script execution
+   * @returns {Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script) {
     return new Promise((resolve, reject) => {

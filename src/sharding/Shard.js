@@ -8,9 +8,9 @@ const { Error } = require('../errors');
  */
 class Shard {
   /**
-   * @param {ShardingManager} manager The sharding manager
-   * @param {number} id The ID of this shard
-   * @param {Array} [args=[]] Command line arguments to pass to the script
+   * @param {ShardingManager} manager Manager that is spawning this shard
+   * @param {number} id ID of this shard
+   * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
     /**
@@ -26,7 +26,7 @@ class Shard {
     this.id = id;
 
     /**
-     * The environment variables for the shard
+     * Environment variables for the shard's process
      * @type {Object}
      */
     this.env = Object.assign({}, process.env, {
@@ -41,14 +41,33 @@ class Shard {
      */
     this.process = childProcess.fork(path.resolve(this.manager.file), args, {
       env: this.env,
-    });
-    this.process.on('message', this._handleMessage.bind(this));
-    this.process.once('exit', () => {
-      if (this.manager.respawn) this.manager.createShard(this.id);
-    });
+    }).on('message', this._handleMessage.bind(this));
 
+    /**
+     * Whether the shard's {@link Client} is ready
+     * @type {boolean}
+     */
+    this.ready = false;
+
+    /**
+     * Ongoing promises for calls to {@link Shard#eval}, mapped by the `script` they were called with
+     * @type {Map<string, Promise>}
+     * @private
+     */
     this._evals = new Map();
+
+    /**
+     * Ongoing promises for calls to {@link Shard#fetchClientValue}, mapped by the `prop` they were called with
+     * @type {Map<string, Promise>}
+     * @private
+     */
     this._fetches = new Map();
+
+    // Handle the death of the process
+    this.process.once('exit', () => {
+      this.ready = false;
+      if (this.manager.respawn) this.manager.createShard(this.id).catch(err => { this.manager.emit('error', err); });
+    });
   }
 
   /**
@@ -134,6 +153,39 @@ class Shard {
    */
   _handleMessage(message) {
     if (message) {
+      // Shard is ready
+      if (message._ready) {
+        this.ready = true;
+        /**
+         * Emitted upon the shard's {@link Client#ready} event.
+         * @event Shard#ready
+         */
+        this.emit('ready');
+        return;
+      }
+
+      // Shard has disconnected
+      if (message._disconnect) {
+        this.ready = false;
+        /**
+         * Emitted upon the shard's {@link Client#disconnect} event.
+         * @event Shard#disconnect
+         */
+        this.emit('disconnect');
+        return;
+      }
+
+      // Shard is attempting to reconnect
+      if (message._reconnecting) {
+        this.ready = false;
+        /**
+         * Emitted upon the shard's {@link Client#reconnecting} event.
+         * @event Shard#reconnecting
+         */
+        this.emit('reconnecting');
+        return;
+      }
+
       // Shard is requesting a property fetch
       if (message._sFetchProp) {
         this.manager.fetchClientValues(message._sFetchProp).then(

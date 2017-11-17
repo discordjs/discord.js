@@ -168,7 +168,7 @@ class ShardingManager extends EventEmitter {
   /**
    * Evaluates a script on all shards, in the context of the Clients.
    * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array>} Results of the script execution
+   * @returns {Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script) {
     const promises = [];
@@ -179,7 +179,7 @@ class ShardingManager extends EventEmitter {
   /**
    * Fetches a client property value of each shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
-   * @returns {Promise<Array>}
+   * @returns {Promise<Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.size')
    *   .then(results => {
