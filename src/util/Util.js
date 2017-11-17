@@ -326,21 +326,16 @@ class Util {
    */
   static idToBinary(num) {
     let bin = '';
-
-    while (num.length > 15) {
-      const first = num.slice(0, -10);
-      const second = (first & 1).toString() + num.slice(-10);
-
-      bin = String(num.slice(-1) & 1) + bin;
-      num = Math.floor(first / 2).toString() + Math.floor(second / 2).toString().padStart(10, '0');
+    let high = parseInt(num.slice(0, -10)) || 0;
+    let low = parseInt(num.slice(-10));
+    while (low > 0 || high > 0) {
+      bin = String(low & 1) + bin;
+      low = Math.floor(low / 2);
+      if (high > 0) {
+        low += 5000000000 * (high % 2);
+        high = Math.floor(high / 2);
+      }
     }
-
-    num = parseInt(num);
-    while (num > 0) {
-      bin = (num & 1).toString() + bin;
-      num = Math.floor(num / 2);
-    }
-
     return bin;
   }
 
@@ -354,12 +349,12 @@ class Util {
   static binaryToID(num) {
     let dec = '';
 
-    while (num.length > 33) {
-      const first = parseInt(num.slice(0, -32), 2);
-      const second = parseInt((first % 10).toString(2) + num.slice(-32), 2);
+    while (num.length > 50) {
+      const high = parseInt(num.slice(0, -32), 2);
+      const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
 
-      dec = (second % 10).toString() + dec;
-      num = Math.floor(first / 10).toString(2) + Math.floor(second / 10).toString(2).padStart(32, '0');
+      dec = (low % 10).toString() + dec;
+      num = Math.floor(high / 10).toString(2) + Math.floor(low / 10).toString(2).padStart(32, '0');
     }
 
     num = parseInt(num, 2);
