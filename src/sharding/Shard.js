@@ -160,7 +160,7 @@ class Shard {
          * Emitted upon the shard's {@link Client#ready} event.
          * @event Shard#ready
          */
-        this.emit('ready');
+        this.manager.emit('ready');
         return;
       }
 
@@ -171,7 +171,7 @@ class Shard {
          * Emitted upon the shard's {@link Client#disconnect} event.
          * @event Shard#disconnect
          */
-        this.emit('disconnect');
+        this.manager.emit('disconnect');
         return;
       }
 
@@ -182,7 +182,7 @@ class Shard {
          * Emitted upon the shard's {@link Client#reconnecting} event.
          * @event Shard#reconnecting
          */
-        this.emit('reconnecting');
+        this.manager.emit('reconnecting');
         return;
       }
 
