@@ -8,7 +8,7 @@ class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
     Object.defineProperty(this, 'client', { value: client });
-    Object.defineProperty(this, 'holds', { value: client.options.customStructures[holds.constructor.name] || holds });
+    Object.defineProperty(this, 'holds', { value: client.options.customStructures[holds.name] || holds });
     if (iterable) for (const item of iterable) this.create(item);
   }
 
