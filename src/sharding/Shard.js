@@ -1,4 +1,5 @@
 const childProcess = require('child_process');
+const EventEmitter = require('events');
 const path = require('path');
 const Util = require('../util/Util');
 const { Error } = require('../errors');
@@ -6,13 +7,14 @@ const { Error } = require('../errors');
 /**
  * Represents a Shard spawned by the ShardingManager.
  */
-class Shard {
+class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is spawning this shard
    * @param {number} id ID of this shard
    * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
+    super();
     /**
      * Manager that created the shard
      * @type {ShardingManager}
