@@ -77,36 +77,42 @@ class GuildMember extends Base {
   /**
    * Whether this member is deafened server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverDeaf() { return this.voiceState.deaf; }
 
   /**
    * Whether this member is muted server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverMute() { return this.voiceState.mute; }
 
   /**
    * Whether this member is self-muted
    * @type {boolean}
+   * @readonly
    */
   get selfMute() { return this.voiceState.self_mute; }
 
   /**
    * Whether this member is self-deafened
    * @type {boolean}
+   * @readonly
    */
   get selfDeaf() { return this.voiceState.self_deaf; }
 
   /**
    * The voice session ID of this member (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceSessionID() { return this.voiceState.session_id; }
 
   /**
    * The voice channel ID of this member, (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceChannelID() { return this.voiceState.channel_id; }
 

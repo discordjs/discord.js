@@ -3,7 +3,7 @@ const BaseClient = require('./BaseClient');
 
 /**
  * The webhook client.
- * @extends {Webhook}
+ * @implements {Webhook}
  * @extends {BaseClient}
  */
 class WebhookClient extends BaseClient {
