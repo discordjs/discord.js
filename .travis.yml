@@ -10,8 +10,8 @@ jobs:
       node_js: 9
       script: bash ./travis/deploy.sh
       env:
-        - ENCRYPTION_LABEL: "af862fa96d3e"
-        - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
+        - ENCRYPTION_LABEL="af862fa96d3e"
+        - COMMIT_AUTHOR_EMAIL="amishshah.2k@gmail.com"
 cache:
   directories:
     - node_modules
