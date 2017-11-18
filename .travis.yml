@@ -1,4 +1,7 @@
 language: node_js
+node_js:
+  - 8
+  - 9
 cache:
   directories:
     - node_modules
@@ -7,9 +10,6 @@ jobs:
   include:
     - stage: test
       script: bash ./travis/test.sh
-      node_js:
-        - 8
-        - 9
     - stage: deploy
       script: bash ./travis/deploy.sh
       node_js: 9
