@@ -256,7 +256,7 @@ class RESTMethods {
     if (overwrites instanceof Collection) overwrites = overwrites.array();
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
-      type: channelType,
+      type: Constants.ChannelTypes[channelType.toUpperCase()],
       permission_overwrites: overwrites,
     }, undefined, reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
@@ -320,6 +320,7 @@ class RESTMethods {
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || channel.bitrate;
     data.user_limit = _data.userLimit || channel.userLimit;
+    data.parent_id = _data.parent || channel.parent ? channel.parent.id : undefined;
     return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data, undefined, reason).then(newData =>
       this.client.actions.ChannelUpdate.handle(newData).updated
     );
