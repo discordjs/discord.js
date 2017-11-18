@@ -32,7 +32,6 @@
   "homepage": "https://github.com/hydrabolt/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "long": "^3.0.0",
     "pako": "^1.0.0",
     "prism-media": "^0.0.2",
     "snekfetch": "^3.0.0",
