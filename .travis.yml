@@ -7,12 +7,11 @@ script: bash ./travis/test.sh
 jobs:
   include:
     - stage: deploy
-      script: bash ./travis/deploy.sh
       node_js: 9
-env:
-  global:
-    - ENCRYPTION_LABEL: "af862fa96d3e"
-    - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
+      script: bash ./travis/deploy.sh
+      env:
+        - ENCRYPTION_LABEL: "af862fa96d3e"
+        - COMMIT_AUTHOR_EMAIL: "amishshah.2k@gmail.com"
 cache:
   directories:
     - node_modules
