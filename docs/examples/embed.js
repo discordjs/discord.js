@@ -20,7 +20,7 @@ client.on('message', message => {
     // We can create embeds using the MessageEmbed constructor
     // Read more about all that you can do with the constructor in the docs
     const embed = new MessageEmbed()
-      .setTitle(`A slick little embed`) // Set the author of the field
+      .setTitle(`A slick little embed`) // Set the title of the field
       .setColor('RANDOM') // Set the color of the embed
       .setDescription(`Hello, this is a slick embed!`); // Set the main content of the embed
     // Send the embed to the same channel as the message
