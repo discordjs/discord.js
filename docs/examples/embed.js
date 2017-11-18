@@ -18,43 +18,14 @@ client.on('message', message => {
   // If the message is "how to embed"
   if (message.content === 'how to embed') {
     // We can create embeds using the MessageEmbed constructor
-    // Read more about all that you can do with the constructor in the docs
+    // Read more about all that you can do with the constructor
+    // over at https://discord.js.org/#/docs/main/master/class/MessageEmbed
     const embed = new MessageEmbed()
       .setTitle(`A slick little embed`) // Set the title of the field
       .setColor('RANDOM') // Set the color of the embed
       .setDescription(`Hello, this is a slick embed!`); // Set the main content of the embed
     // Send the embed to the same channel as the message
     message.channel.send(embed);
-    // Otherwise, if the message is "how to embed using objects"
-  } else if (message.content === 'how to embed using objects') {
-    // Send an embed to the same channel as the message, replying to the message author
-    // All properties in the embed are optional, but at least one must be present to be able to send the message
-    // See all the properties an embed can have @ https://discordapp.com/developers/docs/resources/channel#embed-object
-    message.reply({
-      embed: {
-        // Sets the color, either in format "0xXXXXXX" or in number form
-        color: 0xFF00FF,
-        // The title of the embed
-        title: `Did you know.. ~~some markdown~~ works here too!`,
-        // The main description of the embed
-        description: `Hey, we have markdown here too! **Just type it out!**`,
-        // The URL, allows the title to be clickable,
-        url: `https://discord.js.org/`,
-        // Fields are arrays of objects
-        fields: [
-          {
-            // The field title
-            name: `Hey, this is a field title`,
-            // The field content
-            value: `Hey, this is a value! Valuable`,
-            // If the field should be inline.
-            // Depending on the size of the content the field has,
-            // fields can be up to 3 inline, per line
-            inline: false,
-          },
-        ],
-      },
-    });
   }
 });
 
