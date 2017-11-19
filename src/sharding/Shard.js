@@ -77,6 +77,7 @@ class Shard extends EventEmitter {
     /**
      * Listener function for the {@link ChildProcess}' `exit` event
      * @type {Function}
+     * @private
      */
     this._exitListener = this._handleExit.bind(this);
   }
