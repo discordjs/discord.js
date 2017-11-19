@@ -1,4 +1,4 @@
-const Permissions = require('../util/Permissions');
+const { Permissions } = require('../');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.

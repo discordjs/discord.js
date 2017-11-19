@@ -1,6 +1,4 @@
-const DataStore = require('./DataStore');
-const Collection = require('../util/Collection');
-const Message = require('../structures/Message');
+const { DataStore, Collection, Message } = require('../');
 const { Error } = require('../errors');
 
 /**

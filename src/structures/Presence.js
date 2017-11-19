@@ -1,4 +1,4 @@
-const { ActivityTypes } = require('../util/Constants');
+const { Constants: { ActivityTypes } } = require('../');
 
 /**
  * Represents a user's presence.

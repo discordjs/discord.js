@@ -1,6 +1,6 @@
 const VolumeInterface = require('../util/VolumeInterface');
 const VoiceBroadcast = require('../VoiceBroadcast');
-const { VoiceStatus } = require('../../../util/Constants');
+const { Constants: { VoiceStatus } } = require('../../../');
 
 const secretbox = require('../util/Secretbox');
 

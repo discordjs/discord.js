@@ -1,5 +1,4 @@
-const DataStore = require('./DataStore');
-const { Presence } = require('../structures/Presence');
+const { DataStore, Presence } = require('../');
 
 /**
  * Stores presences.

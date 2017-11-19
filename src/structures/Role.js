@@ -1,7 +1,4 @@
-const Snowflake = require('../util/Snowflake');
-const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
-const Base = require('./Base');
+const { Snowflake, Permissions, Util, Base } = require('../');
 const { TypeError } = require('../errors');
 
 /**

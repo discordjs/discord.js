@@ -1,5 +1,4 @@
-const Collection = require('../util/Collection');
-const GuildMember = require('./GuildMember');
+const { Collection, GuildMember } = require('../');
 
 /**
  * Keeps track of mentions in a {@link Message}.

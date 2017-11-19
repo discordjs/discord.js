@@ -1,4 +1,4 @@
-const Collection = require('../util/Collection');
+const { Collection } = require('../');
 
 /**
  * Manages the creation, retrieval and deletion of a specific data model.

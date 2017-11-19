@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events, Status } = require('../../../../util/Constants');
+const { Constants: { Events, Status } } = require('../../../../');
 
 class ResumedHandler extends AbstractHandler {
   handle(packet) {

@@ -1,5 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
+const { Constants: { Events } } = require('../../../../');
 
 class TypingStartHandler extends AbstractHandler {
   handle(packet) {

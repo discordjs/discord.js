@@ -1,5 +1,4 @@
-const Util = require('../util/Util');
-const { Events } = require('../util/Constants');
+const { Util, Constants: { Events } } = require('../');
 const { Error } = require('../errors');
 
 /**

@@ -1,8 +1,4 @@
-const Channel = require('./Channel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
-const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
+const { Channel, TextBasedChannel, Collection, DataResolver, MessageStore } = require('../');
 
 /*
 { type: 3,

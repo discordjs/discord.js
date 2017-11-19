@@ -1,4 +1,4 @@
-const { OPCodes, Status, WSEvents } = require('../../../util/Constants');
+const { Constants: { OPCodes, Status, WSEvents } } = require('../../../');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,

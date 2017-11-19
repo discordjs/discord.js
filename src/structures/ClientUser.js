@@ -1,11 +1,5 @@
-const User = require('./User');
-const Collection = require('../util/Collection');
-const ClientUserSettings = require('./ClientUserSettings');
-const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const { Events } = require('../util/Constants');
-const Util = require('../util/Util');
-const DataResolver = require('../util/DataResolver');
-const Guild = require('./Guild');
+// eslint-disable-next-line max-len
+const { User, Collection, ClientUserSettings, ClientUserGuildSettings, Util, DataResolver, Guild, Constants: { Events } } = require('../');
 
 /**
  * Represents the logged in client's Discord user.

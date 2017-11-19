@@ -1,5 +1,4 @@
-const DataStore = require('./DataStore');
-const MessageReaction = require('../structures/MessageReaction');
+const { DataStore, MessageReaction } = require('../');
 
 /**
  * Stores reactions.

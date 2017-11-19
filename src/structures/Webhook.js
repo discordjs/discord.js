@@ -1,4 +1,4 @@
-const DataResolver = require('../util/DataResolver');
+const { DataResolver } = require('../');
 const { createMessage } = require('./shared');
 
 /**

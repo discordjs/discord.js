@@ -1,4 +1,4 @@
-const GuildChannel = require('./GuildChannel');
+const { GuildChannel } = require('../');
 
 /**
  * Represents a guild category channel on Discord.

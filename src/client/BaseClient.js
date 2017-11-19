@@ -1,7 +1,6 @@
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
-const Util = require('../util/Util');
-const { DefaultOptions } = require('../util/Constants');
+const { Util, Constants: { DefaultOptions } } = require('../');
 
 /**
  * The base class for all clients.

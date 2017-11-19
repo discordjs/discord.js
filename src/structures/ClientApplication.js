@@ -1,7 +1,4 @@
-const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
-const Base = require('./Base');
+const { Snowflake, DataResolver, Base, Constants: { ClientApplicationAssetTypes, Endpoints } } = require('../');
 
 /**
  * Represents a Client OAuth2 Application.

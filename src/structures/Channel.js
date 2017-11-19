@@ -1,6 +1,4 @@
-const Snowflake = require('../util/Snowflake');
-const Base = require('./Base');
-const { ChannelTypes } = require('../util/Constants');
+const { Snowflake, Base, Util: { ChannelTypes } } = require('../');
 
 /**
  * Represents any channel on Discord.

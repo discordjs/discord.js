@@ -1,7 +1,6 @@
 const EventEmitter = require('events');
-const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
+const { WebSocket, Constants: { Events, OPCodes, Status, WSCodes } } = require('../../');
 const PacketManager = require('./packets/WebSocketPacketManager');
-const WebSocket = require('../../WebSocket');
 try {
   var zlib = require('zlib-sync');
   if (!zlib.Inflate) zlib = require('pako');

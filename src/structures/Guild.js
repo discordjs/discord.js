@@ -1,21 +1,24 @@
-const Invite = require('./Invite');
-const GuildAuditLogs = require('./GuildAuditLogs');
-const Webhook = require('./Webhook');
-const GuildMember = require('./GuildMember');
-const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, Events, browser } = require('../util/Constants');
-const Collection = require('../util/Collection');
-const Util = require('../util/Util');
-const DataResolver = require('../util/DataResolver');
-const Snowflake = require('../util/Snowflake');
-const Permissions = require('../util/Permissions');
+const {
+  Invite,
+  GuildAuditLogs,
+  Webhook,
+  GuildMember,
+  VoiceRegion,
+  Collection,
+  Util,
+  DataResolver,
+  Snowflake,
+  Permissions,
+  GuildMemberStore,
+  RoleStore,
+  EmojiStore,
+  GuildChannelStore,
+  PresenceStore,
+  Base,
+  Constants: { ChannelTypes, Events, browser },
+} = require('../');
+
 const Shared = require('./shared');
-const GuildMemberStore = require('../stores/GuildMemberStore');
-const RoleStore = require('../stores/RoleStore');
-const EmojiStore = require('../stores/EmojiStore');
-const GuildChannelStore = require('../stores/GuildChannelStore');
-const PresenceStore = require('../stores/PresenceStore');
-const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
 /**

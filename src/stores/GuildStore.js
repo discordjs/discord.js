@@ -1,5 +1,4 @@
-const DataStore = require('./DataStore');
-const Guild = require('../structures/Guild');
+const { DataStore, Guild } = require('../');
 
 /**
  * Stores guilds.

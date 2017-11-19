@@ -1,5 +1,4 @@
-const { UserSettingsMap } = require('../util/Constants');
-const Util = require('../util/Util');
+const { Util, Constants: { UserSettingsMap } } = require('../');
 const { Error } = require('../errors');
 
 /**

@@ -1,5 +1,4 @@
-const Collector = require('./interfaces/Collector');
-const { Events } = require('../util/Constants');
+const { Collector, Constants: { Events } } = require('../');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions

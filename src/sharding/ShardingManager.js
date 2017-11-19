@@ -1,9 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events');
-const Shard = require('./Shard');
-const Collection = require('../util/Collection');
-const Util = require('../util/Util');
+const { Shard, Collection, Util } = require('../');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**

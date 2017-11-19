@@ -1,6 +1,4 @@
-const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
-const Base = require('./Base');
+const { Collection, Snowflake, Base } = require('../');
 const { TypeError } = require('../errors');
 
 /**

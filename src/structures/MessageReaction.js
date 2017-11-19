@@ -1,6 +1,4 @@
-const Emoji = require('./Emoji');
-const ReactionEmoji = require('./ReactionEmoji');
-const ReactionUserStore = require('../stores/ReactionUserStore');
+const { Emoji, ReactionEmoji, ReactionUserStore } = require('../');
 const { Error } = require('../errors');
 
 /**

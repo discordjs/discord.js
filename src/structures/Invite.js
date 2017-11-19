@@ -1,5 +1,4 @@
-const { Endpoints } = require('../util/Constants');
-const Base = require('./Base');
+const { Base, Constants: { Endpoints } } = require('../');
 
 /**
  * Represents an invitation to a guild channel.

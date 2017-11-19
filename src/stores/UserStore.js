@@ -1,7 +1,4 @@
-const DataStore = require('./DataStore');
-const User = require('../structures/User');
-const GuildMember = require('../structures/GuildMember');
-const Message = require('../structures/Message');
+const { DataStore, User, GuildMember, Message } = require('../');
 
 /**
  * A data store to store User models.

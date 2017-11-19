@@ -1,4 +1,4 @@
-const { UserChannelOverrideMap } = require('../util/Constants');
+const { Constants: { UserChannelOverrideMap } } = require('../');
 
 /**
  * A wrapper around the ClientUser's channel overrides.

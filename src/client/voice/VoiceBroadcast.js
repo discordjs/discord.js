@@ -1,7 +1,7 @@
-const VolumeInterface = require('./util/VolumeInterface');
 const Prism = require('prism-media');
+const { Collection } = require('../../');
+const VolumeInterface = require('./util/VolumeInterface');
 const OpusEncoders = require('./opus/OpusEngineList');
-const Collection = require('../../util/Collection');
 
 const ffmpegArguments = [
   '-analyzeduration', '0',

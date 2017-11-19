@@ -1,9 +1,5 @@
-const GuildChannel = require('./GuildChannel');
-const Webhook = require('./Webhook');
+const { GuildChannel, Webhook, Collection, DataResolver, MessageStore } = require('../');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
-const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a guild text channel on Discord.

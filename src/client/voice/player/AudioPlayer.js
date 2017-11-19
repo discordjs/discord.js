@@ -1,7 +1,7 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Prism = require('prism-media');
+const { Collection } = require('../../../');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
-const Collection = require('../../../util/Collection');
 const OpusEncoders = require('../opus/OpusEngineList');
 
 const ffmpegArguments = [

@@ -1,5 +1,4 @@
-const Webhook = require('../structures/Webhook');
-const BaseClient = require('./BaseClient');
+const { Webhook, BaseClient } = require('../');
 
 /**
  * The webhook client.

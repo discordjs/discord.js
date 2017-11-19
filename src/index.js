@@ -1,82 +1,95 @@
 const Util = require('./util/Util');
 
-module.exports = {
-  // "Root" classes (starting points)
-  BaseClient: require('./client/BaseClient'),
-  Client: require('./client/Client'),
-  Shard: require('./sharding/Shard'),
-  ShardClientUtil: require('./sharding/ShardClientUtil'),
-  ShardingManager: require('./sharding/ShardingManager'),
-  WebhookClient: require('./client/WebhookClient'),
+class Index {
 
-  // Utilities
-  Collection: require('./util/Collection'),
-  Constants: require('./util/Constants'),
-  DataResolver: require('./util/DataResolver'),
-  DataStore: require('./stores/DataStore'),
-  DiscordAPIError: require('./rest/DiscordAPIError'),
-  Permissions: require('./util/Permissions'),
-  Snowflake: require('./util/Snowflake'),
-  SnowflakeUtil: require('./util/Snowflake'),
-  Util: Util,
-  util: Util,
-  version: require('../package.json').version,
+  constructor() {
+    // "Root" classes (starting points)
+    this.BaseClient = require('./client/BaseClient');
+    this.Client = require('./client/Client');
+    this.Shard = require('./sharding/Shard');
+    this.ShardClientUtil = require('./sharding/ShardClientUtil');
+    this.ShardingManager = require('./sharding/ShardingManager');
+    this.WebhookClient = require('./client/WebhookClient');
 
-  // Stores
-  ChannelStore: require('./stores/ChannelStore'),
-  ClientPresenceStore: require('./stores/ClientPresenceStore'),
-  EmojiStore: require('./stores/EmojiStore'),
-  GuildChannelStore: require('./stores/GuildChannelStore'),
-  GuildMemberStore: require('./stores/GuildMemberStore'),
-  GuildStore: require('./stores/GuildStore'),
-  ReactionUserStore: require('./stores/ReactionUserStore'),
-  MessageStore: require('./stores/MessageStore'),
-  PresenceStore: require('./stores/PresenceStore'),
-  RoleStore: require('./stores/RoleStore'),
-  UserStore: require('./stores/UserStore'),
+    // Utilities
+    this.Collection = require('./util/Collection');
+    this.Constants = require('./util/Constants');
+    this.DataResolver = require('./util/DataResolver');
+    this.DataStore = require('./stores/DataStore');
+    this.DiscordAPIError = require('./rest/DiscordAPIError');
+    this.Permissions = require('./util/Permissions');
+    this.Snowflake = require('./util/Snowflake');
+    this.SnowflakeUtil = require('./util/Snowflake');
+    this.Util = Util;
+    this.util = this.Util;
+    this.version = require('../package.json').version;
 
-  // Shortcuts to Util methods
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  splitMessage: Util.splitMessage,
+    // Stores
+    this.ChannelStore = require('./stores/ChannelStore');
+    this.ClientPresenceStore = require('./stores/ClientPresenceStore');
+    this.EmojiStore = require('./stores/EmojiStore');
+    this.GuildChannelStore = require('./stores/GuildChannelStore');
+    this.GuildMemberStore = require('./stores/GuildMemberStore');
+    this.GuildStore = require('./stores/GuildStore');
+    this.ReactionUserStore = require('./stores/ReactionUserStore');
+    this.MessageStore = require('./stores/MessageStore');
+    this.PresenceStore = require('./stores/PresenceStore');
+    this.RoleStore = require('./stores/RoleStore');
+    this.UserStore = require('./stores/UserStore');
 
-  // Structures
-  Base: require('./structures/Base'),
-  Activity: require('./structures/Presence').Activity,
-  CategoryChannel: require('./structures/CategoryChannel'),
-  Channel: require('./structures/Channel'),
-  ClientApplication: require('./structures/ClientApplication'),
-  ClientUser: require('./structures/ClientUser'),
-  ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
-  ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
-  ClientUserSettings: require('./structures/ClientUserSettings'),
-  Collector: require('./structures/interfaces/Collector'),
-  DMChannel: require('./structures/DMChannel'),
-  Emoji: require('./structures/Emoji'),
-  GroupDMChannel: require('./structures/GroupDMChannel'),
-  Guild: require('./structures/Guild'),
-  GuildAuditLogs: require('./structures/GuildAuditLogs'),
-  GuildChannel: require('./structures/GuildChannel'),
-  GuildMember: require('./structures/GuildMember'),
-  Invite: require('./structures/Invite'),
-  Message: require('./structures/Message'),
-  MessageAttachment: require('./structures/MessageAttachment'),
-  MessageCollector: require('./structures/MessageCollector'),
-  MessageEmbed: require('./structures/MessageEmbed'),
-  MessageMentions: require('./structures/MessageMentions'),
-  MessageReaction: require('./structures/MessageReaction'),
-  PermissionOverwrites: require('./structures/PermissionOverwrites'),
-  Presence: require('./structures/Presence').Presence,
-  ReactionCollector: require('./structures/ReactionCollector'),
-  ReactionEmoji: require('./structures/ReactionEmoji'),
-  RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
-  Role: require('./structures/Role'),
-  TextChannel: require('./structures/TextChannel'),
-  User: require('./structures/User'),
-  UserConnection: require('./structures/UserConnection'),
-  VoiceChannel: require('./structures/VoiceChannel'),
-  VoiceRegion: require('./structures/VoiceRegion'),
-  Webhook: require('./structures/Webhook'),
+    // Shortcuts to Util methods
+    this.escapeMarkdown = Util.escapeMarkdown;
+    this.fetchRecommendedShards = Util.fetchRecommendedShards;
+    this.splitMessage = Util.splitMessage;
 
-  WebSocket: require('./WebSocket'),
-};
+    // Structures
+    this.Base = require('./structures/Base');
+    this.Activity = require('./structures/Presence').Activity;
+    this.CategoryChannel = require('./structures/CategoryChannel');
+    this.Channel = require('./structures/Channel');
+    this.ClientApplication = require('./structures/ClientApplication');
+    this.ClientUser = require('./structures/ClientUser');
+    this.ClientUserChannelOverride = require('./structures/ClientUserChannelOverride');
+    this.ClientUserGuildSettings = require('./structures/ClientUserGuildSettings');
+    this.ClientUserSettings = require('./structures/ClientUserSettings');
+    this.Collector = require('./structures/interfaces/Collector');
+    this.DMChannel = require('./structures/DMChannel');
+    this.Emoji = require('./structures/Emoji');
+    this.GroupDMChannel = require('./structures/GroupDMChannel');
+    this.Guild = require('./structures/Guild');
+    this.GuildAuditLogs = require('./structures/GuildAuditLogs');
+    this.GuildChannel = require('./structures/GuildChannel');
+    this.GuildMember = require('./structures/GuildMember');
+    this.Invite = require('./structures/Invite');
+    this.Message = require('./structures/Message');
+    this.MessageAttachment = require('./structures/MessageAttachment');
+    this.MessageCollector = require('./structures/MessageCollector');
+    this.MessageEmbed = require('./structures/MessageEmbed');
+    this.MessageMentions = require('./structures/MessageMentions');
+    this.MessageReaction = require('./structures/MessageReaction');
+    this.PermissionOverwrites = require('./structures/PermissionOverwrites');
+    this.Presence = require('./structures/Presence').Presence;
+    this.ReactionCollector = require('./structures/ReactionCollector');
+    this.ReactionEmoji = require('./structures/ReactionEmoji');
+    this.RichPresenceAssets = require('./structures/Presence').RichPresenceAssets;
+    this.Role = require('./structures/Role');
+    this.TextChannel = require('./structures/TextChannel');
+    this.User = require('./structures/User');
+    this.UserConnection = require('./structures/UserConnection');
+    this.VoiceChannel = require('./structures/VoiceChannel');
+    this.VoiceRegion = require('./structures/VoiceRegion');
+    this.Webhook = require('./structures/Webhook');
+
+    this.WebSocket = require('./WebSocket');
+  }
+
+  getStructure(key) {
+    return this[key];
+  }
+
+  registerStructures(classes) {
+    for (const key of classes) if (key in this) this[key] = classes[key];
+  }
+}
+
+module.exports = new Index();

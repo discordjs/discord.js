@@ -1,6 +1,4 @@
-const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
-const Webhook = require('./Webhook');
+const { Collection, Snowflake, Webhook } = require('../');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:

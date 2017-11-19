@@ -1,6 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
-const ClientUserGuildSettings = require('../../../../structures/ClientUserGuildSettings');
+const { ClientUserGuildSettings, Constants: { Events } } = require('../../../../');
 
 class UserGuildSettingsUpdateHandler extends AbstractHandler {
   handle(packet) {

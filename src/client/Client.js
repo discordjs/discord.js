@@ -1,23 +1,26 @@
-const BaseClient = require('./BaseClient');
-const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
-const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const WebSocketManager = require('./websocket/WebSocketManager');
-const ActionsManager = require('./actions/ActionsManager');
-const Collection = require('../util/Collection');
-const VoiceRegion = require('../structures/VoiceRegion');
-const Webhook = require('../structures/Webhook');
-const Invite = require('../structures/Invite');
-const ClientApplication = require('../structures/ClientApplication');
-const ShardClientUtil = require('../sharding/ShardClientUtil');
-const VoiceBroadcast = require('./voice/VoiceBroadcast');
-const UserStore = require('../stores/UserStore');
-const ChannelStore = require('../stores/ChannelStore');
-const GuildStore = require('../stores/GuildStore');
-const ClientPresenceStore = require('../stores/ClientPresenceStore');
-const EmojiStore = require('../stores/EmojiStore');
-const { Events, browser } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
+const {
+  BaseClient,
+  Permissions,
+  ClientManager,
+  ClientVoiceManager,
+  WebSocketManager,
+  ActionsManager,
+  Collection,
+  VoiceRegion,
+  Webhook,
+  Invite,
+  ClientApplication,
+  ShardClientUtil,
+  VoiceBroadcast,
+  UserStore,
+  ChannelStore,
+  GuildStore,
+  ClientPresenceStore,
+  EmojiStore,
+  DataResolver,
+  Constants: { Events, browser },
+} = require('../');
+
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**

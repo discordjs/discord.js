@@ -1,6 +1,4 @@
-const Channel = require('./Channel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const MessageStore = require('../stores/MessageStore');
+const { Channel, TextBasedChannel, MessageStore } = require('../');
 
 /**
  * Represents a direct message channel between two users.

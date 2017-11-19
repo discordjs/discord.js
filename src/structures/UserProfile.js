@@ -1,7 +1,4 @@
-const Collection = require('../util/Collection');
-const { UserFlags } = require('../util/Constants');
-const UserConnection = require('./UserConnection');
-const Base = require('./Base');
+const { Collection, UserConnection, Base, Constants: { UserFlags } } = require('../');
 
 /**
  * Represents a user's profile on Discord.

@@ -1,6 +1,4 @@
-const Collector = require('./interfaces/Collector');
-const Collection = require('../util/Collection');
-const { Events } = require('../util/Constants');
+const { Collector, Collection, Constants: { Events } } = require('../');
 
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions

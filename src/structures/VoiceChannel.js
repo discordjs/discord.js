@@ -1,6 +1,4 @@
-const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
-const { browser } = require('../util/Constants');
+const { GuildChannel, Collection, Constants: { browser } } = require('../');
 const { Error } = require('../errors');
 
 /**

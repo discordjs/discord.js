@@ -1,8 +1,5 @@
+const { Presence, UserProfile, Snowflake, Base } = require('../');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { Presence } = require('./Presence');
-const UserProfile = require('./UserProfile');
-const Snowflake = require('../util/Snowflake');
-const Base = require('./Base');
 const { Error } = require('../errors');
 
 /**

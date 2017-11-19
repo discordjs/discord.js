@@ -2,7 +2,7 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
+const { Constants: { Endpoints } } = require('../');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {

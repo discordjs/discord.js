@@ -1,6 +1,4 @@
-const DataStore = require('./DataStore');
-const Emoji = require('../structures/Emoji');
-const ReactionEmoji = require('../structures/ReactionEmoji');
+const { DataStore, Emoji, ReactionEmoji } = require('../');
 
 /**
  * Stores emojis.

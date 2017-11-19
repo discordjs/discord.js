@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const { Events, Status } = require('../../util/Constants');
+const { Constants: { Events, Status } } = require('../../');
 
 class GuildMemberRemoveAction extends Action {
   handle(data) {

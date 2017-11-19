@@ -1,7 +1,7 @@
+const EventEmitter = require('events');
 const udp = require('dgram');
 const dns = require('dns');
-const { VoiceOPCodes } = require('../../util/Constants');
-const EventEmitter = require('events');
+const { Constants: { VoiceOPCodes } } = require('../../');
 const { Error } = require('../../errors');
 
 /**

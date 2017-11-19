@@ -1,6 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-
-const { Events } = require('../../../../util/Constants');
+const { Constants: { Events } } = require('../../../../');
 
 class VoiceStateUpdateHandler extends AbstractHandler {
   handle(packet) {

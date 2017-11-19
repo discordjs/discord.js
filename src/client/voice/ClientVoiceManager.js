@@ -1,5 +1,4 @@
-const Collection = require('../../util/Collection');
-const { VoiceStatus } = require('../../util/Constants');
+const { Collection, Constants: { VoiceStatus } } = require('../../');
 const VoiceConnection = require('./VoiceConnection');
 const { Error } = require('../../errors');
 

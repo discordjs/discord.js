@@ -1,6 +1,4 @@
-const DataStore = require('./DataStore');
-const Channel = require('../structures/Channel');
-const { Events } = require('../util/Constants');
+const { DataStore, Channel, Constants: { Events } } = require('../');
 
 const kLru = Symbol('LRU');
 const lruable = ['group', 'dm'];

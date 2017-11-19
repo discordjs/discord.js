@@ -1,7 +1,4 @@
-const DataStore = require('./DataStore');
-const GuildMember = require('../structures/GuildMember');
-const { Events, OPCodes } = require('../util/Constants');
-const Collection = require('../util/Collection');
+const { DataStore, GuildMember, Collection, Constants: { Events, OPCodes } } = require('../');
 const { Error } = require('../errors');
 
 /**

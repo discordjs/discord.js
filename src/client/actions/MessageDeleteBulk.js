@@ -1,6 +1,6 @@
 const Action = require('./Action');
 const Collection = require('../../util/Collection');
-const { Events } = require('../../util/Constants');
+const { Collection, Constants: { Events } } = require('../../');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {

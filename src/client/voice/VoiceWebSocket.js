@@ -1,8 +1,7 @@
-const { OPCodes, VoiceOPCodes } = require('../../util/Constants');
-const SecretKey = require('./util/SecretKey');
 const EventEmitter = require('events');
+const { WebSocket, Constants: { OPCodes, VoiceOPCodes } } = require('../../');
+const SecretKey = require('./util/SecretKey');
 const { Error } = require('../../errors');
-const WebSocket = require('../../WebSocket');
 
 /**
  * Represents a Voice Connection's WebSocket.

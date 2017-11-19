@@ -1,4 +1,4 @@
-const { Events, Status } = require('../util/Constants');
+const { Constants: { Events, Status } } = require('../');
 const { Error } = require('../errors');
 
 /**

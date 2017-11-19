@@ -1,6 +1,4 @@
-const DataStore = require('./DataStore');
-const Channel = require('../structures/Channel');
-const GuildChannel = require('../structures/GuildChannel');
+const { DataStore, Channel, GuildChannel } = require('../');
 
 /**
  * Stores guild channels.

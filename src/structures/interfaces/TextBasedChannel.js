@@ -1,7 +1,5 @@
-const MessageCollector = require('../MessageCollector');
+const { MessageCollector, Collection, Snowflake } = require('../../');
 const Shared = require('../shared');
-const Snowflake = require('../../util/Snowflake');
-const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
 
 /**

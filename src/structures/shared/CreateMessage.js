@@ -1,9 +1,4 @@
-const Embed = require('../MessageEmbed');
-const DataResolver = require('../../util/DataResolver');
-const MessageEmbed = require('../MessageEmbed');
-const MessageAttachment = require('../MessageAttachment');
-const { browser } = require('../../util/Constants');
-const Util = require('../../util/Util');
+const { MessageEmbed, DataResolver, MessageAttachment, Constants: { browser }, Util } = require('../../');
 
 // eslint-disable-next-line complexity
 module.exports = async function createMessage(channel, options) {
@@ -57,9 +52,9 @@ module.exports = async function createMessage(channel, options) {
     else options.files = options.embed.files;
   }
 
-  if (options.embed && webhook) options.embeds = [new Embed(options.embed)._apiTransform()];
-  else if (options.embed) options.embed = new Embed(options.embed)._apiTransform();
-  else if (options.embeds) options.embeds = options.embeds.map(e => new Embed(e)._apiTransform());
+  if (options.embed && webhook) options.embeds = [new MessageEmbed(options.embed)._apiTransform()];
+  else if (options.embed) options.embed = new MessageEmbed(options.embed)._apiTransform();
+  else if (options.embeds) options.embeds = options.embeds.map(e => new MessageEmbed(e)._apiTransform());
 
   let files;
 

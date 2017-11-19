@@ -1,5 +1,4 @@
-const DataStore = require('./DataStore');
-const Role = require('../structures/Role');
+const { DataStore, Role } = require('../');
 
 /**
  * Stores roles.

@@ -1,7 +1,4 @@
-const PresenceStore = require('./PresenceStore');
-const Collection = require('../util/Collection');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
-const { Presence } = require('../structures/Presence');
+const { PresenceStore, Collection, Presence, Constants: { ActivityTypes, OPCodes } } = require('../');
 const { TypeError } = require('../errors');
 
 /**

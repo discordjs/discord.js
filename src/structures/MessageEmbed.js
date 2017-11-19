@@ -1,5 +1,4 @@
-const MessageAttachment = require('./MessageAttachment');
-const Util = require('../util/Util');
+const { MessageAttachment, Util } = require('../');
 const { RangeError } = require('../errors');
 
 /**

@@ -1,5 +1,5 @@
 const DiscordAPIError = require('../DiscordAPIError');
-const { Events: { RATE_LIMIT } } = require('../../util/Constants');
+const { Constants: { Events: { RATE_LIMIT } } } = require('../../');
 
 class RequestHandler {
   constructor(manager, handler) {

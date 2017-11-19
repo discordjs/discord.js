@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const https = require('https');
-const { browser, UserAgent } = require('../util/Constants');
+const { Constants: { browser, UserAgent } } = require('../');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 

@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
+const { Constants: { Events } } = require('../../');
 
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {

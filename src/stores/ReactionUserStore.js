@@ -1,4 +1,4 @@
-const DataStore = require('./DataStore');
+const { DataStore } = require('../');
 /**
  * A data store to store User models who reacted to a MessageReaction.
  * @extends {DataStore}

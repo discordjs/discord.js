@@ -1,11 +1,14 @@
-const Channel = require('./Channel');
-const Role = require('./Role');
-const Invite = require('./Invite');
-const PermissionOverwrites = require('./PermissionOverwrites');
-const Util = require('../util/Util');
-const Permissions = require('../util/Permissions');
-const Collection = require('../util/Collection');
-const { MessageNotificationTypes } = require('../util/Constants');
+const {
+  Channel,
+  Role,
+  Invite,
+  PermissionOverwrites,
+  Util,
+  Permissions,
+  Collection,
+  Constants: { MessageNotificationTypes },
+} = require('../');
+
 const { Error, TypeError } = require('../errors');
 
 /**

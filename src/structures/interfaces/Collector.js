@@ -1,4 +1,4 @@
-const Collection = require('../../util/Collection');
+const { Collection } = require('../../');
 const EventEmitter = require('events');
 
 /**
