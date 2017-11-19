@@ -1067,8 +1067,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return DataResolver.resolveImage(attachment)
-      .then(image => this.createEmoji(image, name, { roles, reason }));
+    return DataResolver.resolveImage(attachment).then(image => this.createEmoji(image, name, { roles, reason }));
   }
 
   /**
@@ -1146,6 +1145,34 @@ class Guild extends Base {
     return this.name;
   }
 
+  /**
+   * Creates a collection of this guild's roles, sorted by their position and IDs.
+   * @returns {Collection<Role>}
+   * @private
+   */
+  _sortedRoles() {
+    return Util.discordSort(this.roles);
+  }
+
+  /**
+   * Creates a collection of this guild's or a specific category's channels, sorted by their position and IDs.
+   * @param {GuildChannel} [channel] Category to get the channels of
+   * @returns {Collection<GuildChannel>}
+   * @private
+   */
+  _sortedChannels(channel) {
+    const category = channel.type === ChannelTypes.CATEGORY;
+    return Util.discordSort(this.channels.filter(c =>
+      c.type === channel.type && (category || c.parent === channel.parent)
+    ));
+  }
+
+  /**
+   * Handles a user speaking update in a voice channel.
+   * @param {Snowflake} user ID of the user that the update is for
+   * @param {boolean} speaking Whether the user is speaking
+   * @private
+   */
   _memberSpeakUpdate(user, speaking) {
     const member = this.members.get(user);
     if (member && member.speaking !== speaking) {
@@ -1159,23 +1186,15 @@ class Guild extends Base {
       this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
   }
-
-  _sortedRoles() {
-    return Util.discordSort(this.roles);
-  }
-
-  _sortedChannels(channel) {
-    const category = channel.type === ChannelTypes.CATEGORY;
-    return Util.discordSort(this.channels.filter(c =>
-      c.type === channel.type && (category || c.parent === channel.parent)));
-  }
 }
 
+// TODO: Document this thing
 class VoiceStateCollection extends Collection {
   constructor(guild) {
     super();
     this.guild = guild;
   }
+
   set(id, voiceState) {
     const member = this.guild.members.get(id);
     if (member) {

@@ -21,9 +21,7 @@ class Util {
   static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
-    if (splitText.length === 1) {
-      throw new RangeError('SPLIT_MAX_LEN');
-    }
+    if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [''];
     let msg = 0;
     for (let i = 0; i < splitText.length; i++) {
@@ -83,10 +81,7 @@ class Util {
       const [name, id] = text.split(':');
       return { name, id };
     } else {
-      return {
-        name: text,
-        id: null,
-      };
+      return { name: text, id: null };
     }
   }
 
@@ -225,7 +220,6 @@ class Util {
    * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
    */
-
   static resolveString(data) {
     if (typeof data === 'string') return data;
     if (data instanceof Array) return data.join('\n');
@@ -273,7 +267,6 @@ class Util {
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
-
   static resolveColor(color) {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
@@ -292,17 +285,29 @@ class Util {
   }
 
   /**
-   * Sorts by Discord's position and then by ID.
+   * Sorts by Discord's position and ID.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection
-      .sort((a, b) => a.rawPosition - b.rawPosition ||
-        parseInt(a.id.slice(0, -10)) - parseInt(b.id.slice(0, -10)) ||
-        parseInt(a.id.slice(10)) - parseInt(b.id.slice(10)));
+    return collection.sort((a, b) =>
+      a.rawPosition - b.rawPosition ||
+      parseInt(a.id.slice(0, -10)) - parseInt(b.id.slice(0, -10)) ||
+      parseInt(a.id.slice(10)) - parseInt(b.id.slice(10))
+    );
   }
 
+  /**
+   * Sets the position of a Channel or Role.
+   * @param {Channel|Role} item Object to set the position of
+   * @param {number} position New position for the object
+   * @param {boolean} relative Whether `position` is relative to its current position
+   * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
+   * @param {APIRouter} route Route to call PATCH on
+   * @param {string} [reason] Reason for the change
+   * @returns {Promise<Object[]>} Updated item list, with `id` and `position` properties
+   * @private
+   */
   static setPosition(item, position, relative, sorted, route, reason) {
     let updatedItems = sorted.array();
     Util.moveElementInArray(updatedItems, item, position, relative);
@@ -310,17 +315,22 @@ class Util {
     return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
   }
 
+  /**
+   * Alternative to Node's `path.basename` that we have for some (probably stupid) reason.
+   * @param {string} path Path to get the basename of
+   * @param {string} [ext] File extension to remove
+   * @returns {string} Basename of the path
+   * @private
+   */
   static basename(path, ext) {
     let f = splitPathRe.exec(path).slice(1)[2];
-    if (ext && f.substr(-1 * ext.length) === ext) {
-      f = f.substr(0, f.length - ext.length);
-    }
+    if (ext && f.substr(-1 * ext.length) === ext) f = f.substr(0, f.length - ext.length);
     return f;
   }
 
   /**
-   * Transform a snowflake from a decimal string to a bit string
-   * @param  {string} num Snowflake to be transformed
+   * Transforms a snowflake from a decimal string to a bit string.
+   * @param  {Snowflake} num Snowflake to be transformed
    * @returns {string}
    * @private
    */
@@ -339,11 +349,10 @@ class Util {
     return bin;
   }
 
-
   /**
-   * Transform a snowflake from a bit string to a decimal string
+   * Transforms a snowflake from a bit string to a decimal string.
    * @param  {string} num Bit string to be transformed
-   * @returns {string}
+   * @returns {Snowflake}
    * @private
    */
   static binaryToID(num) {
