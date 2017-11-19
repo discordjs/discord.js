@@ -3,7 +3,6 @@ const EventEmitter = require('events');
 const path = require('path');
 const Util = require('../util/Util');
 const { Error } = require('../errors');
-const delayFor = require('util').promisify(setTimeout);
 
 /**
  * A self-contained shard created by the {@link ShardingManager}. Each one has a {@link ChildProcess} that contains
@@ -122,7 +121,7 @@ class Shard extends EventEmitter {
     this.process.removeListener('exit', this._exitListener);
     this.process.kill();
     this._handleExit(false);
-    if (delay > 0) await delayFor(delay);
+    if (delay > 0) await Util.delayFor(delay);
     return this.spawn(waitForReady);
   }
 

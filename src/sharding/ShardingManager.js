@@ -5,7 +5,6 @@ const Shard = require('./Shard');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const { Error, TypeError, RangeError } = require('../errors');
-const delayFor = require('util').promisify(setTimeout);
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -132,7 +131,7 @@ class ShardingManager extends EventEmitter {
       const promises = [];
       const shard = this.createShard();
       promises.push(shard.spawn(waitForReady));
-      if (delay > 0 && s !== amount) promises.push(delayFor(delay));
+      if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 
@@ -192,7 +191,7 @@ class ShardingManager extends EventEmitter {
     let s = 0;
     for (const shard of this.shards) {
       const promises = [shard.respawn(respawnDelay, waitForReady)];
-      if (++s < this.shards.size && shardDelay > 0) promises.push(delayFor(shardDelay));
+      if (++s < this.shards.size && shardDelay > 0) promises.push(Util.delayFor(shardDelay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
     return this.shards;
