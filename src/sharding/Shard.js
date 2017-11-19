@@ -259,7 +259,7 @@ class Shard extends EventEmitter {
       // Shard is requesting a respawn of all shards
       if (message._sRespawnAll) {
         const { shardDelay, respawnDelay, waitForReady } = message._sRespawnAll;
-        this.manager.respawn(shardDelay, respawnDelay, waitForReady).catch(() => {
+        this.manager.respawnAll(shardDelay, respawnDelay, waitForReady).catch(() => {
           // Do nothing
         });
         return;

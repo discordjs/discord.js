@@ -184,7 +184,7 @@ class ShardingManager extends EventEmitter {
    * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
    * @returns {Promise<Collection<string, Shard>>}
    */
-  async respawn(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
+  async respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
     let s = 0;
     for (const shard of this.shards) {
       const promises = [shard.respawn(respawnDelay, waitForReady)];

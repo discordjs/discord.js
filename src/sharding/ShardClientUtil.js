@@ -106,7 +106,7 @@ class ShardClientUtil {
    * (in milliseconds)
    * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
    * @returns {Promise<void>} Resolves upon the message being sent
-   * @see {@link ShardingManager#respawn}
+   * @see {@link ShardingManager#respawnAll}
    */
   respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
     return this.send({ _sRespawnAll: { shardDelay, respawnDelay, waitForReady } });
