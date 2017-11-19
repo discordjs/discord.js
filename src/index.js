@@ -1,7 +1,6 @@
 const Util = require('./util/Util');
 
 class Index {
-
   constructor() {
     // "Root" classes (starting points)
     this.BaseClient = require('./client/BaseClient');
