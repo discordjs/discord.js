@@ -83,7 +83,8 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns a single shard.
-   * @param {number} id ID of the shard to spawn. **This is usually not necessary**
+   * @param {number} [id=this.shards.size] ID of the shard to spawn -
+   * **This is usually not necessary to manually specify.**
    * @returns {Shard}
    */
   createShard(id = this.shards.size) {
