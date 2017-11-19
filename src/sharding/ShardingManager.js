@@ -8,9 +8,12 @@ const { Error, TypeError, RangeError } = require('../errors');
 const delayFor = require('util').promisify(setTimeout);
 
 /**
- * This is a utility class that can be used to help you spawn shards of your client. Each shard is completely separate
- * from the other. The Shard Manager takes a path to a file and spawns it under the specified amount of shards safely.
- * If you do not select an amount of shards, the manager will automatically decide the best amount.
+ * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
+ * It works by spawning a self-contained {@link ChildProcess} for each individual shard, each containing its own client.
+ * They all have a line of communication with the master process, and there are several useful methods that utilise
+ * it in order to simplify tasks that are normally difficult with multi-process sharding. It can spawn a specific number
+ * of shards or the amount that Discord suggests for the bot, and takes a path to your main bot script to launch for
+ * each one.
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
@@ -148,7 +151,7 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the Clients.
+   * Evaluates a script on all shards, in the context of the {@link Client}s.
    * @param {string} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    */

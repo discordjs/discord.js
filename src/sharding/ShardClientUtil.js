@@ -3,7 +3,8 @@ const { Events } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
- * Helper class for sharded clients spawned as a child process, such as from a ShardingManager.
+ * Helper class for sharded clients spawned as a child process, such as from a {@link ShardingManager}.
+ * Utilises IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
   /**
@@ -78,7 +79,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the Clients.
+   * Evaluates a script on all shards, in the context of the {@link Clients}.
    * @param {string} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    * @see {@link ShardingManager#broadcastEval}

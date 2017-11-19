@@ -6,7 +6,8 @@ const { Error } = require('../errors');
 const delayFor = require('util').promisify(setTimeout);
 
 /**
- * Represents a Shard spawned by the ShardingManager.
+ * A self-contained shard spawned by the {@link ShardingManager}.
+ * @extends EventEmitter
  */
 class Shard extends EventEmitter {
   /**
@@ -171,7 +172,7 @@ class Shard extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on the shard, in the context of the client.
+   * Evaluates a script on the shard, in the context of the {@link Client}.
    * @param {string} script JavaScript to run on the shard
    * @returns {Promise<*>} Result of the script execution
    */
