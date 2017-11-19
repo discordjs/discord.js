@@ -34,9 +34,9 @@
   "dependencies": {
     "pako": "^1.0.0",
     "prism-media": "^0.0.2",
-    "snekfetch": "^3.0.0",
+    "snekfetch": "^3.5.0",
     "tweetnacl": "^1.0.0",
-    "ws": "^3.0.0"
+    "ws": "^3.3.1"
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
@@ -51,12 +51,12 @@
   "devDependencies": {
     "@types/node": "^8.0.0",
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^4.0.0",
+    "eslint": "^4.11.0",
     "jsdoc-strip-async-await": "^0.1.0",
     "json-filter-loader": "^1.0.0",
-    "parallel-webpack": "^2.0.0",
+    "parallel-webpack": "^2.2.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
-    "webpack": "^3.0.0"
+    "webpack": "^3.8.0"
   },
   "engines": {
     "node": ">=8.0.0"
