@@ -1,8 +1,3 @@
-const DataStore = require('./DataStore');
-const User = require('../structures/User');
-const GuildMember = require('../structures/GuildMember');
-const Message = require('../structures/Message');
-
 /**
  * A data store to store User models.
  * @extends {DataStore}
@@ -59,3 +54,5 @@ class UserStore extends DataStore {
 }
 
 module.exports = UserStore;
+
+const { DataStore, User, GuildMember, Message } = require('../');

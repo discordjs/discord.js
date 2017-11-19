@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 class ChannelDeleteAction extends Action {
   constructor(client) {
@@ -27,3 +26,5 @@ class ChannelDeleteAction extends Action {
  */
 
 module.exports = ChannelDeleteAction;
+
+const { Constants: { Events } } = require('../../');

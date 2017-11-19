@@ -1,6 +1,3 @@
-const Collector = require('./interfaces/Collector');
-const { Events } = require('../util/Constants');
-
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
  * @property {number} max The maximum amount of messages to collect
@@ -85,3 +82,5 @@ class MessageCollector extends Collector {
 }
 
 module.exports = MessageCollector;
+
+const { Collector, Constants: { Events } } = require('../');

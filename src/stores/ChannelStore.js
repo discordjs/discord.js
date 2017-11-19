@@ -1,7 +1,3 @@
-const DataStore = require('./DataStore');
-const Channel = require('../structures/Channel');
-const { Events } = require('../util/Constants');
-
 const kLru = Symbol('LRU');
 const lruable = ['group', 'dm'];
 
@@ -100,3 +96,5 @@ class ChannelStore extends DataStore {
 }
 
 module.exports = ChannelStore;
+
+const { DataStore, Channel, Constants: { Events } } = require('../');

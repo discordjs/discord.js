@@ -1,7 +1,6 @@
 const childProcess = require('child_process');
 const EventEmitter = require('events');
 const path = require('path');
-const Util = require('../util/Util');
 const { Error } = require('../errors');
 
 /**
@@ -218,3 +217,5 @@ class Shard extends EventEmitter {
 }
 
 module.exports = Shard;
+
+const { Util } = require('../');

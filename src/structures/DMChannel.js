@@ -1,6 +1,4 @@
-const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a direct message channel between two users.
@@ -56,3 +54,5 @@ class DMChannel extends Channel {
 TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);
 
 module.exports = DMChannel;
+
+const { Channel, MessageStore } = require('../');

@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 class UserUpdateAction extends Action {
   handle(data) {
@@ -29,3 +28,5 @@ class UserUpdateAction extends Action {
 }
 
 module.exports = UserUpdateAction;
+
+const { Constants: { Events } } = require('../../');

@@ -1,7 +1,6 @@
 // ##untested handler##
 
 const AbstractHandler = require('./AbstractHandler');
-const { Events, Status } = require('../../../../util/Constants');
 
 class GuildMemberAddHandler extends AbstractHandler {
   handle(packet) {
@@ -19,6 +18,8 @@ class GuildMemberAddHandler extends AbstractHandler {
 }
 
 module.exports = GuildMemberAddHandler;
+
+const { Constants: { Events, Status } } = require('../../../../');
 
 /**
  * Emitted whenever a user joins a guild.

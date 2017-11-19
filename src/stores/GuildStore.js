@@ -1,6 +1,3 @@
-const DataStore = require('./DataStore');
-const Guild = require('../structures/Guild');
-
 /**
  * Stores guilds.
  * @private
@@ -38,3 +35,5 @@ class GuildStore extends DataStore {
 }
 
 module.exports = GuildStore;
+
+const { DataStore, Guild } = require('../');

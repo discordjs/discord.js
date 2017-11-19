@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
 
 class MessageUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -11,6 +10,8 @@ class MessageUpdateHandler extends AbstractHandler {
 }
 
 module.exports = MessageUpdateHandler;
+
+const { Constants: { Events } } = require('../../../../');
 
 /**
  * Emitted whenever a message is updated - e.g. embed or content change.

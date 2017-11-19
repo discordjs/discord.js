@@ -1,5 +1,3 @@
-const { OPCodes, Status, WSEvents } = require('../../../util/Constants');
-
 const BeforeReadyWhitelist = [
   WSEvents.READY,
   WSEvents.RESUMED,
@@ -106,3 +104,5 @@ class WebSocketPacketManager {
 }
 
 module.exports = WebSocketPacketManager;
+
+const { Constants: { OPCodes, Status, WSEvents } } = require('../../../');

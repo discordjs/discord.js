@@ -1,5 +1,4 @@
 const DiscordAPIError = require('../DiscordAPIError');
-const { Events: { RATE_LIMIT } } = require('../../util/Constants');
 
 class RequestHandler {
   constructor(manager, handler) {
@@ -95,3 +94,5 @@ class RequestHandler {
 }
 
 module.exports = RequestHandler;
+
+const { Constants: { Events: { RATE_LIMIT } } } = require('../../');

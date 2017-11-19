@@ -1,5 +1,3 @@
-const Util = require('../util/Util');
-
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
 let INCREMENT = 0;
@@ -70,3 +68,5 @@ class SnowflakeUtil {
 }
 
 module.exports = SnowflakeUtil;
+
+const { Util } = require('../');

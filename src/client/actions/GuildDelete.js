@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
   constructor(client) {
@@ -55,3 +54,5 @@ class GuildDeleteAction extends Action {
  */
 
 module.exports = GuildDeleteAction;
+
+const { Constants: { Events } } = require('../../');

@@ -1,8 +1,3 @@
-const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
-const Base = require('./Base');
-
 /**
  * Represents a Client OAuth2 Application.
  * @extends {Base}
@@ -208,3 +203,5 @@ class ClientApplication extends Base {
 }
 
 module.exports = ClientApplication;
+
+const { Snowflake, DataResolver, Base, Constants: { ClientApplicationAssetTypes, Endpoints } } = require('../');

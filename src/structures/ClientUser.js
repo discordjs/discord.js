@@ -1,12 +1,3 @@
-const User = require('./User');
-const Collection = require('../util/Collection');
-const ClientUserSettings = require('./ClientUserSettings');
-const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const { Events } = require('../util/Constants');
-const Util = require('../util/Util');
-const DataResolver = require('../util/DataResolver');
-const Guild = require('./Guild');
-
 /**
  * Represents the logged in client's Discord user.
  * @extends {User}
@@ -331,3 +322,14 @@ class ClientUser extends User {
 }
 
 module.exports = ClientUser;
+
+const {
+  User,
+  Collection,
+  ClientUserSettings,
+  ClientUserGuildSettings,
+  Util,
+  DataResolver,
+  Guild,
+  Constants: { Events },
+} = require('../');

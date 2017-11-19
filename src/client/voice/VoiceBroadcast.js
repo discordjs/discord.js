@@ -1,7 +1,6 @@
-const VolumeInterface = require('./util/VolumeInterface');
 const Prism = require('prism-media');
+const VolumeInterface = require('./util/VolumeInterface');
 const OpusEncoders = require('./opus/OpusEngineList');
-const Collection = require('../../util/Collection');
 
 const ffmpegArguments = [
   '-analyzeduration', '0',
@@ -369,3 +368,5 @@ class VoiceBroadcast extends VolumeInterface {
 }
 
 module.exports = VoiceBroadcast;
+
+const { Collection } = require('../../');

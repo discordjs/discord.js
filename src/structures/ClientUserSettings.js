@@ -1,5 +1,3 @@
-const { UserSettingsMap } = require('../util/Constants');
-const Util = require('../util/Util');
 const { Error } = require('../errors');
 
 /**
@@ -78,3 +76,5 @@ class ClientUserSettings {
 }
 
 module.exports = ClientUserSettings;
+
+const { Util, Constants: { UserSettingsMap } } = require('../');

@@ -1,4 +1,3 @@
-const DataResolver = require('../util/DataResolver');
 const { createMessage } = require('./shared');
 
 /**
@@ -204,3 +203,5 @@ class Webhook {
 }
 
 module.exports = Webhook;
+
+const { DataResolver } = require('../');

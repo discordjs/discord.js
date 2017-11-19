@@ -1,7 +1,6 @@
+const EventEmitter = require('events');
 const udp = require('dgram');
 const dns = require('dns');
-const { VoiceOPCodes } = require('../../util/Constants');
-const EventEmitter = require('events');
 const { Error } = require('../../errors');
 
 /**
@@ -147,3 +146,5 @@ function parseLocalPacket(message) {
 }
 
 module.exports = VoiceConnectionUDPClient;
+
+const { Constants: { VoiceOPCodes } } = require('../../');

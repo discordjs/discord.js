@@ -1,9 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events');
-const Shard = require('./Shard');
-const Collection = require('../util/Collection');
-const Util = require('../util/Util');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -197,3 +194,5 @@ class ShardingManager extends EventEmitter {
 }
 
 module.exports = ShardingManager;
+
+const { Shard, Collection, Util } = require('../');

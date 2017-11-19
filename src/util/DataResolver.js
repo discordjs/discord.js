@@ -1,9 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const snekfetch = require('snekfetch');
-const Util = require('../util/Util');
 const { Error, TypeError } = require('../errors');
-const { browser } = require('../util/Constants');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -121,3 +119,5 @@ class DataResolver {
 }
 
 module.exports = DataResolver;
+
+const { Util, Constants: { browser } } = require('../');

@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -72,3 +71,5 @@ class PresenceUpdateHandler extends AbstractHandler {
  */
 
 module.exports = PresenceUpdateHandler;
+
+const { Constants: { Events } } = require('../../../../');

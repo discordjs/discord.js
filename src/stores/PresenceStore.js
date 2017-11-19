@@ -1,6 +1,3 @@
-const DataStore = require('./DataStore');
-const { Presence } = require('../structures/Presence');
-
 /**
  * Stores presences.
  * @private
@@ -50,3 +47,5 @@ class PresenceStore extends DataStore {
 }
 
 module.exports = PresenceStore;
+
+const { DataStore, Presence } = require('../');

@@ -1,14 +1,3 @@
-const Mentions = require('./MessageMentions');
-const MessageAttachment = require('./MessageAttachment');
-const Embed = require('./MessageEmbed');
-const ReactionCollector = require('./ReactionCollector');
-const ClientApplication = require('./ClientApplication');
-const Util = require('../util/Util');
-const Collection = require('../util/Collection');
-const ReactionStore = require('../stores/ReactionStore');
-const { MessageTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
-const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const { createMessage } = require('./shared');
 
@@ -89,7 +78,7 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(e));
+    this.embeds = data.embeds.map(e => new MessageEmbed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -129,7 +118,7 @@ class Message extends Base {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+    this.mentions = new MessageMentions(this, data.mentions, data.mention_roles, data.mention_everyone);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -179,7 +168,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new MessageEmbed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
@@ -193,7 +182,7 @@ class Message extends Base {
       this.attachments = new Collection(this.attachments);
     }
 
-    this.mentions = new Mentions(
+    this.mentions = new MessageMentions(
       this,
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
@@ -551,3 +540,17 @@ class Message extends Base {
 }
 
 module.exports = Message;
+
+const {
+  MessageMentions,
+  MessageAttachment,
+  MessageEmbed,
+  ReactionCollector,
+  ClientApplication,
+  Util,
+  Collection,
+  ReactionStore,
+  Permissions,
+  Base,
+  Constants: { MessageTypes },
+} = require('../');

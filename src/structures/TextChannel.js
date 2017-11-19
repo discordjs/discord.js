@@ -1,9 +1,4 @@
-const GuildChannel = require('./GuildChannel');
-const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
-const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a guild text channel on Discord.
@@ -99,3 +94,5 @@ class TextChannel extends GuildChannel {
 TextBasedChannel.applyToClass(TextChannel, true);
 
 module.exports = TextChannel;
+
+const { GuildChannel, Webhook, Collection, DataResolver, MessageStore } = require('../');

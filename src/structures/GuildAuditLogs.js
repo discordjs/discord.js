@@ -1,7 +1,3 @@
-const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
-const Webhook = require('./Webhook');
-
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
  * * GUILD
@@ -378,3 +374,5 @@ GuildAuditLogs.Targets = Targets;
 GuildAuditLogs.Entry = GuildAuditLogsEntry;
 
 module.exports = GuildAuditLogs;
+
+const { Collection, Snowflake, Webhook } = require('../');

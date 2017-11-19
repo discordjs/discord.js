@@ -1,5 +1,3 @@
-const MessageAttachment = require('./MessageAttachment');
-const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
 /**
@@ -335,3 +333,5 @@ class MessageEmbed {
 }
 
 module.exports = MessageEmbed;
+
+const { MessageAttachment, Util } = require('../');

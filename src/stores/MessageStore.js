@@ -1,6 +1,3 @@
-const DataStore = require('./DataStore');
-const Collection = require('../util/Collection');
-const Message = require('../structures/Message');
 const { Error } = require('../errors');
 
 /**
@@ -117,3 +114,5 @@ class MessageStore extends DataStore {
 }
 
 module.exports = MessageStore;
+
+const { DataStore, Collection, Message } = require('../');

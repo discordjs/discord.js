@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
 
 class ChannelUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -11,6 +10,8 @@ class ChannelUpdateHandler extends AbstractHandler {
 }
 
 module.exports = ChannelUpdateHandler;
+
+const { Constants: { Events } } = require('../../../../');
 
 /**
  * Emitted whenever a channel is updated - e.g. name change, topic change.

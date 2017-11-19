@@ -1,7 +1,6 @@
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const Prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
-const Collection = require('../../../util/Collection');
 const OpusEncoders = require('../opus/OpusEngineList');
 
 const ffmpegArguments = [
@@ -169,3 +168,5 @@ class AudioPlayer extends EventEmitter {
 }
 
 module.exports = AudioPlayer;
+
+const { Collection } = require('../../../');

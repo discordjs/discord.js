@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 /*
 { user_id: 'id',
@@ -38,3 +37,5 @@ class MessageReactionRemove extends Action {
  */
 
 module.exports = MessageReactionRemove;
+
+const { Constants: { Events } } = require('../../');

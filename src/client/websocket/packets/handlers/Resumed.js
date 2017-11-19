@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events, Status } = require('../../../../util/Constants');
 
 class ResumedHandler extends AbstractHandler {
   handle(packet) {
@@ -26,3 +25,5 @@ class ResumedHandler extends AbstractHandler {
  */
 
 module.exports = ResumedHandler;
+
+const { Constants: { Events, Status } } = require('../../../../');

@@ -1,6 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
-const ClientUser = require('../../../../structures/ClientUser');
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -75,3 +73,5 @@ class ReadyHandler extends AbstractHandler {
 }
 
 module.exports = ReadyHandler;
+
+const { ClientUser, Constants: { Events } } = require('../../../../');

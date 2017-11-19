@@ -1,8 +1,4 @@
-const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
-const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
 
 /*
 { type: 3,
@@ -232,3 +228,5 @@ class GroupDMChannel extends Channel {
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
+
+const { Channel, Collection, DataResolver, MessageStore } = require('../');

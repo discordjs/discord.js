@@ -1,5 +1,3 @@
-const GuildChannel = require('./GuildChannel');
-
 /**
  * Represents a guild category channel on Discord.
  * @extends {GuildChannel}
@@ -16,3 +14,5 @@ class CategoryChannel extends GuildChannel {
 }
 
 module.exports = CategoryChannel;
+
+const { GuildChannel } = require('../');

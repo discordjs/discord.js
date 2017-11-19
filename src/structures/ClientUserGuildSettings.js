@@ -1,7 +1,3 @@
-const { UserGuildSettingsMap } = require('../util/Constants');
-const Collection = require('../util/Collection');
-const ClientUserChannelOverride = require('./ClientUserChannelOverride');
-
 /**
  * A wrapper around the ClientUser's guild settings.
  */
@@ -58,3 +54,5 @@ class ClientUserGuildSettings {
 }
 
 module.exports = ClientUserGuildSettings;
+
+const { Collection, ClientUserChannelOverride, Constants: { UserGuildSettingsMap } } = require('../');

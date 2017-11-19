@@ -1,4 +1,3 @@
-const Collection = require('../../util/Collection');
 const EventEmitter = require('events');
 
 /**
@@ -206,3 +205,5 @@ class Collector extends EventEmitter {
 }
 
 module.exports = Collector;
+
+const { Collection } = require('../../');

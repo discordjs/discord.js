@@ -2,7 +2,6 @@ const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
@@ -73,3 +72,5 @@ class RESTManager {
 }
 
 module.exports = RESTManager;
+
+const { Constants: { Endpoints } } = require('../');

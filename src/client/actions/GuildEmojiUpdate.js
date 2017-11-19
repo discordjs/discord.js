@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 
 class GuildEmojiUpdateAction extends Action {
   handle(current, data) {
@@ -17,3 +16,5 @@ class GuildEmojiUpdateAction extends Action {
  */
 
 module.exports = GuildEmojiUpdateAction;
+
+const { Constants: { Events } } = require('../../');

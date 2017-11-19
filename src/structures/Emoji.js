@@ -1,6 +1,3 @@
-const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
-const Base = require('./Base');
 const { TypeError } = require('../errors');
 
 /**
@@ -236,3 +233,5 @@ class Emoji extends Base {
 }
 
 module.exports = Emoji;
+
+const { Collection, Snowflake, Base } = require('../');

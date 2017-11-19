@@ -1,7 +1,6 @@
 // ##untested handler##
 
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
 
 class GuildBanAddHandler extends AbstractHandler {
   handle(packet) {
@@ -21,3 +20,5 @@ class GuildBanAddHandler extends AbstractHandler {
  */
 
 module.exports = GuildBanAddHandler;
+
+const { Constants: { Events } } = require('../../../../');

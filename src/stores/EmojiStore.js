@@ -1,7 +1,3 @@
-const DataStore = require('./DataStore');
-const Emoji = require('../structures/Emoji');
-const ReactionEmoji = require('../structures/ReactionEmoji');
-
 /**
  * Stores emojis.
  * @private
@@ -69,3 +65,5 @@ class EmojiStore extends DataStore {
 }
 
 module.exports = EmojiStore;
+
+const { DataStore, Emoji, ReactionEmoji } = require('../');

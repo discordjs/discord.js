@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
 
 class TypingStartHandler extends AbstractHandler {
   handle(packet) {
@@ -66,3 +65,5 @@ function tooLate(channel, user) {
  */
 
 module.exports = TypingStartHandler;
+
+const { Constants: { Events } } = require('../../../../');

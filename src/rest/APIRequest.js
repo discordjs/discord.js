@@ -1,7 +1,6 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const https = require('https');
-const { browser, UserAgent } = require('../util/Constants');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
@@ -42,3 +41,5 @@ class APIRequest {
 }
 
 module.exports = APIRequest;
+
+const { Constants: { browser, UserAgent } } = require('../');

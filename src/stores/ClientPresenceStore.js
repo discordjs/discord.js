@@ -1,7 +1,3 @@
-const PresenceStore = require('./PresenceStore');
-const Collection = require('../util/Collection');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
-const { Presence } = require('../structures/Presence');
 const { TypeError } = require('../errors');
 
 /**
@@ -65,3 +61,5 @@ class ClientPresenceStore extends PresenceStore {
 }
 
 module.exports = ClientPresenceStore;
+
+const { PresenceStore, Collection, Presence, Constants: { ActivityTypes, OPCodes } } = require('../');

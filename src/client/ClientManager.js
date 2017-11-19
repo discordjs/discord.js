@@ -1,4 +1,3 @@
-const { Events, Status } = require('../util/Constants');
 const { Error } = require('../errors');
 
 /**
@@ -71,3 +70,5 @@ class ClientManager {
 }
 
 module.exports = ClientManager;
+
+const { Constants: { Events, Status } } = require('../');
