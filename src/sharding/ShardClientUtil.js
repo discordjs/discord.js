@@ -59,6 +59,7 @@ class ShardClientUtil {
    *     console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
    *   })
    *   .catch(console.error);
+   * @see {@link ShardingManager#fetchClientValues}
    */
   fetchClientValues(prop) {
     return new Promise((resolve, reject) => {
@@ -80,6 +81,7 @@ class ShardClientUtil {
    * Evaluates a script on all shards, in the context of the Clients.
    * @param {string} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
+   * @see {@link ShardingManager#broadcastEval}
    */
   broadcastEval(script) {
     return new Promise((resolve, reject) => {
@@ -95,6 +97,19 @@ class ShardClientUtil {
         reject(err);
       });
     });
+  }
+
+  /**
+   * Requests a respawn of all shards.
+   * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
+   * @param {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
+   * (in milliseconds)
+   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @returns {Promise<void>} Resolves upon the message being sent
+   * @see {@link ShardingManager#respawn}
+   */
+  respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
+    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, waitForReady } });
   }
 
   /**
