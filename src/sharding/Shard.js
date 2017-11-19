@@ -6,7 +6,9 @@ const { Error } = require('../errors');
 const delayFor = require('util').promisify(setTimeout);
 
 /**
- * A self-contained shard spawned by the {@link ShardingManager}.
+ * A self-contained shard created by the {@link ShardingManager}. Each one has a {@link ChildProcess} that contains
+ * an instance of the bot and its {@link Client}. When its child process exits for any reason, the shard will spawn a
+ * new one to replace it as necessary.
  * @extends EventEmitter
  */
 class Shard extends EventEmitter {
