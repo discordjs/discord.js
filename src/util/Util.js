@@ -227,39 +227,34 @@ class Util {
   }
 
   /**
-   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
+   * Can be a number, hex string, an RGB array like:
+   * ```js
+   * [255, 0, 255] // purple
    * ```
-   * [
-   *   'DEFAULT',
-   *   'AQUA',
-   *   'GREEN',
-   *   'BLUE',
-   *   'PURPLE',
-   *   'GOLD',
-   *   'ORANGE',
-   *   'RED',
-   *   'GREY',
-   *   'DARKER_GREY',
-   *   'NAVY',
-   *   'DARK_AQUA',
-   *   'DARK_GREEN',
-   *   'DARK_BLUE',
-   *   'DARK_PURPLE',
-   *   'DARK_GOLD',
-   *   'DARK_ORANGE',
-   *   'DARK_RED',
-   *   'DARK_GREY',
-   *   'LIGHT_GREY',
-   *   'DARK_NAVY',
-   *   'RANDOM',
-   * ]
-   * ```
-   * or something like
-   * ```
-   * [255, 0, 255]
-   * ```
-   * for purple
-   * @typedef {string|number|Array} ColorResolvable
+   * or one of the following strings:
+   * - `DEFAULT`
+   * - `AQUA`
+   * - `GREEN`
+   * - `BLUE`
+   * - `PURPLE`
+   * - `GOLD`
+   * - `ORANGE`
+   * - `RED`
+   * - `GREY`
+   * - `DARKER_GREY`
+   * - `NAVY`
+   * - `DARK_AQUA`
+   * - `DARK_GREEN`
+   * - `DARK_BLUE`
+   * - `DARK_PURPLE`
+   * - `DARK_GOLD`
+   * - `DARK_ORANGE`
+   * - `DARK_RED`
+   * - `DARK_GREY`
+   * - `LIGHT_GREY`
+   * - `DARK_NAVY`
+   * - `RANDOM`
+   * @typedef {string|number|number[]} ColorResolvable
    */
 
   /**
@@ -275,11 +270,8 @@ class Util {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('COLOR_RANGE');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('COLOR_CONVERT');
-    }
+    if (color < 0 || color > 0xFFFFFF) throw new RangeError('COLOR_RANGE');
+    else if (color && isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
   }
