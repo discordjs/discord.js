@@ -1,6 +1,4 @@
 const Action = require('./Action');
-const Collection = require('../../util/Collection');
-const { Collection, Constants: { Events } } = require('../../');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
@@ -32,3 +30,5 @@ class MessageDeleteBulkAction extends Action {
  */
 
 module.exports = MessageDeleteBulkAction;
+
+const { Collection, Constants: { Events } } = require('../../');

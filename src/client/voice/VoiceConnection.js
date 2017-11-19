@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const Prism = require('prism-media');
-const { Util, Constants: { OPCodes, VoiceOPCodes, VoiceStatus } } = require('../../');
 const VoiceWebSocket = require('./VoiceWebSocket');
 const VoiceUDP = require('./VoiceUDPClient');
 const AudioPlayer = require('./player/AudioPlayer');
@@ -546,3 +545,5 @@ class VoiceConnection extends EventEmitter {
 }
 
 module.exports = VoiceConnection;
+
+const { Util, Constants: { OPCodes, VoiceOPCodes, VoiceStatus } } = require('../../');

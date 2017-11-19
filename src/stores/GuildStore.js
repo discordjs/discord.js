@@ -1,5 +1,3 @@
-const { DataStore, Guild } = require('../');
-
 /**
  * Stores guilds.
  * @private
@@ -37,3 +35,5 @@ class GuildStore extends DataStore {
 }
 
 module.exports = GuildStore;
+
+const { DataStore, Guild } = require('../');

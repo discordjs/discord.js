@@ -1,23 +1,3 @@
-const {
-  Invite,
-  GuildAuditLogs,
-  Webhook,
-  GuildMember,
-  VoiceRegion,
-  Collection,
-  Util,
-  DataResolver,
-  Snowflake,
-  Permissions,
-  GuildMemberStore,
-  RoleStore,
-  EmojiStore,
-  GuildChannelStore,
-  PresenceStore,
-  Base,
-  Constants: { ChannelTypes, Events, browser },
-} = require('../');
-
 const Shared = require('./shared');
 const { Error, TypeError } = require('../errors');
 
@@ -1213,3 +1193,23 @@ class VoiceStateCollection extends Collection {
 }
 
 module.exports = Guild;
+
+const {
+  Invite,
+  GuildAuditLogs,
+  Webhook,
+  GuildMember,
+  VoiceRegion,
+  Collection,
+  Util,
+  DataResolver,
+  Snowflake,
+  Permissions,
+  GuildMemberStore,
+  RoleStore,
+  EmojiStore,
+  GuildChannelStore,
+  PresenceStore,
+  Base,
+  Constants: { ChannelTypes, Events, browser },
+} = require('../');

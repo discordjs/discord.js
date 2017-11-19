@@ -1,5 +1,3 @@
-const { Collector, Collection, Constants: { Events } } = require('../');
-
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions
  * @property {number} max The maximum total amount of reactions to collect
@@ -122,3 +120,5 @@ class ReactionCollector extends Collector {
 }
 
 module.exports = ReactionCollector;
+
+const { Collector, Collection, Constants: { Events } } = require('../');

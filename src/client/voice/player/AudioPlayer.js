@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const Prism = require('prism-media');
-const { Collection } = require('../../../');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const OpusEncoders = require('../opus/OpusEngineList');
 
@@ -169,3 +168,5 @@ class AudioPlayer extends EventEmitter {
 }
 
 module.exports = AudioPlayer;
+
+const { Collection } = require('../../../');

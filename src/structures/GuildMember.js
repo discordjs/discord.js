@@ -1,4 +1,3 @@
-const { Role, Permissions, Collection, Base, Presence } = require('../');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error, TypeError } = require('../errors');
 
@@ -549,3 +548,5 @@ class GuildMember extends Base {
 TextBasedChannel.applyToClass(GuildMember);
 
 module.exports = GuildMember;
+
+const { Role, Permissions, Collection, Base, Presence } = require('../');

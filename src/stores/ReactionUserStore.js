@@ -1,4 +1,3 @@
-const { DataStore } = require('../');
 /**
  * A data store to store User models who reacted to a MessageReaction.
  * @extends {DataStore}
@@ -31,3 +30,5 @@ class ReactionUserStore extends DataStore {
 }
 
 module.exports = ReactionUserStore;
+
+const { DataStore } = require('../');

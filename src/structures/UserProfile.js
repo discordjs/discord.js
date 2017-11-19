@@ -1,5 +1,3 @@
-const { Collection, UserConnection, Base, Constants: { UserFlags } } = require('../');
-
 /**
  * Represents a user's profile on Discord.
  * @extends {Base}
@@ -74,3 +72,5 @@ class UserProfile extends Base {
 }
 
 module.exports = UserProfile;
+
+const { Collection, UserConnection, Base, Constants: { UserFlags } } = require('../');

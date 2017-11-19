@@ -1,5 +1,3 @@
-const { Collection } = require('../');
-
 /**
  * Manages the creation, retrieval and deletion of a specific data model.
  * @extends {Collection}
@@ -47,3 +45,5 @@ class DataStore extends Collection {
 }
 
 module.exports = DataStore;
+
+const { Collection } = require('../');

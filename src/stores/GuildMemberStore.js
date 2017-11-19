@@ -1,4 +1,3 @@
-const { DataStore, GuildMember, Collection, Constants: { Events, OPCodes } } = require('../');
 const { Error } = require('../errors');
 
 /**
@@ -140,3 +139,5 @@ class GuildMemberStore extends DataStore {
 }
 
 module.exports = GuildMemberStore;
+
+const { DataStore, GuildMember, Collection, Constants: { Events, OPCodes } } = require('../');

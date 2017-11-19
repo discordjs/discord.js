@@ -1,5 +1,3 @@
-const { DataStore, Role } = require('../');
-
 /**
  * Stores roles.
  * @private
@@ -42,3 +40,5 @@ class RoleStore extends DataStore {
 }
 
 module.exports = RoleStore;
+
+const { DataStore, Role } = require('../');

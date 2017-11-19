@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Constants: { Events, Status } } = require('../../../../');
 
 class GuildCreateHandler extends AbstractHandler {
   async handle(packet) {
@@ -31,3 +30,5 @@ class GuildCreateHandler extends AbstractHandler {
 }
 
 module.exports = GuildCreateHandler;
+
+const { Constants: { Events, Status } } = require('../../../../');

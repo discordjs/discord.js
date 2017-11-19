@@ -1,5 +1,3 @@
-const { MessageEmbed, DataResolver, MessageAttachment, Constants: { browser }, Util } = require('../../');
-
 // eslint-disable-next-line complexity
 module.exports = async function createMessage(channel, options) {
   const User = require('../User');
@@ -101,3 +99,5 @@ module.exports = async function createMessage(channel, options) {
     avatar_url: options.avatar_url,
   }, files };
 };
+
+const { MessageEmbed, DataResolver, MessageAttachment, Constants: { browser }, Util } = require('../../');

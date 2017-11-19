@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const snekfetch = require('snekfetch');
-const { Util, Constants: { browser } } = require('../');
 const { Error, TypeError } = require('../errors');
 
 /**
@@ -120,3 +119,5 @@ class DataResolver {
 }
 
 module.exports = DataResolver;
+
+const { Util, Constants: { browser } } = require('../');

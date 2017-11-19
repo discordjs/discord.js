@@ -1,26 +1,3 @@
-const {
-  BaseClient,
-  Permissions,
-  ClientManager,
-  ClientVoiceManager,
-  WebSocketManager,
-  ActionsManager,
-  Collection,
-  VoiceRegion,
-  Webhook,
-  Invite,
-  ClientApplication,
-  ShardClientUtil,
-  VoiceBroadcast,
-  UserStore,
-  ChannelStore,
-  GuildStore,
-  ClientPresenceStore,
-  EmojiStore,
-  DataResolver,
-  Constants: { Events, browser },
-} = require('../');
-
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -458,6 +435,29 @@ class Client extends BaseClient {
 }
 
 module.exports = Client;
+
+const {
+  BaseClient,
+  Permissions,
+  ClientManager,
+  ClientVoiceManager,
+  WebSocketManager,
+  ActionsManager,
+  Collection,
+  VoiceRegion,
+  Webhook,
+  Invite,
+  ClientApplication,
+  ShardClientUtil,
+  VoiceBroadcast,
+  UserStore,
+  ChannelStore,
+  GuildStore,
+  ClientPresenceStore,
+  EmojiStore,
+  DataResolver,
+  Constants: { Events, browser },
+} = require('../');
 
 /**
  * Emitted for general warnings.

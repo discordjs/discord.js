@@ -1,4 +1,3 @@
-const { DataStore, Collection, Message } = require('../');
 const { Error } = require('../errors');
 
 /**
@@ -115,3 +114,5 @@ class MessageStore extends DataStore {
 }
 
 module.exports = MessageStore;
+
+const { DataStore, Collection, Message } = require('../');

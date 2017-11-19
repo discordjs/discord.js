@@ -1,14 +1,3 @@
-const {
-  Channel,
-  Role,
-  Invite,
-  PermissionOverwrites,
-  Util,
-  Permissions,
-  Collection,
-  Constants: { MessageNotificationTypes },
-} = require('../');
-
 const { Error, TypeError } = require('../errors');
 
 /**
@@ -505,3 +494,14 @@ class GuildChannel extends Channel {
 }
 
 module.exports = GuildChannel;
+
+const {
+  Channel,
+  Role,
+  Invite,
+  PermissionOverwrites,
+  Util,
+  Permissions,
+  Collection,
+  Constants: { MessageNotificationTypes },
+} = require('../');

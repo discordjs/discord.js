@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Constants: { Events } } = require('../../');
 
 class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
@@ -16,3 +15,5 @@ class GuildEmojiDeleteAction extends Action {
  */
 
 module.exports = GuildEmojiDeleteAction;
+
+const { Constants: { Events } } = require('../../');

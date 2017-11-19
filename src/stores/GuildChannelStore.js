@@ -1,5 +1,3 @@
-const { DataStore, Channel, GuildChannel } = require('../');
-
 /**
  * Stores guild channels.
  * @private
@@ -45,3 +43,5 @@ class GuildChannelStore extends DataStore {
 }
 
 module.exports = GuildChannelStore;
+
+const { DataStore, Channel, GuildChannel } = require('../');

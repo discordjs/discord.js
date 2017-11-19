@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Constants: { Events } } = require('../../../../');
 
 /*
 { t: 'CHANNEL_PINS_UPDATE',
@@ -21,6 +20,8 @@ class ChannelPinsUpdate extends AbstractHandler {
 }
 
 module.exports = ChannelPinsUpdate;
+
+const { Constants: { Events } } = require('../../../../');
 
 /**
  * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event, not much information

@@ -1,5 +1,4 @@
 const Prism = require('prism-media');
-const { Collection } = require('../../');
 const VolumeInterface = require('./util/VolumeInterface');
 const OpusEncoders = require('./opus/OpusEngineList');
 
@@ -369,3 +368,5 @@ class VoiceBroadcast extends VolumeInterface {
 }
 
 module.exports = VoiceBroadcast;
+
+const { Collection } = require('../../');

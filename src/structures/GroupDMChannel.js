@@ -1,4 +1,4 @@
-const { Channel, TextBasedChannel, Collection, DataResolver, MessageStore } = require('../');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 
 /*
 { type: 3,
@@ -228,3 +228,5 @@ class GroupDMChannel extends Channel {
 TextBasedChannel.applyToClass(GroupDMChannel, true, ['bulkDelete']);
 
 module.exports = GroupDMChannel;
+
+const { Channel, Collection, DataResolver, MessageStore } = require('../');

@@ -1,4 +1,3 @@
-const { Collection, Constants: { VoiceStatus } } = require('../../');
 const VoiceConnection = require('./VoiceConnection');
 const { Error } = require('../../errors');
 
@@ -79,3 +78,5 @@ class ClientVoiceManager {
 }
 
 module.exports = ClientVoiceManager;
+
+const { Collection, Constants: { VoiceStatus } } = require('../../');

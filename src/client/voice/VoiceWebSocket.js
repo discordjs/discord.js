@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const { WebSocket, Constants: { OPCodes, VoiceOPCodes } } = require('../../');
 const SecretKey = require('./util/SecretKey');
 const { Error } = require('../../errors');
 
@@ -236,3 +235,5 @@ class VoiceWebSocket extends EventEmitter {
 }
 
 module.exports = VoiceWebSocket;
+
+const { WebSocket, Constants: { OPCodes, VoiceOPCodes } } = require('../../');

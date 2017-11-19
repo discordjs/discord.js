@@ -1,5 +1,3 @@
-const { Collector, Constants: { Events } } = require('../');
-
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
  * @property {number} max The maximum amount of messages to collect
@@ -84,3 +82,5 @@ class MessageCollector extends Collector {
 }
 
 module.exports = MessageCollector;
+
+const { Collector, Constants: { Events } } = require('../');

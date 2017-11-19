@@ -1,5 +1,4 @@
 const EventEmitter = require('events');
-const { WebSocket, Constants: { Events, OPCodes, Status, WSCodes } } = require('../../');
 const PacketManager = require('./packets/WebSocketPacketManager');
 try {
   var zlib = require('zlib-sync');
@@ -477,3 +476,5 @@ class WebSocketConnection extends EventEmitter {
 }
 
 module.exports = WebSocketConnection;
+
+const { WebSocket, Constants: { Events, OPCodes, Status, WSCodes } } = require('../../');

@@ -1,4 +1,3 @@
-const { GuildChannel, Webhook, Collection, DataResolver, MessageStore } = require('../');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 
 /**
@@ -95,3 +94,5 @@ class TextChannel extends GuildChannel {
 TextBasedChannel.applyToClass(TextChannel, true);
 
 module.exports = TextChannel;
+
+const { GuildChannel, Webhook, Collection, DataResolver, MessageStore } = require('../');

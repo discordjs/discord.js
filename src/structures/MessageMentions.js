@@ -1,5 +1,3 @@
-const { Collection, GuildMember } = require('../');
-
 /**
  * Keeps track of mentions in a {@link Message}.
  */
@@ -157,3 +155,5 @@ MessageMentions.ROLES_PATTERN = /<@&(\d{17,19})>/g;
 MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})>/g;
 
 module.exports = MessageMentions;
+
+const { Collection, GuildMember } = require('../');

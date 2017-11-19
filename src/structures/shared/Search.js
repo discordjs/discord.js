@@ -1,4 +1,3 @@
-const { Util } = require('../../');
 const { TypeError } = require('../../errors');
 
 /**
@@ -98,3 +97,5 @@ module.exports = function search(target, options) {
     };
   });
 };
+
+const { Util } = require('../../');

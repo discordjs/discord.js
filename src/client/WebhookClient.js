@@ -1,5 +1,3 @@
-const { Webhook, BaseClient } = require('../');
-
 /**
  * The webhook client.
  * @implements {Webhook}
@@ -26,3 +24,5 @@ class WebhookClient extends BaseClient {
 Webhook.applyToClass(WebhookClient);
 
 module.exports = WebhookClient;
+
+const { Webhook, BaseClient } = require('../');

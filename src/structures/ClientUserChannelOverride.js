@@ -1,5 +1,3 @@
-const { Constants: { UserChannelOverrideMap } } = require('../');
-
 /**
  * A wrapper around the ClientUser's channel overrides.
  */
@@ -26,3 +24,5 @@ class ClientUserChannelOverride {
 }
 
 module.exports = ClientUserChannelOverride;
+
+const { Constants: { UserChannelOverrideMap } } = require('../');

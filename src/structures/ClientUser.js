@@ -1,6 +1,3 @@
-// eslint-disable-next-line max-len
-const { User, Collection, ClientUserSettings, ClientUserGuildSettings, Util, DataResolver, Guild, Constants: { Events } } = require('../');
-
 /**
  * Represents the logged in client's Discord user.
  * @extends {User}
@@ -325,3 +322,14 @@ class ClientUser extends User {
 }
 
 module.exports = ClientUser;
+
+const {
+  User,
+  Collection,
+  ClientUserSettings,
+  ClientUserGuildSettings,
+  Util,
+  DataResolver,
+  Guild,
+  Constants: { Events },
+} = require('../');

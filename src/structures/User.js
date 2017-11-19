@@ -1,4 +1,3 @@
-const { Presence, UserProfile, Snowflake, Base } = require('../');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 
@@ -263,3 +262,5 @@ class User extends Base {
 TextBasedChannel.applyToClass(User);
 
 module.exports = User;
+
+const { Presence, UserProfile, Snowflake, Base } = require('../');

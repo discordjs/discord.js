@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Constants: { Events } } = require('../../../../');
 
 class MessageReactionAddHandler extends AbstractHandler {
   handle(packet) {
@@ -11,3 +10,5 @@ class MessageReactionAddHandler extends AbstractHandler {
 }
 
 module.exports = MessageReactionAddHandler;
+
+const { Constants: { Events } } = require('../../../../');

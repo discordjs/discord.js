@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Constants: { Events } } = require('../../');
 
 class MessageCreateAction extends Action {
   handle(data) {
@@ -37,3 +36,5 @@ class MessageCreateAction extends Action {
  */
 
 module.exports = MessageCreateAction;
+
+const { Constants: { Events } } = require('../../');

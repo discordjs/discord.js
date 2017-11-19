@@ -1,5 +1,3 @@
-const { Permissions } = require('../');
-
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
  */
@@ -62,3 +60,5 @@ class PermissionOverwrites {
 }
 
 module.exports = PermissionOverwrites;
+
+const { Permissions } = require('../');

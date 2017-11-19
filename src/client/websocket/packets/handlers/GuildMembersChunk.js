@@ -1,5 +1,4 @@
 const AbstractHandler = require('./AbstractHandler');
-const { Collection, Constants: { Events } } = require('../../../../');
 
 class GuildMembersChunkHandler extends AbstractHandler {
   handle(packet) {
@@ -25,3 +24,5 @@ class GuildMembersChunkHandler extends AbstractHandler {
  */
 
 module.exports = GuildMembersChunkHandler;
+
+const { Collection, Constants: { Events } } = require('../../../../');

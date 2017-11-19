@@ -1,16 +1,3 @@
-const {
-  MessageMentions,
-  MessageAttachment,
-  MessageEmbed,
-  ReactionCollector,
-  ClientApplication,
-  Util,
-  Collection,
-  ReactionStore,
-  Permissions,
-  Base,
-  Constants: { MessageTypes },
-} = require('../');
 const { Error, TypeError } = require('../errors');
 const { createMessage } = require('./shared');
 
@@ -553,3 +540,17 @@ class Message extends Base {
 }
 
 module.exports = Message;
+
+const {
+  MessageMentions,
+  MessageAttachment,
+  MessageEmbed,
+  ReactionCollector,
+  ClientApplication,
+  Util,
+  Collection,
+  ReactionStore,
+  Permissions,
+  Base,
+  Constants: { MessageTypes },
+} = require('../');

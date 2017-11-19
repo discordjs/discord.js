@@ -1,5 +1,3 @@
-const { DataStore, MessageReaction } = require('../');
-
 /**
  * Stores reactions.
  * @private
@@ -42,3 +40,5 @@ class ReactionStore extends DataStore {
 }
 
 module.exports = ReactionStore;
+
+const { DataStore, MessageReaction } = require('../');

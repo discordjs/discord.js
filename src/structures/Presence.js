@@ -1,5 +1,3 @@
-const { Constants: { ActivityTypes } } = require('../');
-
 /**
  * Represents a user's presence.
  */
@@ -201,3 +199,5 @@ class RichPresenceAssets {
 exports.Presence = Presence;
 exports.Activity = Activity;
 exports.RichPresenceAssets = RichPresenceAssets;
+
+const { Constants: { ActivityTypes } } = require('../');

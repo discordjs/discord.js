@@ -1,4 +1,3 @@
-const { GuildChannel, Collection, Constants: { browser } } = require('../');
 const { Error } = require('../errors');
 
 /**
@@ -132,3 +131,5 @@ class VoiceChannel extends GuildChannel {
 }
 
 module.exports = VoiceChannel;
+
+const { GuildChannel, Collection, Constants: { browser } } = require('../');

@@ -1,5 +1,3 @@
-const { Snowflake, Base, Util: { ChannelTypes } } = require('../');
-
 /**
  * Represents any channel on Discord.
  * @extends {Base}
@@ -99,3 +97,5 @@ class Channel extends Base {
 }
 
 module.exports = Channel;
+
+const { Snowflake, Base, Util: { ChannelTypes } } = require('../');

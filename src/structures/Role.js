@@ -1,4 +1,3 @@
-const { Snowflake, Permissions, Util, Base } = require('../');
 const { TypeError } = require('../errors');
 
 /**
@@ -354,3 +353,5 @@ class Role extends Base {
 }
 
 module.exports = Role;
+
+const { Snowflake, Permissions, Util, Base } = require('../');

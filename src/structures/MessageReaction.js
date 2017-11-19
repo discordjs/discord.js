@@ -1,4 +1,3 @@
-const { Emoji, ReactionEmoji, ReactionUserStore } = require('../');
 const { Error } = require('../errors');
 
 /**
@@ -96,3 +95,5 @@ class MessageReaction {
 }
 
 module.exports = MessageReaction;
+
+const { Emoji, ReactionEmoji, ReactionUserStore } = require('../');

@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const { Constants: { Events } } = require('../../');
 
 class ChannelCreateAction extends Action {
   handle(data) {
@@ -14,3 +13,5 @@ class ChannelCreateAction extends Action {
 }
 
 module.exports = ChannelCreateAction;
+
+const { Constants: { Events } } = require('../../');

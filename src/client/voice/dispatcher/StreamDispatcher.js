@@ -1,6 +1,5 @@
 const VolumeInterface = require('../util/VolumeInterface');
 const VoiceBroadcast = require('../VoiceBroadcast');
-const { Constants: { VoiceStatus } } = require('../../../');
 
 const secretbox = require('../util/Secretbox');
 
@@ -329,3 +328,5 @@ class StreamDispatcher extends VolumeInterface {
 }
 
 module.exports = StreamDispatcher;
+
+const { Constants: { VoiceStatus } } = require('../../../');

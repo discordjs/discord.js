@@ -1,4 +1,3 @@
-const { Util, Constants: { Events } } = require('../');
 const { Error } = require('../errors');
 
 /**
@@ -147,3 +146,5 @@ class ShardClientUtil {
 }
 
 module.exports = ShardClientUtil;
+
+const { Util, Constants: { Events } } = require('../');

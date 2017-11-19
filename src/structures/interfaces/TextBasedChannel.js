@@ -1,4 +1,3 @@
-const { MessageCollector, Collection, Snowflake } = require('../../');
 const Shared = require('../shared');
 const { RangeError, TypeError } = require('../../errors');
 
@@ -317,5 +316,4 @@ class TextBasedChannel {
 
 module.exports = TextBasedChannel;
 
-// Fixes Circular
-const MessageStore = require('../../stores/MessageStore');
+const { MessageStore, MessageCollector, Collection, Snowflake } = require('../../');
