@@ -24,19 +24,19 @@ class Structures {
    *   }
    * );
    */
-  extend(name, extender) {
+  static extend(name, extender) {
     if (!structures[name]) throw new RangeError(`"${name}" is not a valid extensible structure.`);
     if (typeof extender !== 'function') {
-      throw new TypeError('The extender must be a function that returns the extended class.');
+      throw new TypeError('The extender must be a function that returns the extended structure class/prototype.');
     }
 
     const custom = extender(structures[name]);
     if (typeof custom !== 'function') {
-      throw new TypeError('The extender function should return the extended class/prototype.');
+      throw new TypeError('The extender function must return the extended structure class/prototype.');
     }
     if (Object.getPrototypeOf(custom) !== structures[name]) {
       throw new Error(
-        'The class/prototype returned from the extender function must extend the existing structure class/prototype.'
+        "The class/prototype returned from the extender function doesn't extend the existing structure class/prototype."
       );
     }
 
