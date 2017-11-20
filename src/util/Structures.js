@@ -1,5 +1,7 @@
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
+ * When extending a built-in structure, it is important to both get the class you're extending from here,
+ * and to set it here afterwards.
  */
 class Structures {
   constructor() {
@@ -20,6 +22,17 @@ class Structures {
    * Replaces a structure class with an extended one.
    * @param {string} structure Name of the structure to replace
    * @param {Function} extended Extended structure class/prototype function to replace with
+   * @example
+   * const { Structures } = require('discord.js');
+   *
+   * class CoolGuild extends Structures.get('Guild') {
+   *   constructor(client, data) {
+   *     super(client, data);
+   *     this.cool = true;
+   *   }
+   * }
+   *
+   * Structures.set('Guild', CoolGuild);
    */
   static set(structure, extended) {
     if (!structures[structure]) throw new RangeError(`"${structure}" is not a valid extensible structure.`);
