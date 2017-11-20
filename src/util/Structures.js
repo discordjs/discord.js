@@ -1,7 +1,5 @@
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
- * When extending a built-in structure, it is important to both get the class you're extending from here,
- * and to set it here afterwards.
  */
 class Structures {
   constructor() {
@@ -19,32 +17,46 @@ class Structures {
   }
 
   /**
-   * Replaces a structure class with an extended one.
-   * @param {string} structure Name of the structure to replace
-   * @param {Function} extended Extended structure class/prototype function to replace with
+   * Extends a structure.
+   * @param {string} structure Name of the structure class to extend
+   * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
+   * extended class/prototype
+   * @returns {Function} Extended class/prototype returned from the extender
    * @example
    * const { Structures } = require('discord.js');
    *
-   * class CoolGuild extends Structures.get('Guild') {
-   *   constructor(client, data) {
-   *     super(client, data);
-   *     this.cool = true;
+   * Structures.extend('Guild', Guild => {
+   *   class CoolGuild extends Guild {
+   *     constructor(client, data) {
+   *       super(client, data);
+   *       this.cool = true;
+   *     }
    *   }
-   * }
    *
-   * Structures.set('Guild', CoolGuild);
+   *   return CoolGuild;
+   * });
    */
-  static set(structure, extended) {
+  static extend(structure, extender) {
     if (!structures[structure]) throw new RangeError(`"${structure}" is not a valid extensible structure.`);
-    if (typeof extended !== 'function') {
+    if (typeof extender !== 'function') {
+      const received = `(received ${typeof extender})`;
       throw new TypeError(
-        `"extended" argument must be a structure class/prototype function (received ${typeof extended})`
+        `"extender" argument must be a function that returns the extended structure class/prototype ${received}`
       );
     }
-    if (Object.getPrototypeOf(extended) !== structures[structure]) {
-      throw new Error('The class/prototype function provided doesn\'t extend the existing structure class/prototype.');
+
+    const extended = extender(structures[structure]);
+    if (typeof extended !== 'function') {
+      throw new TypeError('The extender function must return the extended structure class/prototype.');
     }
+    if (Object.getPrototypeOf(extended) !== structures[structure]) {
+      throw new Error(
+        'The class/prototype returned from the extender function must extend the existing structure class/prototype.'
+      );
+    }
+
     structures[structure] = extended;
+    return extended;
   }
 }
 
