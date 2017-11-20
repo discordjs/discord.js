@@ -1,18 +1,5 @@
 /**
- * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore}s.
- * When extending a built-in structure, it is important to both get the class you're extending from here,
- * and to set it here afterwards.
- * @example
- * const { Structures } = require('discord.js');
- *
- * class CoolGuild extends Structures.get('Guild') {
- *   constructor(client, data) {
- *     super(client, data);
- *     this.cool = true;
- *   }
- * }
- *
- * Structures.set('Guild', CoolGuild);
+ * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
  */
 class Structures {
   constructor() {
@@ -20,21 +7,41 @@ class Structures {
   }
 
   /**
-   * Retrieves a structure class.
-   * @param {string} name Name of the base structure
-   * @returns {Function}
+   * Extends a structure.
+   * @param {string} name Name of the structure class to extend
+   * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
+   * extended class/prototype
+   * @returns {Function} Extended class/prototype returned from the extender
+   * @example
+   * const { Structures } = require('discord.js');
+   *
+   * Structures.extend('Guild', Guild =>
+   *   class CoolGuild extends Guild {
+   *     constructor(client, data) {
+   *       super(client, data);
+   *       this.cool = true;
+   *     }
+   *   }
+   * );
    */
-  static get(name) {
-    return structures[name];
-  }
+  extend(name, extender) {
+    if (!structures[name]) throw new RangeError(`"${name}" is not a valid extensible structure.`);
+    if (typeof extender !== 'function') {
+      throw new TypeError('The extender must be a function that returns the extended class.');
+    }
 
-  /**
-   * Overrides a structure class.
-   * @param {string} name Name of the base structure
-   * @param {Function} custom Extended structure class to override with
-   */
-  static set(name, custom) {
+    const custom = extender(structures[name]);
+    if (typeof custom !== 'function') {
+      throw new TypeError('The extender function should return the extended class/prototype.');
+    }
+    if (Object.getPrototypeOf(custom) !== structures[name]) {
+      throw new Error(
+        'The class/prototype returned from the extender function must extend the existing structure class/prototype.'
+      );
+    }
+
     structures[name] = custom;
+    return custom;
   }
 }
 
