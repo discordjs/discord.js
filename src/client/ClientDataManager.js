@@ -2,6 +2,7 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
+const CategoryChannel = require('../structures/CategoryChannel');
 const DMChannel = require('../structures/DMChannel');
 const Emoji = require('../structures/Emoji');
 const TextChannel = require('../structures/TextChannel');
@@ -60,6 +61,9 @@ class ClientDataManager {
           guild.channels.set(channel.id, channel);
         } else if (data.type === Constants.ChannelTypes.VOICE) {
           channel = new VoiceChannel(guild, data);
+          guild.channels.set(channel.id, channel);
+        } else if (data.type === Constants.ChannelTypes.CATEGORY) {
+          channel = new CategoryChannel(guild, data);
           guild.channels.set(channel.id, channel);
         }
       }

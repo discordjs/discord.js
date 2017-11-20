@@ -876,7 +876,7 @@ class Guild {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice`
+   * @param {string} type The type of the new channel, either `text` or `voice` or `category`
    * @param {Array<PermissionOverwrites|Object>} [overwrites] Permission overwrites to apply to the new channel
    * @param {string} [reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}

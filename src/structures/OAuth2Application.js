@@ -124,7 +124,7 @@ class OAuth2Application {
 
   /**
    * Reset the app's secret and bot token.
-   * <warn>This is only available when using a user account.</warn> 
+   * <warn>This is only available when using a user account.</warn>
    * @returns {OAuth2Application}
    */
   reset() {
