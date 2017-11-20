@@ -8,7 +8,7 @@ let Structures;
 class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
-    if(!Structures) Structures = require('../util/Structures');
+    if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
     Object.defineProperty(this, 'holds', { value: Structures.get(holds) });
     if (iterable) for (const item of iterable) this.create(item);
