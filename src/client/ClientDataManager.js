@@ -69,9 +69,10 @@ class ClientDataManager {
       }
     }
 
-    if (channel) {
-      if (this.pastReady && !already) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
+    if (channel && !already) {
+      if (this.pastReady) this.client.emit(Constants.Events.CHANNEL_CREATE, channel);
       this.client.channels.set(channel.id, channel);
+    } else if (already) {
       return channel;
     }
 
