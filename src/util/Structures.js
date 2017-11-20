@@ -3,7 +3,7 @@
  * When extending a built-in structure, it is important to both get the class you're extending from here,
  * and to set it here afterwards.
  * @example
- * const { Structures } = require('discord.js);
+ * const { Structures } = require('discord.js');
  *
  * class CoolGuild extends Structures.get('Guild') {
  *   constructor(client, data) {
