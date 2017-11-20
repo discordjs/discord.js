@@ -39,16 +39,16 @@ class Structures {
 }
 
 const structures = {
-  Channel: require('./structures/Channel'),
-  Emoji: require('./structures/Emoji'),
-  GuildChannel: require('./structures/GuildChannel'),
-  GuildMember: require('./structures/GuildMember'),
-  Guild: require('./structures/Guild'),
-  Message: require('./structures/Message'),
-  Presence: require('./structures/Presence'),
-  Reaction: require('./structures/Reaction'),
-  Role: require('./structures/Role'),
-  User: require('./structures/User'),
+  Channel: require('../structures/Channel'),
+  Emoji: require('../structures/Emoji'),
+  GuildChannel: require('../structures/GuildChannel'),
+  GuildMember: require('../structures/GuildMember'),
+  Guild: require('../structures/Guild'),
+  Message: require('../structures/Message'),
+  Presence: require('../structures/Presence'),
+  Reaction: require('../structures/Reaction'),
+  Role: require('../structures/Role'),
+  User: require('../structures/User'),
 };
 
 module.exports = Structures;
