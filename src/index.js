@@ -18,6 +18,7 @@ module.exports = {
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  Structures: require('./util/Structures'),
   Util: Util,
   util: Util,
   version: require('../package.json').version,
