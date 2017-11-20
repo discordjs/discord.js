@@ -69,24 +69,34 @@ class Channel extends Base {
     const Structures = require('../util/Structures');
     let channel;
     if (data.type === ChannelTypes.DM) {
-      channel = new Structures.get('DMChannel')(client, data);
+      const DMChannel = Structures.get('DMChannel');
+      channel = new DMChannel(client, data);
     } else if (data.type === ChannelTypes.GROUP) {
-      channel = new Structures.get('GroupDMChannel')(client, data);
+      const GroupDMChannel = Structures.get('GroupDMChannel');
+      channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
         switch (data.type) {
-          case ChannelTypes.TEXT:
-            channel = new Structures.get('TextChannel')(guild, data);
+          case ChannelTypes.TEXT: {
+            const TextChannel = Structures.get('TextChannel');
+            channel = new TextChannel(guild, data);
             break;
-          case ChannelTypes.VOICE:
-            channel = new Structures.get('VoiceChannel')(guild, data);
+          }
+          case ChannelTypes.VOICE: {
+            const VoiceChannel = Structures.get('VoiceChannel');
+            channel = new VoiceChannel(guild, data);
             break;
-          case ChannelTypes.CATEGORY:
-            channel = new Structures.get('CategoryChannel')(guild, data);
+          }
+          case ChannelTypes.CATEGORY: {
+            const CategoryChannel = Structures.get('CategoryChannel');
+            channel = new CategoryChannel(guild, data);
             break;
-          default:
-            channel = new Structures.get('GuildChannel')(guild, data);
+          }
+          default: {
+            const GuildChannel = Structures.get('GuildChannel');
+            channel = new GuildChannel(guild, data);
+          }
         }
         guild.channels.set(channel.id, channel);
       }
