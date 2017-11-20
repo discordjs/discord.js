@@ -45,8 +45,8 @@ const structures = {
   GuildMember: require('../structures/GuildMember'),
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),
+  MessageReaction: require('../structures/MessageReaction'),
   Presence: require('../structures/Presence'),
-  Reaction: require('../structures/Reaction'),
   Role: require('../structures/Role'),
   User: require('../structures/User'),
 };
