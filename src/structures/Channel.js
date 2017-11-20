@@ -66,32 +66,27 @@ class Channel extends Base {
   }
 
   static create(client, data, guild) {
-    const DMChannel = require('./DMChannel');
-    const GroupDMChannel = require('./GroupDMChannel');
-    const TextChannel = require('./TextChannel');
-    const VoiceChannel = require('./VoiceChannel');
-    const CategoryChannel = require('./CategoryChannel');
-    const GuildChannel = require('./GuildChannel');
+    const Structures = require('../util/Structures');
     let channel;
     if (data.type === ChannelTypes.DM) {
-      channel = new DMChannel(client, data);
+      channel = new Structures.get('DMChannel')(client, data);
     } else if (data.type === ChannelTypes.GROUP) {
-      channel = new GroupDMChannel(client, data);
+      channel = new Structures.get('GroupDMChannel')(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT:
-            channel = new TextChannel(guild, data);
+            channel = new Structures.get('TextChannel')(guild, data);
             break;
           case ChannelTypes.VOICE:
-            channel = new VoiceChannel(guild, data);
+            channel = new Structures.get('VoiceChannel')(guild, data);
             break;
           case ChannelTypes.CATEGORY:
-            channel = new CategoryChannel(guild, data);
+            channel = new Structures.get('CategoryChannel')(guild, data);
             break;
           default:
-            channel = new GuildChannel(guild, data);
+            channel = new Structures.get('GuildChannel')(guild, data);
         }
         guild.channels.set(channel.id, channel);
       }

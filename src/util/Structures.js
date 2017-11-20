@@ -61,8 +61,12 @@ class Structures {
 }
 
 const structures = {
-  Channel: require('../structures/Channel'),
   Emoji: require('../structures/Emoji'),
+  DMChannel: require('../structures/DMChannel'),
+  GroupDMChannel: require('../structures/GroupDMChannel'),
+  TextChannel: require('../structures/TextChannel'),
+  VoiceChannel: require('../structures/VoiceChannel'),
+  CategoryChannel: require('../structures/CategoryChannel'),
   GuildChannel: require('../structures/GuildChannel'),
   GuildMember: require('../structures/GuildMember'),
   Guild: require('../structures/Guild'),
