@@ -1,6 +1,25 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Webhook = require('./Webhook');
 
+/**
+ * The target type of an entry, e.g. `GUILD`. Here are the available types:
+ * * GUILD
+ * * CHANNEL
+ * * USER
+ * * ROLE
+ * * INVITE
+ * * WEBHOOK
+ * * EMOJI
+ * * MESSAGE
+ * @typedef {string} AuditLogTargetType
+ */
+
+/**
+ * Key mirror of all available audit log targets.
+ * @name GuildAuditLogs.Targets
+ * @type {AuditLogTargetType}
+ */
 const Targets = {
   ALL: 'ALL',
   GUILD: 'GUILD',
@@ -13,6 +32,43 @@ const Targets = {
   MESSAGE: 'MESSAGE',
 };
 
+/**
+ * The action of an entry. Here are the available actions:
+ * * ALL: null
+ * * GUILD_UPDATE: 1
+ * * CHANNEL_CREATE: 10
+ * * CHANNEL_UPDATE: 11
+ * * CHANNEL_DELETE: 12
+ * * CHANNEL_OVERWRITE_CREATE: 13
+ * * CHANNEL_OVERWRITE_UPDATE: 14
+ * * CHANNEL_OVERWRITE_DELETE: 15
+ * * MEMBER_KICK: 20
+ * * MEMBER_PRUNE: 21
+ * * MEMBER_BAN_ADD: 22
+ * * MEMBER_BAN_REMOVE: 23
+ * * MEMBER_UPDATE: 24
+ * * MEMBER_ROLE_UPDATE: 25
+ * * ROLE_CREATE: 30
+ * * ROLE_UPDATE: 31
+ * * ROLE_DELETE: 32
+ * * INVITE_CREATE: 40
+ * * INVITE_UPDATE: 41
+ * * INVITE_DELETE: 42
+ * * WEBHOOK_CREATE: 50
+ * * WEBHOOK_UPDATE: 51
+ * * WEBHOOK_DELETE: 50
+ * * EMOJI_CREATE: 60
+ * * EMOJI_UPDATE: 61
+ * * EMOJI_DELETE: 62
+ * * MESSAGE_DELETE: 72
+ * @typedef {?number|string} AuditLogAction
+ */
+
+/**
+ * All available actions keyed under their names to their numeric values.
+ * @name GuildAuditLogs.Actions
+ * @type {AuditLogAction}
+ */
 const Actions = {
   ALL: null,
   GUILD_UPDATE: 1,
@@ -52,12 +108,24 @@ class GuildAuditLogs {
     if (data.users) for (const user of data.users) guild.client.dataManager.newUser(user);
 
     /**
+     * Cached webhooks
+     * @type {Collection<Snowflake, Webhook>}
+     * @private
+     */
+    this.webhooks = new Collection();
+    if (data.webhooks) {
+      for (const hook of data.webhooks) {
+        this.webhooks.set(hook.id, new Webhook(guild.client, hook));
+      }
+    }
+
+    /**
      * The entries for this guild's audit logs
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(guild, item);
+      const entry = new GuildAuditLogsEntry(this, guild, item);
       this.entries.set(entry.id, entry);
     }
   }
@@ -70,6 +138,18 @@ class GuildAuditLogs {
     const logs = new GuildAuditLogs(...args);
     return Promise.all(logs.entries.map(e => e.target)).then(() => logs);
   }
+
+  /**
+   * The target of an entry. It can be one of:
+   * * A guild
+   * * A user
+   * * A role
+   * * An emoji
+   * * An invite
+   * * A webhook
+   * * An object where the keys represent either the new value or the old value
+   * @typedef {?Object|Guild|User|Role|Emoji|Invite|Webhook} AuditLogEntryTarget
+   */
 
   /**
    * Find target type from entry action.
@@ -88,11 +168,20 @@ class GuildAuditLogs {
     return null;
   }
 
+  /**
+   * The action type of an entry, e.g. `CREATE`. Here are the available types:
+   * * CREATE
+   * * DELETE
+   * * UPDATE
+   * * ALL
+   * @typedef {string} AuditLogActionType
+   */
+
 
   /**
-   * Find action type from entry action.
-   * @param {string} action The action target
-   * @returns {string}
+   * Finds the action type from the entry action.
+   * @param {AuditLogAction} action The action target
+   * @returns {AuditLogActionType}
    */
   static actionType(action) {
     if ([
@@ -138,23 +227,23 @@ class GuildAuditLogs {
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
-  constructor(guild, data) {
+  constructor(logs, guild, data) {
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
-     * @type {string}
+     * @type {AuditLogTargetType}
      */
     this.targetType = targetType;
 
     /**
      * The action type of this entry
-     * @type {string}
+     * @type {AuditLogActionType}
      */
     this.actionType = GuildAuditLogs.actionType(data.action_type);
 
     /**
-     * Specific action type of this entry
-     * @type {string}
+     * Specific action type of this entry in its string representation
+     * @type {AuditLogAction}
      */
     this.action = Object.keys(Actions).find(k => Actions[k] === data.action_type);
 
@@ -225,15 +314,19 @@ class GuildAuditLogsEntry {
     if ([Targets.USER, Targets.GUILD].includes(targetType)) {
       /**
        * The target of this entry
-       * @type {?Guild|User|Role|Emoji|Invite|Webhook}
+       * @type {AuditLogEntryTarget}
        */
       this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
-      this.target = guild.fetchWebhooks()
-        .then(hooks => {
-          this.target = hooks.find(h => h.id === data.target_id);
-          return this.target;
-        });
+      this.target = logs.webhooks.get(data.target_id) ||
+        new Webhook(guild.client,
+          this.changes.reduce((o, c) => {
+            o[c.key] = c.new || c.old;
+            return o;
+          }, {
+            id: data.target_id,
+            guild_id: guild.id,
+          }));
     } else if (targetType === Targets.INVITE) {
       const change = this.changes.find(c => c.key === 'code');
       this.target = guild.fetchInvites()
