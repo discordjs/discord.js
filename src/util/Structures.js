@@ -7,6 +7,17 @@ class Structures {
   }
 
   /**
+   * Retrieves a structure class.
+   * @param {string|Function} structure Name of the structure or a class/prototype function to use the name of
+   * @returns {Function}
+   */
+  static get(structure) {
+    if (typeof structure === 'string') return structures[structure];
+    if (typeof structure === 'function') return structures[structure.name];
+    throw new TypeError(`Structure to retrieve must be a string or class/prototype function, not ${typeof structure}.`);
+  }
+
+  /**
    * Extends a structure.
    * @param {string} name Name of the structure class to extend
    * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the

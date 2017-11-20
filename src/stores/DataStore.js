@@ -9,7 +9,7 @@ class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
     Object.defineProperty(this, 'client', { value: client });
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds) });
     if (iterable) for (const item of iterable) this.create(item);
   }
 
