@@ -44,7 +44,7 @@ class Permissions {
   /**
    * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {PermissionResolvable[]}
+   * @returns {string[]}
    */
   toArray(checkAdmin = true) {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
