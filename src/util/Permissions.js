@@ -24,7 +24,6 @@ class Permissions {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    if (permission instanceof Permissions) return this.has(permission.toArray());
     if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
@@ -117,7 +116,7 @@ class Permissions {
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable|PermissionResolvable[]|Permissions} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
