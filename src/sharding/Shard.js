@@ -270,12 +270,11 @@ class Shard extends EventEmitter {
     }
 
     /**
-     * Emitted upon recieving a message from a shard.
-     * @event ShardingManager#message
-     * @param {Shard} shard Shard that sent the message
+     * Emitted upon recieving a message from the child process.
+     * @event Shard#message
      * @param {*} message Message that was received
      */
-    this.manager.emit('message', this, message);
+    this.emit('message', message);
   }
 
   /**
