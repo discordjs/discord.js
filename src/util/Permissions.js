@@ -47,11 +47,7 @@ class Permissions {
    * @returns {PermissionResolvable[]}
    */
   toArray(checkAdmin = true) {
-    const arr = [];
-    for (const perm of Object.keys(Permissions.FLAGS)) {
-      if (this.has(perm, checkAdmin)) arr.push(perm);
-    }
-    return arr;
+    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
 
   /**
