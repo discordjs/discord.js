@@ -291,6 +291,8 @@ class Shard extends EventEmitter {
     this.emit('death', this.process);
     this.ready = false;
     this.process = null;
+    this._evals.clear();
+    this._fetches.clear();
     if (respawn) this.spawn().catch(err => this.emit('error', err));
   }
 }
