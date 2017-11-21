@@ -92,7 +92,7 @@ class Shard extends EventEmitter {
 
     this.process = childProcess.fork(path.resolve(this.manager.file), this.args, { env: this.env })
       .on('message', this._handleMessage.bind(this))
-      .on('exit', this._exitListener);
+      .on('exit', () => this._exitListener(this.manager.respawn));
 
     /**
      * Emitted upon the creation of the shard's child process.
