@@ -38,7 +38,7 @@ class Permissions {
    */
   missing(permissions, checkAdmin = true) {
     if (permissions instanceof Array) return permissions.filter(p => !this.has(p, checkAdmin));
-    return this.missing(new Permissions(permissions).toArray());
+    return this.missing(new Permissions(permissions).toArray(checkAdmin), checkAdmin);
   }
 
   /**
