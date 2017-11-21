@@ -200,7 +200,7 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        game.type = game.url && !game.type ? 1 : game.type || 0;
+        game.type = game.url && typeof game.type === 'undefined' ? 1 : game.type || 0;
         if (typeof game.type === 'string') {
           game.type = Constants.ActivityTypes.indexOf(game.type.toUpperCase());
         }
