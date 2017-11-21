@@ -7,7 +7,7 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {number|PermissionResolvable|PermissionResolvable[]} permissions Permission(s) or bitfield to read from
+   * @param {PermissionResolvable|PermissionResolvable[]} permissions Permission(s) or bitfield to read from
    */
   constructor(permissions) {
     /**
