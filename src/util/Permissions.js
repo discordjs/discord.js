@@ -19,7 +19,7 @@ class Permissions {
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]|Permissions} permission Permission(s) to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
@@ -37,7 +37,7 @@ class Permissions {
    * @returns {PermissionResolvable[]}
    */
   missing(permissions, checkAdmin = true) {
-    if (permissions instanceof Permissions) return this.missing(permissions.toArray());
+    if (permissions instanceof Permissions) return this.missing(permissions.toArray(checkAdmin), checkAdmin);
     return permissions.filter(p => !this.has(p, checkAdmin));
   }
 
@@ -47,8 +47,8 @@ class Permissions {
    * @returns {PermissionResolvable[]}
    */
   toArray(checkAdmin = true) {
-    let arr = [];
-    for (let perm in Permissions.FLAGS) {
+    const arr = [];
+    for (const perm of Object.keys(Permissions.FLAGS)) {
       if (this.has(perm, checkAdmin)) arr.push(perm);
     }
     return arr;
@@ -116,7 +116,7 @@ class Permissions {
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]|Permissions} permission - Permission(s) to resolve
+   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
