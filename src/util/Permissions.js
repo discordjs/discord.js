@@ -126,6 +126,15 @@ class Permissions {
     if (typeof permission === 'string') return this.FLAGS[permission];
     throw new RangeError('PERMISSIONS_INVALID');
   }
+
+  /**
+   * Resolves permissions to an instance of {@link Permissions}
+   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @returns {Permissions}
+   */
+  static resolveToObject(permission) {
+    return new Permissions(Permissions.resolve(permission));
+  }
 }
 
 /**
