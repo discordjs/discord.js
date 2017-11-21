@@ -78,7 +78,7 @@ class Shard extends EventEmitter {
      * @type {Function}
      * @private
      */
-    this._exitListener = this._handleExit.bind(this);
+    this._exitListener = this._handleExit.bind(this, undefined);
   }
 
   /**
@@ -282,8 +282,7 @@ class Shard extends EventEmitter {
    * @param {boolean} [respawn=this.manager.respawn] Whether to spawn the shard again
    * @private
    */
-  _handleExit(respawn) {
-    if (typeof respawn === 'undefined') respawn = this.manager.respawn;
+  _handleExit(respawn = this.manager.respawn) {
     /**
      * Emitted upon the shard's child process exiting.
      * @event Shard#death
