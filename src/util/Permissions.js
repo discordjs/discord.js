@@ -19,11 +19,12 @@ class Permissions {
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable|PermissionResolvable[]|Permissions} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
+    if (permission instanceof Permissions) return this.has(permission.toArray());
     if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
