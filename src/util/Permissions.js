@@ -42,7 +42,7 @@ class Permissions {
   }
 
   /**
-   * Returns this object as an {@link Array} of {@link PermissionResolvable}.
+   * Gets an {@link Array} of permission names (such as VIEW_CHANNEL) based on the ones available.
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {PermissionResolvable[]}
    */
