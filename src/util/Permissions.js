@@ -41,6 +41,18 @@ class Permissions {
   }
 
   /**
+   * Returns this object as an {@link Array} of {@link PermissionResolvable}.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {PermissionResolvable[]}
+   */
+  toArray(checkAdmin = true){
+    let arr = new Array();
+    for (let perm in Permissions.FLAGS)
+      if (this.has(perm, checkAdmin)) arr.push(perm);
+    return arr;
+  }
+
+  /**
    * Freezes these permissions, making them immutable.
    * @returns {Permissions} These permissions
    */
