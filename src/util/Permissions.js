@@ -47,10 +47,11 @@ class Permissions {
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {PermissionResolvable[]}
    */
-  toArray(checkAdmin = true){
-    let arr = new Array();
-    for (let perm in Permissions.FLAGS)
+  toArray(checkAdmin = true) {
+    let arr = [];
+    for (let perm in Permissions.FLAGS) {
       if (this.has(perm, checkAdmin)) arr.push(perm);
+    }
     return arr;
   }
 
