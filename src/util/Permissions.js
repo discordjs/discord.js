@@ -7,7 +7,7 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
+   * @param {number|PermissionResolvable|PermissionResolvable[]} permissions Permission(s) or bitfield to read from
    */
   constructor(permissions) {
     /**
@@ -125,15 +125,6 @@ class Permissions {
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') return this.FLAGS[permission];
     throw new RangeError('PERMISSIONS_INVALID');
-  }
-
-  /**
-   * Resolves permissions to an instance of {@link Permissions}
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
-   * @returns {Permissions}
-   */
-  static resolveToObject(permission) {
-    return new Permissions(Permissions.resolve(permission));
   }
 }
 
