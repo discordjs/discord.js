@@ -165,6 +165,7 @@ class ClientUser extends User {
    * @property {Object} [game] Game the user is playing
    * @property {string} [game.name] Name of the game
    * @property {string} [game.url] Twitch stream URL
+   * @property {?ActivityType|number} [game.type] Type of the activity
    */
 
   /**
@@ -199,7 +200,10 @@ class ClientUser extends User {
 
       if (data.game) {
         game = data.game;
-        game.type = game.url ? 1 : 0;
+        game.type = game.url && !game.type ? 1 : game.type || 0;
+        if (typeof game.type === 'string') {
+          game.type = Constants.ActivityTypes.indexOf(game.type.toUpperCase());
+        }
       } else if (typeof data.game !== 'undefined') {
         game = null;
       }
@@ -242,8 +246,8 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {?string} game Game being played
-   * @param {string} [streamingURL] Twitch stream URL
+   * @param {string} game Game being played
+   * @param {?string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
    */
   setGame(game, streamingURL) {
