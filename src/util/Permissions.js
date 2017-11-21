@@ -32,13 +32,13 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]|PermissionResolvable} permissions Permission(s) to check for
+   * @param {PermissionResolvable|PermissionResolvable[]} permissions Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {PermissionResolvable[]}
    */
   missing(permissions, checkAdmin = true) {
-    if (permissions instanceof PermissionResolvable) return this.missing(Permissions.resolveToObject(permissions).toArray(), checkAdmin);
-    return permissions.filter(p => !this.has(p, checkAdmin));
+    if (permissions instanceof Array) return permissions.filter(p => !this.has(p, checkAdmin));
+    return this.missing(new Permissions(permissions).toArray());
   }
 
   /**
