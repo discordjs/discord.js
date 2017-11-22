@@ -37,10 +37,8 @@ class Permissions {
    * @returns {string[]}
    */
   missing(permissions, checkAdmin = true) {
-    if (checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR)) return [];
-    permissions = new this.constructor(permissions);
-    const missing = new this.constructor(~this.bitfield & permissions.bitfield);
-    return missing.toArray(false);
+    if (!(permissions instanceof Array)) permissions = new this.constructor(permissions).toArray(false);
+    return permissions.filter(p => !this.has(p, checkAdmin));
   }
 
   /**
