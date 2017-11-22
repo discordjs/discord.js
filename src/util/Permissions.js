@@ -14,7 +14,7 @@ class Permissions {
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
+    this.bitfield = this.constructor.resolve(permissions);
   }
 
   /**
