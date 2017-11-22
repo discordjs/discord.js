@@ -104,6 +104,11 @@ class Permissions {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
 
+  *[Symbol.iterator]() {
+    const keys = this.toArray();
+    while (keys.length) yield keys.shift();
+  }
+
   /**
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
