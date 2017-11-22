@@ -7,19 +7,19 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
+   * @param {PermissionResolvable} permissions Permissions or bitfield to read from
    */
   constructor(permissions) {
     /**
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
+    this.bitfield = this.constructor.resolve(permissions);
   }
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
@@ -32,7 +32,7 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]|PermissionResolvable} permissions Permissions to check for
+   * @param {PermissionResolvable} permissions Permissions to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {string[]}
    */
@@ -99,6 +99,11 @@ class Permissions {
     return serialized;
   }
 
+  /**
+   * Provides an array of permission strings (e.g. `MANAGE_MESSAGES`) that these permissions have
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {string[]}
+   */
   toArray(checkAdmin = true) {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
@@ -113,12 +118,13 @@ class Permissions {
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
    * * An instance of Permissions
-   * @typedef {string|number|Permissions} PermissionResolvable
+   * * An array of any of the above
+   * @typedef {string|number|Permissions|string[]|number[]|Permissions[]} PermissionResolvable
    */
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
