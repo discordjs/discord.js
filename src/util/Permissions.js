@@ -42,15 +42,6 @@ class Permissions {
   }
 
   /**
-   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  toArray(checkAdmin = true) {
-    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
-  }
-
-  /**
    * Freezes these permissions, making them immutable.
    * @returns {Permissions} These permissions
    */
@@ -100,6 +91,15 @@ class Permissions {
     const serialized = {};
     for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
     return serialized;
+  }
+
+  /**
+ * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
+ * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+ * @returns {string[]}
+ */
+  toArray(checkAdmin = true) {
+    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
 
   /**
