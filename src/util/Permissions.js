@@ -40,7 +40,7 @@ class Permissions {
     if (checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR)) return [];
     permissions = new this.constructor(permissions);
     const missing = new this.constructor(~this.bitfield & permissions.bitfield);
-    return missing.toArray(checkAdmin);
+    return missing.toArray(false);
   }
 
   /**
