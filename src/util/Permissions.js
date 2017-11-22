@@ -37,9 +37,14 @@ class Permissions {
    * @returns {string[]}
    */
   missing(permissions, checkAdmin = true) {
-    permissions = new this.constructor(this.constructor.resolve(permissions) & ~this.bitfield);
-    if (checkAdmin && permissions.has(this.constructor.FLAGS.ADMINISTRATOR)) return [];
-    return permissions.toArray();
+    permissions = new this.constructor(permissions);
+
+    if (checkAdmin) {
+      if (this.has(this.constructor.FLAGS.ADMINISTRATOR)) return [];
+      if (permissions.has(this.constructor.FLAGS.ADMINISTRATOR)) return ['ADMINISTRATOR'];
+    }
+
+    return new this.constructor(permissions.bitfield & ~this.bitfield).toArray();
   }
 
   /**
