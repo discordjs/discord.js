@@ -39,7 +39,7 @@ class Permissions {
   missing(permissions, checkAdmin = true) {
     permissions = new this.constructor(~this.constructor.resolve(permissions) & this.bitfield);
     if (checkAdmin && permissions.has(this.constructor.FLAGS.ADMINISTRATOR)) {
-      return new this.constructor(this.constructor.FLAGS.ALL);
+      return new this.constructor(0);
     }
     return permissions;
   }
