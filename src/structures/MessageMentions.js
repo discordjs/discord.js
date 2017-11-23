@@ -121,18 +121,18 @@ class MessageMentions {
    * Takes into account user mentions, role mentions, and @everyone/@here mentions.
    * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
    * @param {Object} [options] Options
-   * @param {boolean} [options.ignoreSelf=false] - Whether to ignore direct mentions to the item
+   * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
    * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member
    * @param {boolean} [options.ignoreEveryone=false] - Whether to ignore everyone/here mentions
    * @returns {boolean}
    */
-  has(data, { ignoreSelf = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
+  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     if (!ignoreEveryone && this.everyone) return true;
     if (!ignoreRoles && data instanceof GuildMember) {
       for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
     }
 
-    if (!ignoreSelf) {
+    if (!ignoreDirect) {
       const id = data.id || data;
       return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
     }
