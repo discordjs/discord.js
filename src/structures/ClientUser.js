@@ -3,6 +3,7 @@ const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
 const Constants = require('../util/Constants');
+const util = require('util');
 
 /**
  * Represents the logged in client's Discord user.
@@ -246,9 +247,10 @@ class ClientUser extends User {
 
   /**
    * Sets the game the client user is playing.
-   * @param {string} game Game being played
+   * @param {?string} game Game being played
    * @param {?string} [streamingURL] Twitch stream URL
    * @returns {Promise<ClientUser>}
+   * @deprecated
    */
   setGame(game, streamingURL) {
     if (!game) return this.setPresence({ game: null });
@@ -257,6 +259,21 @@ class ClientUser extends User {
         name: game,
         url: streamingURL,
       },
+    });
+  }
+
+  /**
+   * Sets the activity the client user is playing.
+   * @param {?string} name Activity being played
+   * @param {Object} [options] Options for setting the activity
+   * @param {string} [options.url] Twitch stream URL
+   * @param {ActivityType|number} [options.type] Type of the activity
+   * @returns {Promise<Presence>}
+   */
+  setActivity(name, { url, type } = {}) {
+    if (!name) return this.setPresence({ activity: null });
+    return this.setPresence({
+      game: { name, type, url },
     });
   }
 
@@ -355,5 +372,8 @@ class ClientUser extends User {
     return this.client.rest.methods.acceptInvite(invite);
   }
 }
+
+ClientUser.prototype.setGame =
+  util.deprecate(ClientUser.prototype.setGame, 'ClientUser#setGame: use ClientUser#setActivity instead');
 
 module.exports = ClientUser;
