@@ -366,6 +366,18 @@ class Util {
 
     return dec;
   }
+
+  /**
+   * Creates a Promise that resolves after a specified duration.
+   * @param {number} ms How long to wait before resolving (in milliseconds)
+   * @returns {Promise<void>}
+   * @private
+   */
+  static delayFor(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
+  }
 }
 
 module.exports = Util;
