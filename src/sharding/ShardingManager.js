@@ -94,10 +94,10 @@ class ShardingManager extends EventEmitter {
     this.shards.set(id, shard);
     /**
      * Emitted upon creating a shard.
-     * @event ShardingManager#launch
+     * @event ShardingManager#shardCreate
      * @param {Shard} shard Shard that was created
      */
-    this.emit('launch', shard);
+    this.emit('shardCreate', shard);
     return shard;
   }
 
