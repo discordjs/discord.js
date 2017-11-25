@@ -84,5 +84,3 @@ module.exports = {
 
   WebSocket: require('./WebSocket'),
 };
-
-Object.
