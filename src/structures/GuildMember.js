@@ -521,8 +521,7 @@ class GuildMember extends Base {
 
   /**
    * Bans this guild member.
-   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
-   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {Object} [options] Options for the ban
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
