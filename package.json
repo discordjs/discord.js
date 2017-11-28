@@ -38,7 +38,7 @@
     "tweetnacl": "^1.0.0",
     "ws": "^3.3.1"
   },
-  "peerDependencies": {
+  "optionalDependencies": {
     "bufferutil": "^3.0.0",
     "erlpack": "discordapp/erlpack",
     "node-opus": "^0.2.0",
