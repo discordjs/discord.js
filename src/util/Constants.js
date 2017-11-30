@@ -351,6 +351,21 @@ exports.Events = {
 };
 
 /**
+ * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
+ * * PLAYING
+ * * STREAMING
+ * * LISTENING
+ * * WATCHING
+ * @typedef {string} ActivityType
+ */
+exports.ActivityTypes = [
+  'PLAYING',
+  'STREAMING',
+  'LISTENING',
+  'WATCHING',
+];
+
+/**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
