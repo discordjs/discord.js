@@ -432,15 +432,15 @@ class Guild extends Base {
   }
 
   /**
-   * A Discord Ban Object.
-   * @typedef {Object} Ban
-   * @property {User} user The banned user
-   * @property {?string} reason The reason
+   * An object containing information about a guild member's ban.
+   * @typedef {Object} BanInfo
+   * @property {User} user User that was banned
+   * @property {?string} reason Reason the user was banned
    */
 
   /**
    * Fetches a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, Ban>>}
+   * @returns {Promise<Collection<Snowflake, BanInfo>>}
    */
   fetchBans() {
     return this.client.api.guilds(this.id).bans.get().then(bans =>
