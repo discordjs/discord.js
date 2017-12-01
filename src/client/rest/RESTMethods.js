@@ -253,7 +253,30 @@ class RESTMethods {
   }
 
   createChannel(guild, channelName, channelType, overwrites, reason) {
-    if (overwrites instanceof Collection) overwrites = overwrites.array();
+    if (overwrites instanceof Collection || overwrites instanceof Array) {
+      overwrites = overwrites.map(overwrite => {
+        let allow = overwrite.allow || overwrite._allowed;
+        let deny = overwrite.deny || overwrite._denied;
+        if (allow instanceof Array) allow = Permissions.resolve(allow);
+        if (deny instanceof Array) deny = Permissions.resolve(deny);
+
+        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        if (role) {
+          overwrite.id = role.id;
+          overwrite.type = 'role';
+        } else {
+          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
+          overwrite.type = 'member';
+        }
+
+        return {
+          allow,
+          deny,
+          type: overwrite.type,
+          id: overwrite.id,
+        };
+      });
+    }
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
       type: Constants.ChannelTypes[channelType.toUpperCase()],
