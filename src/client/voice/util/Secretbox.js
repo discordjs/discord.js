@@ -15,7 +15,7 @@ const libs = {
 
 exports.methods = {};
 
-(async() => {
+(async () => {
   for (const libName of Object.keys(libs)) {
     try {
       const lib = require(libName);

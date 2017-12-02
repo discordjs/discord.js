@@ -9,7 +9,6 @@ class RequestHandler {
     this.limit = Infinity;
     this.resetTime = null;
     this.remaining = 1;
-    this.timeDifference = 0;
 
     this.queue = [];
   }
@@ -32,7 +31,7 @@ class RequestHandler {
       const finish = timeout => {
         if (timeout || this.limited) {
           if (!timeout) {
-            timeout = this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset;
+            timeout = this.resetTime - Date.now() + this.manager.timeDifference + this.client.options.restTimeOffset;
           }
           // eslint-disable-next-line prefer-promise-reject-errors
           reject({ timeout });
@@ -40,17 +39,18 @@ class RequestHandler {
             /**
              * Emitted when the client hits a rate limit while making a request
              * @event Client#rateLimit
-             * @prop {number} timeout Timeout in ms
-             * @prop {number} limit Number of requests that can be made to this endpoint
-             * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
-             * @prop {string} method HTTP method used for request that triggered this event
-             * @prop {string} path Path used for request that triggered this event
-             * @prop {string} route Route used for request that triggered this event
+             * @param {Object} rateLimitInfo Object containing the rate limit info
+             * @param {number} rateLimitInfo.timeout Timeout in ms
+             * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
+             * @param {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
+             * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
+             * @param {string} rateLimitInfo.path Path used for request that triggered this event
+             * @param {string} rateLimitInfo.route Route used for request that triggered this event
              */
             this.client.emit(RATE_LIMIT, {
               timeout,
               limit: this.limit,
-              timeDifference: this.timeDifference,
+              timeDifference: this.manager.timeDifference,
               method: item.request.method,
               path: item.request.path,
               route: item.request.route,
@@ -66,7 +66,7 @@ class RequestHandler {
           this.limit = Number(res.headers['x-ratelimit-limit']);
           this.resetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
           this.remaining = Number(res.headers['x-ratelimit-remaining']);
-          this.timeDifference = Date.now() - new Date(res.headers.date).getTime();
+          this.manager.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
           if (err.status === 429) {

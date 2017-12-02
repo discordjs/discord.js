@@ -41,7 +41,7 @@ class GuildMemberStore extends DataStore {
   /**
    * Resolves a GuildMemberResolvable to an member ID string.
    * @param {GuildMemberResolvable} member The user that is part of the guild
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(member) {
     const memberResolveable = super.resolveID(member);

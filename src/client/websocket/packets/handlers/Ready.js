@@ -1,6 +1,6 @@
 const AbstractHandler = require('./AbstractHandler');
 const { Events } = require('../../../../util/Constants');
-const ClientUser = require('../../../../structures/ClientUser');
+let ClientUser;
 
 class ReadyHandler extends AbstractHandler {
   handle(packet) {
@@ -12,6 +12,7 @@ class ReadyHandler extends AbstractHandler {
     data.user.user_settings = data.user_settings;
     data.user.user_guild_settings = data.user_guild_settings;
 
+    if (!ClientUser) ClientUser = require('../../../../structures/ClientUser');
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
     client.readyAt = new Date();

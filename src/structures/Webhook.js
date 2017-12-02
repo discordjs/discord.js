@@ -1,9 +1,5 @@
-const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
-const Embed = require('./MessageEmbed');
-const MessageAttachment = require('./MessageAttachment');
-const MessageEmbed = require('./MessageEmbed');
-const { browser } = require('../util/Constants');
+const { createMessage } = require('./shared');
 
 /**
  * Represents a webhook.
@@ -79,7 +75,6 @@ class Webhook {
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
    * should be replaced with plain-text
-   * @property {FileOptions|BufferResolvable} [file] A file to send with the message
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -99,115 +94,37 @@ class Webhook {
    *   .catch(console.error);
    */
   /* eslint-enable max-len */
-  send(content, options) { // eslint-disable-line complexity
+  async send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
+    if (!options.content) options.content = content;
 
-    if (options instanceof MessageAttachment) options = { files: [options.file] };
-    if (options instanceof MessageEmbed) options = { embeds: [options] };
-    if (options.embed) options = { embeds: [options.embed] };
+    const { data, files } = await createMessage(this, options);
 
-    if (content instanceof Array || options instanceof Array) {
-      const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof MessageAttachment);
-      const embeds = which.filter(item => item instanceof MessageEmbed);
-      if (attachments.length) options = { files: attachments };
-      if (embeds.length) options = { embeds };
-      if ((embeds.length || attachments.length) && content instanceof Array) content = '';
-    }
-
-    if (!options.username) options.username = this.name;
-    if (options.avatarURL) {
-      options.avatar_url = options.avatarURL;
-      options.avatarURL = null;
-    }
-
-    if (content) {
-      content = Util.resolveString(content);
-      let { split, code, disableEveryone } = options;
-      if (split && typeof split !== 'object') split = {};
-      if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-        content = Util.escapeMarkdown(content, true);
-        content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-        if (split) {
-          split.prepend = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n`;
-          split.append = '\n```';
-        }
+    if (data.content instanceof Array) {
+      const messages = [];
+      for (let i = 0; i < data.content.length; i++) {
+        const opt = i === data.content.length - 1 ? { embeds: data.embeds, files } : {};
+        Object.assign(opt, { avatarURL: data.avatar_url, content: data.content[i], username: data.username });
+        // eslint-disable-next-line no-await-in-loop
+        const message = await this.send(data.content[i], opt);
+        messages.push(message);
       }
-      if (disableEveryone || (typeof disableEveryone === 'undefined' && this.client.options.disableEveryone)) {
-        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
-      }
-
-      if (split) content = Util.splitMessage(content, split);
-    }
-    options.content = content;
-
-    if (options.embeds) options.embeds = options.embeds.map(embed => new Embed(embed)._apiTransform());
-
-    if (options.files) {
-      for (let i = 0; i < options.files.length; i++) {
-        let file = options.files[i];
-        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
-        if (!file.name) {
-          if (typeof file.attachment === 'string') {
-            file.name = Util.basename(file.attachment);
-          } else if (file.attachment && file.attachment.path) {
-            file.name = Util.basename(file.attachment.path);
-          } else if (file instanceof MessageAttachment) {
-            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
-          } else {
-            file.name = 'file.jpg';
-          }
-        } else if (file instanceof MessageAttachment) {
-          file = file.file;
-        }
-        options.files[i] = file;
-      }
-
-      return Promise.all(options.files.map(file =>
-        DataResolver.resolveFile(file.attachment).then(resource => {
-          file.file = resource;
-          return file;
-        })
-      )).then(files => this.client.api.webhooks(this.id, this.token).post({
-        data: options,
-        query: { wait: true },
-        files,
-        auth: false,
-      }));
+      return messages;
     }
 
-    if (content instanceof Array) {
-      return new Promise((resolve, reject) => {
-        const messages = [];
-        (function sendChunk() {
-          const opt = content.length ? null : { embeds: options.embeds, files: options.files };
-          this.client.api.webhooks(this.id, this.token).post({
-            data: { content: content.shift(), opt },
-            query: { wait: true },
-            auth: false,
-          })
-            .then(message => {
-              messages.push(message);
-              if (content.length === 0) return resolve(messages);
-              return sendChunk.call(this);
-            })
-            .catch(reject);
-        }.call(this));
-      });
-    }
 
     return this.client.api.webhooks(this.id, this.token).post({
-      data: options,
+      data, files,
       query: { wait: true },
       auth: false,
-    }).then(data => {
-      if (!this.client.channels) return data;
-      return this.client.channels.get(data.channel_id).messages.create(data, false);
+    }).then(d => {
+      if (!this.client.channels) return d;
+      return this.client.channels.get(d.channel_id).messages.create(d, false);
     });
   }
 
