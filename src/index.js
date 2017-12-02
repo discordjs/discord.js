@@ -37,8 +37,11 @@ module.exports = {
   UserStore: require('./stores/UserStore'),
 
   // Shortcuts to Util methods
+  discordSort: Util.discordSort,
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
+  resolveColor: Util.resolveColor,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
