@@ -1,4 +1,4 @@
-const User = require('./User');
+const Structures = require('../util/Structures');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
@@ -11,7 +11,7 @@ const Guild = require('./Guild');
  * Represents the logged in client's Discord user.
  * @extends {User}
  */
-class ClientUser extends User {
+class ClientUser extends Structures.get('User') {
   _patch(data) {
     super._patch(data);
 
@@ -248,7 +248,7 @@ class ClientUser extends User {
   /**
    * Fetches messages that mentioned the client's user.
    * <warn>This is only available when using a user account.</warn>
-   * @param {Object} [options] Options for the fetch
+   * @param {Object} [options={}] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions

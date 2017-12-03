@@ -1,12 +1,7 @@
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
-const Util = require('../../util/Util');
-const { browser } = require('../../util/Constants');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
-const DataResolver = require('../../util/DataResolver');
-const MessageAttachment = require('../../structures/MessageAttachment');
-const MessageEmbed = require('../../structures/MessageEmbed');
 const { RangeError, TypeError } = require('../../errors');
 
 /**
@@ -80,60 +75,11 @@ class TextBasedChannel {
   send(content, options) { // eslint-disable-line complexity
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
-
-    if (options instanceof MessageEmbed) options = { embed: options };
-    if (options instanceof MessageAttachment) options = { files: [options.file] };
-
-    if (content instanceof Array || options instanceof Array) {
-      const which = content instanceof Array ? content : options;
-      const attachments = which.filter(item => item instanceof MessageAttachment);
-      if (attachments.length) {
-        options = { files: attachments };
-        if (content instanceof Array) content = '';
-      }
-    }
-
     if (!options.content) options.content = content;
-
-    if (options.embed && options.embed.files) {
-      if (options.files) options.files = options.files.concat(options.embed.files);
-      else options.files = options.embed.files;
-    }
-
-    if (options.files) {
-      for (let i = 0; i < options.files.length; i++) {
-        let file = options.files[i];
-        if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
-        if (!file.name) {
-          if (typeof file.attachment === 'string') {
-            file.name = Util.basename(file.attachment);
-          } else if (file.attachment && file.attachment.path) {
-            file.name = Util.basename(file.attachment.path);
-          } else if (file instanceof MessageAttachment) {
-            file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
-          } else {
-            file.name = 'file.jpg';
-          }
-        } else if (file instanceof MessageAttachment) {
-          file = file.file;
-        }
-        options.files[i] = file;
-      }
-
-      return Promise.all(options.files.map(file =>
-        DataResolver.resolveFile(file.attachment).then(resource => {
-          file.file = resource;
-          return file;
-        })
-      )).then(files => {
-        options.files = files;
-        return Shared.sendMessage(this, options);
-      });
-    }
 
     return Shared.sendMessage(this, options);
   }
@@ -158,26 +104,45 @@ class TextBasedChannel {
 
   /**
    * Starts a typing indicator in the channel.
-   * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @param {number} [count=1] The number of times startTyping should be considered to have been called
+   * @returns {Promise} Resolves once the bot stops typing gracefully, or rejects when an error occurs
    * @example
-   * // Start typing in a channel
+   * // Start typing in a channel, or increase the typing count by one
    * channel.startTyping();
+   * @example
+   * // Start typing in a channel with a typing count of five, or set it to five
+   * channel.startTyping(5);
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
-    if (!this.client.user._typing.has(this.id)) {
-      const endpoint = this.client.api.channels[this.id].typing;
-      this.client.user._typing.set(this.id, {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          endpoint.post();
-        }, 9000),
-      });
-      endpoint.post();
-    } else {
+    if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
+      return entry.promise;
     }
+
+    const entry = {};
+    entry.promise = new Promise((resolve, reject) => {
+      const endpoint = this.client.api.channels[this.id].typing;
+      Object.assign(entry, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          endpoint.post().catch(error => {
+            this.client.clearInterval(entry.interval);
+            this.client.user._typing.delete(this.id);
+            reject(error);
+          });
+        }, 9000),
+        resolve,
+      });
+      endpoint.post().catch(error => {
+        this.client.clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+        reject(error);
+      });
+      this.client.user._typing.set(this.id, entry);
+    });
+    return entry.promise;
   }
 
   /**
@@ -186,10 +151,10 @@ class TextBasedChannel {
    * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
-   * // Stop typing in a channel
+   * // Reduce the typing count by one and stop typing if it reached 0
    * channel.stopTyping();
    * @example
-   * // Force typing to fully stop in a channel
+   * // Force typing to fully stop regardless of typing count
    * channel.stopTyping(true);
    */
   stopTyping(force = false) {
@@ -199,6 +164,7 @@ class TextBasedChannel {
       if (entry.count <= 0 || force) {
         this.client.clearInterval(entry.interval);
         this.client.user._typing.delete(this.id);
+        entry.resolve();
       }
     }
   }

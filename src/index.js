@@ -18,6 +18,7 @@ module.exports = {
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  Structures: require('./util/Structures'),
   Util: Util,
   util: Util,
   version: require('../package.json').version,
@@ -29,14 +30,18 @@ module.exports = {
   GuildChannelStore: require('./stores/GuildChannelStore'),
   GuildMemberStore: require('./stores/GuildMemberStore'),
   GuildStore: require('./stores/GuildStore'),
+  ReactionUserStore: require('./stores/ReactionUserStore'),
   MessageStore: require('./stores/MessageStore'),
   PresenceStore: require('./stores/PresenceStore'),
   RoleStore: require('./stores/RoleStore'),
   UserStore: require('./stores/UserStore'),
 
   // Shortcuts to Util methods
+  discordSort: Util.discordSort,
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
+  resolveColor: Util.resolveColor,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
@@ -45,7 +50,10 @@ module.exports = {
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
-  ClientUser: require('./structures/ClientUser'),
+  get ClientUser() {
+    // This is a getter so that it properly extends any custom User class
+    return require('./structures/ClientUser');
+  },
   ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
   ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
