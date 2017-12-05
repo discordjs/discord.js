@@ -1,7 +1,8 @@
 const { browser } = require('./util/Constants');
 const querystring = require('querystring');
+let erlpack;
 try {
-  var erlpack = require('erlpack');
+  erlpack = require('erlpack');
   if (!erlpack.pack) erlpack = null;
 } catch (err) {} // eslint-disable-line no-empty
 
