@@ -874,10 +874,18 @@ class Guild {
   }
 
   /**
+   * Can be used to overwrite permissions when creating a channel.
+   * @typedef {Object} ChannelCreationOverwrites
+   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
+   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
+   */
+
+  /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} type The type of the new channel, either `text` or `voice` or `category`
-   * @param {Array<PermissionOverwrites|Object>} [overwrites] Permission overwrites to apply to the new channel
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [overwrites] Permission overwrites
    * @param {string} [reason] Reason for creating this channel
    * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
