@@ -155,7 +155,7 @@ class GuildChannel extends Channel {
    * @param {Role|Snowflake|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The configuration for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
-   * @returns {Promise}
+   * @returns {Promise<GuildChannel>}
    * @example
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
@@ -203,7 +203,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    return this.client.rest.methods.setChannelOverwrite(this, payload, reason);
+    return this.client.rest.methods.setChannelOverwrite(this, payload, reason).then(() => this);
   }
 
   /**
