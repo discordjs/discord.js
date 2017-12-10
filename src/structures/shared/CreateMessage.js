@@ -19,8 +19,21 @@ module.exports = async function createMessage(channel, options) {
     if (isNaN(options.nonce) || options.nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
+  let { content } = options;
   if (options instanceof MessageEmbed) options = webhook ? { embeds: [options] } : { embed: options };
   if (options instanceof MessageAttachment) options = { files: [options.file] };
+
+  if (content instanceof Array || options instanceof Array) {
+    const which = content instanceof Array ? content : options;
+    const attachments = which.filter(item => item instanceof MessageAttachment);
+    const embeds = which.filter(item => item instanceof MessageEmbed);
+    if (attachments.length) options = { files: attachments };
+    if (embeds.length) options = { embeds };
+    if ((embeds.length || attachments.length) && content instanceof Array) {
+      content = null;
+      options.content = '';
+    }
+  }
 
   if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
     const id = channel.client.users.resolveID(options.reply);
@@ -29,8 +42,8 @@ module.exports = async function createMessage(channel, options) {
     options.content = `${mention}${typeof options.content !== 'undefined' ? `, ${options.content}` : ''}`;
   }
 
-  if (options.content) {
-    options.content = Util.resolveString(options.content);
+  if (content) {
+    options.content = Util.resolveString(content);
     if (options.split && typeof options.split !== 'object') options.split = {};
     // Wrap everything in a code block
     if (typeof options.code !== 'undefined' && (typeof options.code !== 'boolean' || options.code === true)) {
