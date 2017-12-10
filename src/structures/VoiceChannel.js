@@ -2,6 +2,7 @@ const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
 const { Error } = require('../errors');
+const { setParent } = require('./shared');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -99,10 +100,7 @@ class VoiceChannel extends GuildChannel {
    * @returns {Promise<VoiceChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
-    return this.edit({
-      parentID: channel !== null ? channel.id ? channel.id : channel : null,
-      lockPermissions,
-    }, reason);
+    return setParent(this, channel, lockPermissions, reason);
   }
 
   /**

@@ -4,6 +4,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
+const { setParent } = require('./shared');
 
 /**
  * Represents a guild text channel on Discord.
@@ -56,10 +57,7 @@ class TextChannel extends GuildChannel {
    * @returns {Promise<TextChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
-    return this.edit({
-      parentID: channel !== null ? channel.id ? channel.id : channel : null,
-      lockPermissions,
-    }, reason);
+    return setParent(this, channel, lockPermissions, reason);
   }
 
   /**
