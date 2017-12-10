@@ -49,6 +49,20 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * Sets the category parent of this channel.
+   * @param {TextChannel|VoiceChannel|Snowflake} channel Parent channel
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
+   * @returns {Promise<TextChannel>}
+   */
+  setParent(channel, { lockPermissions = true, reason } = {}) {
+    return this.edit({
+      parentID: channel !== null ? channel.id ? channel.id : channel : null,
+      lockPermissions,
+    }, reason);
+  }
+
+  /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    */

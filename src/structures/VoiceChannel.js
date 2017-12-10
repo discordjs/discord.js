@@ -92,6 +92,20 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Sets the category parent of this channel.
+   * @param {TextChannel|VoiceChannel|Snowflake} channel Parent channel
+   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {string} [options.reason] Reason for modifying the parent of this channel
+   * @returns {Promise<VoiceChannel>}
+   */
+  setParent(channel, { lockPermissions = true, reason } = {}) {
+    return this.edit({
+      parentID: channel !== null ? channel.id ? channel.id : channel : null,
+      lockPermissions,
+    }, reason);
+  }
+
+  /**
    * Sets the user limit of the channel.
    * @param {number} userLimit The new user limit
    * @param {string} [reason] Reason for changing the user limit
