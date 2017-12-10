@@ -20,7 +20,7 @@ module.exports = async function createMessage(channel, options) {
   }
 
   const { content } = options;
-  if (options instanceof MessageEmbed) options = { embeds: webhook ? [options] : options, content };
+  if (options instanceof MessageEmbed) options = webhook ? { embeds: [options], content } : { embed: options, content };
   if (options instanceof MessageAttachment) options = { files: [options.file], content };
 
   if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
