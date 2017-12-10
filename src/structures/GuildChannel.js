@@ -9,7 +9,7 @@ const { MessageNotificationTypes } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (e.g. text channels and voice channels).
+ * Represents a guild channel (e.g. a {@link TextChannel}, {@link VoiceChannel} or {@link CategoryChannel}).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
