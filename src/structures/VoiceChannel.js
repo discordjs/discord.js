@@ -100,7 +100,7 @@ class VoiceChannel extends GuildChannel {
    * @returns {Promise<VoiceChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
-    return setParent(this, channel, lockPermissions, reason);
+    return setParent.call(this, channel, lockPermissions, reason);
   }
 
   /**

@@ -1,6 +1,6 @@
-module.exports = function setParent(channel, parent, lockPermissions, reason) {
-  return channel.edit({
-    parentID: parent !== null ? parent.id ? parent.id : parent : null,
+module.exports = function setParent(channel, lockPermissions, reason) {
+  return this.edit({
+    parentID: channel !== null ? channel.id ? channel.id : channel : null,
     lockPermissions,
   }, reason);
 };
