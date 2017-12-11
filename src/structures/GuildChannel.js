@@ -249,7 +249,7 @@ class GuildChannel extends Channel {
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
-   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [bitrate] The bitrate of the voice channel in bits
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
