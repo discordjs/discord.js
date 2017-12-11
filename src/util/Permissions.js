@@ -7,7 +7,7 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {PermissionResolvable|PermissionResolvable[]} permissions Permission(s) to read from
+   * @param {PermissionResolvable} permissions Permission(s) to read from
    */
   constructor(permissions) {
     /**
@@ -19,7 +19,7 @@ class Permissions {
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
@@ -32,7 +32,7 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable|PermissionResolvable[]} permissions Permission(s) to check for
+   * @param {PermissionResolvable} permissions Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {string[]}
    */
@@ -112,12 +112,13 @@ class Permissions {
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
    * * An instance of Permissions
-   * @typedef {string|number|Permissions} PermissionResolvable
+   * * An Array of PermissionResolvable
+   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
    */
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
