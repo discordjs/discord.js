@@ -884,10 +884,10 @@ class Guild {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text` or `voice` or `category`
+   * @param {string} [type='text'] The type of the new channel, either `text` or `voice` or `category`
    * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [overwrites] Permission overwrites
    * @param {string} [reason] Reason for creating this channel
-   * @returns {Promise<TextChannel|VoiceChannel>}
+   * @returns {Promise<CategoryChannel|TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
    * guild.createChannel('new-general', 'text')

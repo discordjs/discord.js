@@ -279,7 +279,7 @@ class RESTMethods {
     }
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
-      type: Constants.ChannelTypes[channelType.toUpperCase()],
+      type: channelType ? Constants.ChannelTypes[channelType.toUpperCase()] : 'text',
       permission_overwrites: overwrites,
     }, undefined, reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
