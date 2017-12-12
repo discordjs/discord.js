@@ -39,7 +39,7 @@ module.exports = async function createMessage(channel, options) {
     const id = channel.client.users.resolveID(options.reply);
     const mention = `<@${options.reply instanceof GuildMember && options.reply.nickname ? '!' : ''}${id}>`;
     if (options.split) options.split.prepend = `${mention}, ${options.split.prepend || ''}`;
-    options.content = `${mention}${typeof options.content !== 'undefined' ? `, ${options.content}` : ''}`;
+    content = `${mention}${typeof options.content !== 'undefined' ? `, ${options.content}` : ''}`;
   }
 
   if (content) {
