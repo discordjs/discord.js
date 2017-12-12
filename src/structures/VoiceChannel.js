@@ -95,7 +95,7 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * Sets the category parent of this channel.
-   * @name TextChannel#setParent
+   * @name VoiceChannel#setParent
    * @param {TextChannel|VoiceChannel|Snowflake} channel Parent channel
    * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
