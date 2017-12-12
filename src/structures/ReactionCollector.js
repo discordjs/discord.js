@@ -42,24 +42,29 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
 
+    const collectHandler = (_, __, user) => {
+      this.total++;
+      this.users.set(user.id, user);
+    };
+    const removeHandler = () => this.total--;
+    const disposeHandler = (_, __, user) => this.users.delete(user.id);
+
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
+
+    this.on('collect', collectHandler);
+    this.on('remove', removeHandler);
+    this.on('dispose', disposeHandler);
 
     this.once('end', () => {
       this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
-    });
 
-    this.on('collect', (collected, reaction, user) => {
-      this.total++;
-      this.users.set(user.id, user);
-    });
-
-    this.on('dispose', (disposed, reaction, user) => {
-      this.total--;
-      if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
+      this.removeListener('collect', collectHandler);
+      this.removeListener('remove', removeHandler);
+      this.removeListener('dispose', disposeHandler);
     });
   }
 
@@ -92,7 +97,7 @@ class ReactionCollector extends Collector {
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      */
-    if (this.collected.has(reaction)) this.emit('remove', reaction);
+    if (this.collected.has(this.constructor.key(reaction))) this.emit('remove', reaction);
     return reaction.count ? null : ReactionCollector.key(reaction);
   }
 

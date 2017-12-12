@@ -67,6 +67,11 @@ class Collector extends EventEmitter {
     this.handleDispose = this.handleDispose.bind(this);
 
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
+
+    this.once('end', () => {
+      if (this._timeout) this.client.clearTimeout(this._timeout);
+      this.ended = true;
+    });
   }
 
   /**
@@ -154,9 +159,6 @@ class Collector extends EventEmitter {
    */
   stop(reason = 'user') {
     if (this.ended) return;
-
-    if (this._timeout) this.client.clearTimeout(this._timeout);
-    this.ended = true;
 
     /**
      * Emitted when the collector is finished collecting.
