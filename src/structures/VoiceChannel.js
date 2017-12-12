@@ -18,6 +18,7 @@ class VoiceChannel extends GuildChannel {
      * @name VoiceChannel#members
      */
     Object.defineProperty(this, 'members', { value: new Collection() });
+    this.setParent = setParent.bind(this);
   }
 
   _patch(data) {
@@ -99,9 +100,6 @@ class VoiceChannel extends GuildChannel {
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<VoiceChannel>}
    */
-  setParent(channel, { lockPermissions = true, reason } = {}) {
-    return setParent.call(this, channel, lockPermissions, reason);
-  }
 
   /**
    * Sets the user limit of the channel.

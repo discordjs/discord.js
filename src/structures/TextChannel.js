@@ -15,6 +15,7 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.messages = new MessageStore(this);
+    this.setParent = setParent.bind(this);
     this._typing = new Map();
   }
 
@@ -56,9 +57,6 @@ class TextChannel extends GuildChannel {
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<TextChannel>}
    */
-  setParent(channel, { lockPermissions = true, reason } = {}) {
-    return setParent.call(this, channel, lockPermissions, reason);
-  }
 
   /**
    * Fetches all webhooks for the channel.
