@@ -2,7 +2,6 @@ const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
 const { Error } = require('../errors');
-const { setParent } = require('./shared');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -18,7 +17,6 @@ class VoiceChannel extends GuildChannel {
      * @name VoiceChannel#members
      */
     Object.defineProperty(this, 'members', { value: new Collection() });
-    this.setParent = setParent.bind(this);
   }
 
   _patch(data) {
@@ -92,15 +90,6 @@ class VoiceChannel extends GuildChannel {
     bitrate *= 1000;
     return this.edit({ bitrate }, reason);
   }
-
-  /**
-   * Sets the category parent of this channel.
-   * @name VoiceChannel#setParent
-   * @param {TextChannel|VoiceChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
-   * @param {string} [options.reason] Reason for modifying the parent of this channel
-   * @returns {Promise<VoiceChannel>}
-   */
 
   /**
    * Sets the user limit of the channel.

@@ -4,7 +4,6 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
-const { setParent } = require('./shared');
 
 /**
  * Represents a guild text channel on Discord.
@@ -15,7 +14,6 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.messages = new MessageStore(this);
-    this.setParent = setParent.bind(this);
     this._typing = new Map();
   }
 
@@ -49,15 +47,6 @@ class TextChannel extends GuildChannel {
   setNSFW(nsfw, reason) {
     return this.edit({ nsfw }, reason);
   }
-
-  /**
-   * Sets the category parent of this channel.
-   * @name TextChannel#setParent
-   * @param {TextChannel|VoiceChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
-   * @param {string} [options.reason] Reason for modifying the parent of this channel
-   * @returns {Promise<TextChannel>}
-   */
 
   /**
    * Fetches all webhooks for the channel.
