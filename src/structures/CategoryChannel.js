@@ -20,7 +20,7 @@ class CategoryChannel extends GuildChannel {
    * @method setParent
    * @memberof CategoryChannel
    * @instance
-   * @param {GuildChannel|Snowflake} channel Parent channel
+   * @param {?GuildChannel|Snowflake} channel Parent channel
    * @param {Object} [options={}] Options to pass
    * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
