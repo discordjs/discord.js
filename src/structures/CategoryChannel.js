@@ -28,6 +28,4 @@ class CategoryChannel extends GuildChannel {
    */
 }
 
-CategoryChannel.prototype.setParent = undefined;
-
 module.exports = CategoryChannel;
