@@ -17,8 +17,7 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11.2 documentation.
-v11.2 fixes a lot of bugs we encountered along the 11.1.0 release, as well as support for new features such as Message Attachments and UserGuildSettings.
+Welcome to the discord.js v11.3 documentation.
 
 ## About
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
