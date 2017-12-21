@@ -4,6 +4,7 @@ const MessageCollector = require('../MessageCollector');
 const Collection = require('../../util/Collection');
 const Attachment = require('../../structures/Attachment');
 const RichEmbed = require('../../structures/RichEmbed');
+const Snowflake = require('../../util/Snowflake');
 const util = require('util');
 
 /**
@@ -390,11 +391,18 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    */
   bulkDelete(messages, filterOld = false) {
-    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     if (messages instanceof Array || messages instanceof Collection) {
-      const messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+      if (filterOld) {
+        messageIDs = messageIDs.filter(id => Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000);
+      }
+      if (messageIDs.length === 0) return new Collection();
+      if (messageIDs.length === 1) {
+        return this.fetchMessage(messageIDs[0]).then(msg => msg.delete().then(() => new Collection([[msg.id, msg]])));
+      }
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
+    if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     throw new TypeError('The messages must be an Array, Collection, or number.');
   }
 
