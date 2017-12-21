@@ -78,8 +78,11 @@ class Util {
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (text.includes(':')) {
-      const [name, id] = text.split(':');
-      return { name, id };
+      const m = text.match(/<?(a)?:(\w{2,32}):(\d{17,19})>?/);
+      if (!m) {
+        return null;
+      }
+      return { animated: Boolean(m[1]), name: m[2], id: m[3] };
     } else {
       return { name: text, id: null };
     }
