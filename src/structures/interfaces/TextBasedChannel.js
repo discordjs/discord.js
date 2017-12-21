@@ -398,17 +398,7 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        return this.fetchMessage(messageIDs[0]).then(m => {
-          this.client.rest.methods.deleteMessage(m)
-            .then(() => {
-              const { message } = this.client.actions.MessageDelete.handle({
-                channel_id: this.id,
-                id: m.id,
-              });
-              if (message) return new Collection([[message.id, message]]);
-              return new Collection();
-            });
-        });
+        return this.fetchMessage(messageIDs[0]).then(msg => msg.delete().then(() => new Collection([[msg.id, msg]])));
       }
       return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
     }
