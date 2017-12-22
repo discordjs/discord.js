@@ -910,7 +910,7 @@ class Guild extends Base {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
+   * @param {string} [type='text'] The type of the new channel, either `text`, `voice`, or `category`
    * @param {Object} [options] Options
    * @param {boolean} [options.nsfw] Whether the new channel is nsfw
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
@@ -955,7 +955,7 @@ class Guild extends Base {
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
-        type: ChannelTypes[type.toUpperCase()],
+        type: type ? ChannelTypes[type.toUpperCase()] : 'text',
         nsfw,
         bitrate,
         user_limit: userLimit,
