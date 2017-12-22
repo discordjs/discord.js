@@ -1,0 +1,21 @@
+{
+  "attachments": [],
+  "tts": false,
+  "embeds": [],
+  "timestamp": "2017-12-22T03:03:28.166000+00:00",
+  "mention_everyone": false,
+  "id": "393599393636286467",
+  "pinned": false,
+  "edited_timestamp": null,
+  "author": {
+    "username": "Gus",
+    "discriminator": "0103",
+    "id": "173547401905176585",
+    "avatar": "a_770407e2f209dc3f2a619aa3ed51244c"
+  },
+  "mention_roles": [],
+  "content": "test_message",
+  "channel_id": "393598884695375872",
+  "mentions": [],
+  "type": 0
+}

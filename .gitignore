@@ -8,8 +8,8 @@ logs/
 *.log
 
 # Authentication
-test/auth.json
-test/auth.js
+test/manual/auth.json
+test/manual/auth.js
 docs/deploy/deploy_key
 docs/deploy/deploy_key.pub
 deploy/deploy_key
@@ -20,3 +20,4 @@ deploy/deploy_key.pub
 .vscode/
 docs/docs.json
 webpack/
+coverage/

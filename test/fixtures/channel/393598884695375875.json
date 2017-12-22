@@ -1,0 +1,12 @@
+{
+  "permission_overwrites": [],
+  "name": "General",
+  "user_limit": 0,
+  "type": 2,
+  "parent_id": "393598884695375874",
+  "nsfw": false,
+  "position": 0,
+  "guild_id": "393598884221550624",
+  "bitrate": 64000,
+  "id": "393598884695375875"
+}

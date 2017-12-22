@@ -1,0 +1,34 @@
+{
+  "mfa_level": 0,
+  "emojis": [],
+  "application_id": null,
+  "name": "guild_name",
+  "roles": [
+    {
+      "hoist": false,
+      "name": "@everyone",
+      "mentionable": false,
+      "color": 0,
+      "position": 0,
+      "id": "393598884221550624",
+      "managed": false,
+      "permissions": 104324161
+    }
+  ],
+  "afk_timeout": 300,
+  "system_channel_id": "393598884695375872",
+  "widget_channel_id": null,
+  "region": "us-central",
+  "default_message_notifications": 0,
+  "embed_channel_id": null,
+  "explicit_content_filter": 0,
+  "splash": null,
+  "features": [],
+  "afk_channel_id": null,
+  "widget_enabled": false,
+  "verification_level": 0,
+  "owner_id": "173547401905176585",
+  "embed_enabled": false,
+  "id": "393598884221550624",
+  "icon": null
+}
