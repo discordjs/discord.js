@@ -910,8 +910,8 @@ class Guild extends Base {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} [type='text'] The type of the new channel, either `text`, `voice`, or `category`
    * @param {Object} [options] Options
+   * @param {string} [options.type='text'] The type of the new channel, either `text`, `voice`, or `category`
    * @param {boolean} [options.nsfw] Whether the new channel is nsfw
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
@@ -925,7 +925,7 @@ class Guild extends Base {
    *   .then(channel => console.log(`Created new channel ${channel}`))
    *   .catch(console.error);
    */
-  createChannel(name, type, { nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
+  createChannel(name, { type, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => {
         let allow = overwrite.allow || (overwrite.allowed ? overwrite.allowed.bitfield : 0);
