@@ -37,13 +37,13 @@ class UserProfile {
 
   setup(data) {
     /**
-     * If the user has Discord Premium
+     * If the user has Discord Premium (Nitro)
      * @type {boolean}
      */
     this.premium = data.premium;
 
     /**
-     * The date since which the user has had Discord Premium
+     * The date since which the user has had Discord Premium (Nitro)
      * @type {?Date}
      */
     this.premiumSince = data.premium_since ? new Date(data.premium_since) : null;
