@@ -68,6 +68,8 @@ const Messages = {
   IMAGE_SIZE: size => `Invalid image size: ${size}`,
 
   MESSAGE_MISSING: 'Message not found',
+  MESSAGES_MISSING_OR_NO_PERMISSIONS:
+    'No messages were returned or you are missing a permission required for fetching messages.',
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
   MESSAGE_NONCE_TYPE: 'Message nonce must fit in an unsigned 64-bit integer.',
 
