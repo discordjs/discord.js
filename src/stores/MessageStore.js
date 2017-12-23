@@ -80,13 +80,15 @@ class MessageStore extends DataStore {
       .then(data => this.create(data));
   }
 
-  _fetchMany(options = {}) {
-    return this.client.api.channels[this.channel.id].messages.get({ query: options })
-      .then(data => {
-        const messages = new Collection();
-        for (const message of data) messages.set(message.id, this.create(message));
-        return messages;
-      });
+  async _fetchMany(options = {}) {
+    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
+    if (!data.length) {
+      throw new Error('MESSAGES_MISSING_OR_NO_PERMISSIONS');
+    } else {
+      const messages = new Collection();
+      for (const message of data) messages.set(message.id, this.create(message));
+      return messages;
+    }
   }
 
 
