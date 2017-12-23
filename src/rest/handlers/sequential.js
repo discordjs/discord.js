@@ -11,6 +11,6 @@ module.exports = function sequential() {
         this.reset();
         this.busy = false;
         this.handle();
-      }, timeout || (this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset));
+      }, timeout);
     });
 };

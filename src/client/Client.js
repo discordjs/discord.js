@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const RESTManager = require('../rest/RESTManager');
 const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -41,13 +40,6 @@ class Client extends BaseClient {
     }
 
     this._validateOptions();
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this);
 
     /**
      * The manager of the client
@@ -171,6 +163,7 @@ class Client extends BaseClient {
   /**
    * Timestamp of the latest ping's start time
    * @type {number}
+   * @readonly
    * @private
    */
   get _pingTimestamp() {
@@ -257,9 +250,9 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error('TOKEN_INVALID');
+      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
       this.manager.connectToWebSocket(token, resolve, reject);
     }).catch(e => {

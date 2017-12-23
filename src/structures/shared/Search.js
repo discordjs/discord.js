@@ -1,4 +1,4 @@
-const long = require('long');
+const Util = require('../../util/Util');
 const { TypeError } = require('../../errors');
 
 /**
@@ -11,7 +11,7 @@ const { TypeError } = require('../../errors');
  * @property {ChannelResolvable} [channel] Channel to limit search to (only for guild search endpoint)
  * @property {UserResolvable} [author] Author to limit search
  * @property {string} [authorType] One of `user`, `bot`, `webhook`, or add `-` to negate (e.g. `-webhook`)
- * @property {string} [sortBy='recent'] `recent` or `relevant`
+ * @property {string} [sortBy='timestamp'] `timestamp` or `relevant`
  * @property {string} [sortOrder='descending'] `ascending` or `descending`
  * @property {number} [contextSize=2] How many messages to get around the matched message (0 to 2)
  * @property {number} [limit=25] Maximum number of results to get (1 to 25)
@@ -40,17 +40,17 @@ module.exports = function search(target, options) {
   if (typeof options === 'string') options = { content: options };
   if (options.before) {
     if (!(options.before instanceof Date)) options.before = new Date(options.before);
-    options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
+    options.maxID = Util.binaryToID((options.before.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
   }
   if (options.after) {
     if (!(options.after instanceof Date)) options.after = new Date(options.after);
-    options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
+    options.minID = Util.binaryToID((options.after.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
   }
   if (options.during) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
-    options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 864e5).shiftLeft(22).toString();
+    options.minID = Util.binaryToID(t.toString(2) + '0'.repeat(22));
+    options.maxID = Util.binaryToID((t + 864e5).toString(2) + '0'.repeat(22));
   }
   if (options.channel) options.channel = target.client.channels.resolveID(options.channel);
   if (options.author) options.author = target.client.users.resolveID(options.author);

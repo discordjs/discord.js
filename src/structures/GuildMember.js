@@ -64,7 +64,7 @@ class GuildMember extends Base {
      * @type {number}
      * @name GuildMember#joinedTimestamp
      */
-    if (typeof data.joined_at !== 'undefined') this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     this.user = this.guild.client.users.create(data.user);
     if (data.roles) this._roles = data.roles;
@@ -77,36 +77,42 @@ class GuildMember extends Base {
   /**
    * Whether this member is deafened server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverDeaf() { return this.voiceState.deaf; }
 
   /**
    * Whether this member is muted server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverMute() { return this.voiceState.mute; }
 
   /**
    * Whether this member is self-muted
    * @type {boolean}
+   * @readonly
    */
   get selfMute() { return this.voiceState.self_mute; }
 
   /**
    * Whether this member is self-deafened
    * @type {boolean}
+   * @readonly
    */
   get selfDeaf() { return this.voiceState.self_deaf; }
 
   /**
    * The voice session ID of this member (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceSessionID() { return this.voiceState.session_id; }
 
   /**
    * The voice channel ID of this member, (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceChannelID() { return this.voiceState.channel_id; }
 
@@ -125,7 +131,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(this.client);
   }
 
   /**
@@ -294,19 +300,13 @@ class GuildMember extends Base {
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
-   * **(deprecated)**
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
-   * (takes priority over `explicit`)
-   * @param {boolean} [checkOwner] Whether to allow being the guild's owner to override
-   * (takes priority over `explicit`)
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, explicit = false, checkAdmin, checkOwner) {
-    if (typeof checkAdmin === 'undefined') checkAdmin = !explicit;
-    if (typeof checkOwner === 'undefined') checkOwner = !explicit;
+  hasPermission(permission, checkAdmin = true, checkOwner = true) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.permissions.has(permission, undefined, checkAdmin));
+    return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
 
   /**
@@ -521,8 +521,7 @@ class GuildMember extends Base {
 
   /**
    * Bans this guild member.
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
-   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {Object} [options] Options for the ban
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
@@ -535,10 +534,10 @@ class GuildMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the Member object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {

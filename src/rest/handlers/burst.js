@@ -6,7 +6,7 @@ module.exports = function burst() {
       this.client.setTimeout(() => {
         this.reset();
         this.handle();
-      }, timeout || (this.resetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset));
+      }, timeout);
     });
   this.remaining--;
   this.handle();
