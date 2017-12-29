@@ -921,7 +921,7 @@ class Guild extends Base {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
-   * guild.createChannel('new-general', 'text')
+   * guild.createChannel('new-general', {type: 'text'})
    *   .then(channel => console.log(`Created new channel ${channel}`))
    *   .catch(console.error);
    */
