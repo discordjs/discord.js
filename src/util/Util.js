@@ -1,4 +1,4 @@
-const snekfetch = require('snekfetch');
+const phin = require('phin').promisified;
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
@@ -57,9 +57,13 @@ class Util {
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     return new Promise((resolve, reject) => {
       if (!token) throw new DiscordError('TOKEN_MISSING');
-      snekfetch.get(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`)
-        .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-        .end((err, res) => {
+      phin({
+        url: `${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`,
+        headers: {
+          Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}`
+        }
+      })
+        .then((err, res) => {
           if (err) reject(err);
           resolve(res.body.shards * (1000 / guildsPerShard));
         });

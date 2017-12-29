@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const snekfetch = require('snekfetch');
+const phin = require('phin').promisified;
 const Util = require('../util/Util');
 const { Error, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -89,8 +89,8 @@ class DataResolver {
     if (typeof resource === 'string') {
       return new Promise((resolve, reject) => {
         if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
-            .end((err, res) => {
+          phin(resource)
+            .then((err, res) => {
               if (err) return reject(err);
               if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
               return resolve(res.body);
