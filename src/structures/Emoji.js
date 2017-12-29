@@ -100,10 +100,7 @@ class Emoji extends Base {
    * @readonly
    */
   get identifier() {
-    if (this.id) {
-      if (this.animated) return `a:${this.name}:${this.id}`;
-      return `${this.name}:${this.id}`;
-    }
+    if (this.id) return `${this.animated ? 'a:' : ''}${this.name}:${this.id}`;
     return encodeURIComponent(this.name);
   }
 
@@ -207,8 +204,7 @@ class Emoji extends Base {
    * msg.reply(`Hello! ${emoji}`);
    */
   toString() {
-    if (this.animated) return this.requiresColons ? `<a:${this.name}:${this.id}>` : this.name;
-    return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+    return this.requiresColons ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
   }
 
   /**
