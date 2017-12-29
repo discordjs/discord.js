@@ -46,7 +46,6 @@ const createConfig = options => {
             },
           },
         },
-        ...require('snekfetch/webpack.supplemental').rules,
       ],
     },
     node: {
