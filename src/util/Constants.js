@@ -110,10 +110,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: (emojiID, animated) => {
-        if (animated) return `${root}/emojis/${emojiID}.gif`;
-        return `${root}/emojis/${emojiID}.png`;
-      },
+      Emoji: (emojiID, animated) => `${root}/emojis/${emojiID}.${animated ? 'gif' : 'png'}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
