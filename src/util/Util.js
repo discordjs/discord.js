@@ -79,7 +79,7 @@ class Util {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (text.includes(':')) {
       const [, animated, name, id] = text.match(/(?:<(a)?:)?([\w_]{2,32}):(\d+)>?/);
-      return { animated: !!animated, name, id };
+      return { animated: Boolean(animated), name, id };
     } else {
       return {
         animated: false,
