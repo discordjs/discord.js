@@ -62,6 +62,7 @@ class Util {
         headers: {
           Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}`,
         },
+        parse: 'json',
       })
         .then((err, res) => {
           if (err) reject(err);
