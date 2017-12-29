@@ -1,5 +1,5 @@
 const querystring = require('querystring');
-const snekfetch = require('snekfetch');
+const phin = require('phin').promisified;
 const https = require('https');
 const { browser, UserAgent } = require('../util/Constants');
 
@@ -24,19 +24,27 @@ class APIRequest {
       this.path += `?${queryString}`;
     }
 
-    const request = snekfetch[this.method](`${API}${this.path}`, { agent });
+    let requestHeaders = {};
 
-    if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
-    if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
-    if (!browser) request.set('User-Agent', UserAgent);
-    if (this.options.headers) request.set(this.options.headers);
+    if (this.options.auth !== false) requestHeaders.Authorization = this.rest.getAuth();
+    if (this.options.reason) requestHeaders['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);
+    if (!browser) requestHeaders['User-Agent'] = UserAgent;
+    if (this.options.headers) Object.assign(requestHeaders, this.options.headers);
+
+    let formData = null;
 
     if (this.options.files) {
-      for (const file of this.options.files) if (file && file.file) request.attach(file.name, file.file, file.name);
-      if (typeof this.options.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.options.data));
-    } else if (typeof this.options.data !== 'undefined') {
-      request.send(this.options.data);
+      for (const file of this.options.files) formData[file.name] = file.file;
+
+      if (this.options.data !== 'undefined') formData.payload_json = JSON.stringify(this.options.data);
     }
+
+    const request = phin(Object.assign({
+      url: `${API}${this.path}`,
+      method: this.method,
+      agent,
+      headers: requestHeaders,
+    }, this.options.files ? { form: formData } : this.options.data !== 'undefined' ? { data: this.options.data } : {}));
     return request;
   }
 }
