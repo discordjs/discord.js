@@ -44,6 +44,12 @@ class Emoji extends Base {
      * @type {boolean}
      */
     this.managed = data.managed;
+    
+    /**
+     * Whether this emoji is animated
+     * @type {boolean}
+     */
+    this.animated = data.animated;
 
     this._roles = data.roles;
   }
@@ -85,7 +91,7 @@ class Emoji extends Base {
    * @readonly
    */
   get url() {
-    return this.client.rest.cdn.Emoji(this.id);
+    return this.client.rest.cdn.Emoji(this.id, this.animated);
   }
 
   /**
@@ -94,7 +100,10 @@ class Emoji extends Base {
    * @readonly
    */
   get identifier() {
-    if (this.id) return `${this.name}:${this.id}`;
+    if (this.id) {
+      if (this.animated) return `a:${this.name}:${this.id}`;
+      return `${this.name}:${this.id}`;
+    }
     return encodeURIComponent(this.name);
   }
 
@@ -198,6 +207,7 @@ class Emoji extends Base {
    * msg.reply(`Hello! ${emoji}`);
    */
   toString() {
+    if (this.animated) return this.requiresColons ? `<a:${this.name}:${this.id}>` : this.name;
     return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
   }
 
