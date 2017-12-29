@@ -60,8 +60,8 @@ class Util {
       phin({
         url: `${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`,
         headers: {
-          Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}`
-        }
+          Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}`,
+        },
       })
         .then((err, res) => {
           if (err) reject(err);

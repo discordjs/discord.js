@@ -24,27 +24,27 @@ class APIRequest {
       this.path += `?${queryString}`;
     }
 
-    let requestHeaders = {}
+    let requestHeaders = {};
 
-    if (this.options.auth !== false) requestHeaders['Authorization'] = this.rest.getAuth();
+    if (this.options.auth !== false) requestHeaders.Authorization = this.rest.getAuth();
     if (this.options.reason) requestHeaders['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);
     if (!browser) requestHeaders['User-Agent'] = UserAgent;
-    if (this.options.headers) Object.assign(requestHeaders, this.options.headers)
+    if (this.options.headers) Object.assign(requestHeaders, this.options.headers);
 
-    let formData = null
+    let formData = null;
 
     if (this.options.files) {
-      for (const file of this.options.files) formData[file.name] = file.file
+      for (const file of this.options.files) formData[file.name] = file.file;
 
-      if (this.options.data !== 'undefined') formData['payload_json'] = JSON.stringify(this.options.data)
+      if (this.options.data !== 'undefined') formData.payload_json = JSON.stringify(this.options.data);
     }
 
     const request = phin(Object.assign({
       url: `${API}${this.path}`,
       method: this.method,
       agent,
-      headers: requestHeaders
-    }, (this.options.files ? {form: formData} : (this.options.data !== 'undefined' ? {data: this.options.data} : {}))));
+      headers: requestHeaders,
+    }, this.options.files ? { form: formData } : this.options.data !== 'undefined' ? { data: this.options.data } : {}));
     return request;
   }
 }
