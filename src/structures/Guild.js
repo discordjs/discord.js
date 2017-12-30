@@ -486,6 +486,11 @@ class Guild {
    * @param {UserResolvable} [options.user] Only show entries involving this user
    * @param {string|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
+   * @example
+   * // Output audit log entries
+   * guild.fetchAuditLogs()
+   *   .then(audit => console.log(audit.entries))
+   *   .catch(console.error);
    */
   fetchAuditLogs(options) {
     return this.client.rest.methods.getGuildAuditLogs(this, options);
@@ -514,6 +519,11 @@ class Guild {
    * @param {UserResolvable} user The user to fetch the member for
    * @param {boolean} [cache=true] Insert the member into the members cache
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Fetch a guild member
+   * guild.fetchMember(message.author)
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
