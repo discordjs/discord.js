@@ -399,10 +399,10 @@ class GuildChannel extends Channel {
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
    * @returns {string}
    * @example
-   * // Outputs: Hello from #general
+   * // Logs: Hello from <#123456789012345678>!
    * console.log(`Hello from ${channel}`);
    * @example
-   * // Outputs: Hello from #general
+   * // Logs: Hello from <#123456789012345678>!
    * console.log('Hello from ' + channel);
    */
   toString() {
