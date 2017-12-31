@@ -104,7 +104,7 @@ const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 ** (i + 4));
 function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (format && !AllowedImageFormats.includes(format)) throw new Error('IMAGE_FORMAT', format);
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
-  return `${root}.${format}${size ? `?size=${size}` : ''}`;
+  return `${root}.${format}${format === 'gif' ? '' : size ? `?size=${size}` : ''}`;
 }
 
 exports.Endpoints = {
