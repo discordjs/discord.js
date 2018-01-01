@@ -386,6 +386,11 @@ class GuildMember {
    * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Remove all the roles from a member
+   * guildMember.setRoles([])
+   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .catch(console.error);
    */
   setRoles(roles, reason) {
     return this.edit({ roles }, reason);
@@ -497,8 +502,10 @@ class GuildMember {
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
-   * // ban a guild member
-   * guildMember.ban(7);
+   * // Ban a guild member
+   * guildMember.ban(7)
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   ban(options) {
     return this.guild.ban(this, options);

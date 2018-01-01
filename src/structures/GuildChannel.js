@@ -223,8 +223,8 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
-   * channel.edit({name: 'new-channel'})
-   *   .then(c => console.log(`Edited channel ${c}`))
+   * channel.edit({ name: 'new-channel' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   edit(data, reason) {
@@ -298,6 +298,11 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [reason] Reason for creating the invite
    * @returns {Promise<Invite>}
+   * @example
+   * // Create an invite to a channel
+   * channel.createInvite()
+   *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
+   *   .catch(console.error);
    */
   createInvite(options = {}, reason) {
     return this.client.rest.methods.createChannelInvite(this, options, reason);

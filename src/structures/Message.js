@@ -254,10 +254,8 @@ class Message {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const collector = message.createReactionCollector(
-   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
-   *   { time: 15000 }
-   * );
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * const collector = message.createReactionCollector(filter, { time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -277,6 +275,12 @@ class Message {
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
+   * @example
+   * // Create a reaction collector
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * message.awaitReactions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} reactions`))
+   *   .catch(console.error);
    */
   awaitReactions(filter, options = {}) {
     return new Promise((resolve, reject) => {
