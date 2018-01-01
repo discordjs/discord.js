@@ -313,7 +313,7 @@ class Util {
    * @private
    */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path).slice[3];
+    let f = splitPathRe.exec(path)[3];
     if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
     return f;
   }
