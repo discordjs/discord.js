@@ -514,6 +514,11 @@ class Guild extends Base {
    * @param {UserResolvable} [options.user] Only show entries involving this user
    * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
+   * @example
+   * // Output audit log entries
+   * guild.fetchAuditLogs()
+   *   .then(audit => console.log(audit.entries))
+   *   .catch(console.error);
    */
   fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
