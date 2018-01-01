@@ -58,7 +58,7 @@ class Channel extends Base {
    * @example
    * // Delete the channel
    * channel.delete()
-   *   then(channel => console.log(`Deleted ${channel}`))
+   *   then(console.log)
    *   .catch(console.error);
    */
   delete() {
