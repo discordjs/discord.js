@@ -29,7 +29,7 @@ class Util {
         messages.push(msg + append);
         msg = prepend;
       }
-      msg += (msg.length > 0 && msg !== prepend ? char : '') + chunk;
+      msg += (msg && msg !== prepend ? char : '') + chunk;
     }
     return messages.concat(msg).filter(m => m);
   }
