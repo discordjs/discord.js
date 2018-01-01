@@ -22,17 +22,16 @@ class Util {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
     if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
-    const messages = [''];
-    let msg = 0;
-    for (let i = 0; i < splitText.length; i++) {
-      if (messages[msg].length + splitText[i].length + 1 > maxLength) {
-        messages[msg] += append;
-        messages.push(prepend);
-        msg++;
+    const messages = [];
+    let msg = '';
+    for (const chunk of splitText) {
+      if ((msg + char + chunk + append).length > maxLength) {
+        messages.push(msg + append);
+        msg = prepend;
       }
-      messages[msg] += (messages[msg].length > 0 && messages[msg] !== prepend ? char : '') + splitText[i];
+      msg += (msg.length > 0 && msg !== prepend ? char : '') + chunk;
     }
-    return messages.filter(m => m);
+    return messages.concat(msg).filter(m => m);
   }
 
   /**
