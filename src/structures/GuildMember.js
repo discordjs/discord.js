@@ -395,6 +395,11 @@ class GuildMember extends Base {
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Remove all the roles from a member
+   * guildMember.setRoles([])
+   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .catch(console.error);
    */
   setRoles(roles, reason) {
     return this.edit({ roles }, reason);
@@ -527,7 +532,9 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
-   * guildMember.ban(7);
+   * guildMember.ban({ days: 7, reason: 'They deserved it' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   ban(options) {
     return this.guild.ban(this, options);
