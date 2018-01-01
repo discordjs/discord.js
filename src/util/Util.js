@@ -77,15 +77,10 @@ class Util {
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
-    if (text.includes(':')) {
-      const m = text.match(/<?(a)?:(\w{2,32}):(\d{17,19})>?/);
-      if (!m) {
-        return null;
-      }
-      return { animated: Boolean(m[1]), name: m[2], id: m[3] };
-    } else {
-      return { animated: false, name: text, id: null };
-    }
+    if (!text.includes(':')) return { animated: false, name: text, id: null };
+    const m = text.match(/<?(a)?:(\w{2,32}):(\d{17,19})>?/);
+    if (!m) return null;
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
   }
 
   /**
@@ -184,11 +179,11 @@ class Util {
    * @private
    */
   static makePlainError(err) {
-    const obj = {};
-    obj.name = err.name;
-    obj.message = err.message;
-    obj.stack = err.stack;
-    return obj;
+    return {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    };
   }
 
   /**
@@ -318,8 +313,8 @@ class Util {
    * @private
    */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path).slice(1)[2];
-    if (ext && f.substr(-1 * ext.length) === ext) f = f.substr(0, f.length - ext.length);
+    let f = splitPathRe.exec(path).slice[3];
+    if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
     return f;
   }
 
