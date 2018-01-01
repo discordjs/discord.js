@@ -259,24 +259,42 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @returns {Promise}
    * @example
    * // Start typing in a channel
-   * channel.startTyping();
+   * channel.startTyping()
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
-    if (!this.client.user._typing.has(this.id)) {
-      this.client.user._typing.set(this.id, {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id);
-        }, 9000),
-      });
-      this.client.rest.methods.sendTyping(this.id);
-    } else {
+    if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
+      return entry.promise;
     }
+
+    const entry = {};
+    entry.promise = new Promise((resolve, reject) => {
+      Object.assign(entry, {
+        count: count || 1,
+        interval: this.client.setInterval(() => {
+          this.client.rest.methods.sendTyping(this.id).catch(error => {
+            this.client.clearInterval(entry.interval);
+            this.client.user._typing.delete(this.id);
+            reject(error);
+          });
+        }, 9000),
+        resolve,
+      });
+      this.client.rest.methods.sendTyping(this.id).catch(error => {
+        this.client.clearInterval(entry.interval);
+        this.client.user._typing.delete(this.id);
+        reject(error);
+      });
+      this.client.user._typing.set(this.id, entry);
+    });
+    return entry.promise;
   }
 
   /**
