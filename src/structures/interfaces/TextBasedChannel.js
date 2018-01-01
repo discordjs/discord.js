@@ -259,6 +259,9 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
+   * @example
+   * // Start typing in a channel
+   * channel.startTyping();
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
