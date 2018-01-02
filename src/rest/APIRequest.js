@@ -10,9 +10,11 @@ class APIRequest {
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
-    this.path = `${path}${querystring.stringify(this.options.query)}`;
     this.route = options.route;
     this.options = options;
+
+    const queryString = querystring.stringify(options.query);
+    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
   }
 
   gen() {
