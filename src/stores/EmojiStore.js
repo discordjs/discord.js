@@ -29,12 +29,12 @@ class EmojiStore extends DataStore {
    * @returns {Promise<Emoji>} The created emoji
    * @example
    * // Create a new emoji from a url
-   * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
+   * guild.emojis.create('https://i.imgur.com/w3duR07.png', 'rip')
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
-   * guild.createEmoji('./memes/banana.png', 'banana')
+   * guild.emojis.create('./memes/banana.png', 'banana')
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */

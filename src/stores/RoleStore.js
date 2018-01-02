@@ -26,18 +26,18 @@ class RoleStore extends DataStore {
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
-   * guild.createRole()
-   *   .then(role => console.log(`Created role ${role}`))
+   * guild.roles.create()
+   *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Create a new role with data and a reason
-   * guild.createRole({
+   * guild.roles.create({
    *     name: 'Super Cool People',
    *     color: 'BLUE'
    *   },
    *   reason: 'we needed a role for Super Cool People',
    * })
-   *   .then(role => console.log(`Created role ${role}`))
+   *   .then(console.log)
    *   .catch(console.error);
    */
   create(data = {}, reason) {

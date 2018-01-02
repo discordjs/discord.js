@@ -1,7 +1,6 @@
 const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
-const GuildMember = require('./GuildMember');
 const VoiceRegion = require('./VoiceRegion');
 const { ChannelTypes, Events, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
