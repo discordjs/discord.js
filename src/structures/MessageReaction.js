@@ -1,7 +1,6 @@
 const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserStore = require('../stores/ReactionUserStore');
-const { Error } = require('../errors');
 
 /**
  * Represents a reaction to a message.
@@ -54,27 +53,6 @@ class MessageReaction {
       }
     }
     return this._emoji;
-  }
-
-  /**
-   * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
-   * @returns {Promise<MessageReaction>}
-   */
-  remove(user = this.message.client.user) {
-    const userID = this.message.client.users.resolveID(user);
-    if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
-    return this.message.client.api.channels[this.message.channel.id].messages[this.message.id]
-      .reactions[this.emoji.identifier][userID === this.message.client.user.id ? '@me' : userID]
-      .delete()
-      .then(() =>
-        this.message.client.actions.MessageReactionRemove.handle({
-          user_id: userID,
-          message_id: this.message.id,
-          emoji: this.emoji,
-          channel_id: this.message.channel.id,
-        }).reaction
-      );
   }
 
   _add(user) {

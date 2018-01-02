@@ -430,15 +430,6 @@ class Message extends Base {
   }
 
   /**
-   * Removes all reactions from a message.
-   * @returns {Promise<Message>}
-   */
-  clearReactions() {
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
-      .then(() => this);
-  }
-
-  /**
    * Deletes the message.
    * @param {Object} [options] Options
    * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds

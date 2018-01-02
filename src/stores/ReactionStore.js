@@ -40,6 +40,15 @@ class ReactionStore extends DataStore {
     * @param {MessageReactionResolvable} role The role resolvable to resolve
     * @returns {?Snowflake}
     */
+
+  /**
+   * Removes all reactions from a message.
+   * @returns {Promise<Message>}
+   */
+  removeAll() {
+    return this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions.delete()
+      .then(() => this.message);
+  }
 }
 
 module.exports = ReactionStore;
