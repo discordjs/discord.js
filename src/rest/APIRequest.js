@@ -13,7 +13,7 @@ class APIRequest {
     this.route = options.route;
     this.options = options;
 
-    const queryString = querystring.stringify(options.query);
+    const queryString = (querystring.stringify(options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
     this.path = `${path}${queryString ? `?${queryString}` : ''}`;
   }
 
