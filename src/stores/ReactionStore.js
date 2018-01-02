@@ -12,8 +12,8 @@ class ReactionStore extends DataStore {
     this.message = message;
   }
 
-  create(data, cache) {
-    return super.create(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
+  add(data, cache) {
+    return super.add(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
   }
 
   /**

@@ -52,7 +52,7 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.create(data.author, !data.webhook_id);
+    this.author = this.client.users.add(data.author, !data.webhook_id);
 
     /**
      * Represents the author of the message as a guild member.
@@ -121,7 +121,7 @@ class Message extends Base {
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        this.reactions.create(reaction);
+        this.reactions.add(reaction);
       }
     }
 

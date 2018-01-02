@@ -260,7 +260,7 @@ class ClientUser extends Structures.get('User') {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.create(m, false)));
+      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.add(m, false)));
   }
 
   /**
@@ -290,7 +290,7 @@ class ClientUser extends Structures.get('User') {
 
             const timeout = this.client.setTimeout(() => {
               this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.guilds.create(data));
+              resolve(this.client.guilds.add(data));
             }, 10000);
             return undefined;
           }, reject)
@@ -326,7 +326,7 @@ class ClientUser extends Structures.get('User') {
       }, {}),
     } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
-      .then(res => this.client.channels.create(res));
+      .then(res => this.client.channels.add(res));
   }
 }
 

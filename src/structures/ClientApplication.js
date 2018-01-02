@@ -97,7 +97,7 @@ class ClientApplication extends Base {
        * The owner of this OAuth application
        * @type {?User}
        */
-      this.owner = this.client.users.create(data.owner);
+      this.owner = this.client.users.add(data.owner);
     }
   }
 

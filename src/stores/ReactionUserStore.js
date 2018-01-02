@@ -23,7 +23,7 @@ class ReactionUserStore extends DataStore {
       .reactions[this.reaction.emoji.identifier]
       .get({ query: { limit, before, after } });
     for (const rawUser of users) {
-      const user = this.client.users.create(rawUser);
+      const user = this.client.users.add(rawUser);
       this.set(user.id, user);
     }
     return this;

@@ -124,7 +124,7 @@ class Webhook {
       auth: false,
     }).then(d => {
       if (!this.client.channels) return d;
-      return this.client.channels.get(d.channel_id).messages.create(d, false);
+      return this.client.channels.get(d.channel_id).messages.add(d, false);
     });
   }
 
@@ -152,7 +152,7 @@ class Webhook {
       data: body,
     }).then(data => {
       if (!this.client.channels) return data;
-      return this.client.channels.get(data.channel_id).messages.create(data, false);
+      return this.client.channels.get(data.channel_id).messages.add(data, false);
     });
   }
 

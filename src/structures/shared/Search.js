@@ -90,7 +90,7 @@ module.exports = function search(target, options) {
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
     const results = body.messages.map(x =>
-      x.map(m => target.client.channels.get(m.channel_id).messages.create(m, false))
+      x.map(m => target.client.channels.get(m.channel_id).messages.add(m, false))
     );
     return {
       total: body.total_results,
