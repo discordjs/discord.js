@@ -914,8 +914,10 @@ class RESTMethods {
       .then(() => message);
   }
 
-  getMessageReactionUsers(message, emoji, limit = 100) {
-    return this.rest.makeRequest('get', Endpoints.Message(message).Reaction(emoji, limit), true);
+  getMessageReactionUsers(message, emoji, options) {
+    const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+
+    return this.rest.makeRequest('get', `${Endpoints.Message(message).Reaction(emoji)}?${queryString}`, true);
   }
 
   getApplication(id) {
