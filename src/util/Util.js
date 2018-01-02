@@ -68,22 +68,17 @@ class Util {
    * Parses emoji info out of a string. The string must be one of:
    * * A UTF-8 emoji (no ID)
    * * A URL-encoded UTF-8 emoji (no ID)
-   * * A Discord custom emoji (`<:name:id>`)
+   * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
-   * @returns {Object} Object with `name` and `id` properties
+   * @returns {?Object} Object with `animated`, `name`, and `id` properties
    * @private
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
-    if (text.includes(':')) {
-      const [name, id] = text.split(':');
-      return { name, id };
-    } else {
-      return {
-        name: text,
-        id: null,
-      };
-    }
+    if (!text.includes(':')) return { animated: false, name: text, id: null };
+    const m = text.match(/<?(a)?:(\w{2,32}):(\d{17,19})>?/);
+    if (!m) return null;
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
   }
 
   /**

@@ -49,6 +49,12 @@ class Emoji {
      */
     this.managed = data.managed;
 
+    /**
+     * Whether this emoji is animated
+     * @type {boolean}
+     */
+    this.animated = data.animated;
+
     this._roles = data.roles;
   }
 
@@ -89,7 +95,7 @@ class Emoji {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id);
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id, this.animated ? 'gif' : 'png');
   }
 
   /**
@@ -187,7 +193,11 @@ class Emoji {
    * msg.reply(`Hello! ${emoji}`);
    */
   toString() {
-    return this.requiresColons ? `<:${this.name}:${this.id}>` : this.name;
+    if (!this.id || !this.requiresColons) {
+      return this.name;
+    }
+
+    return `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>`;
   }
 
   /**
