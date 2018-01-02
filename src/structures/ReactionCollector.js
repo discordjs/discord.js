@@ -20,7 +20,8 @@ class ReactionCollector extends Collector {
    * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, filter, options = {}) {
-    super(message.client, filter, { ...options, emitOnlyArgs: true });
+    options.emitOnlyArgs = true;
+    super(message.client, filter, options);
 
     /**
      * The message upon which to collect reactions
