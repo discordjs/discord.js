@@ -1,6 +1,8 @@
 const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
-const { RangeError } = require('../../errors');
+const Snowflake = require('../../util/Snowflake');
+const Collection = require('../../util/Collection');
+const { RangeError, TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -236,6 +238,46 @@ class TextBasedChannel {
   }
 
   /**
+   * Bulk deletes given messages that are newer than two weeks.
+   * <warn>This is only available when using a bot account.</warn>
+   * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
+   * Messages or number of messages to delete
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
+   * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
+   */
+  async bulkDelete(messages, filterOld = false) {
+    if (messages instanceof Array || messages instanceof Collection) {
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
+      if (filterOld) {
+        messageIDs = messageIDs.filter(id =>
+          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+        );
+      }
+      if (messageIDs.length === 0) return new Collection();
+      if (messageIDs.length === 1) {
+        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
+        const message = this.client.actions.MessageDelete.handle({
+          channel_id: this.id,
+          id: messageIDs[0],
+        }).message;
+        if (message) return new Collection([[message.id, message]]);
+        return new Collection();
+      }
+      await this.client.api.channels[this.id].messages['bulk-delete']
+        .post({ data: { messages: messageIDs } });
+      return this.client.actions.MessageDeleteBulk.handle({
+        channel_id: this.id,
+        ids: messageIDs,
+      }).messages;
+    }
+    if (!isNaN(messages)) {
+      const msgs = await this.messages.fetch({ limit: messages });
+      return this.bulkDelete(msgs, filterOld);
+    }
+    throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
+  }
+
+  /**
    * Marks all messages in this channel as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
@@ -256,6 +298,7 @@ class TextBasedChannel {
       props.push(
         'acknowledge',
         'search',
+        'bulkDelete',
         'startTyping',
         'stopTyping',
         'typing',
