@@ -13,15 +13,17 @@ class APIRequest {
     this.path = path.toString();
     this.route = options.route;
     this.options = options;
+    this.builtQueryString = false;
   }
 
   gen() {
     const API = this.options.versioned === false ? this.client.options.http.api :
       `${this.client.options.http.api}/v${this.client.options.http.version}`;
 
-    if (this.options.query) {
-      const queryString = (querystring.stringify(this.options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+    if (this.options.query && !this.builtQueryString) {
+      const queryString = querystring.stringify(this.options.query);
       this.path += `?${queryString}`;
+      this.builtQueryString = true;
     }
 
     const request = snekfetch[this.method](`${API}${this.path}`, { agent });
