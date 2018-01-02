@@ -82,13 +82,13 @@ class Collector extends EventEmitter {
     if (collect && this.filter(...args, this.collected)) {
       this.collected.set(collect.key, collect.value);
 
-      if (!this.options.emitOnlyArgs) args.unshift(collect.value);
       /**
        * Emitted whenever an element is collected.
        * @event Collector#collect
        * @param {*} element The element that got collected
        * @param {...*} args Other arguments emitted by the listener
        */
+      if (!this.options.emitOnlyArgs) args.unshift(collect.value);
       this.emit('collect', ...args);
     }
     this.checkEnd();
@@ -108,13 +108,13 @@ class Collector extends EventEmitter {
     const value = this.collected.get(dispose);
     this.collected.delete(dispose);
 
-    if (!this.options.emitOnlyArgs) args.unshift(value);
     /**
      * Emitted whenever an element has been disposed.
      * @event Collector#dispose
      * @param {*} element The element that was disposed
      * @param {...*} args Other arguments emitted by the listener
      */
+    if (!this.options.emitOnlyArgs) args.unshift(value);
     this.emit('dispose', ...args);
     this.checkEnd();
   }
