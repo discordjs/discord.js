@@ -20,7 +20,7 @@ class ReactionCollector extends Collector {
    * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, filter, options = {}) {
-    super(message.client, filter, options);
+    super(message.client, filter, { ...options, emitOnlyArgs: true });
 
     /**
      * The message upon which to collect reactions
@@ -52,12 +52,12 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
     });
 
-    this.on('collect', (collected, reaction, user) => {
+    this.on('collect', (reaction, user) => {
       this.total++;
       this.users.set(user.id, user);
     });
 
-    this.on('dispose', (disposed, reaction, user) => {
+    this.on('dispose', (reaction, user) => {
       this.total--;
       if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
     });
@@ -80,9 +80,10 @@ class ReactionCollector extends Collector {
   /**
    * Handles a reaction deletion for possible disposal.
    * @param {MessageReaction} reaction The reaction to possibly dispose
+   * @param {User} user The user that removed the reaction
    * @returns {?Snowflake|string}
    */
-  dispose(reaction) {
+  dispose(reaction, user) {
     if (reaction.message.id !== this.message.id) return null;
 
     /**
@@ -91,8 +92,11 @@ class ReactionCollector extends Collector {
      * is removed.
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
+     * @param {User} user The user that removed the reaction
      */
-    if (this.collected.has(reaction)) this.emit('remove', reaction);
+    if (this.collected.has(ReactionCollector.key(reaction))) {
+      this.emit('remove', reaction, user);
+    }
     return reaction.count ? null : ReactionCollector.key(reaction);
   }
 
