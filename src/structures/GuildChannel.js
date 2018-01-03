@@ -9,7 +9,7 @@ const { MessageNotificationTypes } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (e.g. text channels and voice channels).
+ * Represents a guild channel (i.g. a {@link TextChannel}, {@link VoiceChannel} or {@link CategoryChannel}).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -323,14 +323,15 @@ class GuildChannel extends Channel {
 
   /**
    * Sets the category parent of this channel.
-   * @param {GuildChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {?GuildChannel|Snowflake} channel Parent channel
+   * @param {Object} [options={}] Options to pass
+   * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit({
-      parentID: channel.id ? channel.id : channel,
+      parentID: channel !== null ? channel.id ? channel.id : channel : null,
       lockPermissions,
     }, reason);
   }
