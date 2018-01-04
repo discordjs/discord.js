@@ -265,7 +265,6 @@ class ClientUser extends Structures.get('User') {
 
   /**
    * Creates a guild.
-   * <warn>This is only available when using a user account.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
    * @param {string} [options.region] The region for the server, defaults to the closest one available
