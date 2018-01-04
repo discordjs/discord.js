@@ -300,11 +300,12 @@ class GuildMember extends Base {
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
+   * @param {Object} [options] Options
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, checkAdmin = true, checkOwner = true) {
+  hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
