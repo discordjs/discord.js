@@ -514,6 +514,11 @@ class Guild extends Base {
    * @param {UserResolvable} [options.user] Only show entries involving this user
    * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
+   * @example
+   * // Output audit log entries
+   * guild.fetchAuditLogs()
+   *   .then(audit => console.log(audit.entries))
+   *   .catch(console.error);
    */
   fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
@@ -921,8 +926,8 @@ class Guild extends Base {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
-   * guild.createChannel('new-general', 'text')
-   *   .then(channel => console.log(`Created new channel ${channel}`))
+   * guild.createChannel('new-general', { reason: 'Cool new channel' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   createChannel(name, { type, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {

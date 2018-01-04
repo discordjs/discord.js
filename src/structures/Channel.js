@@ -53,13 +53,24 @@ class Channel extends Base {
   }
 
   /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Logs: Hello from <#123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+
+  /**
    * Deletes this channel.
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
    * channel.delete()
-   *   .then() // Success
-   *   .catch(console.error); // Log error
+   *   then(console.log)
+   *   .catch(console.error);
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
