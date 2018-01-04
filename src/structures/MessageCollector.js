@@ -57,10 +57,7 @@ class MessageCollector extends Collector {
   collect(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
-    return {
-      key: message.id,
-      value: message,
-    };
+    return message.id;
   }
 
   /**

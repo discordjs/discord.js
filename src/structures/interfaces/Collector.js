@@ -14,7 +14,6 @@ const EventEmitter = require('events');
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
- * @property {boolean} [emitOnlyArgs=false] Used in case the processed element
  * is equal to the first argument emitted by the listener.
  */
 
@@ -80,7 +79,7 @@ class Collector extends EventEmitter {
     const collect = this.collect(...args);
 
     if (collect && this.filter(...args, this.collected)) {
-      this.collected.set(collect.key, collect.value);
+      this.collected.set(collect, args[0]);
 
       /**
        * Emitted whenever an element is collected.
@@ -88,7 +87,6 @@ class Collector extends EventEmitter {
        * @param {*} element The element that got collected
        * @param {...*} args Other arguments emitted by the listener
        */
-      if (!this.options.emitOnlyArgs) args.unshift(collect.value);
       this.emit('collect', ...args);
     }
     this.checkEnd();
@@ -104,8 +102,6 @@ class Collector extends EventEmitter {
 
     const dispose = this.dispose(...args);
     if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
-
-    const value = this.collected.get(dispose);
     this.collected.delete(dispose);
 
     /**
@@ -114,7 +110,6 @@ class Collector extends EventEmitter {
      * @param {*} element The element that was disposed
      * @param {...*} args Other arguments emitted by the listener
      */
-    if (!this.options.emitOnlyArgs) args.unshift(value);
     this.emit('dispose', ...args);
     this.checkEnd();
   }

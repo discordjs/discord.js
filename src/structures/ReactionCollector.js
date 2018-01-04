@@ -20,7 +20,6 @@ class ReactionCollector extends Collector {
    * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, filter, options = {}) {
-    options.emitOnlyArgs = true;
     super(message.client, filter, options);
 
     /**
@@ -58,7 +57,7 @@ class ReactionCollector extends Collector {
       this.users.set(user.id, user);
     });
 
-    this.on('dispose', (reaction, user) => {
+    this.on('remove', (reaction, user) => {
       this.total--;
       if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
     });
@@ -72,10 +71,7 @@ class ReactionCollector extends Collector {
    */
   collect(reaction) {
     if (reaction.message.id !== this.message.id) return null;
-    return {
-      key: ReactionCollector.key(reaction),
-      value: reaction,
-    };
+    return ReactionCollector.key(reaction);
   }
 
   /**
