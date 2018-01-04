@@ -187,8 +187,8 @@ const Endpoints = exports.Endpoints = {
           toString: () => mbase,
           reactions: `${mbase}/reactions`,
           ack: `${mbase}/ack`,
-          Reaction: (emoji, limit) => {
-            const rbase = `${mbase}/reactions/${emoji}${limit ? `?limit=${limit}` : ''}`;
+          Reaction: emoji => {
+            const rbase = `${mbase}/reactions/${emoji}`;
             return {
               toString: () => rbase,
               User: userID => `${rbase}/${userID}`,

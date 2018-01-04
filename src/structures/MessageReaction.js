@@ -72,19 +72,20 @@ class MessageReaction {
   /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
+   * @param {Object} [options] Options to fetch users
+   * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
+   * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  fetchUsers(limit = 100) {
+  fetchUsers(limit = 100, { after, before } = {}) {
     const message = this.message;
     return message.client.rest.methods.getMessageReactionUsers(
-      message, this.emoji.identifier, limit
+      message, this.emoji.identifier, { after, before, limit }
     ).then(users => {
-      this.users = new Collection();
       for (const rawUser of users) {
         const user = this.message.client.dataManager.newUser(rawUser);
         this.users.set(user.id, user);
       }
-      this.count = this.users.size;
       return this.users;
     });
   }
