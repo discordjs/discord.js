@@ -58,8 +58,8 @@ class Channel {
    * @example
    * // Delete the channel
    * channel.delete()
-   *   .then() // Success
-   *   .catch(console.error); // Log error
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   delete() {
     return this.client.rest.methods.deleteChannel(this);

@@ -171,7 +171,7 @@ class TextBasedChannel {
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get messages
-   * channel.fetchMessages({limit: 10})
+   * channel.fetchMessages({ limit: 10 })
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    */
@@ -303,7 +303,7 @@ class TextBasedChannel {
    * <info>It can take a few seconds for the client user to stop typing.</info>
    * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
    * @example
-   * // Stop typing in a channel
+   * // Reduce the typing count by one and stop typing if it reached 0
    * channel.stopTyping();
    * @example
    * // Force typing to fully stop in a channel
@@ -357,10 +357,8 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createMessageCollector(
-   *   m => m.content.includes('discord'),
-   *   { time: 15000 }
-   * );
+   * const filter = m => m.content.includes('discord');
+   * const collector = channel.createMessageCollector(filter, { time: 15000 });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -407,6 +405,11 @@ class TextBasedChannel {
    * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
+   * @example
+   * // Bulk delete messages
+   * channel.bulkDelete(5)
+   *   .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+   *   .catch(console.error);
    */
   bulkDelete(messages, filterOld = false) {
     if (messages instanceof Array || messages instanceof Collection) {
