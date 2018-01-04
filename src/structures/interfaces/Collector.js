@@ -14,7 +14,6 @@ const EventEmitter = require('events');
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
- * is equal to the first argument emitted by the listener.
  */
 
 /**
