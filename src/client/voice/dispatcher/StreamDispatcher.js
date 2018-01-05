@@ -200,7 +200,7 @@ class StreamDispatcher extends Writable {
       setTimeout(done.bind(this), next);
     }
     if (this._sdata.sequence >= (2 ** 16) - 1) this._sdata.sequence = -1;
-    if (this._sdata.timestamp >= (2 ** 32) - 1) this._sdata.timestamp = -TIMESTAMP_INC;
+    if (this._sdata.timestamp >= (2 ** 32) - TIMESTAMP_INC) this._sdata.timestamp = -TIMESTAMP_INC;
     this._sdata.sequence++;
     this._sdata.timestamp += TIMESTAMP_INC;
     this.count++;
