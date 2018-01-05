@@ -300,11 +300,12 @@ class GuildMember extends Base {
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
+   * @param {Object} [options] Options
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, checkAdmin = true, checkOwner = true) {
+  hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
@@ -395,6 +396,16 @@ class GuildMember extends Base {
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Set the member's roles to a single role
+   * guildMember.setRoles(['391156570408615936'])
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Remove all the roles from a member
+   * guildMember.setRoles([])
+   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .catch(console.error);
    */
   setRoles(roles, reason) {
     return this.edit({ roles }, reason);
@@ -527,7 +538,9 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
-   * guildMember.ban(7);
+   * guildMember.ban({ days: 7, reason: 'They deserved it' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   ban(options) {
     return this.guild.ban(this, options);

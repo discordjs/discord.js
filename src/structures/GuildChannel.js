@@ -272,8 +272,8 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
-   * channel.edit({name: 'new-channel'})
-   *   .then(c => console.log(`Edited channel ${c}`))
+   * channel.edit({ name: 'new-channel' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   async edit(data, reason) {
@@ -386,6 +386,11 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
+   * @example
+   * // Create an invite to a channel
+   * channel.createInvite()
+   *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
+   *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
     return this.client.api.channels(this.id).invites.post({ data: {
@@ -488,17 +493,6 @@ class GuildChannel extends Channel {
     } catch (err) {
       return MessageNotificationTypes[3];
     }
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Logs: Hello from <#123456789012345678>!
-   * console.log(`Hello from ${channel}!`);
-   */
-  toString() {
-    return `<#${this.id}>`;
   }
 }
 
