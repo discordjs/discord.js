@@ -260,7 +260,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether the member is manageable by the client user
+   * Whether the member is manageable in terms of role hierarchy by the client user
    * @type {boolean}
    * @readonly
    */
