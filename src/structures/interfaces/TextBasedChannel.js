@@ -271,22 +271,20 @@ class TextBasedChannel {
     }
 
     const entry = {};
-    entry.promise = new Promise((resolve, reject) => {
+    entry.promise = new Promise(resolve => {
       Object.assign(entry, {
         count: count || 1,
         interval: this.client.setInterval(() => {
-          this.client.rest.methods.sendTyping(this.id).catch(error => {
+          this.client.rest.methods.sendTyping(this.id).catch(() => {
             this.client.clearInterval(entry.interval);
             this.client.user._typing.delete(this.id);
-            reject(error);
           });
         }, 9000),
         resolve,
       });
-      this.client.rest.methods.sendTyping(this.id).catch(error => {
+      this.client.rest.methods.sendTyping(this.id).catch(() => {
         this.client.clearInterval(entry.interval);
         this.client.user._typing.delete(this.id);
-        reject(error);
       });
       this.client.user._typing.set(this.id, entry);
     });
