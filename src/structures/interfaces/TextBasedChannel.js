@@ -259,19 +259,15 @@ class TextBasedChannel {
   /**
    * Starts a typing indicator in the channel.
    * @param {number} [count] The number of times startTyping should be considered to have been called
-   * @returns {Promise}
    * @example
    * // Start typing in a channel
-   * channel.startTyping()
-   *   .then(console.log)
-   *   .catch(console.error);
+   * channel.startTyping();
    */
   startTyping(count) {
     if (typeof count !== 'undefined' && count < 1) throw new RangeError('Count must be at least 1.');
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
-      return entry.promise;
     }
 
     const entry = {};
@@ -294,7 +290,6 @@ class TextBasedChannel {
       });
       this.client.user._typing.set(this.id, entry);
     });
-    return entry.promise;
   }
 
   /**
