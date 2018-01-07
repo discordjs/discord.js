@@ -104,9 +104,10 @@ class User extends Base {
    * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
    * @returns {?string}
    */
-  avatarURL({ format, size } = {}) {
+  avatarURL(options = {}) {
     if (!this.avatar) return null;
-    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+    if (typeof options === 'string') options = { format: options };
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, options.format, options.size);
   }
 
   /**
