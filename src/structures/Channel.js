@@ -53,45 +53,61 @@ class Channel extends Base {
   }
 
   /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Logs: Hello from <#123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+
+  /**
    * Deletes this channel.
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
    * channel.delete()
-   *   .then() // Success
-   *   .catch(console.error); // Log error
+   *   then(console.log)
+   *   .catch(console.error);
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
   }
 
   static create(client, data, guild) {
-    const DMChannel = require('./DMChannel');
-    const GroupDMChannel = require('./GroupDMChannel');
-    const TextChannel = require('./TextChannel');
-    const VoiceChannel = require('./VoiceChannel');
-    const CategoryChannel = require('./CategoryChannel');
-    const GuildChannel = require('./GuildChannel');
+    const Structures = require('../util/Structures');
     let channel;
     if (data.type === ChannelTypes.DM) {
+      const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
     } else if (data.type === ChannelTypes.GROUP) {
+      const GroupDMChannel = Structures.get('GroupDMChannel');
       channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
         switch (data.type) {
-          case ChannelTypes.TEXT:
+          case ChannelTypes.TEXT: {
+            const TextChannel = Structures.get('TextChannel');
             channel = new TextChannel(guild, data);
             break;
-          case ChannelTypes.VOICE:
+          }
+          case ChannelTypes.VOICE: {
+            const VoiceChannel = Structures.get('VoiceChannel');
             channel = new VoiceChannel(guild, data);
             break;
-          case ChannelTypes.CATEGORY:
+          }
+          case ChannelTypes.CATEGORY: {
+            const CategoryChannel = Structures.get('CategoryChannel');
             channel = new CategoryChannel(guild, data);
             break;
-          default:
+          }
+          default: {
+            const GuildChannel = Structures.get('GuildChannel');
             channel = new GuildChannel(guild, data);
+          }
         }
         guild.channels.set(channel.id, channel);
       }

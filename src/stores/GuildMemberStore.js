@@ -41,7 +41,7 @@ class GuildMemberStore extends DataStore {
   /**
    * Resolves a GuildMemberResolvable to an member ID string.
    * @param {GuildMemberResolvable} member The user that is part of the guild
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(member) {
     const memberResolveable = super.resolveID(member);
@@ -72,21 +72,22 @@ class GuildMemberStore extends DataStore {
    * @returns {Promise<GuildMember>|Promise<Collection<Snowflake, GuildMember>>}
    * @example
    * // Fetch all members from a guild
-   * guild.members.fetch();
+   * guild.members.fetch()
+   *   .then(console.log)
+   *   .catch(console.error);
    * @example
    * // Fetch a single member
-   * guild.members.fetch('66564597481480192');
-   * guild.members.fetch(user);
-   * guild.members.fetch({ user, cache: false }); // Fetch and don't cache
+   * guild.members.fetch('66564597481480192')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * guild.members.fetch({ user, cache: false }) // Fetch and don't cache
+   *   .then(console.log)
+   *   .catch(console.error);
    * @example
    * // Fetch by query
-   * guild.members.fetch({
-   *   query: 'hydra',
-   * });
-   * guild.members.fetch({
-   *   query: 'hydra',
-   *   limit: 10,
-   * });
+   * guild.members.fetch({ query: 'hydra' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetch(options) {
     if (!options) return this._fetchMany();

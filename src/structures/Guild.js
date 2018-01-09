@@ -114,8 +114,18 @@ class Guild extends Base {
     this.large = Boolean('large' in data ? data.large : this.large);
 
     /**
-     * An array of guild features
-     * @type {Object[]}
+     * An array of enabled guild features, here are the possible values:
+     * * INVITE_SPLASH
+     * * MORE_EMOJI
+     * * VERIFIED
+     * * VIP_REGIONS
+     * * VANITY_URL
+     * @typedef {string} Features
+     */
+
+    /**
+     * An array of guild features partnered guilds have enabled
+     * @type {Features[]}
      */
     this.features = data.features;
 
@@ -250,6 +260,15 @@ class Guild extends Base {
   }
 
   /**
+   * If this guild is verified
+   * @type {boolean}
+   * @readonly
+   */
+  get verified() {
+    return this.features.includes('VERIFIED');
+  }
+
+  /**
    * The URL to this guild's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
@@ -302,7 +321,7 @@ class Guild extends Base {
 
   /**
    * System channel for this guild
-   * @type {?GuildChannel}
+   * @type {?TextChannel}
    * @readonly
    */
   get systemChannel() {
@@ -392,7 +411,7 @@ class Guild extends Base {
     }
   }
 
-  /*
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -423,9 +442,15 @@ class Guild extends Base {
   }
 
   /**
+   * An object containing information about a guild member's ban.
+   * @typedef {Object} BanInfo
+   * @property {User} user User that was banned
+   * @property {?string} reason Reason the user was banned
+   */
+
+  /**
    * Fetches a collection of banned users in this guild.
-   * The returned collection contains user objects keyed under `user` and reasons keyed under `reason`.
-   * @returns {Promise<Collection<Snowflake, Object>>}
+   * @returns {Promise<Collection<Snowflake, BanInfo>>}
    */
   fetchBans() {
     return this.client.api.guilds(this.id).bans.get().then(bans =>
@@ -487,8 +512,13 @@ class Guild extends Base {
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
-   * @param {ActionType|number} [options.type] Only show entries involving this action type
+   * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
+   * @example
+   * // Output audit log entries
+   * guild.fetchAuditLogs()
+   *   .then(audit => console.log(audit.entries))
+   *   .catch(console.error);
    */
   fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
@@ -519,7 +549,9 @@ class Guild extends Base {
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    user = this.client.users.resolveID(user);
+    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
+    if (this.members.has(user)) return Promise.resolve(this.members.get(user));
     options.access_token = options.accessToken;
     if (options.roles) {
       const roles = [];
@@ -532,8 +564,8 @@ class Guild extends Base {
         roles.push(role.id);
       }
     }
-    return this.client.api.guilds(this.id).members(user.id).put({ data: options })
-      .then(data => this.client.actions.GuildMemberGet.handle(this, data).member);
+    return this.client.api.guilds(this.id).members(user).put({ data: options })
+      .then(data => this.members.create(data));
   }
 
   /**
@@ -785,6 +817,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   allowDMs(allow) {
+    if (this.client.user.bot) return Promise.reject(new Error('FEATURE_USER_ONLY'));
     const settings = this.client.user.settings;
     if (allow) return settings.removeRestrictedGuild(this);
     else return settings.addRestrictedGuild(this);
@@ -793,11 +826,10 @@ class Guild extends Base {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
-   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {Object} [options] Options for the ban
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
-   * @returns {Promise<GuildMember|User|string>} Result object will be resolved as specifically as possible.
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
@@ -883,8 +915,8 @@ class Guild extends Base {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} type The type of the new channel, either `text`, `voice`, or `category`
    * @param {Object} [options] Options
+   * @param {string} [options.type='text'] The type of the new channel, either `text`, `voice`, or `category`
    * @param {boolean} [options.nsfw] Whether the new channel is nsfw
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
@@ -894,11 +926,11 @@ class Guild extends Base {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create a new text channel
-   * guild.createChannel('new-general', 'text')
-   *   .then(channel => console.log(`Created new channel ${channel}`))
+   * guild.createChannel('new-general', { reason: 'Cool new channel' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
-  createChannel(name, type, { nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
+  createChannel(name, { type, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (overwrites instanceof Collection || overwrites instanceof Array) {
       overwrites = overwrites.map(overwrite => {
         let allow = overwrite.allow || (overwrite.allowed ? overwrite.allowed.bitfield : 0);
@@ -928,7 +960,7 @@ class Guild extends Base {
     return this.client.api.guilds(this.id).channels.post({
       data: {
         name,
-        type: ChannelTypes[type.toUpperCase()],
+        type: type ? ChannelTypes[type.toUpperCase()] : 'text',
         nsfw,
         bitrate,
         user_limit: userLimit,
@@ -970,7 +1002,7 @@ class Guild extends Base {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {RoleData} [options.data] The data to update the role with
@@ -991,7 +1023,7 @@ class Guild extends Base {
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(role => console.log(`Created role ${role}`))
-   *   .catch(console.error)
+   *   .catch(console.error);
    */
   createRole({ data = {}, reason } = {}) {
     if (data.color) data.color = Util.resolveColor(data.color);
@@ -1045,8 +1077,7 @@ class Guild extends Base {
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this, emoji).emoji);
     }
 
-    return DataResolver.resolveImage(attachment)
-      .then(image => this.createEmoji(image, name, { roles, reason }));
+    return DataResolver.resolveImage(attachment).then(image => this.createEmoji(image, name, { roles, reason }));
   }
 
   /**
@@ -1114,19 +1145,44 @@ class Guild extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the guild's name instead of the guild object.
+   * When concatenated with a string, this automatically returns the guild's name instead of the Guild object.
    * @returns {string}
    * @example
    * // Logs: Hello from My Guild!
    * console.log(`Hello from ${guild}!`);
-   * @example
-   * // Logs: Hello from My Guild!
-   * console.log('Hello from ' + guild + '!');
    */
   toString() {
     return this.name;
   }
 
+  /**
+   * Creates a collection of this guild's roles, sorted by their position and IDs.
+   * @returns {Collection<Role>}
+   * @private
+   */
+  _sortedRoles() {
+    return Util.discordSort(this.roles);
+  }
+
+  /**
+   * Creates a collection of this guild's or a specific category's channels, sorted by their position and IDs.
+   * @param {GuildChannel} [channel] Category to get the channels of
+   * @returns {Collection<GuildChannel>}
+   * @private
+   */
+  _sortedChannels(channel) {
+    const category = channel.type === ChannelTypes.CATEGORY;
+    return Util.discordSort(this.channels.filter(c =>
+      c.type === channel.type && (category || c.parent === channel.parent)
+    ));
+  }
+
+  /**
+   * Handles a user speaking update in a voice channel.
+   * @param {Snowflake} user ID of the user that the update is for
+   * @param {boolean} speaking Whether the user is speaking
+   * @private
+   */
   _memberSpeakUpdate(user, speaking) {
     const member = this.members.get(user);
     if (member && member.speaking !== speaking) {
@@ -1140,23 +1196,15 @@ class Guild extends Base {
       this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
     }
   }
-
-  _sortedRoles() {
-    return Util.discordSort(this.roles);
-  }
-
-  _sortedChannels(channel) {
-    const category = channel.type === ChannelTypes.CATEGORY;
-    return Util.discordSort(this.channels.filter(c =>
-      c.type === channel.type && (category || c.parent === channel.parent)));
-  }
 }
 
+// TODO: Document this thing
 class VoiceStateCollection extends Collection {
   constructor(guild) {
     super();
     this.guild = guild;
   }
+
   set(id, voiceState) {
     const member = this.guild.members.get(id);
     if (member) {

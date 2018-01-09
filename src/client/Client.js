@@ -70,11 +70,10 @@ class Client extends BaseClient {
     this.voice = !browser ? new ClientVoiceManager(this) : null;
 
     /**
-     * The shard helpers for the client
-     * (only if the process was spawned as a child, such as from a {@link ShardingManager})
+     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = !browser && process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -163,6 +162,7 @@ class Client extends BaseClient {
   /**
    * Timestamp of the latest ping's start time
    * @type {number}
+   * @readonly
    * @private
    */
   get _pingTimestamp() {
@@ -249,7 +249,7 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return new Promise((resolve, reject) => {
       if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');

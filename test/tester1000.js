@@ -10,6 +10,7 @@ client.on('debug', log);
 client.on('ready', () => {
   log('READY', client.user.tag, client.user.id);
 });
+client.on('rateLimit', log);
 
 const commands = {
   eval: message => {

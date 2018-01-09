@@ -150,11 +150,12 @@ class ClientApplication extends Base {
    * @returns {Promise<Object>}
    */
   fetchAssets() {
-    return this.client.api.applications(this.id).assets.get()
+    const types = Object.keys(ClientApplicationAssetTypes);
+    return this.client.api.oauth2.applications(this.id).assets.get()
       .then(assets => assets.map(a => ({
         id: a.id,
         name: a.name,
-        type: Object.keys(ClientApplicationAssetTypes)[a.type - 1],
+        type: types[a.type - 1],
       })));
   }
 
@@ -167,7 +168,7 @@ class ClientApplication extends Base {
    */
   createAsset(name, data, type) {
     return DataResolver.resolveBase64(data).then(b64 =>
-      this.client.api.applications(this.id).assets.post({ data: {
+      this.client.api.oauth2.applications(this.id).assets.post({ data: {
         name,
         data: b64,
         type: ClientApplicationAssetTypes[type.toUpperCase()],
@@ -177,7 +178,7 @@ class ClientApplication extends Base {
   /**
    * Resets the app's secret.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetSecret() {
     return this.client.api.oauth2.applications[this.id].reset.post()
@@ -187,7 +188,7 @@ class ClientApplication extends Base {
   /**
    * Resets the app's bot token.
    * <warn>This is only available when using a user account.</warn>
-   * @returns {ClientApplication}
+   * @returns {Promise<ClientApplication>}
    */
   resetToken() {
     return this.client.api.oauth2.applications[this.id].bot.reset.post()
@@ -195,8 +196,12 @@ class ClientApplication extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the app name rather than the app object.
+   * When concatenated with a string, this automatically returns the application's name instead of the
+   * ClientApplication object.
    * @returns {string}
+   * @example
+   * // Logs: Application name: My App
+   * console.log(`Application name: ${application}`);
    */
   toString() {
     return this.name;

@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+let Structures;
 
 /**
  * Manages the creation, retrieval and deletion of a specific data model.
@@ -7,8 +8,9 @@ const Collection = require('../util/Collection');
 class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
+    if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
-    Object.defineProperty(this, 'holds', { value: holds });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
     if (iterable) for (const item of iterable) this.create(item);
   }
 
@@ -37,7 +39,7 @@ class DataStore extends Collection {
   /**
    * Resolves a data entry to a instance ID.
    * @param {string|Instance} idOrInstance The id or instance of something in this DataStore
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;

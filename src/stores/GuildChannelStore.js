@@ -42,7 +42,7 @@ class GuildChannelStore extends DataStore {
    * @memberof GuildChannelStore
    * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
 }
 

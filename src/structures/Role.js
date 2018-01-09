@@ -165,15 +165,24 @@ class Role extends Base {
    *   .then(r => console.log(`Edited role ${r}`))
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
+    if (typeof data.position !== 'undefined') {
+      await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles, reason)
+        .then(updatedRoles => {
+          this.client.actions.GuildRolesPositionUpdate.handle({
+            guild_id: this.guild.id,
+            roles: updatedRoles,
+          });
+        });
+    }
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
         color: Util.resolveColor(data.color || this.color),
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-        position: typeof data.position !== 'undefined' ? data.position : this.position,
         permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
       },
@@ -323,8 +332,11 @@ class Role extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the role mention rather than the Role object.
+   * When concatenated with a string, this automatically returns the role's mention instead of the Role object.
    * @returns {string}
+   * @example
+   * // Logs: Role: <@&123456789012345678>
+   * console.log(`Role: ${role}`);
    */
   toString() {
     if (this.id === this.guild.id) return '@everyone';

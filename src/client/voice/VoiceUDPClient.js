@@ -103,6 +103,9 @@ class VoiceConnectionUDPClient extends EventEmitter {
     const socket = this.socket = udp.createSocket('udp4');
 
     socket.once('message', message => {
+      // Stop if the sockets have been deleted because the connection has been closed already
+      if (!this.voiceConnection.sockets.ws) return;
+
       const packet = parseLocalPacket(message);
       if (packet.error) {
         this.emit('error', packet.error);

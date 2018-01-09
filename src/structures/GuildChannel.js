@@ -9,7 +9,7 @@ const { MessageNotificationTypes } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (e.g. text channels and voice channels).
+ * Represents a guild channel (i.g. a {@link TextChannel}, {@link VoiceChannel} or {@link CategoryChannel}).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
@@ -248,6 +248,7 @@ class GuildChannel extends Channel {
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
+   * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
@@ -271,18 +272,28 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
-   * channel.edit({name: 'new-channel'})
-   *   .then(c => console.log(`Edited channel ${c}`))
+   * channel.edit({ name: 'new-channel' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data, reason) {
+  async edit(data, reason) {
+    if (typeof data.position !== 'undefined') {
+      await Util.setPosition(this, data.position, false,
+        this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
+        .then(updatedChannels => {
+          this.client.actions.GuildChannelsPositionUpdate.handle({
+            guild_id: this.guild.id,
+            channels: updatedChannels,
+          });
+        });
+    }
     return this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
-        position: typeof data.position === 'number' ? data.position : this.rawPosition,
+        nsfw: data.nsfw,
         bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
-        user_limit: data.userLimit != null ? data.userLimit : this.userLimit, // eslint-disable-line eqeqeq
+        user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         permission_overwrites: data.permissionOverwrites,
@@ -312,14 +323,15 @@ class GuildChannel extends Channel {
 
   /**
    * Sets the category parent of this channel.
-   * @param {GuildChannel|Snowflake} channel Parent channel
-   * @param {boolean} [options.lockPermissions] Lock the permissions to what the parent's permissions are
+   * @param {?GuildChannel|Snowflake} channel Parent channel
+   * @param {Object} [options={}] Options to pass
+   * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit({
-      parentID: channel.id ? channel.id : channel,
+      parentID: channel !== null ? channel.id ? channel.id : channel : null,
       lockPermissions,
     }, reason);
   }
@@ -374,6 +386,11 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
+   * @example
+   * // Create an invite to a channel
+   * channel.createInvite()
+   *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
+   *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
     return this.client.api.channels(this.id).invites.post({ data: {
@@ -476,20 +493,6 @@ class GuildChannel extends Channel {
     } catch (err) {
       return MessageNotificationTypes[3];
     }
-  }
-
-  /**
-   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
-   * @returns {string}
-   * @example
-   * // Outputs: Hello from #general
-   * console.log(`Hello from ${channel}`);
-   * @example
-   * // Outputs: Hello from #general
-   * console.log('Hello from ' + channel);
-   */
-  toString() {
-    return `<#${this.id}>`;
   }
 }
 

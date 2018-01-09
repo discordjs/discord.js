@@ -35,7 +35,7 @@ class UserStore extends DataStore {
   /**
    * Resolves a UserResolvable to a user ID string.
    * @param {UserResolvable} user The UserResolvable to identify
-   * @returns {?string}
+   * @returns {?Snowflake}
    */
   resolveID(user) {
     if (user instanceof GuildMember) return user.user.id;

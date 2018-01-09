@@ -1,7 +1,7 @@
 const querystring = require('querystring');
 const snekfetch = require('snekfetch');
 const https = require('https');
-const { browser } = require('../util/Constants');
+const { browser, UserAgent } = require('../util/Constants');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
@@ -10,25 +10,22 @@ class APIRequest {
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
-    this.path = path.toString();
     this.route = options.route;
     this.options = options;
+
+    const queryString = (querystring.stringify(options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
   }
 
   gen() {
     const API = this.options.versioned === false ? this.client.options.http.api :
       `${this.client.options.http.api}/v${this.client.options.http.version}`;
 
-    if (this.options.query) {
-      const queryString = (querystring.stringify(this.options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
-      this.path += `?${queryString}`;
-    }
-
     const request = snekfetch[this.method](`${API}${this.path}`, { agent });
 
     if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
     if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
-    if (!browser) request.set('User-Agent', this.rest.userAgentManager.userAgent);
+    if (!browser) request.set('User-Agent', UserAgent);
     if (this.options.headers) request.set(this.options.headers);
 
     if (this.options.files) {

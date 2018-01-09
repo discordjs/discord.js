@@ -1,4 +1,3 @@
-const Long = require('long');
 const snekfetch = require('snekfetch');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -22,9 +21,7 @@ class Util {
   static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
-    if (splitText.length === 1) {
-      throw new RangeError('SPLIT_MAX_LEN');
-    }
+    if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [''];
     let msg = 0;
     for (let i = 0; i < splitText.length; i++) {
@@ -73,22 +70,17 @@ class Util {
    * Parses emoji info out of a string. The string must be one of:
    * * A UTF-8 emoji (no ID)
    * * A URL-encoded UTF-8 emoji (no ID)
-   * * A Discord custom emoji (`<:name:id>`)
+   * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
-   * @returns {Object} Object with `name` and `id` properties
+   * @returns {Object} Object with `animated`, `name`, and `id` properties
    * @private
    */
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
-    if (text.includes(':')) {
-      const [name, id] = text.split(':');
-      return { name, id };
-    } else {
-      return {
-        name: text,
-        id: null,
-      };
-    }
+    if (!text.includes(':')) return { animated: false, name: text, id: null };
+    const m = text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/);
+    if (!m) return null;
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
   }
 
   /**
@@ -187,11 +179,11 @@ class Util {
    * @private
    */
   static makePlainError(err) {
-    const obj = {};
-    obj.name = err.name;
-    obj.message = err.message;
-    obj.stack = err.stack;
-    return obj;
+    return {
+      name: err.name,
+      message: err.message,
+      stack: err.stack,
+    };
   }
 
   /**
@@ -226,7 +218,6 @@ class Util {
    * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
    */
-
   static resolveString(data) {
     if (typeof data === 'string') return data;
     if (data instanceof Array) return data.join('\n');
@@ -234,39 +225,34 @@ class Util {
   }
 
   /**
-   * Can be a Hex Literal, Hex String, Number, RGB Array, or one of the following
+   * Can be a number, hex string, an RGB array like:
+   * ```js
+   * [255, 0, 255] // purple
    * ```
-   * [
-   *   'DEFAULT',
-   *   'AQUA',
-   *   'GREEN',
-   *   'BLUE',
-   *   'PURPLE',
-   *   'GOLD',
-   *   'ORANGE',
-   *   'RED',
-   *   'GREY',
-   *   'DARKER_GREY',
-   *   'NAVY',
-   *   'DARK_AQUA',
-   *   'DARK_GREEN',
-   *   'DARK_BLUE',
-   *   'DARK_PURPLE',
-   *   'DARK_GOLD',
-   *   'DARK_ORANGE',
-   *   'DARK_RED',
-   *   'DARK_GREY',
-   *   'LIGHT_GREY',
-   *   'DARK_NAVY',
-   *   'RANDOM',
-   * ]
-   * ```
-   * or something like
-   * ```
-   * [255, 0, 255]
-   * ```
-   * for purple
-   * @typedef {string|number|Array} ColorResolvable
+   * or one of the following strings:
+   * - `DEFAULT`
+   * - `AQUA`
+   * - `GREEN`
+   * - `BLUE`
+   * - `PURPLE`
+   * - `GOLD`
+   * - `ORANGE`
+   * - `RED`
+   * - `GREY`
+   * - `DARKER_GREY`
+   * - `NAVY`
+   * - `DARK_AQUA`
+   * - `DARK_GREEN`
+   * - `DARK_BLUE`
+   * - `DARK_PURPLE`
+   * - `DARK_GOLD`
+   * - `DARK_ORANGE`
+   * - `DARK_RED`
+   * - `DARK_GREY`
+   * - `LIGHT_GREY`
+   * - `DARK_NAVY`
+   * - `RANDOM`
+   * @typedef {string|number|number[]} ColorResolvable
    */
 
   /**
@@ -274,7 +260,6 @@ class Util {
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
    */
-
   static resolveColor(color) {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
@@ -283,25 +268,36 @@ class Util {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
-    if (color < 0 || color > 0xFFFFFF) {
-      throw new RangeError('COLOR_RANGE');
-    } else if (color && isNaN(color)) {
-      throw new TypeError('COLOR_CONVERT');
-    }
+    if (color < 0 || color > 0xFFFFFF) throw new RangeError('COLOR_RANGE');
+    else if (color && isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
   }
 
   /**
-   * Sorts by Discord's position and then by ID.
+   * Sorts by Discord's position and ID.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection
-      .sort((a, b) => a.rawPosition - b.rawPosition || Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber());
+    return collection.sort((a, b) =>
+      a.rawPosition - b.rawPosition ||
+      parseInt(a.id.slice(0, -10)) - parseInt(b.id.slice(0, -10)) ||
+      parseInt(a.id.slice(10)) - parseInt(b.id.slice(10))
+    );
   }
 
+  /**
+   * Sets the position of a Channel or Role.
+   * @param {Channel|Role} item Object to set the position of
+   * @param {number} position New position for the object
+   * @param {boolean} relative Whether `position` is relative to its current position
+   * @param {Collection<string, Channel|Role>} sorted A collection of the objects sorted properly
+   * @param {APIRouter} route Route to call PATCH on
+   * @param {string} [reason] Reason for the change
+   * @returns {Promise<Object[]>} Updated item list, with `id` and `position` properties
+   * @private
+   */
   static setPosition(item, position, relative, sorted, route, reason) {
     let updatedItems = sorted.array();
     Util.moveElementInArray(updatedItems, item, position, relative);
@@ -309,12 +305,76 @@ class Util {
     return route.patch({ data: updatedItems, reason }).then(() => updatedItems);
   }
 
+  /**
+   * Alternative to Node's `path.basename` that we have for some (probably stupid) reason.
+   * @param {string} path Path to get the basename of
+   * @param {string} [ext] File extension to remove
+   * @returns {string} Basename of the path
+   * @private
+   */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path).slice(1)[2];
-    if (ext && f.substr(-1 * ext.length) === ext) {
-      f = f.substr(0, f.length - ext.length);
-    }
+    let f = splitPathRe.exec(path)[3];
+    if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
     return f;
+  }
+
+  /**
+   * Transforms a snowflake from a decimal string to a bit string.
+   * @param  {Snowflake} num Snowflake to be transformed
+   * @returns {string}
+   * @private
+   */
+  static idToBinary(num) {
+    let bin = '';
+    let high = parseInt(num.slice(0, -10)) || 0;
+    let low = parseInt(num.slice(-10));
+    while (low > 0 || high > 0) {
+      bin = String(low & 1) + bin;
+      low = Math.floor(low / 2);
+      if (high > 0) {
+        low += 5000000000 * (high % 2);
+        high = Math.floor(high / 2);
+      }
+    }
+    return bin;
+  }
+
+  /**
+   * Transforms a snowflake from a bit string to a decimal string.
+   * @param  {string} num Bit string to be transformed
+   * @returns {Snowflake}
+   * @private
+   */
+  static binaryToID(num) {
+    let dec = '';
+
+    while (num.length > 50) {
+      const high = parseInt(num.slice(0, -32), 2);
+      const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
+
+      dec = (low % 10).toString() + dec;
+      num = Math.floor(high / 10).toString(2) + Math.floor(low / 10).toString(2).padStart(32, '0');
+    }
+
+    num = parseInt(num, 2);
+    while (num > 0) {
+      dec = (num % 10).toString() + dec;
+      num = Math.floor(num / 10);
+    }
+
+    return dec;
+  }
+
+  /**
+   * Creates a Promise that resolves after a specified duration.
+   * @param {number} ms How long to wait before resolving (in milliseconds)
+   * @returns {Promise<void>}
+   * @private
+   */
+  static delayFor(ms) {
+    return new Promise(resolve => {
+      setTimeout(resolve, ms);
+    });
   }
 }
 

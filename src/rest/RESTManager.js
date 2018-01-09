@@ -1,23 +1,31 @@
-const UserAgentManager = require('./UserAgentManager');
 const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
-const { Endpoints, browser } = require('../util/Constants');
+const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = {};
-    if (!browser) this.userAgentManager = new UserAgentManager(this);
     this.rateLimitedEndpoints = {};
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
+    this.timeDifferences = [];
   }
 
   get api() {
     return routeBuilder(this);
+  }
+
+  get timeDifference() {
+    return Math.round(this.timeDifferences.reduce((a, b) => a + b, 0) / this.timeDifferences.length);
+  }
+
+  set timeDifference(ms) {
+    this.timeDifferences.unshift(ms);
+    if (this.timeDifferences.length > 5) this.timeDifferences.length = 5;
   }
 
   getAuth() {

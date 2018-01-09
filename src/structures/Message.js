@@ -8,9 +8,9 @@ const Collection = require('../util/Collection');
 const ReactionStore = require('../stores/ReactionStore');
 const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const GuildMember = require('./GuildMember');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
+const { createMessage } = require('./shared');
 
 /**
  * Represents a message on Discord.
@@ -273,10 +273,8 @@ class Message extends Base {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const collector = message.createReactionCollector(
-   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
-   *   { time: 15000 }
-   * );
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
+   * const collector = message.createReactionCollector(filter, { time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -296,6 +294,12 @@ class Message extends Base {
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
+   * @example
+   * // Create a reaction collector
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * message.awaitReactions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} reactions`))
+   *   .catch(console.error);
    */
   awaitReactions(filter, options = {}) {
     return new Promise((resolve, reject) => {
@@ -368,41 +372,22 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
    *   .catch(console.error);
    */
-  edit(content, options) {
+  async edit(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = null;
     } else if (!options) {
       options = {};
     }
-    if (options instanceof Embed) options = { embed: options };
+    if (!options.content) options.content = content;
 
-    if (typeof options.content !== 'undefined') content = options.content;
-
-    if (typeof content !== 'undefined') content = Util.resolveString(content);
-
-    let { embed, code, reply } = options;
-
-    if (embed) embed = new Embed(embed)._apiTransform();
-
-    // Wrap everything in a code block
-    if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
-      content = Util.escapeMarkdown(Util.resolveString(content), true);
-      content = `\`\`\`${typeof code !== 'boolean' ? code || '' : ''}\n${content}\n\`\`\``;
-    }
-
-    // Add the reply prefix
-    if (reply && this.channel.type !== 'dm') {
-      const id = this.client.users.resolveID(reply);
-      const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
-      content = `${mention}${content ? `, ${content}` : ''}`;
-    }
+    const { data } = await createMessage(this, options);
 
     return this.client.api.channels[this.channel.id].messages[this.id]
-      .patch({ data: { content, embed } })
-      .then(data => {
+      .patch({ data })
+      .then(d => {
         const clone = this._clone();
-        clone._patch(data);
+        clone._patch(d);
         return clone;
       });
   }
