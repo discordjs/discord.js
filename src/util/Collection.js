@@ -85,7 +85,7 @@ class Collection extends Map {
     if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
     count = Math.min(this.size, count);
     const arr = new Array(count);
-    const iter = this.iter();
+    const iter = this.keys();
     for (let i = 0; i < count; i++) arr[i] = iter.next().value;
     return arr;
   }
