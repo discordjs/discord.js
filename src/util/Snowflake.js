@@ -37,7 +37,7 @@ class SnowflakeUtil {
     if (typeof time === 'number') {
       throw new Error(`Invalid timestamp`);
     }
-    
+    // eslint-disable-next-line max-len
     const BINARY = `${(time - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
     return Util.binaryToID(BINARY);
   }
