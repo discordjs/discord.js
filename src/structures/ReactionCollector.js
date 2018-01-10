@@ -70,6 +70,12 @@ class ReactionCollector extends Collector {
    * @private
    */
   collect(reaction) {
+    /**
+     * Emitted whenever a reaction is collected.
+     * @event ReactionCollector#collect
+     * @param {MessageReaction} reaction The reaction that was collected
+     * @param {User} user The user that added the reaction
+     */
     if (reaction.message.id !== this.message.id) return null;
     return ReactionCollector.key(reaction);
   }
@@ -81,6 +87,12 @@ class ReactionCollector extends Collector {
    * @returns {?Snowflake|string}
    */
   dispose(reaction, user) {
+    /**
+     * Emitted whenever a reaction is disposed of.
+     * @event ReactionCollector#dispose
+     * @param {MessageReaction} reaction The reaction that was disposed of
+     * @param {User} user The user that removed the reaction
+     */
     if (reaction.message.id !== this.message.id) return null;
 
     /**

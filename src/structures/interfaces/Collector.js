@@ -83,8 +83,7 @@ class Collector extends EventEmitter {
       /**
        * Emitted whenever an element is collected.
        * @event Collector#collect
-       * @param {*} element The element that got collected
-       * @param {...*} args Other arguments emitted by the listener
+       * @param {...*} args The arguments emitted by the listener
        */
       this.emit('collect', ...args);
     }
@@ -106,8 +105,7 @@ class Collector extends EventEmitter {
     /**
      * Emitted whenever an element has been disposed.
      * @event Collector#dispose
-     * @param {*} element The element that was disposed
-     * @param {...*} args Other arguments emitted by the listener
+     * @param {...*} args The arguments emitted by the listener
      */
     this.emit('dispose', ...args);
     this.checkEnd();

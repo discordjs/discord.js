@@ -55,6 +55,11 @@ class MessageCollector extends Collector {
    * @private
    */
   collect(message) {
+    /**
+     * Emitted whenever a message is collected.
+     * @event MessageCollector#collect
+     * @param {Message} message The message that was collected
+     */
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
     return message.id;
@@ -66,6 +71,11 @@ class MessageCollector extends Collector {
    * @returns {?string}
    */
   dispose(message) {
+    /**
+     * Emitted whenever a message is disposed of.
+     * @event MessageCollector#dispose
+     * @param {Message} message The message that was disposed of
+     */
     return message.channel.id === this.channel.id ? message.id : null;
   }
 
