@@ -270,8 +270,7 @@ class TextBasedChannel {
       entry.count = count || entry.count + 1;
     }
 
-    const entry = {};
-    Object.assign(entry, {
+    const entry = {
       count: count || 1,
       interval: this.client.setInterval(() => {
         this.client.rest.methods.sendTyping(this.id).catch(() => {
@@ -279,7 +278,7 @@ class TextBasedChannel {
           this.client.user._typing.delete(this.id);
         });
       }, 9000),
-    });
+    };
     this.client.rest.methods.sendTyping(this.id).catch(() => {
       this.client.clearInterval(entry.interval);
       this.client.user._typing.delete(this.id);
