@@ -103,7 +103,7 @@ class Collector extends EventEmitter {
     this.collected.delete(dispose);
 
     /**
-     * Emitted whenever an element has been disposed.
+     * Emitted whenever an element is disposed of.
      * @event Collector#dispose
      * @param {...*} args The arguments emitted by the listener
      */
