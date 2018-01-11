@@ -33,7 +33,7 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   add(roleOrRoles, reason) {
-    if (this.guild.roles.resolve(roleOrRoles)) {
+    if (this.resolve(roleOrRoles)) {
       return this._addOne(roleOrRoles, reason);
     } else {
       return this._addMany(roleOrRoles, reason);
@@ -48,7 +48,7 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   _addOne(role, reason) {
-    role = this.guild.roles.resolve(role);
+    role = this.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (this.member._roles.includes(role.id)) return Promise.resolve(this.member);
     return this.client.api.guilds(this.guild.id).members(this.member.id).roles(role.id)
@@ -70,7 +70,7 @@ class GuildMemberRoleStore extends DataStore {
   _addMany(roles, reason) {
     let allRoles = this.member._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
+      role = this.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
@@ -107,7 +107,7 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   remove(roleOrRoles, reason) {
-    if (this.guild.roles.resolve(roleOrRoles)) {
+    if (this.resolve(roleOrRoles)) {
       return this._removeOne(roleOrRoles, reason);
     } else {
       return this._removeMany(roleOrRoles, reason);
@@ -122,7 +122,7 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   _removeOne(role, reason) {
-    role = this.guild.roles.resolve(role);
+    role = this.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
     if (!this.member._roles.includes(role.id)) return Promise.resolve(this);
     return this.client.api.guilds(this.guild.id).members(this.member.id).roles(role.id)
@@ -145,7 +145,7 @@ class GuildMemberRoleStore extends DataStore {
   _removeMany(roles, reason) {
     const allRoles = this.member._roles.slice();
     for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
+      role = this.resolve(role);
       if (!role) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
