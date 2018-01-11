@@ -32,6 +32,7 @@ class RoleStore extends DataStore {
    * @example
    * // Create a new role with data and a reason
    * guild.roles.create({
+   *   {
    *     name: 'Super Cool People',
    *     color: 'BLUE'
    *   },
@@ -62,22 +63,22 @@ class RoleStore extends DataStore {
    */
 
   /**
-    * Resolves a RoleResolvable to a Role object.
-    * @method resolve
-    * @memberof RoleStore
-    * @instance
-    * @param {RoleResolvable} role The role resolvable to resolve
-    * @returns {?Role}
-    */
+   * Resolves a RoleResolvable to a Role object.
+   * @method resolve
+   * @memberof RoleStore
+   * @instance
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Role}
+   */
 
   /**
-    * Resolves a RoleResolvable to a role ID string.
-    * @method resolveID
-    * @memberof RoleStore
-    * @instance
-    * @param {RoleResolvable} role The role resolvable to resolve
-    * @returns {?Snowflake}
-    */
+   * Resolves a RoleResolvable to a role ID string.
+   * @method resolveID
+   * @memberof RoleStore
+   * @instance
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Snowflake}
+   */
 }
 
 module.exports = RoleStore;
