@@ -1,10 +1,10 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
-const Collection = require('../util/Collection');
+const GuildMemberRoleStore = require('../stores/GuildMemberRoleStore');
 const Base = require('./Base');
 const { Presence } = require('./Presence');
-const { Error, TypeError } = require('../errors');
+const { Error } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
@@ -136,40 +136,21 @@ class GuildMember extends Base {
 
   /**
    * A list of roles that are applied to this GuildMember, mapped by the role ID
-   * @type {Collection<Snowflake, Role>}
+   * @type {GuildMemberRoleStore<Snowflake, Role>}
    * @readonly
    */
   get roles() {
-    const list = new Collection();
+    const list = new GuildMemberRoleStore(this);
+
     const everyoneRole = this.guild.roles.get(this.guild.id);
-    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
+    if (everyoneRole) list._set(everyoneRole.id, everyoneRole);
 
     for (const roleID of this._roles) {
-      const role = this.guild.roles.get(roleID);
-      if (role) list.set(role.id, role);
+      const role = this.guild.roles.resolve(roleID);
+      if (role) list._set(role.id, role);
     }
 
     return list;
-  }
-
-  /**
-   * The role of the member with the highest position
-   * @type {Role}
-   * @readonly
-   */
-  get highestRole() {
-    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  /**
-   * The role of the member used to set their color
-   * @type {?Role}
-   * @readonly
-   */
-  get colorRole() {
-    const coloredRoles = this.roles.filter(role => role.color);
-    if (!coloredRoles.size) return null;
-    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -178,7 +159,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    const role = this.colorRole;
+    const role = this.roles.colorRole;
     return (role && role.color) || 0;
   }
 
@@ -188,19 +169,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.colorRole;
+    const role = this.roles.colorRole;
     return (role && role.hexColor) || '#000000';
-  }
-
-  /**
-   * The role of the member used to hoist them in a separate category in the users list
-   * @type {?Role}
-   * @readonly
-   */
-  get hoistRole() {
-    const hoistedRoles = this.roles.filter(role => role.hoist);
-    if (!hoistedRoles.size) return null;
-    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -388,104 +358,6 @@ class GuildMember extends Base {
    */
   setVoiceChannel(channel) {
     return this.edit({ channel });
-  }
-
-  /**
-   * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
-   * @param {string} [reason] Reason for applying the roles
-   * @returns {Promise<GuildMember>}
-   * @example
-   * // Set the member's roles to a single role
-   * guildMember.setRoles(['391156570408615936'])
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
-   * // Remove all the roles from a member
-   * guildMember.setRoles([])
-   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
-   *   .catch(console.error);
-   */
-  setRoles(roles, reason) {
-    return this.edit({ roles }, reason);
-  }
-
-  /**
-   * Adds a single role to the member.
-   * @param {RoleResolvable} role The role or ID of the role to add
-   * @param {string} [reason] Reason for adding the role
-   * @returns {Promise<GuildMember>}
-   */
-  addRole(role, reason) {
-    role = this.guild.roles.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
-      .put({ reason })
-      .then(() => {
-        const clone = this._clone();
-        if (!clone._roles.includes(role.id)) clone._roles.push(role.id);
-        return clone;
-      });
-  }
-
-  /**
-   * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
-   * @param {string} [reason] Reason for adding the roles
-   * @returns {Promise<GuildMember>}
-   */
-  addRoles(roles, reason) {
-    let allRoles = this._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      allRoles.push(role.id);
-    }
-    return this.edit({ roles: allRoles }, reason);
-  }
-
-  /**
-   * Removes a single role from the member.
-   * @param {RoleResolvable} role The role or ID of the role to remove
-   * @param {string} [reason] Reason for removing the role
-   * @returns {Promise<GuildMember>}
-   */
-  removeRole(role, reason) {
-    role = this.guild.roles.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (!this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
-      .delete({ reason })
-      .then(() => {
-        const clone = this._clone();
-        const index = clone._roles.indexOf(role.id);
-        if (~index) clone._roles.splice(index, 1);
-        return clone;
-      });
-  }
-
-  /**
-   * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
-   * @param {string} [reason] Reason for removing the roles
-   * @returns {Promise<GuildMember>}
-   */
-  removeRoles(roles, reason) {
-    const allRoles = this._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      const index = allRoles.indexOf(role.id);
-      if (index >= 0) allRoles.splice(index, 1);
-    }
-    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
