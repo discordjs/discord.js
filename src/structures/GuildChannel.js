@@ -411,8 +411,8 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone({ name = this.name, withPermissions = true, withTopic = true, reason } = {}) {
-    const options = { overwrites: withPermissions ? this.permissionOverwrites : [], reason };
-    return this.guild.createChannel(name, this.type, options)
+    const options = { overwrites: withPermissions ? this.permissionOverwrites : [], reason, type: this.type };
+    return this.guild.channels.create(name, options)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 
