@@ -35,7 +35,7 @@ class TextChannel extends GuildChannel {
 
     this.lastMessageID = data.last_message_id;
 
-    if (data.messages) for (const message of data.messages) this.messages.create(message);
+    if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
 
   /**
