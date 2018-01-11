@@ -15,23 +15,23 @@ class GuildMemberRoleStore extends DataStore {
   }
 
   /**
-	 * Function that does exactly the same as Map.set
-	 * but it is overwritten for this DataStore due to {@link GuildMemberRoleStore#set}
-	 * @private
-	 * @param {Snowflake} id The role ID
-	 * @param {Role} role The role object
-	 * @returns {GuildMemberRoleStore} The updated store
-	 */
+   * Function that does exactly the same as Map#set
+   * but it is overwritten for this DataStore due to {@link GuildMemberRoleStore#set}
+   * @private
+   * @param {Snowflake} id The role ID
+   * @param {Role} role The role object
+   * @returns {GuildMemberRoleStore} The updated store
+   */
   _set(id, role) {
     return super.set(id, role);
   }
 
   /**
-	 * Adds a role (or multiple roles) to the member
-	 * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
-	 * @param {string} [reason] Reason for adding the role(s)
-	 * @returns {Promise<GuildMember>}
-	 */
+   * Adds a role (or multiple roles) to the member
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
+   * @param {string} [reason] Reason for adding the role(s)
+   * @returns {Promise<GuildMember>}
+   */
   add(roleOrRoles, reason) {
     if (this.guild.roles.resolve(roleOrRoles)) {
       return this._addOne(roleOrRoles, reason);
@@ -41,12 +41,12 @@ class GuildMemberRoleStore extends DataStore {
   }
 
   /**
-	 * Adds a single role to the member
-	 * @param {RoleResolvable} role The role or role ID to add
-	 * @param {string} [reason] Reason for adding the role
-	 * @private
-	 * @returns {Promise<GuildMember>}
-	 */
+   * Adds a single role to the member
+   * @param {RoleResolvable} role The role or role ID to add
+   * @param {string} [reason] Reason for adding the role
+   * @private
+   * @returns {Promise<GuildMember>}
+   */
   _addOne(role, reason) {
     role = this.guild.roles.resolve(role);
     if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
@@ -64,7 +64,7 @@ class GuildMemberRoleStore extends DataStore {
    * Adds multiple roles to the member.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
    * @param {string} [reason] Reason for adding the roles
-	 * @private
+   * @private
    * @returns {Promise<GuildMember>}
    */
   _addMany(roles, reason) {
@@ -101,11 +101,11 @@ class GuildMemberRoleStore extends DataStore {
   }
 
   /**
-	 * Removes a role (or multiple roles) from the member
-	 * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
-	 * @param {string} [reason] Reason for removing the role(s)
-	 * @returns {Promise<GuildMember>}
-	 */
+   * Removes a role (or multiple roles) from the member
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
+   * @param {string} [reason] Reason for removing the role(s)
+   * @returns {Promise<GuildMember>}
+   */
   remove(roleOrRoles, reason) {
     if (this.guild.roles.resolve(roleOrRoles)) {
       return this._removeOne(roleOrRoles, reason);
@@ -118,7 +118,7 @@ class GuildMemberRoleStore extends DataStore {
    * Removes a single role from the member.
    * @param {RoleResolvable} role The role or ID of the role to remove
    * @param {string} [reason] Reason for removing the role
-	 * @private
+   * @private
    * @returns {Promise<GuildMember>}
    */
   _removeOne(role, reason) {
@@ -139,7 +139,7 @@ class GuildMemberRoleStore extends DataStore {
    * Removes multiple roles from the member.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
    * @param {string} [reason] Reason for removing the roles
-	 * @private
+   * @private
    * @returns {Promise<GuildMember>}
    */
   _removeMany(roles, reason) {
