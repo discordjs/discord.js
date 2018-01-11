@@ -142,7 +142,6 @@ class GuildMember extends Base {
   get roles() {
     const list = new Collection();
     const everyoneRole = this.guild.roles.get(this.guild.id);
-
     if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
 
     for (const roleID of this._roles) {
