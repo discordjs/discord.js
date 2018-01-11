@@ -10,7 +10,7 @@ const Snowflake = require('../util/Snowflake');
 const Shared = require('./shared');
 const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
-const EmojiStore = require('../stores/EmojiStore');
+const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
 const PresenceStore = require('../stores/PresenceStore');
 const Base = require('./Base');
@@ -218,9 +218,9 @@ class Guild extends Base {
     if (!this.emojis) {
       /**
        * A collection of emojis that are in this guild. The key is the emoji's ID, the value is the emoji.
-       * @type {EmojiStore<Snowflake, Emoji>}
+       * @type {GuildEmojiStore<Snowflake, GuildEmoji>}
        */
-      this.emojis = new EmojiStore(this);
+      this.emojis = new GuildEmojiStore(this);
       if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
     } else {
       this.client.actions.GuildEmojisUpdate.handle({
