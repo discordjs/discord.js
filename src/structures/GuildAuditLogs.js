@@ -148,7 +148,7 @@ class GuildAuditLogs {
    * * An invite
    * * A webhook
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?Object|Guild|User|Role|Emoji|Invite|Webhook} AuditLogEntryTarget
+   * @typedef {?Object|Guild|User|Role|GuildEmoji|Invite|Webhook} AuditLogEntryTarget
    */
 
   /**

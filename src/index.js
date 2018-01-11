@@ -64,6 +64,7 @@ module.exports = {
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
+  GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
