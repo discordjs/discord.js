@@ -66,7 +66,7 @@ class ReactionCollector extends Collector {
   /**
    * Handles an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @returns {?Snowflake}
+   * @returns {?Snowflake|string}
    * @private
    */
   collect(reaction) {
