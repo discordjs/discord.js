@@ -32,11 +32,10 @@ class RoleStore extends DataStore {
    * @example
    * // Create a new role with data and a reason
    * guild.roles.create({
-   *   {
    *     name: 'Super Cool People',
    *     color: 'BLUE'
    *   },
-   *   reason: 'we needed a role for Super Cool People',
+   *   'we needed a role for Super Cool People',
    * })
    *   .then(console.log)
    *   .catch(console.error);
