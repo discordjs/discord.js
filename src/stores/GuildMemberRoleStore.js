@@ -12,8 +12,6 @@ class GuildMemberRoleStore extends DataStore {
     super(member.client, null, Role);
     this.member = member;
     this.guild = member.guild;
-
-    Object.defineProperty(this, '_roles', { value: [], enumerable: false, writable: true });
   }
 
   /**
@@ -23,33 +21,18 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   add(roleOrRoles, reason) {
-    if (this.resolve(roleOrRoles)) {
-      roleOrRoles = this.resolve(roleOrRoles);
-      if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-      if (this._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
-      return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
-        .put({ reason })
-        .then(() => {
-          const clone = this.member._clone();
-          const roles = clone.roles._roles;
-          if (!roles.includes(roleOrRoles.id)) {
-            roles.push(roleOrRoles.id);
-            clone.roles._patch(roles);
-          }
-          return clone;
-        });
-    } else {
-      let allRoles = this._roles.slice();
-      for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
-        role = this.resolve(role);
-        if (!role) {
-          return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-            'Array or Collection of Roles or Snowflakes', true));
-        }
-        if (!allRoles.includes(role.id)) allRoles.push(role.id);
+    if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray(), reason);
+    if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles.id || roleOrRoles], reason);
+
+    for (let role of roleOrRoles) {
+      role = this.guild.roles.resolve(role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
       }
-      return this.member.edit({ roles: allRoles }, reason);
+      super.set(role.id, role);
     }
+    return this.set(this, reason);
   }
 
   /**
@@ -79,35 +62,19 @@ class GuildMemberRoleStore extends DataStore {
    * @returns {Promise<GuildMember>}
    */
   remove(roleOrRoles, reason) {
-    if (this.resolve(roleOrRoles)) {
-      roleOrRoles = this.resolve(roleOrRoles);
-      if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-      if (!this._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
-      return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
-        .delete({ reason })
-        .then(() => {
-          const clone = this.member._clone();
-          const roles = clone.roles._roles;
+    if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray(), reason);
+    if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles.id || roleOrRoles], reason);
 
-          const index = roles.indexOf(roleOrRoles.id);
-          if (~index) roles.splice(index, 1);
-
-          clone.roles._patch(roles);
-          return clone;
-        });
-    } else {
-      const allRoles = this._roles.slice();
-      for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
-        role = this.resolve(role);
-        if (!role) {
-          return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-            'Array or Collection of Roles or Snowflakes', true));
-        }
-        const index = allRoles.indexOf(role.id);
-        if (index >= 0) allRoles.splice(index, 1);
+    for (let role of roleOrRoles) {
+      role = this.guild.roles.resolve(role);
+      if (!role) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true));
       }
-      return this.member.edit({ roles: allRoles }, reason);
+      super.remove(role.id);
     }
+
+    return this.set(this, reason);
   }
 
   /**
@@ -115,7 +82,7 @@ class GuildMemberRoleStore extends DataStore {
    * @type {?Role}
    * @readonly
    */
-  get hoistRole() {
+  get hoist() {
     const hoistedRoles = this.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
     return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
@@ -126,7 +93,7 @@ class GuildMemberRoleStore extends DataStore {
    * @type {?Role}
    * @readonly
    */
-  get colorRole() {
+  get color() {
     const coloredRoles = this.filter(role => role.color);
     if (!coloredRoles.size) return null;
     return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
@@ -137,16 +104,8 @@ class GuildMemberRoleStore extends DataStore {
    * @type {Role}
    * @readonly
    */
-  get highestRole() {
+  get highest() {
     return this.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  resolve(idOrInstance) {
-    return this.guild.roles.resolve(idOrInstance);
-  }
-
-  resolveID(idOrInstance) {
-    return this.guild.roles.resolveID(idOrInstance);
   }
 
   /**
@@ -155,8 +114,6 @@ class GuildMemberRoleStore extends DataStore {
    * @private
    */
   _patch(roles) {
-    this._roles = roles;
-
     this.clear();
 
     const everyoneRole = this.guild.roles.get(this.guild.id);
@@ -164,7 +121,7 @@ class GuildMemberRoleStore extends DataStore {
 
     if (roles) {
       for (const roleID of roles) {
-        const role = this.resolve(roleID);
+        const role = this.guild.roles.resolve(roleID);
         if (role) super.set(role.id, role);
       }
     }
