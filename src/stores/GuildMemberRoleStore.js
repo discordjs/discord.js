@@ -8,22 +8,20 @@ const { TypeError } = require('../errors');
  * @extends {DataStore}
  */
 class GuildMemberRoleStore extends DataStore {
-  constructor(member) {
+  constructor(member, data) {
     super(member.client, null, Role);
     this.member = member;
     this.guild = member.guild;
-  }
 
-  /**
-   * Function that does exactly the same as Map#set
-   * but it is overwritten for this DataStore due to {@link GuildMemberRoleStore#set}
-   * @private
-   * @param {Snowflake} id The role ID
-   * @param {Role} role The role object
-   * @returns {GuildMemberRoleStore} The updated store
-   */
-  _set(id, role) {
-    return super.set(id, role);
+    const everyoneRole = this.guild.roles.get(this.guild.id);
+    if (everyoneRole) super.set(everyoneRole.id, everyoneRole);
+
+    if (data) {
+      for (const roleID of data) {
+        const role = this.resolve(roleID);
+        if (role) super.set(role.id, role);
+      }
+    }
   }
 
   /**
@@ -34,50 +32,28 @@ class GuildMemberRoleStore extends DataStore {
    */
   add(roleOrRoles, reason) {
     if (this.resolve(roleOrRoles)) {
-      return this._addOne(roleOrRoles, reason);
+      roleOrRoles = this.resolve(roleOrRoles);
+      if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
+      if (this._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
+      return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
+        .put({ reason })
+        .then(() => {
+          const clone = this.member._clone();
+          if (!clone._roles.includes(roleOrRoles.id)) clone._roles.push(roleOrRoles.id);
+          return clone;
+        });
     } else {
-      return this._addMany(roleOrRoles, reason);
-    }
-  }
-
-  /**
-   * Adds a single role to the member
-   * @param {RoleResolvable} role The role or role ID to add
-   * @param {string} [reason] Reason for adding the role
-   * @private
-   * @returns {Promise<GuildMember>}
-   */
-  _addOne(role, reason) {
-    role = this.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (this.member._roles.includes(role.id)) return Promise.resolve(this.member);
-    return this.client.api.guilds(this.guild.id).members(this.member.id).roles(role.id)
-      .put({ reason })
-      .then(() => {
-        const clone = this.member._clone();
-        if (!clone._roles.includes(role.id)) clone._roles.push(role.id);
-        return clone;
-      });
-  }
-
-  /**
-   * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
-   * @param {string} [reason] Reason for adding the roles
-   * @private
-   * @returns {Promise<GuildMember>}
-   */
-  _addMany(roles, reason) {
-    let allRoles = this.member._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+      let allRoles = this.member._roles.slice();
+      for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+        role = this.resolve(role);
+        if (!role) {
+          return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+            'Array or Collection of Roles or Snowflakes', true));
+        }
+        if (!allRoles.includes(role.id)) allRoles.push(role.id);
       }
-      if (!allRoles.includes(role.id)) allRoles.push(role.id);
+      return this.member.edit({ roles: allRoles }, reason);
     }
-    return this.member.edit({ roles: allRoles }, reason);
   }
 
   /**
@@ -108,52 +84,30 @@ class GuildMemberRoleStore extends DataStore {
    */
   remove(roleOrRoles, reason) {
     if (this.resolve(roleOrRoles)) {
-      return this._removeOne(roleOrRoles, reason);
+      roleOrRoles = this.resolve(roleOrRoles);
+      if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
+      if (!this.member._roles.includes(roleOrRoles.id)) return Promise.resolve(this);
+      return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
+        .delete({ reason })
+        .then(() => {
+          const clone = this.member._clone();
+          const index = clone._roles.indexOf(roleOrRoles.id);
+          if (~index) clone._roles.splice(index, 1);
+          return clone;
+        });
     } else {
-      return this._removeMany(roleOrRoles, reason);
-    }
-  }
-
-  /**
-   * Removes a single role from the member.
-   * @param {RoleResolvable} role The role or ID of the role to remove
-   * @param {string} [reason] Reason for removing the role
-   * @private
-   * @returns {Promise<GuildMember>}
-   */
-  _removeOne(role, reason) {
-    role = this.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (!this.member._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.member.id).roles(role.id)
-      .delete({ reason })
-      .then(() => {
-        const clone = this.member._clone();
-        const index = clone._roles.indexOf(role.id);
-        if (~index) clone._roles.splice(index, 1);
-        return clone;
-      });
-  }
-
-  /**
-   * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
-   * @param {string} [reason] Reason for removing the roles
-   * @private
-   * @returns {Promise<GuildMember>}
-   */
-  _removeMany(roles, reason) {
-    const allRoles = this.member._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+      const allRoles = this.member._roles.slice();
+      for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+        role = this.resolve(role);
+        if (!role) {
+          return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+            'Array or Collection of Roles or Snowflakes', true));
+        }
+        const index = allRoles.indexOf(role.id);
+        if (index >= 0) allRoles.splice(index, 1);
       }
-      const index = allRoles.indexOf(role.id);
-      if (index >= 0) allRoles.splice(index, 1);
+      return this.member.edit({ roles: allRoles }, reason);
     }
-    return this.member.edit({ roles: allRoles }, reason);
   }
 
   /**

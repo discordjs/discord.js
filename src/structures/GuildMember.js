@@ -140,17 +140,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get roles() {
-    const list = new GuildMemberRoleStore(this);
-
-    const everyoneRole = this.guild.roles.get(this.guild.id);
-    if (everyoneRole) list._set(everyoneRole.id, everyoneRole);
-
-    for (const roleID of this._roles) {
-      const role = this.guild.roles.resolve(roleID);
-      if (role) list._set(role.id, role);
-    }
-
-    return list;
+    return new GuildMemberRoleStore(this, this._roles);
   }
 
   /**
