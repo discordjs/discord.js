@@ -82,7 +82,7 @@ class GuildMemberRoleStore extends DataStore {
     if (this.resolve(roleOrRoles)) {
       roleOrRoles = this.resolve(roleOrRoles);
       if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-      if (!this._roles.includes(roleOrRoles.id)) return Promise.resolve(this);
+      if (!this._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
       return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
         .delete({ reason })
         .then(() => {
