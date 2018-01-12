@@ -8,20 +8,12 @@ const { TypeError } = require('../errors');
  * @extends {DataStore}
  */
 class GuildMemberRoleStore extends DataStore {
-  constructor(member, data) {
+  constructor(member) {
     super(member.client, null, Role);
     this.member = member;
     this.guild = member.guild;
 
-    const everyoneRole = this.guild.roles.get(this.guild.id);
-    if (everyoneRole) super.set(everyoneRole.id, everyoneRole);
-
-    if (data) {
-      for (const roleID of data) {
-        const role = this.resolve(roleID);
-        if (role) super.set(role.id, role);
-      }
-    }
+    Object.defineProperty(this, '_roles', { value: [], enumerable: false, writable: true });
   }
 
   /**
@@ -34,16 +26,20 @@ class GuildMemberRoleStore extends DataStore {
     if (this.resolve(roleOrRoles)) {
       roleOrRoles = this.resolve(roleOrRoles);
       if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-      if (this.member._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
+      if (this._roles.includes(roleOrRoles.id)) return Promise.resolve(this.member);
       return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
         .put({ reason })
         .then(() => {
           const clone = this.member._clone();
-          if (!clone._roles.includes(roleOrRoles.id)) clone._roles.push(roleOrRoles.id);
+          const roles = clone.roles._roles;
+          if (!roles.includes(roleOrRoles.id)) {
+            roles.push(roleOrRoles.id);
+            clone.roles._patch(roles);
+          }
           return clone;
         });
     } else {
-      let allRoles = this.member._roles.slice();
+      let allRoles = this._roles.slice();
       for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
         role = this.resolve(role);
         if (!role) {
@@ -86,17 +82,21 @@ class GuildMemberRoleStore extends DataStore {
     if (this.resolve(roleOrRoles)) {
       roleOrRoles = this.resolve(roleOrRoles);
       if (!roleOrRoles) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-      if (!this.member._roles.includes(roleOrRoles.id)) return Promise.resolve(this);
+      if (!this._roles.includes(roleOrRoles.id)) return Promise.resolve(this);
       return this.client.api.guilds(this.guild.id).members(this.member.id).roles(roleOrRoles.id)
         .delete({ reason })
         .then(() => {
           const clone = this.member._clone();
-          const index = clone._roles.indexOf(roleOrRoles.id);
-          if (~index) clone._roles.splice(index, 1);
+          const roles = clone.roles._roles;
+
+          const index = roles.indexOf(roleOrRoles.id);
+          if (~index) roles.splice(index, 1);
+
+          clone.roles._patch(roles);
           return clone;
         });
     } else {
-      const allRoles = this.member._roles.slice();
+      const allRoles = this._roles.slice();
       for (let role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
         role = this.resolve(role);
         if (!role) {
@@ -147,6 +147,27 @@ class GuildMemberRoleStore extends DataStore {
 
   resolveID(idOrInstance) {
     return this.guild.roles.resolveID(idOrInstance);
+  }
+
+  /**
+   * Patches the roles for this store
+   * @param {Snowflake[]} roles The new roles
+   * @private
+   */
+  _patch(roles) {
+    this._roles = roles;
+
+    this.clear();
+
+    const everyoneRole = this.guild.roles.get(this.guild.id);
+    if (everyoneRole) super.set(everyoneRole.id, everyoneRole);
+
+    if (roles) {
+      for (const roleID of roles) {
+        const role = this.resolve(roleID);
+        if (role) super.set(role.id, role);
+      }
+    }
   }
 
   /**

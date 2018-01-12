@@ -27,7 +27,12 @@ class GuildMember extends Base {
      */
     this.user = {};
 
-    this._roles = [];
+    /**
+     * A list of roles that are applied to this GuildMember, mapped by the role ID
+     * @type {GuildMemberRoleStore<Snowflake, Role>}
+     */
+
+    this.roles = new GuildMemberRoleStore(this);
 
     if (data) this._patch(data);
 
@@ -67,7 +72,7 @@ class GuildMember extends Base {
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     this.user = this.guild.client.users.add(data.user);
-    if (data.roles) this._roles = data.roles;
+    if (data.roles) this.roles._patch(data.roles);
   }
 
   get voiceState() {
@@ -132,15 +137,6 @@ class GuildMember extends Base {
    */
   get presence() {
     return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(this.client);
-  }
-
-  /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID
-   * @type {GuildMemberRoleStore<Snowflake, Role>}
-   * @readonly
-   */
-  get roles() {
-    return new GuildMemberRoleStore(this, this._roles);
   }
 
   /**
