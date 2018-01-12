@@ -13,8 +13,8 @@ class MessageStore extends DataStore {
     this.channel = channel;
   }
 
-  create(data, cache) {
-    return super.create(data, cache, { extras: [this.channel] });
+  add(data, cache) {
+    return super.add(data, cache, { extras: [this.channel] });
   }
 
   set(key, value) {
@@ -62,7 +62,7 @@ class MessageStore extends DataStore {
   fetchPinned() {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {
       const messages = new Collection();
-      for (const message of data) messages.set(message.id, this.create(message));
+      for (const message of data) messages.set(message.id, this.add(message));
       return messages;
     });
   }
@@ -77,7 +77,7 @@ class MessageStore extends DataStore {
         });
     }
     return this.client.api.channels[this.channel.id].messages[messageID].get()
-      .then(data => this.create(data));
+      .then(data => this.add(data));
   }
 
   async _fetchMany(options = {}) {
