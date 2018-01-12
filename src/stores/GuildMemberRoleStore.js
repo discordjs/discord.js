@@ -66,13 +66,13 @@ class GuildMemberRoleStore extends DataStore {
     if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray(), reason);
     if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles], reason);
 
-    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
+    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
     } else {
-      for (const role of roleOrRoles) super.remove(role.id);
+      for (const role of roleOrRoles) super.remove(role);
     }
 
     return this.set(this, reason);
