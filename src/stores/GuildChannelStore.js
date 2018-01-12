@@ -3,7 +3,7 @@ const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
 const GuildChannel = require('../structures/GuildChannel');
-const { resolve } = require('../util/Permissions');
+const Permissions = require('../util/Permissions');
 
 /**
  * Stores guild channels.
@@ -54,8 +54,8 @@ class GuildChannelStore extends DataStore {
       overwrites = overwrites.map(overwrite => {
         let allow = overwrite.allow || (overwrite.allowed ? overwrite.allowed.bitfield : 0);
         let deny = overwrite.deny || (overwrite.denied ? overwrite.denied.bitfield : 0);
-        if (allow instanceof Array) allow = resolve(allow);
-        if (deny instanceof Array) deny = resolve(deny);
+        if (allow instanceof Array) allow = Permissions.resolve(allow);
+        if (deny instanceof Array) deny = Permissions.resolve(deny);
 
         const role = this.guild.roles.resolve(overwrite.id);
         if (role) {
