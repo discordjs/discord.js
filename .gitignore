@@ -20,3 +20,4 @@ deploy/deploy_key.pub
 .vscode/
 docs/docs.json
 webpack/
+.idea/
