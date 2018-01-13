@@ -34,26 +34,26 @@
   "dependencies": {
     "long": "^3.2.0",
     "prism-media": "^0.0.1",
-    "snekfetch": "^3.3.0",
+    "snekfetch": "^3.6.1",
     "tweetnacl": "^1.0.0",
     "ws": "^3.1.0"
   },
   "peerDependencies": {
-    "bufferutil": "^3.0.2",
+    "bufferutil": "^3.0.3",
     "erlpack": "discordapp/erlpack",
-    "node-opus": "^0.2.6",
-    "opusscript": "^0.0.3",
-    "sodium": "^2.0.1",
+    "node-opus": "^0.2.7",
+    "opusscript": "^0.0.6",
+    "sodium": "^2.0.3",
     "libsodium-wrappers": "^0.5.4",
     "uws": "^0.14.5"
   },
   "devDependencies": {
-    "@types/node": "^7.0.43",
+    "@types/node": "^7.0.52",
     "discord.js-docgen": "hydrabolt/discord.js-docgen",
-    "eslint": "^4.6.0",
-    "parallel-webpack": "^2.1.0",
+    "eslint": "^4.15.0",
+    "parallel-webpack": "^2.2.0",
     "uglifyjs-webpack-plugin": "^1.0.0-beta.1",
-    "webpack": "^3.5.5"
+    "webpack": "^3.10.0"
   },
   "engines": {
     "node": ">=6.0.0"
