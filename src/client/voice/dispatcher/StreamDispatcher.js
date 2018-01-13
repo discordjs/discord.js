@@ -199,10 +199,10 @@ class StreamDispatcher extends Writable {
       const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
       setTimeout(done.bind(this), next);
     }
-    if (this._sdata.sequence >= (2 ** 16) - 1) this._sdata.sequence = -1;
-    if (this._sdata.timestamp >= (2 ** 32) - TIMESTAMP_INC) this._sdata.timestamp = -TIMESTAMP_INC;
     this._sdata.sequence++;
     this._sdata.timestamp += TIMESTAMP_INC;
+    if (this._sdata.sequence >= 2 ** 16) this._sdata.sequence = 0;
+    if (this._sdata.timestamp >= 2 ** 32) this._sdata.timestamp = 0;
     this.count++;
   }
 
