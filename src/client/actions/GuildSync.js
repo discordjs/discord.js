@@ -7,7 +7,7 @@ class GuildSync extends Action {
     const guild = client.guilds.get(data.id);
     if (guild) {
       if (data.presences) {
-        for (const presence of data.presences) guild.presences.create(presence);
+        for (const presence of data.presences) guild.presences.add(presence);
       }
 
       if (data.members) {
@@ -16,7 +16,7 @@ class GuildSync extends Action {
           if (member) {
             member._patch(syncMember);
           } else {
-            guild.members.create(syncMember, false);
+            guild.members.add(syncMember, false);
           }
         }
       }
