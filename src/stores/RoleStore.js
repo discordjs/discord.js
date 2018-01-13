@@ -1,7 +1,7 @@
 const DataStore = require('./DataStore');
 const Role = require('../structures/Role');
 const { resolveColor } = require('../util/Util');
-const { resolve } = require('../util/Permissions');
+const Permissions = require('../util/Permissions');
 
 /**
  * Stores roles.
@@ -42,7 +42,7 @@ class RoleStore extends DataStore {
    */
   create(data = {}, reason) {
     if (data.color) data.color = resolveColor(data.color);
-    if (data.permissions) data.permissions = resolve(data.permissions);
+    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
     return this.guild.client.api.guilds(this.guild.id).roles.post({ data, reason }).then(r => {
       const { role } = this.client.actions.GuildRoleCreate.handle({
