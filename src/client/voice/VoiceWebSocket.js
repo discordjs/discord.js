@@ -155,7 +155,8 @@ class VoiceWebSocket extends EventEmitter {
   onPacket(packet) {
     switch (packet.op) {
       case VoiceOPCodes.READY:
-        this.setHeartbeat(packet.d.heartbeat_interval);
+        // *.75 to correct for discord devs taking longer to fix things than i do to release versions
+        this.setHeartbeat(packet.d.heartbeat_interval * 0.75);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
          * @param {Object} packet The received packet
