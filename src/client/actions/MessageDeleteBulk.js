@@ -1,6 +1,7 @@
 const Action = require('./Action');
-const Collection = require('../../util/Collection');
+const Dictionary = require('@sugarcoated/fondant-dictionary');
 const { Events } = require('../../util/Constants');
+const Message = require('../../structures/Message');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
@@ -9,7 +10,7 @@ class MessageDeleteBulkAction extends Action {
 
     if (channel) {
       const ids = data.ids;
-      const messages = new Collection();
+      const messages = new Dictionary(Message);
       for (const id of ids) {
         const message = channel.messages.get(id);
         if (message) {
@@ -28,7 +29,7 @@ class MessageDeleteBulkAction extends Action {
 /**
  * Emitted whenever messages are deleted in bulk.
  * @event Client#messageDeleteBulk
- * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
+ * @param {Dictionary<Snowflake, Message>} messages The deleted messages, mapped by their ID
  */
 
 module.exports = MessageDeleteBulkAction;
