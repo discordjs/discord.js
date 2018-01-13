@@ -1,3 +1,7 @@
+# Version 11.3.0
+v11.3.0 backports many new features and bug fixes from the in-development v12.
+See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.3.0) for a full list of changes, including information about deprecations.
+
 # Version 11.2.0
 v11.2.0 fixes a lot of bugs we encountered along the 11.1.0 release, as well as support for new features such as Message Attachments and UserGuildSettings.
 See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.2.0) for a full list of changes, including information about deprecations.

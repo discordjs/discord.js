@@ -23,7 +23,7 @@ The usage of the API isn't any different from using it in Node.js.
 
 ## Example
 ```html
-<script type="text/javascript" src="discord.11.1.0.min.js"></script>
+<script type="text/javascript" src="discord.11.3.0.min.js"></script>
 <script type="text/javascript">
   const client = new Discord.Client();
 
