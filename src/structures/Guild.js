@@ -40,7 +40,7 @@ class Guild extends Base {
 
     /**
      * A collection of roles that are in this guild. The key is the role's ID, the value is the role
-     * @type {Collection<Snowflake, Role>}
+     * @type {RoleStore<Snowflake, Role>}
      */
     this.roles = new RoleStore(this);
 
