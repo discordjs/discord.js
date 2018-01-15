@@ -98,9 +98,9 @@ class GuildChannel extends Channel {
    */
   permissionsFor(memberOrRole) {
     const member = this.guild.members.resolve(memberOrRole);
-    if (member) return this._memberPermissions(member);
+    if (member) return this.memberPermissions(member);
     const role = this.guild.roles.resolve(memberOrRole);
-    if (role) return this._rolePermissions(role);
+    if (role) return this.rolePermissions(role);
     return null;
   }
 
@@ -136,7 +136,7 @@ class GuildChannel extends Channel {
    * @returns {Permissions}
    * @private
    */
-  _memberPermissions(member) {
+  memberPermissions(member) {
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
     const roles = member.roles;
@@ -162,7 +162,7 @@ class GuildChannel extends Channel {
    * @returns {Permissions}
    * @private
    */
-  _rolePermissions(role) {
+  rolePermissions(role) {
     if (role.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
     const everyoneOverwrites = this.permissionOverwrites.get(this.guild.id);
