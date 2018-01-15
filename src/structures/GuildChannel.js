@@ -417,7 +417,7 @@ class GuildChannel extends Channel {
   clone({ name = this.name, withPermissions = true, withTopic = true, nsfw, parent, bitrate, userLimit, reason } = {}) {
     const options = {
       overwrites: withPermissions ? this.permissionOverwrites : [],
-      nsfw: typeof nsfw === 'undefined' ? this.nsfw : nsfw, 
+      nsfw: typeof nsfw === 'undefined' ? this.nsfw : nsfw,
       parent: parent || this.parent,
       bitrate: bitrate || this.bitrate,
       userLimit: userLimit || this.userLimit,
