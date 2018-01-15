@@ -22,7 +22,7 @@ class GuildMemberRoleStore extends DataStore {
    */
   add(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray(), reason);
-    if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles], reason);
+    if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles], reason);
 
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
@@ -64,7 +64,7 @@ class GuildMemberRoleStore extends DataStore {
    */
   remove(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray(), reason);
-    if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles], reason);
+    if (!(roleOrRoles instanceof Array)) return this.remove([roleOrRoles], reason);
 
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
