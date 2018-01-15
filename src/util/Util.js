@@ -18,14 +18,14 @@ class Util {
    * @param {SplitOptions} [options] Options controlling the behaviour of the split
    * @returns {string|string[]}
    */
-  static splitMessage(text, { maxLength = 1950, char = '\n', prepend = '', append = '' } = {}) {
+  static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
     if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
-      if ((msg + char + chunk + append).length > maxLength) {
+      if (msg && (msg + char + chunk + append).length > maxLength) {
         messages.push(msg + append);
         msg = prepend;
       }
