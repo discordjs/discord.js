@@ -196,6 +196,18 @@ class Role extends Base {
   }
 
   /**
+   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
+   * taking into account permission overwrites.
+   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @returns {?Permissions}
+   */
+  permissionsIn(channel) {
+    channel = this.guild.channels.resolve(channel);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    return channel._rolePermissions(this);
+  }
+
+  /**
    * Sets a new name for the role.
    * @param {string} name The new name of the role
    * @param {string} [reason] Reason for changing the role's name
