@@ -145,7 +145,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    const role = this.roles.colorRole;
+    const role = this.roles.color;
     return (role && role.color) || 0;
   }
 
@@ -155,7 +155,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.roles.colorRole;
+    const role = this.roles.color;
     return (role && role.hexColor) || '#000000';
   }
 
