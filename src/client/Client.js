@@ -291,7 +291,7 @@ class Client extends BaseClient {
    * client.fetchInvite('invite code or URL')
    *  .then(invite => {
    *    console.log(`Obtained invite with code: ${invite.code}`);
-   *  });
+   *  }).catch(console.error);
    */
   fetchInvite(invite) {
     const code = DataResolver.resolveInviteCode(invite);
@@ -308,7 +308,7 @@ class Client extends BaseClient {
    * client.fetchWebhook('id', 'token')
    *  .then(webhook => {
    *    console.log(`Obtained webhook with name: ${webhook.name}`);
-   *  });
+   *  }).catch(console.error);
    */
   fetchWebhook(id, token) {
     return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
@@ -321,7 +321,7 @@ class Client extends BaseClient {
    * client.fetchVoiceRegions()
    *  .then(regions => {
    *    console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`);
-   *  });
+   *  }).catch(console.error);
    */
   fetchVoiceRegions() {
     return this.api.voice.regions.get().then(res => {
@@ -382,7 +382,7 @@ class Client extends BaseClient {
    * client.fetchApplication('id')
    *  .then(application => {
    *    console.log('Obtained application with name: ${application.name}');
-   *  });
+   *  }).catch(console.error);
    */
   fetchApplication(id = '@me') {
     return this.api.oauth2.applications(id).get()
@@ -398,7 +398,7 @@ class Client extends BaseClient {
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
    *   .then(link => {
    *     console.log(`Generated bot invite link: ${link}`);
-   *   });
+   *   }).catch(console.error);
    */
   generateInvite(permissions) {
     if (permissions) {
