@@ -1,17 +1,11 @@
 const Action = require('./Action');
 
-function mappify(iterable) {
-  const map = new Map();
-  for (const x of iterable) map.set(...x);
-  return map;
-}
-
 class GuildEmojisUpdateAction extends Action {
   handle(data) {
     const guild = this.client.guilds.get(data.guild_id);
     if (!guild || !guild.emojis) return;
 
-    const deletions = mappify(guild.emojis.entries());
+    const deletions = new Map(guild.emojis);
 
     for (const emoji of data.emojis) {
       // Determine type of emoji event
