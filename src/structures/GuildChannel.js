@@ -415,9 +415,10 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
+    if (typeof options.withPermissions === 'undefined') options.withPermissions = true;
     Util.mergeDefault({
       name: this.name,
-      withPermissions: true,
+      overwrites: options.withPermissions ? this.permissionOverwrites : [],
       withTopic: true,
       nsfw: this.nsfw,
       parent: this.parent,
@@ -425,6 +426,7 @@ class GuildChannel extends Channel {
       userLimit: this.userLimit,
       reason: null,
     }, options);
+    options.type = this.type;
     return this.guild.channels.create(options.name, options)
       .then(channel => options.withTopic ? channel.setTopic(this.topic) : channel);
   }
