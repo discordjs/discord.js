@@ -381,7 +381,7 @@ class Client extends BaseClient {
    * @example
    * client.fetchApplication('id')
    *  .then(application => {
-   *    console.log('Obtained application with name: ${application.name}');
+   *    console.log(`Obtained application with name: ${application.name}`);
    *  }).catch(console.error);
    */
   fetchApplication(id = '@me') {
