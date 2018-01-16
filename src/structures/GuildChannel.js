@@ -414,18 +414,18 @@ class GuildChannel extends Channel {
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone({ name = this.name, withPermissions = true, withTopic = true, nsfw, parent, bitrate, userLimit, reason } = {}) {
-    const options = {
-      overwrites: withPermissions ? this.permissionOverwrites : [],
-      nsfw: typeof nsfw === 'undefined' ? this.nsfw : nsfw,
-      parent: parent || this.parent,
-      bitrate: bitrate || this.bitrate,
-      userLimit: userLimit || this.userLimit,
-      reason,
+  clone(options = {}) {
+    const createOptions = {
+      overwrites: options.overwrites ? this.permissionOverwrites : [],
+      nsfw: 'nsfw' in options ? options.nsfw : this.nsfw,
+      parent: 'parent' in options ? options.parent : this.parent,
+      bitrate: options.bitrate || this.bitrate,
+      userLimit: 'userLimit' in options ? options.userLimit : this.userLimit,
+      reason: options.reason,
       type: this.type,
     };
-    return this.guild.channels.create(name, options)
-      .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
+    return this.guild.channels.create(options.name || this.name, createOptions)
+      .then(channel => options.withTopic ? channel.setTopic(this.topic) : channel);
   }
 
   /**
