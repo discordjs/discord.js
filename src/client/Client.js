@@ -288,7 +288,7 @@ class Client extends BaseClient {
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
    * @example
-   * client.fetchInvite('invite code or URL')
+   * client.fetchInvite('https://discord.gg/bRCvFy9')
    *  .then(invite => {
    *    console.log(`Obtained invite with code: ${invite.code}`);
    *  }).catch(console.error);
