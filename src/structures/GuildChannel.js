@@ -415,16 +415,17 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    const createOptions = {
-      overwrites: options.overwrites ? this.permissionOverwrites : [],
-      nsfw: 'nsfw' in options ? options.nsfw : this.nsfw,
-      parent: 'parent' in options ? options.parent : this.parent,
-      bitrate: options.bitrate || this.bitrate,
-      userLimit: 'userLimit' in options ? options.userLimit : this.userLimit,
-      reason: options.reason,
-      type: this.type,
-    };
-    return this.guild.channels.create(options.name || this.name, createOptions)
+    Util.mergeDefault({
+      name: this.name,
+      withPermissions: true,
+      withTopic: true,
+      nsfw: this.nsfw,
+      parent: this.parent,
+      bitrate: this.bitrate,
+      userLimit: this.userLimit,
+      reason: null,
+    }, options);
+    return this.guild.channels.create(options.name, options)
       .then(channel => options.withTopic ? channel.setTopic(this.topic) : channel);
   }
 
