@@ -260,7 +260,7 @@ class RESTMethods {
         if (allow instanceof Array) allow = Permissions.resolve(allow);
         if (deny instanceof Array) deny = Permissions.resolve(deny);
 
-        const role = this.client.resolver.resolveRole(this, overwrite.id);
+        const role = this.client.resolver.resolveRole(guild, overwrite.id);
         if (role) {
           overwrite.id = role.id;
           overwrite.type = 'role';
