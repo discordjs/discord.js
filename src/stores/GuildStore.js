@@ -5,7 +5,6 @@ const Guild = require('../structures/Guild');
 
 /**
  * Stores guilds.
- * @private
  * @extends {DataStore}
  */
 class GuildStore extends DataStore {
