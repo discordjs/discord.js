@@ -174,8 +174,7 @@ class Collection extends Map {
   /**
    * Searches for a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
-   * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), except
-   * it returns `null` instead of `undefined` if the value was not found.
+   * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
    * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
@@ -208,8 +207,7 @@ class Collection extends Map {
   /**
    * Searches for the key of a single item where its specified property's value is identical to the given value
    * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
-   * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
-   * except it returns `null` instead of `undefined` if the value was not found.
+   * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
