@@ -11,10 +11,10 @@ class DataStore extends Collection {
     if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
     Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
-    if (iterable) for (const item of iterable) this.create(item);
+    if (iterable) for (const item of iterable) this.add(item);
   }
 
-  create(data, cache = true, { id, extras = [] } = {}) {
+  add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.get(id || data.id);
     if (existing) return existing;
 

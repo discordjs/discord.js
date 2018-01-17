@@ -51,7 +51,7 @@ class ChannelStore extends DataStore {
     return super.delete(key);
   }
 
-  create(data, guild, cache = true) {
+  add(data, guild, cache = true) {
     const existing = this.get(data.id);
     if (existing) return existing;
 

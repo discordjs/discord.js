@@ -106,7 +106,7 @@ const Actions = {
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.users.create(user);
+    if (data.users) for (const user of data.users) guild.client.users.add(user);
     /**
      * Cached webhooks
      * @type {Collection<Snowflake, Webhook>}

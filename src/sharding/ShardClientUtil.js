@@ -86,6 +86,7 @@ class ShardClientUtil {
    */
   broadcastEval(script) {
     return new Promise((resolve, reject) => {
+      script = typeof script === 'function' ? `(${script})(this)` : script;
       const listener = message => {
         if (!message || message._sEval !== script) return;
         process.removeListener('message', listener);

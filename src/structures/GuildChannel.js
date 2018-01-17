@@ -407,12 +407,24 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.withPermissions=true] Whether to clone the channel with this channel's
    * permission overwrites
    * @param {boolean} [options.withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
+   * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
+   * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @param {ChannelResolvable} [options.parent=this.parent] The parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone({ name = this.name, withPermissions = true, withTopic = true, reason } = {}) {
-    const options = { overwrites: withPermissions ? this.permissionOverwrites : [], reason };
-    return this.guild.createChannel(name, this.type, options)
+  clone({ name = this.name, withPermissions = true, withTopic = true, nsfw, parent, bitrate, userLimit, reason } = {}) {
+    const options = {
+      overwrites: withPermissions ? this.permissionOverwrites : [],
+      nsfw: typeof nsfw === 'undefined' ? this.nsfw : nsfw,
+      parent: parent || this.parent,
+      bitrate: bitrate || this.bitrate,
+      userLimit: userLimit || this.userLimit,
+      reason,
+      type: this.type,
+    };
+    return this.guild.channels.create(name, options)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
   }
 

@@ -42,6 +42,7 @@ class Shard extends EventEmitter {
      * @type {Object}
      */
     this.env = Object.assign({}, process.env, {
+      SHARDING_MANAGER: true,
       SHARD_ID: this.id,
       SHARD_COUNT: this.manager.totalShards,
       CLIENT_TOKEN: this.manager.token,
@@ -174,8 +175,8 @@ class Shard extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on the shard, in the context of the {@link Client}.
-   * @param {string} script JavaScript to run on the shard
+   * Evaluates a script or function on the shard, in the context of the {@link Client}.
+   * @param {string|Function} script JavaScript to run on the shard
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
@@ -190,7 +191,8 @@ class Shard extends EventEmitter {
       };
       this.process.on('message', listener);
 
-      this.send({ _eval: script }).catch(err => {
+      const _eval = typeof script === 'function' ? `(${script})(this)` : script;
+      this.send({ _eval }).catch(err => {
         this.process.removeListener('message', listener);
         this._evals.delete(script);
         reject(err);
