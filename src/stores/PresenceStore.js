@@ -11,9 +11,9 @@ class PresenceStore extends DataStore {
     super(client, iterable, Presence);
   }
 
-  create(data, cache) {
+  add(data, cache) {
     const existing = this.get(data.user.id);
-    return existing ? existing.patch(data) : super.create(data, cache, { id: data.user.id });
+    return existing ? existing.patch(data) : super.add(data, cache, { id: data.user.id });
   }
 
   /**

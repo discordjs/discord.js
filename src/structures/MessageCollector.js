@@ -51,24 +51,31 @@ class MessageCollector extends Collector {
   /**
    * Handles a message for possible collection.
    * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}}
+   * @returns {?Snowflake}
    * @private
    */
   collect(message) {
+    /**
+     * Emitted whenever a message is collected.
+     * @event MessageCollector#collect
+     * @param {Message} message The message that was collected
+     */
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
-    return {
-      key: message.id,
-      value: message,
-    };
+    return message.id;
   }
 
   /**
    * Handles a message for possible disposal.
-   * @param {Message} message The message that could be disposed
-   * @returns {?string}
+   * @param {Message} message The message that could be disposed of
+   * @returns {?Snowflake}
    */
   dispose(message) {
+    /**
+     * Emitted whenever a message is disposed of.
+     * @event MessageCollector#dispose
+     * @param {Message} message The message that was disposed of
+     */
     return message.channel.id === this.channel.id ? message.id : null;
   }
 

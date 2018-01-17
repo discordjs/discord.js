@@ -66,7 +66,7 @@ class GuildMember extends Base {
      */
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = this.guild.client.users.create(data.user);
+    this.user = this.guild.client.users.add(data.user);
     if (data.roles) this._roles = data.roles;
   }
 
@@ -260,16 +260,23 @@ class GuildMember extends Base {
   }
 
   /**
+   * Whether the member is manageable in terms of role hierarchy by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get manageable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    return this.guild.me.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
    * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
   get kickable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
   }
 
   /**
@@ -278,11 +285,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
   }
 
   /**
@@ -543,7 +546,7 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   ban(options) {
-    return this.guild.ban(this, options);
+    return this.guild.members.ban(this, options);
   }
 
   /**

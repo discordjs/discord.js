@@ -22,7 +22,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.create(mention);
+          let user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
       }
