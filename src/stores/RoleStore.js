@@ -5,7 +5,6 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Stores roles.
- * @private
  * @extends {DataStore}
  */
 class RoleStore extends DataStore {
