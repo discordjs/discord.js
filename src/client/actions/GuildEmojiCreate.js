@@ -12,7 +12,7 @@ class GuildEmojiCreateAction extends Action {
 /**
  * Emitted whenever a custom emoji is created in a guild.
  * @event Client#emojiCreate
- * @param {Emoji} emoji The emoji that was created
+ * @param {GuildEmoji} emoji The emoji that was created
  */
 
 module.exports = GuildEmojiCreateAction;

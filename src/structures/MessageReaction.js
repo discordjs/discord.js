@@ -1,4 +1,4 @@
-const Emoji = require('./Emoji');
+const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserStore = require('../stores/ReactionUserStore');
 
@@ -31,18 +31,18 @@ class MessageReaction {
      */
     this.users = new ReactionUserStore(client, undefined, this);
 
-    this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
+    this._emoji = new ReactionEmoji(this, data.emoji);
   }
 
   /**
-   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji
+   * The emoji of this reaction, either an GuildEmoji object for known custom emojis, or a ReactionEmoji
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
-   * @type {Emoji|ReactionEmoji}
+   * @type {GuildEmoji|ReactionEmoji}
    * @readonly
    */
   get emoji() {
-    if (this._emoji instanceof Emoji) return this._emoji;
+    if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis;

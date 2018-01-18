@@ -295,9 +295,9 @@ class GuildMember extends Base {
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.permissionsFor(this);
+    channel = this.guild.channels.resolve(channel);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    return channel.memberPermissions(this);
   }
 
   /**
