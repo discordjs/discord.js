@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.0.0",
-    "discord.js-docgen": "hydrabolt/discord.js-docgen",
+    "discord.js-docgen": "discordjs/discord.js-docgen",
     "eslint": "^4.11.0",
     "jsdoc-strip-async-await": "^0.1.0",
     "json-filter-loader": "^1.0.0",
