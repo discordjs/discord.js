@@ -7,19 +7,19 @@ const { RangeError } = require('../errors');
  */
 class Permissions {
   /**
-   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
+   * @param {PermissionResolvable} permissions Permission(s) to read from
    */
   constructor(permissions) {
     /**
      * Bitfield of the packed permissions
      * @type {number}
      */
-    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
+    this.bitfield = this.constructor.resolve(permissions);
   }
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
@@ -32,11 +32,12 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]} permissions Permissions to check for
+   * @param {PermissionResolvable} permissions Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {PermissionResolvable[]}
+   * @returns {string[]}
    */
   missing(permissions, checkAdmin = true) {
+    if (!(permissions instanceof Array)) permissions = new this.constructor(permissions).toArray(false);
     return permissions.filter(p => !this.has(p, checkAdmin));
   }
 
@@ -93,16 +94,31 @@ class Permissions {
   }
 
   /**
+   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {string[]}
+   */
+  toArray(checkAdmin = true) {
+    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
+  }
+
+  *[Symbol.iterator]() {
+    const keys = this.toArray();
+    while (keys.length) yield keys.shift();
+  }
+
+  /**
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
    * * An instance of Permissions
-   * @typedef {string|number|Permissions} PermissionResolvable
+   * * An Array of PermissionResolvable
+   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
    */
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
