@@ -24,6 +24,7 @@ class GuildEmojiRoleStore extends DataStore {
     if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles]);
 
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
+
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
