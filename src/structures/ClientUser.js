@@ -271,7 +271,7 @@ class ClientUser extends User {
    * @returns {Promise<Presence>}
    */
   setActivity(name, { url, type } = {}) {
-    if (!name) return this.setPresence({ activity: null });
+    if (!name) return this.setPresence({ game: null });
     return this.setPresence({
       game: { name, type, url },
     });
