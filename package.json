@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.5.7",
-    "discord.js-docgen": "hydrabolt/discord.js-docgen",
+    "discord.js-docgen": "discordjs/discord.js-docgen",
     "eslint": "^4.15.0",
     "parallel-webpack": "^2.2.0",
     "uglifyjs-webpack-plugin": "^1.1.6",
