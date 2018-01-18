@@ -193,7 +193,7 @@ class MessageEmbed {
 
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
-   * setting an embed image or author/footer icons. Only one file may be attached.
+   * setting an embed image or author/footer icons. Multiple files can be attached.
    * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
    * @returns {MessageEmbed}
    */
