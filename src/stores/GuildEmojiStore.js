@@ -1,16 +1,16 @@
 const Collection = require('../util/Collection');
 const DataStore = require('./DataStore');
-const Emoji = require('../structures/Emoji');
+const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const DataResolver = require('../util/DataResolver');
 
 /**
- * Stores emojis.
+ * Stores guild emojis.
  * @extends {DataStore}
  */
-class EmojiStore extends DataStore {
+class GuildEmojiStore extends DataStore {
   constructor(guild, iterable) {
-    super(guild.client, iterable, Emoji);
+    super(guild.client, iterable, GuildEmoji);
     this.guild = guild;
   }
 
@@ -60,17 +60,17 @@ class EmojiStore extends DataStore {
   }
 
   /**
-   * Data that can be resolved into an Emoji object. This can be:
+   * Data that can be resolved into an GuildEmoji object. This can be:
    * * A custom emoji ID
-   * * An Emoji object
+   * * A GuildEmoji object
    * * A ReactionEmoji object
-   * @typedef {Snowflake|Emoji|ReactionEmoji} EmojiResolvable
+   * @typedef {Snowflake|GuildEmoji|ReactionEmoji} EmojiResolvable
    */
 
   /**
-   * Resolves a EmojiResolvable to a Emoji object.
+   * Resolves an EmojiResolvable to an Emoji object.
    * @param {EmojiResolvable} emoji The Emoji resolvable to identify
-   * @returns {?Emoji}
+   * @returns {?GuildEmoji}
    */
   resolve(emoji) {
     if (emoji instanceof ReactionEmoji) return super.resolve(emoji.id);
@@ -78,7 +78,7 @@ class EmojiStore extends DataStore {
   }
 
   /**
-   * Resolves a EmojiResolvable to a Emoji ID string.
+   * Resolves an EmojiResolvable to an Emoji ID string.
    * @param {EmojiResolvable} emoji The Emoji resolvable to identify
    * @returns {?Snowflake}
    */
@@ -110,4 +110,4 @@ class EmojiStore extends DataStore {
   }
 }
 
-module.exports = EmojiStore;
+module.exports = GuildEmojiStore;
