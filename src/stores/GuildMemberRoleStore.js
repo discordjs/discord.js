@@ -15,7 +15,7 @@ class GuildMemberRoleStore extends DataStore {
   }
 
   /**
-   * Adds a role (or multiple roles) to the member
+   * Adds a role (or multiple roles) to the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @param {string} [reason] Reason for adding the role(s)
    * @returns {Promise<GuildMember>}
@@ -57,7 +57,7 @@ class GuildMemberRoleStore extends DataStore {
   }
 
   /**
-   * Removes a role (or multiple roles) from the member
+   * Removes a role (or multiple roles) from the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
    * @param {string} [reason] Reason for removing the role(s)
    * @returns {Promise<GuildMember>}
