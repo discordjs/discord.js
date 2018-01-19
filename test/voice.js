@@ -42,7 +42,7 @@ client.on('message', m => {
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
         // conn.playOpusStream(fs.createReadStream('C:/users/amish/downloads/z.ogg').pipe(new prism.OggOpusDemuxer()));
-        d = conn.playStream(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
+        d = conn.play(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
       });
     } else {
       m.reply('Specify a voice channel!');

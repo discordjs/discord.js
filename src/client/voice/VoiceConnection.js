@@ -6,6 +6,7 @@ const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/Receiver');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
+const PlayInterface = require('./util/PlayInterface');
 
 /**
  * Represents a connection to a guild's voice server.
@@ -17,6 +18,7 @@ const { Error } = require('../../errors');
  *   });
  * ```
  * @extends {EventEmitter}
+ * @implements {PlayInterface}
  */
 class VoiceConnection extends EventEmitter {
   constructor(voiceManager, channel) {
@@ -426,106 +428,6 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Options that can be passed to stream-playing methods:
-   * @typedef {Object} StreamOptions
-   * @property {number} [seek=0] The time to seek to
-   * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
-   * this stream to improve performance.
-   * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
-   * @property {number} [plp] Expected packet loss percentage
-   * @property {boolean} [fec] Enabled forward error correction
-   * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps.
-   * If set to 'auto', the voice channel's bitrate will be used
-   * @property {number} [highWaterMark=8] The maximum number of opus packets to make and store before they are
-   * actually needed. See https://nodejs.org/en/docs/guides/backpressuring-in-streams/. Setting this value to
-   * 1 means that changes in volume will be more instant.
-   */
-
-  /**
-   * Plays the given file in the voice connection.
-   * @param {string} file The absolute path to the file
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play files natively
-   * voiceChannel.join()
-   *   .then(connection => {
-   *     const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *   })
-   *   .catch(console.error);
-   */
-  playFile(file, options) {
-    return this.player.playUnknown(file, options);
-  }
-
-  /**
-   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playArbitraryInput(input, options) {
-    return this.player.playUnknown(input, options);
-  }
-
-  /**
-   * Plays and converts an audio stream in the voice connection.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play streams using ytdl-core
-   * const ytdl = require('ytdl-core');
-   * const streamOptions = { seek: 0, volume: 1 };
-   * voiceChannel.join()
-   *   .then(connection => {
-   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *     const dispatcher = connection.playStream(stream, streamOptions);
-   *   })
-   *   .catch(console.error);
-   */
-  playStream(stream, options) {
-    return this.player.playUnknown(stream, options);
-  }
-
-  /**
-   * Plays a stream of 16-bit signed stereo PCM.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playConvertedStream(stream, options) {
-    return this.player.playPCMStream(stream, options);
-  }
-
-  /**
-   * Plays an Opus encoded stream.
-   * <warn>Note that inline volume is not compatible with this method.</warn>
-   * @param {ReadableStream} stream The Opus audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playOpusStream(stream, options) {
-    return this.player.playOpusStream(stream, options);
-  }
-
-  /**
-   * Plays a voice broadcast.
-   * @param {VoiceBroadcast} broadcast The broadcast to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play a broadcast
-   * const broadcast = client
-   *   .createVoiceBroadcast()
-   *   .playFile('./test.mp3');
-   * const dispatcher = voiceConnection.playBroadcast(broadcast);
-   */
-  playBroadcast(broadcast, options) {
-    return this.player.playBroadcast(broadcast, options);
-  }
-
-  /**
    * Creates a VoiceReceiver so you can start listening to voice data.
    * It's recommended to only create one of these.
    * @returns {VoiceReceiver}
@@ -536,5 +438,7 @@ class VoiceConnection extends EventEmitter {
     return receiver;
   }
 }
+
+PlayInterface.applyToClass(VoiceConnection);
 
 module.exports = VoiceConnection;
