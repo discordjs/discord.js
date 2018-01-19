@@ -7,6 +7,12 @@ class VoiceReceiver extends EventEmitter {
     super();
     this.connection = connection;
     this.packets = new PacketHandler(this);
+    /**
+     * Emitted whenever there is a warning
+     * @event VoiceReceiver#debug
+     * @param {Error|string} error The error or message to debug
+     */
+    this.packets.on('error', err => this.emit('debug', err));
     this.connection.sockets.udp.socket.on('message', buffer => this.packets.push(buffer));
   }
 
@@ -20,10 +26,6 @@ class VoiceReceiver extends EventEmitter {
       return decoder;
     }
     return stream;
-  }
-
-  stoppedSpeaking() {
-    return false;
   }
 }
 

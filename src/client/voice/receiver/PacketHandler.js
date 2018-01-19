@@ -50,7 +50,10 @@ class PacketHandler {
     const stream = this.streams.get(user.id);
     if (!stream) return;
     const opusPacket = this.parseBuffer(buffer);
-    if (opusPacket instanceof Error) return;
+    if (opusPacket instanceof Error) {
+      this.emit('error', opusPacket);
+      return;
+    }
     stream.push(opusPacket);
   }
 }

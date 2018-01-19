@@ -415,11 +415,6 @@ class VoiceConnection extends EventEmitter {
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
     this.ssrcMap.set(+ssrc, user);
-    if (!speaking) {
-      for (const receiver of this.receivers) {
-        receiver.stoppedSpeaking(user);
-      }
-    }
     /**
      * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
