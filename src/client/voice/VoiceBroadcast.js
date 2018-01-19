@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
+const DispatcherSet = require('./util/DispatcherSet');
 
 /**
  * A voice broadcast can be played across multiple voice connections for improved shared-stream efficiency.
@@ -23,7 +24,7 @@ class VoiceBroadcast extends EventEmitter {
      * @type {Client}
      */
     this.client = client;
-    this.dispatchers = new Set();
+    this.dispatchers = new DispatcherSet(this);
     this.player = new BroadcastAudioPlayer(this);
   }
 
