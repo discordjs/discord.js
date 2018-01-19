@@ -2,6 +2,13 @@ const EventEmitter = require('events');
 const prism = require('prism-media');
 const PacketHandler = require('./PacketHandler');
 
+/**
+ * Receives audio packets from a voice connection.
+ * @example
+ * const receiver = connection.createReceiver();
+ * // opusStream is a ReadableStream - that means you could play it back to a voice channel if you wanted to!
+ * const opusStream = receiver.createStream(user);
+ */
 class VoiceReceiver extends EventEmitter {
   constructor(connection) {
     super();
@@ -16,6 +23,21 @@ class VoiceReceiver extends EventEmitter {
     this.connection.sockets.udp.socket.on('message', buffer => this.packets.push(buffer));
   }
 
+  /**
+   * Options passed to `VoiceReceiver#createStream`.
+   * @typedef {Object} ReceiveStreamOptions
+   * @property {string} [mode='opus'] The mode for audio output. This defaults to opus, meaning discord.js won't decode
+   * the packets for you. You can set this to 'pcm' so that the stream's output will be 16-bit little-endian stereo
+   * audio
+   */
+
+  /**
+   * Creates a new audio receiving stream. If a stream already exists for a user, then that stream will be returned
+   * rather than generating a new one.
+   * @param {UserResolvable} user The user to start listening to.
+   * @param {ReceiveStreamOptions} options Options.
+   * @returns {ReadableStream}
+   */
   createStream(user, { mode = 'opus' } = {}) {
     user = this.connection.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
