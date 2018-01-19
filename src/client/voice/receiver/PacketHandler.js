@@ -1,10 +1,12 @@
 const nonce = Buffer.alloc(24);
 const secretbox = require('../util/Secretbox');
+const EventEmitter = require('events');
 
 class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
-class PacketHandler {
+class PacketHandler extends EventEmitter {
   constructor(receiver) {
+    super();
     this.receiver = receiver;
     this.streams = new Map();
   }
