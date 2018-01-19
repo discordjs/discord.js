@@ -18,7 +18,7 @@ class AudioPlayer extends BasePlayer {
 
   createDispatcher(options, streams) {
     this.destroyDispatcher();
-    const dispatcher = new BroadcastDispatcher(this, options, streams);
+    const dispatcher = this.dispatcher = new BroadcastDispatcher(this, options, streams);
     return dispatcher;
   }
 }

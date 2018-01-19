@@ -29,6 +29,14 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   /**
+   * The current master dispatcher, if any. This dispatcher controls all that is played by subscribed dispatchers.
+   * @type {?BroadcastDispatcher}
+   */
+  get dispatcher() {
+    return this.player.dispatcher;
+  }
+
+  /**
    * Plays the given file in the voice connection.
    * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
