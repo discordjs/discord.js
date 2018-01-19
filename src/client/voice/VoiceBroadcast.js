@@ -40,7 +40,7 @@ class VoiceBroadcast extends EventEmitter {
    * Plays the given file in the voice connection.
    * @param {string} file The absolute path to the file
    * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
+   * @returns {BroadcastDispatcher}
    * @example
    * // Play files natively
    * voiceChannel.join()
@@ -57,7 +57,7 @@ class VoiceBroadcast extends EventEmitter {
    * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
    * @param {string} input the arbitrary input
    * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
+   * @returns {BroadcastDispatcher}
    */
   playArbitraryInput(input, options) {
     return this.player.playUnknown(input, options);
@@ -67,7 +67,7 @@ class VoiceBroadcast extends EventEmitter {
    * Plays and converts an audio stream in the voice connection.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
+   * @returns {BroadcastDispatcher}
    * @example
    * // Play streams using ytdl-core
    * const ytdl = require('ytdl-core');
@@ -87,7 +87,7 @@ class VoiceBroadcast extends EventEmitter {
    * Plays a stream of 16-bit signed stereo PCM.
    * @param {ReadableStream} stream The audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
+   * @returns {BroadcastDispatcher}
    */
   playConvertedStream(stream, options) {
     return this.player.playPCMStream(stream, options);
@@ -98,7 +98,7 @@ class VoiceBroadcast extends EventEmitter {
    * <warn>Note that inline volume is not compatible with this method.</warn>
    * @param {ReadableStream} stream The Opus audio stream to play
    * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
+   * @returns {BroadcastDispatcher}
    */
   playOpusStream(stream, options) {
     return this.player.playOpusStream(stream, options);
