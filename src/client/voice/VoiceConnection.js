@@ -1,5 +1,5 @@
-const VoiceWebSocket = require('./VoiceWebSocket');
-const VoiceUDP = require('./VoiceUDPClient');
+const VoiceWebSocket = require('./networking/VoiceWebSocket');
+const VoiceUDP = require('./networking/VoiceUDPClient');
 const Util = require('../../util/Util');
 const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
