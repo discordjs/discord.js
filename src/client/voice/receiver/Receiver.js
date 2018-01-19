@@ -10,12 +10,12 @@ class VoiceReceiver extends EventEmitter {
     this.connection.sockets.udp.socket.on('message', buffer => this.packets.push(buffer));
   }
 
-  createStream(user, pcm=false) {
+  createStream(user, { mode = 'opus' } = {}) {
     user = this.connection.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
     console.log('making stream for', user.tag);
     const stream = this.packets.makeStream(user.id);
-    if (pcm) {
+    if (mode === 'pcm') {
       const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 1920 });
       stream.pipe(decoder);
       return decoder;
