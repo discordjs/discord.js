@@ -1,6 +1,7 @@
 const nonce = Buffer.alloc(24);
-const Readable = require('./VoiceReadable');
 const secretbox = require('../util/Secretbox');
+
+class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
 class PacketHandler {
   constructor(receiver) {
@@ -16,13 +17,13 @@ class PacketHandler {
   }
 
   parseBuffer(buffer) {
-    // reuse nonce
+    // Reuse nonce buffer
     buffer.copy(nonce, 0, 0, 12);
 
     let packet = secretbox.methods.open(buffer.slice(12), nonce, this.receiver.connection.authentication.secretKey);
     if (!packet) return Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
-  
+
     // Strip RTP Header Extensions (one-byte only)
     if (packet[0] === 0xBE && packet[1] === 0xDE && packet.length > 4) {
       const headerExtensionLength = packet.readUInt16BE(2);

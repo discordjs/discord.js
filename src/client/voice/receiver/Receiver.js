@@ -13,7 +13,6 @@ class VoiceReceiver extends EventEmitter {
   createStream(user, { mode = 'opus' } = {}) {
     user = this.connection.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
-    console.log('making stream for', user.tag);
     const stream = this.packets.makeStream(user.id);
     if (mode === 'pcm') {
       const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 1920 });
@@ -24,7 +23,7 @@ class VoiceReceiver extends EventEmitter {
   }
 
   stoppedSpeaking() {
-    console.log('remember to remove this :)');
+    return false;
   }
 }
 
