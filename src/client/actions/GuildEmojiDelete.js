@@ -10,9 +10,9 @@ class GuildEmojiDeleteAction extends Action {
 }
 
 /**
- * Emitted whenever a custom guild emoji is deleted.
+ * Emitted whenever a custom emoji is deleted in a guild.
  * @event Client#emojiDelete
- * @param {Emoji} emoji The emoji that was deleted
+ * @param {GuildEmoji} emoji The emoji that was deleted
  */
 
 module.exports = GuildEmojiDeleteAction;

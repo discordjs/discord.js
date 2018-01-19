@@ -8,8 +8,8 @@
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://travis-ci.org/hydrabolt/discord.js"><img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" /></a>
-    <a href="https://david-dm.org/hydrabolt/discord.js"><img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
+    <a href="https://travis-ci.org/discordjs/discord.js"><img src="https://travis-ci.org/discordjs/discord.js.svg" alt="Build status" /></a>
+    <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
   </p>
   <p>
     <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="NPM info" /></a>
@@ -68,18 +68,18 @@ client.login('your token');
 ```
 
 ## Links
-* [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
+* [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs)
 * [Discord.js server](https://discord.gg/bRCvFy9)
 * [Discord API server](https://discord.gg/rV4BwdK)
-* [GitHub](https://github.com/hydrabolt/discord.js)
+* [GitHub](https://github.com/discordjs/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Related libraries](https://discordapi.com/unofficial/libs.html) (see also [discord-rpc](https://www.npmjs.com/package/discord-rpc))
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle

@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hydrabolt/discord.js.git"
+    "url": "git+https://github.com/discordjs/discord.js.git"
   },
   "keywords": [
     "discord",
@@ -27,9 +27,9 @@
   "author": "Amish Shah <amishshah.2k@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/hydrabolt/discord.js/issues"
+    "url": "https://github.com/discordjs/discord.js/issues"
   },
-  "homepage": "https://github.com/hydrabolt/discord.js#readme",
+  "homepage": "https://github.com/discordjs/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "pako": "^1.0.0",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/node": "^8.0.0",
-    "discord.js-docgen": "hydrabolt/discord.js-docgen",
+    "discord.js-docgen": "discordjs/docgen",
     "eslint": "^4.11.0",
     "jsdoc-strip-async-await": "^0.1.0",
     "json-filter-loader": "^1.0.0",

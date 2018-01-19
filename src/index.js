@@ -26,8 +26,8 @@ module.exports = {
   // Stores
   ChannelStore: require('./stores/ChannelStore'),
   ClientPresenceStore: require('./stores/ClientPresenceStore'),
-  EmojiStore: require('./stores/EmojiStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
+  GuildEmojiStore: require('./stores/GuildEmojiStore'),
   GuildMemberStore: require('./stores/GuildMemberStore'),
   GuildStore: require('./stores/GuildStore'),
   ReactionUserStore: require('./stores/ReactionUserStore'),
@@ -64,6 +64,7 @@ module.exports = {
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
+  GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),

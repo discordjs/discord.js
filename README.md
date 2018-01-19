@@ -8,8 +8,8 @@
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://travis-ci.org/hydrabolt/discord.js"><img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" /></a>
-    <a href="https://david-dm.org/hydrabolt/discord.js"><img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
+    <a href="https://travis-ci.org/discordjs/discord.js"><img src="https://travis-ci.org/discordjs/discord.js.svg" alt="Build status" /></a>
+    <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
     <a href="https://www.patreon.com/discordjs"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
   </p>
   <p>
@@ -40,7 +40,7 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm i zlib-sync`) 
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm i zlib-sync`)
 - [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm i discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm i sodium`)
@@ -67,21 +67,21 @@ client.login('your token');
 ```
 
 ## Links
-* [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
+* [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs)
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
-* [GitHub](https://github.com/hydrabolt/discord.js)
+* [GitHub](https://github.com/discordjs/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
 * [Related libraries](https://discordapi.com/unofficial/libs.html)
 
 ### Extensions
-* [discord-rpc](https://www.npmjs.com/package/discord-rpc) ([github](https://github.com/devsnek/discord-rpc))
+* [discord-rpc](https://www.npmjs.com/package/discord-rpc) ([github](https://github.com/discordjs/RPC))
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
