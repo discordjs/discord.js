@@ -3,7 +3,7 @@ const VoiceUDP = require('./VoiceUDPClient');
 const Util = require('../../util/Util');
 const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
-const VoiceReceiver = require('./receiver/VoiceReceiver');
+const VoiceReceiver = require('./receiver/Receiver');
 const EventEmitter = require('events');
 const { Error } = require('../../errors');
 

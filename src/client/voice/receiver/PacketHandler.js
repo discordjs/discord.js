@@ -1,8 +1,18 @@
 const nonce = Buffer.alloc(24);
+const Readable = require('./VoiceReadable');
+const secretbox = require('../util/Secretbox');
 
 class PacketHandler {
   constructor(receiver) {
     this.receiver = receiver;
+    this.streams = new Map();
+  }
+
+  makeStream(user) {
+    if (this.streams.has(user)) return this.streams.get(user);
+    const stream = new Readable();
+    this.streams.set(user, stream);
+    return stream;
   }
 
   parseBuffer(buffer) {
@@ -36,8 +46,11 @@ class PacketHandler {
     const ssrc = buffer.readUInt32BE(8);
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
+    const stream = this.streams.get(user.id);
+    if (!stream) return;
     const opusPacket = this.parseBuffer(buffer);
     if (opusPacket instanceof Error) return;
+    stream.push(opusPacket);
   }
 }
 

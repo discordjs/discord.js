@@ -1,11 +1,6 @@
 /* eslint no-console: 0 */
 'use strict';
 
-var profiler = require('gc-profiler');
-profiler.on('gc', function (info) {
-  console.log(info);
-});
-
 const Discord = require('../');
 const ytdl = require('ytdl-core');
 const prism = require('prism-media');
@@ -32,22 +27,6 @@ async function wait(time = 1000) {
 
 var count = 0;
 
-client.on('ready', async () => {
-  for (const guild of client.guilds.values()) {
-    const channels = guild.channels.filter(c => c.type === 'voice' && c.joinable && c.members.size === 0);
-    const channel = channels.first();
-    if (channel) {
-      channel.join().then(conn => {
-        conn.playOpusStream(fs.createReadStream('C:/users/amish/downloads/z.ogg').pipe(new prism.OggOpusDemuxer()));
-      });
-      count++;
-      console.log(`Playing in ${channel.name} in ${channel.guild.name} at count ${count} ${process.memoryUsage().rss / (1024 * 1024)}`);
-      await wait();
-    }
-  }
-  console.log('done!');
-});
-
 process.on('unhandledRejection', console.log);
 
 client.on('message', m => {
@@ -57,6 +36,8 @@ client.on('message', m => {
     const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voiceChannel;
     if (channel && channel.type === 'voice') {
       channel.join().then(conn => {
+        const receiver = conn.createReceiver();
+        receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');
