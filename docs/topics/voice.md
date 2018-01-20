@@ -79,12 +79,16 @@ Discord.js allows you to play a lot of things:
 
 ```js
 // ReadableStreams, in this example YouTube audio
+const ytdl = require('ytdl-core');
 connection.play(ytdl(
   'https://www.youtube.com/watch?v=ZlAU_w7-Xp8',
   { filter: 'audioonly' }));
 
 // Files on the internet
-connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3')
+connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
+
+// Local files
+connection.play('/home/discord/audio.mp3');
 ```
 
 New to v12 is the ability to play OggOpus and WebmOpus streams with much better performance by skipping out Ffmpeg. Note this comes at the cost of no longer having volume control over the stream:
