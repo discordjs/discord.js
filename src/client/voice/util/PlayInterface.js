@@ -4,7 +4,7 @@ const prism = require('prism-media');
 /**
  * Options that can be passed to stream-playing methods:
  * @typedef {Object} StreamOptions
- * @property {StreamType} [type='unknown'] The type of stream. 'unknown', 'converted', 'opus', 'broadcast.
+ * @property {StreamType} [type='unknown'] The type of stream.
  * @property {number} [seek=0] The time to seek to
  * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
  * this stream to improve performance.
