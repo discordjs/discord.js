@@ -357,7 +357,8 @@ class GuildMember extends Base {
       const clone = this._clone();
       data.user = this.user;
       clone._patch(data);
-      clone._frozenVoiceState = this.voiceState;
+      clone._frozenVoiceState = {};
+      Object.assign(clone._frozenVoiceState, this.voiceState);
       if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
       if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
       if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;

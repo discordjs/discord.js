@@ -7,7 +7,6 @@ const { TypeError } = require('../errors');
 /**
  * Stores the client presence and other presences.
  * @extends {PresenceStore}
- * @private
  */
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {

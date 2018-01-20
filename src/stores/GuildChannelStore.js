@@ -7,7 +7,6 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Stores guild channels.
- * @private
  * @extends {DataStore}
  */
 class GuildChannelStore extends DataStore {

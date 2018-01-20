@@ -3,7 +3,6 @@ const { Presence } = require('../structures/Presence');
 
 /**
  * Stores presences.
- * @private
  * @extends {DataStore}
  */
 class PresenceStore extends DataStore {
