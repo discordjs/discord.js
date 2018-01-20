@@ -37,6 +37,8 @@ class VoiceBroadcast extends EventEmitter {
   get dispatcher() {
     return this.player.dispatcher;
   }
+
+  play() {} // eslint-disable-line no-empty-function
 }
 
 PlayInterface.applyToClass(VoiceBroadcast);

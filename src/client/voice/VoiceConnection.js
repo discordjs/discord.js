@@ -437,6 +437,8 @@ class VoiceConnection extends EventEmitter {
     this.receivers.push(receiver);
     return receiver;
   }
+
+  play() {} // eslint-disable-line no-empty-function
 }
 
 PlayInterface.applyToClass(VoiceConnection);
