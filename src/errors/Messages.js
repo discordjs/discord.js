@@ -54,6 +54,9 @@ const Messages = {
   VOICE_NO_BROWSER: 'Voice connections are not available in browsers.',
   VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
   VOICE_JOIN_SOCKET_CLOSED: 'Tried to send join packet, but the WebSocket is not open.',
+  VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
+  VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
+  VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
 
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 

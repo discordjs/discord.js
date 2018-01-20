@@ -323,7 +323,7 @@ class GuildChannel extends Channel {
         name: (data.name || this.name).trim(),
         topic: data.topic,
         nsfw: data.nsfw,
-        bitrate: data.bitrate || (this.bitrate ? this.bitrate * 1000 : undefined),
+        bitrate: data.bitrate || this.bitrate,
         user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,

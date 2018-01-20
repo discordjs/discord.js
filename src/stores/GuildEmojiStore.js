@@ -6,7 +6,6 @@ const DataResolver = require('../util/DataResolver');
 
 /**
  * Stores guild emojis.
- * @private
  * @extends {DataStore}
  */
 class GuildEmojiStore extends DataStore {
