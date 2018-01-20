@@ -27,10 +27,19 @@ class PlayInterface {
    * Play an audio resource.
    * @param {ReadableStream|string} resource The resource to play.
    * @param {StreamOptions} [options] The options to play.
+   * @example
+   * // Play a local audio file
+   * connection.play('/home/hydrabolt/audio.mp3', { volume: 0.5 });
+   *
+   * // Play a ReadableStream
+   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { filter: 'audioonly' }));
+   *
+   * // Using different protocols: https://ffmpeg.org/ffmpeg-protocols.html
+   * connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
    * @returns {StreamDispatcher}
    */
   play(resource, options = {}) {
-    const type = options.type || 'unknown';
+    const type = resource instanceof Broadcast ? options.type || 'unknown' : 'broadcast';
     if (type === 'unknown') {
       return this.player.playUnknown(resource, options);
     } else if (type === 'converted') {
@@ -53,3 +62,5 @@ class PlayInterface {
 }
 
 module.exports = PlayInterface;
+
+const Broadcast = require('../VoiceBroadcast');
