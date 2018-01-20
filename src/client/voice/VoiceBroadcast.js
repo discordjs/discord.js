@@ -44,18 +44,13 @@ class VoiceBroadcast extends EventEmitter {
    * @param {StreamOptions} [options] The options to play.
    * @example
    * // Play a local audio file
-   * connection.play('/home/hydrabolt/audio.mp3', { volume: 0.5 });
+   * broadcast.play('/home/hydrabolt/audio.mp3', { volume: 0.5 });
    * @example
    * // Play a ReadableStream
-   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { filter: 'audioonly' }));
-   * @example
-   * // Play a voice broadcast
-   * const broadcast = client.createVoiceBroadcast();
-   * broadcast.play('/home/hydrabolt/audio.mp3');
-   * connection.play(broadcast);
+   * broadcast.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { filter: 'audioonly' }));
    * @example
    * // Using different protocols: https://ffmpeg.org/ffmpeg-protocols.html
-   * connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
+   * broadcast.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
    * @returns {BroadcastDispatcher}
    */
   play() { return null; }
