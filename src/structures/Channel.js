@@ -19,6 +19,7 @@ class Channel {
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
+     * * `category` - a guild category channel
      * @type {string}
      */
     this.type = null;
