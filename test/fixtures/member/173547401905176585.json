@@ -1,0 +1,12 @@
+{
+  "deaf": false,
+  "joined_at": "2017-12-22T03:01:26.798000+00:00",
+  "user": {
+    "username": "Gus",
+    "discriminator": "0103",
+    "id": "173547401905176585",
+    "avatar": "a_770407e2f209dc3f2a619aa3ed51244c"
+  },
+  "roles": [],
+  "mute": false
+}

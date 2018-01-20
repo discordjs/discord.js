@@ -1,4 +1,4 @@
-const Discord = require('../src');
+const Discord = require('../../src');
 const { token, prefix, owner } = require('./auth.js');
 
 // eslint-disable-next-line no-console

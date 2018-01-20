@@ -24,3 +24,4 @@ webpack/
 webpack.config.js
 .github/
 test/
+coverage/
