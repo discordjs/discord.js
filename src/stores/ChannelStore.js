@@ -7,7 +7,6 @@ const lruable = ['group', 'dm'];
 
 /**
  * Stores channels.
- * @private
  * @extends {DataStore}
  */
 class ChannelStore extends DataStore {

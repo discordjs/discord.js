@@ -3,7 +3,6 @@ const MessageReaction = require('../structures/MessageReaction');
 
 /**
  * Stores reactions.
- * @private
  * @extends {DataStore}
  */
 class ReactionStore extends DataStore {
