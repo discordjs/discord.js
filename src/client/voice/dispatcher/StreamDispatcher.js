@@ -22,7 +22,7 @@ nonce.fill(0);
  * // Obtained using:
  * voiceChannel.join().then(connection => {
  *   // You can play a file or a stream here:
- *   const dispatcher = connection.playFile('./file.mp3');
+ *   const dispatcher = connection.play('/home/hydrabolt/audio.mp3');
  * });
  * ```
  * @implements {VolumeInterface}
