@@ -75,7 +75,7 @@ class StreamDispatcher extends Writable {
        * @event StreamDispatcher#error
        */
       if (type && err) {
-        err.message = `${type} stream: `;
+        err.message = `${type} stream: ${err.message}`;
         this.emit('error', err);
       }
       this.destroy();
