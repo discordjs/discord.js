@@ -32,6 +32,7 @@
   "homepage": "https://github.com/discordjs/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
+    "@sugarcoated/fondant-dictionary": "^1.0.4",
     "pako": "^1.0.0",
     "prism-media": "github:hydrabolt/prism-media#indev",
     "snekfetch": "^3.5.0",
