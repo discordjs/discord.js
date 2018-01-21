@@ -69,20 +69,23 @@ class StreamDispatcher extends Writable {
     if (typeof plp !== 'undefined') this.setPLP(plp);
     if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
 
-    const streamError = err => {
+    const streamError = (type, err) => {
       /**
        * Emitted when the dispatcher encounters an error.
        * @event StreamDispatcher#error
        */
-      if (err) this.emit('error', err);
+      if (type && err) {
+        err.message = `${type} stream: `;
+        this.emit('error', err);
+      }
       this.destroy();
     };
 
     this.on('error', () => streamError());
-    if (this.streams.input) this.streams.input.on('error', streamError);
-    if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', streamError);
-    if (this.streams.opus) this.streams.opus.on('error', streamError);
-    if (this.streams.volume) this.streams.volume.on('error', streamError);
+    if (this.streams.input) this.streams.input.on('error', err => streamError('input', err));
+    if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', err => streamError('ffmpeg', err));
+    if (this.streams.opus) this.streams.opus.on('error', err => streamError('opus', err));
+    if (this.streams.volume) this.streams.volume.on('error', err => streamError('volume', err));
   }
 
   get _sdata() {
