@@ -3,6 +3,7 @@ const DataStore = require('./DataStore');
 const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const DataResolver = require('../util/DataResolver');
+const { TypeError } = require('../errors');
 
 /**
  * Stores guild emojis.

@@ -23,7 +23,7 @@ class PacketHandler extends EventEmitter {
     buffer.copy(nonce, 0, 0, 12);
 
     let packet = secretbox.methods.open(buffer.slice(12), nonce, this.receiver.connection.authentication.secretKey);
-    if (!packet) return Error('Failed to decrypt voice packet');
+    if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
 
     // Strip RTP Header Extensions (one-byte only)

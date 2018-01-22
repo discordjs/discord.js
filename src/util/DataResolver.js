@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const snekfetch = require('snekfetch');
 const Util = require('../util/Util');
-const { Error, TypeError } = require('../errors');
+const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
 
 /**
@@ -99,7 +99,7 @@ class DataResolver {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error('FILE_NOT_FOUND', file));
+            if (!stats || !stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2); else resolve(data);
             });

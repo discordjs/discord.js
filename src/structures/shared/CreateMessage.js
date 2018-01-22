@@ -4,6 +4,7 @@ const MessageEmbed = require('../MessageEmbed');
 const MessageAttachment = require('../MessageAttachment');
 const { browser } = require('../../util/Constants');
 const Util = require('../../util/Util');
+const { RangeError } = require('../../errors');
 
 // eslint-disable-next-line complexity
 module.exports = async function createMessage(channel, options) {

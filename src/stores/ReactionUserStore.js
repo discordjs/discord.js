@@ -1,4 +1,6 @@
 const DataStore = require('./DataStore');
+const { Error } = require('../errors');
+
 /**
  * A data store to store User models who reacted to a MessageReaction.
  * @extends {DataStore}
