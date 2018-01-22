@@ -8,8 +8,8 @@ class GuildMemberRemoveAction extends Action {
     let member = null;
     if (guild) {
       member = guild.members.get(data.user.id);
+      guild.memberCount--;
       if (member) {
-        guild.memberCount--;
         guild.members.remove(member.id);
         if (client.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }

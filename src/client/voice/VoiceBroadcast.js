@@ -9,13 +9,12 @@ const PlayInterface = require('./util/PlayInterface');
  * Example usage:
  * ```js
  * const broadcast = client.createVoiceBroadcast();
- * broadcast.playFile('./music.mp3');
+ * broadcast.play('./music.mp3');
  * // Play "music.mp3" in all voice connections that the client is in
  * for (const connection of client.voiceConnections.values()) {
- *   connection.playBroadcast(broadcast);
+ *   connection.play(broadcast);
  * }
  * ```
- * @implements {VolumeInterface}
  * @implements {PlayInterface}
  */
 class VoiceBroadcast extends EventEmitter {

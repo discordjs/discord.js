@@ -59,7 +59,7 @@ class PlayInterface {
    */
   play(resource, options = {}) {
     if (resource instanceof Broadcast) {
-      if (!this.player.playBroadcast) throw Error('VOICE_PLAY_INTERFACE_NO_BROADCAST');
+      if (!this.player.playBroadcast) throw new Error('VOICE_PLAY_INTERFACE_NO_BROADCAST');
       return this.player.playBroadcast(resource, options);
     }
     const type = options.type || 'unknown';
@@ -70,13 +70,13 @@ class PlayInterface {
     } else if (type === 'opus') {
       return this.player.playOpusStream(resource, options);
     } else if (type === 'ogg/opus') {
-      if (!(resource instanceof Readable)) throw Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
+      if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
       return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()));
     } else if (type === 'webm/opus') {
-      if (!(resource instanceof Readable)) throw Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
+      if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
       return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()));
     }
-    throw Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
+    throw new Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
   }
 
   static applyToClass(structure) {

@@ -33,7 +33,7 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "pako": "^1.0.0",
-    "prism-media": "github:hydrabolt/prism-media#indev",
+    "prism-media": "github:hydrabolt/prism-media",
     "snekfetch": "^3.5.0",
     "tweetnacl": "^1.0.0",
     "ws": "^3.3.1"
