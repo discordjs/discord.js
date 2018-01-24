@@ -1,7 +1,6 @@
-const Collection = require('../util/Collection');
+const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
 const Snowflake = require('../util/Snowflake');
 const Emoji = require('./Emoji');
-const { TypeError } = require('../errors');
 
 /**
  * Represents a custom emoji.
@@ -16,6 +15,12 @@ class GuildEmoji extends Emoji {
      * @type {Guild}
      */
     this.guild = guild;
+
+    /**
+     * A collection of roles this emoji is active for (empty if all), mapped by role ID
+     * @type {GuildEmojiRoleStore<Snowflake, Role>}
+     */
+    this.roles = new GuildEmojiRoleStore(this);
 
     this._patch(data);
   }
@@ -35,7 +40,7 @@ class GuildEmoji extends Emoji {
      */
     this.managed = data.managed;
 
-    this._roles = data.roles;
+    if (data.roles) this.roles._patch(data.roles);
   }
 
   /**
@@ -54,19 +59,6 @@ class GuildEmoji extends Emoji {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * A collection of roles this emoji is active for (empty if all), mapped by role ID
-   * @type {Collection<Snowflake, Role>}
-   * @readonly
-   */
-  get roles() {
-    const roles = new Collection();
-    for (const role of this._roles) {
-      if (this.guild.roles.has(role)) roles.set(role, this.guild.roles.get(role));
-    }
-    return roles;
   }
 
   /**
@@ -107,60 +99,6 @@ class GuildEmoji extends Emoji {
   }
 
   /**
-   * Adds a role to the list of roles that can use this emoji.
-   * @param {Role} role The role to add
-   * @returns {Promise<GuildEmoji>}
-   */
-  addRestrictedRole(role) {
-    return this.addRestrictedRoles([role]);
-  }
-
-  /**
-   * Adds multiple roles to the list of roles that can use this emoji.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to add
-   * @returns {Promise<GuildEmoji>}
-   */
-  addRestrictedRoles(roles) {
-    const newRoles = new Collection(this.roles);
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      newRoles.set(role.id, role);
-    }
-    return this.edit({ roles: newRoles });
-  }
-
-  /**
-   * Removes a role from the list of roles that can use this emoji.
-   * @param {Role} role The role to remove
-   * @returns {Promise<GuildEmoji>}
-   */
-  removeRestrictedRole(role) {
-    return this.removeRestrictedRoles([role]);
-  }
-
-  /**
-   * Removes multiple roles from the list of roles that can use this emoji.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles Roles to remove
-   * @returns {Promise<GuildEmoji>}
-   */
-  removeRestrictedRoles(roles) {
-    const newRoles = new Collection(this.roles);
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      if (newRoles.has(role.id)) newRoles.delete(role.id);
-    }
-    return this.edit({ roles: newRoles });
-  }
-
-  /**
    * Deletes the emoji.
    * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise<GuildEmoji>}
@@ -182,13 +120,13 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
-        other._roles === this._roles
+        other.roles.every(role => this.roles.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other._roles === this._roles
+        other.roles.every(role => this.roles.has(role))
       );
     }
   }

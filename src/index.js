@@ -28,6 +28,7 @@ module.exports = {
   ClientPresenceStore: require('./stores/ClientPresenceStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
   GuildEmojiStore: require('./stores/GuildEmojiStore'),
+  GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
   GuildMemberStore: require('./stores/GuildMemberStore'),
   GuildMemberRoleStore: require('./stores/GuildMemberRoleStore'),
   GuildStore: require('./stores/GuildStore'),
