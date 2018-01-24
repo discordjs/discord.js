@@ -179,6 +179,18 @@ class Guild extends Base {
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
 
+    if (data.channels) {
+      this.channels.clear();
+      for (const rawChannel of data.channels) {
+        this.client.channels.add(rawChannel, this);
+      }
+    }
+
+    if (data.roles) {
+      this.roles.clear();
+      for (const role of data.roles) this.roles.add(role);
+    }
+
     if (data.members) {
       this.members.clear();
       for (const guildUser of data.members) this.members.add(guildUser);
@@ -190,18 +202,6 @@ class Guild extends Base {
        * @type {Snowflake}
        */
       this.ownerID = data.owner_id;
-    }
-
-    if (data.channels) {
-      this.channels.clear();
-      for (const rawChannel of data.channels) {
-        this.client.channels.add(rawChannel, this);
-      }
-    }
-
-    if (data.roles) {
-      this.roles.clear();
-      for (const role of data.roles) this.roles.add(role);
     }
 
     if (data.presences) {
