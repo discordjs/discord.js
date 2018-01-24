@@ -126,7 +126,7 @@ class GuildEmoji extends Emoji {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other.roles.every(role => this.roles.has(role.id))
+        other.roles.every(role => this.roles.has(role))
       );
     }
   }
