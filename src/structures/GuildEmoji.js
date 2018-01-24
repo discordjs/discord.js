@@ -120,13 +120,13 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
-        other._roles === this._roles
+        other.roles.every(role => this.roles.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other._roles === this._roles
+        other.roles.every(role => this.roles.has(role.id))
       );
     }
   }
