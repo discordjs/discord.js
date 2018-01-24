@@ -179,7 +179,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * How long it has been since the client last entered the `READY` state
+   * How long it has been since the client last entered the `READY` state in milliseconds
    * @type {?number}
    * @readonly
    */
