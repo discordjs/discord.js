@@ -95,7 +95,7 @@ class Webhook {
    * @param {StringResolvable} content The content to send
    * @param {WebhookMessageOptions|Attachment|RichEmbed} [options] The options to provide
    * can also be just a RichEmbed or Attachment
-   * @returns {Promise<Message|Message[]>}
+   * @returns {Promise<Message|Message[]|Object|Object[]>}
    * @example
    * // Send a message
    * webhook.send('hello!')

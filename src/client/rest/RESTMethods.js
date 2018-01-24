@@ -806,7 +806,10 @@ class RESTMethods {
           content,
           tts,
           embeds,
-        }, files).then(resolve, reject);
+        }, files).then(data => {
+          if (!this.client.channels) resolve(data);
+          else resolve(this.client.actions.MessageCreate.handle(data).message);
+        }, reject);
       }
     });
   }
