@@ -125,7 +125,7 @@ class Util {
       if (!has(given, key) || given[key] === undefined) {
         given[key] = def[key];
       } else if (given[key] === Object(given[key])) {
-        given[key] = this.mergeDefault(def[key], given[key]);
+        given[key] = Util.mergeDefault(def[key], given[key]);
       }
     }
 
@@ -139,7 +139,7 @@ class Util {
    * @private
    */
   static convertToBuffer(ab) {
-    if (typeof ab === 'string') ab = this.str2ab(ab);
+    if (typeof ab === 'string') ab = Util.str2ab(ab);
     return Buffer.from(ab);
   }
 
