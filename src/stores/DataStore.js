@@ -10,7 +10,7 @@ class DataStore extends Collection {
     super();
     if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.constructor.name) || holds });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
     if (iterable) for (const item of iterable) this.add(item);
   }
 
