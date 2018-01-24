@@ -222,7 +222,7 @@ class GuildMember extends Base {
   get manageable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
-    return this.guild.me.highestRole.comparePositionTo(this.highestRole) > 0;
+    return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
 
   /**
