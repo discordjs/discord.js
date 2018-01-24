@@ -118,7 +118,7 @@ class Role extends Base {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
-    return clientMember.highestRole.comparePositionTo(this) > 0;
+    return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
   /**
