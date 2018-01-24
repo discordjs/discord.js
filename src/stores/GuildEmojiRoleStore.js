@@ -1,5 +1,4 @@
 const DataStore = require('./DataStore');
-let GuildEmoji;
 const Collection = require('../util/Collection');
 const { TypeError } = require('../errors');
 
@@ -9,8 +8,7 @@ const { TypeError } = require('../errors');
  */
 class GuildEmojiRoleStore extends DataStore {
   constructor(emoji) {
-    if (!GuildEmoji) GuildEmoji = require('../structures/GuildEmoji');
-    super(emoji.client, null, GuildEmoji);
+    super(emoji.client, null, require('../structures/GuildEmoji'));
     this.emoji = emoji;
     this.guild = emoji.guild;
   }
