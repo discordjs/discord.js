@@ -54,12 +54,16 @@ class ClientPresenceStore extends PresenceStore {
         application_id: applicationID || undefined,
         secrets: activity.secrets || undefined,
         instance: activity.instance || undefined,
-      } : this.clientPresence.activity,
+      } : null,
     };
+
+    if ((status || afk || since) && !activity) {
+      packet.game = this.clientPresence.activity;
+    }
 
     if (packet.game) {
       packet.game.type = typeof packet.game.type === 'number' ?
-        packet.game.type : ActivityTypes.indexOf(packet.game.type)
+        packet.game.type : ActivityTypes.indexOf(packet.game.type);
     }
 
     this.clientPresence.patch(packet);
