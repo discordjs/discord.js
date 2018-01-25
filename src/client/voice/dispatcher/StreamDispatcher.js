@@ -278,7 +278,7 @@ class StreamDispatcher extends Writable {
   get volume() {
     return this.streams.volume ? this.streams.volume.volume : 1;
   }
-  
+
   /**
    * Ends playback. Inherited from WriteableStream.
    */
