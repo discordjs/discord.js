@@ -1,6 +1,5 @@
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
-const Guild = require('../structures/Guild.js');
 const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
