@@ -108,9 +108,7 @@ class ChannelStore extends DataStore {
     const existing = this.get(id);
     if (existing) return Promise.resolve(existing);
 
-    return this.client.api.channels(id).get().then(data => {
-      return this.client.guilds.fetch(data.guild_id).then(guild => this.add(data, guild, cache));
-    });
+    return this.client.api.channels(id).get().then(data => this.client.guilds.fetch(data.guild_id).then(guild => this.add(data, guild, cache)));
   }
 }
 
