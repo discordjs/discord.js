@@ -59,6 +59,10 @@ class StreamDispatcher extends Writable {
     this._pausedTime = 0;
     this.count = 0;
 
+    /**
+     * Emitted when the dispatcher ends. Previously known as the "end" event. Inherited from WriteableStream.
+     * @event StreamDispatcher#finish
+     */
     this.on('finish', () => {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
@@ -273,6 +277,13 @@ class StreamDispatcher extends Writable {
   // Volume
   get volume() {
     return this.streams.volume ? this.streams.volume.volume : 1;
+  }
+
+  /**
+   * Ends playback. Inherited from WriteableStream.
+   */
+  end() {
+    super.end();
   }
 
   setVolume(value) {
