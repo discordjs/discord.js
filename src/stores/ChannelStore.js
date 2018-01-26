@@ -102,7 +102,7 @@ class ChannelStore extends DataStore {
     * <warn>This is only available when using a bot account.</warn>
     * @param {Snowflake} id ID of the channel
     * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
-    * @returns {Promise<GuildChannel>}
+    * @returns {Promise<Channel>}
     */
   fetch(id, cache = true) {
     const existing = this.get(id);

@@ -80,13 +80,15 @@ class GuildStore extends DataStore {
     * <warn>This is only available when using a bot account.</warn>
     * @param {Snowflake} id ID of the guild
     * @param {boolean} [cache=true] Whether to cache the new guild object if it isn't already
-    * @returns {Promise<GuildChannel>}
+    * @returns {Promise<Guild>}
     */
   fetch(id, cache = true) {
     const existing = this.get(id);
     if (existing) return Promise.resolve(existing);
 
-    return this.client.api.guilds(id).get().then(data => this.add(data, cache));
+    return this.client.api.guilds(id).get().then(
+      data => this.client.api.guilds(id).channels.get().then(
+        cData => this.add(Object.assign({ channels: cData }, data), cache)));
   }
 }
 
