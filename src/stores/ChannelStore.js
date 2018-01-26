@@ -1,5 +1,6 @@
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
+const Guild = require('../structures/Guild.js');
 const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
@@ -96,6 +97,22 @@ class ChannelStore extends DataStore {
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
+
+  /**
+    * Obtains a channel from Discord, or the channel cache if it's already available.
+    * <warn>This is only available when using a bot account.</warn>
+    * @param {Snowflake} id ID of the channel
+    * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+    * @returns {Promise<GuildChannel>}
+    */
+  fetch(id, cache = true) {
+    const existing = this.get(id);
+    if (existing) return Promise.resolve(existing);
+
+    return this.client.api.channels(id).get().then(data => {
+      return this.client.guilds.fetch(data.guild_id).then(guild => this.add(data, guild, cache));
+    });
+  }
 }
 
 module.exports = ChannelStore;

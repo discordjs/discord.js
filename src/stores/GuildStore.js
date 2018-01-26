@@ -74,6 +74,20 @@ class GuildStore extends DataStore {
     return DataResolver.resolveImage(icon)
       .then(data => this.create(name, { region, icon: data || null }));
   }
+
+  /**
+    * Obtains a guild from Discord, or the guild cache if it's already available.
+    * <warn>This is only available when using a bot account.</warn>
+    * @param {Snowflake} id ID of the guild
+    * @param {boolean} [cache=true] Whether to cache the new guild object if it isn't already
+    * @returns {Promise<GuildChannel>}
+    */
+  fetch(id, cache = true) {
+    const existing = this.get(id);
+    if (existing) return Promise.resolve(existing);
+
+    return this.client.api.guilds(id).get().then(data => this.add(data, cache));
+  }
 }
 
 module.exports = GuildStore;
