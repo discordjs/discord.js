@@ -320,7 +320,7 @@ class GuildChannel extends Channel {
     }
     return this.client.api.channels(this.id).patch({
       data: {
-        name: (data.name || this.name).trim(),
+        name: String(data.name || this.name).trim(),
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
