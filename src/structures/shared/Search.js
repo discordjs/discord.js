@@ -1,4 +1,4 @@
-const long = require('long');
+const Util = require('../../util/Util');
 const { TypeError } = require('../../errors');
 
 /**
@@ -40,17 +40,17 @@ module.exports = function search(target, options) {
   if (typeof options === 'string') options = { content: options };
   if (options.before) {
     if (!(options.before instanceof Date)) options.before = new Date(options.before);
-    options.maxID = long.fromNumber(options.before.getTime() - 14200704e5).shiftLeft(22).toString();
+    options.maxID = Util.binaryToID((options.before.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
   }
   if (options.after) {
     if (!(options.after instanceof Date)) options.after = new Date(options.after);
-    options.minID = long.fromNumber(options.after.getTime() - 14200704e5).shiftLeft(22).toString();
+    options.minID = Util.binaryToID((options.after.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
   }
   if (options.during) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
     const t = options.during.getTime() - 14200704e5;
-    options.minID = long.fromNumber(t).shiftLeft(22).toString();
-    options.maxID = long.fromNumber(t + 864e5).shiftLeft(22).toString();
+    options.minID = Util.binaryToID(t.toString(2) + '0'.repeat(22));
+    options.maxID = Util.binaryToID((t + 864e5).toString(2) + '0'.repeat(22));
   }
   if (options.channel) options.channel = target.client.channels.resolveID(options.channel);
   if (options.author) options.author = target.client.users.resolveID(options.author);
@@ -90,7 +90,7 @@ module.exports = function search(target, options) {
   let endpoint = target.client.api[target instanceof Channel ? 'channels' : 'guilds'](target.id).messages().search;
   return endpoint.get({ query: options }).then(body => {
     const results = body.messages.map(x =>
-      x.map(m => target.client.channels.get(m.channel_id).messages.create(m, false))
+      x.map(m => target.client.channels.get(m.channel_id).messages.add(m, false))
     );
     return {
       total: body.total_results,

@@ -195,10 +195,8 @@ class TextBasedChannel {
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
-   * const collector = channel.createMessageCollector(
-   *   m => m.content.includes('discord'),
-   *   { time: 15000 }
-   * );
+   * const filter = m => m.content.includes('discord');
+   * const collector = channel.createMessageCollector(filter, { time: 15000 });
    * collector.on('collect', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -246,6 +244,11 @@ class TextBasedChannel {
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
+   * @example
+   * // Bulk delete messages
+   * channel.bulkDelete(5)
+   *   .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+   *   .catch(console.error);
    */
   async bulkDelete(messages, filterOld = false) {
     if (messages instanceof Array || messages instanceof Collection) {

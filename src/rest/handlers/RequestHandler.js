@@ -39,12 +39,13 @@ class RequestHandler {
             /**
              * Emitted when the client hits a rate limit while making a request
              * @event Client#rateLimit
-             * @prop {number} timeout Timeout in ms
-             * @prop {number} limit Number of requests that can be made to this endpoint
-             * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
-             * @prop {string} method HTTP method used for request that triggered this event
-             * @prop {string} path Path used for request that triggered this event
-             * @prop {string} route Route used for request that triggered this event
+             * @param {Object} rateLimitInfo Object containing the rate limit info
+             * @param {number} rateLimitInfo.timeout Timeout in ms
+             * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
+             * @param {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
+             * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
+             * @param {string} rateLimitInfo.path Path used for request that triggered this event
+             * @param {string} rateLimitInfo.route Route used for request that triggered this event
              */
             this.client.emit(RATE_LIMIT, {
               timeout,

@@ -8,7 +8,7 @@ class MessageCreateAction extends Action {
     if (channel) {
       const existing = channel.messages.get(data.id);
       if (existing) return { message: existing };
-      const message = channel.messages.create(data);
+      const message = channel.messages.add(data);
       const user = message.author;
       const member = channel.guild ? channel.guild.member(user) : null;
       channel.lastMessageID = data.id;

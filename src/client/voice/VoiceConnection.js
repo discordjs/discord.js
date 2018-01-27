@@ -1,12 +1,12 @@
-const VoiceWebSocket = require('./VoiceWebSocket');
-const VoiceUDP = require('./VoiceUDPClient');
+const VoiceWebSocket = require('./networking/VoiceWebSocket');
+const VoiceUDP = require('./networking/VoiceUDPClient');
 const Util = require('../../util/Util');
 const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
-const VoiceReceiver = require('./receiver/VoiceReceiver');
+const VoiceReceiver = require('./receiver/Receiver');
 const EventEmitter = require('events');
-const Prism = require('prism-media');
 const { Error } = require('../../errors');
+const PlayInterface = require('./util/PlayInterface');
 
 /**
  * Represents a connection to a guild's voice server.
@@ -18,6 +18,7 @@ const { Error } = require('../../errors');
  *   });
  * ```
  * @extends {EventEmitter}
+ * @implements {PlayInterface}
  */
 class VoiceConnection extends EventEmitter {
   constructor(voiceManager, channel) {
@@ -34,17 +35,6 @@ class VoiceConnection extends EventEmitter {
      * @type {Client}
      */
     this.client = voiceManager.client;
-
-    /**
-     * @external Prism
-     * @see {@link https://github.com/hydrabolt/prism-media}
-     */
-
-    /**
-     * The audio transcoder for this connection
-     * @type {Prism}
-     */
-    this.prism = new Prism();
 
     /**
      * The voice channel this connection is currently serving
@@ -100,6 +90,8 @@ class VoiceConnection extends EventEmitter {
        */
       this.emit('warn', e);
     });
+
+    this.once('closing', () => this.player.destroy());
 
     /**
      * Map SSRC to speaking values
@@ -425,11 +417,6 @@ class VoiceConnection extends EventEmitter {
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
     this.ssrcMap.set(+ssrc, user);
-    if (!speaking) {
-      for (const receiver of this.receivers) {
-        receiver.stoppedSpeaking(user);
-      }
-    }
     /**
      * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
@@ -438,100 +425,6 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
-  }
-
-  /**
-   * Options that can be passed to stream-playing methods:
-   * @typedef {Object} StreamOptions
-   * @property {number} [seek=0] The time to seek to
-   * @property {number} [volume=1] The volume to play at
-   * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
-   * @property {number|string} [bitrate=48000] The bitrate (quality) of the audio.
-   * If set to 'auto', the voice channel's bitrate will be used
-   */
-
-  /**
-   * Plays the given file in the voice connection.
-   * @param {string} file The absolute path to the file
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play files natively
-   * voiceChannel.join()
-   *   .then(connection => {
-   *     const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *   })
-   *   .catch(console.error);
-   */
-  playFile(file, options) {
-    return this.player.playUnknownStream(`file:${file}`, options);
-  }
-
-  /**
-   * Plays an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playArbitraryInput(input, options) {
-    return this.player.playUnknownStream(input, options);
-  }
-
-  /**
-   * Plays and converts an audio stream in the voice connection.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play streams using ytdl-core
-   * const ytdl = require('ytdl-core');
-   * const streamOptions = { seek: 0, volume: 1 };
-   * voiceChannel.join()
-   *   .then(connection => {
-   *     const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *     const dispatcher = connection.playStream(stream, streamOptions);
-   *   })
-   *   .catch(console.error);
-   */
-  playStream(stream, options) {
-    return this.player.playUnknownStream(stream, options);
-  }
-
-  /**
-   * Plays a stream of 16-bit signed stereo PCM.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playConvertedStream(stream, options) {
-    return this.player.playPCMStream(stream, options);
-  }
-
-  /**
-   * Plays an Opus encoded stream.
-   * <warn>Note that inline volume is not compatible with this method.</warn>
-   * @param {ReadableStream} stream The Opus audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playOpusStream(stream, options) {
-    return this.player.playOpusStream(stream, options);
-  }
-
-  /**
-   * Plays a voice broadcast.
-   * @param {VoiceBroadcast} broadcast The broadcast to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play a broadcast
-   * const broadcast = client
-   *   .createVoiceBroadcast()
-   *   .playFile('./test.mp3');
-   * const dispatcher = voiceConnection.playBroadcast(broadcast);
-   */
-  playBroadcast(broadcast, options) {
-    return this.player.playBroadcast(broadcast, options);
   }
 
   /**
@@ -544,6 +437,10 @@ class VoiceConnection extends EventEmitter {
     this.receivers.push(receiver);
     return receiver;
   }
+
+  play() {} // eslint-disable-line no-empty-function
 }
+
+PlayInterface.applyToClass(VoiceConnection);
 
 module.exports = VoiceConnection;

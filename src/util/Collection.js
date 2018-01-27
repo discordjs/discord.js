@@ -192,12 +192,12 @@ class Collection extends Map {
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
-      return null;
+      return undefined;
     } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
         if (propOrFn(val, key, this)) return val;
       }
-      return null;
+      return undefined;
     } else {
       throw new Error('First argument must be a property string or a function.');
     }
@@ -223,12 +223,12 @@ class Collection extends Map {
       for (const [key, val] of this) {
         if (val[propOrFn] === value) return key;
       }
-      return null;
+      return undefined;
     } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
         if (propOrFn(val, key, this)) return key;
       }
-      return null;
+      return undefined;
     } else {
       throw new Error('First argument must be a property string or a function.');
     }

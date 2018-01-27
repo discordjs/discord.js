@@ -89,7 +89,7 @@ class GroupDMChannel extends Channel {
 
     if (data.recipients) {
       for (const recipient of data.recipients) {
-        const user = this.client.users.create(recipient);
+        const user = this.client.users.add(recipient);
         this.recipients.set(user.id, user);
       }
     }

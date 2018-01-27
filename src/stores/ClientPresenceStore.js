@@ -7,7 +7,6 @@ const { TypeError } = require('../errors');
 /**
  * Stores the client presence and other presences.
  * @extends {PresenceStore}
- * @private
  */
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
@@ -39,7 +38,7 @@ class ClientPresenceStore extends PresenceStore {
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.clientPresence.status,
       game: activity ? {
-        type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+        type: activity.type,
         name: activity.name,
         url: activity.url,
         details: activity.details || undefined,
@@ -57,6 +56,15 @@ class ClientPresenceStore extends PresenceStore {
         instance: activity.instance || undefined,
       } : null,
     };
+
+    if ((status || afk || since) && !activity) {
+      packet.game = this.clientPresence.activity;
+    }
+
+    if (packet.game) {
+      packet.game.type = typeof packet.game.type === 'number' ?
+        packet.game.type : ActivityTypes.indexOf(packet.game.type);
+    }
 
     this.clientPresence.patch(packet);
     this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });

@@ -10,19 +10,16 @@ class APIRequest {
     this.rest = rest;
     this.client = rest.client;
     this.method = method;
-    this.path = path.toString();
     this.route = options.route;
     this.options = options;
+
+    const queryString = (querystring.stringify(options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
+    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
   }
 
   gen() {
     const API = this.options.versioned === false ? this.client.options.http.api :
       `${this.client.options.http.api}/v${this.client.options.http.version}`;
-
-    if (this.options.query) {
-      const queryString = (querystring.stringify(this.options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
-      this.path += `?${queryString}`;
-    }
 
     const request = snekfetch[this.method](`${API}${this.path}`, { agent });
 
