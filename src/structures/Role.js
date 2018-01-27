@@ -95,9 +95,7 @@ class Role extends Base {
    * @readonly
    */
   get hexColor() {
-    let col = this.color.toString(16);
-    while (col.length < 6) col = `0${col}`;
-    return `#${col}`;
+    return `#${this.color.toString(16).padStart(6, '0')}`;
   }
 
   /**
