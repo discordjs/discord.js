@@ -41,7 +41,6 @@ module.exports = {
           },
         },
       },
-      ...require('snekfetch/webpack.supplemental').rules,
     ],
   },
   node: {
