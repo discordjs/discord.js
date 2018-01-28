@@ -144,7 +144,7 @@ class StreamDispatcher extends Writable {
 
   /**
    * Stops the current stream permanently and emits a `finish` event.
-   * @param {string} reason The reason for ending this stream.
+   * @param {string} [reason='user'] The reason for ending this stream.
    */
   finish(reason = 'user') {
     super.end();
