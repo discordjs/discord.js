@@ -143,6 +143,15 @@ class StreamDispatcher extends Writable {
   }
 
   /**
+   * Stops the current stream permanently and emits a `finish` event.
+   * @param {string} reason The reason for ending this stream.
+   */
+  finish(reason = 'user') {
+    super.end();
+    this.emit('finish', reason);
+  }
+
+  /**
    * The time (in milliseconds) that the dispatcher has actually been playing audio for
    * @type {number}
    */
