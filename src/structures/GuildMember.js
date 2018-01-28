@@ -22,7 +22,7 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The user that this guild member instance Represents
+     * The user that this guild member instance represents
      * @type {User}
      */
     this.user = {};
@@ -322,7 +322,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mute/unmutes a user.
+   * Mutes/unmutes a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -332,7 +332,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deafen/undeafens a user.
+   * Deafens/undeafens a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}

@@ -198,6 +198,7 @@ class Message extends Base {
    * Represents the author of the message as a guild member.
    * Only available if the message comes from a guild where the author is still a member
    * @type {?GuildMember}
+   * @readonly
    */
   get member() {
     return this.guild ? this.guild.member(this.author) || null : null;
