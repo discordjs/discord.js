@@ -234,6 +234,7 @@ class Util {
    * - `GREEN`
    * - `BLUE`
    * - `PURPLE`
+   * - `PINKISH_PURPLE`
    * - `GOLD`
    * - `ORANGE`
    * - `RED`
@@ -244,6 +245,7 @@ class Util {
    * - `DARK_GREEN`
    * - `DARK_BLUE`
    * - `DARK_PURPLE`
+   * - `DARK_PINKISH_PURPLE`
    * - `DARK_GOLD`
    * - `DARK_ORANGE`
    * - `DARK_RED`
