@@ -351,6 +351,7 @@ class ClientDataResolver {
   static resolveColor(color) {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      if (color === 'DEFAULT') return 0;
       color = Constants.Colors[color] || parseInt(color.replace('#', ''), 16);
     } else if (color instanceof Array) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
