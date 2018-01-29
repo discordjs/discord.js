@@ -175,9 +175,9 @@ class MessageEmbed {
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     name = Util.resolveString(name);
-    if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
+    if (!String(name)) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!String(value) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!String(value)) throw new RangeError('EMBED_FIELD_VALUE');
     this.fields.push({ name, value, inline });
     return this;
   }
@@ -235,7 +235,6 @@ class MessageEmbed {
    */
   setDescription(description) {
     description = Util.resolveString(description);
-    if (description.length > 2048) throw new RangeError('EMBED_DESCRIPTION');
     this.description = description;
     return this;
   }
@@ -248,7 +247,6 @@ class MessageEmbed {
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
-    if (text.length > 2048) throw new RangeError('EMBED_FOOTER_TEXT');
     this.footer = { text, iconURL };
     return this;
   }
@@ -290,7 +288,6 @@ class MessageEmbed {
    */
   setTitle(title) {
     title = Util.resolveString(title);
-    if (title.length > 256) throw new RangeError('EMBED_TITLE');
     this.title = title;
     return this;
   }

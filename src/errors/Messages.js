@@ -32,11 +32,8 @@ const Messages = {
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
   EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not exceed 256 characters or be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not exceed 1024 characters or be empty.',
-  EMBED_DESCRIPTION: 'MessageEmbed descriptions may not exceed 2048 characters.',
-  EMBED_FOOTER_TEXT: 'MessageEmbed footer text may not exceed 2048 characters.',
-  EMBED_TITLE: 'MessageEmbed titles may not exceed 256 characters.',
+  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
+  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
