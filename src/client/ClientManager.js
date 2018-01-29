@@ -32,14 +32,18 @@ class ClientManager {
   /**
    * Connects the client to the WebSocket.
    * @param {string} token The authorization token
+   * @param {LoginOptions} options Options to log in with
    * @param {Function} resolve Function to run when connection is successful
    * @param {Function} reject Function to run when connection fails
    */
-  connectToWebSocket(token, resolve, reject) {
+  connectToWebSocket(token, options, resolve, reject) {
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
-    this.client.api.gateway.get().then(res => {
+    this.client.api.gateway.get().then(async res => {
+      if (options.presence != null) { // eslint-disable-line eqeqeq
+        this.client.presences.clientPresence = await this.client.presences._parse(options.presence);
+      }
       const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
@@ -50,7 +54,7 @@ class ClientManager {
         if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
       this.client.once(Events.READY, () => {
-        resolve(token);
+        resolve({ token, options });
         this.client.clearTimeout(timeout);
       });
     }, reject);

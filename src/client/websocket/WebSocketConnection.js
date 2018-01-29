@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocket = require('../../WebSocket');
+const { Presence } = require('../../structures/Presence');
 try {
   var zlib = require('zlib-sync');
   if (!zlib.Inflate) zlib = require('pako');
@@ -443,8 +444,19 @@ class WebSocketConnection extends EventEmitter {
       this.debug('No token available to identify a new session with');
       return;
     }
-    // Clone the generic payload and assign the token
-    const d = Object.assign({ token: this.client.token }, this.client.options.ws);
+
+    const { clientPresence } = this.client.presences;
+
+    // Clone the generic payload and assign the token and presence
+    const d = Object.assign({
+      token: this.client.token,
+      presence: clientPresence,
+    }, this.client.options.ws);
+
+    // Make sure it's a Presence instance and not just an object
+    if (!(clientPresence instanceof Presence)) {
+      this.client.presences.clientPresence = new Presence(this.client, clientPresence);
+    }
 
     // Sharding stuff
     const { shardId, shardCount } = this.client.options;
