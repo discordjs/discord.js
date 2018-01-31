@@ -128,6 +128,12 @@ class GuildMemberRoleStore extends DataStore {
     }
   }
 
+  clone() {
+    const clone = new this.constructor(this.member);
+    clone._patch(this.keyArray());
+    return clone;
+  }
+
   /**
    * Resolves a RoleResolvable to a Role object.
    * @method resolve

@@ -75,6 +75,12 @@ class GuildMember extends Base {
     if (data.roles) this.roles._patch(data.roles);
   }
 
+  _clone() {
+    const clone = super._clone();
+    clone.roles = this.roles.clone();
+    return clone;
+  }
+
   get voiceState() {
     return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
   }
