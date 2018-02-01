@@ -60,7 +60,7 @@ class GuildEmoji extends Emoji {
   get createdAt() {
     return new Date(this.createdTimestamp);
   }
-  
+
   /**
    * Fetches the author for this emoji
    * @returns {Promise<User>}
