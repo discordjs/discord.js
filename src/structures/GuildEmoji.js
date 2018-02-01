@@ -60,6 +60,15 @@ class GuildEmoji extends Emoji {
   get createdAt() {
     return new Date(this.createdTimestamp);
   }
+  
+  /**
+   * Fetches the author for this emoji
+   * @returns {Promise<User>}
+   */
+  fetchAuthor() {
+    return this.client.api.guilds(this.guild.id).emojis(this.id).get()
+      .then(emoji => this.client.users.add(emoji.user));
+  }
 
   /**
    * Data for editing an emoji.
