@@ -21,7 +21,8 @@ class ClientUser extends User {
 
     /**
      * The email of this account
-     * @type {string}
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?string}
      */
     this.email = data.email;
     this.localPresence = {};
