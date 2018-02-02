@@ -62,6 +62,15 @@ class GuildEmoji extends Emoji {
   }
 
   /**
+   * Fetches the author for this emoji
+   * @returns {Promise<User>}
+   */
+  fetchAuthor() {
+    return this.client.api.guilds(this.guild.id).emojis(this.id).get()
+      .then(emoji => this.client.users.add(emoji.user));
+  }
+
+  /**
    * Data for editing an emoji.
    * @typedef {Object} GuildEmojiEditData
    * @property {string} [name] The name of the emoji
