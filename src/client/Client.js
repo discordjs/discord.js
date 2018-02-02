@@ -271,7 +271,12 @@ class Client extends BaseClient {
    *      type: 'WATCHING',
    *    },
    *  },
-   * });
+   * })
+   *   .then(data => {
+   *     console.log('Token:', data.token);
+   *     console.log('Login options:', data.options);
+   *   })
+   *   .catch(console.error);
    */
   login(token = this.token, options = {}) {
     return new Promise((resolve, reject) => {
