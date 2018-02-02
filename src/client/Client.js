@@ -239,21 +239,50 @@ class Client extends BaseClient {
   }
 
   /**
+   * Options that can be passed when logging in.
+   * @typedef {Object} LoginOptions
+   * @property {PresenceData} presence Presence data to log in with
+   */
+
+  /**
+   * The data used when logging in.
+   * @typedef {Object} LoginData
+   * @property {string} token The token of the account used
+   * @property {LoginOptions} options The login options of the account used
+   */
+
+  /**
    * Logs the client in, establishing a websocket connection to Discord.
    * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
    * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
    * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
    * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
-   * @returns {Promise<string>} Token of the account used
+   * @param {LoginOptions} [options={}] Options to log in with
+   * @returns {Promise<LoginData>} Token and login options used to log in
    * @example
    * client.login('my token');
+   * @example
+   * client.login('my token', {
+   *  presence: {
+   *    status: 'dnd',
+   *    activity: {
+   *      name: 'YouTube',
+   *      type: 'WATCHING',
+   *    },
+   *  },
+   * })
+   *   .then(data => {
+   *     console.log('Token:', data.token);
+   *     console.log('Login options:', data.options);
+   *   })
+   *   .catch(console.error);
    */
-  login(token = this.token) {
+  login(token = this.token, options = {}) {
     return new Promise((resolve, reject) => {
       if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
+      this.manager.connectToWebSocket(token, options, resolve, reject);
     }).catch(e => {
       this.destroy();
       return Promise.reject(e);
