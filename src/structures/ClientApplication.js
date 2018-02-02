@@ -166,13 +166,12 @@ class ClientApplication extends Base {
    * @param {string} type Type of the asset. `big`, or `small`
    * @returns {Promise}
    */
-  createAsset(name, data, type) {
-    return DataResolver.resolveBase64(data).then(b64 =>
-      this.client.api.oauth2.applications(this.id).assets.post({ data: {
-        name,
-        data: b64,
-        type: ClientApplicationAssetTypes[type.toUpperCase()],
-      } }));
+  async createAsset(name, data, type) {
+    return this.client.api.oauth2.applications(this.id).assets.post({ data: {
+      name,
+      type: ClientApplicationAssetTypes[type.toUpperCase()],
+      image: await DataResolver.resolveImage(data),
+    } });
   }
 
   /**
