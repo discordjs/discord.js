@@ -39,7 +39,11 @@ class ClientManager {
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
-    this.client.api.gateway.get().then(res => {
+    this.client.api.gateway.get().then(async res => {
+      const wsOptions = this.client.options.ws;
+      if (wsOptions != null && 'presence' in wsOptions) { // eslint-disable-line eqeqeq
+        this.client.options.ws.presence = await this.client.presences._parse(wsOptions.presence);
+      }
       const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.connect(gateway);
