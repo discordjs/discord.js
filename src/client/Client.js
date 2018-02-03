@@ -263,6 +263,10 @@ class Client extends BaseClient {
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
+   * @example
+   * client.destory()
+   *   .then(() => console.log('Client destroyed'))
+   *   .catch(console.error)
    */
   destroy() {
     super.destroy();

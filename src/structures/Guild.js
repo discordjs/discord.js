@@ -449,6 +449,10 @@ class Guild extends Base {
   /**
    * Fetches a collection of banned users in this guild.
    * @returns {Promise<Collection<Snowflake, BanInfo>>}
+   * @example
+   * guild.fetchBans()
+   *   .then(bans => console.log(`This guild has ${bans.size} bans`))
+   *   .catch(console.error);
    */
   fetchBans() {
     return this.client.api.guilds(this.id).bans.get().then(bans =>
@@ -466,6 +470,10 @@ class Guild extends Base {
    * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
+   * @example
+   * guild.fetchInvites()
+   *   .then(invites => console.log(`This guild has ${invites.size} invites`))
+   *   .catch(console.error);
    */
   fetchInvites() {
     return this.client.api.guilds(this.id).invites.get()
@@ -482,6 +490,10 @@ class Guild extends Base {
   /**
    * Fetches all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * guild.fetchWebhooks()
+   *   .then(webhooks => console.log(`This guild has ${webhooks.size} webhooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.api.guilds(this.id).webhooks.get().then(data => {
@@ -494,6 +506,10 @@ class Guild extends Base {
   /**
    * Fetches available voice regions.
    * @returns {Promise<Collection<string, VoiceRegion>>}
+   * @example
+   * guild.fetchVoiceRegions()
+   *   .then(voiceRegions => console.log(`This guild has ${voiceRegions.size} available voice regions`))
+   *   .catch(console.error);
    */
   fetchVoiceRegions() {
     return this.client.api.guilds(this.id).regions.get().then(res => {

@@ -200,6 +200,11 @@ class ClientUser extends Structures.get('User') {
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
    * @returns {Promise<Presence>}
+   * @example
+   * // Set presence
+   * client.user.setPresence({ game: { name: "with discord.js" }, status: "idle" })
+   *   .then(presence => console.log(`Presence set!`))
+   *   .catch(console.error);
    */
   setPresence(data) {
     return this.client.presences.setClientPresence(data);
@@ -218,6 +223,11 @@ class ClientUser extends Structures.get('User') {
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
    * @returns {Promise<Presence>}
+   * @example
+   * // Set status
+   * client.user.setStatus('idle')
+   *   .then(presence => console.log(`New status set! ${presence.status}`))
+   *   .catch(console.error);
    */
   setStatus(status) {
     return this.setPresence({ status });
@@ -230,6 +240,11 @@ class ClientUser extends Structures.get('User') {
    * @param {string} [options.url] Twitch stream URL
    * @param {ActivityType|number} [options.type] Type of the activity
    * @returns {Promise<Presence>}
+   * @example
+   * // Set activity
+   * client.user.setActivity('With discord.js')
+   *   .then(presence => console.log('Playing status set!'))
+   *   .catch(console.error);
    */
   setActivity(name, { url, type } = {}) {
     if (!name) return this.setPresence({ activity: null });
@@ -242,6 +257,11 @@ class ClientUser extends Structures.get('User') {
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
    * @returns {Promise<Presence>}
+   * @example
+   * // Set afk
+   * client.user.setAFK(true)
+   *   .then(presence => console.log(`I'm now afk`))
+   *   .catch(console.error);
    */
   setAFK(afk) {
     return this.setPresence({ afk });
@@ -256,6 +276,11 @@ class ClientUser extends Structures.get('User') {
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
    * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
+   * @example
+   * // Fetch mentions
+   * client.user.fetchMentions()
+   *   .then(messages => console.log(`${messages.length} mentions`))
+   *   .catch(console.error);
    */
   fetchMentions(options = {}) {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
