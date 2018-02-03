@@ -138,7 +138,7 @@ class Message extends Base {
 
     /**
      * Group activity
-     * @type {?Object}
+     * @type {?MessageActivity}
      */
     this.activity = data.activity ? {
       partyID: data.activity.party_id,
