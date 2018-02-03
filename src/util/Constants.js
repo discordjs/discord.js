@@ -52,7 +52,7 @@ exports.DefaultOptions = {
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=true] Whether to compress data sent on the connection
+   * @property {boolean} [compress=false] Whether to compress data sent on the connection
    * (defaults to `false` for browsers)
    */
   ws: {
@@ -110,7 +110,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
+      Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
@@ -234,6 +234,8 @@ exports.Events = {
   USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
+  VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
+  VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
@@ -657,7 +659,7 @@ exports.Colors = {
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
  * * BULK_DELETE_MESSAGE_TOO_OLD
- * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
  * * REACTION_BLOCKED
  * @typedef {string} APIError
  */
@@ -703,7 +705,7 @@ exports.APIErrors = {
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
-  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   REACTION_BLOCKED: 90001,
 };
 

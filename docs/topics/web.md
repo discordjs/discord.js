@@ -17,7 +17,7 @@ const Discord = require('discord.js/browser');
 ```
 
 ### Webpack File
-You can obtain your desired version of discord.js' web build from the [webpack branch](https://github.com/hydrabolt/discord.js/tree/webpack) of the GitHub repository.
+You can obtain your desired version of discord.js' web build from the [webpack branch](https://github.com/discordjs/discord.js/tree/webpack) of the GitHub repository.
 There is a file for each branch and version of the library, and the ones ending in `.min.js` are minified to substantially reduce the size of the source code.
 
 Include the file on the page just as you would any other JS library, like so:

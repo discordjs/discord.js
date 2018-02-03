@@ -1,8 +1,8 @@
 const udp = require('dgram');
 const dns = require('dns');
-const { VoiceOPCodes } = require('../../util/Constants');
+const { VoiceOPCodes } = require('../../../util/Constants');
 const EventEmitter = require('events');
-const { Error } = require('../../errors');
+const { Error } = require('../../../errors');
 
 /**
  * Represents a UDP client for a Voice Connection.

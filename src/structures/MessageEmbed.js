@@ -67,8 +67,8 @@ class MessageEmbed {
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url,
       proxyURL: data.thumbnail.proxy_url,
-      height: data.height,
-      width: data.width,
+      height: data.thumbnail.height,
+      width: data.thumbnail.width,
     } : null;
 
     /**
@@ -82,8 +82,8 @@ class MessageEmbed {
     this.image = data.image ? {
       url: data.image.url,
       proxyURL: data.image.proxy_url,
-      height: data.height,
-      width: data.width,
+      height: data.image.height,
+      width: data.image.width,
     } : null;
 
     /**
@@ -193,7 +193,7 @@ class MessageEmbed {
 
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
-   * setting an embed image or author/footer icons. Only one file may be attached.
+   * setting an embed image or author/footer icons. Multiple files can be attached.
    * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
    * @returns {MessageEmbed}
    */

@@ -1,11 +1,20 @@
-const VolumeInterface = require('../util/VolumeInterface');
-const VoiceBroadcast = require('../VoiceBroadcast');
 const { VoiceStatus } = require('../../../util/Constants');
+const VolumeInterface = require('../util/VolumeInterface');
+const { Writable } = require('stream');
 
 const secretbox = require('../util/Secretbox');
 
+const FRAME_LENGTH = 20;
+const CHANNELS = 2;
+const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
+
 const nonce = Buffer.alloc(24);
 nonce.fill(0);
+
+/**
+ * @external WritableStream
+ * @see {@link https://nodejs.org/api/stream.html#stream_class_stream_writable}
+ */
 
 /**
  * The class that sends voice packet data to the voice connection.
@@ -13,146 +22,200 @@ nonce.fill(0);
  * // Obtained using:
  * voiceChannel.join().then(connection => {
  *   // You can play a file or a stream here:
- *   const dispatcher = connection.playFile('./file.mp3');
+ *   const dispatcher = connection.play('/home/hydrabolt/audio.mp3');
  * });
  * ```
  * @implements {VolumeInterface}
+ * @extends {WritableStream}
  */
-class StreamDispatcher extends VolumeInterface {
-  constructor(player, stream, streamOptions) {
+class StreamDispatcher extends Writable {
+  constructor(
+    player,
+    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {},
+    streams) {
+    const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
      * @type {AudioPlayer}
      */
     this.player = player;
-    /**
-     * The stream that the dispatcher plays
-     * @type {ReadableStream|VoiceBroadcast}
-     */
-    this.stream = stream;
-    if (!(this.stream instanceof VoiceBroadcast)) this.startStreaming();
     this.streamOptions = streamOptions;
-
-    const data = this.streamingData;
-    data.length = 20;
-    data.missed = 0;
+    this.streams = streams;
 
     /**
-     * Whether playing is paused
-     * @type {boolean}
+     * The time that the stream was paused at (null if not paused)
+     * @type {?number}
      */
-    this.paused = false;
+    this.pausedSince = null;
+    this._writeCallback = null;
+
     /**
-     * Whether this dispatcher has been destroyed
-     * @type {boolean}
+     * The broadcast controlling this dispatcher, if any
+     * @type {?VoiceBroadcast}
      */
-    this.destroyed = false;
+    this.broadcast = this.streams.broadcast;
 
-    this._opus = streamOptions.opus;
+    this._pausedTime = 0;
+    this.count = 0;
+
+    this.on('finish', () => {
+      // Still emitting end for backwards compatibility, probably remove it in the future!
+      this.emit('end');
+    });
+
+    if (typeof volume !== 'undefined') this.setVolume(volume);
+    if (typeof fec !== 'undefined') this.setFEC(fec);
+    if (typeof plp !== 'undefined') this.setPLP(plp);
+    if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
+
+    const streamError = (type, err) => {
+      /**
+       * Emitted when the dispatcher encounters an error.
+       * @event StreamDispatcher#error
+       */
+      if (type && err) {
+        err.message = `${type} stream: ${err.message}`;
+        this.emit(this.player.dispatcher === this ? 'error' : 'debug', err);
+      }
+      this.destroy();
+    };
+
+    this.on('error', () => streamError());
+    if (this.streams.input) this.streams.input.on('error', err => streamError('input', err));
+    if (this.streams.ffmpeg) this.streams.ffmpeg.on('error', err => streamError('ffmpeg', err));
+    if (this.streams.opus) this.streams.opus.on('error', err => streamError('opus', err));
+    if (this.streams.volume) this.streams.volume.on('error', err => streamError('volume', err));
   }
 
-  /**
-   * How many passes the dispatcher should take when sending packets to reduce packet loss. Values over 5
-   * aren't recommended, as it means you are using 5x more bandwidth. You _can_ edit this at runtime
-   * @type {number}
-   * @readonly
-   */
-  get passes() {
-    return this.streamOptions.passes || 1;
-  }
-
-  set passes(n) {
-    this.streamOptions.passes = n;
-  }
-
-  get streamingData() {
+  get _sdata() {
     return this.player.streamingData;
   }
 
-  /**
-   * How long the stream dispatcher has been "speaking" for
-   * @type {number}
-   * @readonly
-   */
-  get time() {
-    return this.streamingData.count * (this.streamingData.length || 0);
+  _write(chunk, enc, done) {
+    if (!this.startTime) {
+      /**
+       * Emitted once the stream has started to play.
+       * @event StreamDispatcher#start
+       */
+      this.emit('start');
+      this.startTime = Date.now();
+    }
+    this._playChunk(chunk);
+    this._step(done);
+  }
+
+  _destroy(err, cb) {
+    if (this.player.dispatcher === this) this.player.dispatcher = null;
+    const { streams } = this;
+    if (streams.broadcast) streams.broadcast.dispatchers.delete(this);
+    if (streams.opus) streams.opus.unpipe(this);
+    if (streams.ffmpeg) streams.ffmpeg.destroy();
+    super._destroy(err, cb);
   }
 
   /**
-   * The total time, taking into account pauses and skips, that the dispatcher has been streaming for
+   * Pauses playback
+   */
+  pause() {
+    this.pausedSince = Date.now();
+  }
+
+  /**
+   * Whether or not playback is paused
+   * @type {boolean}
+   */
+  get paused() { return Boolean(this.pausedSince); }
+
+  /**
+   * Total time that this dispatcher has been paused
    * @type {number}
-   * @readonly
+   */
+  get pausedTime() { return this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0); }
+
+  /**
+   * Resumes playback
+   */
+  resume() {
+    this._pausedTime += Date.now() - this.pausedSince;
+    this.pausedSince = null;
+    if (this._writeCallback) this._writeCallback();
+  }
+
+  /**
+   * The time (in milliseconds) that the dispatcher has actually been playing audio for
+   * @type {number}
+   */
+  get streamTime() {
+    return this.count * FRAME_LENGTH;
+  }
+
+  /**
+   * The time (in milliseconds) that the dispatcher has been playing audio for, taking into account skips and pauses
+   * @type {number}
    */
   get totalStreamTime() {
-    return this.time + this.streamingData.pausedTime;
+    return Date.now() - this.startTime;
   }
 
   /**
-   * Stops sending voice packets to the voice connection (stream may still progress however).
-   */
-  pause() { this.setPaused(true); }
-
-  /**
-   * Resumes sending voice packets to the voice connection (may be further on in the stream than when paused).
-   */
-  resume() { this.setPaused(false); }
-
-
-  /**
-   * Stops the current stream permanently and emits an `end` event.
-   * @param {string} [reason='user'] An optional reason for stopping the dispatcher
-   */
-  end(reason = 'user') {
-    this.destroy('end', reason);
-  }
-
-  setSpeaking(value) {
-    if (this.speaking === value) return;
-    if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
-    this.speaking = value;
-    /**
-     * Emitted when the dispatcher starts/stops speaking.
-     * @event StreamDispatcher#speaking
-     * @param {boolean} value Whether or not the dispatcher is speaking
-     */
-    this.emit('speaking', value);
-  }
-
-
-  /**
-   * Sets the bitrate of the current Opus encoder.
-   * @param {number} bitrate New bitrate, in kbps.
+   * Set the bitrate of the current Opus encoder if using a compatible Opus stream.
+   * @param {number} value New bitrate, in kbps
    * If set to 'auto', the voice channel's bitrate will be used
+   * @returns {boolean} true if the bitrate has been successfully changed.
    */
-  setBitrate(bitrate) {
-    this.player.setBitrate(bitrate);
+  setBitrate(value) {
+    if (!value || !this.bitrateEditable) return false;
+    const bitrate = value === 'auto' ? this.player.voiceConnection.channel.bitrate : value;
+    this.streams.opus.setBitrate(bitrate * 1000);
+    return true;
   }
 
-  sendBuffer(buffer, sequence, timestamp, opusPacket) {
-    opusPacket = opusPacket || this.player.opusEncoder.encode(buffer);
-    const packet = this.createPacket(sequence, timestamp, opusPacket);
-    this.sendPacket(packet);
+  /**
+   * Sets the expected packet loss percentage if using a compatible Opus stream.
+   * @param {number} value between 0 and 1
+   * @returns {boolean} Returns true if it was successfully set.
+   */
+  setPLP(value) {
+    if (!this.bitrateEditable) return false;
+    this.streams.opus.setPLP(value);
+    return true;
   }
 
-  sendPacket(packet) {
-    let repeats = this.passes;
-    /**
-     * Emitted whenever the dispatcher has debug information.
-     * @event StreamDispatcher#debug
-     * @param {string} info The debug info
-     */
-    this.setSpeaking(true);
-    while (repeats--) {
-      this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => {
-          this.setSpeaking(false);
-          this.emit('debug', `Failed to send a packet ${e}`);
-        });
+  /**
+   * Enables or disables forward error correction if using a compatible Opus stream.
+   * @param {boolean} enabled true to enable
+   * @returns {boolean} Returns true if it was successfully set.
+   */
+  setFEC(enabled) {
+    if (!this.bitrateEditable) return false;
+    this.streams.opus.setFEC(enabled);
+    return true;
+  }
+
+  _step(done) {
+    if (this.pausedSince) {
+      this._writeCallback = done;
+      return;
     }
+    if (!this.streams.broadcast) {
+      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
+      setTimeout(done.bind(this), next);
+    }
+    this._sdata.sequence++;
+    this._sdata.timestamp += TIMESTAMP_INC;
+    if (this._sdata.sequence >= 2 ** 16) this._sdata.sequence = 0;
+    if (this._sdata.timestamp >= 2 ** 32) this._sdata.timestamp = 0;
+    this.count++;
   }
 
-  createPacket(sequence, timestamp, buffer) {
+  _playChunk(chunk) {
+    if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secretKey) return;
+    this._setSpeaking(true);
+    this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
+  }
+
+  _createPacket(sequence, timestamp, buffer) {
     const packetBuffer = Buffer.alloc(buffer.length + 28);
     packetBuffer.fill(0);
     packetBuffer[0] = 0x80;
@@ -163,169 +226,69 @@ class StreamDispatcher extends VolumeInterface {
     packetBuffer.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
 
     packetBuffer.copy(nonce, 0, 0, 12);
-    buffer = secretbox.methods.close(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
+    buffer = secretbox.methods.close(buffer, nonce, this.player.voiceConnection.authentication.secretKey);
     for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
     return packetBuffer;
   }
 
-  processPacket(packet) {
-    try {
-      if (this.destroyed) {
-        this.setSpeaking(false);
-        return;
-      }
-
-      const data = this.streamingData;
-
-      if (this.paused) {
-        this.setSpeaking(false);
-        data.pausedTime = data.length * 10;
-        return;
-      }
-
-      if (!packet) {
-        data.missed++;
-        data.pausedTime += data.length * 10;
-        return;
-      }
-
-      this.started();
-      this.missed = 0;
-
-      this.stepStreamingData();
-      this.sendBuffer(null, data.sequence, data.timestamp, packet);
-    } catch (e) {
-      this.destroy('error', e);
-    }
-  }
-
-  process() {
-    try {
-      if (this.destroyed) {
-        this.setSpeaking(false);
-        return;
-      }
-
-      const data = this.streamingData;
-
-      if (data.missed >= 5) {
-        this.destroy('end', 'Stream is not generating quickly enough.');
-        return;
-      }
-
-      if (this.paused) {
-        this.setSpeaking(false);
-        // Old code?
-        // data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
-        data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
-        return;
-      }
-
-      this.started();
-
-      const buffer = this.readStreamBuffer();
-      if (!buffer) {
-        data.missed++;
-        data.pausedTime += data.length * 10;
-        this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), data.length * 10);
-        return;
-      }
-
-      data.missed = 0;
-
-      this.stepStreamingData();
-
-      if (this._opus) {
-        this.sendBuffer(null, data.sequence, data.timestamp, buffer);
-      } else {
-        this.sendBuffer(buffer, data.sequence, data.timestamp);
-      }
-
-      const nextTime = data.length + (data.startTime + data.pausedTime + (data.count * data.length) - Date.now());
-      this.player.voiceConnection.voiceManager.client.setTimeout(() => this.process(), nextTime);
-    } catch (e) {
-      this.destroy('error', e);
-    }
-  }
-
-  readStreamBuffer() {
-    const data = this.streamingData;
-    const bufferLength = (this._opus ? 80 : 1920) * data.channels;
-    let buffer = this.stream.read(bufferLength);
-    if (this._opus) return buffer;
-    if (!buffer) return null;
-
-    if (buffer.length !== bufferLength) {
-      const newBuffer = Buffer.alloc(bufferLength).fill(0);
-      buffer.copy(newBuffer);
-      buffer = newBuffer;
-    }
-
-    buffer = this.applyVolume(buffer);
-    return buffer;
-  }
-
-  started() {
-    const data = this.streamingData;
-
-    if (!data.startTime) {
-      /**
-       * Emitted once the dispatcher starts streaming.
-       * @event StreamDispatcher#start
-       */
-      this.emit('start');
-      data.startTime = Date.now();
-    }
-  }
-
-  stepStreamingData() {
-    const data = this.streamingData;
-    data.count++;
-    data.sequence = data.sequence < 65535 ? data.sequence + 1 : 0;
-    data.timestamp = data.timestamp + 4294967295 ? data.timestamp + 960 : 0;
-  }
-
-  destroy(type, reason) {
-    if (this.destroyed) return;
-    this.destroyed = true;
-    this.setSpeaking(false);
-    this.emit(type, reason);
+  _sendPacket(packet) {
+    let repeats = this.streamOptions.passes;
     /**
-     * Emitted once the dispatcher ends.
-     * @param {string} [reason] The reason the dispatcher ended
-     * @event StreamDispatcher#end
+     * Emitted whenever the dispatcher has debug information.
+     * @event StreamDispatcher#debug
+     * @param {string} info The debug info
      */
-    if (type !== 'end') this.emit('end', `destroyed due to ${type} - ${reason}`);
-  }
-
-  startStreaming() {
-    if (!this.stream) {
-      /**
-       * Emitted if the dispatcher encounters an error.
-       * @event StreamDispatcher#error
-       * @param {string} error The error message
-       */
-      this.emit('error', 'No stream');
-      return;
+    this._setSpeaking(true);
+    while (repeats--) {
+      this.player.voiceConnection.sockets.udp.send(packet)
+        .catch(e => {
+          this._setSpeaking(false);
+          this.emit('debug', `Failed to send a packet ${e}`);
+        });
     }
-
-    this.stream.on('end', err => this.destroy('end', err || 'stream'));
-    this.stream.on('error', err => this.destroy('error', err));
-
-    const data = this.streamingData;
-    data.length = 20;
-    data.missed = 0;
-
-    this.stream.once('readable', () => {
-      data.startTime = null;
-      data.count = 0;
-      this.process();
-    });
   }
 
-  setPaused(paused) { this.setSpeaking(!(this.paused = paused)); }
+  _setSpeaking(value) {
+    if (this.speaking === value) return;
+    if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
+    this.speaking = value;
+    this.player.voiceConnection.setSpeaking(value);
+    /**
+     * Emitted when the dispatcher starts/stops speaking.
+     * @event StreamDispatcher#speaking
+     * @param {boolean} value Whether or not the dispatcher is speaking
+     */
+    this.emit('speaking', value);
+  }
+
+  get volumeEditable() { return Boolean(this.streams.volume); }
+
+  /**
+   * Whether or not the Opus bitrate of this stream is editable
+   * @type {boolean}
+   */
+  get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
+
+  // Volume
+  get volume() {
+    return this.streams.volume ? this.streams.volume.volume : 1;
+  }
+
+  setVolume(value) {
+    if (!this.streams.volume) return false;
+    this.streams.volume.setVolume(value);
+    return true;
+  }
+
+  // Volume stubs for docs
+  /* eslint-disable no-empty-function*/
+  get volumeDecibels() {}
+  get volumeLogarithmic() {}
+  setVolumeDecibels() {}
+  setVolumeLogarithmic() {}
 }
+
+VolumeInterface.applyToClass(StreamDispatcher);
 
 module.exports = StreamDispatcher;

@@ -14,4 +14,4 @@ To get ready to work on the codebase, please do the following:
 3. If you're working on voice, also run `npm install node-opus` or `npm install opusscript`
 4. Code your heart out!
 5. Run `npm test` to run ESLint and ensure any JSDoc changes are valid
-6. [Submit a pull request](https://github.com/hydrabolt/discord.js/compare)
+6. [Submit a pull request](https://github.com/discordjs/discord.js/compare)
