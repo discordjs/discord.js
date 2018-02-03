@@ -18,6 +18,8 @@
       path: ping.js
     - name: Avatars
       path: avatars.js
+    - name: Attachments
+      path: attachments.md
     - name: Server greeting
       path: greeting.js
     - name: Message Embed
