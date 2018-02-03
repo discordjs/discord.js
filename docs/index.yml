@@ -22,5 +22,7 @@
       path: greeting.js
     - name: Message Embed
       path: embed.js
+    - name: Moderation
+      path: moderation.md
     - name: Webhook
       path: webhook.js
