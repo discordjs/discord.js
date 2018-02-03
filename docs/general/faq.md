@@ -15,7 +15,7 @@ Update to Node.js 8.0.0 or newer.
 - **npm:** `npm install ffmpeg-binaries`
 - **Ubuntu 16.04:** `sudo apt install ffmpeg`
 - **Ubuntu 14.04:** `sudo apt-get install libav-tools`
-- **Windows:** Use the npm version or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
+- **Windows:** `npm install ffmpeg-binaries` or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
 
 ## How do I set up node-opus?
 - **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!

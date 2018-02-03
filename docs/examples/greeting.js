@@ -1,6 +1,6 @@
-/*
-  A bot that welcomes new guild members when they join
-*/
+/**
+ * A bot that welcomes new guild members when they join
+ */
 
 // Import the discord.js module
 const Discord = require('discord.js');
@@ -25,4 +25,4 @@ client.on('guildMemberAdd', member => {
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login(`your token here`);
+client.login('your token here');

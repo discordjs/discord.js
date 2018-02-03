@@ -1,6 +1,6 @@
-/*
-	An example of how you can send embeds
-*/
+/**
+ * An example of how you can send embeds
+ */
 
 // Extract the required classes from the discord.js module
 const { Client, MessageEmbed } = require('discord.js');
@@ -21,13 +21,16 @@ client.on('message', message => {
     // Read more about all that you can do with the constructor
     // over at https://discord.js.org/#/docs/main/master/class/MessageEmbed
     const embed = new MessageEmbed()
-      .setTitle(`A slick little embed`) // Set the title of the field
-      .setColor('RANDOM') // Set the color of the embed
-      .setDescription(`Hello, this is a slick embed!`); // Set the main content of the embed
+      // Set the title of the field
+      .setTitle('A slick little embed')
+      // Set the color of the embed
+      .setColor(0xFF0000)
+      // Set the main content of the embed
+      .setDescription('Hello, this is a slick embed!');
     // Send the embed to the same channel as the message
     message.channel.send(embed);
   }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
-client.login(`your token here`);
+client.login('your token here');
