@@ -1,6 +1,6 @@
 # Sending Attachments
 
-In here you'll see a few examples showing how you can send an attachment using discord.js
+In here you'll see a few examples showing how you can send an attachment using discord.js.
 
 ## Sending an attachment using a URL
 
@@ -39,7 +39,7 @@ And here is the result:
 
 ![Image showing the result](/static/attachment-example1.png)
 
-But what if you want to send an attachment with a message content? Fear not, for it is easy to do that too! We'll recommend reading [the TextChannel's "send" function](/#/docs/main/master/class/TextChannel?scrollTo=send) to see what other options are available.
+But what if you want to send an attachment with a message content? Fear not, for it is easy to do that too! We'll recommend reading [the TextChannel's "send" function documentation](/#/docs/main/master/class/TextChannel?scrollTo=send) to see what other options are available.
 
 ```js
 // Extract the required classes from the discord.js module
