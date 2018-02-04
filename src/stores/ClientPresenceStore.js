@@ -19,7 +19,14 @@ class ClientPresenceStore extends PresenceStore {
     });
   }
 
-  async setClientPresence({ status, since, afk, activity }) { // eslint-disable-line complexity
+  async setClientPresence(presence) {
+    const packet = await this._parse(presence);
+    this.clientPresence.patch(packet);
+    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    return this.clientPresence;
+  }
+
+  async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
     if (activity) {
@@ -66,9 +73,7 @@ class ClientPresenceStore extends PresenceStore {
         packet.game.type : ActivityTypes.indexOf(packet.game.type);
     }
 
-    this.clientPresence.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
-    return this.clientPresence;
+    return packet;
   }
 }
 
