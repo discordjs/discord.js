@@ -1,6 +1,13 @@
 const { ActivityTypes, ActivityFlags } = require('../util/Constants');
 
 /**
+ * Activity sent in a message.
+ * @typedef {Object} MessageActivity
+ * @property {string} [partyID] Id of the party represented in activity
+ * @property {number} [type] Type of activity sent
+ */
+
+/**
  * Represents a user's presence.
  */
 class Presence {
