@@ -156,8 +156,8 @@ class AudioPlayer extends EventEmitter {
     return dispatcher;
   }
 
-  createDispatcher(stream, { seek = 0, volume = 1, passes = 1 } = {}) {
-    const options = { seek, volume, passes };
+  createDispatcher(stream, { seek = 0, volume = 1, passes = 1, opus } = {}) {
+    const options = { seek, volume, passes, opus };
 
     const dispatcher = new StreamDispatcher(this, stream, options);
     dispatcher.on('end', () => this.destroyCurrentStream());
