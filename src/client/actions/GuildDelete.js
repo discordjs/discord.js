@@ -28,6 +28,9 @@ class GuildDeleteAction extends Action {
         };
       }
 
+      for (const channel of guild.channels.values()) this.client.channels.delete(channel.id);
+      if (guild.voiceConnection) guild.voiceConnection.disconnect();
+
       // Delete guild
       client.guilds.delete(guild.id);
       this.deleted.set(guild.id, guild);
