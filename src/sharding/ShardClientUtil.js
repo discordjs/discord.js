@@ -119,7 +119,7 @@ class ShardClientUtil {
    * @param {*} message Message received
    * @private
    */
-  _handleMessage(message) {
+  async _handleMessage(message) {
     if (!message) return;
     if (message._fetchProp) {
       const props = message._fetchProp.split('.');
@@ -128,7 +128,7 @@ class ShardClientUtil {
       this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
     } else if (message._eval) {
       try {
-        this._respond('eval', { _eval: message._eval, _result: this.client._eval(message._eval) });
+        this._respond('eval', { _eval: message._eval, _result: await this.client._eval(message._eval) });
       } catch (err) {
         this._respond('eval', { _eval: message._eval, _error: Util.makePlainError(err) });
       }
