@@ -1,17 +1,18 @@
 const Action = require('./Action');
+const { Events } = require('../../util/Constants');
 
 class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
-    const client = this.client;
-    client.dataManager.killEmoji(emoji);
+    emoji.guild.emojis.remove(emoji.id);
+    this.client.emit(Events.GUILD_EMOJI_DELETE, emoji);
     return { emoji };
   }
 }
 
 /**
- * Emitted whenever a custom guild emoji is deleted.
+ * Emitted whenever a custom emoji is deleted in a guild.
  * @event Client#emojiDelete
- * @param {Emoji} emoji The emoji that was deleted
+ * @param {GuildEmoji} emoji The emoji that was deleted
  */
 
 module.exports = GuildEmojiDeleteAction;

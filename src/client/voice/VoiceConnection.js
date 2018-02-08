@@ -1,21 +1,24 @@
-const VoiceWebSocket = require('./VoiceWebSocket');
-const VoiceUDP = require('./VoiceUDPClient');
+const VoiceWebSocket = require('./networking/VoiceWebSocket');
+const VoiceUDP = require('./networking/VoiceUDPClient');
 const Util = require('../../util/Util');
-const Constants = require('../../util/Constants');
+const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
-const VoiceReceiver = require('./receiver/VoiceReceiver');
-const EventEmitter = require('events').EventEmitter;
-const Prism = require('prism-media');
+const VoiceReceiver = require('./receiver/Receiver');
+const EventEmitter = require('events');
+const { Error } = require('../../errors');
+const PlayInterface = require('./util/PlayInterface');
 
 /**
  * Represents a connection to a guild's voice server.
  * ```js
  * // Obtained using:
- * voiceChannel.join().then(connection => {
+ * voiceChannel.join()
+ *   .then(connection => {
  *
- * });
+ *   });
  * ```
  * @extends {EventEmitter}
+ * @implements {PlayInterface}
  */
 class VoiceConnection extends EventEmitter {
   constructor(voiceManager, channel) {
@@ -34,17 +37,6 @@ class VoiceConnection extends EventEmitter {
     this.client = voiceManager.client;
 
     /**
-     * @external Prism
-     * @see {@link https://github.com/hydrabolt/prism-media}
-     */
-
-    /**
-     * The audio transcoder for this connection
-     * @type {Prism}
-     */
-    this.prism = new Prism();
-
-    /**
      * The voice channel this connection is currently serving
      * @type {VoiceChannel}
      */
@@ -54,7 +46,7 @@ class VoiceConnection extends EventEmitter {
      * The current status of the voice connection
      * @type {VoiceStatus}
      */
-    this.status = Constants.VoiceStatus.AUTHENTICATING;
+    this.status = VoiceStatus.AUTHENTICATING;
 
     /**
      * Whether we're currently transmitting audio
@@ -99,6 +91,8 @@ class VoiceConnection extends EventEmitter {
       this.emit('warn', e);
     });
 
+    this.once('closing', () => this.player.destroy());
+
     /**
      * Map SSRC to speaking values
      * @type {Map<number, boolean>}
@@ -132,11 +126,12 @@ class VoiceConnection extends EventEmitter {
    */
   setSpeaking(value) {
     if (this.speaking === value) return;
+    if (this.status !== VoiceStatus.CONNECTED) return;
     this.speaking = value;
     this.sockets.ws.sendPacket({
-      op: Constants.VoiceOPCodes.SPEAKING,
+      op: VoiceOPCodes.SPEAKING,
       d: {
-        speaking: true,
+        speaking: this.speaking,
         delay: 0,
       },
     }).catch(e => {
@@ -147,6 +142,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
+   * @private
    */
   sendVoiceStateUpdate(options = {}) {
     options = Util.mergeDefault({
@@ -157,15 +153,16 @@ class VoiceConnection extends EventEmitter {
     }, options);
 
     this.channel.guild.shard.send({
-      op: Constants.OPCodes.VOICE_STATE_UPDATE,
+      op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
   }
 
   /**
-   * Set the token and endpoint required to connect to the the voice servers.
+   * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
+   * @private
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
@@ -175,18 +172,18 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (!token) {
-      this.authenticateFailed('Token not provided from voice server packet.');
+      this.authenticateFailed('VOICE_TOKEN_ABSENT');
       return;
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
 
     if (!endpoint) {
-      this.authenticateFailed('Invalid endpoint received.');
+      this.authenticateFailed('VOICE_INVALID_ENDPOINT');
       return;
     }
 
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       this.authentication.token = token;
       this.authentication.endpoint = endpoint;
       this.checkAuthenticated();
@@ -198,14 +195,15 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sets the Session ID for the connection.
    * @param {string} sessionID The voice session ID
+   * @private
    */
   setSessionID(sessionID) {
     if (!sessionID) {
-      this.authenticateFailed('Session ID not supplied.');
+      this.authenticateFailed('VOICE_SESSION_ABSENT');
       return;
     }
 
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       this.authentication.sessionID = sessionID;
       this.checkAuthenticated();
     } else if (sessionID !== this.authentication.sessionID) {
@@ -228,7 +226,7 @@ class VoiceConnection extends EventEmitter {
 
     if (token && endpoint && sessionID) {
       clearTimeout(this.connectTimeout);
-      this.status = Constants.VoiceStatus.CONNECTING;
+      this.status = VoiceStatus.CONNECTING;
       /**
        * Emitted when we successfully initiate a voice connection.
        * @event VoiceConnection#authenticated
@@ -245,8 +243,7 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
-    this.status = Constants.VoiceStatus.DISCONNECTED;
-    if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
+    if (this.status === VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
        * @event VoiceConnection#failed
@@ -256,6 +253,7 @@ class VoiceConnection extends EventEmitter {
     } else {
       this.emit('error', new Error(reason));
     }
+    this.status = VoiceStatus.DISCONNECTED;
   }
 
   /**
@@ -275,7 +273,7 @@ class VoiceConnection extends EventEmitter {
   authenticate() {
     this.sendVoiceStateUpdate();
     this.connectTimeout = this.client.setTimeout(
-      () => this.authenticateFailed(new Error('Connection not established within 15 seconds.')), 15000);
+      () => this.authenticateFailed('VOICE_CONNECTION_TIMEOUT'), 15000);
   }
 
   /**
@@ -288,7 +286,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.token = token;
     this.authentication.endpoint = endpoint;
 
-    this.status = Constants.VoiceStatus.RECONNECTING;
+    this.status = VoiceStatus.RECONNECTING;
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
      * @event VoiceConnection#reconnecting
@@ -298,16 +296,23 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Disconnect the voice connection, causing a disconnect and closing event to be emitted.
+   * Disconnects the voice connection, causing a disconnect and closing event to be emitted.
    */
   disconnect() {
     this.emit('closing');
     this.sendVoiceStateUpdate({
       channel_id: null,
     });
-    this.player.destroy();
+    this._disconnect();
+  }
+
+  /**
+   * Internally disconnects (doesn't send disconnect packet).
+   * @private
+   */
+  _disconnect() {
     this.cleanup();
-    this.status = Constants.VoiceStatus.DISCONNECTED;
+    this.status = VoiceStatus.DISCONNECTED;
     /**
      * Emitted when the voice connection disconnects.
      * @event VoiceConnection#disconnect
@@ -315,11 +320,14 @@ class VoiceConnection extends EventEmitter {
     this.emit('disconnect');
   }
 
+
   /**
    * Cleans up after disconnect.
    * @private
    */
   cleanup() {
+    this.player.destroy();
+
     const { ws, udp } = this.sockets;
 
     if (ws) {
@@ -340,9 +348,9 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   connect() {
-    if (this.status !== Constants.VoiceStatus.RECONNECTING) {
-      if (this.sockets.ws) throw new Error('There is already an existing WebSocket connection.');
-      if (this.sockets.udp) throw new Error('There is already an existing UDP connection.');
+    if (this.status !== VoiceStatus.RECONNECTING) {
+      if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
+      if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
     }
 
     if (this.sockets.ws) this.sockets.ws.shutdown();
@@ -391,7 +399,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.encryptionMode = mode;
     this.authentication.secretKey = secret;
 
-    this.status = Constants.VoiceStatus.CONNECTED;
+    this.status = VoiceStatus.CONNECTED;
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.
@@ -409,114 +417,19 @@ class VoiceConnection extends EventEmitter {
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
     this.ssrcMap.set(+ssrc, user);
-    if (!speaking) {
-      for (const receiver of this.receivers) {
-        receiver.stoppedSpeaking(user);
-      }
-    }
     /**
      * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
      * @param {User} user The user that has started/stopped speaking
      * @param {boolean} speaking Whether or not the user is speaking
      */
-    if (this.status === Constants.VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
+    if (this.status === VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
   }
 
   /**
-   * Options that can be passed to stream-playing methods:
-   * @typedef {Object} StreamOptions
-   * @property {number} [seek=0] The time to seek to
-   * @property {number} [volume=1] The volume to play at
-   * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
-   */
-
-  /**
-   * Play the given file in the voice connection.
-   * @param {string} file The absolute path to the file
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play files natively
-   * voiceChannel.join()
-   *  .then(connection => {
-   *    const dispatcher = connection.playFile('C:/Users/Discord/Desktop/music.mp3');
-   *  })
-   *  .catch(console.error);
-   */
-  playFile(file, options) {
-    return this.player.playUnknownStream(`file:${file}`, options);
-  }
-
-  /**
-   * Play an arbitrary input that can be [handled by ffmpeg](https://ffmpeg.org/ffmpeg-protocols.html#Description)
-   * @param {string} input the arbitrary input
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playArbitraryInput(input, options) {
-    return this.player.playUnknownStream(input, options);
-  }
-
-  /**
-   * Plays and converts an audio stream in the voice connection.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play streams using ytdl-core
-   * const ytdl = require('ytdl-core');
-   * const streamOptions = { seek: 0, volume: 1 };
-   * voiceChannel.join()
-   *  .then(connection => {
-   *    const stream = ytdl('https://www.youtube.com/watch?v=XAWgeLF9EVQ', { filter : 'audioonly' });
-   *    const dispatcher = connection.playStream(stream, streamOptions);
-   *  })
-   *  .catch(console.error);
-   */
-  playStream(stream, options) {
-    return this.player.playUnknownStream(stream, options);
-  }
-
-  /**
-   * Plays a stream of 16-bit signed stereo PCM at 48KHz.
-   * @param {ReadableStream} stream The audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playConvertedStream(stream, options) {
-    return this.player.playPCMStream(stream, options);
-  }
-
-  /**
-   * Plays an Opus encoded stream at 48KHz.
-   * <warn>Note that inline volume is not compatible with this method.</warn>
-   * @param {ReadableStream} stream The Opus audio stream to play
-   * @param {StreamOptions} [options] Options for playing the stream
-   * @returns {StreamDispatcher}
-   */
-  playOpusStream(stream, options) {
-    return this.player.playOpusStream(stream, options);
-  }
-
-  /**
-   * Plays a voice broadcast.
-   * @param {VoiceBroadcast} broadcast The broadcast to play
-   * @returns {StreamDispatcher}
-   * @example
-   * // Play a broadcast
-   * const broadcast = client
-   *   .createVoiceBroadcast()
-   *   .playFile('./test.mp3');
-   * const dispatcher = voiceConnection.playBroadcast(broadcast);
-   */
-  playBroadcast(broadcast) {
-    return this.player.playBroadcast(broadcast);
-  }
-
-  /**
-   * Creates a VoiceReceiver so you can start listening to voice data. It's recommended to only create one of these.
+   * Creates a VoiceReceiver so you can start listening to voice data.
+   * It's recommended to only create one of these.
    * @returns {VoiceReceiver}
    */
   createReceiver() {
@@ -524,6 +437,10 @@ class VoiceConnection extends EventEmitter {
     this.receivers.push(receiver);
     return receiver;
   }
+
+  play() {} // eslint-disable-line no-empty-function
 }
+
+PlayInterface.applyToClass(VoiceConnection);
 
 module.exports = VoiceConnection;

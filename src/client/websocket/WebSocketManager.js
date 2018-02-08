@@ -1,11 +1,11 @@
-const EventEmitter = require('events').EventEmitter;
 const Collection = require('../../util/Collection');
-const WebSocketConnection = require('./WebSocketConnection');
+const EventEmitter = require('events');
+const { Events } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
-const Constants = require('../../util/Constants');
+const WebSocketConnection = require('./WebSocketConnection');
 
 /**
- * WebSocket Manager of the client
+ * WebSocket Manager of the client.
  * @private
  */
 class WebSocketManager extends EventEmitter {
@@ -17,23 +17,23 @@ class WebSocketManager extends EventEmitter {
      */
     this.client = client;
 
-    /**
-     * The WebSocket connection of this manager
-     * @type {?WebSocketConnection}
+    /*
+     * The Shards connected to this manager.
+     * @type {Collection}
      */
     this.shards = new Collection();
+
+    /**
+     * A cached gateway url
+     * @type {string}
+     */
+    this.gateway = null;
 
     /**
      * The Packet Manager of the connection
      * @type {WebSocketPacketManager}
      */
     this.packetManager = new PacketManager(this);
-
-    /**
-     * A cached gateway url
-     * @type {string}
-     */
-    this.cachedGateway = null;
 
     /**
      * Events that are disabled (will not be processed)
@@ -44,12 +44,21 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
+   * Sends a heartbeat on the available connection.
+   * @returns {void}
+   */
+  heartbeat() {
+    if (!this.connection) return this.debug('No connection to heartbeat');
+    return this.connection.heartbeat();
+  }
+
+  /**
    * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
    */
-  debug(...args) {
-    return this.client.emit('debug', `[ws] ${args.join(' ')}`);
+  debug(message) {
+    return this.client.emit(Events.DEBUG, `[ws] ${message}`);
   }
 
   /**
@@ -61,51 +70,75 @@ class WebSocketManager extends EventEmitter {
       this.debug('Attempted to destroy WebSocket but no connections exist!');
       return false;
     }
-    // TODO: iterate and destroy
+    this.packetManager.handleQueue();
+    for (const shard of this.shards.values()) shard.destroy();
     return true;
   }
 
   /**
-   * Connects the client to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * Send a packet on the available WebSocket.
+   * @param {Object} packet Packet to send
+   * @returns {boolean}
    */
-  connect(gateway) {
-    this.cachedGateway = gateway;
-    this.spawnShards();
+  send(packet) {
+    if (!this.shards.size) {
+      this.debug('No connection any websockets');
+      return false;
+    }
+    for (const shard of this.shards.values()) shard.send(packet);
+    return true;
   }
 
-  spawnShards() {
+  /**
+   * Connects all appropriate Shards to the gateway.
+   * @param {string} gateway The gateway to connect to
+   * @param {Function} resolve Function to run when connection is successful
+   * @param {Function} reject Function to run when connection fails
+   */
+  spawn(gateway, resolve, reject) {
+    this.debug(`SHARD EXISTS: ${typeof this.client.shard}`);
+    this.debug(`SHARD ID: ${(this.client.shard ? this.client.shard.id : 0)}`);
+    this.gateway = gateway;
     (function spawnLoop(id) {
       if (id >= this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
-      this.spawnShard(id, this.cachedGateway)
-      .once('ready', () => {
-        this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
+      const shard = this.createShard(id);
+      shard.ws.once('error', reject);
+      shard.ws.once('close', event => {
+        if (event === 4004) reject(new Error('TOKEN_INVALID'));
+        if (event === 4010) reject(new Error('SHARDING_INVALID'));
+        if (event === 4011) reject(new Error('SHARDING_REQUIRED'));
+      });
+      shard.once('ready', () => {
+        this.debug(`Shard ready ${id}`);
+        if (this.client.options.internalSharding) this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
+         * @param {Number} shardId The created shard's ID
          */
-        this.client.emit(Constants.Events.SHARD_READY, id);
-        if (id === this.client.options.shardCount) {
+        this.client.emit(Events.SHARD_READY, id);
+        if (this.client.options.internalSharding && id === this.client.options.shardCount - 1) {
           /**
            * Emitted when the client becomes ready to start working.
            * @event Client#ready
            */
-          this.client.emit(Constants.Events.READY);
+          this.client.emit(Events.READY);
+          this.packetManager.handleQueue();
         }
       });
-    }.bind(this)(0));
+    }.bind(this)(this.client.shard ? this.client.shard.id : 0));
   }
 
-  spawnShard(id, gateway) {
-    const shard = new WebSocketConnection(this, id, gateway);
-    // Handlers for disconnect and such go here
+  /**
+   * Spawns a new Shard on the client
+   * @param {number} id The Shard's ID
+   * @returns {WebSocketConnection} The created Shard
+   */
+  createShard(id) {
+    const shard = new WebSocketConnection(this, id);
     this.shards.set(id, shard);
     return shard;
-  }
-
-  send(data) {
-    for (const shard of this.shards.values()) shard.send(data);
   }
 }
 

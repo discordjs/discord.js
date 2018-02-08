@@ -1,11 +1,11 @@
 # Version 11.1.0
 v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
-See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.1.0) for a full list of changes, including
+See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.1.0) for a full list of changes, including
 information about deprecations.
 
 # Version 11
 Version 11 contains loads of new and improved features, optimisations, and bug fixes.
-See [the changelog](https://github.com/hydrabolt/discord.js/releases/tag/11.0.0) for a full list of changes.
+See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.0.0) for a full list of changes.
 
 ## Significant additions
 * Message Reactions and Embeds (rich text)

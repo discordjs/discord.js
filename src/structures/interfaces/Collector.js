@@ -1,17 +1,19 @@
 const Collection = require('../../util/Collection');
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 
 /**
  * Filter to be applied to the collector.
  * @typedef {Function} CollectorFilter
  * @param {...*} args Any arguments received by the listener
- * @returns {boolean} To collect or not collect
+ * @param {Collection} collection The items collected by this collector
+ * @returns {boolean}
  */
 
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
+ * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
  */
 
 /**
@@ -23,7 +25,7 @@ class Collector extends EventEmitter {
     super();
 
     /**
-     * The client
+     * The client that instantiated this Collector
      * @name Collector#client
      * @type {Client}
      * @readonly
@@ -61,41 +63,56 @@ class Collector extends EventEmitter {
      */
     this._timeout = null;
 
-    /**
-     * Call this to handle an event as a collectable element
-     * Accepts any event data as parameters
-     * @type {Function}
-     * @private
-     */
-    this.listener = this._handle.bind(this);
+    this.handleCollect = this.handleCollect.bind(this);
+    this.handleDispose = this.handleDispose.bind(this);
+
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
   }
 
   /**
+   * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
-   * @private
    */
-  _handle(...args) {
-    const collect = this.handle(...args);
-    if (!collect || !this.filter(...args)) return;
+  handleCollect(...args) {
+    const collect = this.collect(...args);
 
-    this.collected.set(collect.key, collect.value);
+    if (collect && this.filter(...args, this.collected)) {
+      this.collected.set(collect, args[0]);
 
-    /**
-     * Emitted whenever an element is collected.
-     * @event Collector#collect
-     * @param {*} element The element that got collected
-     * @param {Collector} collector The collector
-     */
-    this.emit('collect', collect.value, this);
-
-    const post = this.postCheck(...args);
-    if (post) this.stop(post);
+      /**
+       * Emitted whenever an element is collected.
+       * @event Collector#collect
+       * @param {...*} args The arguments emitted by the listener
+       */
+      this.emit('collect', ...args);
+    }
+    this.checkEnd();
   }
 
   /**
-   * Return a promise that resolves with the next collected element;
+   * Call this to remove an element from the collection. Accepts any event data as parameters.
+   * @param {...*} args The arguments emitted by the listener
+   * @emits Collector#dispose
+   */
+  handleDispose(...args) {
+    if (!this.options.dispose) return;
+
+    const dispose = this.dispose(...args);
+    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    this.collected.delete(dispose);
+
+    /**
+     * Emitted whenever an element is disposed of.
+     * @event Collector#dispose
+     * @param {...*} args The arguments emitted by the listener
+     */
+    this.emit('dispose', ...args);
+    this.checkEnd();
+  }
+
+  /**
+   * Returns a promise that resolves with the next collected element;
    * rejects with collected elements if the collector finishes without receving a next element
    * @type {Promise}
    * @readonly
@@ -128,7 +145,7 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Stop this collector and emit the `end` event.
+   * Stops this collector and emits the `end` event.
    * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end
    */
@@ -137,7 +154,6 @@ class Collector extends EventEmitter {
 
     if (this._timeout) this.client.clearTimeout(this._timeout);
     this.ended = true;
-    this.cleanup();
 
     /**
      * Emitted when the collector is finished collecting.
@@ -148,30 +164,41 @@ class Collector extends EventEmitter {
     this.emit('end', this.collected, reason);
   }
 
+  /**
+   * Checks whether the collector should end, and if so, ends it.
+   */
+  checkEnd() {
+    const reason = this.endReason();
+    if (reason) this.stop(reason);
+  }
+
   /* eslint-disable no-empty-function, valid-jsdoc */
   /**
-   * Handles incoming events from the `listener` function. Returns null if the event should not be collected,
-   * or returns an object describing the data that should be stored.
-   * @see Collector#listener
+   * Handles incoming events from the `handleCollect` function. Returns null if the event should not
+   * be collected, or returns an object describing the data that should be stored.
+   * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
-   * @returns {?{key: string, value}} Data to insert into collection, if any
+   * @returns {?{key, value}} Data to insert into collection, if any
    * @abstract
    */
-  handle() {}
+  collect() {}
 
   /**
-   * This method runs after collection to see if the collector should finish.
+   * Handles incoming events from the `handleDispose`. Returns null if the event should not
+   * be disposed, or returns the key that should be removed.
+   * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits
+   * @returns {?*} Key to remove from the collection, if any
+   * @abstract
+   */
+  dispose() {}
+
+  /**
+   * The reason this collector has ended or will end with.
    * @returns {?string} Reason to end the collector, if any
    * @abstract
    */
-  postCheck() {}
-
-  /**
-   * Called when the collector is ending.
-   * @abstract
-   */
-  cleanup() {}
+  endReason() {}
   /* eslint-enable no-empty-function, valid-jsdoc */
 }
 

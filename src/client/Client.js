@@ -1,68 +1,53 @@
-const os = require('os');
-const EventEmitter = require('events').EventEmitter;
-const Constants = require('../util/Constants');
+const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
-const RESTManager = require('./rest/RESTManager');
-const ClientDataManager = require('./ClientDataManager');
-const ClientDataResolver = require('./ClientDataResolver');
+const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const WebSocketConnection = require('./websocket/WebSocketConnection');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
-const Presence = require('../structures/Presence').Presence;
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
-const User = require('../structures/User');
 const Invite = require('../structures/Invite');
-const OAuth2Application = require('../structures/OAuth2Application');
+const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
+const UserStore = require('../stores/UserStore');
+const ChannelStore = require('../stores/ChannelStore');
+const GuildStore = require('../stores/GuildStore');
+const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const GuildEmojiStore = require('../stores/GuildEmojiStore');
+const { Events, browser } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
+const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
- * @extends {EventEmitter}
+ * @extends {BaseClient}
  */
-class Client extends EventEmitter {
+class Client extends BaseClient {
   /**
    * @param {ClientOptions} [options] Options for the client
    */
   constructor(options = {}) {
-    super();
+    super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!options.shardID && 'SHARD_ID' in process.env) options.shardID = Number(process.env.SHARD_ID);
-    if (!options.shardCount && 'SHARD_COUNT' in process.env) options.shardCount = Number(process.env.SHARD_COUNT);
+    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
+      this.options.shardId = Number(process.env.SHARD_ID);
+    }
+    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    }
 
-    /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = Util.mergeDefault(Constants.DefaultOptions, options);
-    if (options.shardCount !== 'auto') options.shardCount = Math.max(options.shardCount, 1);
     this._validateOptions();
 
     /**
-     * The REST manager of the client
-     * @type {RESTManager}
+     * The manager of the client
+     * @type {ClientManager}
      * @private
      */
-    this.rest = new RESTManager(this);
-
-    /**
-     * API shortcut
-     * @type {Object}
-     * @private
-     */
-    this.api = this.rest.api;
-
-    /**
-     * The data manager of the client
-     * @type {ClientDataManager}
-     * @private
-     */
-    this.dataManager = new ClientDataManager(this);
+    this.manager = new ClientManager(this);
 
     /**
      * The WebSocket manager of the client
@@ -70,13 +55,6 @@ class Client extends EventEmitter {
      * @private
      */
     this.ws = new WebSocketManager(this);
-
-    /**
-     * The data resolver of the client
-     * @type {ClientDataResolver}
-     * @private
-     */
-    this.resolver = new ClientDataResolver(this);
 
     /**
      * The action manager of the client
@@ -90,43 +68,44 @@ class Client extends EventEmitter {
      * @type {?ClientVoiceManager}
      * @private
      */
-    this.voice = !this.browser ? new ClientVoiceManager(this) : null;
+    this.voice = !browser ? new ClientVoiceManager(this) : null;
 
     /**
-     * The shard helpers for the client
-     * (only if the process was spawned as a child, such as from a {@link ShardingManager})
+     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = process.send ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {Collection<Snowflake, User>}
+     * @type {UserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {Collection<Snowflake, Guild>}
+     * @type {GuildStore<Snowflake, Guild>}
      */
-    this.guilds = new Collection();
+    this.guilds = new GuildStore(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild, and all DM channels
-     * @type {Collection<Snowflake, Channel>}
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+     * is a member of, and all DM channels
+     * @type {ChannelStore<Snowflake, Channel>}
      */
-    this.channels = new Collection();
+    this.channels = new ChannelStore(this);
 
     /**
      * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, Presence>}
+     * @type {ClientPresenceStore<Snowflake, Presence>}
      */
-    this.presences = new Collection();
+    this.presences = new ClientPresenceStore(this);
 
-    if (!this.token && 'CLIENT_TOKEN' in process.env) {
+    Object.defineProperty(this, 'token', { writable: true });
+    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in user/bot
        * <warn>This should be kept private at all times.</warn>
@@ -178,6 +157,7 @@ class Client extends EventEmitter {
   /**
    * Timestamp of the latest ping's start time
    * @type {number}
+   * @readonly
    * @private
    */
   get _pingTimestamp() {
@@ -190,11 +170,11 @@ class Client extends EventEmitter {
    * @readonly
    */
   get status() {
-    return this.ws.connection.status;
+    return this.ws.connection ? this.ws.connection.status : null;
   }
 
   /**
-   * How long it has been since the client last entered the `READY` state
+   * How long it has been since the client last entered the `READY` state in milliseconds
    * @type {?number}
    * @readonly
    */
@@ -203,25 +183,24 @@ class Client extends EventEmitter {
   }
 
   /**
-   * All active voice connections that have been established, mapped by channel ID
+   * All active voice connections that have been established, mapped by guild ID
    * @type {Collection<Snowflake, VoiceConnection>}
    * @readonly
    */
   get voiceConnections() {
-    if (this.browser) return new Collection();
+    if (browser) return new Collection();
     return this.voice.connections;
   }
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {Collection<Snowflake, Emoji>}
+   * @type {GuildEmojiStore<Snowflake, GuildEmoji>}
    * @readonly
    */
   get emojis() {
-    const emojis = new Collection();
+    const emojis = new GuildEmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
-      if (!guild.available) continue;
-      for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
+      if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }
     return emojis;
   }
@@ -233,15 +212,6 @@ class Client extends EventEmitter {
    */
   get readyTimestamp() {
     return this.readyAt ? this.readyAt.getTime() : null;
-  }
-
-  /**
-   * Whether the client is in a browser environment
-   * @type {boolean}
-   * @readonly
-   */
-  get browser() {
-    return os.platform() === 'browser';
   }
 
   /**
@@ -265,34 +235,14 @@ class Client extends EventEmitter {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return new Promise((resolve, reject) => {
-      if (typeof token !== 'string') throw new Error(Constants.Errors.INVALID_TOKEN);
+      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
       token = token.replace(/^Bot\s*/i, '');
-      this.token = token;
-      const timeout = this.setTimeout(() => reject(new Error(Constants.Errors.TOOK_TOO_LONG)), 1000 * 300);
-      let endpoint = this.api.gateway;
-      const forceBot = this.options.shardCount === 'auto';
-      if (forceBot) endpoint = endpoint.bot;
-      endpoint.get({ forceBot }).then(res => {
-        this.emit(Constants.Events.DEBUG, `Authenticated using token ${token}`);
-        if (res.shards) {
-          this.emit(Constants.Events.DEBUG, `Using recommended shard count: ${res.shards}`);
-          this.options.shardCount = res.shards;
-        }
-        const protocolVersion = Constants.DefaultOptions.ws.version;
-        const gateway = `${res.url}/?v=${protocolVersion}&encoding=${WebSocketConnection.ENCODING}`;
-        this.emit(Constants.Events.DEBUG, `Using gateway ${gateway}`);
-        this.ws.connect(gateway);
-        this.ws.once('close', event => {
-          if (!Object.keys(Constants.WSCodes).includes(event.code)) return;
-          reject(new Error(Constants.WSCodes[event.code]));
-        });
-        this.once(Constants.Events.READY, () => {
-          resolve(token);
-          this.clearTimeout(timeout);
-        });
-      }, reject);
+      this.manager.connectToWebSocket(token, resolve, reject);
+    }).catch(e => {
+      this.destroy();
+      return Promise.reject(e);
     });
   }
 
@@ -301,21 +251,8 @@ class Client extends EventEmitter {
    * @returns {Promise}
    */
   destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
-    this._timeouts.clear();
-    this._intervals.clear();
-    this.ws.destroy();
-    this.rest.destroy();
-    if (!this.user) return Promise.resolve();
-    if (this.user.bot) {
-      this.token = null;
-      return Promise.resolve();
-    } else {
-      return this.api.logout.post().then(() => {
-        this.token = null;
-      });
-    }
+    super.destroy();
+    return this.manager.destroy();
   }
 
   /**
@@ -333,26 +270,17 @@ class Client extends EventEmitter {
   }
 
   /**
-   * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
-   * @param {Snowflake} id ID of the user
-   * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
-   * @returns {Promise<User>}
-   */
-  fetchUser(id, cache = true) {
-    if (this.users.has(id)) return Promise.resolve(this.users.get(id));
-    return this.api.users(id).get().then(data =>
-      cache ? this.dataManager.newUser(data) : new User(this, data)
-    );
-  }
-
-  /**
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
+   * @example
+   * client.fetchInvite('https://discord.gg/bRCvFy9')
+   *  .then(invite => {
+   *    console.log(`Obtained invite with code: ${invite.code}`);
+   *  }).catch(console.error);
    */
   fetchInvite(invite) {
-    const code = this.resolver.resolveInviteCode(invite);
+    const code = DataResolver.resolveInviteCode(invite);
     return this.api.invites(code).get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
   }
@@ -362,6 +290,11 @@ class Client extends EventEmitter {
    * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
+   * @example
+   * client.fetchWebhook('id', 'token')
+   *  .then(webhook => {
+   *    console.log(`Obtained webhook with name: ${webhook.name}`);
+   *  }).catch(console.error);
    */
   fetchWebhook(id, token) {
     return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
@@ -370,6 +303,11 @@ class Client extends EventEmitter {
   /**
    * Obtains the available voice regions from Discord.
    * @returns {Collection<string, VoiceRegion>}
+   * @example
+   * client.fetchVoiceRegions()
+   *  .then(regions => {
+   *    console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`);
+   *  }).catch(console.error);
    */
   fetchVoiceRegions() {
     return this.api.voice.regions.get().then(res => {
@@ -386,11 +324,17 @@ class Client extends EventEmitter {
    * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
    * @returns {number} Amount of messages that were removed from the caches,
    * or -1 if the message cache lifetime is unlimited
+   * @example
+   * // Remove all messages older than 1800 seconds from the messages cache
+   * const amount = client.sweepMessages(1800);
+   * console.log(`Successfully removed ${amount} messages from the cache.`);
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
-    if (typeof lifetime !== 'number' || isNaN(lifetime)) throw new TypeError('The lifetime must be a number.');
+    if (typeof lifetime !== 'number' || isNaN(lifetime)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
+    }
     if (lifetime <= 0) {
-      this.emit('debug', 'Didn\'t sweep messages - lifetime is unlimited');
+      this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
       return -1;
     }
 
@@ -411,18 +355,24 @@ class Client extends EventEmitter {
       }
     }
 
-    this.emit('debug', `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
+    this.emit(Events.DEBUG,
+      `Swept ${messages} messages older than ${lifetime} seconds in ${channels} text-based channels`);
     return messages;
   }
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
-   * @returns {Promise<OAuth2Application>}
+   * @returns {Promise<ClientApplication>}
+   * @example
+   * client.fetchApplication('id')
+   *  .then(application => {
+   *    console.log(`Obtained application with name: ${application.name}`);
+   *  }).catch(console.error);
    */
   fetchApplication(id = '@me') {
-    return this.rest.api.oauth2.applications(id).get()
-    .then(app => new OAuth2Application(this, app));
+    return this.api.oauth2.applications(id).get()
+      .then(app => new ClientApplication(this, app));
   }
 
   /**
@@ -434,7 +384,7 @@ class Client extends EventEmitter {
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
    *   .then(link => {
    *     console.log(`Generated bot invite link: ${link}`);
-   *   });
+   *   }).catch(console.error);
    */
   generateInvite(permissions) {
     if (permissions) {
@@ -445,67 +395,6 @@ class Client extends EventEmitter {
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
-  }
-
-  /**
-   * Sets a timeout that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setTimeout(fn, delay, ...args) {
-    const timeout = setTimeout(() => {
-      fn();
-      this._timeouts.delete(timeout);
-    }, delay, ...args);
-    this._timeouts.add(timeout);
-    return timeout;
-  }
-
-  /**
-   * Clears a timeout.
-   * @param {Timeout} timeout Timeout to cancel
-   */
-  clearTimeout(timeout) {
-    clearTimeout(timeout);
-    this._timeouts.delete(timeout);
-  }
-
-  /**
-   * Sets an interval that will be automatically cancelled if the client is destroyed.
-   * @param {Function} fn Function to execute
-   * @param {number} delay Time to wait before executing (in milliseconds)
-   * @param {...*} args Arguments for the function
-   * @returns {Timeout}
-   */
-  setInterval(fn, delay, ...args) {
-    const interval = setInterval(fn, delay, ...args);
-    this._intervals.add(interval);
-    return interval;
-  }
-
-  /**
-   * Clears an interval.
-   * @param {Timeout} interval Interval to cancel
-   */
-  clearInterval(interval) {
-    clearInterval(interval);
-    this._intervals.delete(interval);
-  }
-
-  /**
-   * Adds/updates a friend's presence in {@link Client#presences}.
-   * @param {Snowflake} id ID of the user
-   * @param {Object} presence Raw presence object from Discord
-   * @private
-   */
-  _setPresence(id, presence) {
-    if (this.presences.has(id)) {
-      this.presences.get(id).update(presence);
-      return;
-    }
-    this.presences.set(id, new Presence(presence));
   }
 
   /**
@@ -524,43 +413,42 @@ class Client extends EventEmitter {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
-    if (options.shardCount !== 'auto' && isNaN(options.shardCount)) {
-      throw new TypeError('The shardCount option must be a number or "auto".');
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
     }
-    if (typeof options.shardID !== 'number' || isNaN(options.shardID)) {
-      throw new TypeError('The shardID option must be a number.');
+    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
     }
-    if (options.shardCount < 0) throw new RangeError('The shardCount option must be at least 0.');
-    if (options.shardID < 0) throw new RangeError('The shardID option must be at least 0.');
-    if (options.shardID !== 0 && options.shardID >= options.shardCount) {
-      throw new RangeError('The shardID option must be less than shardCount.');
+    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
+    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
+    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
     }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('The messageCacheMaxSize option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('The messageCacheLifetime option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
     }
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('The messageSweepInterval option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
     if (typeof options.fetchAllMembers !== 'boolean') {
-      throw new TypeError('The fetchAllMembers option must be a boolean.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
     if (typeof options.disableEveryone !== 'boolean') {
-      throw new TypeError('The disableEveryone option must be a boolean.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError('The restWsBridgeTimeout option must be a number.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
     }
     if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('The internalSharding option must be a boolean.');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
-    if (options.internalSharding && ('shardCount' in options || 'shardId' in options)) {
-      throw new TypeError('You cannot specify shardCount/shardId if you are using internal sharding.');
+    if (!(options.disabledEvents instanceof Array)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
     }
-    if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
   }
 }
 

@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class GuildDeleteAction extends Action {
   constructor(client) {
@@ -19,7 +19,7 @@ class GuildDeleteAction extends Action {
       if (guild.available && data.unavailable) {
         // Guild is unavailable
         guild.available = false;
-        client.emit(Constants.Events.GUILD_UNAVAILABLE, guild);
+        client.emit(Events.GUILD_UNAVAILABLE, guild);
 
         // Stops the GuildDelete packet thinking a guild was actually deleted,
         // handles emitting of event itself
@@ -28,8 +28,12 @@ class GuildDeleteAction extends Action {
         };
       }
 
+      for (const channel of guild.channels.values()) this.client.channels.remove(channel.id);
+      if (guild.voiceConnection) guild.voiceConnection.disconnect();
+
       // Delete guild
-      client.guilds.delete(guild.id);
+      client.guilds.remove(guild.id);
+      client.emit(Events.GUILD_DELETE, guild);
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
     } else {

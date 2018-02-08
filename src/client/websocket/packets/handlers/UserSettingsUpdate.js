@@ -1,16 +1,16 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
+const { Events } = require('../../../../util/Constants');
 
 class UserSettingsUpdateHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     client.user.settings.patch(packet.d);
-    client.emit(Constants.Events.USER_SETTINGS_UPDATE, client.user.settings);
+    client.emit(Events.USER_SETTINGS_UPDATE, client.user.settings);
   }
 }
 
 /**
- * Emitted when the client user's settings update.
+ * Emitted whenever the client user's settings update.
  * @event Client#clientUserSettingsUpdate
  * @param {ClientUserSettings} clientUserSettings The new client user settings
  */

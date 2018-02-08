@@ -1,25 +1,12 @@
-const browser = require('os').platform() === 'browser';
 const EventEmitter = require('events');
-const Constants = require('../../util/Constants');
-const zlib = require('zlib');
-const erlpack = (function findErlpack() {
-  try {
-    const e = require('erlpack');
-    if (!e.pack) return null;
-    return e;
-  } catch (e) {
-    return null;
-  }
-}());
-
-const WebSocket = (function findWebSocket() {
-  if (browser) return window.WebSocket; // eslint-disable-line no-undef
-  try {
-    return require('uws');
-  } catch (e) {
-    return require('ws');
-  }
-}());
+const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
+const WebSocket = require('../../WebSocket');
+try {
+  var zlib = require('zlib-sync');
+  if (!zlib.Inflate) zlib = require('pako');
+} catch (err) {
+  zlib = require('pako');
+}
 
 /**
  * Abstracts a WebSocket connection with decoding/encoding for the Discord gateway.
@@ -28,17 +15,22 @@ const WebSocket = (function findWebSocket() {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {number} id shard ID
-   * @param {string} [gateway] WebSocket gateway to connect to
+   * @param {number} id The Shard's id
    */
-  constructor(manager, id, gateway) {
+  constructor(manager, id) {
     super();
     /**
-     * WebSocket Manager of this connection
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
 
+    this.id = id;
+
+    /**
+     * The ID of this Shard
+     * @type {number}
+     */
     this.id = id;
 
     /**
@@ -63,7 +55,13 @@ class WebSocketConnection extends EventEmitter {
      * The current status of the client
      * @type {number}
      */
-    this.status = Constants.Status.IDLE;
+    this.status = Status.IDLE;
+
+    /**
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
+     */
+    this.pings = [];
 
     /**
      * The last time a ping was sent (a timestamp)
@@ -78,10 +76,10 @@ class WebSocketConnection extends EventEmitter {
     this.ratelimit = {
       queue: [],
       remaining: 120,
-      resetTime: -1,
+      total: 120,
+      time: 60e3,
+      resetTimer: null,
     };
-
-    if (gateway) this.connect(gateway);
 
     /**
      * The sequence on WebSocket close
@@ -95,11 +93,8 @@ class WebSocketConnection extends EventEmitter {
      */
     this.expectingClose = false;
 
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
+    this.inflate = null;
+    if (this.manager.gateway) this.connect(this.manager.gateway);
   }
 
   /**
@@ -115,12 +110,12 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   triggerReady() {
-    if (this.status === Constants.Status.READY) {
+    if (this.status === Status.READY) {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
-    this.status = Constants.Status.READY;
-    this.emit(Constants.Events.READY);
+    this.status = Status.READY;
+    this.emit(Events.READY);
   }
 
   /**
@@ -128,16 +123,16 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   checkIfReady() {
-    if (this.status === Constants.Status.READY || this.status === Constants.Status.NEARLY) return false;
+    if (this.status === Status.READY || this.status === Status.NEARLY) return false;
     let unavailableGuilds = 0;
     for (const guild of this.guilds.values()) {
       if (!guild.available) unavailableGuilds++;
     }
     if (unavailableGuilds === 0) {
-      this.status = Constants.Status.NEARLY;
+      this.status = Status.NEARLY;
       if (!this.client.options.fetchAllMembers) return this.triggerReady();
       // Fetch all members before marking self as ready
-      const promises = this.guilds.map(g => g.fetchMembers());
+      const promises = this.client.guilds.map(g => g.members.fetch());
       Promise.all(promises)
         .then(() => this.triggerReady())
         .catch(e => {
@@ -160,39 +155,16 @@ class WebSocketConnection extends EventEmitter {
   }
 
   /**
-   * Attempts to serialise data from the WebSocket.
-   * @param {string|Object} data Data to unpack
-   * @returns {Object}
-   */
-  unpack(data) {
-    if (data instanceof ArrayBuffer) data = Buffer.from(new Uint8Array(data));
-
-    if (erlpack && typeof data !== 'string') return erlpack.unpack(data);
-    else if (data instanceof Buffer) data = zlib.inflateSync(data).toString();
-
-    return JSON.parse(data);
-  }
-
-  /**
-   * Packs an object ready to be sent.
-   * @param {Object} data Data to pack
-   * @returns {string|Buffer}
-   */
-  pack(data) {
-    return erlpack ? erlpack.pack(data) : JSON.stringify(data);
-  }
-
-  /**
    * Processes the current WebSocket queue.
    */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
     if (this.ratelimit.queue.length === 0) return;
-    if (this.ratelimit.remaining === 120) {
-      this.ratelimit.resetTimer = setTimeout(() => {
-        this.ratelimit.remaining = 120;
+    if (this.ratelimit.remaining === this.ratelimit.total) {
+      this.ratelimit.resetTimer = this.client.setTimeout(() => {
+        this.ratelimit.remaining = this.ratelimit.total;
         this.processQueue();
-      }, 120e3); // eslint-disable-line
+      }, this.ratelimit.time);
     }
     while (this.ratelimit.remaining > 0) {
       const item = this.ratelimit.queue.shift();
@@ -212,7 +184,7 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
       return;
     }
-    this.ws.send(this.pack(data));
+    this.ws.send(WebSocket.pack(data));
   }
 
   /**
@@ -231,7 +203,7 @@ class WebSocketConnection extends EventEmitter {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} gateway Gateway to connect to
+   * @param {string} gateway The gateway to connect to
    * @param {number} [after=0] How long to wait before connecting
    * @param {boolean} [force=false] Whether or not to force a new connection even if one already exists
    * @returns {boolean}
@@ -245,16 +217,23 @@ class WebSocketConnection extends EventEmitter {
       this.debug(`Tried to connect to an invalid gateway: ${gateway}`);
       return false;
     }
+    this.inflate = new zlib.Inflate({
+      chunkSize: 65535,
+      flush: zlib.Z_SYNC_FLUSH,
+      to: WebSocket.encoding === 'json' ? 'string' : '',
+    });
     this.expectingClose = false;
     this.gateway = gateway;
     this.debug(`Connecting to ${gateway}`);
-    const ws = this.ws = new WebSocket(gateway);
-    if (browser) ws.binaryType = 'arraybuffer';
+    const ws = this.ws = WebSocket.create(gateway, {
+      v: this.client.options.ws.version,
+      compress: 'zlib-stream',
+    });
     ws.onmessage = this.onMessage.bind(this);
     ws.onopen = this.onOpen.bind(this);
     ws.onerror = this.onError.bind(this);
     ws.onclose = this.onClose.bind(this);
-    this.status = Constants.Status.CONNECTING;
+    this.status = Status.CONNECTING;
     return true;
   }
 
@@ -272,23 +251,35 @@ class WebSocketConnection extends EventEmitter {
     this.expectingClose = true;
     ws.close(1000);
     this.ws = null;
-    this.status = Constants.Status.DISCONNECTED;
+    this.status = Status.DISCONNECTED;
+    this.ratelimit.remaining = this.ratelimit.total;
     return true;
   }
 
   /**
    * Called whenever a message is received.
    * @param {Event} event Event received
-   * @returns {boolean}
    */
-  onMessage(event) {
-    let data;
+  onMessage({ data }) {
+    if (data instanceof ArrayBuffer) data = new Uint8Array(data);
+    const l = data.length;
+    const flush = l >= 4 &&
+      data[l - 4] === 0x00 &&
+      data[l - 3] === 0x00 &&
+      data[l - 2] === 0xFF &&
+      data[l - 1] === 0xFF;
+
+    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+    if (!flush) return;
+    let packet;
     try {
-      data = this.unpack(event.data);
+      packet = WebSocket.unpack(this.inflate.result);
     } catch (err) {
-      this.emit('debug', err);
+      this.client.emit('debug', err);
+      return;
     }
-    return this.onPacket(data);
+    this.onPacket(packet);
+    if (this.client.listenerCount('raw')) this.client.emit('raw', packet);
   }
 
   /**
@@ -309,20 +300,19 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Received null packet');
       return false;
     }
-    this.client.emit('raw', packet);
     switch (packet.op) {
-      case Constants.OPCodes.HELLO:
+      case OPCodes.HELLO:
         return this.heartbeat(packet.d.heartbeat_interval);
-      case Constants.OPCodes.RECONNECT:
+      case OPCodes.RECONNECT:
         return this.reconnect();
-      case Constants.OPCodes.INVALID_SESSION:
+      case OPCodes.INVALID_SESSION:
         if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated -- will identify with a new session');
         return this.identify(packet.d ? 2500 : 0);
-      case Constants.OPCodes.HEARTBEAT_ACK:
+      case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
-      case Constants.OPCodes.HEARTBEAT:
+      case OPCodes.HEARTBEAT:
         return this.heartbeat();
       default:
         packet.shard = this;
@@ -349,13 +339,13 @@ class WebSocketConnection extends EventEmitter {
      * Emitted whenever the client tries to reconnect to the WebSocket.
      * @event Client#reconnecting
      */
-    this.client.emit(Constants.Events.RECONNECTING);
+    this.client.emit(Events.RECONNECTING);
     this.connect(this.gateway, 5500, true);
   }
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error Error that occurred
+   * @param {Error} error The error that occurred
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
@@ -367,7 +357,7 @@ class WebSocketConnection extends EventEmitter {
      * @event Client#error
      * @param {Error} error The encountered error
      */
-    this.client.emit(Constants.Events.ERROR, error);
+    this.client.emit(Events.ERROR, error);
   }
 
   /**
@@ -386,15 +376,15 @@ class WebSocketConnection extends EventEmitter {
     this.emit('close', event);
     this.heartbeat(-1);
     // Should we reconnect?
-    if (event.code === 1000 ? this.expectingClose : Constants.WSCodes[event.code]) {
+    if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       this.expectingClose = false;
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
        * @param {CloseEvent} event The WebSocket close event
        */
-      this.client.emit(Constants.Events.DISCONNECT, event);
-      this.debug(Constants.WSCodes[event.code]);
+      this.client.emit(Events.DISCONNECT, event);
+      this.debug(WSCodes[event.code]);
       this.destroy();
       return;
     }
@@ -432,7 +422,7 @@ class WebSocketConnection extends EventEmitter {
     this.debug('Sending a heartbeat');
     this.lastPingTimestamp = Date.now();
     this.send({
-      op: Constants.OPCodes.HEARTBEAT,
+      op: OPCodes.HEARTBEAT,
       d: this.sequence,
     });
   }
@@ -453,7 +443,7 @@ class WebSocketConnection extends EventEmitter {
    * @returns {void}
    */
   identify(after) {
-    if (after) return this.client.setTimeout(this.identify.apply(this), after);
+    if (after) return this.client.setTimeout(this.identify.bind(this), after);
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 
@@ -475,7 +465,7 @@ class WebSocketConnection extends EventEmitter {
 
     // Send the payload
     this.debug('Identifying as a new session');
-    this.send({ op: Constants.OPCodes.IDENTIFY, d });
+    this.send({ op: OPCodes.IDENTIFY, d });
   }
 
   /**
@@ -496,17 +486,10 @@ class WebSocketConnection extends EventEmitter {
     };
 
     return this.send({
-      op: Constants.OPCodes.RESUME,
+      op: OPCodes.RESUME,
       d,
     });
   }
 }
-
-/**
- * Encoding the WebSocket connections will use.
- * @type {string}
- */
-WebSocketConnection.ENCODING = erlpack ? 'etf' : 'json';
-WebSocketConnection.WebSocket = WebSocket;
 
 module.exports = WebSocketConnection;

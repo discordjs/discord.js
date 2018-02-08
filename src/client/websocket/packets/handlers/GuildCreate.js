@@ -1,20 +1,32 @@
 const AbstractHandler = require('./AbstractHandler');
+const { Events, Status } = require('../../../../util/Constants');
 
 class GuildCreateHandler extends AbstractHandler {
-  handle(packet) {
+  async handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
+    data.shard = packet.shard;
 
-    const guild = client.guilds.get(data.id);
+    let guild = client.guilds.get(data.id);
     if (guild) {
       if (!guild.available && !data.unavailable) {
         // A newly available guild
-        guild.setup(data);
+        guild._patch(data);
         packet.shard.checkIfReady();
       }
     } else {
       // A new guild
-      client.dataManager.newGuild(data, packet.shard);
+      guild = client.guilds.add(data);
+      const emitEvent = data.shard.status === Status.READY;
+      if (emitEvent) {
+        /**
+         * Emitted whenever the client joins a guild.
+         * @event Client#guildCreate
+         * @param {Guild} guild The created guild
+         */
+        if (client.options.fetchAllMembers) await guild.members.fetch();
+        client.emit(Events.GUILD_CREATE, guild);
+      }
     }
   }
 }

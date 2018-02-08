@@ -1,4 +1,5 @@
 const Collector = require('./interfaces/Collector');
+const { Events } = require('../util/Constants');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -11,7 +12,6 @@ const Collector = require('./interfaces/Collector');
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
-
   /**
    * @param {TextChannel|DMChannel|GroupDMChannel} channel The channel
    * @param {CollectorFilter} filter The filter to be applied to this collector
@@ -22,7 +22,8 @@ class MessageCollector extends Collector {
     super(channel.client, filter, options);
 
     /**
-     * @type {TextBasedChannel} channel The channel
+     * The channel
+     * @type {TextBasedChannel}
      */
     this.channel = channel;
 
@@ -32,41 +33,61 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    this.client.on('message', this.listener);
+    const bulkDeleteListener = (messages => {
+      for (const message of messages.values()) this.handleDispose(message);
+    }).bind(this);
+
+    this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
+    this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
+    this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
+
+    this.once('end', () => {
+      this.client.removeListener(Events.MESSAGE_CREATE, this.handleCollect);
+      this.client.removeListener(Events.MESSAGE_DELETE, this.handleDispose);
+      this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
+    });
   }
 
   /**
-   * Handle an incoming message for possible collection.
+   * Handles a message for possible collection.
    * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}} Message data to collect
+   * @returns {?Snowflake}
    * @private
    */
-  handle(message) {
+  collect(message) {
+    /**
+     * Emitted whenever a message is collected.
+     * @event MessageCollector#collect
+     * @param {Message} message The message that was collected
+     */
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
-    return {
-      key: message.id,
-      value: message,
-    };
+    return message.id;
   }
 
   /**
-   * Check after collection to see if the collector is done.
-   * @returns {?string} Reason to end the collector, if any
+   * Handles a message for possible disposal.
+   * @param {Message} message The message that could be disposed of
+   * @returns {?Snowflake}
+   */
+  dispose(message) {
+    /**
+     * Emitted whenever a message is disposed of.
+     * @event MessageCollector#dispose
+     * @param {Message} message The message that was disposed of
+     */
+    return message.channel.id === this.channel.id ? message.id : null;
+  }
+
+  /**
+   * Checks after un/collection to see if the collector is done.
+   * @returns {?string}
    * @private
    */
-  postCheck() {
+  endReason() {
     if (this.options.max && this.collected.size >= this.options.max) return 'limit';
     if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
-  }
-
-  /**
-   * Removes event listeners.
-   * @private
-   */
-  cleanup() {
-    this.client.removeListener('message', this.listener);
   }
 }
 

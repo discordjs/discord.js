@@ -2,6 +2,7 @@ const Util = require('./util/Util');
 
 module.exports = {
   // "Root" classes (starting points)
+  BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
@@ -11,31 +12,61 @@ module.exports = {
   // Utilities
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
-  EvaluatedPermissions: require('./util/Permissions'),
+  DataResolver: require('./util/DataResolver'),
+  DataStore: require('./stores/DataStore'),
+  DiscordAPIError: require('./rest/DiscordAPIError'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  Structures: require('./util/Structures'),
   Util: Util,
   util: Util,
-  version: require('../package').version,
+  version: require('../package.json').version,
+
+  // Stores
+  ChannelStore: require('./stores/ChannelStore'),
+  ClientPresenceStore: require('./stores/ClientPresenceStore'),
+  GuildChannelStore: require('./stores/GuildChannelStore'),
+  GuildEmojiStore: require('./stores/GuildEmojiStore'),
+  GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
+  GuildMemberStore: require('./stores/GuildMemberStore'),
+  GuildMemberRoleStore: require('./stores/GuildMemberRoleStore'),
+  GuildStore: require('./stores/GuildStore'),
+  ReactionUserStore: require('./stores/ReactionUserStore'),
+  MessageStore: require('./stores/MessageStore'),
+  PresenceStore: require('./stores/PresenceStore'),
+  RoleStore: require('./stores/RoleStore'),
+  UserStore: require('./stores/UserStore'),
 
   // Shortcuts to Util methods
+  discordSort: Util.discordSort,
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
+  resolveColor: Util.resolveColor,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
+  Base: require('./structures/Base'),
+  Activity: require('./structures/Presence').Activity,
+  CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
-  ClientUser: require('./structures/ClientUser'),
+  ClientApplication: require('./structures/ClientApplication'),
+  get ClientUser() {
+    // This is a getter so that it properly extends any custom User class
+    return require('./structures/ClientUser');
+  },
+  ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
+  ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  Game: require('./structures/Presence').Game,
   GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
+  GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
@@ -44,20 +75,18 @@ module.exports = {
   MessageEmbed: require('./structures/MessageEmbed'),
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
-  OAuth2Application: require('./structures/OAuth2Application'),
-  ClientOAuth2Application: require('./structures/OAuth2Application'),
-  PartialGuild: require('./structures/PartialGuild'),
-  PartialGuildChannel: require('./structures/PartialGuildChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
-  ReactionEmoji: require('./structures/ReactionEmoji'),
   ReactionCollector: require('./structures/ReactionCollector'),
-  RichEmbed: require('./structures/RichEmbed'),
+  ReactionEmoji: require('./structures/ReactionEmoji'),
+  RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
+  UserConnection: require('./structures/UserConnection'),
   VoiceChannel: require('./structures/VoiceChannel'),
+  VoiceRegion: require('./structures/VoiceRegion'),
   Webhook: require('./structures/Webhook'),
-};
 
-if (require('os').platform() === 'browser') window.Discord = module.exports; // eslint-disable-line no-undef
+  WebSocket: require('./WebSocket'),
+};

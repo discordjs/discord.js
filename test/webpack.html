@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 </head>
 <body>
-  <script type="text/javascript" src="../webpack/discord.js"></script>
+  <script type="text/javascript" src="../webpack/discord.12.0.0-dev.js"></script>
   <script type="text/javascript" src="auth.js"></script>
   <script type="text/javascript">
     (() => {
@@ -14,6 +14,8 @@
       client.on('ready', () => {
         console.log('[CLIENT] Ready!');
       });
+
+      client.on('debug', console.log);
 
       client.on('error', console.error);
 

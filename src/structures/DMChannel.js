@@ -1,6 +1,6 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
+const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a direct message channel between two users.
@@ -10,27 +10,29 @@ const Collection = require('../util/Collection');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.type = 'dm';
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The recipient on the other end of the DM
      * @type {User}
      */
-    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
+    this.recipient = this.client.users.add(data.recipients[0]);
 
     this.lastMessageID = data.last_message_id;
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
+   * When concatenated with a string, this automatically returns the recipient's mention instead of the
+   * DMChannel object.
    * @returns {string}
+   * @example
+   * // Logs: Hello from <@123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
    */
   toString() {
     return this.recipient.toString();
@@ -39,9 +41,6 @@ class DMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
   search() {}
   startTyping() {}
   stopTyping() {}

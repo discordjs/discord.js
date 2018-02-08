@@ -1,6 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
+const { Events } = require('../../util/Constants');
 
 class UserUpdateAction extends Action {
   handle(data) {
@@ -14,9 +13,8 @@ class UserUpdateAction extends Action {
         };
       }
 
-      const oldUser = Util.cloneObject(client.user);
-      client.user.patch(data);
-      client.emit(Constants.Events.USER_UPDATE, oldUser, client.user);
+      const oldUser = client.user._update(data);
+      client.emit(Events.USER_UPDATE, oldUser, client.user);
       return {
         old: oldUser,
         updated: client.user,

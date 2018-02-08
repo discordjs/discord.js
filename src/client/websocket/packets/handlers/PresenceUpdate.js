@@ -1,6 +1,5 @@
 const AbstractHandler = require('./AbstractHandler');
-const Constants = require('../../../../util/Constants');
-const Util = require('../../../../util/Util');
+const { Events } = require('../../../../util/Constants');
 
 class PresenceUpdateHandler extends AbstractHandler {
   handle(packet) {
@@ -12,42 +11,41 @@ class PresenceUpdateHandler extends AbstractHandler {
     // Step 1
     if (!user) {
       if (data.user.username) {
-        user = client.dataManager.newUser(data.user);
+        user = client.users.add(data.user);
       } else {
         return;
       }
     }
 
-    const oldUser = Util.cloneObject(user);
-    user.patch(data.user);
+    const oldUser = user._update(data.user);
     if (!user.equals(oldUser)) {
-      client.emit(Constants.Events.USER_UPDATE, oldUser, user);
+      client.emit(Events.USER_UPDATE, oldUser, user);
     }
 
     if (guild) {
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
-        member = guild._addMember({
+        member = guild.members.add({
           user,
           roles: data.roles,
           deaf: false,
           mute: false,
-        }, false);
-        client.emit(Constants.Events.GUILD_MEMBER_AVAILABLE, member);
+        });
+        client.emit(Events.GUILD_MEMBER_AVAILABLE, member);
       }
       if (member) {
-        if (client.listenerCount(Constants.Events.PRESENCE_UPDATE) === 0) {
-          guild._setPresence(user.id, data);
+        if (client.listenerCount(Events.PRESENCE_UPDATE) === 0) {
+          guild.presences.add(data);
           return;
         }
-        const oldMember = Util.cloneObject(member);
+        const oldMember = member._clone();
         if (member.presence) {
-          oldMember.frozenPresence = Util.cloneObject(member.presence);
+          oldMember.frozenPresence = member.presence._clone();
         }
-        guild._setPresence(user.id, data);
-        client.emit(Constants.Events.PRESENCE_UPDATE, oldMember, member);
+        guild.presences.add(data);
+        client.emit(Events.PRESENCE_UPDATE, oldMember, member);
       } else {
-        guild._setPresence(user.id, data);
+        guild.presences.add(data);
       }
     }
   }

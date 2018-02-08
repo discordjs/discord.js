@@ -6,8 +6,8 @@ In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `
 To get started, make sure you have:
 * ffmpeg - `npm install ffmpeg-binaries`
 * an opus encoder, choose one from below:
+  * `npm install node-opus` (better performance)
   * `npm install opusscript`
-  * `npm install node-opus`
 * a good network connection
 
 ## Joining a voice channel
@@ -20,7 +20,7 @@ const client = new Discord.Client();
 
 client.login('token here');
 
-client.on('message', message => {
+client.on('message', async message => {
   // Voice only works in guilds, if the message does not come from a guild,
   // we ignore it
   if (!message.guild) return;
@@ -28,11 +28,7 @@ client.on('message', message => {
   if (message.content === '/join') {
     // Only try to join the sender's voice channel if they are in one themselves
     if (message.member.voiceChannel) {
-      message.member.voiceChannel.join()
-        .then(connection => { // Connection is an instance of VoiceConnection
-          message.reply('I have successfully connected to the channel!');
-        })
-        .catch(console.log);
+      const connection = await message.member.voiceChannel.join();
     } else {
       message.reply('You need to join a voice channel first!');
     }
@@ -42,68 +38,98 @@ client.on('message', message => {
 
 ## Streaming to a Voice Channel
 In the previous example, we looked at how to join a voice channel in order to obtain a `VoiceConnection`. Now that we
-have obtained a voice connection, we can start streaming audio to it. The following example shows how to stream an mp3
-file:
+have obtained a voice connection, we can start streaming audio to it.
 
-**Playing a file:**
+### Introduction to playing on voice connections
+The most basic example of playing audio over a connection would be playing a local file:
+
 ```js
-// To play a file, we need to give an absolute path to it
-const dispatcher = connection.playFile('C:/Users/Discord/Desktop/myfile.mp3');
+const dispatcher = connection.play('/home/discord/audio.mp3');
 ```
 
-Your file doesn't have to be just an mp3; ffmpeg can convert videos and audios of many formats.
-
-The `dispatcher` variable is an instance of a `StreamDispatcher`, which manages streaming a specific resource to a voice
-channel. We can do many things with the dispatcher, such as finding out when the stream ends or changing the volume:
+The `dispatcher` in this case is a `StreamDispatcher` - here you can control the volume and playback of the stream:
 
 ```js
-dispatcher.on('end', () => {
-  // The song has finished
+dispatcher.pause();
+dispatcher.resume();
+
+dispatcher.setVolume(0.5); // half the volume
+
+dispatcher.on('finish', () => {
+  console.log('Finished playing!');
 });
 
-dispatcher.on('error', e => {
-  // Catch any errors that may arise
-  console.log(e);
+dispatcher.destroy(); // end the stream
+```
+
+We can also pass in options when we first play the stream:
+
+```js
+const dispatcher = connection.play('/home/discord/audio.mp3', {
+  volume: 0.5,
+  passes: 3
+});
+```
+
+These are just a subset of the options available (consult documentation for a full list). Most users may be interested in the `passes` option, however. As audio is sent over UDP, there is a chance packets may not arrive. Increasing the number of passes, e.g. to `3` gives you a better chance that your packets reach your recipients, at the cost of triple the bandwidth. We recommend not going over 5 passes.
+
+### What can I play?
+
+Discord.js allows you to play a lot of things:
+
+```js
+// ReadableStreams, in this example YouTube audio
+const ytdl = require('ytdl-core');
+connection.play(ytdl(
+  'https://www.youtube.com/watch?v=ZlAU_w7-Xp8',
+  { filter: 'audioonly' }));
+
+// Files on the internet
+connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
+
+// Local files
+connection.play('/home/discord/audio.mp3');
+```
+
+New to v12 is the ability to play OggOpus and WebmOpus streams with much better performance by skipping out Ffmpeg. Note this comes at the cost of no longer having volume control over the stream:
+
+```js
+connection.play(fs.createReadStream('./media.webm'), {
+  type: 'webm/opus'
 });
 
-dispatcher.setVolume(0.5); // Set the volume to 50%
-dispatcher.setVolume(1); // Set the volume back to 100%
-
-console.log(dispatcher.time); // The time in milliseconds that the stream dispatcher has been playing for
-
-dispatcher.pause(); // Pause the stream
-dispatcher.resume(); // Carry on playing
-
-dispatcher.end(); // End the dispatcher, emits 'end' event
+connection.play(fs.createReadStream('./media.ogg'), {
+  type: 'ogg/opus'
+});
 ```
 
-If you have an existing [ReadableStream](https://nodejs.org/api/stream.html#stream_readable_streams),
-this can also be used:
+Make sure to consult the documentation for a full list of what you can play - there's too much to cover here!
 
-**Playing a ReadableStream:**
-```js
-connection.playStream(myReadableStream);
+## Voice Broadcasts
 
-// If you don't want to use absolute paths, you can use
-// fs.createReadStream to circumvent it
-
-const fs = require('fs');
-const stream = fs.createReadStream('./test.mp3');
-connection.playStream(stream);
-```
-
-It's important to note that creating a readable stream to a file is less efficient than simply using `connection.playFile()`.
-
-**Playing anything else:**
-
-For anything else, such as a URL to a file, you can use `connection.playArbitraryInput()`. You should consult the [ffmpeg protocol documentation](https://ffmpeg.org/ffmpeg-protocols.html) to see what you can use this for.
+A voice broadcast is very useful for "radio" bots, that play the same audio across multiple channels. It means audio is only transcoded once, and is much better on performance.
 
 ```js
-// Play an mp3 from a URL
-connection.playArbitraryInput('http://mysite.com/sound.mp3');
+const broadcast = client.createVoiceBroadcast();
+
+broadcast.on('subscribe', dispatcher => {
+  console.log('New broadcast subscriber!');
+});
+
+broadcast.on('unsubscribe', dispatcher => {
+  console.log('Channel unsubscribed from broadcast :(');
+})
 ```
 
-Again, playing a file from a URL like this is more performant than creating a ReadableStream to the file.
+`broadcast` is an instance of `VoiceBroadcast`, which has the same `play` method you are used to with regular VoiceConnections:
 
-## Advanced Topics
-soon:tm:
+```js
+const dispatcher = broadcast.play('./audio.mp3');
+
+connection.play(broadcast);
+```
+
+It's important to note that the `dispatcher` stored above is a `BroadcastDispatcher` - it controls all the dispatcher subscribed to the broadcast, e.g. setting the volume of this dispatcher affects the volume of all subscribers.
+
+## Voice Receive
+coming soon™

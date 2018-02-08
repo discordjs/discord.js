@@ -1,15 +1,15 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
+    <a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" id="djs-logo" /></a>
   </p>
   <br />
   <p>
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://travis-ci.org/hydrabolt/discord.js"><img src="https://travis-ci.org/hydrabolt/discord.js.svg" alt="Build status" /></a>
-    <a href="https://david-dm.org/hydrabolt/discord.js"><img src="https://img.shields.io/david/hydrabolt/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
+    <a href="https://travis-ci.org/discordjs/discord.js"><img src="https://travis-ci.org/discordjs/discord.js.svg" alt="Build status" /></a>
+    <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
   </p>
   <p>
     <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="NPM info" /></a>
@@ -17,7 +17,10 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v12.0.0 documentation.
+Welcome to the discord.js v12 documentation.
+
+v12 is still very much a work-in-progress, as we're aiming to make it the best it can possibly be before releasing.
+Only use it if you are fond of living life on the bleeding edge.
 
 ## About
 discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
@@ -32,9 +35,9 @@ discord.js is a powerful [node.js](https://nodejs.org) module that allows you to
 **Node.js 8.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discord.js --save`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus --save`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript --save`
+Without voice support: `npm install discord.js`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
 
 ### Audio engines
 The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
@@ -42,12 +45,13 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [bufferutil](https://www.npmjs.com/package/bufferutil) to greatly speed up the WebSocket when *not* using uws (`npm install bufferutil --save`)
-- [erlpack](https://github.com/hammerandchisel/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install hammerandchisel/erlpack --save`)
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`)
+- [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
-    - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium --save`)
-    - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers --save`)
-- [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws --save`)
+    - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
+    - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
+- [uws](https://www.npmjs.com/package/uws) for a much faster WebSocket connection (`npm install uws`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection when *not* using uws (`npm install bufferutil`)
 
 ## Example usage
 ```js
@@ -55,31 +59,34 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.on('ready', () => {
-  console.log('I am ready!');
+  console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', message => {
-  if (message.content === 'ping') {
-    message.reply('pong');
+client.on('message', msg => {
+  if (msg.content === 'ping') {
+    msg.reply('pong');
   }
 });
 
-client.login('your token');
+client.login('token');
 ```
 
 ## Links
-* [Website](https://discord.js.org/) ([source](https://github.com/hydrabolt/discord.js-site))
+* [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs)
-* [Discord.js server](https://discord.gg/bRCvFy9)
-* [Discord API server](https://discord.gg/rV4BwdK)
-* [GitHub](https://github.com/hydrabolt/discord.js)
+* [Discord.js Discord server](https://discord.gg/bRCvFy9)
+* [Discord API Discord server](https://discord.gg/discord-api)
+* [GitHub](https://github.com/discordjs/discord.js)
 * [NPM](https://www.npmjs.com/package/discord.js)
-* [Related libraries](https://discordapi.com/unofficial/libs.html) (see also [discord-rpc](https://www.npmjs.com/package/discord-rpc))
+* [Related libraries](https://discordapi.com/unofficial/libs.html)
+
+### Extensions
+* [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC))
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/hydrabolt/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle

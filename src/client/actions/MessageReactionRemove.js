@@ -1,5 +1,5 @@
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 /*
 { user_id: 'id',
@@ -20,8 +20,11 @@ class MessageReactionRemove extends Action {
     if (!message) return false;
     if (!data.emoji) return false;
     // Verify reaction
-    const reaction = message._removeReaction(data.emoji, user);
-    if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE, reaction, user);
+    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
+    const reaction = message.reactions.get(emojiID);
+    if (!reaction) return false;
+    reaction._remove(user);
+    this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, user);
 
     return { message, reaction, user };
   }

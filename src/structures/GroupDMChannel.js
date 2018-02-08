@@ -1,6 +1,8 @@
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
+const MessageStore = require('../stores/MessageStore');
 
 /*
 { type: 3,
@@ -32,13 +34,12 @@ const Collection = require('../util/Collection');
 class GroupDMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    this.type = 'group';
-    this.messages = new Collection();
+    this.messages = new MessageStore(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The name of this Group DM, can be null if one isn't set
@@ -47,14 +48,14 @@ class GroupDMChannel extends Channel {
     this.name = data.name;
 
     /**
-     * A hash of the Group DM icon.
-     * @type {string}
+     * A hash of this Group DM icon
+     * @type {?string}
      */
     this.icon = data.icon;
 
     /**
      * The user ID of this Group DM's owner
-     * @type {string}
+     * @type {Snowflake}
      */
     this.ownerID = data.owner_id;
 
@@ -66,15 +67,17 @@ class GroupDMChannel extends Channel {
 
     /**
      * Application ID of the application that made this Group DM, if applicable
-     * @type {?string}
+     * @type {?Snowflake}
      */
     this.applicationID = data.application_id;
 
-    /**
-     * Nicknames for group members
-     * @type {?Collection<Snowflake, string>}
-     */
-    if (data.nicks) this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    if (data.nicks) {
+      /**
+       * Nicknames for group members
+       * @type {?Collection<Snowflake, string>}
+       */
+      this.nicks = new Collection(data.nicks.map(n => [n.id, n.nick]));
+    }
 
     if (!this.recipients) {
       /**
@@ -86,7 +89,7 @@ class GroupDMChannel extends Channel {
 
     if (data.recipients) {
       for (const recipient of data.recipients) {
-        const user = this.client.dataManager.newUser(recipient);
+        const user = this.client.users.add(recipient);
         this.recipients.set(user.id, user);
       }
     }
@@ -101,6 +104,18 @@ class GroupDMChannel extends Channel {
    */
   get owner() {
     return this.client.users.get(this.ownerID);
+  }
+
+  /**
+   * Gets the URL to this Group DM's icon.
+   * @param {Object} [options={}] Options for the icon url
+   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @returns {?string}
+   */
+  iconURL({ format, size } = {}) {
+    if (!this.icon) return null;
+    return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
   }
 
   /**
@@ -125,29 +140,75 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Add a user to the DM
-   * @param {UserResolvable|string} accessTokenOrUser Access token or user resolvable
-   * @param {string} [nick] Permanent nickname to give the user (only available if a bot is creating the DM)
+   * Edits this Group DM.
+   * @param {Object} data New data for this Group DM
+   * @param {string} [reason] Reason for editing this Group DM
    * @returns {Promise<GroupDMChannel>}
    */
-  addUser(accessTokenOrUser, nick) {
-    const id = this.client.resolver.resolveUserID(accessTokenOrUser);
-    const data = this.client.user.bot ?
-      { nick, access_token: accessTokenOrUser } :
-      { recipient: id };
-    return this.client.api.channels(this.id).recipients(id).put({ data })
-    .then(() => this);
+  edit(data, reason) {
+    return this.client.api.channels[this.id].patch({
+      data: {
+        icon: data.icon,
+        name: data.name === null ? null : data.name || this.name,
+      },
+      reason,
+    }).then(() => this);
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the channel's name instead of the Channel object.
+   * Sets a new icon for this Group DM.
+   * @param {Base64Resolvable|BufferResolvable} icon The new icon of this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  async setIcon(icon) {
+    return this.edit({ icon: await DataResolver.resolveImage(icon) });
+  }
+
+  /**
+   * Sets a new name for this Group DM.
+   * @param {string} name New name for this Group DM
+   * @returns {Promise<GroupDMChannel>}
+   */
+  setName(name) {
+    return this.edit({ name });
+  }
+
+  /**
+   * Adds an user to this Group DM.
+   * @param {Object} options Options for this method
+   * @param {UserResolvable} options.user User to add to this Group DM
+   * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
+   * (only available under a bot account)
+   * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
+   * @returns {Promise<GroupDMChannel>}
+   */
+  addUser({ user, accessToken, nick }) {
+    const id = this.client.users.resolveID(user);
+    const data = this.client.user.bot ?
+      { nick, access_token: accessToken } :
+      { recipient: id };
+    return this.client.api.channels[this.id].recipients[id].put({ data })
+      .then(() => this);
+  }
+
+  /**
+   * Removes an user from this Group DM.
+   * @param {UserResolvable} user User to remove
+   * @returns {Promise<GroupDMChannel>}
+   */
+  removeUser(user) {
+    const id = this.client.users.resolveID(user);
+    return this.client.api.channels[this.id].recipients[id].delete()
+      .then(() => this);
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the channel's name instead of the
+   * GroupDMChannel object.
    * @returns {string}
    * @example
    * // Logs: Hello from My Group DM!
    * console.log(`Hello from ${channel}!`);
-   * @example
-   * // Logs: Hello from My Group DM!
-   * console.log(`Hello from ' + channel + '!');
    */
   toString() {
     return this.name;
@@ -156,9 +217,6 @@ class GroupDMChannel extends Channel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
   search() {}
   startTyping() {}
   stopTyping() {}

@@ -60,97 +60,95 @@ class Collection extends Map {
 
   /**
    * Obtains the first value(s) in this collection.
-   * @param {number} [count] Number of values to obtain from the beginning
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain from the beginning
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the end if
+   * amount is negative
    */
-  first(count) {
-    if (count === undefined) return this.values().next().value;
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    count = Math.min(this.size, count);
-    const arr = new Array(count);
+  first(amount) {
+    if (typeof amount === 'undefined') return this.values().next().value;
+    if (amount < 0) return this.last(amount * -1);
+    amount = Math.min(this.size, amount);
+    const arr = new Array(amount);
     const iter = this.values();
-    for (let i = 0; i < count; i++) arr[i] = iter.next().value;
+    for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
     return arr;
   }
 
   /**
    * Obtains the first key(s) in this collection.
-   * @param {number} [count] Number of keys to obtain from the beginning
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain from the beginning
+   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the end if
+   * amount is negative
    */
-  firstKey(count) {
-    if (count === undefined) return this.keys().next().value;
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    count = Math.min(this.size, count);
-    const arr = new Array(count);
-    const iter = this.iter();
-    for (let i = 0; i < count; i++) arr[i] = iter.next().value;
+  firstKey(amount) {
+    if (typeof amount === 'undefined') return this.keys().next().value;
+    if (amount < 0) return this.lastKey(amount * -1);
+    amount = Math.min(this.size, amount);
+    const arr = new Array(amount);
+    const iter = this.keys();
+    for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
     return arr;
   }
 
   /**
    * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain from the end
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain from the end
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the end if
+   * amount is negative
    */
-  last(count) {
+  last(amount) {
     const arr = this.array();
-    if (count === undefined) return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    return arr.slice(-count);
+    if (typeof amount === 'undefined') return arr[arr.length - 1];
+    if (amount < 0) return this.first(amount * -1);
+    if (!amount) return [];
+    return arr.slice(-amount);
   }
 
   /**
    * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain from the end
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain from the end
+   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the end if
+   * amount is negative
    */
-  lastKey(count) {
+  lastKey(amount) {
     const arr = this.keyArray();
-    if (count === undefined) return arr[arr.length - 1];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    return arr.slice(-count);
+    if (typeof amount === 'undefined') return arr[arr.length - 1];
+    if (amount < 0) return this.firstKey(amount * -1);
+    if (!amount) return [];
+    return arr.slice(-amount);
   }
 
   /**
    * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of values to obtain randomly
-   * @returns {*|Array<*>} The single value if `count` is undefined, or an array of values of `count` length
+   * @param {number} [amount] Amount of values to obtain randomly
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values
    */
-  random(count) {
+  random(amount) {
     let arr = this.array();
-    if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    if (arr.length === 0) return [];
-    const rand = new Array(count);
+    if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
+    if (arr.length === 0 || !amount) return [];
+    const rand = new Array(amount);
     arr = arr.slice();
-    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
   /**
    * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
-   * @param {number} [count] Number of keys to obtain randomly
-   * @returns {*|Array<*>} The single key if `count` is undefined, or an array of keys of `count` length
+   * @param {number} [amount] Amount of keys to obtain randomly
+   * @returns {*|Array<*>} A single key if no amount is provided or an array
    */
-  randomKey(count) {
+  randomKey(amount) {
     let arr = this.keyArray();
-    if (count === undefined) return arr[Math.floor(Math.random() * arr.length)];
-    if (typeof count !== 'number') throw new TypeError('The count must be a number.');
-    if (!Number.isInteger(count) || count < 1) throw new RangeError('The count must be an integer greater than 0.');
-    if (arr.length === 0) return [];
-    const rand = new Array(count);
+    if (typeof amount === 'undefined') return arr[Math.floor(Math.random() * arr.length)];
+    if (arr.length === 0 || !amount) return [];
+    const rand = new Array(amount);
     arr = arr.slice();
-    for (let i = 0; i < count; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
+    for (let i = 0; i < amount; i++) rand[i] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0];
     return rand;
   }
 
@@ -194,12 +192,12 @@ class Collection extends Map {
       for (const item of this.values()) {
         if (item[propOrFn] === value) return item;
       }
-      return null;
+      return undefined;
     } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
         if (propOrFn(val, key, this)) return val;
       }
-      return null;
+      return undefined;
     } else {
       throw new Error('First argument must be a property string or a function.');
     }
@@ -225,12 +223,12 @@ class Collection extends Map {
       for (const [key, val] of this) {
         if (val[propOrFn] === value) return key;
       }
-      return null;
+      return undefined;
     } else if (typeof propOrFn === 'function') {
       for (const [key, val] of this) {
         if (propOrFn(val, key, this)) return key;
       }
-      return null;
+      return undefined;
     } else {
       throw new Error('First argument must be a property string or a function.');
     }
@@ -238,19 +236,23 @@ class Collection extends Map {
 
   /**
    * Searches for the existence of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`).
+   * (`item[prop] === value`), or the given function returns a truthy value.
    * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {boolean}
    * @example
    * if (collection.exists('username', 'Bob')) {
    *  console.log('user here!');
    * }
+   * @example
+   * if (collection.exists(user => user.username === 'Bob')) {
+   *  console.log('user here!');
+   * }
    */
-  exists(prop, value) {
-    return Boolean(this.find(prop, value));
+  exists(propOrFn, value) {
+    return Boolean(this.find(propOrFn, value));
   }
 
   /**
@@ -411,10 +413,10 @@ class Collection extends Map {
   }
 
   /**
-   * The sort() method sorts the elements of a collection in place and returns the collection.
+   * The sort() method sorts the elements of a collection and returns it.
    * The sort is not necessarily stable. The default sort order is according to string Unicode code points.
    * @param {Function} [compareFunction] Specifies a function that defines the sort order.
-   * if omitted, the collection is sorted according to each character's Unicode code point value,
+   * If omitted, the collection is sorted according to each character's Unicode code point value,
    * according to the string conversion of each element.
    * @returns {Collection}
    */

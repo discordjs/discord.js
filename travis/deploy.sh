@@ -8,14 +8,13 @@ if [[ "$TRAVIS_BRANCH" == revert-* ]]; then
   exit 0
 fi
 
-# For PRs, do nothing
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - doing nothing."
-  exit 0
-fi
+DONT_COMMIT=false
 
-# Figure out the source of the build
-if [ -n "$TRAVIS_TAG" ]; then
+if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - not commiting"
+  SOURCE_TYPE="pr"
+  DONT_COMMIT=true
+elif [ -n "$TRAVIS_TAG" ]; then
   echo -e "\e[36m\e[1mBuild triggered for tag \"${TRAVIS_TAG}\"."
   SOURCE=$TRAVIS_TAG
   SOURCE_TYPE="tag"
@@ -25,16 +24,14 @@ else
   SOURCE_TYPE="branch"
 fi
 
-# For Node != 8, do nothing
-if [ "$TRAVIS_NODE_VERSION" != "8" ]; then
-  echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - doing nothing."
-  exit 0
-fi
-
 # Run the build
 npm run docs
 VERSIONED=false npm run webpack
 
+if [ $DONT_COMMIT == true ]; then
+  echo -e "\e[36m\e[1mNot commiting - exiting early"
+  exit 0
+fi
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`

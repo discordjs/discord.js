@@ -8,9 +8,9 @@ console.time('magic');
 
 const client = new Discord.Client({ fetchAllMembers: true, apiRequestMethod: 'sequential' });
 
-const { email, password, token, usertoken, song } = require('./auth.json');
+const { email, password, token, usertoken, song } = require('./auth.js');
 
-client.login(token).then(atoken => console.log('logged in with token ' + atoken)).catch(console.error);
+client.login(token).then(atoken => console.log('logged in')).catch(console.error);
 
 client.on('ready', () => {
   console.log(`ready with ${client.users.size} users`);

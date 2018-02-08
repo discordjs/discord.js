@@ -1,9 +1,10 @@
 const Action = require('./Action');
+const { Events } = require('../../util/Constants');
 
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
-    const client = this.client;
-    const emoji = client.dataManager.newEmoji(createdEmoji, guild);
+    const emoji = guild.emojis.add(createdEmoji);
+    this.client.emit(Events.GUILD_EMOJI_CREATE, emoji);
     return { emoji };
   }
 }
@@ -11,7 +12,7 @@ class GuildEmojiCreateAction extends Action {
 /**
  * Emitted whenever a custom emoji is created in a guild.
  * @event Client#emojiCreate
- * @param {Emoji} emoji The emoji that was created
+ * @param {GuildEmoji} emoji The emoji that was created
  */
 
 module.exports = GuildEmojiCreateAction;

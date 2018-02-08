@@ -1,27 +1,19 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
 const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
+const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
-class User {
+class User extends Base {
   constructor(client, data) {
-    /**
-     * The client that created the instance of the the user
-     * @name User#client
-     * @type {}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
-    if (data) this.setup(data);
-  }
-
-  setup(data) {
     /**
      * The ID of the user
      * @type {Snowflake}
@@ -29,28 +21,36 @@ class User {
     this.id = data.id;
 
     /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
      * The username of the user
      * @type {string}
+     * @name User#username
      */
-    this.username = data.username;
+    if (data.username) this.username = data.username;
 
     /**
      * A discriminator based on username for the user
      * @type {string}
+     * @name User#discriminator
      */
-    this.discriminator = data.discriminator;
+    if (data.discriminator) this.discriminator = data.discriminator;
 
     /**
      * The ID of the user's avatar
-     * @type {string}
+     * @type {?string}
+     * @name User#avatar
      */
-    this.avatar = data.avatar;
-
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     */
-    this.bot = Boolean(data.bot);
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -65,13 +65,6 @@ class User {
     this.lastMessage = null;
   }
 
-  patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
-      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
-    }
-    if (data.token) this.client.token = data.token;
-  }
-
   /**
    * The timestamp the user was created at
    * @type {number}
@@ -82,7 +75,7 @@ class User {
   }
 
   /**
-   * The time the user was created
+   * The time the user was created at
    * @type {Date}
    * @readonly
    */
@@ -100,11 +93,11 @@ class User {
     for (const guild of this.client.guilds.values()) {
       if (guild.presences.has(this.id)) return guild.presences.get(this.id);
     }
-    return new Presence();
+    return new Presence(this.client);
   }
 
   /**
-   * A link to the user's avatar
+   * A link to the user's avatar.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
@@ -113,11 +106,7 @@ class User {
    */
   avatarURL({ format, size } = {}) {
     if (!this.avatar) return null;
-    if (typeof format === 'number') {
-      size = format;
-      format = 'default';
-    }
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
   }
 
   /**
@@ -126,15 +115,16 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).DefaultAvatar(this.discriminator % 5);
+    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
+   * A link to the user's avatar if they have one.
+   * Otherwise a link to their default avatar will be returned.
    * @param {Object} [options={}] Options for the avatar url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
    * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `128`, '256', `512`, `1024`, `2048`
+   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -142,7 +132,7 @@ class User {
   }
 
   /**
-   * The Discord "tag" for this user
+   * The Discord "tag" (e.g. `hydrabolt#0086`) for this user
    * @type {string}
    * @readonly
    */
@@ -161,32 +151,32 @@ class User {
   }
 
   /**
-   * Check whether the user is typing in a channel.
+   * Checks whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id);
   }
 
   /**
-   * Get the time that the user started typing.
+   * Gets the time that the user started typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {?Date}
    */
   typingSinceIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
   }
 
   /**
-   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * Gets the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
   }
 
@@ -208,7 +198,7 @@ class User {
     return this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
     } })
-    .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   /**
@@ -216,19 +206,18 @@ class User {
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('No DM Channel exists!'));
-    return this.client.api.channels(this.dmChannel.id).delete().then(data =>
-       this.client.actions.ChannelDelete.handle(data).channel
-    );
+    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
+    return this.client.api.channels(this.dmChannel.id).delete()
+      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
   }
 
   /**
-   * Get the profile of the user.
+   * Gets the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
    */
   fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(data));
+    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(this, data));
   }
 
   /**
@@ -253,17 +242,16 @@ class User {
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot);
+      this.avatar === user.avatar;
 
     return equal;
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${user}!`);
    */
   toString() {

@@ -1,32 +1,32 @@
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Represents any channel on Discord.
+ * @extends {Base}
  */
-class Channel {
+class Channel extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the Channel
-     * @name Channel#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
+    const type = Object.keys(ChannelTypes)[data.type];
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
      * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
+     * * `category` - a guild category channel
+     * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
-    this.type = null;
+    this.type = type ? type.toLowerCase() : 'unknown';
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
      * The unique ID of the channel
      * @type {Snowflake}
@@ -44,7 +44,7 @@ class Channel {
   }
 
   /**
-   * The time the channel was created
+   * The time the channel was created at
    * @type {Date}
    * @readonly
    */
@@ -53,16 +53,66 @@ class Channel {
   }
 
   /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Logs: Hello from <#123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
+   */
+  toString() {
+    return `<#${this.id}>`;
+  }
+
+  /**
    * Deletes this channel.
    * @returns {Promise<Channel>}
    * @example
    * // Delete the channel
    * channel.delete()
-   *  .then() // Success
-   *  .catch(console.error); // Log error
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   delete() {
     return this.client.api.channels(this.id).delete().then(() => this);
+  }
+
+  static create(client, data, guild) {
+    const Structures = require('../util/Structures');
+    let channel;
+    if (data.type === ChannelTypes.DM) {
+      const DMChannel = Structures.get('DMChannel');
+      channel = new DMChannel(client, data);
+    } else if (data.type === ChannelTypes.GROUP) {
+      const GroupDMChannel = Structures.get('GroupDMChannel');
+      channel = new GroupDMChannel(client, data);
+    } else {
+      guild = guild || client.guilds.get(data.guild_id);
+      if (guild) {
+        switch (data.type) {
+          case ChannelTypes.TEXT: {
+            const TextChannel = Structures.get('TextChannel');
+            channel = new TextChannel(guild, data);
+            break;
+          }
+          case ChannelTypes.VOICE: {
+            const VoiceChannel = Structures.get('VoiceChannel');
+            channel = new VoiceChannel(guild, data);
+            break;
+          }
+          case ChannelTypes.CATEGORY: {
+            const CategoryChannel = Structures.get('CategoryChannel');
+            channel = new CategoryChannel(guild, data);
+            break;
+          }
+          default: {
+            const GuildChannel = Structures.get('GuildChannel');
+            channel = new GuildChannel(guild, data);
+          }
+        }
+        guild.channels.set(channel.id, channel);
+      }
+    }
+    return channel;
   }
 }
 
