@@ -22,7 +22,7 @@ const Messages = {
   SHARDING_PARENT_CONNECTION: 'Failed to send message to master process.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
-  SHARDING_CANNOT_USE_BOTH_METHODS: 'Shard Manager and Internal Sharding are incompatible.',
+  SHARDING_CANNOT_USE_MULTIPLE_METHODS: 'You must use one sharding method.',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
   SHARDING_PROCESS_EXISTS: id => `Shard ${id} already has an active process.`,
   SHARDING_READY_TIMEOUT: id => `Shard ${id}'s Client took too long to become ready.`,

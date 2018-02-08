@@ -173,6 +173,26 @@ class Client extends BaseClient {
   }
 
   /**
+   * Average heartbeat ping of each Shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each Shard
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+  }
+
+  /**
+   * An array of the average heartbeat ping of each Shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each Shard
+   * @type {number[]}
+   * @readonly
+   */
+  get pings() {
+    return this.ws.shards.map(sh => sh.ping);
+  }
+
+  /**
    * How long it has been since the client last entered the `READY` state in milliseconds
    * @type {?number}
    * @readonly
@@ -262,7 +282,7 @@ class Client extends BaseClient {
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
-    this.ws.send({
+    this.ws.broadcast({
       op: 12,
       d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
     });
@@ -444,6 +464,9 @@ class Client extends BaseClient {
     }
     if (typeof options.internalSharding !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
+    }
+    if (options.internalSharding && (options.shardId && options.shardCount)) {
+      throw new Error('SHARDING_CANNOT_USE_MULTIPLE_METHODS');
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');

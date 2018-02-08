@@ -23,7 +23,7 @@ class ClientPresenceStore extends PresenceStore {
     const packet = await this._parse(presence);
     this.clientPresence.patch(packet);
     if (this.clientPresence.shard === 'all') {
-      this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
     } else {
       const shard = this.client.ws.shards.get(this.clientPresence.shard);
       if (shard) shard.send({ op: OPCodes.STATUS_UPDATE, d: packet });

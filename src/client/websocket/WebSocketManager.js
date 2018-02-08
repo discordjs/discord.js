@@ -127,7 +127,7 @@ class WebSocketManager extends EventEmitter {
           this.packetManager.handleQueue();
         }
       });
-    }.bind(this)(this.client.shard ? this.client.shard.id : 0));
+    }.bind(this)(this.client.options.internalSharding ? 0 : this.client.options.shardId));
   }
 
   /**

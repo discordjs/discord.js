@@ -36,10 +36,6 @@ class ClientManager {
    * @param {Function} reject Function to run when a shard fails
    */
   connectToWebSocket(token, resolve, reject) {
-    if (this.client.options.internalSharding && this.client.shard) {
-      reject(new Error('SHARDING_CANNOT_USE_BOTH_METHODS'));
-      return;
-    }
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     let timeout;

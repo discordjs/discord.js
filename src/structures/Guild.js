@@ -176,13 +176,6 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The Shard that this guild is on
-     * @type {WebSocketConnection}
-     * @private
-     */
-    this.shard = data.shard;
-
-    /**
      * The Shard ID that this guild is on
      * @type {number}
      */

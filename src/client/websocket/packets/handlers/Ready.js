@@ -19,7 +19,7 @@ class ReadyHandler extends AbstractHandler {
     client.users.set(clientUser.id, clientUser);
 
     for (const guild of data.guilds) {
-      guild.shard = data.shard;
+      guild.shard = data.shard || client.shard;
       client.guilds.add(guild);
     }
     for (const privateDM of data.private_channels) client.channels.add(privateDM);
