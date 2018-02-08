@@ -465,7 +465,7 @@ class Client extends BaseClient {
     if (typeof options.internalSharding !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
-    if (options.internalSharding && (options.shardId && options.shardCount)) {
+    if (options.internalSharding && options.shardId && options.shardCount) {
       throw new Error('SHARDING_CANNOT_USE_MULTIPLE_METHODS');
     }
     if (!(options.disabledEvents instanceof Array)) {
