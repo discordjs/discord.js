@@ -43,7 +43,10 @@ class ClientManager {
     }
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
-    const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
+    let timeout;
+    if (!this.client.options.internalSharding) {
+      timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
+    }
     let endpoint = this.client.api.gateway;
     if (this.client.options.internalSharding) endpoint = endpoint.bot;
     endpoint.get({ forceBot: this.client.options.internalSharding }).then(async res => {

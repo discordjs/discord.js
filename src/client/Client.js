@@ -412,7 +412,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
     }

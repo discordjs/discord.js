@@ -11,7 +11,7 @@ class GuildMemberAddHandler extends AbstractHandler {
     if (guild) {
       guild.memberCount++;
       const member = guild.members.add(data);
-      if (client.ws.connection.status === Status.READY) {
+      if (packet.shard.status === Status.READY) {
         client.emit(Events.GUILD_MEMBER_ADD, member);
       }
     }

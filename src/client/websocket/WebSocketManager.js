@@ -118,7 +118,7 @@ class WebSocketManager extends EventEmitter {
          * @param {Number} shardId The created shard's ID
          */
         this.client.emit(Events.SHARD_READY, id);
-        if (!this.client.options.internalSharding || id === this.client.options.shardCount) {
+        if (this.client.options.internalSharding && id === this.client.options.shardCount - 1) {
           /**
            * Emitted when the client becomes ready to start working.
            * @event Client#ready
