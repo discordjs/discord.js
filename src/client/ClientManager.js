@@ -1,5 +1,6 @@
-const { Events, Status } = require('../util/Constants');
+const { DefaultOptions, Events, Status } = require('../util/Constants');
 const { Error } = require('../errors');
+const WebSocket = require('../WebSocket');
 
 /**
  * Manages the state and background tasks of the client.
@@ -32,26 +33,26 @@ class ClientManager {
   /**
    * Connects the client to the WebSocket.
    * @param {string} token The authorization token
-   * @param {Function} resolve Function to run when connection is successful
-   * @param {Function} reject Function to run when connection fails
+   * @param {Function} resolve Function to run when all shards are connected
+   * @param {Function} reject Function to run when a shard fails
    */
   connectToWebSocket(token, resolve, reject) {
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
-    this.client.api.gateway.get().then(async res => {
+    let endpoint = this.api.gateway;
+    if (this.options.internalSharding) endpoint = endpoint.bot;
+    endpoint.get({ forceBot: this.options.internalSharding }).then(async res => {
       if (this.client.options.presence != null) { // eslint-disable-line eqeqeq
         this.client.options.ws.presence = await this.client.presences._parse(this.client.options.presence);
       }
-      const gateway = `${res.url}/`;
+      if (res.shards) {
+        this.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
+        this.options.shardCount = res.shards;
+      }
+      const gateway = `${res.url}/?v${DefaultOptions.ws.version}&encoding=${WebSocket.encoding}`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
-      this.client.ws.connect(gateway);
-      this.client.ws.connection.once('error', reject);
-      this.client.ws.connection.once('close', event => {
-        if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
-        if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
-        if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
-      });
+      this.client.ws.spawn(gateway, resolve, reject);
       this.client.once(Events.READY, () => {
         resolve(token);
         this.client.clearTimeout(timeout);
