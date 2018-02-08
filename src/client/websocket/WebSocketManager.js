@@ -71,7 +71,7 @@ class WebSocketManager extends EventEmitter {
       return false;
     }
     this.packetManager.handleQueue();
-    for (const shard of this.shard.values()) shard.destroy();
+    for (const shard of this.shards.values()) shard.destroy();
     return true;
   }
 
@@ -85,7 +85,7 @@ class WebSocketManager extends EventEmitter {
       this.debug('No connection any websockets');
       return false;
     }
-    for (const shard of this.shard.values()) shard.send(packet);
+    for (const shard of this.shards.values()) shard.send(packet);
     return true;
   }
 
@@ -98,14 +98,14 @@ class WebSocketManager extends EventEmitter {
   spawn(gateway, resolve, reject) {
     this.gateway = gateway;
     (function spawnLoop(id) {
-      if (id >= this.client.options.shardCount) return;
+      if (id > this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
       const shard = this.spawnShard(id);
       shard.ws.once('error', reject);
       shard.ws.once('close', event => {
-        if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
-        if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
-        if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
+        if (event === 4004) reject(new Error('TOKEN_INVALID'));
+        if (event === 4010) reject(new Error('SHARDING_INVALID'));
+        if (event === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
       shard.once('ready', () => {
         this.debug(`Shard ready ${id}`);
