@@ -105,7 +105,7 @@ class WebSocketConnection extends EventEmitter {
       return;
     }
     this.status = Status.READY;
-    this.client.emit(Events.READY);
+    this.emit(Events.READY);
   }
 
   /**
@@ -388,8 +388,6 @@ class WebSocketConnection extends EventEmitter {
    */
   ackHeartbeat() {
     this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
-    this.client._pong(this.lastPingTimestamp);
-
     this.pings.unshift(Date.now() - this.lastPingTimestamp);
     if (this.pings.length > 3) this.pings.length = 3;
   }
