@@ -5,18 +5,19 @@ class GuildCreateHandler extends AbstractHandler {
   async handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
+    data.shard = packet.shard;
 
     let guild = client.guilds.get(data.id);
     if (guild) {
       if (!guild.available && !data.unavailable) {
         // A newly available guild
         guild._patch(data);
-        this.packetManager.ws.checkIfReady();
+        packet.shard.checkIfReady();
       }
     } else {
       // A new guild
       guild = client.guilds.add(data);
-      const emitEvent = client.ws.connection.status === Status.READY;
+      const emitEvent = data.shard.status === Status.READY;
       if (emitEvent) {
         /**
          * Emitted whenever the client joins a guild.

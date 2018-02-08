@@ -22,6 +22,7 @@ const Messages = {
   SHARDING_PARENT_CONNECTION: 'Failed to send message to master process.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
+  SHARDING_CANNOT_USE_BOTH_METHODS: 'Shard Manager and Internal Sharding are incompatible.',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
   SHARDING_PROCESS_EXISTS: id => `Shard ${id} already has an active process.`,
   SHARDING_READY_TIMEOUT: id => `Shard ${id}'s Client took too long to become ready.`,
@@ -90,6 +91,7 @@ const Messages = {
   GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
+  INVALID_SHARD: id => `Shard ${id} is an invalid shard.`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 

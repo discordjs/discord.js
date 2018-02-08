@@ -11,8 +11,8 @@ const BeforeReadyWhitelist = [
 ];
 
 class WebSocketPacketManager {
-  constructor(connection) {
-    this.ws = connection;
+  constructor(manager) {
+    this.manager = manager;
     this.handlers = {};
     this.queue = [];
 
@@ -56,7 +56,7 @@ class WebSocketPacketManager {
   }
 
   get client() {
-    return this.ws.client;
+    return this.manager.client;
   }
 
   register(event, Handler) {
@@ -72,27 +72,26 @@ class WebSocketPacketManager {
 
   handle(packet, queue = false) {
     if (packet.op === OPCodes.HEARTBEAT_ACK) {
-      this.ws.client._pong(this.ws.client._pingTimestamp);
-      this.ws.lastHeartbeatAck = true;
-      this.ws.client.emit('debug', 'Heartbeat acknowledged');
+      packet.shard.ackHeartbeat();
+      this.client.emit('debug', 'Heartbeat acknowledged');
     } else if (packet.op === OPCodes.HEARTBEAT) {
-      this.client.ws.send({
+      packet.shard.send({
         op: OPCodes.HEARTBEAT,
-        d: this.client.ws.sequence,
+        d: packet.shard.sequence,
       });
-      this.ws.client.emit('debug', 'Received gateway heartbeat');
+      this.client.emit('debug', 'Received gateway heartbeat');
     }
 
-    if (this.ws.status === Status.RECONNECTING) {
-      this.ws.reconnecting = false;
-      this.ws.checkIfReady();
+    if (packet.shard.status === Status.RECONNECTING) {
+      packet.shard.reconnecting = false;
+      packet.shard.checkIfReady();
     }
 
-    this.ws.setSequence(packet.s);
+    packet.shard.setSequence(packet.s);
 
-    if (this.ws.disabledEvents[packet.t] !== undefined) return false;
+    if (this.manager.disabledEvents[packet.t] !== undefined) return false;
 
-    if (this.ws.status !== Status.READY) {
+    if (packet.shard.status !== Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
         this.queue.push(packet);
         return false;

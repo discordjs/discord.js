@@ -135,12 +135,6 @@ class Client extends BaseClient {
     this.broadcasts = [];
 
     /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -185,15 +179,6 @@ class Client extends BaseClient {
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -412,17 +397,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
@@ -438,7 +412,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
     }

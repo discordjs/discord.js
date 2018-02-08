@@ -4,18 +4,18 @@ const { Events, Status } = require('../../../../util/Constants');
 class ResumedHandler extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
-    const ws = client.ws.connection;
+    const shard = packet.shard;
 
-    ws._trace = packet.d._trace;
+    shard._trace = packet.d._trace;
 
-    ws.status = Status.READY;
+    shard.status = Status.READY;
     this.packetManager.handleQueue();
 
-    const replayed = ws.sequence - ws.closeSequence;
+    const replayed = shard.sequence - shard.closeSequence;
 
-    ws.debug(`RESUMED ${ws._trace.join(' -> ')} | replayed ${replayed} events.`);
+    shard.debug(`RESUMED ${shard._trace.join(' -> ')} | replayed ${replayed} events.`);
     client.emit(Events.RESUMED, replayed);
-    ws.heartbeat();
+    shard.heartbeat();
   }
 }
 

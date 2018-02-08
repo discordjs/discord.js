@@ -1,6 +1,5 @@
 const EventEmitter = require('events');
 const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
-const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocket = require('../../WebSocket');
 try {
   var zlib = require('zlib-sync');
@@ -16,15 +15,21 @@ try {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {string} gateway The WebSocket gateway to connect to
+   * @param {number} id The Shard's id
    */
-  constructor(manager, gateway) {
+  constructor(manager, id) {
     super();
     /**
      * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
+
+    /**
+     * The ID of this Shard
+     * @type {number}
+     */
+    this.id = id;
 
     /**
      * The client this belongs to
@@ -51,10 +56,10 @@ class WebSocketConnection extends EventEmitter {
     this.status = Status.IDLE;
 
     /**
-     * The Packet Manager of the connection
-     * @type {WebSocketPacketManager}
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
      */
-    this.packetManager = new PacketManager(this);
+    this.pings = [];
 
     /**
      * The last time a ping was sent (a timestamp)
@@ -75,13 +80,6 @@ class WebSocketConnection extends EventEmitter {
     };
 
     /**
-     * Events that are disabled (will not be processed)
-     * @type {Object}
-     */
-    this.disabledEvents = {};
-    for (const event of this.client.options.disabledEvents) this.disabledEvents[event] = true;
-
-    /**
      * The sequence on WebSocket close
      * @type {number}
      */
@@ -94,7 +92,7 @@ class WebSocketConnection extends EventEmitter {
     this.expectingClose = false;
 
     this.inflate = null;
-    this.connect(gateway);
+    if (this.manager.gateway) this.connect(this.manager.gateway);
   }
 
   /**
@@ -106,13 +104,8 @@ class WebSocketConnection extends EventEmitter {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
-    /**
-     * Emitted when the client becomes ready to start working.
-     * @event Client#ready
-     */
     this.status = Status.READY;
-    this.client.emit(Events.READY);
-    this.packetManager.handleQueue();
+    this.emit(Events.READY);
   }
 
   /**
@@ -247,7 +240,6 @@ class WebSocketConnection extends EventEmitter {
     this.heartbeat(-1);
     this.expectingClose = true;
     ws.close(1000);
-    this.packetManager.handleQueue();
     this.ws = null;
     this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
@@ -313,7 +305,8 @@ class WebSocketConnection extends EventEmitter {
       case OPCodes.HEARTBEAT:
         return this.heartbeat();
       default:
-        return this.packetManager.handle(packet);
+        packet.shard = this;
+        return this.manager.packetManager.handle(packet);
     }
   }
 
@@ -395,7 +388,8 @@ class WebSocketConnection extends EventEmitter {
    */
   ackHeartbeat() {
     this.debug(`Heartbeat acknowledged, latency of ${Date.now() - this.lastPingTimestamp}ms`);
-    this.client._pong(this.lastPingTimestamp);
+    this.pings.unshift(Date.now() - this.lastPingTimestamp);
+    if (this.pings.length > 3) this.pings.length = 3;
   }
 
   /**
@@ -423,6 +417,15 @@ class WebSocketConnection extends EventEmitter {
     });
   }
 
+  /**
+   * Average heartbeat ping of the websocket, obtained by averaging the {@link WebSocketConnection#pings} property
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+  }
+
   // Identification
   /**
    * Identifies the client on a connection.
@@ -447,8 +450,8 @@ class WebSocketConnection extends EventEmitter {
     const d = Object.assign({ token: this.client.token }, this.client.options.ws);
 
     // Sharding stuff
-    const { shardId, shardCount } = this.client.options;
-    if (shardCount > 0) d.shard = [Number(shardId), Number(shardCount)];
+    const { shardCount } = this.client.options;
+    if (shardCount > 0) d.shard = [this.id, Number(shardCount)];
 
     // Send the payload
     this.debug('Identifying as a new session');

@@ -7,7 +7,7 @@ class ReadyHandler extends AbstractHandler {
     const client = this.packetManager.client;
     const data = packet.d;
 
-    client.ws.heartbeat();
+    packet.shard.heartbeat();
 
     data.user.user_settings = data.user_settings;
     data.user.user_guild_settings = data.user_guild_settings;
@@ -18,7 +18,10 @@ class ReadyHandler extends AbstractHandler {
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
-    for (const guild of data.guilds) client.guilds.add(guild);
+    for (const guild of data.guilds) {
+      guild.shard = data.shard;
+      client.guilds.add(guild);
+    }
     for (const privateDM of data.private_channels) client.channels.add(privateDM);
 
     for (const relation of data.relationships) {
@@ -55,7 +58,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     const t = client.setTimeout(() => {
-      client.ws.connection.triggerReady();
+      packet.shard.triggerReady();
     }, 1200 * data.guilds.length);
 
     client.setMaxListeners(data.guilds.length + 10);
@@ -66,12 +69,12 @@ class ReadyHandler extends AbstractHandler {
       client.clearTimeout(t);
     });
 
-    const ws = this.packetManager.ws;
+    const shard = packet.shard;
 
-    ws.sessionID = data.session_id;
-    ws._trace = data._trace;
-    client.emit(Events.DEBUG, `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
-    ws.checkIfReady();
+    shard.sessionID = data.session_id;
+    shard._trace = data._trace;
+    client.emit(Events.DEBUG, `SHARD ${shard.id} READY ${shard._trace.join(' -> ')} ${shard.sessionID}`);
+    shard.checkIfReady();
   }
 }
 

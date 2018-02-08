@@ -22,11 +22,19 @@ class ClientPresenceStore extends PresenceStore {
   async setClientPresence(presence) {
     const packet = await this._parse(presence);
     this.clientPresence.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    if (this.clientPresence.shard === 'all') {
+      this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    } else {
+      const shard = this.client.ws.shards.find(s => s.id === this.clientPresence.shard);
+      shard.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    }
     return this.clientPresence;
   }
 
-  async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
+  async _parse({ status, since, afk, shard, activity }) { // eslint-disable-line complexity
+    if (shard && shard !== 'all' && !this.client.ws.shards.find(s => s.id === shard)) {
+      throw new TypeError('INVALID_SHARD', shard);
+    }
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
     if (activity) {
@@ -44,6 +52,7 @@ class ClientPresenceStore extends PresenceStore {
       afk: afk != null ? afk : false, // eslint-disable-line eqeqeq
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.clientPresence.status,
+      shard: shard || shard === 0 ? shard : 'all',
       game: activity ? {
         type: activity.type,
         name: activity.name,
