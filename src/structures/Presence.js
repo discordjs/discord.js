@@ -37,7 +37,7 @@ class Presence {
 
     /**
      * The Shard ID of the presence
-     * @type {number}
+     * @type {string|number}
      */
     this.shard = data.shard;
 

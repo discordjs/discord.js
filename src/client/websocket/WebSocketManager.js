@@ -17,7 +17,7 @@ class WebSocketManager extends EventEmitter {
      */
     this.client = client;
 
-    /*
+    /**
      * The Shards connected to this manager.
      * @type {Collection}
      */
@@ -82,7 +82,7 @@ class WebSocketManager extends EventEmitter {
    */
   send(packet) {
     if (!this.shards.size) {
-      this.debug('No connection any websockets');
+      this.debug('No websocket connections');
       return false;
     }
     for (const shard of this.shards.values()) shard.send(packet);
@@ -100,7 +100,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`SHARD ID: ${(this.client.shard ? this.client.shard.id : 0)}`);
     this.gateway = gateway;
     (function spawnLoop(id) {
-      if (id >= this.client.options.shardCount) return;
+      if (this.client.options.internalSharding && id >= this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
       const shard = this.createShard(id);
       shard.ws.once('error', reject);
@@ -118,7 +118,7 @@ class WebSocketManager extends EventEmitter {
          * @param {Number} shardId The created shard's ID
          */
         this.client.emit(Events.SHARD_READY, id);
-        if (this.client.options.internalSharding && id === this.client.options.shardCount - 1) {
+        if (!this.client.options.internalSharding || id === this.client.options.shardCount - 1) {
           /**
            * Emitted when the client becomes ready to start working.
            * @event Client#ready

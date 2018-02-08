@@ -1,6 +1,5 @@
-const { DefaultOptions, Events, Status } = require('../util/Constants');
+const { Events, Status } = require('../util/Constants');
 const { Error } = require('../errors');
-const WebSocket = require('../WebSocket');
 
 /**
  * Manages the state and background tasks of the client.
@@ -57,7 +56,7 @@ class ClientManager {
         this.client.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
         this.client.options.shardCount = res.shards;
       }
-      const gateway = `${res.url}/?v${DefaultOptions.ws.version}&encoding=${WebSocket.encoding}`;
+      const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
       this.client.ws.spawn(gateway, resolve, reject);
       this.client.once(Events.READY, () => {

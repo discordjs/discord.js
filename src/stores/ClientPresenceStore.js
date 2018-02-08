@@ -25,8 +25,8 @@ class ClientPresenceStore extends PresenceStore {
     if (this.clientPresence.shard === 'all') {
       this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
     } else {
-      const shard = this.client.ws.shards.find(s => s.id === this.clientPresence.shard);
-      shard.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      const shard = this.client.ws.shards.get(this.clientPresence.shard);
+      if (shard) shard.send({ op: OPCodes.STATUS_UPDATE, d: packet });
     }
     return this.clientPresence;
   }
