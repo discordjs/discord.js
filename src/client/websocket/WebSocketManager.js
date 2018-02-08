@@ -96,11 +96,13 @@ class WebSocketManager extends EventEmitter {
    * @param {Function} reject Function to run when connection fails
    */
   spawn(gateway, resolve, reject) {
+    this.debug(`SHARD EXISTS: ${typeof this.client.shard}`);
+    this.debug(`SHARD ID: ${(this.client.shard ? this.client.shard.id : 0)}`);
     this.gateway = gateway;
     (function spawnLoop(id) {
-      if (id > this.client.options.shardCount) return;
+      if (id >= this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
-      const shard = this.spawnShard(id);
+      const shard = this.createShard(id);
       shard.ws.once('error', reject);
       shard.ws.once('close', event => {
         if (event === 4004) reject(new Error('TOKEN_INVALID'));
@@ -109,14 +111,14 @@ class WebSocketManager extends EventEmitter {
       });
       shard.once('ready', () => {
         this.debug(`Shard ready ${id}`);
-        this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
+        if (this.client.options.internalSharding) this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
          * @param {Number} shardId The created shard's ID
          */
         this.client.emit(Events.SHARD_READY, id);
-        if (id === this.client.options.shardCount) {
+        if (!this.client.options.internalSharding || id === this.client.options.shardCount) {
           /**
            * Emitted when the client becomes ready to start working.
            * @event Client#ready
@@ -125,7 +127,7 @@ class WebSocketManager extends EventEmitter {
           this.packetManager.handleQueue();
         }
       });
-    }.bind(this)(0));
+    }.bind(this)(this.client.shard ? this.client.shard.id : 0));
   }
 
   /**
@@ -133,7 +135,7 @@ class WebSocketManager extends EventEmitter {
    * @param {number} id The Shard's ID
    * @returns {WebSocketConnection} The created Shard
    */
-  spawnShard(id) {
+  createShard(id) {
     const shard = new WebSocketConnection(this, id);
     this.shards.set(id, shard);
     return shard;
