@@ -453,7 +453,7 @@ class WebSocketConnection extends EventEmitter {
 
     // Sharding stuff
     const { shardCount } = this.client.options;
-    if (shardCount > 0) d.shard = [Number(shardCount)];
+    if (shardCount > 0) d.shard = [this.id, Number(shardCount)];
 
     // Send the payload
     this.debug('Identifying as a new session');

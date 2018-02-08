@@ -40,15 +40,15 @@ class ClientManager {
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
-    let endpoint = this.api.gateway;
-    if (this.options.internalSharding) endpoint = endpoint.bot;
-    endpoint.get({ forceBot: this.options.internalSharding }).then(async res => {
+    let endpoint = this.client.api.gateway;
+    if (this.client.options.internalSharding) endpoint = endpoint.bot;
+    endpoint.get({ forceBot: this.client.options.internalSharding }).then(async res => {
       if (this.client.options.presence != null) { // eslint-disable-line eqeqeq
         this.client.options.ws.presence = await this.client.presences._parse(this.client.options.presence);
       }
       if (res.shards) {
-        this.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
-        this.options.shardCount = res.shards;
+        this.client.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
+        this.client.options.shardCount = res.shards;
       }
       const gateway = `${res.url}/?v${DefaultOptions.ws.version}&encoding=${WebSocket.encoding}`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);

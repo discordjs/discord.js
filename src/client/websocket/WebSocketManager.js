@@ -98,7 +98,7 @@ class WebSocketManager extends EventEmitter {
   spawn(gateway, resolve, reject) {
     this.gateway = gateway;
     (function spawnLoop(id) {
-      if (id > this.client.options.shardCount) return;
+      if (id >= this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
       const shard = this.spawnShard(id);
       shard.ws.once('error', reject);
