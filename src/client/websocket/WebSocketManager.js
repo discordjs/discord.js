@@ -18,7 +18,7 @@ class WebSocketManager extends EventEmitter {
     this.client = client;
 
     /**
-     * The shards connected to this manager.
+     * The shards connected to this manager
      * @type {Collection<number, WebSocketConnection>}
      */
     this.shards = new Collection();
