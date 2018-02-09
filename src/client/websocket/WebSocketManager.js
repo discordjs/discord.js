@@ -80,7 +80,7 @@ class WebSocketManager extends EventEmitter {
    * @param {Object} packet Packet to send
    * @returns {boolean}
    */
-  send(packet) {
+  broadcast(packet) {
     if (!this.shards.size) {
       this.debug('No websocket connections');
       return false;
