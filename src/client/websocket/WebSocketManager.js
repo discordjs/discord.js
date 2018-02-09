@@ -25,7 +25,7 @@ class WebSocketManager extends EventEmitter {
 
     /**
      * A cached gateway url
-     * @type {string}
+     * @type {?string}
      */
     this.gateway = null;
 
