@@ -80,7 +80,7 @@ class WebSocketManager extends EventEmitter {
    * @param {Object} packet Packet to send
    * @returns {boolean}
    */
-  send(packet) {
+  broadcast(packet) {
     if (!this.shards.size) {
       this.debug('No websocket connections');
       return false;
@@ -96,10 +96,8 @@ class WebSocketManager extends EventEmitter {
    * @param {Function} reject Function to run when connection fails
    */
   spawn(gateway, resolve, reject) {
-    this.debug(`SHARD EXISTS: ${typeof this.client.shard}`);
-    this.debug(`SHARD ID: ${(this.client.shard ? this.client.shard.id : 0)}`);
     this.gateway = gateway;
-    (function spawnLoop(id) {
+    const spawnShard = id => {
       if (this.client.options.internalSharding && id >= this.client.options.shardCount) return;
       this.debug(`Spawning shard ${id}`);
       const shard = this.createShard(id);
@@ -110,8 +108,8 @@ class WebSocketManager extends EventEmitter {
         if (event === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
       shard.once('ready', () => {
-        this.debug(`Shard ready ${id}`);
-        if (this.client.options.internalSharding) this.client.setTimeout(spawnLoop.bind(this, id + 1), 5500);
+        this.debug(`Shard ${id} is ready`);
+        if (this.client.options.internalSharding) this.client.setTimeout(newId => spawnShard(newId), 5500, id + 1);
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
@@ -127,7 +125,8 @@ class WebSocketManager extends EventEmitter {
           this.packetManager.handleQueue();
         }
       });
-    }.bind(this)(this.client.options.internalSharding ? 0 : this.client.options.shardId));
+    };
+    spawnShard(this.client.options.internalSharding ? 0 : this.client.options.shardId);
   }
 
   /**
