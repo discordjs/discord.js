@@ -15,7 +15,7 @@ try {
 class WebSocketConnection extends EventEmitter {
   /**
    * @param {WebSocketManager} manager The WebSocket manager
-   * @param {number} id The Shard's id
+   * @param {number} id The shard's id
    */
   constructor(manager, id) {
     super();
@@ -26,7 +26,7 @@ class WebSocketConnection extends EventEmitter {
     this.manager = manager;
 
     /**
-     * The ID of this Shard
+     * The ID of this shard
      * @type {number}
      */
     this.id = id;

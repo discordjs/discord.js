@@ -176,7 +176,7 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The Shard ID that this guild is on
+     * The shard ID that this guild is on
      * @type {number}
      */
     this.shardId = data.shard ? data.shard.id : null;
