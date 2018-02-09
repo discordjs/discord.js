@@ -17,7 +17,7 @@ class GuildCreateHandler extends AbstractHandler {
     } else {
       // A new guild
       guild = client.guilds.add(data);
-      const emitEvent = data.shard.status === Status.READY;
+      const emitEvent = packet.shard.status === Status.READY;
       if (emitEvent) {
         /**
          * Emitted whenever the client joins a guild.
