@@ -5,7 +5,7 @@ class GuildCreateHandler extends AbstractHandler {
   async handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
-    data.shard = packet.shard || client.shard;
+    data.shard = packet.shard;
 
     let guild = client.guilds.get(data.id);
     if (guild) {

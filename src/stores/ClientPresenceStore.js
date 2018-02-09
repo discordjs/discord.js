@@ -32,7 +32,7 @@ class ClientPresenceStore extends PresenceStore {
   }
 
   async _parse({ status, since, afk, shard, activity }) { // eslint-disable-line complexity
-    if (shard && shard !== 'all' && !this.client.ws.shards.find(s => s.id === shard)) {
+    if (shard && shard !== 'all' && !this.client.ws.shards.get(shard)) {
       throw new TypeError('INVALID_SHARD', shard);
     }
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);

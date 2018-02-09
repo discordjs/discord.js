@@ -179,7 +179,7 @@ class Guild extends Base {
      * The shard ID that this guild is on
      * @type {number}
      */
-    this.shardId = data.shard ? data.shard.id : null;
+    this.shardId = data.shard ? data.shard.id : 0;
 
     this.id = data.id;
     this.available = !data.unavailable;
