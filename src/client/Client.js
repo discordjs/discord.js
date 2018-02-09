@@ -173,8 +173,8 @@ class Client extends BaseClient {
   }
 
   /**
-   * Average heartbeat ping of each Shard, obtained by averaging the
-   * {@link WebSocketConnection#pings} property on each Shard
+   * Average heartbeat ping of each shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each shard
    * @type {number}
    * @readonly
    */
@@ -183,8 +183,8 @@ class Client extends BaseClient {
   }
 
   /**
-   * An array of the average heartbeat ping of each Shard, obtained by averaging the
-   * {@link WebSocketConnection#pings} property on each Shard
+   * An array of the average heartbeat ping of each shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each shard
    * @type {number[]}
    * @readonly
    */

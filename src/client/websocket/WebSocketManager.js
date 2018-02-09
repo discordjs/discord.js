@@ -18,7 +18,7 @@ class WebSocketManager extends EventEmitter {
     this.client = client;
 
     /**
-     * The Shards connected to this manager.
+     * The shards connected to this manager.
      * @type {Collection}
      */
     this.shards = new Collection();
@@ -90,7 +90,7 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Connects all appropriate Shards to the gateway.
+   * Connects all appropriate shards to the gateway.
    * @param {string} gateway The gateway to connect to
    * @param {Function} resolve Function to run when connection is successful
    * @param {Function} reject Function to run when connection fails
@@ -130,9 +130,9 @@ class WebSocketManager extends EventEmitter {
   }
 
   /**
-   * Spawns a new Shard on the client
-   * @param {number} id The Shard's ID
-   * @returns {WebSocketConnection} The created Shard
+   * Spawns a new shard on the client
+   * @param {number} id The shard's ID
+   * @returns {WebSocketConnection} The created shard
    */
   createShard(id) {
     const shard = new WebSocketConnection(this, id);
