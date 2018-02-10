@@ -71,6 +71,7 @@ class Client extends BaseClient {
 
     /**
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * <warn>This is unavailable using Internal Sharding</warn>
      * @type {?ShardClientUtil}
      */
     this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
