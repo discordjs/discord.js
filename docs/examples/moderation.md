@@ -20,8 +20,8 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// Ignore messages that aren't from a guild
-	if (!message.guild) return;
+  // Ignore messages that aren't from a guild
+  if (!message.guild) return;
 
   // if the message content starts with "!kick"
   if (message.content.startsWith('!kick')) {
