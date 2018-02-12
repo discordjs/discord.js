@@ -436,7 +436,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<Collection<string, Invite>>}
    */
   async fetchInvites() {
-    const inviteItems = await this.client.api.guilds(this.id).invites.get();
+    const inviteItems = await this.client.api.channels(this.id).invites.get();
     const invites = new Collection();
     for (const inviteItem of inviteItems) {
       const invite = new Invite(this.client, inviteItem);
