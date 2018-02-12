@@ -454,7 +454,7 @@ class GuildChannel extends Channel {
    *  parent: this.parent,
    *  reason: 'Some reason'
    * })
-   *  .then(() => console.log('Channel cloned!))
+   *  .then(() => console.log('Channel cloned!'))
    *  .catch(console.error)
   */
   clone(options = {}) {
