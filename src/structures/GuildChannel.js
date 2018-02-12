@@ -456,7 +456,7 @@ class GuildChannel extends Channel {
    * })
    *  .then(() => console.log('Channel cloned!'))
    *  .catch(console.error);
-  */
+   */
   clone(options = {}) {
     if (typeof options.withPermissions === 'undefined') options.withPermissions = true;
     Util.mergeDefault({
