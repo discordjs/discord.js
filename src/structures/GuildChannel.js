@@ -444,7 +444,7 @@ class GuildChannel extends Channel {
    * @param {ChannelResolvable} [options.parent=this.parent] The parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
-   * @example 
+   * @example
    * // Clone a channel
    * channel.clone({
    *  name: 'Some name',
