@@ -188,7 +188,7 @@ class ClientUser extends Structures.get('User') {
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {ShardSelector} [shard='all'] The shard that this presence should update
+   * @property {number|string} [shard='all'] The shard that this presence should update
    * @property {Object} [activity] Activity the user is playing
    * @property {Object|string} [activity.application] An application object or application id
    * @property {string} [activity.application.id] The id of the application
