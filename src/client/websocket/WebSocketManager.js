@@ -97,8 +97,6 @@ class WebSocketManager extends EventEmitter {
    */
   spawn(gateway, resolve, reject) {
     this.gateway = gateway;
-    this.debug(`Shard id ${JSON.stringify(this.client.options.shardId)}`);
-    this.debug(`Shard count ${JSON.stringify(this.client.options.shardCount)}`);
     let shardsToSpawn;
     if (!(this.client.options.shardId instanceof Array) && typeof this.client.options.shardId !== 'number' &&
         this.client.options.shardCount) {
@@ -116,11 +114,12 @@ class WebSocketManager extends EventEmitter {
       const id = shardsToSpawn[pos];
       this.debug(`Spawning shard ${id}`);
       const shard = this.createShard(id);
-      shard.ws.once('error', reject);
-      shard.ws.once('close', event => {
-        if (event === 4004) reject(new Error('TOKEN_INVALID'));
-        if (event === 4010) reject(new Error('SHARDING_INVALID'));
-        if (event === 4011) reject(new Error('SHARDING_REQUIRED'));
+      shard.once('error', reject);
+      shard.once('close', event => {
+        this.debug(`Event ${event}`);
+        if (event.code === 4004) reject(new Error('TOKEN_INVALID'));
+        if (event.code === 4010) reject(new Error('SHARDING_INVALID'));
+        if (event.code === 4011) reject(new Error('SHARDING_REQUIRED'));
       });
       shard.once('ready', () => {
         this.debug(`Shard ${id} is ready`);
