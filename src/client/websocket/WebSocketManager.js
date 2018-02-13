@@ -97,8 +97,23 @@ class WebSocketManager extends EventEmitter {
    */
   spawn(gateway, resolve, reject) {
     this.gateway = gateway;
-    const spawnShard = id => {
-      if (this.client.options.internalSharding && id >= this.client.options.shardCount) return;
+    this.debug(`Shard id ${JSON.stringify(this.client.options.shardId)}`);
+    this.debug(`Shard count ${JSON.stringify(this.client.options.shardCount)}`);
+    let shardsToSpawn;
+    if (!(this.client.options.shardId instanceof Array) && typeof this.client.options.shardId !== 'number' &&
+        this.client.options.shardCount) {
+      shardsToSpawn = new Array(this.client.options.shardCount).fill(0).map((v, i) => i);
+    } else if (this.client.options.shardId instanceof Array) {
+      shardsToSpawn = this.client.options.shardId;
+    } else if (typeof this.client.options.shardId !== 'number' && !this.client.options.shardCount) {
+      shardsToSpawn = [0];
+    } else {
+      shardsToSpawn = [this.client.options.shardId];
+    }
+    this.debug(`Shards to spawn ${JSON.stringify(shardsToSpawn)}`);
+    const spawnShard = pos => {
+      if (pos >= shardsToSpawn.length) return;
+      const id = shardsToSpawn[pos];
       this.debug(`Spawning shard ${id}`);
       const shard = this.createShard(id);
       shard.ws.once('error', reject);
@@ -109,14 +124,14 @@ class WebSocketManager extends EventEmitter {
       });
       shard.once('ready', () => {
         this.debug(`Shard ${id} is ready`);
-        if (this.client.options.internalSharding) this.client.setTimeout(newId => spawnShard(newId), 5500, id + 1);
+        this.client.setTimeout(newPos => spawnShard(newPos), 5500, pos + 1);
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
          * @param {Number} shardId The created shard's ID
          */
         this.client.emit(Events.SHARD_READY, id);
-        if (!this.client.options.internalSharding || id === this.client.options.shardCount - 1) {
+        if (pos === shardsToSpawn.length - 1) {
           /**
            * Emitted when the client becomes ready to start working.
            * @event Client#ready
@@ -126,7 +141,7 @@ class WebSocketManager extends EventEmitter {
         }
       });
     };
-    spawnShard(this.client.options.internalSharding ? 0 : this.client.options.shardId);
+    spawnShard(0);
   }
 
   /**

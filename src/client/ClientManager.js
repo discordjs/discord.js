@@ -39,16 +39,20 @@ class ClientManager {
     this.client.emit(Events.DEBUG, `Authenticated using token ${token}`);
     this.client.token = token;
     let timeout;
-    if (!this.client.options.internalSharding) {
+    if (this.client.options.shardCount) {
       timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
     }
     let endpoint = this.client.api.gateway;
-    if (this.client.options.internalSharding) endpoint = endpoint.bot;
-    endpoint.get({ forceBot: this.client.options.internalSharding }).then(async res => {
+    let forceBot = false;
+    if (this.client.options.shardCount) {
+      endpoint = endpoint.bot;
+      forceBot = true;
+    }
+    endpoint.get({ forceBot }).then(async res => {
       if (this.client.options.presence != null) { // eslint-disable-line eqeqeq
         this.client.options.ws.presence = await this.client.presences._parse(this.client.options.presence);
       }
-      if (res.shards) {
+      if (this.client.options.shardCount === 'auto') {
         this.client.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
         this.client.options.shardCount = res.shards;
       }
