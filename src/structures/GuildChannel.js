@@ -459,6 +459,17 @@ class GuildChannel extends Channel {
    * @param {ChannelResolvable} [options.parent=this.parent] The parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
+   * @example
+   * // Clone a channel
+   * channel.clone({
+   *  name: 'Some-name',
+   *  withPermissions: true,
+   *  withTopic: false,
+   *  nsfw: false,
+   *  reason: 'Some reason'
+   * })
+   *  .then(() => console.log('Channel cloned!'))
+   *  .catch(console.error);
    */
   clone(options = {}) {
     if (typeof options.withPermissions === 'undefined') options.withPermissions = true;
