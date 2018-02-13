@@ -447,7 +447,7 @@ class GuildChannel extends Channel {
    * @example
    * // Clone a channel
    * channel.clone({
-   *  name: 'Some name',
+   *  name: 'Some-name',
    *  withPermissions: true,
    *  withTopic: false,
    *  nsfw: false,
