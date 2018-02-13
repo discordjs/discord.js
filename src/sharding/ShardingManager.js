@@ -149,7 +149,6 @@ class ShardingManager extends EventEmitter {
       }
     }
 
-    for (let s = 0; s <= (processes.length || processes); s++) {
     for (let s = 0; s <= (processes.length - 1 || processes); s++) {
       const promises = [];
       const shard = this.createShard(processes[s] || s);
