@@ -431,6 +431,21 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Fetches a collection of invites to this guild channel.
+   * Resolves with a collection mapping invites by their codes.
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  async fetchInvites() {
+    const inviteItems = await this.client.api.channels(this.id).invites.get();
+    const invites = new Collection();
+    for (const inviteItem of inviteItems) {
+      const invite = new Invite(this.client, inviteItem);
+      invites.set(invite.code, invite);
+    }
+    return invites;
+  }
+
+  /**
    * Clones this channel.
    * @param {Object} [options] The options
    * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
