@@ -13,7 +13,7 @@ const { Error } = require('../errors');
 class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is spawning this shard
-   * @param {number} id ID of this shard
+   * @param {number|number[]} id ID or IDs of this shard
    * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
