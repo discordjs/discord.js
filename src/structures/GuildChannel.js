@@ -451,7 +451,6 @@ class GuildChannel extends Channel {
    *  withPermissions: true,
    *  withTopic: false,
    *  nsfw: false,
-   *  parent: this.parent,
    *  reason: 'Some reason'
    * })
    *  .then(() => console.log('Channel cloned!'))
