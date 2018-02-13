@@ -23,6 +23,7 @@ class ShardingManager extends EventEmitter {
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
+   * @param {number} [options.shardsPerProcess] The amount of shards there should be per process
    */
   constructor(file, options = {}) {
     super();
@@ -31,6 +32,7 @@ class ShardingManager extends EventEmitter {
       respawn: true,
       shardArgs: [],
       token: null,
+      shardsPerProcess: 1,
     }, options);
 
     /**
@@ -81,11 +83,22 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    /**
+     * The amount of shards found per process
+     * @type {Number}
+     */
+    this.shardsPerProcess = options.shardsPerProcess;
+    if (typeof this.shardsPerProcess !== 'number') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'Shards per process', 'a number.');
+    } else if (this.shardsPerProcess < 1) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'Shards per process', 'at least 1.');
+    }
   }
 
   /**
    * Spawns a single shard.
-   * @param {number} [id=this.shards.size] ID of the shard to spawn -
+   * @param {number|number[]} [id=this.shards.size] ID or IDs of the shard to spawn -
    * **This is usually not necessary to manually specify.**
    * @returns {Shard}
    */
@@ -127,9 +140,18 @@ class ShardingManager extends EventEmitter {
     this.totalShards = amount;
 
     // Spawn the shards
-    for (let s = 1; s <= amount; s++) {
+    let processes = amount;
+    if (this.shardsPerProcess > 1) {
+      const shards = Array(amount).fill(0).map((v, i) => i);
+      processes = [];
+      for (let i = 0; i < shards.length; i += this.shardsPerProcess) {
+        processes.push(shards.slice(i, i + this.shardsPerProcess));
+      }
+    }
+
+    for (let s = 0; s <= (processes.length || processes); s++) {
       const promises = [];
-      const shard = this.createShard();
+      const shard = this.createShard(processes[s] || s);
       promises.push(shard.spawn(waitForReady));
       if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop

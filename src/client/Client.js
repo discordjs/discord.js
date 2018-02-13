@@ -34,6 +34,7 @@ class Client extends BaseClient {
     // Obtain shard details from environment
     if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
       this.options.shardId = Number(process.env.SHARD_ID);
+      if (isNaN(this.options.shardId)) this.options.shardId = JSON.parse(`[${process.env.SHARD_ID}]`);
     }
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
