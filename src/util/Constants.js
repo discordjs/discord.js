@@ -38,7 +38,6 @@ exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
   shardId: null,
   shardCount: 0,
-  internalSharding: false,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
