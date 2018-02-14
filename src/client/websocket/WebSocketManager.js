@@ -1,4 +1,5 @@
 const Collection = require('../../util/Collection');
+const { Error, RangeError } = require('../../errors');
 const EventEmitter = require('events');
 const { Events } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
@@ -107,6 +108,10 @@ class WebSocketManager extends EventEmitter {
       shardsToSpawn = [0];
     } else {
       shardsToSpawn = [this.client.options.shardId];
+    }
+    if (shardsToSpawn.map(i => i > this.client.options.shardCount).includes(true)) {
+      reject(new RangeError('CLIENT_INVALID_OPTION', 'shardId', `less than ${this.client.options.shardCount}`));
+      return;
     }
     this.debug(`Shards to spawn ${JSON.stringify(shardsToSpawn)}`);
     const spawnShard = pos => {
