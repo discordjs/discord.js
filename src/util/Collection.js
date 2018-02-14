@@ -39,7 +39,8 @@ class Collection extends Map {
   /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
    * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
-   * itself. If you don't want this caching behaviour, use `[...collection.values()]` or `Array.from(collection.values())` instead.
+   * itself. If you don't want this caching behaviour, use `[...collection.values()]` or
+   * `Array.from(collection.values())` instead.
    * @returns {Array}
    */
   array() {
@@ -50,7 +51,8 @@ class Collection extends Map {
   /**
    * Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
    * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
-   * itself. If you don't want this caching behaviour, use `[...collection.keys()]` or `Array.from(collection.keys())` instead.
+   * itself. If you don't want this caching behaviour, use `[...collection.keys()]` or
+   * `Array.from(collection.keys())` instead.
    * @returns {Array}
    */
   keyArray() {
