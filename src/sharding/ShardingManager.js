@@ -142,10 +142,9 @@ class ShardingManager extends EventEmitter {
     // Spawn the shards
     let processes = amount;
     if (this.shardsPerProcess > 1) {
-      const shards = Array(amount).fill(0).map((v, i) => i);
-      processes = [];
-      for (let i = 0; i < shards.length; i += this.shardsPerProcess) {
-        processes.push(shards.slice(i, i + this.shardsPerProcess));
+      processes = new Array(Math.ceil(amount / this.shardsPerProcess)).fill(0).map(() => []);
+      for (let i = 0; i < amount; i++) {
+        processes[i % processes.length].push(i);
       }
     }
 
