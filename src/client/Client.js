@@ -444,9 +444,6 @@ class Client extends BaseClient {
     }
     if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
     if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (typeof options.shardId === 'number' && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }

@@ -1,5 +1,5 @@
 const { Events, Status } = require('../util/Constants');
-const { Error } = require('../errors');
+const { Error, RangeError } = require('../errors');
 
 /**
  * Manages the state and background tasks of the client.
@@ -55,6 +55,11 @@ class ClientManager {
       if (this.client.options.shardCount === 'auto') {
         this.client.emit(Events.DEBUG, `Using recommended shard count: ${res.shards}`);
         this.client.options.shardCount = res.shards;
+      }
+      if ((this.client.options.shardId instanceof Array &&
+          this.client.options.shardId.map(i => i > this.client.options.shardCount).includes(true)) ||
+          this.client.options.shardId >= this.client.options.shardCount) {
+        throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', `less than ${this.client.options.shardCount}`);
       }
       const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
