@@ -109,7 +109,7 @@ class WebSocketManager extends EventEmitter {
     } else {
       shardsToSpawn = [this.client.options.shardId];
     }
-    if (shardsToSpawn.map(i => i !== 0 && i >= this.client.options.shardCount).includes(true)) {
+    if (shardsToSpawn.some(i => i !== 0 && i >= this.client.options.shardCount)) {
       reject(new RangeError('CLIENT_INVALID_OPTION', 'shardId', `less than ${this.client.options.shardCount}`));
       return;
     }
