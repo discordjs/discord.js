@@ -18,11 +18,11 @@ class ReadyHandler extends AbstractHandler {
     client.readyAt = new Date();
     client.users.set(clientUser.id, clientUser);
 
-    for (const guild of data.guilds) client.guilds.create(guild);
-    for (const privateDM of data.private_channels) client.channels.create(privateDM);
+    for (const guild of data.guilds) client.guilds.add(guild);
+    for (const privateDM of data.private_channels) client.channels.add(privateDM);
 
     for (const relation of data.relationships) {
-      const user = client.users.create(relation.user);
+      const user = client.users.add(relation.user);
       if (relation.type === 1) {
         client.user.friends.set(user.id, user);
       } else if (relation.type === 2) {
@@ -30,7 +30,7 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    for (const presence of data.presences || []) client.presences.create(presence);
+    for (const presence of data.presences || []) client.presences.add(presence);
 
     if (data.notes) {
       for (const user in data.notes) {
@@ -42,7 +42,7 @@ class ReadyHandler extends AbstractHandler {
     }
 
     if (!client.users.has('1')) {
-      client.users.create({
+      client.users.add({
         id: '1',
         username: 'Clyde',
         discriminator: '0000',

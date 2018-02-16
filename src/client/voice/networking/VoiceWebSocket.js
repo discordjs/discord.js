@@ -1,8 +1,7 @@
-const { OPCodes, VoiceOPCodes } = require('../../util/Constants');
-const SecretKey = require('./util/SecretKey');
+const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 const EventEmitter = require('events');
-const { Error } = require('../../errors');
-const WebSocket = require('../../WebSocket');
+const { Error } = require('../../../errors');
+const WebSocket = require('../../../WebSocket');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -156,7 +155,8 @@ class VoiceWebSocket extends EventEmitter {
   onPacket(packet) {
     switch (packet.op) {
       case VoiceOPCodes.READY:
-        this.setHeartbeat(packet.d.heartbeat_interval);
+        // *.75 to correct for discord devs taking longer to fix things than i do to release versions
+        this.setHeartbeat(packet.d.heartbeat_interval * 0.75);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
          * @param {Object} packet The received packet
@@ -164,14 +164,17 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('ready', packet.d);
         break;
+      /* eslint-disable no-case-declarations */
       case VoiceOPCodes.SESSION_DESCRIPTION:
+        const key = new Uint8Array(new ArrayBuffer(packet.d.secret_key.length));
+        for (const i in packet.d.secret_key) key[i] = packet.d.secret_key[i];
         /**
          * Emitted once the Voice Websocket receives a description of this voice session.
          * @param {string} encryptionMode The type of encryption being used
-         * @param {SecretKey} secretKey The secret key used for encryption
+         * @param {Uint8Array} secretKey The secret key used for encryption
          * @event VoiceWebSocket#sessionDescription
          */
-        this.emit('sessionDescription', packet.d.mode, new SecretKey(packet.d.secret_key));
+        this.emit('sessionDescription', packet.d.mode, key);
         break;
       case VoiceOPCodes.SPEAKING:
         /**

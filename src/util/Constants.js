@@ -26,6 +26,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
+ * @property {PresenceData} [presence] Presence data to use upon login
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
@@ -47,6 +48,7 @@ exports.DefaultOptions = {
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
+  presence: {},
 
   /**
    * WebSocket options (these are left as snake_case to match the API)
@@ -110,7 +112,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
 exports.Endpoints = {
   CDN(root) {
     return {
-      Emoji: emojiID => `${root}/emojis/${emojiID}.png`,
+      Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
@@ -234,6 +236,8 @@ exports.Events = {
   USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
+  VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
+  VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
@@ -359,6 +363,15 @@ exports.ActivityTypes = [
   'LISTENING',
   'WATCHING',
 ];
+
+exports.ActivityFlags = {
+  INSTANCE: 1 << 0,
+  JOIN: 1 << 1,
+  SPECTATE: 1 << 2,
+  JOIN_REQUEST: 1 << 3,
+  SYNC: 1 << 4,
+  PLAY: 1 << 5,
+};
 
 exports.ExplicitContentFilterTypes = [
   'DISABLED',
@@ -657,7 +670,7 @@ exports.Colors = {
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
  * * BULK_DELETE_MESSAGE_TOO_OLD
- * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
  * * REACTION_BLOCKED
  * @typedef {string} APIError
  */
@@ -703,7 +716,7 @@ exports.APIErrors = {
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
-  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   REACTION_BLOCKED: 90001,
 };
 

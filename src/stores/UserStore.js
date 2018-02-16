@@ -54,7 +54,7 @@ class UserStore extends DataStore {
     const existing = this.get(id);
     if (existing) return Promise.resolve(existing);
 
-    return this.client.api.users(id).get().then(data => this.create(data, cache));
+    return this.client.api.users(id).get().then(data => this.add(data, cache));
   }
 }
 

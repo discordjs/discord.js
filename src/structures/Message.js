@@ -52,14 +52,7 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.create(data.author, !data.webhook_id);
-
-    /**
-     * Represents the author of the message as a guild member.
-     * Only available if the message comes from a guild where the author is still a member
-     * @type {?GuildMember}
-     */
-    this.member = this.guild ? this.guild.member(this.author) || null : null;
+    this.author = this.client.users.add(data.author, !data.webhook_id);
 
     /**
      * Whether or not this message is pinned
@@ -121,7 +114,7 @@ class Message extends Base {
     this.reactions = new ReactionStore(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        this.reactions.create(reaction);
+        this.reactions.add(reaction);
       }
     }
 
@@ -145,7 +138,7 @@ class Message extends Base {
 
     /**
      * Group activity
-     * @type {?Object}
+     * @type {?MessageActivity}
      */
     this.activity = data.activity ? {
       partyID: data.activity.party_id,
@@ -199,6 +192,16 @@ class Message extends Base {
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
     );
+  }
+
+  /**
+   * Represents the author of the message as a guild member.
+   * Only available if the message comes from a guild where the author is still a member
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild ? this.guild.member(this.author) || null : null;
   }
 
   /**
@@ -273,10 +276,8 @@ class Message extends Base {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const collector = message.createReactionCollector(
-   *   (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID',
-   *   { time: 15000 }
-   * );
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
+   * const collector = message.createReactionCollector(filter, { time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
@@ -296,6 +297,12 @@ class Message extends Base {
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}
+   * @example
+   * // Create a reaction collector
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * message.awaitReactions(filter, { time: 15000 })
+   *   .then(collected => console.log(`Collected ${collected.size} reactions`))
+   *   .catch(console.error);
    */
   awaitReactions(filter, options = {}) {
     return new Promise((resolve, reject) => {
@@ -377,10 +384,10 @@ class Message extends Base {
     }
     if (!options.content) options.content = content;
 
-    const { data, files } = await createMessage(this, options);
+    const { data } = await createMessage(this, options);
 
     return this.client.api.channels[this.channel.id].messages[this.id]
-      .patch({ data, files })
+      .patch({ data })
       .then(d => {
         const clone = this._clone();
         clone._patch(d);
@@ -423,15 +430,6 @@ class Message extends Base {
         message: this,
         emoji: Util.parseEmoji(emoji),
       }).reaction);
-  }
-
-  /**
-   * Removes all reactions from a message.
-   * @returns {Promise<Message>}
-   */
-  clearReactions() {
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions.delete()
-      .then(() => this);
   }
 
   /**

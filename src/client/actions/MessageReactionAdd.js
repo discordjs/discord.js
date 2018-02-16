@@ -19,7 +19,7 @@ class MessageReactionAdd extends Action {
     if (!message) return false;
     if (!data.emoji) return false;
     // Verify reaction
-    const reaction = message.reactions.create({
+    const reaction = message.reactions.add({
       emoji: data.emoji,
       count: 0,
       me: user.id === this.client.user.id,
@@ -33,7 +33,7 @@ class MessageReactionAdd extends Action {
  * Emitted whenever a reaction is added to a message.
  * @event Client#messageReactionAdd
  * @param {MessageReaction} messageReaction The reaction object
- * @param {User} user The user that applied the emoji or reaction emoji
+ * @param {User} user The user that applied the guild or reaction emoji
  */
 
 module.exports = MessageReactionAdd;

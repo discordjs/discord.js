@@ -2,7 +2,6 @@ const Structures = require('../util/Structures');
 const Collection = require('../util/Collection');
 const ClientUserSettings = require('./ClientUserSettings');
 const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const { Events } = require('../util/Constants');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Guild = require('./Guild');
@@ -23,7 +22,8 @@ class ClientUser extends Structures.get('User') {
 
     /**
      * The email of this account
-     * @type {string}
+     * <warn>This is only filled when using a user account.</warn>
+     * @type {?string}
      */
     this.email = data.email;
     this._typing = new Map();
@@ -188,7 +188,9 @@ class ClientUser extends Structures.get('User') {
    * @typedef {Object} PresenceData
    * @property {PresenceStatus} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [activity] activity the user is playing
+   * @property {Object} [activity] Activity the user is playing
+   * @property {Object|string} [activity.application] An application object or application id
+   * @property {string} [activity.application.id] The id of the application
    * @property {string} [activity.name] Name of the activity
    * @property {ActivityType|number} [activity.type] Type of the activity
    * @property {string} [activity.url] Stream url
@@ -260,45 +262,7 @@ class ClientUser extends Structures.get('User') {
     Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
 
     return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.create(m, false)));
-  }
-
-  /**
-   * Creates a guild.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} name The name of the guild
-   * @param {Object} [options] Options for the creating
-   * @param {string} [options.region] The region for the server, defaults to the closest one available
-   * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
-   * @returns {Promise<Guild>} The guild that was created
-   */
-  createGuild(name, { region, icon = null } = {}) {
-    if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
-      return new Promise((resolve, reject) =>
-        this.client.api.guilds.post({ data: { name, region, icon } })
-          .then(data => {
-            if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
-
-            const handleGuild = guild => {
-              if (guild.id === data.id) {
-                this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-                this.client.clearTimeout(timeout);
-                resolve(guild);
-              }
-            };
-            this.client.on(Events.GUILD_CREATE, handleGuild);
-
-            const timeout = this.client.setTimeout(() => {
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.guilds.create(data));
-            }, 10000);
-            return undefined;
-          }, reject)
-      );
-    }
-
-    return DataResolver.resolveImage(icon)
-      .then(data => this.createGuild(name, { region, icon: data || null }));
+      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.add(m, false)));
   }
 
   /**
@@ -326,7 +290,7 @@ class ClientUser extends Structures.get('User') {
       }, {}),
     } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
-      .then(res => this.client.channels.create(res));
+      .then(res => this.client.channels.add(res));
   }
 }
 

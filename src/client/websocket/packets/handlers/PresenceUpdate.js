@@ -11,7 +11,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     // Step 1
     if (!user) {
       if (data.user.username) {
-        user = client.users.create(data.user);
+        user = client.users.add(data.user);
       } else {
         return;
       }
@@ -25,7 +25,7 @@ class PresenceUpdateHandler extends AbstractHandler {
     if (guild) {
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
-        member = guild.members.create({
+        member = guild.members.add({
           user,
           roles: data.roles,
           deaf: false,
@@ -35,17 +35,17 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
       if (member) {
         if (client.listenerCount(Events.PRESENCE_UPDATE) === 0) {
-          guild.presences.create(data);
+          guild.presences.add(data);
           return;
         }
         const oldMember = member._clone();
         if (member.presence) {
           oldMember.frozenPresence = member.presence._clone();
         }
-        guild.presences.create(data);
+        guild.presences.add(data);
         client.emit(Events.PRESENCE_UPDATE, oldMember, member);
       } else {
-        guild.presences.create(data);
+        guild.presences.add(data);
       }
     }
   }

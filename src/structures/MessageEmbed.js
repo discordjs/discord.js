@@ -67,8 +67,8 @@ class MessageEmbed {
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url,
       proxyURL: data.thumbnail.proxy_url,
-      height: data.height,
-      width: data.width,
+      height: data.thumbnail.height,
+      width: data.thumbnail.width,
     } : null;
 
     /**
@@ -82,8 +82,8 @@ class MessageEmbed {
     this.image = data.image ? {
       url: data.image.url,
       proxyURL: data.image.proxy_url,
-      height: data.height,
-      width: data.width,
+      height: data.image.height,
+      width: data.image.width,
     } : null;
 
     /**
@@ -175,9 +175,9 @@ class MessageEmbed {
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     name = Util.resolveString(name);
-    if (!String(name) || name.length > 256) throw new RangeError('EMBED_FIELD_NAME');
+    if (!String(name)) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!String(value) || value.length > 1024) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!String(value)) throw new RangeError('EMBED_FIELD_VALUE');
     this.fields.push({ name, value, inline });
     return this;
   }
@@ -193,7 +193,7 @@ class MessageEmbed {
 
   /**
    * Sets the file to upload alongside the embed. This file can be accessed via `attachment://fileName.extension` when
-   * setting an embed image or author/footer icons. Only one file may be attached.
+   * setting an embed image or author/footer icons. Multiple files can be attached.
    * @param {Array<FileOptions|string|MessageAttachment>} files Files to attach
    * @returns {MessageEmbed}
    */
@@ -235,7 +235,6 @@ class MessageEmbed {
    */
   setDescription(description) {
     description = Util.resolveString(description);
-    if (description.length > 2048) throw new RangeError('EMBED_DESCRIPTION');
     this.description = description;
     return this;
   }
@@ -248,7 +247,6 @@ class MessageEmbed {
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
-    if (text.length > 2048) throw new RangeError('EMBED_FOOTER_TEXT');
     this.footer = { text, iconURL };
     return this;
   }
@@ -290,7 +288,6 @@ class MessageEmbed {
    */
   setTitle(title) {
     title = Util.resolveString(title);
-    if (title.length > 256) throw new RangeError('EMBED_TITLE');
     this.title = title;
     return this;
   }

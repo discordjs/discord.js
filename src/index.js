@@ -26,9 +26,11 @@ module.exports = {
   // Stores
   ChannelStore: require('./stores/ChannelStore'),
   ClientPresenceStore: require('./stores/ClientPresenceStore'),
-  EmojiStore: require('./stores/EmojiStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
+  GuildEmojiStore: require('./stores/GuildEmojiStore'),
+  GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
   GuildMemberStore: require('./stores/GuildMemberStore'),
+  GuildMemberRoleStore: require('./stores/GuildMemberRoleStore'),
   GuildStore: require('./stores/GuildStore'),
   ReactionUserStore: require('./stores/ReactionUserStore'),
   MessageStore: require('./stores/MessageStore'),
@@ -37,8 +39,11 @@ module.exports = {
   UserStore: require('./stores/UserStore'),
 
   // Shortcuts to Util methods
+  discordSort: Util.discordSort,
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
+  resolveColor: Util.resolveColor,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
@@ -61,6 +66,7 @@ module.exports = {
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
+  GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
