@@ -13,6 +13,7 @@ if (prod) {
   plugins.push(new UglifyJSPlugin({
     uglifyOptions: {
       mangle: { keep_classnames: true },
+      compress: { keep_classnames: true },
       output: { comments: false },
     },
   }));
