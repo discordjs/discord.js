@@ -29,6 +29,10 @@ class Base {
   toJSON(...props) {
     return Util.flatten(this, ...props);
   }
+
+  valueOf() {
+    return this.id;
+  }
 }
 
 module.exports = Base;

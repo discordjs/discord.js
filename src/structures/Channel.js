@@ -100,7 +100,7 @@ class Channel extends Base {
   }
 
   toJSON(...props) {
-    return super.toJSON(Object.assign({ createdTimestamp: true }, ...props));
+    return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
 

@@ -51,6 +51,10 @@ class ReactionEmoji {
   toJSON() {
     return Util.flatten(this, { identifier: true });
   }
+
+  valueOf() {
+    return this.id;
+  }
 }
 
 module.exports = ReactionEmoji;

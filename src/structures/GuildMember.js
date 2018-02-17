@@ -541,6 +541,8 @@ class GuildMember extends Base {
 
   toJSON() {
     return super.toJSON({
+      guild: 'guildID',
+      user: 'userID',
       displayName: true,
       speaking: false,
       lastMessage: false,
