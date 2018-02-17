@@ -32,7 +32,7 @@ else
 fi
 
 # For Node != 6, do nothing
-if [ "$TRAVIS_NODE_VERSION" != "6" ]; then
+if [ "$TRAVIS_NODE_VERSION" != "8" ]; then
   echo -e "\e[36m\e[1mBuild triggered with Node v${TRAVIS_NODE_VERSION} - doing nothing."
   exit 0
 fi
