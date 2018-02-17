@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "11.3.0",
+  "version": "11.3.1-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -32,9 +32,9 @@
   "homepage": "https://github.com/discordjs/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
-    "long": "^3.2.0",
-    "prism-media": "^0.0.1",
-    "snekfetch": "^3.6.1",
+    "long": "^4.0.0",
+    "prism-media": "^0.0.2",
+    "snekfetch": "^3.6.4",
     "tweetnacl": "^1.0.0",
     "ws": "^4.0.0"
   },
@@ -48,12 +48,12 @@
     "uws": "^9.14.0"
   },
   "devDependencies": {
-    "@types/node": "^8.5.7",
+    "@types/node": "^9.4.6",
     "discord.js-docgen": "discordjs/docgen",
-    "eslint": "^4.15.0",
+    "eslint": "^4.18.0",
     "parallel-webpack": "^2.2.0",
-    "uglifyjs-webpack-plugin": "^1.1.6",
-    "webpack": "^3.10.0"
+    "uglifyjs-webpack-plugin": "^1.2.0",
+    "webpack": "^3.11.0"
   },
   "engines": {
     "node": ">=6.0.0"
