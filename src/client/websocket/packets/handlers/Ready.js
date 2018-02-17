@@ -41,19 +41,6 @@ class ReadyHandler extends AbstractHandler {
       }
     }
 
-    if (!client.users.has('1')) {
-      client.users.add({
-        id: '1',
-        username: 'Clyde',
-        discriminator: '0000',
-        avatar: 'https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png',
-        bot: true,
-        status: 'online',
-        activity: null,
-        verified: true,
-      });
-    }
-
     const t = client.setTimeout(() => {
       client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
