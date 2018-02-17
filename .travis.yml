@@ -11,7 +11,7 @@ script: bash ./deploy/test.sh
 jobs:
   include:
     - stage: build
-      node_js: "6"
+      node_js: "8"
       script: bash ./deploy/deploy.sh
 env:
   global:
