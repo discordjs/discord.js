@@ -6,11 +6,12 @@
   "types": "./typings/index.d.ts",
   "scripts": {
     "test": "npm run lint && npm run docs:test",
-    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
-    "docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+    "docs:test": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src *.js",
     "lint:fix": "eslint --fix src",
-    "webpack": "parallel-webpack"
+    "build:browser": "webpack",
+    "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
   "repository": {
     "type": "git",
@@ -31,12 +32,13 @@
   },
   "homepage": "https://github.com/discordjs/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
+  "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "pako": "^1.0.0",
-    "prism-media": "github:hydrabolt/prism-media",
-    "snekfetch": "^3.5.0",
+    "prism-media": "hydrabolt/prism-media",
+    "snekfetch": "^3.6.0",
     "tweetnacl": "^1.0.0",
-    "ws": "^3.3.1"
+    "ws": "^4.0.0"
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
@@ -47,14 +49,12 @@
     "zlib-sync": "^0.1.0"
   },
   "devDependencies": {
-    "@types/node": "^8.0.0",
+    "@types/node": "^9.4.6",
     "discord.js-docgen": "discordjs/docgen",
-    "eslint": "^4.11.0",
-    "jsdoc-strip-async-await": "^0.1.0",
+    "eslint": "^4.17.0",
     "json-filter-loader": "^1.0.0",
-    "parallel-webpack": "^2.2.0",
-    "uglifyjs-webpack-plugin": "^1.0.0-beta.2",
-    "webpack": "^3.8.0"
+    "uglifyjs-webpack-plugin": "^1.1.8",
+    "webpack": "^3.11.0"
   },
   "engines": {
     "node": ">=8.0.0"
