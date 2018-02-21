@@ -67,6 +67,7 @@ client.login('token');
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs)
+* [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
 * [GitHub](https://github.com/discordjs/discord.js)
