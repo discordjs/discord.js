@@ -328,7 +328,7 @@ class WebSocketConnection extends EventEmitter {
     /**
      * Emitted whenever the client tries to reconnect to the WebSocket.
      * @event Client#reconnecting
-     * @param {Number} shardId The shard ID that emitted this event
+     * @param {Number} shardID The shard ID that emitted this event
      */
     this.client.emit(Events.RECONNECTING, this.id);
     this.connect(this.gateway, 5500, true);
@@ -348,7 +348,7 @@ class WebSocketConnection extends EventEmitter {
      * Emitted whenever the client's WebSocket encounters a connection error.
      * @event Client#error
      * @param {Error} error The encountered error
-     * @param {Number} shardId The shard ID that emitted this event
+     * @param {Number} shardID The shard ID that emitted this event
      */
     this.client.emit(Events.ERROR, error, this.id);
   }
@@ -375,7 +375,7 @@ class WebSocketConnection extends EventEmitter {
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
        * @param {CloseEvent} event The WebSocket close event
-       * @param {Number} shardId The shard ID that emitted this event
+       * @param {Number} shardID The shard ID that emitted this event
        */
       this.client.emit(Events.DISCONNECT, event, this.id);
       this.debug(WSCodes[event.code]);

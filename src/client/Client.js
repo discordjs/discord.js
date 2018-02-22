@@ -32,9 +32,9 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
-      if (isNaN(this.options.shardId)) this.options.shardId = JSON.parse(`[${process.env.SHARD_ID}]`);
+    if (!browser && !this.options.shardID && 'SHARD_ID' in process.env) {
+      this.options.shardID = Number(process.env.SHARD_ID);
+      if (isNaN(this.options.shardID)) this.options.shardID = JSON.parse(`[${process.env.SHARD_ID}]`);
     }
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
@@ -438,12 +438,12 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (!(options.shardId instanceof Array) && options.shardId !== null &&
-        (typeof options.shardId !== 'number' || isNaN(options.shardId))) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number, null, or an array');
+    if (!(options.shardID instanceof Array) && options.shardID !== null &&
+        (typeof options.shardID !== 'number' || isNaN(options.shardID))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardID', 'a number, null, or an array');
     }
     if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
+    if (options.shardID < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardID', 'at least 0');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }

@@ -99,18 +99,18 @@ class WebSocketManager extends EventEmitter {
   spawn(gateway, resolve, reject) {
     this.gateway = gateway;
     let shardsToSpawn;
-    if (!(this.client.options.shardId instanceof Array) && typeof this.client.options.shardId !== 'number' &&
+    if (!(this.client.options.shardID instanceof Array) && typeof this.client.options.shardID !== 'number' &&
         this.client.options.shardCount) {
       shardsToSpawn = new Array(this.client.options.shardCount).fill(0).map((v, i) => i);
-    } else if (this.client.options.shardId instanceof Array) {
-      shardsToSpawn = this.client.options.shardId;
-    } else if (typeof this.client.options.shardId !== 'number' && !this.client.options.shardCount) {
+    } else if (this.client.options.shardID instanceof Array) {
+      shardsToSpawn = this.client.options.shardID;
+    } else if (typeof this.client.options.shardID !== 'number' && !this.client.options.shardCount) {
       shardsToSpawn = [0];
     } else {
-      shardsToSpawn = [this.client.options.shardId];
+      shardsToSpawn = [this.client.options.shardID];
     }
     if (shardsToSpawn.some(i => i !== 0 && i >= this.client.options.shardCount)) {
-      reject(new RangeError('CLIENT_INVALID_OPTION', 'shardId', `less than ${this.client.options.shardCount}`));
+      reject(new RangeError('CLIENT_INVALID_OPTION', 'shardID', `less than ${this.client.options.shardCount}`));
       return;
     }
     this.debug(`Shards to spawn ${JSON.stringify(shardsToSpawn)}`);
@@ -132,7 +132,7 @@ class WebSocketManager extends EventEmitter {
         /**
          * Emitted when a shard becomes ready to start working.
          * @event Client#shardReady
-         * @param {Number} shardId The created shard's ID
+         * @param {Number} shardID The created shard's ID
          */
         this.client.emit(Events.SHARD_READY, id);
         if (pos === shardsToSpawn.length - 1) {
