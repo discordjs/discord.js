@@ -137,6 +137,7 @@ class StreamDispatcher extends Writable {
    * Resumes playback
    */
   resume() {
+    if (!this.pausedSince) return;
     this._pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
     if (this._writeCallback) this._writeCallback();
@@ -277,6 +278,13 @@ class StreamDispatcher extends Writable {
 
   setVolume(value) {
     if (!this.streams.volume) return false;
+    /**
+     * Emitted when the volume of this dispatcher changes.
+     * @event StreamDispatcher#volumeChange
+     * @param {number} oldVolume The old volume of this dispatcher
+     * @param {number} newVolume The new volume of this dispatcher
+     */
+    this.emit('volumeChange', this.volume, value);
     this.streams.volume.setVolume(value);
     return true;
   }
