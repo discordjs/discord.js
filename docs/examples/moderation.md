@@ -13,8 +13,10 @@ const Discord = require('discord.js');
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
-// The ready event is vital, it means that your bot will only start reacting to information
-// from Discord _after_ ready is emitted
+/**
+ * The ready event is vital, it means that only _after_ this will your bot start reacting to information
+ * received from Discord
+ */
 client.on('ready', () => {
   console.log('I am ready!');
 });
@@ -23,7 +25,7 @@ client.on('message', message => {
   // Ignore messages that aren't from a guild
   if (!message.guild) return;
 
-  // if the message content starts with "!kick"
+  // If the message content starts with "!kick"
   if (message.content.startsWith('!kick')) {
     // Assuming we mention someone in the message, this will return the user
     // Read more about mentions over at https://discord.js.org/#/docs/main/master/class/MessageMentions
@@ -80,8 +82,10 @@ const Discord = require('discord.js');
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
-// The ready event is vital, it means that your bot will only start reacting to information
-// from Discord _after_ ready is emitted
+/**
+ * The ready event is vital, it means that only _after_ this will your bot start reacting to information
+ * received from Discord
+ */
 client.on('ready', () => {
   console.log('I am ready!');
 });
@@ -119,14 +123,14 @@ client.on('message', message => {
           // either due to missing permissions or role hierarchy
           message.reply('I was unable to ban the member');
           // Log the error
-          console.error(err)
+          console.error(err);
         });
       } else {
         // The mentioned user isn't in this guild
         message.reply("That user isn't in this guild!");
       }
-    // Otherwise, if no user was mentioned
     } else {
+    // Otherwise, if no user was mentioned
       message.reply("You didn't mention the user to ban!");
     }
   }

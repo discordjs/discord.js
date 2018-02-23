@@ -8,8 +8,10 @@ const { Client, MessageEmbed } = require('discord.js');
 // Create an instance of a Discord client
 const client = new Client();
 
-// The ready event is vital, it means that your bot will only start reacting to information
-// from Discord _after_ ready is emitted
+/**
+ * The ready event is vital, it means that only _after_ this will your bot start reacting to information
+ * received from Discord
+ */
 client.on('ready', () => {
   console.log('I am ready!');
 });
