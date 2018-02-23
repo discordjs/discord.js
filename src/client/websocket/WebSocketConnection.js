@@ -269,13 +269,15 @@ class WebSocketConnection extends EventEmitter {
 
     this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
     if (!flush) return;
+    let packet;
     try {
-      const packet = WebSocket.unpack(this.inflate.result);
-      this.onPacket(packet);
-      if (this.client.listenerCount('raw')) this.client.emit('raw', packet);
+      packet = WebSocket.unpack(this.inflate.result);
     } catch (err) {
       this.client.emit('debug', err);
+      return;
     }
+    this.onPacket(packet);
+    if (this.client.listenerCount('raw')) this.client.emit('raw', packet);
   }
 
   /**

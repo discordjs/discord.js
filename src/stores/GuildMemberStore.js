@@ -2,7 +2,7 @@ const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 const { Events, OPCodes } = require('../util/Constants');
 const Collection = require('../util/Collection');
-const { Error } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Stores guild members.
@@ -14,8 +14,8 @@ class GuildMemberStore extends DataStore {
     this.guild = guild;
   }
 
-  create(data, cache) {
-    return super.create(data, cache, { extras: [this.guild] });
+  add(data, cache) {
+    return super.add(data, cache, { extras: [this.guild] });
   }
 
   /**
@@ -72,21 +72,22 @@ class GuildMemberStore extends DataStore {
    * @returns {Promise<GuildMember>|Promise<Collection<Snowflake, GuildMember>>}
    * @example
    * // Fetch all members from a guild
-   * guild.members.fetch();
+   * guild.members.fetch()
+   *   .then(console.log)
+   *   .catch(console.error);
    * @example
    * // Fetch a single member
-   * guild.members.fetch('66564597481480192');
-   * guild.members.fetch(user);
-   * guild.members.fetch({ user, cache: false }); // Fetch and don't cache
+   * guild.members.fetch('66564597481480192')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * guild.members.fetch({ user, cache: false }) // Fetch and don't cache
+   *   .then(console.log)
+   *   .catch(console.error);
    * @example
    * // Fetch by query
-   * guild.members.fetch({
-   *   query: 'hydra',
-   * });
-   * guild.members.fetch({
-   *   query: 'hydra',
-   *   limit: 10,
-   * });
+   * guild.members.fetch({ query: 'hydra' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetch(options) {
     if (!options) return this._fetchMany();
@@ -99,11 +100,85 @@ class GuildMemberStore extends DataStore {
     return this._fetchMany(options);
   }
 
+  /**
+   * Prunes members from the guild based on how long they have been inactive.
+   * @param {Object} [options] Prune options
+   * @param {number} [options.days=7] Number of days of inactivity required to kick
+   * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
+   * @param {string} [options.reason] Reason for this prune
+   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @example
+   * // See how many members will be pruned
+   * guild.members.prune({ dry: true })
+   *   .then(pruned => console.log(`This will prune ${pruned} people!`))
+   *   .catch(console.error);
+   * @example
+   * // Actually prune the members
+   * guild.members.prune({ days: 1, reason: 'too many people!' })
+   *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
+   *   .catch(console.error);
+   */
+  prune({ days = 7, dry = false, reason } = {}) {
+    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
+    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
+      .then(data => data.pruned);
+  }
+
+  /**
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {Object} [options] Options for the ban
+   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {string} [options.reason] Reason for banning
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * @example
+   * // Ban a user by ID (or with a user/guild member object)
+   * guild.members.ban('84484653687267328')
+   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  ban(user, options = { days: 0 }) {
+    if (options.days) options['delete-message-days'] = options.days;
+    const id = this.client.users.resolveID(user);
+    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
+    return this.client.api.guilds(this.guild.id).bans[id].put({ query: options })
+      .then(() => {
+        if (user instanceof GuildMember) return user;
+        const _user = this.client.users.resolve(id);
+        if (_user) {
+          const member = this.resolve(_user);
+          return member || _user;
+        }
+        return id;
+      });
+  }
+
+  /**
+   * Unbans a user from the guild.
+   * @param {UserResolvable} user The user to unban
+   * @param {string} [reason] Reason for unbanning user
+   * @returns {Promise<User>}
+   * @example
+   * // Unban a user by ID (or with a user/guild member object)
+   * guild.members.unban('84484653687267328')
+   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  unban(user, reason) {
+    const id = this.client.users.resolveID(user);
+    if (!id) throw new Error('BAN_RESOLVE_ID');
+    return this.client.api.guilds(this.guild.id).bans[id].delete({ reason })
+      .then(() => user);
+  }
+
+
   _fetchSingle({ user, cache }) {
     const existing = this.get(user);
     if (existing) return Promise.resolve(existing);
     return this.client.api.guilds(this.guild.id).members(user).get()
-      .then(data => this.create(data, cache));
+      .then(data => this.add(data, cache));
   }
 
   _fetchMany({ query = '', limit = 0 } = {}) {

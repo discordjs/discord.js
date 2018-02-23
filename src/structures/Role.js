@@ -2,7 +2,7 @@ const Snowflake = require('../util/Snowflake');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 const Base = require('./Base');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a role on Discord.
@@ -95,9 +95,7 @@ class Role extends Base {
    * @readonly
    */
   get hexColor() {
-    let col = this.color.toString(16);
-    while (col.length < 6) col = `0${col}`;
-    return `#${col}`;
+    return `#${this.color.toString(16).padStart(6, '0')}`;
   }
 
   /**
@@ -118,7 +116,7 @@ class Role extends Base {
     if (this.managed) return false;
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
-    return clientMember.highestRole.comparePositionTo(this) > 0;
+    return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
   /**
@@ -193,6 +191,18 @@ class Role extends Base {
         clone._patch(role);
         return clone;
       });
+  }
+
+  /**
+   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
+   * taking into account permission overwrites.
+   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @returns {?Permissions}
+   */
+  permissionsIn(channel) {
+    channel = this.guild.channels.resolve(channel);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    return channel.rolePermissions(this);
   }
 
   /**

@@ -1,10 +1,10 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
-const Collection = require('../util/Collection');
+const GuildMemberRoleStore = require('../stores/GuildMemberRoleStore');
 const Base = require('./Base');
 const { Presence } = require('./Presence');
-const { Error, TypeError } = require('../errors');
+const { Error } = require('../errors');
 
 /**
  * Represents a member of a guild on Discord.
@@ -22,12 +22,17 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The user that this guild member instance Represents
+     * The user that this guild member instance represents
      * @type {User}
      */
     this.user = {};
 
-    this._roles = [];
+    /**
+     * A list of roles that are applied to this GuildMember, mapped by the role ID
+     * @type {GuildMemberRoleStore<Snowflake, Role>}
+     */
+
+    this.roles = new GuildMemberRoleStore(this);
 
     if (data) this._patch(data);
 
@@ -66,8 +71,14 @@ class GuildMember extends Base {
      */
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = this.guild.client.users.create(data.user);
-    if (data.roles) this._roles = data.roles;
+    this.user = this.guild.client.users.add(data.user);
+    if (data.roles) this.roles._patch(data.roles);
+  }
+
+  _clone() {
+    const clone = super._clone();
+    clone.roles = this.roles.clone();
+    return clone;
   }
 
   get voiceState() {
@@ -77,36 +88,42 @@ class GuildMember extends Base {
   /**
    * Whether this member is deafened server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverDeaf() { return this.voiceState.deaf; }
 
   /**
    * Whether this member is muted server-wide
    * @type {boolean}
+   * @readonly
    */
   get serverMute() { return this.voiceState.mute; }
 
   /**
    * Whether this member is self-muted
    * @type {boolean}
+   * @readonly
    */
   get selfMute() { return this.voiceState.self_mute; }
 
   /**
    * Whether this member is self-deafened
    * @type {boolean}
+   * @readonly
    */
   get selfDeaf() { return this.voiceState.self_deaf; }
 
   /**
    * The voice session ID of this member (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceSessionID() { return this.voiceState.session_id; }
 
   /**
    * The voice channel ID of this member, (if any)
    * @type {?Snowflake}
+   * @readonly
    */
   get voiceChannelID() { return this.voiceState.channel_id; }
 
@@ -129,51 +146,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID
-   * @type {Collection<Snowflake, Role>}
-   * @readonly
-   */
-  get roles() {
-    const list = new Collection();
-    const everyoneRole = this.guild.roles.get(this.guild.id);
-
-    if (everyoneRole) list.set(everyoneRole.id, everyoneRole);
-
-    for (const roleID of this._roles) {
-      const role = this.guild.roles.get(roleID);
-      if (role) list.set(role.id, role);
-    }
-
-    return list;
-  }
-
-  /**
-   * The role of the member with the highest position
-   * @type {Role}
-   * @readonly
-   */
-  get highestRole() {
-    return this.roles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  /**
-   * The role of the member used to set their color
-   * @type {?Role}
-   * @readonly
-   */
-  get colorRole() {
-    const coloredRoles = this.roles.filter(role => role.color);
-    if (!coloredRoles.size) return null;
-    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
-  }
-
-  /**
    * The displayed color of the member in base 10
    * @type {number}
    * @readonly
    */
   get displayColor() {
-    const role = this.colorRole;
+    const role = this.roles.color;
     return (role && role.color) || 0;
   }
 
@@ -183,19 +161,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayHexColor() {
-    const role = this.colorRole;
+    const role = this.roles.color;
     return (role && role.hexColor) || '#000000';
-  }
-
-  /**
-   * The role of the member used to hoist them in a separate category in the users list
-   * @type {?Role}
-   * @readonly
-   */
-  get hoistRole() {
-    const hoistedRoles = this.roles.filter(role => role.hoist);
-    if (!hoistedRoles.size) return null;
-    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
 
   /**
@@ -254,16 +221,23 @@ class GuildMember extends Base {
   }
 
   /**
+   * Whether the member is manageable in terms of role hierarchy by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get manageable() {
+    if (this.user.id === this.guild.ownerID) return false;
+    if (this.user.id === this.client.user.id) return false;
+    return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
+  }
+
+  /**
    * Whether the member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
   get kickable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.KICK_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
   }
 
   /**
@@ -272,11 +246,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
-    if (this.user.id === this.guild.ownerID) return false;
-    if (this.user.id === this.client.user.id) return false;
-    const clientMember = this.guild.member(this.client.user);
-    if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
-    return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
   }
 
   /**
@@ -286,19 +256,20 @@ class GuildMember extends Base {
    * @returns {?Permissions}
    */
   permissionsIn(channel) {
-    channel = this.client.channels.resolve(channel);
-    if (!channel || !channel.guild) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.permissionsFor(this);
+    channel = this.guild.channels.resolve(channel);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    return channel.memberPermissions(this);
   }
 
   /**
    * Checks if any of the member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [checkOwner=true] Whether to allow being the guild's owner to override
+   * @param {Object} [options] Options
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
    * @returns {boolean}
    */
-  hasPermission(permission, checkAdmin = true, checkOwner = true) {
+  hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.permissions.has(permission, checkAdmin));
   }
@@ -347,7 +318,8 @@ class GuildMember extends Base {
       const clone = this._clone();
       data.user = this.user;
       clone._patch(data);
-      clone._frozenVoiceState = this.voiceState;
+      clone._frozenVoiceState = {};
+      Object.assign(clone._frozenVoiceState, this.voiceState);
       if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
       if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
       if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;
@@ -356,7 +328,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mute/unmutes a user.
+   * Mutes/unmutes a user.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -366,7 +338,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * Deafen/undeafens a user.
+   * Deafens/undeafens a user.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
@@ -382,94 +354,6 @@ class GuildMember extends Base {
    */
   setVoiceChannel(channel) {
     return this.edit({ channel });
-  }
-
-  /**
-   * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
-   * @param {string} [reason] Reason for applying the roles
-   * @returns {Promise<GuildMember>}
-   */
-  setRoles(roles, reason) {
-    return this.edit({ roles }, reason);
-  }
-
-  /**
-   * Adds a single role to the member.
-   * @param {RoleResolvable} role The role or ID of the role to add
-   * @param {string} [reason] Reason for adding the role
-   * @returns {Promise<GuildMember>}
-   */
-  addRole(role, reason) {
-    role = this.guild.roles.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
-      .put({ reason })
-      .then(() => {
-        const clone = this._clone();
-        if (!clone._roles.includes(role.id)) clone._roles.push(role.id);
-        return clone;
-      });
-  }
-
-  /**
-   * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
-   * @param {string} [reason] Reason for adding the roles
-   * @returns {Promise<GuildMember>}
-   */
-  addRoles(roles, reason) {
-    let allRoles = this._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      allRoles.push(role.id);
-    }
-    return this.edit({ roles: allRoles }, reason);
-  }
-
-  /**
-   * Removes a single role from the member.
-   * @param {RoleResolvable} role The role or ID of the role to remove
-   * @param {string} [reason] Reason for removing the role
-   * @returns {Promise<GuildMember>}
-   */
-  removeRole(role, reason) {
-    role = this.guild.roles.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
-    if (!this._roles.includes(role.id)) return Promise.resolve(this);
-    return this.client.api.guilds(this.guild.id).members(this.user.id).roles(role.id)
-      .delete({ reason })
-      .then(() => {
-        const clone = this._clone();
-        const index = clone._roles.indexOf(role.id);
-        if (~index) clone._roles.splice(index, 1);
-        return clone;
-      });
-  }
-
-  /**
-   * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
-   * @param {string} [reason] Reason for removing the roles
-   * @returns {Promise<GuildMember>}
-   */
-  removeRoles(roles, reason) {
-    const allRoles = this._roles.slice();
-    for (let role of roles instanceof Collection ? roles.values() : roles) {
-      role = this.guild.roles.resolve(role);
-      if (!role) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      const index = allRoles.indexOf(role.id);
-      if (index >= 0) allRoles.splice(index, 1);
-    }
-    return this.edit({ roles: allRoles }, reason);
   }
 
   /**
@@ -505,27 +389,23 @@ class GuildMember extends Base {
    */
   kick(reason) {
     return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
-      .then(() =>
-        this.client.actions.GuildMemberRemove.handle({
-          guild_id: this.guild.id,
-          user: this.user,
-        }).member
-      );
+      .then(() => this);
   }
 
   /**
    * Bans this guild member.
-   * @param {Object} [options] Ban options. If a number, the number of days to delete messages for, if a
-   * string, the ban reason. Supplying an object allows you to do both.
+   * @param {Object} [options] Options for the ban
    * @param {number} [options.days=0] Number of days of messages to delete
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
    * // ban a guild member
-   * guildMember.ban(7);
+   * guildMember.ban({ days: 7, reason: 'They deserved it' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   ban(options) {
-    return this.guild.ban(this, options);
+    return this.guild.members.ban(this, options);
   }
 
   /**

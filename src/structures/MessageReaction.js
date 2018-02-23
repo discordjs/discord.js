@@ -1,8 +1,7 @@
-const Collection = require('../util/Collection');
+const GuildEmoji = require('./GuildEmoji');
 const Util = require('../util/Util');
-const Emoji = require('./Emoji');
 const ReactionEmoji = require('./ReactionEmoji');
-const { Error } = require('../errors');
+const ReactionUserStore = require('../stores/ReactionUserStore');
 
 /**
  * Represents a reaction to a message.
@@ -29,22 +28,22 @@ class MessageReaction {
 
     /**
      * The users that have given this reaction, mapped by their ID
-     * @type {Collection<Snowflake, User>}
+     * @type {ReactionUserStore<Snowflake, User>}
      */
-    this.users = new Collection();
+    this.users = new ReactionUserStore(client, undefined, this);
 
-    this._emoji = new ReactionEmoji(this, data.emoji.name, data.emoji.id);
+    this._emoji = new ReactionEmoji(this, data.emoji);
   }
 
   /**
-   * The emoji of this reaction, either an Emoji object for known custom emojis, or a ReactionEmoji
+   * The emoji of this reaction, either an GuildEmoji object for known custom emojis, or a ReactionEmoji
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
-   * @type {Emoji|ReactionEmoji}
+   * @type {GuildEmoji|ReactionEmoji}
    * @readonly
    */
   get emoji() {
-    if (this._emoji instanceof Emoji) return this._emoji;
+    if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis;
@@ -57,46 +56,6 @@ class MessageReaction {
     return this._emoji;
   }
 
-  /**
-   * Removes a user from this reaction.
-   * @param {UserResolvable} [user=this.message.client.user] The user to remove the reaction of
-   * @returns {Promise<MessageReaction>}
-   */
-  remove(user = this.message.client.user) {
-    const userID = this.message.client.users.resolveID(user);
-    if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
-    return this.message.client.api.channels[this.message.channel.id].messages[this.message.id]
-      .reactions[this.emoji.identifier][userID === this.message.client.user.id ? '@me' : userID]
-      .delete()
-      .then(() =>
-        this.message.client.actions.MessageReactionRemove.handle({
-          user_id: userID,
-          message_id: this.message.id,
-          emoji: this.emoji,
-          channel_id: this.message.channel.id,
-        }).reaction
-      );
-  }
-
-  /**
-   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
-   * @param {Object} [options] Options for fetching the users
-   * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
-   * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
-   * @returns {Promise<Collection<Snowflake, User>>}
-   */
-  async fetchUsers({ limit = 100, after } = {}) {
-    const message = this.message;
-    const users = await message.client.api.channels[message.channel.id].messages[message.id]
-      .reactions[this.emoji.identifier]
-      .get({ query: { limit, after } });
-    for (const rawUser of users) {
-      const user = message.client.users.create(rawUser);
-      this.users.set(user.id, user);
-    }
-    this.count = this.users.size;
-    return this.users;
-  }
 
   toJSON() {
     return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });

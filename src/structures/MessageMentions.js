@@ -23,7 +23,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.create(mention);
+          let user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
       }
@@ -118,19 +118,27 @@ class MessageMentions {
   }
 
   /**
-   * Check if a user is mentioned.
+   * Checks if a user, guild member, role, or channel is mentioned.
    * Takes into account user mentions, role mentions, and @everyone/@here mentions.
    * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
-   * @param {boolean} [strict=true] If role mentions and everyone/here mentions should be included
+   * @param {Object} [options] Options
+   * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
+   * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member
+   * @param {boolean} [options.ignoreEveryone=false] - Whether to ignore everyone/here mentions
    * @returns {boolean}
    */
-  has(data, strict = true) {
-    if (strict && this.everyone) return true;
-    if (strict && data instanceof GuildMember) {
+  has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
+    if (!ignoreEveryone && this.everyone) return true;
+    if (!ignoreRoles && data instanceof GuildMember) {
       for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
     }
-    const id = data.id || data;
-    return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+
+    if (!ignoreDirect) {
+      const id = data.id || data;
+      return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
+    }
+
+    return false;
   }
 
   toJSON() {

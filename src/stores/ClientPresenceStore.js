@@ -7,7 +7,6 @@ const { TypeError } = require('../errors');
 /**
  * Stores the client presence and other presences.
  * @extends {PresenceStore}
- * @private
  */
 class ClientPresenceStore extends PresenceStore {
   constructor(...args) {
@@ -20,7 +19,14 @@ class ClientPresenceStore extends PresenceStore {
     });
   }
 
-  async setClientPresence({ status, since, afk, activity }) { // eslint-disable-line complexity
+  async setClientPresence(presence) {
+    const packet = await this._parse(presence);
+    this.clientPresence.patch(packet);
+    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    return this.clientPresence;
+  }
+
+  async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
     if (activity) {
@@ -39,7 +45,7 @@ class ClientPresenceStore extends PresenceStore {
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.clientPresence.status,
       game: activity ? {
-        type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+        type: activity.type,
         name: activity.name,
         url: activity.url,
         details: activity.details || undefined,
@@ -58,9 +64,16 @@ class ClientPresenceStore extends PresenceStore {
       } : null,
     };
 
-    this.clientPresence.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
-    return this.clientPresence;
+    if ((status || afk || since) && !activity) {
+      packet.game = this.clientPresence.activity;
+    }
+
+    if (packet.game) {
+      packet.game.type = typeof packet.game.type === 'number' ?
+        packet.game.type : ActivityTypes.indexOf(packet.game.type);
+    }
+
+    return packet;
   }
 }
 

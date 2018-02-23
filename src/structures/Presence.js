@@ -1,5 +1,12 @@
-const { ActivityTypes } = require('../util/Constants');
 const Util = require('../util/Util');
+const { ActivityTypes, ActivityFlags } = require('../util/Constants');
+
+/**
+ * Activity sent in a message.
+ * @typedef {Object} MessageActivity
+ * @property {string} [partyID] Id of the party represented in activity
+ * @property {number} [type] Type of activity sent
+ */
 
 /**
  * Represents a user's presence.
@@ -123,6 +130,17 @@ class Activity {
      * @type {?RichPresenceAssets}
      */
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
+
+    this.syncID = data.sync_id;
+    this._flags = data.flags;
+  }
+
+  get flags() {
+    const flags = [];
+    for (const [name, flag] of Object.entries(ActivityFlags)) {
+      if ((this._flags & flag) === flag) flags.push(name);
+    }
+    return flags;
   }
 
   /**
@@ -137,6 +155,14 @@ class Activity {
       this.type === activity.type &&
       this.url === activity.url
     );
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the activities's name instead of the Activity object.
+   * @returns {string}
+   */
+  toString() {
+    return this.name;
   }
 
   _clone() {
@@ -198,6 +224,9 @@ class RichPresenceAssets {
    */
   largeImageURL({ format, size } = {}) {
     if (!this.largeImage) return null;
+    if (/^spotify:/.test(this.largeImage)) {
+      return `https://i.scdn.co/image/${this.largeImage.slice(8)}`;
+    }
     return this.activity.presence.client.rest.cdn
       .AppAsset(this.activity.applicationID, this.largeImage, { format, size });
   }

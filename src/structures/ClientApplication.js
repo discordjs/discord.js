@@ -97,7 +97,7 @@ class ClientApplication extends Base {
        * The owner of this OAuth application
        * @type {?User}
        */
-      this.owner = this.client.users.create(data.owner);
+      this.owner = this.client.users.add(data.owner);
     }
   }
 
@@ -150,11 +150,12 @@ class ClientApplication extends Base {
    * @returns {Promise<Object>}
    */
   fetchAssets() {
-    return this.client.api.applications(this.id).assets.get()
+    const types = Object.keys(ClientApplicationAssetTypes);
+    return this.client.api.oauth2.applications(this.id).assets.get()
       .then(assets => assets.map(a => ({
         id: a.id,
         name: a.name,
-        type: Object.keys(ClientApplicationAssetTypes)[a.type - 1],
+        type: types[a.type - 1],
       })));
   }
 
@@ -165,13 +166,12 @@ class ClientApplication extends Base {
    * @param {string} type Type of the asset. `big`, or `small`
    * @returns {Promise}
    */
-  createAsset(name, data, type) {
-    return DataResolver.resolveBase64(data).then(b64 =>
-      this.client.api.applications(this.id).assets.post({ data: {
-        name,
-        data: b64,
-        type: ClientApplicationAssetTypes[type.toUpperCase()],
-      } }));
+  async createAsset(name, data, type) {
+    return this.client.api.oauth2.applications(this.id).assets.post({ data: {
+      name,
+      type: ClientApplicationAssetTypes[type.toUpperCase()],
+      image: await DataResolver.resolveImage(data),
+    } });
   }
 
   /**

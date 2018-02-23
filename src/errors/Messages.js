@@ -20,19 +20,20 @@ const Messages = {
   SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
   SHARDING_CHILD_CONNECTION: 'Failed to send message to shard\'s process.',
   SHARDING_PARENT_CONNECTION: 'Failed to send message to master process.',
-  SHARDING_NO_SHARDS: 'No shards have been spawned',
-  SHARDING_IN_PROCESS: 'Shards are still being spawned',
-  SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards`,
+  SHARDING_NO_SHARDS: 'No shards have been spawned.',
+  SHARDING_IN_PROCESS: 'Shards are still being spawned.',
+  SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
+  SHARDING_PROCESS_EXISTS: id => `Shard ${id} already has an active process.`,
+  SHARDING_READY_TIMEOUT: id => `Shard ${id}'s Client took too long to become ready.`,
+  SHARDING_READY_DISCONNECTED: id => `Shard ${id}'s Client disconnected before becoming ready.`,
+  SHARDING_READY_DIED: id => `Shard ${id}'s process exited before its Client became ready.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
   EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not exceed 256 characters or be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not exceed 1024 characters or be empty.',
-  EMBED_DESCRIPTION: 'MessageEmbed descriptions may not exceed 2048 characters.',
-  EMBED_FOOTER_TEXT: 'MessageEmbed footer text may not exceed 2048 characters.',
-  EMBED_TITLE: 'MessageEmbed titles may not exceed 256 characters.',
+  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
+  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
 
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
@@ -50,6 +51,9 @@ const Messages = {
   VOICE_NO_BROWSER: 'Voice connections are not available in browsers.',
   VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
   VOICE_JOIN_SOCKET_CLOSED: 'Tried to send join packet, but the WebSocket is not open.',
+  VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
+  VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
+  VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
 
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 
@@ -89,7 +93,7 @@ const Messages = {
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
-  EMOJI_TYPE: 'Emoji must be a string or Emoji/ReactionEmoji',
+  EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 };
