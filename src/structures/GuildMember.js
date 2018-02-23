@@ -62,7 +62,7 @@ class GuildMember extends Base {
      * @type {?string}
      * @name GuildMember#nickname
      */
-    this.nickname = data.nick || null;
+    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     /**
      * The timestamp the member joined the guild at

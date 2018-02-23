@@ -70,39 +70,6 @@ class Emoji extends Base {
       identifier: true,
     });
   }
-
-  /**
-   * Deletes the emoji.
-   * @param {string} [reason] Reason for deleting the emoji
-   * @returns {Promise<Emoji>}
-   */
-  delete(reason) {
-    return this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason })
-      .then(() => this);
-  }
-
-  /**
-   * Whether this emoji is the same as another one.
-   * @param {Emoji|Object} other The emoji to compare it to
-   * @returns {boolean} Whether the emoji is equal to the given emoji or not
-   */
-  equals(other) {
-    if (other instanceof Emoji) {
-      return (
-        other.id === this.id &&
-        other.name === this.name &&
-        other.managed === this.managed &&
-        other.requiresColons === this.requiresColons &&
-        other._roles === this._roles
-      );
-    } else {
-      return (
-        other.id === this.id &&
-        other.name === this.name &&
-        other._roles === this._roles
-      );
-    }
-  }
 }
 
 module.exports = Emoji;
