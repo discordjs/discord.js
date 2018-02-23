@@ -54,11 +54,11 @@ client.on('message', message => {
         });
       } else {
         // The mentioned user isn't in this guild
-        message.reply('That user isn't in this guild!');
+        message.reply('That user isn\'t in this guild!');
       }
     // Otherwise, if no user was mentioned
     } else {
-      message.reply('You didn't mention the user to kick!');
+      message.reply('You didn\'t mention the user to kick!');
     }
   }
 });
@@ -127,11 +127,11 @@ client.on('message', message => {
         });
       } else {
         // The mentioned user isn't in this guild
-        message.reply('That user isn't in this guild!');
+        message.reply('That user isn\'t in this guild!');
       }
     } else {
     // Otherwise, if no user was mentioned
-      message.reply('You didn't mention the user to ban!');
+      message.reply('You didn\'t mention the user to ban!');
     }
   }
 });
