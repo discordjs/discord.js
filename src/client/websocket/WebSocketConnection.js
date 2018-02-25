@@ -252,8 +252,8 @@ class WebSocketConnection extends EventEmitter {
     this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
     if (this.ratelimit.resetTimer) {
-        this.client.clearTimeout(this.ratelimit.resetTimer);
-        this.ratelimit.resetTimer = null;
+      this.client.clearTimeout(this.ratelimit.resetTimer);
+      this.ratelimit.resetTimer = null;
     }
 
     return true;
