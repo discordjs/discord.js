@@ -147,7 +147,7 @@ class VoiceReceiver extends EventEmitter {
 
   handlePacket(msg, user) {
     msg.copy(nonce, 0, 0, 12);
-    let data = secretbox.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
+    let data = secretbox.methods.open(msg.slice(12), nonce, this.voiceConnection.authentication.secretKey.key);
     if (!data) {
       /**
        * Emitted whenever a voice packet experiences a problem.

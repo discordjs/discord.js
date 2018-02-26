@@ -163,7 +163,7 @@ class StreamDispatcher extends VolumeInterface {
     packetBuffer.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
 
     packetBuffer.copy(nonce, 0, 0, 12);
-    buffer = secretbox.close(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
+    buffer = secretbox.methods.close(buffer, nonce, this.player.voiceConnection.authentication.secretKey.key);
     for (let i = 0; i < buffer.length; i++) packetBuffer[i + 12] = buffer[i];
 
     return packetBuffer;

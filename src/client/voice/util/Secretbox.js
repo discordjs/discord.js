@@ -13,10 +13,21 @@ const libs = {
   }),
 };
 
+exports.methods = {};
+
 for (const libName of Object.keys(libs)) {
   try {
     const lib = require(libName);
-    module.exports = libs[libName](lib);
+    if (libName === 'libsodium-wrappers' && lib.ready) {
+      lib.ready.then(() => {
+        exports.methods = libs[libName](lib);
+      }).catch(() => {
+        const tweetnacl = require('tweetnacl');
+        exports.methods = libs.tweetnacl(tweetnacl);
+      }).catch(() => undefined);
+    } else {
+      exports.methods = libs[libName](lib);
+    }
     break;
   } catch (err) {} // eslint-disable-line no-empty
 }
