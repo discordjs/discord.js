@@ -507,7 +507,7 @@ class Guild {
    * @param {string|number} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    * @example
-   * // Output an audit log entry
+   * // Output audit log entries
    * guild.fetchAuditLogs()
    *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
@@ -603,7 +603,7 @@ class Guild {
    * @example
    * guild.search({
    *   content: 'discord.js',
-   *   before: '2016-11-17',
+   *   before: '2016-11-17'
    * })
    *   .then(res => {
    *     const hit = res.messages[0].find(m => m.hit).content;

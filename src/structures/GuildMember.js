@@ -351,7 +351,7 @@ class GuildMember {
    * // Set a member's nickname and clear their roles
    * message.member.edit({
    *   nick: 'Cool Name',
-   *   roles: [],
+   *   roles: []
    * })
    *   .then(console.log)
    *   .catch(console.error);

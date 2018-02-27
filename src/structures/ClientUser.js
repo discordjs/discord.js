@@ -374,7 +374,7 @@ class ClientUser extends User {
    * // Create a Group DM with a token provided from OAuth
    * client.user.createGroupDM([{
    *   user: '66564597481480192',
-   *   accessToken: token,
+   *   accessToken: token
    * }])
    *   .then(console.log)
    *   .catch(console.error);
