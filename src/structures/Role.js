@@ -205,9 +205,9 @@ class Role {
    * @param {string} [reason] The reason for editing this role
    * @returns {Promise<Role>}
    * @example
-   * // Edit a role
-   * role.edit({name: 'new role'})
-   *   .then(r => console.log(`Edited role ${r}`))
+   * // Edit name of a role
+   * role.edit({ name: 'New Name' })
+   *   .then(updated => console.log(`Edited role name from ${role.name} to ${updated.name}`))
    *   .catch(console.error);
    */
   edit(data, reason) {
@@ -221,8 +221,8 @@ class Role {
    * @returns {Promise<Role>}
    * @example
    * // Set the name of the role
-   * role.setName('new role')
-   *   .then(r => console.log(`Edited name of role ${r}`))
+   * role.setName('New Name')
+   *   .then(updated => console.log(`Edited role name from ${role.name} to ${updated.name}`))
    *   .catch(console.error);
    */
   setName(name, reason) {
@@ -237,7 +237,7 @@ class Role {
    * @example
    * // Set the color of a role
    * role.setColor('#FF0000')
-   *   .then(r => console.log(`Set color of role ${r}`))
+   *   .then(updated => console.log(`Set color of role to ${role.color}`))
    *   .catch(console.error);
    */
   setColor(color, reason) {
@@ -252,7 +252,7 @@ class Role {
    * @example
    * // Set the hoist of the role
    * role.setHoist(true)
-   *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
+   *   .then(updated => console.log(`Role hoisted: ${updated.hoist}`))
    *   .catch(console.error);
    */
   setHoist(hoist, reason) {
@@ -267,7 +267,7 @@ class Role {
    * @example
    * // Set the position of the role
    * role.setPosition(1)
-   *   .then(r => console.log(`Role position: ${r.position}`))
+   *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
   setPosition(position, relative) {
@@ -282,7 +282,7 @@ class Role {
    * @example
    * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
-   *   .then(r => console.log(`Role updated ${r}`))
+   *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    */
   setPermissions(permissions, reason) {
@@ -296,8 +296,8 @@ class Role {
    * @returns {Promise<Role>}
    * @example
    * // Make the role mentionable
-   * role.setMentionable(true)
-   *   .then(r => console.log(`Role updated ${r}`))
+   * role.setMentionable(true, 'Role needs to be pinged')
+   *   .then(updated => console.log(`Role mentionable: ${updated.mentionable}`))
    *   .catch(console.error);
    */
   setMentionable(mentionable, reason) {
@@ -310,8 +310,8 @@ class Role {
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
-   * role.delete()
-   *   .then(r => console.log(`Deleted role ${r}`))
+   * role.delete('The role needed to go')
+   *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
    *   .catch(console.error);
    */
   delete(reason) {

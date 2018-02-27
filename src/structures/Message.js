@@ -375,7 +375,7 @@ class Message {
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .then(msg => console.log(`New message content: ${msg}`))
    *   .catch(console.error);
    */
   edit(content, options) {
@@ -421,6 +421,16 @@ class Message {
    * Add a reaction to the message.
    * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
+   * @example
+   * // React to a message with a unicode emoji
+   * message.react('🤔')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // React to a message with a custom emoji
+   * message.react(message.guild.emojis.get('123456789012345678'))
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   react(emoji) {
     emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
@@ -444,7 +454,7 @@ class Message {
    * @example
    * // Delete a message
    * message.delete()
-   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
   delete(timeout = 0) {
@@ -467,7 +477,7 @@ class Message {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .then(sent => console.log(`Sent a reply to ${sent.author.username}`))
    *   .catch(console.error);
    */
   reply(content, options) {

@@ -161,7 +161,7 @@ class GuildChannel extends Channel {
    * message.channel.overwritePermissions(message.author, {
    *   SEND_MESSAGES: false
    * })
-   *   .then(() => console.log('Done!'))
+   *   .then(updated => console.log(updated.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
   overwritePermissions(userOrRole, options, reason) {
@@ -266,6 +266,11 @@ class GuildChannel extends Channel {
    * @param {GuildChannel|SnowFlake} parent The new parent for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's parent
    * @returns {Promise<GuildChannel>}
+   * @example
+   * // Sets the parent of a channel
+   * channel.setParent('174674066072928256')
+   *   .then(updated => console.log(`Set the category of ${updated.name} to ${updated.parent.name}`))
+   *   .catch(console.error);
    */
   setParent(parent, reason) {
     parent = this.client.resolver.resolveChannelID(parent);
@@ -279,8 +284,8 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   * channel.setTopic('Needs more rate limiting')
+   *   .then(updated => console.log(`Channel's new topic is ${updated.topic}`))
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
@@ -315,6 +320,11 @@ class GuildChannel extends Channel {
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
    * @param {string} [reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
+   * @example
+   * // Clone a channel
+   * channel.clone(undefined, true, false, 'Needed a clone')
+   *   .then(clone => console.log(`Cloned ${channel.name} to make a channel called ${clone.name}`))
+   *   .catch(console.error);
    */
   clone(name = this.name, withPermissions = true, withTopic = true, reason) {
     return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
@@ -327,9 +337,9 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    * @example
    * // Delete the channel
-   * channel.delete('making room for new channels')
-   *   .then(channel => console.log(`Deleted ${channel.name} to make room for new channels`))
-   *   .catch(console.error); // Log error
+   * channel.delete('Making room for new channels')
+   *   .then(deleted => console.log(`Deleted ${deleted.name} to make room for new channels`))
+   *   .catch(console.error);
    */
   delete(reason) {
     return this.client.rest.methods.deleteChannel(this, reason);

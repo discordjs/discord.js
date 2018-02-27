@@ -336,7 +336,7 @@ class GuildMember {
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {string} [nick] The nickname to set for the member
-   * @property {Collection<Snowflake, Role>|Role[]|Snowflake[]} [roles] The roles or role IDs to apply
+   * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
    * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
@@ -347,6 +347,14 @@ class GuildMember {
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Set a member's nickname and clear their roles
+   * message.member.edit({
+   *   nick: 'Cool Name',
+   *   roles: []
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   edit(data, reason) {
     return this.client.rest.methods.updateGuildMember(this, data, reason);
@@ -357,6 +365,11 @@ class GuildMember {
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Mute a member with a reason
+   * message.member.setMute(true, 'It needed to be done')
+   *   .then(() => console.log(`Muted ${message.member.displayName}`)))
+   *   .catch(console.error);
    */
   setMute(mute, reason) {
     return this.edit({ mute }, reason);
@@ -367,6 +380,11 @@ class GuildMember {
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Deafen a member
+   * message.member.setDeaf(true)
+   *   .then(() => console.log(`Deafened ${message.member.displayName}`))
+   *   .catch(console.error);
    */
   setDeaf(deaf, reason) {
     return this.edit({ deaf }, reason);
@@ -376,6 +394,11 @@ class GuildMember {
    * Moves the guild member to the given channel.
    * @param {ChannelResolvable} channel The channel to move the member to
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Moves a member to a voice channel
+   * member.setVoiceChannel('174674066072928256')
+   *   .then(() => console.log(`Moved ${member.displayName}`))
+   *   .catch(console.error);
    */
   setVoiceChannel(channel) {
     return this.edit({ channel });
@@ -383,7 +406,7 @@ class GuildMember {
 
   /**
    * Sets the roles applied to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to apply
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
    * @example
@@ -392,9 +415,9 @@ class GuildMember {
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Remove all the roles from a member
+   * // Remove all of the member's roles
    * guildMember.setRoles([])
-   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .then(member => console.log(`${member.displayName} now has ${member.roles.size} roles`))
    *   .catch(console.error);
    */
   setRoles(roles, reason) {
@@ -403,9 +426,14 @@ class GuildMember {
 
   /**
    * Adds a single role to the member.
-   * @param {Role|Snowflake} role The role or ID of the role to add
+   * @param {RoleResolvable} role The role or ID of the role to add
    * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Give a role to a member
+   * message.member.addRole('193654001089118208')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   addRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
@@ -415,9 +443,14 @@ class GuildMember {
 
   /**
    * Adds multiple roles to the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to add
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
    * @param {string} [reason] Reason for adding the roles
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Gives a member a few roles
+   * message.member.addRoles(['193654001089118208', '369308579892690945'])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   addRoles(roles, reason) {
     let allRoles;
@@ -432,9 +465,14 @@ class GuildMember {
 
   /**
    * Removes a single role from the member.
-   * @param {Role|Snowflake} role The role or ID of the role to remove
+   * @param {RoleResolvable} role The role or ID of the role to remove
    * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Remove a role from a member
+   * message.member.removeRole('193654001089118208')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   removeRole(role, reason) {
     if (!(role instanceof Role)) role = this.guild.roles.get(role);
@@ -444,9 +482,14 @@ class GuildMember {
 
   /**
    * Removes multiple roles from the member.
-   * @param {Collection<Snowflake, Role>|Role[]|Snowflake[]} roles The roles or role IDs to remove
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
    * @param {string} [reason] Reason for removing the roles
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Removes a few roles from the member
+   * message.member.removeRoles(['193654001089118208', '369308579892690945'])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   removeRoles(roles, reason) {
     const allRoles = this._roles.slice();
@@ -469,6 +512,11 @@ class GuildMember {
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Update the member's nickname
+   * message.member.setNickname('Cool Name')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setNickname(nick, reason) {
     return this.edit({ nick }, reason);
@@ -494,6 +542,11 @@ class GuildMember {
    * Kick this member from the guild.
    * @param {string} [reason] Reason for kicking user
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Kick a member
+   * member.kick()
+   *   .then(() => console.log(`Kicked ${member.displayName}`))
+   *   .catch(console.error);
    */
   kick(reason) {
     return this.client.rest.methods.kickGuildMember(this.guild, this, reason);
@@ -508,8 +561,8 @@ class GuildMember {
    * @returns {Promise<GuildMember>}
    * @example
    * // Ban a guild member
-   * guildMember.ban(7)
-   *   .then(console.log)
+   * member.ban(7)
+   *   .then(() => console.log(`Banned ${member.displayName}`))
    *   .catch(console.error);
    */
   ban(options) {

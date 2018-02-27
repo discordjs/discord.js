@@ -270,6 +270,10 @@ class ClientUser extends User {
    * @param {string} [options.url] Twitch stream URL
    * @param {ActivityType|number} [options.type] Type of the activity
    * @returns {Promise<Presence>}
+   * @example
+   * client.user.setActivity('YouTube', { type: 'WATCHING' })
+   *   .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
+   *   .catch(console.error);
    */
   setActivity(name, { url, type } = {}) {
     if (!name) return this.setPresence({ game: null });
@@ -293,8 +297,20 @@ class ClientUser extends User {
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
-   * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
+   * @param {GuildResolvable} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
+   * @example
+   * // Fetch mentions
+   * client.user.fetchMentions()
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Fetch mentions from a guild
+   * client.user.fetchMentions({
+   *   guild: '222078108977594368'
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetchMentions(options = {}) {
     return this.client.rest.methods.fetchMentions(options);
@@ -354,6 +370,14 @@ class ClientUser extends User {
    * Creates a Group DM.
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
+   * @example
+   * // Create a Group DM with a token provided from OAuth
+   * client.user.createGroupDM([{
+   *   user: '66564597481480192',
+   *   accessToken: token
+   * }])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   createGroupDM(recipients) {
     return this.client.rest.methods.createGroupDM({

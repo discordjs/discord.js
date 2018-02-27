@@ -456,6 +456,16 @@ class Guild {
    * Fetch a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
+   * @example
+   * // Fetch invites
+   * guild.fetchInvites()
+   *   .then(invites => console.log(`Fetched ${invites.size} invites`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch invite creator by their id
+   * guild.fetchInvites()
+   *  .then(invites => console.log(invites.find(invite => invite.inviter.id === '84484653687267328')))
+   *  .then(console.error);
    */
   fetchInvites() {
     return this.client.rest.methods.getGuildInvites(this);
@@ -464,6 +474,11 @@ class Guild {
   /**
    * Fetch all webhooks for the guild.
    * @returns {Collection<Snowflake, Webhook>}
+   * @example
+   * // Fetch webhooks
+   * guild.fetchWebhooks()
+   *   .then(webhooks => console.log(`Fetched ${webhooks.size} webhooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.rest.methods.getGuildWebhooks(this);
@@ -472,6 +487,11 @@ class Guild {
   /**
    * Fetch available voice regions.
    * @returns {Collection<string, VoiceRegion>}
+   * @example
+   * // Fetch voice regions
+   * guild.fetchVoiceRegions()
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetchVoiceRegions() {
     return this.client.rest.methods.fetchVoiceRegions(this.id);
@@ -489,7 +509,7 @@ class Guild {
    * @example
    * // Output audit log entries
    * guild.fetchAuditLogs()
-   *   .then(audit => console.log(audit.entries))
+   *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
   fetchAuditLogs(options) {
@@ -527,7 +547,7 @@ class Guild {
    */
   fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('User is not cached. Use Client.fetchUser first.'));
+    if (!user) return Promise.reject(new Error('Invalid or uncached id provided.'));
     if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
     return this.client.rest.methods.getGuildMember(this, user, cache);
   }
@@ -538,12 +558,20 @@ class Guild {
    * @param {string} [query=''] Limit fetch to members with similar usernames
    * @param {number} [limit=0] Maximum number of members to request
    * @returns {Promise<Guild>}
+   * @example
+   * // Fetch guild members
+   * guild.fetchMembers()
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Fetches a maximum of 1 member with the given query
+   * guild.fetchMembers('hydrabolt', 1)
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetchMembers(query = '', limit = 0) {
     return new Promise((resolve, reject) => {
       if (this.memberCount === this.members.size) {
-        // Uncomment in v12
-        // resolve(this.members)
         resolve(this);
         return;
       }
@@ -559,8 +587,6 @@ class Guild {
         if (guild.id !== this.id) return;
         if (this.memberCount === this.members.size || members.length < 1000) {
           this.client.removeListener(Constants.Events.GUILD_MEMBERS_CHUNK, handler);
-          // Uncomment in v12
-          // resolve(this.members)
           resolve(this);
         }
       };
@@ -578,10 +604,12 @@ class Guild {
    * guild.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.messages[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
-   * }).catch(console.error);
+   * })
+   *   .then(res => {
+   *     const hit = res.messages[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**, total results: ${res.totalResults}`);
+   *   })
+   *   .catch(console.error);
    */
   search(options = {}) {
     return this.client.rest.methods.search(this, options);
@@ -613,7 +641,7 @@ class Guild {
    *   name: 'Discord Guild',
    *   region: 'london',
    * })
-   *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   *   .then(g => console.log(`Changed guild name to ${g} and region to ${g.region}`))
    *   .catch(console.error);
    */
   edit(data, reason) {
@@ -655,7 +683,7 @@ class Guild {
    * @example
    * // Edit the guild name
    * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .then(g => console.log(`Updated guild name to ${g}`))
    *  .catch(console.error);
    */
   setName(name, reason) {
@@ -670,7 +698,7 @@ class Guild {
    * @example
    * // Edit the guild region
    * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .then(g => console.log(`Updated guild region to ${g.region}`))
    *  .catch(console.error);
    */
   setRegion(region, reason) {
@@ -685,7 +713,7 @@ class Guild {
    * @example
    * // Edit the guild verification level
    * guild.setVerificationLevel(1)
-   *  .then(updated => console.log(`Updated guild verification level to ${guild.verificationLevel}`))
+   *  .then(g => console.log(`Updated guild verification level to ${g.verificationLevel}`))
    *  .catch(console.error);
    */
   setVerificationLevel(verificationLevel, reason) {
@@ -700,7 +728,7 @@ class Guild {
    * @example
    * // Edit the guild AFK channel
    * guild.setAFKChannel(channel)
-   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .then(g => console.log(`Updated guild AFK channel to ${g.afkChannel}`))
    *  .catch(console.error);
    */
   setAFKChannel(afkChannel, reason) {
@@ -725,7 +753,7 @@ class Guild {
    * @example
    * // Edit the guild AFK channel
    * guild.setAFKTimeout(60)
-   *  .then(updated => console.log(`Updated guild AFK timeout to ${guild.afkTimeout}`))
+   *  .then(g => console.log(`Updated guild AFK timeout to ${g.afkTimeout}`))
    *  .catch(console.error);
    */
   setAFKTimeout(afkTimeout, reason) {
@@ -740,7 +768,7 @@ class Guild {
    * @example
    * // Edit the guild icon
    * guild.setIcon('./icon.png')
-   *  .then(updated => console.log('Updated the guild icon'))
+   *  .then(console.log)
    *  .catch(console.error);
    */
   setIcon(icon, reason) {
@@ -755,7 +783,7 @@ class Guild {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .then(g => console.log(`Updated the guild owner to ${g.owner.displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
@@ -770,7 +798,7 @@ class Guild {
    * @example
    * // Edit the guild splash
    * guild.setSplash('./splash.png')
-   *  .then(updated => console.log('Updated the guild splash'))
+   *  .then(console.log)
    *  .catch(console.error);
    */
   setSplash(splash) {
@@ -823,9 +851,14 @@ class Guild {
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
    * @example
-   * // Ban a user by ID (or with a user/guild member object)
+   * // Ban a user by ID
    * guild.ban('some user ID')
-   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild}`))
+   *   .catch(console.error);
+   * @example
+   * // Ban a user by object with reason and days
+   * guild.ban(user, { days: 7, reason: 'He needed to go' })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   ban(user, options = {}) {
@@ -846,7 +879,7 @@ class Guild {
    * @example
    * // Unban a user by ID (or with a user/guild member object)
    * guild.unban('some user ID')
-   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *   .then(user => console.log(`Unbanned ${user.username} from ${guild}`))
    *   .catch(console.error);
    */
   unban(user, reason) {
@@ -901,7 +934,16 @@ class Guild {
    * @example
    * // Create a new text channel
    * guild.createChannel('new-general', 'text')
-   *   .then(channel => console.log(`Created new channel ${channel}`))
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create a new category channel with permission overwrites
+   * guild.createChannel('new-category', 'category', [{
+   *   id: guild.id,
+   *   deny: ['MANAGE_MESSAGES'],
+   *   allow: ['SEND_MESSAGES']
+   * }])
+   *   .then(console.log)
    *   .catch(console.error);
    */
   createChannel(name, type, overwrites, reason) {
@@ -921,7 +963,7 @@ class Guild {
    * @returns {Promise<Guild>}
    * @example
    * guild.updateChannels([{ channel: channelID, position: newChannelIndex }])
-   *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *   .then(g => console.log(`Updated channel positions for ${g}`))
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
@@ -929,14 +971,14 @@ class Guild {
   }
 
   /**
-   * Creates a new role in the guild with given information
+   * Creates a new role in the guild with given information.
    * @param {RoleData} [data] The data to update the role with
    * @param {string} [reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
    * guild.createRole()
-   *   .then(role => console.log(`Created role ${role}`))
+   *   .then(role => console.log(`Created new role with name ${role.name}`))
    *   .catch(console.error);
    * @example
    * // Create a new role with data
@@ -944,7 +986,7 @@ class Guild {
    *   name: 'Super Cool People',
    *   color: 'BLUE',
    * })
-   *   .then(role => console.log(`Created role ${role}`))
+   *   .then(role => console.log(`Created new role with name ${role.name} and color ${role.color}`))
    *   .catch(console.error)
    */
   createRole(data = {}, reason) {
@@ -961,12 +1003,12 @@ class Guild {
    * @example
    * // Create a new emoji from a url
    * guild.createEmoji('https://i.imgur.com/w3duR07.png', 'rip')
-   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}`))
    *   .catch(console.error);
    * @example
    * // Create a new emoji from a file on your computer
    * guild.createEmoji('./memes/banana.png', 'banana')
-   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
+   *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}`))
    *   .catch(console.error);
    */
   createEmoji(attachment, name, roles, reason) {
