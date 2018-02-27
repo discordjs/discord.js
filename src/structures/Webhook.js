@@ -104,7 +104,7 @@ class Webhook {
    * @example
    * // Send a remote file
    * webhook.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048'],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -113,8 +113,8 @@ class Webhook {
    * webhook.send({
    *   files: [{
    *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg'
-   *   }]
+   *     name: 'file.jpg',
+   *   }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -124,12 +124,12 @@ class Webhook {
    *   embeds: [{
    *     thumbnail: {
    *          url: 'attachment://file.jpg'
-   *       }
+   *       },
    *    }],
    *    files: [{
    *       attachment: 'entire/path/to/file.jpg',
-   *       name: 'file.jpg'
-   *    }]
+   *       name: 'file.jpg',
+   *    }],
    * })
    *   .then(console.log)
    *   .catch(console.error);
