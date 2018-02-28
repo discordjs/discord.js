@@ -102,6 +102,10 @@ class Permissions {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
 
+  valueOf() {
+    return this.bitfield;
+  }
+
   *[Symbol.iterator]() {
     const keys = this.toArray();
     while (keys.length) yield keys.shift();
