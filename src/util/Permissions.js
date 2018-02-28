@@ -150,6 +150,10 @@ class Permissions {
     return this.missing(permissions, !explicit);
   }
 
+  valueOf() {
+    return this.bitfield;
+  }
+
   /**
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
