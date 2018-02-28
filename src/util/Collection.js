@@ -425,6 +425,10 @@ class Collection extends Map {
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
     return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
   }
+
+  *[Symbol.iterator]() {
+    for (const value of this.values()) yield value;
+  }
 }
 
 module.exports = Collection;
