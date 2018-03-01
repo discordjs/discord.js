@@ -112,6 +112,8 @@ class WebSocketShard extends EventEmitter {
       }
     }
 
+    if (packet.s > this.sequence) this.sequence = packet.s;
+
     switch (packet.op) {
       case OPCodes.HELLO:
         this.identify();

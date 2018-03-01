@@ -1,6 +1,16 @@
 const WebSocketShard = require('./WebSocketShard');
-const { Events, Status } = require('../../util/Constants');
+const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
+
+const BeforeReadyWhitelist = [
+  WSEvents.READY,
+  WSEvents.RESUMED,
+  WSEvents.GUILD_CREATE,
+  WSEvents.GUILD_DELETE,
+  WSEvents.GUILD_MEMBERS_CHUNK,
+  WSEvents.GUILD_MEMBER_ADD,
+  WSEvents.GUILD_MEMBER_REMOVE,
+];
 
 class WebSocketManager {
   constructor(client) {
@@ -11,6 +21,8 @@ class WebSocketManager {
     this.shards = [];
     this.spawnQueue = [];
     this.spawning = false;
+
+    this.packetQueue = [];
 
     this.status = Status.IDLE;
   }
@@ -61,9 +73,25 @@ class WebSocketManager {
   }
 
   handlePacket(packet, shard) {
-    if (PacketHandlers[packet.t]) {
+    if (packet && this.status !== Status.READY) {
+      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+        this.packetQueue.push({ packet, shardId: shard.id });
+        return false;
+      }
+    }
+
+    if (this.packetQueue.length) {
+      const item = this.packetQueue.shift();
+      this.client.setImmediate(() => {
+        this.handlePacket(item.packet, this.shards[item.shardId]);
+      });
+    }
+
+    if (packet && PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
+
+    return false;
   }
 
   checkReady() {
@@ -102,6 +130,7 @@ class WebSocketManager {
      */
     this.status = Status.READY;
     this.client.emit(Events.READY);
+    this.handlePacket();
   }
 }
 
