@@ -15,6 +15,8 @@ class Permissions {
      * @type {number}
      */
     this.bitfield = this.constructor.resolve(permissions);
+
+    this.toJSON = this.valueOf;
   }
 
   /**
@@ -91,10 +93,6 @@ class Permissions {
     const serialized = {};
     for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
     return serialized;
-  }
-
-  toJSON(checkAdmin = false) {
-    return this.serialize(checkAdmin);
   }
 
   /**
