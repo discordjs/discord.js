@@ -1,3 +1,4 @@
+require('setimmediate');
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
@@ -37,6 +38,8 @@ class BaseClient extends EventEmitter {
      * @private
      */
     this._intervals = new Set();
+
+    this._immediates = new Set();
   }
 
   /**
@@ -104,6 +107,17 @@ class BaseClient extends EventEmitter {
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
+  }
+
+  setImmediate(fn, ...args) {
+    const immediate = setImmediate(fn, ...args);
+    this._immediates.add(immediate);
+    return immediate;
+  }
+
+  clearImmediate(immediate) {
+    clearImmediate(immediate);
+    this._immediates.delete(immediate);
   }
 
   toJSON(...props) {
