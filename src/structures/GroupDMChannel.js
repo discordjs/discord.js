@@ -39,7 +39,6 @@ class GroupDMChannel extends Channel {
      * @type {MessageStore<Snowflake, Message>}
      */
     this.messages = new MessageStore(this);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -228,10 +227,7 @@ class GroupDMChannel extends Channel {
   get lastPinAt() {}
   send() {}
   search() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on Group DMs; bulkDelete() {}
