@@ -39,6 +39,11 @@ class BaseClient extends EventEmitter {
      */
     this._intervals = new Set();
 
+    /**
+     * Intervals set by {@link BaseClient#setImmediate} that are still active
+     * @type {Set<Immediate>}
+     * @private
+     */
     this._immediates = new Set();
   }
 
@@ -109,12 +114,22 @@ class BaseClient extends EventEmitter {
     this._intervals.delete(interval);
   }
 
+  /**
+   * Sets an immediate that will be automagically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {...*} args Arguments for the function
+   * @returns {Immediate}
+   */
   setImmediate(fn, ...args) {
     const immediate = setImmediate(fn, ...args);
     this._immediates.add(immediate);
     return immediate;
   }
 
+  /**
+   * Clears an immediate.
+   * @param {Immedate} immediate Immediate to cancel
+   */
   clearImmediate(immediate) {
     clearImmediate(immediate);
     this._immediates.delete(immediate);
