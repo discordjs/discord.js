@@ -6,7 +6,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {number} [shardId=0] ID of the shard to run
- * @property {number} [shardCount=0] Total number of shards
+ * @property {number} [shardCount=1|"auto"] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
