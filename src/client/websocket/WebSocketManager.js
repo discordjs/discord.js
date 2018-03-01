@@ -1,5 +1,5 @@
 const WebSocketShard = require('./WebSocketShard');
-const { Events } = require('../../util/Constants');
+const { Events, Status } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
 
 class WebSocketManager {
@@ -11,6 +11,8 @@ class WebSocketManager {
     this.shards = [];
     this.spawnQueue = [];
     this.spawning = false;
+
+    this.status = Status.IDLE;
   }
 
   debug(x) {
@@ -62,6 +64,44 @@ class WebSocketManager {
     if (PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
+  }
+
+  checkReady() {
+    if (!(this.shards.filter(s => !!s).length === this.client.options.shardCount) ||
+      !this.shards.every(s => s.status === Status.READY)) {
+      return false;
+    }
+
+    let unavailableGuilds = 0;
+    for (const guild of this.client.guilds.values()) {
+      if (!guild.available) unavailableGuilds++;
+    }
+    if (unavailableGuilds === 0) {
+      this.status = Status.NEARLY;
+      if (!this.client.options.fetchAllMembers) return this.triggerReady();
+      // Fetch all members before marking self as ready
+      const promises = this.client.guilds.map(g => g.members.fetch());
+      Promise.all(promises)
+        .then(() => this.triggerReady())
+        .catch(e => {
+          this.debug(`Failed to fetch all members before ready! ${e}`);
+          this.triggerReady();
+        });
+    }
+    return true;
+  }
+
+  triggerReady() {
+    if (this.status === Status.READY) {
+      this.debug('Tried to mark self as ready, but already ready');
+      return;
+    }
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
+    this.status = Status.READY;
+    this.client.emit(Events.READY);
   }
 }
 
