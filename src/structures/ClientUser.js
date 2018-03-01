@@ -15,8 +15,6 @@ class ClientUser extends Structures.get('User') {
      */
     this.verified = data.verified;
 
-    this._typing = new Map();
-
     /**
      * If the bot's {@link ClientApplication#owner Owner} has MFA enabled on their account
      * @type {?boolean}

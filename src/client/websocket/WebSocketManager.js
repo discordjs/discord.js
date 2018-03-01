@@ -1,88 +1,66 @@
-const EventEmitter = require('events');
-const { Events, Status } = require('../../util/Constants');
-const WebSocketConnection = require('./WebSocketConnection');
+const WebSocketShard = require('./WebSocketShard');
+const { Events } = require('../../util/Constants');
+const PacketHandlers = require('./handlers');
 
-/**
- * WebSocket Manager of the client.
- * @private
- */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager {
   constructor(client) {
-    super();
-    /**
-     * The client that instantiated this WebSocketManager
-     * @type {Client}
-     */
     this.client = client;
 
-    /**
-     * The WebSocket connection of this manager
-     * @type {?WebSocketConnection}
-     */
-    this.connection = null;
+    this.gateway = undefined;
+
+    this.shards = [];
+    this.spawnQueue = [];
+    this.spawning = false;
   }
 
-  /**
-   * Sends a heartbeat on the available connection.
-   * @returns {void}
-   */
-  heartbeat() {
-    if (!this.connection) return this.debug('No connection to heartbeat');
-    return this.connection.heartbeat();
+  debug(x) {
+    this.client.emit(Events.DEBUG, `[connection] ${x}`);
   }
 
-  /**
-   * Emits a debug event.
-   * @param {string} message Debug message
-   * @returns {void}
-   */
-  debug(message) {
-    return this.client.emit(Events.DEBUG, `[ws] ${message}`);
-  }
-
-  /**
-   * Destroy the client.
-   * @returns {void} Whether or not destruction was successful
-   */
-  destroy() {
-    if (!this.connection) {
-      this.debug('Attempted to destroy WebSocket but no connection exists!');
-      return false;
+  spawn(query) {
+    if (query !== undefined) {
+      if (Array.isArray(query)) {
+        for (const item of query) {
+          if (!this.spawnQueue.includes(item)) this.spawnQueue.push(item);
+        }
+      } else if (!this.spawnQueue.includes(query)) {
+        this.spawnQueue.push(query);
+      }
     }
-    return this.connection.destroy();
-  }
-
-  /**
-   * Send a packet on the available WebSocket.
-   * @param {Object} packet Packet to send
-   * @returns {void}
-   */
-  send(packet) {
-    if (!this.connection) {
-      this.debug('No connection to websocket');
+    if (this.spawning) return;
+    this.spawning = true;
+    const item = this.spawnQueue.shift();
+    if (item === undefined) {
+      this.spawning = false;
       return;
     }
-    this.connection.send(packet);
+    if (typeof item === 'number') {
+      const shard = new WebSocketShard(this, item);
+      this.shards[item] = shard;
+      shard.once(Events.READY, () => {
+        this.spawning = false;
+        this.client.setTimeout(() => this.spawn(), 5000);
+      });
+    } else if (item instanceof WebSocketShard) {
+      item.reconnect();
+    }
   }
 
-  /**
-   * Connects the client to a gateway.
-   * @param {string} gateway The gateway to connect to
-   * @returns {boolean}
-   */
-  connect(gateway) {
-    if (!this.connection) {
-      this.connection = new WebSocketConnection(this, gateway);
-      return true;
+  connect(gateway = this.gateway) {
+    this.gateway = gateway;
+
+    if (this.client.options.shardId) {
+      this.spawn(this.client.options.shardId);
+    } else {
+      for (let i = 0; i < this.client.options.shardCount; i++) {
+        this.spawn(i);
+      }
     }
-    switch (this.connection.status) {
-      case Status.IDLE:
-      case Status.DISCONNECTED:
-        this.connection.connect(gateway, 5500);
-        return true;
-      default:
-        this.debug(`Couldn't connect to ${gateway} as the websocket is at state ${this.connection.status}`);
-        return false;
+  }
+
+  handlePacket(packet, shard) {
+    if (PacketHandlers[packet.t]) {
+      PacketHandlers[packet.t](this.client, packet, shard);
     }
   }
 }

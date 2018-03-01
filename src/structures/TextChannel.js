@@ -18,7 +18,6 @@ class TextChannel extends GuildChannel {
      * @type {MessageStore<Snowflake, Message>}
      */
     this.messages = new MessageStore(this);
-    this._typing = new Map();
   }
 
   _patch(data) {
@@ -103,10 +102,7 @@ class TextChannel extends GuildChannel {
   get lastMessage() {}
   send() {}
   search() {}
-  startTyping() {}
-  stopTyping() {}
-  get typing() {}
-  get typingCount() {}
+  sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
