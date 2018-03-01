@@ -15,8 +15,6 @@ class Permissions {
      * @type {number}
      */
     this.bitfield = this.constructor.resolve(permissions);
-
-    this.toJSON = this.valueOf;
   }
 
   /**
@@ -102,6 +100,10 @@ class Permissions {
    */
   toArray(checkAdmin = true) {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
+  }
+
+  toJSON() {
+    return this.bitfield;
   }
 
   valueOf() {
