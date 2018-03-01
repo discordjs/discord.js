@@ -284,7 +284,7 @@ class StreamDispatcher extends VolumeInterface {
     const data = this.streamingData;
     data.count++;
     data.sequence = data.sequence < 65535 ? data.sequence + 1 : 0;
-    data.timestamp = ((data.timestamp + 960) < 4294967295) ? data.timestamp + 960 : 0;
+    data.timestamp = (data.timestamp + 960) < 4294967295 ? data.timestamp + 960 : 0;
   }
 
   destroy(type, reason) {
