@@ -2,7 +2,7 @@ const MessageCollector = require('../MessageCollector');
 const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
-const { RangeError, TypeError } = require('../../errors');
+const { TypeError } = require('../../errors');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -137,90 +137,8 @@ class TextBasedChannel {
     return Shared.search(this, options);
   }
 
-  /**
-   * Starts a typing indicator in the channel.
-   * @param {number} [count=1] The number of times startTyping should be considered to have been called
-   * @returns {Promise} Resolves once the bot stops typing gracefully, or rejects when an error occurs
-   * @example
-   * // Start typing in a channel, or increase the typing count by one
-   * channel.startTyping();
-   * @example
-   * // Start typing in a channel with a typing count of five, or set it to five
-   * channel.startTyping(5);
-   */
-  startTyping(count) {
-    if (typeof count !== 'undefined' && count < 1) throw new RangeError('TYPING_COUNT');
-    if (this.client.user._typing.has(this.id)) {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count = count || entry.count + 1;
-      return entry.promise;
-    }
-
-    const entry = {};
-    entry.promise = new Promise((resolve, reject) => {
-      const endpoint = this.client.api.channels[this.id].typing;
-      Object.assign(entry, {
-        count: count || 1,
-        interval: this.client.setInterval(() => {
-          endpoint.post().catch(error => {
-            this.client.clearInterval(entry.interval);
-            this.client.user._typing.delete(this.id);
-            reject(error);
-          });
-        }, 9000),
-        resolve,
-      });
-      endpoint.post().catch(error => {
-        this.client.clearInterval(entry.interval);
-        this.client.user._typing.delete(this.id);
-        reject(error);
-      });
-      this.client.user._typing.set(this.id, entry);
-    });
-    return entry.promise;
-  }
-
-  /**
-   * Stops the typing indicator in the channel.
-   * The indicator will only stop if this is called as many times as startTyping().
-   * <info>It can take a few seconds for the client user to stop typing.</info>
-   * @param {boolean} [force=false] Whether or not to reset the call count and force the indicator to stop
-   * @example
-   * // Reduce the typing count by one and stop typing if it reached 0
-   * channel.stopTyping();
-   * @example
-   * // Force typing to fully stop regardless of typing count
-   * channel.stopTyping(true);
-   */
-  stopTyping(force = false) {
-    if (this.client.user._typing.has(this.id)) {
-      const entry = this.client.user._typing.get(this.id);
-      entry.count--;
-      if (entry.count <= 0 || force) {
-        this.client.clearInterval(entry.interval);
-        this.client.user._typing.delete(this.id);
-        entry.resolve();
-      }
-    }
-  }
-
-  /**
-   * Whether or not the typing indicator is being shown in the channel
-   * @type {boolean}
-   * @readonly
-   */
-  get typing() {
-    return this.client.user._typing.has(this.id);
-  }
-
-  /**
-   * Number of times `startTyping` has been called
-   * @type {number}
-   * @readonly
-   */
-  get typingCount() {
-    if (this.client.user._typing.has(this.id)) return this.client.user._typing.get(this.id).count;
-    return 0;
+  async sendTyping() {
+    await this.client.api.channels(this.id).typing.post();
   }
 
   /**
@@ -340,10 +258,7 @@ class TextBasedChannel {
         'lastMessage',
         'search',
         'bulkDelete',
-        'startTyping',
-        'stopTyping',
-        'typing',
-        'typingCount',
+        'sendTyping',
         'createMessageCollector',
         'awaitMessages'
       );
