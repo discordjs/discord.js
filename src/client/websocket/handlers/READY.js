@@ -1,5 +1,4 @@
 const ClientUser = require('../../../structures/ClientUser');
-const { Status, Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }, shard) => {
   const clientUser = new ClientUser(client, data.user);
@@ -46,8 +45,5 @@ module.exports = (client, { d: data }, shard) => {
     });
   }
 
-  const { shards } = client.ws;
-  if (shards.filter(s => !!s).length === client.options.shardCount && shards.every(s => s.status === Status.READY)) {
-    client.emit(Events.READY);
-  }
+  client.ws.checkReady();
 };
