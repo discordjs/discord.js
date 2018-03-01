@@ -56,6 +56,15 @@ class RoleStore extends DataStore {
   }
 
   /**
+   * The role with the highest position in the store
+   * @type {Role}
+   * @readonly
+   */
+  get highest() {
+    return this.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.first());
+  }
+
+  /**
    * Data that can be resolved to a Role object. This can be:
    * * A Role
    * * A Snowflake

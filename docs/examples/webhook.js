@@ -1,6 +1,6 @@
-/*
-  Send a message using a webhook
-*/
+/**
+ * Send a message using a webhook
+ */
 
 // Import the discord.js module
 const Discord = require('discord.js');

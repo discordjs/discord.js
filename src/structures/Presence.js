@@ -113,8 +113,8 @@ class Activity {
      * @prop {?Date} end When the activity will end
      */
     this.timestamps = data.timestamps ? {
-      start: data.timestamps.start ? new Date(data.timestamps.start) : null,
-      end: data.timestamps.end ? new Date(data.timestamps.end) : null,
+      start: data.timestamps.start ? new Date(Number(data.timestamps.start)) : null,
+      end: data.timestamps.end ? new Date(Number(data.timestamps.end)) : null,
     } : null;
 
     /**
