@@ -6,12 +6,13 @@ module.exports = async (client, { d: data }, shard) => {
     if (!guild.available && !data.unavailable) {
       // A newly available guild
       guild._patch(data);
+      client.ws.checkReady();
     }
   } else {
     // A new guild
     data.shardId = shard.id;
     guild = client.guilds.add(data);
-    const emitEvent = client.ws.connection.status === Status.READY;
+    const emitEvent = client.ws.status === Status.READY;
     if (emitEvent) {
       /**
        * Emitted whenever the client joins a guild.
