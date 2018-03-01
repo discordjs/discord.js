@@ -106,7 +106,7 @@ class GuildMemberRoleStore extends DataStore {
    * @readonly
    */
   get highest() {
-    return this.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+    return this.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.first());
   }
 
   /**
