@@ -36,6 +36,7 @@
   "dependencies": {
     "pako": "^1.0.0",
     "prism-media": "^0.2.0",
+    "setimmediate": "^1.0.5",
     "snekfetch": "^3.6.0",
     "tweetnacl": "^1.0.0",
     "ws": "^4.0.0"
