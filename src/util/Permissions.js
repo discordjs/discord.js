@@ -126,7 +126,8 @@ class Permissions {
    * @returns {number}
    */
   static resolve(permission) {
-    if (permission instanceof Permissions || (typeof permission === 'number' && permission >= 0)) return permission;
+    if (typeof permission === 'number' && permission >= 0) return permission;
+    if (permission instanceof Permissions) return permission.bitfield;
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof permission === 'string') return this.FLAGS[permission];
     throw new RangeError('PERMISSIONS_INVALID');
