@@ -67,6 +67,12 @@ class Guild extends Base {
       this._patch(data);
       if (!data.channels) this.available = false;
     }
+
+    this.shardId = data.shardId;
+  }
+
+  get shard() {
+    return this.client.ws.shards[this.shardId];
   }
 
   /* eslint-disable complexity */

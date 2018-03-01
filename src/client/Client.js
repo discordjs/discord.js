@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
@@ -38,15 +37,9 @@ class Client extends BaseClient {
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
+    this.options.shardCount = this.options.shardCount || 1;
 
     this._validateOptions();
-
-    /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
 
     /**
      * The WebSocket manager of the client
@@ -135,12 +128,6 @@ class Client extends BaseClient {
     this.broadcasts = [];
 
     /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -157,43 +144,6 @@ class Client extends BaseClient {
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Timestamp of the latest ping's start time
-   * @type {number}
-   * @readonly
-   * @private
-   */
-  get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?Status}
-   * @readonly
-   */
-  get status() {
-    return this.ws.connection ? this.ws.connection.status : null;
-  }
-
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -249,38 +199,33 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token = this.token) {
-    return new Promise((resolve, reject) => {
-      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-      token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
-    }).catch(e => {
-      this.destroy();
-      return Promise.reject(e);
-    });
+  async login(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Authenticating using token ${token}`);
+    let endpoint = this.api.gateway;
+    if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
+    const res = await endpoint.get();
+    const gateway = `${res.url}/`;
+    if (this.options.shardCount === 'auto') {
+      this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
+      this.options.shardCount = res.shards;
+    }
+    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
+    this.ws.connect(gateway);
+    await new Promise(r => this.once(Events.READY, r));
+    return token;
   }
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
    */
-  destroy() {
-    super.destroy();
-    return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
+  async destroy() {
+    await super.destroy();
+    this.ws.destroy();
+    this.token = null;
+    return true;
   }
 
   /**
@@ -416,17 +361,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
@@ -443,8 +377,8 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
     if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');

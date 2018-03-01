@@ -26,7 +26,6 @@ class ClientUser extends Structures.get('User') {
      * @type {?string}
      */
     this.email = data.email;
-    this._typing = new Map();
 
     /**
      * A Collection of friends for the logged in user
