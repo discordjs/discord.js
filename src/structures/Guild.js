@@ -441,10 +441,14 @@ class Guild {
   /**
    * Fetch a collection of banned users in this guild.
    * @returns {Promise<Collection<Snowflake, User>>}
+   * @example
+   * // Fetch bans in guild
+   * guild.fetchBans()
+   *   .then(bans => console.log(`This guild has ${bans.size} bans`))
+   *   .catch(console.error);
    */
   fetchBans() {
     return this.client.rest.methods.getGuildBans(this)
-      // This entire re-mapping can be removed in the next major release
       .then(bans => {
         const users = new Collection();
         for (const ban of bans.values()) users.set(ban.user.id, ban.user);

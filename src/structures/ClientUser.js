@@ -174,6 +174,11 @@ class ClientUser extends User {
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
    * @returns {Promise<ClientUser>}
+   * @example
+   * // Set the client user's presence
+   * client.user.setPresence({ game: { name: 'with discord.js' }, status: 'idle' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setPresence(data) {
     // {"op":3,"d":{"status":"dnd","since":0,"game":null,"afk":false}}
@@ -241,6 +246,11 @@ class ClientUser extends User {
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
    * @returns {Promise<ClientUser>}
+   * @example
+   * // Set the client user's status
+   * client.user.setStatus('idle')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setStatus(status) {
     return this.setPresence({ status });

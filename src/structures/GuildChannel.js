@@ -263,7 +263,7 @@ class GuildChannel extends Channel {
 
   /**
    * Set a new parent for the guild channel.
-   * @param {GuildChannel|SnowFlake} parent The new parent for the guild channel
+   * @param {CategoryChannel|SnowFlake} parent The new parent for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's parent
    * @returns {Promise<GuildChannel>}
    * @example
