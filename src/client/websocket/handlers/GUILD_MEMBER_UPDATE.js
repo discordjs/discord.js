@@ -1,12 +1,12 @@
 const { Status, Events } = require('../../../util/Constants');
 
-module.exports = (client, { d: data }) => {
+module.exports = (client, { d: data }, shard) => {
   const guild = client.guilds.get(data.guild_id);
   if (guild) {
     const member = guild.members.get(data.user.id);
     if (member) {
       const old = member._update(data);
-      if (client.ws.connection.status === Status.READY) {
+      if (shard.status === Status.READY) {
         /**
          * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
          * @event Client#guildMemberUpdate

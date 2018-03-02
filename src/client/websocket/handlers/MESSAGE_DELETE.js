@@ -1,3 +1,3 @@
 module.exports = (client, packet) => {
-  client.actions.GuildRoleDelete.handle(packet.d);
+  client.actions.MessageDelete.handle(packet.d);
 };
