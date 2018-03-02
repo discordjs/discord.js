@@ -41,7 +41,7 @@ class Message {
 
     /**
      * The type of the message
-     * @type {string}
+     * @type {MessageType}
      */
     this.type = Constants.MessageTypes[data.type];
 
