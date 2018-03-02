@@ -263,7 +263,7 @@ class GuildMember extends Base {
 
   /**
    * Checks if any of the member's roles have a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {Object} [options] Options
    * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
    * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
@@ -276,7 +276,7 @@ class GuildMember extends Base {
 
   /**
    * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {PermissionResolvable[]}
    */

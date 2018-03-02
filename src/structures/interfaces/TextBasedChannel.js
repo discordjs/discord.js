@@ -67,9 +67,41 @@ class TextBasedChannel {
    * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // Sends a message
+   * // Send a basic message
    * channel.send('hello!')
    *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
+   * @example
+   * // Send a remote file
+   * channel.send({
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send a local file
+   * channel.send({
+   *   files: [{
+   *     attachment: 'entire/path/to/file.jpg',
+   *     name: 'file.jpg'
+   *   }]
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send an embed with a local image inside
+   * channel.send('This is an embed', {
+   *   embed: {
+   *     thumbnail: {
+   *          url: 'attachment://file.jpg'
+   *       }
+   *    },
+   *    files: [{
+   *       attachment: 'entire/path/to/file.jpg',
+   *       name: 'file.jpg'
+   *    }]
+   * })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity

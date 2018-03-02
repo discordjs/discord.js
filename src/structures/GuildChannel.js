@@ -354,11 +354,16 @@ class GuildChannel extends Channel {
 
   /**
    * Sets the category parent of this channel.
-   * @param {?GuildChannel|Snowflake} channel Parent channel
+   * @param {?CategoryChannel|Snowflake} channel Parent channel
    * @param {Object} [options={}] Options to pass
    * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
    * @returns {Promise<GuildChannel>}
+   * @example
+   * // Add a parent to a channel
+   * message.channel.setParent('355908108431917066', { lockPermissions: false })
+   *   .then(channel => console.log(`New parent of ${message.channel.name}: ${channel.name}`))
+   *   .catch(console.error);
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
     return this.edit({

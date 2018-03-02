@@ -159,8 +159,8 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Edit a role
-   * role.edit({name: 'new role'})
-   *   .then(r => console.log(`Edited role ${r}`))
+   * role.edit({ name: 'new role' })
+   *   .then(updated => console.log(`Edited role ${updated.name} name to ${updated.name}`))
    *   .catch(console.error);
    */
   async edit(data, reason) {
@@ -213,7 +213,7 @@ class Role extends Base {
    * @example
    * // Set the name of the role
    * role.setName('new role')
-   *   .then(r => console.log(`Edited name of role ${r}`))
+   *   .then(updated => console.log(`Edited name of role ${role.name} to ${updated.name}`))
    *   .catch(console.error);
    */
   setName(name, reason) {
@@ -228,7 +228,7 @@ class Role extends Base {
    * @example
    * // Set the color of a role
    * role.setColor('#FF0000')
-   *   .then(r => console.log(`Set color of role ${r}`))
+   *   .then(updated => console.log(`Set color of role to ${updated.color}`))
    *   .catch(console.error);
    */
   setColor(color, reason) {
@@ -258,7 +258,7 @@ class Role extends Base {
    * @example
    * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
-   *   .then(r => console.log(`Role updated ${r}`))
+   *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    */
   setPermissions(permissions, reason) {
@@ -273,7 +273,7 @@ class Role extends Base {
    * @example
    * // Make the role mentionable
    * role.setMentionable(true)
-   *   .then(r => console.log(`Role updated ${r}`))
+   *   .then(updated => console.log(`Role updated ${updated.name}`))
    *   .catch(console.error);
    */
   setMentionable(mentionable, reason) {
@@ -290,7 +290,7 @@ class Role extends Base {
    * @example
    * // Set the position of the role
    * role.setPosition(1)
-   *   .then(r => console.log(`Role position: ${r.position}`))
+   *   .then(updated => console.log(`Role position: ${updated.position}`))
    *   .catch(console.error);
    */
   setPosition(position, { relative, reason } = {}) {
@@ -311,8 +311,8 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Delete a role
-   * role.delete()
-   *   .then(r => console.log(`Deleted role ${r}`))
+   * role.delete('The role needed to go')
+   *   .then(deleted => console.log(`Deleted role ${deleted.name}`))
    *   .catch(console.error);
    */
   delete(reason) {
