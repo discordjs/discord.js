@@ -1,4 +1,4 @@
-const Events = require('../../../util/Constants');
+const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.get(data.guild_id);

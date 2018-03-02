@@ -2,7 +2,7 @@ const Action = require('./Action');
 const { Events, Status } = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
-  handle(data) {
+  handle(data, shard) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);
     let member = null;
@@ -12,7 +12,7 @@ class GuildMemberRemoveAction extends Action {
       if (member) {
         guild.voiceStates.delete(member.id);
         guild.members.remove(member.id);
-        if (client.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
+        if (shard.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }
     }
     return { guild, member };
