@@ -1,6 +1,7 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
+const Invite = require('./Invite');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
@@ -328,12 +329,15 @@ class GuildAuditLogsEntry {
             guild_id: guild.id,
           }));
     } else if (targetType === Targets.INVITE) {
-      const change = this.changes.find(c => c.key === 'code');
-      this.target = guild.fetchInvites()
-        .then(invites => {
-          this.target = invites.find(i => i.code === (change.new_value || change.old_value));
-          return this.target;
-        });
+      const changes = this.changes.reduce((o, c) => {
+        o[c.key] = c.new || c.old;
+        return o;
+      }, {
+        id: data.target_id,
+        guild,
+      });
+      changes.channel = guild.channels.get(changes.channel_id);
+      this.target = new Invite(guild.client, changes);
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.get(data.target_id);
     } else {
