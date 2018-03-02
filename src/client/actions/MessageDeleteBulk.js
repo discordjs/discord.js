@@ -4,17 +4,21 @@ const Constants = require('../../util/Constants');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
-    const client = this.client;
-    const channel = client.channels.get(data.channel_id);
-
-    const ids = data.ids;
     const messages = new Collection();
-    for (const id of ids) {
-      const message = channel.messages.get(id);
-      if (message) messages.set(message.id, message);
+
+    if (!data.messages) {
+      const channel = this.client.channels.get(data.channel_id);
+      for (const id of data.ids) {
+        const message = channel.messages.get(id);
+        if (message) messages.set(message.id, message);
+      }
+    } else {
+      for (const msg of data.messages) {
+        messages.set(msg.id, msg);
+      }
     }
 
-    if (messages.size > 0) client.emit(Constants.Events.MESSAGE_BULK_DELETE, messages);
+    if (messages.size > 0) this.client.emit(Constants.Events.MESSAGE_BULK_DELETE, messages);
     return { messages };
   }
 }

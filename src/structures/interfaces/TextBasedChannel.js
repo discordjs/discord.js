@@ -435,16 +435,16 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   bulkDelete(messages, filterOld = false) {
-    if (messages instanceof Array || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id);
+    if (messages instanceof Collection) messages = [...messages.values()];
+    if (messages instanceof Array) {
       if (filterOld) {
-        messageIDs = messageIDs.filter(id => Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000);
+        messages = messages.filter(m => Date.now() - Snowflake.deconstruct(m.id).date.getTime() < 1209600000);
       }
-      if (messageIDs.length === 0) return new Collection();
-      if (messageIDs.length === 1) {
-        return this.fetchMessage(messageIDs[0]).then(msg => msg.delete().then(() => new Collection([[msg.id, msg]])));
+      if (messages.length === 0) return new Collection();
+      if (messages.length === 1) {
+        return messages[0].delete().then(() => new Collection([[messages[0].id, messages[0]]]));
       }
-      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs, filterOld);
+      return this.client.rest.methods.bulkDeleteMessages(this, messages);
     }
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     throw new TypeError('The messages must be an Array, Collection, or number.');

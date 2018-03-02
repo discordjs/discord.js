@@ -4,7 +4,6 @@ const Permissions = require('../../util/Permissions');
 const Constants = require('../../util/Constants');
 const Endpoints = Constants.Endpoints;
 const Collection = require('../../util/Collection');
-const Snowflake = require('../../util/Snowflake');
 const Util = require('../../util/Util');
 
 const User = require('../../structures/User');
@@ -172,18 +171,13 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Guild(guild).ack, true).then(() => guild);
   }
 
-  bulkDeleteMessages(channel, messages, filterOld) {
-    if (filterOld) {
-      messages = messages.filter(id =>
-        Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
-      );
-    }
+  bulkDeleteMessages(channel, messages) {
     return this.rest.makeRequest('post', Endpoints.Channel(channel).messages.bulkDelete, true, {
-      messages,
+      messages: messages.map(m => m.id),
     }).then(() =>
       this.client.actions.MessageDeleteBulk.handle({
         channel_id: channel.id,
-        ids: messages,
+        messages,
       }).messages
     );
   }
