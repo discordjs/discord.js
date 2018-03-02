@@ -556,6 +556,18 @@ class Message extends Base {
   toString() {
     return this.content;
   }
+
+  toJSON() {
+    return super.toJSON({
+      channel: 'channelID',
+      author: 'authorID',
+      application: 'applicationID',
+      guild: 'guildID',
+      cleanContent: true,
+      member: false,
+      reactions: false,
+    });
+  }
 }
 
 module.exports = Message;

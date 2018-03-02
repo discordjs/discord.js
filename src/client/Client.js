@@ -411,6 +411,15 @@ class Client extends BaseClient {
     );
   }
 
+  toJSON() {
+    return super.toJSON({
+      readyAt: false,
+      broadcasts: false,
+      pings: false,
+      presences: false,
+    });
+  }
+
   /**
    * Adds a ping to {@link Client#pings}.
    * @param {number} startTime Starting time of the ping

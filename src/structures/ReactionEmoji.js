@@ -1,3 +1,4 @@
+const Util = require('../util/Util');
 const Emoji = require('./Emoji');
 
 /**
@@ -14,6 +15,14 @@ class ReactionEmoji extends Emoji {
      * @type {MessageReaction}
      */
     this.reaction = reaction;
+  }
+
+  toJSON() {
+    return Util.flatten(this, { identifier: true });
+  }
+
+  valueOf() {
+    return this.id;
   }
 }
 

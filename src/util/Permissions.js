@@ -102,6 +102,10 @@ class Permissions {
     return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
   }
 
+  toJSON() {
+    return this.bitfield;
+  }
+
   valueOf() {
     return this.bitfield;
   }

@@ -114,6 +114,10 @@ class Channel extends Base {
     }
     return channel;
   }
+
+  toJSON(...props) {
+    return super.toJSON({ createdTimestamp: true }, ...props);
+  }
 }
 
 module.exports = Channel;

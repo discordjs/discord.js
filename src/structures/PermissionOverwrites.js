@@ -1,4 +1,5 @@
 const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -58,6 +59,10 @@ class PermissionOverwrites {
     return this.channel.client.api.channels[this.channel.id].permissions[this.id]
       .delete({ reason })
       .then(() => this);
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

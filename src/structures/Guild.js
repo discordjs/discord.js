@@ -951,6 +951,19 @@ class Guild extends Base {
     return this.name;
   }
 
+  toJSON() {
+    const json = super.toJSON({
+      available: false,
+      createdTimestamp: true,
+      nameAcronym: true,
+      presences: false,
+      voiceStates: false,
+    });
+    json.iconURL = this.iconURL();
+    json.splashURL = this.splashURL();
+    return json;
+  }
+
   /**
    * Creates a collection of this guild's roles, sorted by their position and IDs.
    * @returns {Collection<Role>}

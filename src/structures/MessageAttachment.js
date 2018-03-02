@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 /**
  * Represents an attachment in a message.
  * @param {BufferResolvable|Stream} file The file
@@ -107,6 +109,10 @@ class MessageAttachment {
      * @type {?number}
      */
     this.width = data.width;
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

@@ -1,3 +1,4 @@
+const Util = require('../util/Util');
 const { ActivityTypes, ActivityFlags } = require('../util/Constants');
 
 /**
@@ -55,6 +56,10 @@ class Presence {
       this.status === presence.status &&
       this.activity ? this.activity.equals(presence.activity) : !presence.activity
     );
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

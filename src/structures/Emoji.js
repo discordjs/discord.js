@@ -61,6 +61,15 @@ class Emoji extends Base {
   toString() {
     return this.id ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
   }
+
+  toJSON() {
+    return super.toJSON({
+      guild: 'guildID',
+      createdTimestamp: true,
+      url: true,
+      identifier: true,
+    });
+  }
 }
 
 module.exports = Emoji;

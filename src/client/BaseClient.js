@@ -105,6 +105,10 @@ class BaseClient extends EventEmitter {
     clearInterval(interval);
     this._intervals.delete(interval);
   }
+
+  toJSON(...props) {
+    return Util.flatten(this, { domain: false }, ...props);
+  }
 }
 
 module.exports = BaseClient;

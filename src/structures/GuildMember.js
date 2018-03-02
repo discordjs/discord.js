@@ -419,6 +419,17 @@ class GuildMember extends Base {
     return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
   }
 
+  toJSON() {
+    return super.toJSON({
+      guild: 'guildID',
+      user: 'userID',
+      displayName: true,
+      speaking: false,
+      lastMessage: false,
+      lastMessageID: false,
+    });
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

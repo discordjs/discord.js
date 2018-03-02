@@ -74,6 +74,10 @@ class UserProfile extends Base {
     }
     return flags;
   }
+
+  toJSON() {
+    return super.toJSON({ flags: true });
+  }
 }
 
 module.exports = UserProfile;

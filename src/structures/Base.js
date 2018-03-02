@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 /**
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models).
  */
@@ -22,6 +24,14 @@ class Base {
     const clone = this._clone();
     this._patch(data);
     return clone;
+  }
+
+  toJSON(...props) {
+    return Util.flatten(this, ...props);
+  }
+
+  valueOf() {
+    return this.id;
   }
 }
 
