@@ -27,6 +27,7 @@ module.exports = {
 
   // Structures
   Attachment: require('./structures/Attachment'),
+  CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientUser: require('./structures/ClientUser'),
   ClientUserSettings: require('./structures/ClientUserSettings'),
