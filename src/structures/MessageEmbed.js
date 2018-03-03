@@ -63,7 +63,7 @@ class MessageEmbed {
      * The timestamp of this embed
      * @type {number}
      */
-    this.createdTimestamp = data.timestamp;
+    this.timestamp = data.timestamp;
 
     /**
      * The thumbnail of this embed
