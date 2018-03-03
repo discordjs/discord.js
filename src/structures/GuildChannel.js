@@ -1,6 +1,7 @@
 const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
+const resolvePermissions = require('./shared/resolvePermissions');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
@@ -177,6 +178,28 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Updates the permission overwrites for a channel
+   * @param {Object} [options] Options
+   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {string} [options.reason] Reason for updating the channel overwrites
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * channel.overwritePermissions({
+   * overwrites: [
+   *   {
+   *      id: message.author.id,
+   *      denied: ['VIEW_CHANNEL'],
+   *   },
+   * ],
+   *   reason: 'Needed to change permissions'
+   * });
+   */
+  overwritePermissions({ overwrites, reason } = {}) {
+    return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
+      .then(() => this);
+  }
+
+  /**
    * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
    * ```js
    * {
@@ -185,24 +208,24 @@ class GuildChannel extends Channel {
    *  'ATTACH_FILES': false,
    * }
    * ```
-   * @typedef {Object} PermissionOverwriteOptions
+   * @typedef {Object} PermissionOverwriteOption
    */
 
   /**
    * Overwrites the permissions for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The options for the update
+   * @param {PermissionOverwriteOption} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
    * // Overwrite permissions for a message author
-   * message.channel.overwritePermissions(message.author, {
+   * message.channel.updateOverwrite(message.author, {
    *   SEND_MESSAGES: false
    * })
-   *   .then(() => console.log('Done!'))
+   *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  overwritePermissions(userOrRole, options, reason) {
+  updateOverwrite(userOrRole, options, reason) {
     const allow = new Permissions(0);
     const deny = new Permissions(0);
     let type;
