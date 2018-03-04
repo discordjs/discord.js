@@ -132,8 +132,8 @@ class Role extends Base {
   /**
    * Compares this role's position to another role's.
    * @param {RoleResolvable} role Role to compare to this one
-   * @returns {number} Negative number if the this role's position is lower (other role's is higher),
-   * positive number if the this one is higher (other's is lower), 0 if equal
+   * @returns {number} Negative number if this role's position is lower (other role's is higher),
+   * positive number if this one is higher (other's is lower), 0 if equal
    */
   comparePositionTo(role) {
     role = this.guild.roles.resolve(role);
