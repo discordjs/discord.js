@@ -29,7 +29,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.get(this.lastMessageID);
+    return this.messages.get(this.lastMessageID) || null;
   }
 
   /**

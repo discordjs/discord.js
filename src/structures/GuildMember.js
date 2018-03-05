@@ -88,8 +88,7 @@ class GuildMember extends Base {
    */
   get lastMessage() {
     const channel = this.guild.channels.get(this.lastMessageChannelID);
-    if (!channel) return undefined;
-    return channel.messages.get(this.lastMessageID);
+    return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
   get voiceState() {
