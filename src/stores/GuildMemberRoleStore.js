@@ -29,11 +29,9 @@ class GuildMemberRoleStore extends DataStore {
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.set(role.id, role);
     }
-
-    return this.set(this, reason);
+    const newRoles = [...new Set(roleOrRoles.concat(this.array()))];
+    return this.set(newRoles, reason);
   }
 
   /**
@@ -71,11 +69,9 @@ class GuildMemberRoleStore extends DataStore {
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.remove(role);
     }
-
-    return this.set(this, reason);
+    const newRoles = [...new Set(roleOrRoles.concat(this.array()))];
+    return this.set(newRoles, reason);
   }
 
   /**
