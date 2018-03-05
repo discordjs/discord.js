@@ -70,7 +70,7 @@ class GuildMemberRoleStore extends DataStore {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
     }
-    const newRoles = [...new Set(roleOrRoles.concat(this.array()))];
+    const newRoles = this.keyArray().filter(role => !roleOrRoles.includes(role));
     return this.set(newRoles, reason);
   }
 
