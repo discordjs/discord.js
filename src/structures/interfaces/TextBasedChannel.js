@@ -21,12 +21,15 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+  }
 
-    /**
-     * The Message object of the last message in the channel, if one was sent
-     * @type {?Message}
-     */
-    this.lastMessage = null;
+  /**
+   * The Message object of the last message in the channel, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    return this.messages.get(this.lastMessageID);
   }
 
   /**
@@ -334,6 +337,7 @@ class TextBasedChannel {
     if (full) {
       props.push(
         'acknowledge',
+        'lastMessage',
         'search',
         'bulkDelete',
         'startTyping',
