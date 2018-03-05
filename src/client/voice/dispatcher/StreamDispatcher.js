@@ -62,6 +62,7 @@ class StreamDispatcher extends Writable {
     this.on('finish', () => {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
+      this._setSpeaking(false);
     });
 
     if (typeof volume !== 'undefined') this.setVolume(volume);
@@ -251,9 +252,6 @@ class StreamDispatcher extends Writable {
   }
 
   _setSpeaking(value) {
-    if (this.speaking === value) return;
-    if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
-    this.speaking = value;
     this.player.voiceConnection.setSpeaking(value);
     /**
      * Emitted when the dispatcher starts/stops speaking.
