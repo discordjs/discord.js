@@ -55,6 +55,11 @@ class TextChannel extends GuildChannel {
   /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * channel.fetchWebhooks()
+   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.api.channels[this.id].webhooks.get().then(data => {
@@ -72,8 +77,12 @@ class TextChannel extends GuildChannel {
    * @param {string} [options.reason] Reason for creating the webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
-   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   * // Create a webhook for the current channel
+   * channel.createWebhook('Snek', {
+   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *   reason: 'Needed a cool new Webhook'
+   * })
+   *   .then(console.log)
    *   .catch(console.error)
    */
   async createWebhook(name, { avatar, reason } = {}) {
