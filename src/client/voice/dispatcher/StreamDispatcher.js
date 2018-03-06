@@ -242,10 +242,13 @@ class StreamDispatcher extends Writable {
      */
     this._setSpeaking(true);
     while (repeats--) {
+      if (!this.player.voiceConnection.sockets.udp) {
+        this.emit('debug', 'Failed to send a packet - no UDP socket');
+      }
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
           this._setSpeaking(false);
-          this.emit('debug', `Failed to send a packet ${e}`);
+          this.emit('debug', `Failed to send a packet - ${e}`);
         });
     }
   }
