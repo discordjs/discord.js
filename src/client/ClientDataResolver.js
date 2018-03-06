@@ -251,25 +251,20 @@ class ClientDataResolver {
     if (this.client.browser && resource instanceof ArrayBuffer) return Promise.resolve(convertToBuffer(resource));
 
     if (typeof resource === 'string') {
+      if (/^https?:\/\//.test(resource)) {
+        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
+      }
       return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
-            .end((err, res) => {
-              if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('The response body isn\'t a Buffer.'));
-              return resolve(res.body);
-            });
-        } else {
-          const file = path.resolve(resource);
-          fs.stat(file, (err, stats) => {
-            if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
-            fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
-            });
-            return null;
+        const file = path.resolve(resource);
+        fs.stat(file, (err, stats) => {
+          if (err) return reject(err);
+          if (!stats || !stats.isFile()) return reject(new Error(`The file could not be found: ${file}`));
+          fs.readFile(file, (err2, data) => {
+            if (err2) reject(err2);
+            else resolve(data);
           });
-        }
+          return null;
+        });
       });
     } else if (resource && resource.pipe && typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
