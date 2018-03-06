@@ -186,7 +186,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id) || null;
   }
 
   /**
