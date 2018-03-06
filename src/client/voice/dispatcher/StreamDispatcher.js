@@ -140,7 +140,7 @@ class StreamDispatcher extends Writable {
     if (!this.pausedSince) return;
     this._pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
-    if (this._writeCallback) this._writeCallback();
+    if (typeof this._writeCallback === 'function') this._writeCallback();
   }
 
   /**
@@ -195,13 +195,11 @@ class StreamDispatcher extends Writable {
   }
 
   _step(done) {
-    if (this.pausedSince) {
-      this._writeCallback = done;
-      return;
-    }
+    this._writeCallback = done;
+    if (this.pausedSince) return;
     if (!this.streams.broadcast) {
       const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
-      setTimeout(done.bind(this), next);
+      setTimeout(this._writeCallback.bind(this), next);
     }
     this._sdata.sequence++;
     this._sdata.timestamp += TIMESTAMP_INC;
