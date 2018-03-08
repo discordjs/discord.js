@@ -220,6 +220,7 @@ class GroupDMChannel extends Channel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
+  get lastMessage() {}
   send() {}
   search() {}
   startTyping() {}

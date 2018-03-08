@@ -43,10 +43,10 @@ class GuildMember extends Base {
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the member in their guild, if one was sent
-     * @type {?Message}
+     * The ID of the channel for the last message sent by the member in their guild, if one was sent
+     * @type {?Snowflake}
      */
-    this.lastMessage = null;
+    this.lastMessageChannelID = null;
   }
 
   _patch(data) {
@@ -79,6 +79,16 @@ class GuildMember extends Base {
     const clone = super._clone();
     clone.roles = this.roles.clone();
     return clone;
+  }
+
+  /**
+   * The Message object of the last message sent by the member in their guild, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    const channel = this.guild.channels.get(this.lastMessageChannelID);
+    return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
   get voiceState() {
