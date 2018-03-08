@@ -1,3 +1,5 @@
+const Util = require('./Util');
+
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
@@ -424,6 +426,10 @@ class Collection extends Map {
    */
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
     return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
+  }
+
+  toJSON() {
+    return this.map(e => typeof e.toJSON === 'function' ? e.toJSON() : Util.flatten(e));
   }
 }
 

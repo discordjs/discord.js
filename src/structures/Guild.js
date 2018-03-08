@@ -472,6 +472,16 @@ class Guild extends Base {
    * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
+   * @example
+   * // Fetch invites
+   * guild.fetchInvites()
+   *   .then(invites => console.log(`Fetched ${invites.size} invites`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch invite creator by their id
+   * guild.fetchInvites()
+   *  .then(invites => console.log(invites.find(invite => invite.inviter.id === '84484653687267328')))
+   *  .then(console.error);
    */
   fetchInvites() {
     return this.client.api.guilds(this.id).invites.get()
@@ -488,6 +498,11 @@ class Guild extends Base {
   /**
    * Fetches all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * guild.fetchWebhooks()
+   *   .then(webhooks => console.log(`Fetched ${webhooks.size} webhooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.api.guilds(this.id).webhooks.get().then(data => {
@@ -521,7 +536,7 @@ class Guild extends Base {
    * @example
    * // Output audit log entries
    * guild.fetchAuditLogs()
-   *   .then(audit => console.log(audit.entries))
+   *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
   fetchAuditLogs(options = {}) {
@@ -581,10 +596,12 @@ class Guild extends Base {
    * guild.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.results[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
-   * }).catch(console.error);
+   * })
+   *   .then(res => {
+   *     const hit = res.results[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
+   *   })
+   *   .catch(console.error);
    */
   search(options = {}) {
     return Shared.search(this, options);
@@ -616,7 +633,7 @@ class Guild extends Base {
    *   name: 'Discord Guild',
    *   region: 'london',
    * })
-   *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   *   .then(updated => console.log(`New guild name ${updated} in region ${updated.region}`))
    *   .catch(console.error);
    */
   edit(data, reason) {
@@ -659,7 +676,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild name
    * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .then(updated => console.log(`Updated guild name to ${guild}`))
    *  .catch(console.error);
    */
   setName(name, reason) {
@@ -704,7 +721,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild AFK channel
    * guild.setAFKChannel(channel)
-   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel.name}`))
    *  .catch(console.error);
    */
   setAFKChannel(afkChannel, reason) {
@@ -719,7 +736,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild system channel
    * guild.setSystemChannel(channel)
-   *  .then(updated => console.log(`Updated guild system channel to ${guild.systemChannel}`))
+   *  .then(updated => console.log(`Updated guild system channel to ${guild.systemChannel.name}`))
    *  .catch(console.error);
    */
   setSystemChannel(systemChannel, reason) {
@@ -764,7 +781,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
@@ -848,7 +865,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    * @example
    * guild.setChannelPositions([{ channel: channelID, position: newChannelIndex }])
-   *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
@@ -938,6 +955,19 @@ class Guild extends Base {
    */
   toString() {
     return this.name;
+  }
+
+  toJSON() {
+    const json = super.toJSON({
+      available: false,
+      createdTimestamp: true,
+      nameAcronym: true,
+      presences: false,
+      voiceStates: false,
+    });
+    json.iconURL = this.iconURL();
+    json.splashURL = this.splashURL();
+    return json;
   }
 
   /**

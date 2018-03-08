@@ -13,6 +13,10 @@ const MessageStore = require('../stores/MessageStore');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
+    /**
+     * A collection containing the messages sent to this channel
+     * @type {MessageStore<Snowflake, Message>}
+     */
     this.messages = new MessageStore(this);
     this._typing = new Map();
   }

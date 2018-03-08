@@ -1,4 +1,5 @@
 const GuildEmoji = require('./GuildEmoji');
+const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserStore = require('../stores/ReactionUserStore');
 
@@ -53,6 +54,11 @@ class MessageReaction {
       }
     }
     return this._emoji;
+  }
+
+
+  toJSON() {
+    return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });
   }
 
   _add(user) {

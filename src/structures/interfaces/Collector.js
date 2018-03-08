@@ -1,4 +1,5 @@
 const Collection = require('../../util/Collection');
+const Util = require('../../util/Util');
 const EventEmitter = require('events');
 
 /**
@@ -170,6 +171,10 @@ class Collector extends EventEmitter {
   checkEnd() {
     const reason = this.endReason();
     if (reason) this.stop(reason);
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 
   /* eslint-disable no-empty-function, valid-jsdoc */

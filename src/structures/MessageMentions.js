@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Util = require('../util/Util');
 const GuildMember = require('./GuildMember');
 
 /**
@@ -138,6 +139,13 @@ class MessageMentions {
     }
 
     return false;
+  }
+
+  toJSON() {
+    return Util.flatten(this, {
+      members: true,
+      channels: true,
+    });
   }
 }
 

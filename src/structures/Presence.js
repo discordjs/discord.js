@@ -1,3 +1,4 @@
+const Util = require('../util/Util');
 const { ActivityTypes, ActivityFlags } = require('../util/Constants');
 
 /**
@@ -62,6 +63,10 @@ class Presence {
       this.activity ? this.activity.equals(presence.activity) : !presence.activity
     );
   }
+
+  toJSON() {
+    return Util.flatten(this);
+  }
 }
 
 /**
@@ -114,8 +119,8 @@ class Activity {
      * @prop {?Date} end When the activity will end
      */
     this.timestamps = data.timestamps ? {
-      start: data.timestamps.start ? new Date(data.timestamps.start) : null,
-      end: data.timestamps.end ? new Date(data.timestamps.end) : null,
+      start: data.timestamps.start ? new Date(Number(data.timestamps.start)) : null,
+      end: data.timestamps.end ? new Date(Number(data.timestamps.end)) : null,
     } : null;
 
     /**

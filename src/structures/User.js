@@ -258,6 +258,19 @@ class User extends Base {
     return `<@${this.id}>`;
   }
 
+  toJSON(...props) {
+    const json = super.toJSON({
+      createdTimestamp: true,
+      defaultAvatarURL: true,
+      tag: true,
+      lastMessage: false,
+      lastMessageID: false,
+    }, ...props);
+    json.avatarURL = this.avatarURL();
+    json.displayAvatarURL = this.displayAvatarURL();
+    return json;
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}

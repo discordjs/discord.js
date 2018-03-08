@@ -372,7 +372,7 @@ class Message extends Base {
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
   async edit(content, options) {
@@ -417,6 +417,16 @@ class Message extends Base {
    * Adds a reaction to the message.
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
+   * @example
+   * // React to a message with a unicode emoji
+   * message.react('🤔')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // React to a message with a custom emoji
+   * message.react(message.guild.emojis.get('123456789012345678'))
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   react(emoji) {
     emoji = this.client.emojis.resolveIdentifier(emoji);
@@ -441,7 +451,7 @@ class Message extends Base {
    * @example
    * // Delete a message
    * message.delete()
-   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
   delete({ timeout = 0, reason } = {}) {
@@ -470,7 +480,7 @@ class Message extends Base {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .then(msg => console.log(`Sent a reply to ${msg.author.username}`))
    *   .catch(console.error);
    */
   reply(content, options) {
@@ -545,6 +555,18 @@ class Message extends Base {
    */
   toString() {
     return this.content;
+  }
+
+  toJSON() {
+    return super.toJSON({
+      channel: 'channelID',
+      author: 'authorID',
+      application: 'applicationID',
+      guild: 'guildID',
+      cleanContent: true,
+      member: false,
+      reactions: false,
+    });
   }
 }
 

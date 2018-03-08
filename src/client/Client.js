@@ -418,6 +418,15 @@ class Client extends BaseClient {
     );
   }
 
+  toJSON() {
+    return super.toJSON({
+      readyAt: false,
+      broadcasts: false,
+      pings: false,
+      presences: false,
+    });
+  }
+
   /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
