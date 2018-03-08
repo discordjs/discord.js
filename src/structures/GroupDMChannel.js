@@ -103,11 +103,11 @@ class GroupDMChannel extends Channel {
 
   /**
    * The owner of this Group DM
-   * @type {User}
+   * @type {?User}
    * @readonly
    */
   get owner() {
-    return this.client.users.get(this.ownerID);
+    return this.client.users.get(this.ownerID) || null;
   }
 
   /**

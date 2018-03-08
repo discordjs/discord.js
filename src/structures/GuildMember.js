@@ -189,7 +189,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get voiceChannel() {
-    return this.guild.channels.get(this.voiceChannelID);
+    return this.guild.channels.get(this.voiceChannelID) || null;
   }
 
   /**
