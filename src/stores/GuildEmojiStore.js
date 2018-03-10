@@ -103,6 +103,7 @@ class GuildEmojiStore extends DataStore {
   resolveIdentifier(emoji) {
     const emojiResolveable = this.resolve(emoji);
     if (emojiResolveable) return emojiResolveable.identifier;
+    if (emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
       if (!emoji.includes('%')) return encodeURIComponent(emoji);
       else return emoji;
