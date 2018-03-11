@@ -63,7 +63,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.get(this.parentID);
+    return this.guild.channels.get(this.parentID) || null;
   }
 
   /**

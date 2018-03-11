@@ -1,4 +1,3 @@
-const { VoiceStatus } = require('../../../util/Constants');
 const VolumeInterface = require('../util/VolumeInterface');
 const { Writable } = require('stream');
 
@@ -62,6 +61,7 @@ class StreamDispatcher extends Writable {
     this.on('finish', () => {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
+      this._setSpeaking(false);
     });
 
     if (typeof volume !== 'undefined') this.setVolume(volume);
@@ -140,7 +140,7 @@ class StreamDispatcher extends Writable {
     if (!this.pausedSince) return;
     this._pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
-    if (this._writeCallback) this._writeCallback();
+    if (typeof this._writeCallback === 'function') this._writeCallback();
   }
 
   /**
@@ -195,13 +195,11 @@ class StreamDispatcher extends Writable {
   }
 
   _step(done) {
-    if (this.pausedSince) {
-      this._writeCallback = done;
-      return;
-    }
+    this._writeCallback = done;
+    if (this.pausedSince) return;
     if (!this.streams.broadcast) {
       const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
-      setTimeout(done.bind(this), next);
+      setTimeout(this._writeCallback.bind(this), next);
     }
     this._sdata.sequence++;
     this._sdata.timestamp += TIMESTAMP_INC;
@@ -242,18 +240,18 @@ class StreamDispatcher extends Writable {
      */
     this._setSpeaking(true);
     while (repeats--) {
+      if (!this.player.voiceConnection.sockets.udp) {
+        this.emit('debug', 'Failed to send a packet - no UDP socket');
+      }
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
           this._setSpeaking(false);
-          this.emit('debug', `Failed to send a packet ${e}`);
+          this.emit('debug', `Failed to send a packet - ${e}`);
         });
     }
   }
 
   _setSpeaking(value) {
-    if (this.speaking === value) return;
-    if (this.player.voiceConnection.status !== VoiceStatus.CONNECTED) return;
-    this.speaking = value;
     this.player.voiceConnection.setSpeaking(value);
     /**
      * Emitted when the dispatcher starts/stops speaking.

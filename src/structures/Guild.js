@@ -307,11 +307,11 @@ class Guild extends Base {
 
   /**
    * The owner of the guild
-   * @type {GuildMember}
+   * @type {?GuildMember}
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID);
+    return this.members.get(this.ownerID) || null;
   }
 
   /**
@@ -417,11 +417,11 @@ class Guild extends Base {
 
   /**
    * The `@everyone` role of the guild
-   * @type {Role}
+   * @type {?Role}
    * @readonly
    */
   get defaultRole() {
-    return this.roles.get(this.id);
+    return this.roles.get(this.id) || null;
   }
 
   /**
@@ -430,7 +430,7 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    return this.members.get(this.client.user.id);
+    return this.members.get(this.client.user.id) || null;
   }
 
   /**

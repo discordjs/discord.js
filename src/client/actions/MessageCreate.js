@@ -12,14 +12,13 @@ class MessageCreateAction extends Action {
       const user = message.author;
       const member = channel.guild ? channel.guild.member(user) : null;
       channel.lastMessageID = data.id;
-      channel.lastMessage = message;
       if (user) {
         user.lastMessageID = data.id;
-        user.lastMessage = message;
+        user.lastMessageChannelID = channel.id;
       }
       if (member) {
         member.lastMessageID = data.id;
-        member.lastMessage = message;
+        member.lastMessageChannelID = channel.id;
       }
 
       client.emit(Events.MESSAGE_CREATE, message);

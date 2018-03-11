@@ -87,26 +87,22 @@ class DataResolver {
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {
-      return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
-            .end((err, res) => {
-              if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
-              return resolve(res.body);
-            });
-        } else {
+      if (/^https?:\/\//.test(resource)) {
+        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
+      } else {
+        return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
             if (!stats || !stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
+              if (err2) reject(err2);
+              else resolve(data);
             });
             return null;
           });
-        }
-      });
+        });
+      }
     } else if (resource.pipe && typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
         const buffers = [];
