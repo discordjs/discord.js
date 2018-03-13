@@ -25,7 +25,7 @@ class ShardingManager extends EventEmitter {
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
-  async constructor(file, options = {}) {
+  constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
       startShard: 1,
