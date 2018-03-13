@@ -131,7 +131,9 @@ class ShardingManager extends EventEmitter {
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
     this.totalShards = amount;
-    this.shardList = [...Array(amount + 1).keys()].slice(1);
+    if (this.shardList === 'auto' || amount > this.shardList.length) {
+      this.shardList = [...Array(amount).keys()];
+    }
 
     // Spawn the shards
     for (let s = 0; s < this.totalShards; s++) {
