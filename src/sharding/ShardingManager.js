@@ -19,7 +19,6 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
-   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
    * @param {number} [options.startShard=1] First shard in this sharding manager
    * @param {number|string} [options.endShard='auto'] Last shard in this sharding manager or "auto"
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
