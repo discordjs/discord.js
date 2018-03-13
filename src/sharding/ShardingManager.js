@@ -46,6 +46,8 @@ class ShardingManager extends EventEmitter {
 		const stats = fs.statSync(this.file);
 		if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
+		this._maxRecommended = await Util.fetchRecommendedShards(this.token);
+
 		/**
 		 * First shard this sharding manager will spawn
 		 * @type {number}
@@ -55,6 +57,9 @@ class ShardingManager extends EventEmitter {
 			throw new TypeError('CLIENT_INVALID_OPTION', 'Start shard', 'a number.');
 		}
 		if (this.startShard < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', 'at least 1.');
+		if (this.startShard > this._maxRecommended) {
+			throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', `no more than ${this._maxRecommended} (recommended amount)`);
+		}
 		if (this.startShard % 1 !== 0) throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', 'an integer.');
 
 		/**
@@ -66,7 +71,10 @@ class ShardingManager extends EventEmitter {
 			if (typeof this.endShard !== 'number' || isNan(this.endShard)) {
 				throw new TypeError('CLIENT_INVALID_OPTION', 'End shard', 'a number.');
 			}
-			if (startShard > endShard) throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', 'greater or equal to the start shard.');
+			if (this.startShard > this.endShard) throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', 'greater or equal to the start shard.');
+			if (this.endShard > this._maxRecommended) {
+				throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', `at least ${this._maxRecommended} (recommended amount)`);
+			}
 			if (this.endShard % 1 !== 0) throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', 'an integer.');
 		}
 		
@@ -129,7 +137,7 @@ class ShardingManager extends EventEmitter {
 	async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
 		// Obtain/verify the number of shards to spawn
 		if (amount === 'auto') {
-			amount = await Util.fetchRecommendedShards(this.token);
+			amount = this._maxRecommended;
 		} else {
 			if (typeof amount !== 'number' || isNaN(amount)) {
 				throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
@@ -147,7 +155,7 @@ class ShardingManager extends EventEmitter {
 		// Spawn the shards
 		for (let s = this.startShard; s <= this.endShard; s++) {
 			const promises = [];
-			const shard = this.createShard();
+			const shard = this.createShard(s);
 			promises.push(shard.spawn(waitForReady));
 			if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
 			await Promise.all(promises); // eslint-disable-line no-await-in-loop
