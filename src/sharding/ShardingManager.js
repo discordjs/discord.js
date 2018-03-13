@@ -19,6 +19,7 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
+   * @param {string|number[]} [options.totalShards='auto'] Number of total shards of all shard managers or "auto"
    * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
@@ -27,7 +28,6 @@ class ShardingManager extends EventEmitter {
   constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
-      shardList: 'auto',
       respawn: true,
       shardArgs: [],
       token: null,
@@ -47,14 +47,16 @@ class ShardingManager extends EventEmitter {
      * Last shard this sharding manager will spawn
      * @type {string|number[]}
      */
-    this.shardList = options.shardList;
-    if (this.shards !== 'auto') {
-      if (!Array.isArray(this.shards)) {
+    this.shardList = options.shardList || 'auto';
+    if (this.shardList !== 'auto') {
+      if (!Array.isArray(this.shardList)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array.');
       }
-      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'at least 1.');
-      if (this.shardList.some(shardID => typeof shardID !== 'number' || Number.isNaN(shardID) || shardID % 1 !== 0)) {
-        throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array of integers.');
+      this.shardList = [...new Set(this.shardList)];
+      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'at least 1 ID.');
+      if (this.shardList.some(shardID => typeof shardID !== 'number' || Number.isNaN(shardID) ||
+        !Number.isInteger(shardID) || shardID < 0)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array of postive integers.');
       }
     }
 
@@ -62,7 +64,16 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that the sharding manager spawns in total
      * @type {number}
      */
-    this.totalShards = this.shardList !== 'auto' ? this.shardList.length : this.shardList;
+    this.totalShards = options.totalShards || 'auto';
+    if (this.totalShards !== 'auto') {
+      if (typeof this.totalShards !== 'number' || Number.isNaN(this.totalShards)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
+      }
+      if (this.totalShards < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
+      if (!Number.isInteger(this.totalShards)) {
+        throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
+      }
+    }
 
     /**
      * Whether shards should automatically respawn upon exiting
@@ -114,9 +125,9 @@ class ShardingManager extends EventEmitter {
    * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
    * @returns {Promise<Collection<number, Shard>>}
    */
-  async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
+  async spawn(amount = this.shardList.length, delay = 5500, waitForReady = true) {
     // Obtain/verify the number of shards to spawn
-    if (amount === 'auto') {
+    if (this.totalShards === 'auto' && this.shardList === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
     } else {
       if (typeof amount !== 'number' || Number.isNaN(amount)) {
@@ -128,15 +139,17 @@ class ShardingManager extends EventEmitter {
       }
     }
 
-    // Make sure this many shards haven't already been spawned
-    if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
-    this.totalShards = amount;
-    if (this.shardList === 'auto' || amount > this.shardList.length) {
-      this.shardList = [...Array(amount).keys()];
+    if (amount > this.shardList.length) {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'must be "auto" if total shards is "auto".');
     }
 
+    // Make sure this many shards haven't already been spawned
+    if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
+    if (this.totalShards === 'auto') this.totalShards = amount;
+    if (this.shardList === 'auto') this.shardList = [...Array(amount).keys()];
+
     // Spawn the shards
-    for (let s = 0; s < this.totalShards; s++) {
+    for (let s = 0; s < this.shardList.length; s++) {
       const promises = [];
       const shard = this.createShard(this.shardList[s]);
       promises.push(shard.spawn(waitForReady));
