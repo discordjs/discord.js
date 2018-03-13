@@ -62,7 +62,7 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that the sharding manager spawns in total
      * @type {number}
      */
-    this.totalShards = this.shardList !== 'auto' ? this.shardList.length - 1 : this.shardList;
+    this.totalShards = this.shardList !== 'auto' ? this.shardList.length : this.shardList;
 
     /**
      * Whether shards should automatically respawn upon exiting
@@ -134,7 +134,7 @@ class ShardingManager extends EventEmitter {
     this.shardList = [...Array(amount + 1).keys()].slice(1);
 
     // Spawn the shards
-    for (let s = 0; s <= this.totalShards; s++) {
+    for (let s = 0; s < this.totalShards; s++) {
       const promises = [];
       const shard = this.createShard(this.shardList[s]);
       promises.push(shard.spawn(waitForReady));
