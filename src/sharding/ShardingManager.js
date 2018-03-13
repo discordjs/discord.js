@@ -25,7 +25,7 @@ class ShardingManager extends EventEmitter {
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
-  constructor(file, options = {}) {
+  async constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
       startShard: 1,
@@ -45,7 +45,7 @@ class ShardingManager extends EventEmitter {
     const stats = fs.statSync(this.file);
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
-    this._maxRecommended = await Util.fetchRecommendedShards(this.token);
+    this._maxRecommended = this.getRecommendedAmount();
 
     /**
      * First shard this sharding manager will spawn
@@ -223,6 +223,10 @@ class ShardingManager extends EventEmitter {
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
     return this.shards;
+  }
+
+  async getRecommendedAmount() {
+    return this._maxRecommended ? this._maxRecommended : await Util.fetchRecommendedShards(this.token);
   }
 }
 
