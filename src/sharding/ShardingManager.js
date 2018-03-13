@@ -136,14 +136,14 @@ class ShardingManager extends EventEmitter {
   async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
-      amount = this._maxRecommended;
+      this.endShard = amount = this._maxRecommended;
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
-      if (amount > this._maxRecommended) {
-        throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', `at least ${this._maxRecommended} (recommended amount)`);
+      if (this.startShard + amount - 1 > this._maxRecommended) {
+        throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', `no more than ${this._maxRecommended} (recommended amount)`);
       }
       if (amount !== Math.floor(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
@@ -152,10 +152,10 @@ class ShardingManager extends EventEmitter {
 
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
-    this.totalShards = this.endShard - this.startShard + 1;
+    this.totalShards = amount;
 
     // Spawn the shards
-    for (let s = this.startShard; s <= this.endShard; s++) {
+    for (let s = this.startShard; s <= this.startShard + amount - 1; s++) {
       const promises = [];
       const shard = this.createShard(s);
       promises.push(shard.spawn(waitForReady));
