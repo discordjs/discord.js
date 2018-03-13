@@ -19,8 +19,7 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
-   * @param {number} [options.startShard=1] First shard in this sharding manager
-   * @param {number|string} [options.endShard='auto'] Last shard in this sharding manager or "auto"
+   * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
@@ -28,8 +27,7 @@ class ShardingManager extends EventEmitter {
   constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
-      startShard: 1,
-      endShard: 'auto',
+      shardList: 'auto',
       respawn: true,
       shardArgs: [],
       token: null,
@@ -45,43 +43,26 @@ class ShardingManager extends EventEmitter {
     const stats = fs.statSync(this.file);
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
-    this._maxRecommended = this.getRecommendedAmount();
-
-    /**
-     * First shard this sharding manager will spawn
-     * @type {number}
-     */
-    this.startShard = options.startShard;
-    if (typeof this.startShard !== 'number' || isNan(this.startShard)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'Start shard', 'a number.');
-    }
-    if (this.startShard < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', 'at least 1.');
-    if (this.startShard > this._maxRecommended) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', `no more than ${this._maxRecommended} (recommended amount)`);
-    }
-    if (this.startShard % 1 !== 0) throw new RangeError('CLIENT_INVALID_OPTION', 'Start shard', 'an integer.');
-
     /**
      * Last shard this sharding manager will spawn
-     * @type {number|string}
+     * @type {string|number[]}
      */
-    this.endShard = options.endShard;
-    if (this.endShard !== 'auto') {
-      if (typeof this.endShard !== 'number' || isNan(this.endShard)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'End shard', 'a number.');
+    this.shardList = options.shardList;
+    if (this.shards !== 'auto') {
+      if (!Array.isArray(this.shards)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array.');
       }
-      if (this.startShard > this.endShard) throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', 'greater or equal to the start shard.');
-      if (this.endShard > this._maxRecommended) {
-        throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', `at least ${this._maxRecommended} (recommended amount)`);
+      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'at least 1.');
+      if (this.shardList.some(shardID => typeof shardID !== 'number' || Number.isNaN(shardID) || shardID % 1 !== 0)) {
+        throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array of integers.');
       }
-      if (this.endShard % 1 !== 0) throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', 'an integer.');
     }
-    
+
     /**
      * Amount of shards that the sharding manager spawns in total
      * @type {number}
      */
-    this.totalShards = this.endShard !== 'auto' ? this.endShard - this.startShard + 1 : this.endShard;
+    this.totalShards = this.shardList !== 'auto' ? this.shardList.length - 1 : this.shardList;
 
     /**
      * Whether shards should automatically respawn upon exiting
@@ -136,15 +117,12 @@ class ShardingManager extends EventEmitter {
   async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
-      this.endShard = amount = this._maxRecommended;
+      amount = await Util.fetchRecommendedShards(this.token);
     } else {
-      if (typeof amount !== 'number' || isNaN(amount)) {
+      if (typeof amount !== 'number' || Number.isNaN(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
-      if (this.startShard + amount - 1 > this._maxRecommended) {
-        throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', `no more than ${this._maxRecommended} (recommended amount)`);
-      }
       if (amount !== Math.floor(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
@@ -153,11 +131,12 @@ class ShardingManager extends EventEmitter {
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
     this.totalShards = amount;
+    this.shardList = [...Array(amount + 1).keys()].slice(1);
 
     // Spawn the shards
-    for (let s = this.startShard; s <= this.startShard + amount - 1; s++) {
+    for (let s = 0; s <= this.totalShards; s++) {
       const promises = [];
-      const shard = this.createShard(s);
+      const shard = this.createShard(this.shardList[s]);
       promises.push(shard.spawn(waitForReady));
       if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
@@ -223,10 +202,6 @@ class ShardingManager extends EventEmitter {
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
     return this.shards;
-  }
-
-  async getRecommendedAmount() {
-    return this._maxRecommended ? this._maxRecommended : await Util.fetchRecommendedShards(this.token);
   }
 }
 
