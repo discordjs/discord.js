@@ -143,6 +143,9 @@ class ShardingManager extends EventEmitter {
 				throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
 			}
 			if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
+			if (amount > this._maxRecommended) {
+				throw new RangeError('CLIENT_INVALID_OPTION', 'End shard', `at least ${this._maxRecommended} (recommended amount)`);
+			}
 			if (amount !== Math.floor(amount)) {
 				throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
 			}
