@@ -54,7 +54,7 @@ class ShardingManager extends EventEmitter {
       }
       this.shardList = [...new Set(this.shardList)];
       if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'at least 1 ID.');
-      if (this.shardList.some(shardID => typeof shardID !== 'number' || Number.isNaN(shardID) ||
+      if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
         !Number.isInteger(shardID) || shardID < 0)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array of postive integers.');
       }
@@ -66,7 +66,7 @@ class ShardingManager extends EventEmitter {
      */
     this.totalShards = options.totalShards || 'auto';
     if (this.totalShards !== 'auto') {
-      if (typeof this.totalShards !== 'number' || Number.isNaN(this.totalShards)) {
+      if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (this.totalShards < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
@@ -130,11 +130,11 @@ class ShardingManager extends EventEmitter {
     if (this.totalShards === 'auto' && this.shardList === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
     } else {
-      if (typeof amount !== 'number' || Number.isNaN(amount)) {
+      if (typeof amount !== 'number' || isNaN(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
-      if (amount !== Math.floor(amount)) {
+      if (!Number.isInteger(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
     }
