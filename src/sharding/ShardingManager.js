@@ -44,7 +44,7 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
-     * Last shard this sharding manager will spawn
+     * List of shards this sharding manager spawns
      * @type {string|number[]}
      */
     this.shardList = options.shardList || 'auto';
@@ -61,7 +61,7 @@ class ShardingManager extends EventEmitter {
     }
 
     /**
-     * Amount of shards that the sharding manager spawns in total
+     * Amount of shards that all sharding managers spawn in total
      * @type {number}
      */
     this.totalShards = options.totalShards || 'auto';
@@ -125,9 +125,9 @@ class ShardingManager extends EventEmitter {
    * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
    * @returns {Promise<Collection<number, Shard>>}
    */
-  async spawn(amount = this.shardList.length, delay = 5500, waitForReady = true) {
+  async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
     // Obtain/verify the number of shards to spawn
-    if (this.totalShards === 'auto' && this.shardList === 'auto') {
+    if (amount === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
@@ -139,14 +139,15 @@ class ShardingManager extends EventEmitter {
       }
     }
 
-    if (amount > this.shardList.length) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'must be "auto" if total shards is "auto".');
-    }
-
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
+    if (this.shardList === 'auto' || this.totalShards === 'auto') this.shardList = [...Array(amount).keys()];
     if (this.totalShards === 'auto') this.totalShards = amount;
-    if (this.shardList === 'auto') this.shardList = [...Array(amount).keys()];
+
+    if (this.shardList.some(shardId => shardId >= amount)) {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',
+        'bigger than the highest shardId in the shardList option.');
+    }
 
     // Spawn the shards
     for (let s = 0; s < this.shardList.length; s++) {
