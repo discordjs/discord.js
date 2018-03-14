@@ -79,7 +79,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Evaluates a script or Function on all shards, in the context of the {@link Clients}.
+   * Evaluates a script or function on all shards, in the context of the {@link Clients}.
    * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    * @see {@link ShardingManager#broadcastEval}
