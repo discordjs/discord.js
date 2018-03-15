@@ -50,13 +50,13 @@ class ShardingManager extends EventEmitter {
     this.shardList = options.shardList || 'auto';
     if (this.shardList !== 'auto') {
       if (!Array.isArray(this.shardList)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array.');
       }
       this.shardList = [...new Set(this.shardList)];
-      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Shardlist', 'at least 1 ID.');
+      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
       if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
         !Number.isInteger(shardID) || shardID < 0)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'Shardlist', 'an array of postive integers.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of postive integers.');
       }
     }
 
@@ -141,8 +141,10 @@ class ShardingManager extends EventEmitter {
 
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
-    if (this.shardList === 'auto' || this.totalShards === 'auto') this.shardList = [...Array(amount).keys()];
-    if (this.totalShards === 'auto') this.totalShards = amount;
+    if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
+      this.shardList = [...Array(amount).keys()];
+    }
+    if (this.totalShards === 'auto' || this.totalShards !== amount) this.totalShards = amount;
 
     if (this.shardList.some(shardId => shardId >= amount)) {
       throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',
@@ -150,11 +152,11 @@ class ShardingManager extends EventEmitter {
     }
 
     // Spawn the shards
-    for (let s = 0; s < this.shardList.length; s++) {
+    for (let shardId of this.shardList) {
       const promises = [];
-      const shard = this.createShard(this.shardList[s]);
+      const shard = this.createShard(shardId);
       promises.push(shard.spawn(waitForReady));
-      if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
+      if (delay > 0 && this.shards.size !== this.shardList.length - 1) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 
