@@ -230,8 +230,11 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setStatus(status) {
+    const statusArr = ['dnd', 'online', 'invisible', 'idle'];
+    if (!statusArr.includes(status)) throw new SyntaxError('The Provided Status is Not Valid');
     return this.setPresence({ status });
   }
+
 
   /**
    * Sets the activity the client user is playing.
