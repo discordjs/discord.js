@@ -231,7 +231,7 @@ class ClientUser extends Structures.get('User') {
    */
   setStatus(status) {
     const statusArr = ['dnd', 'online', 'invisible', 'idle'];
-    if (!statusArr.includes(status)) throw new SyntaxError('The Provided Status is Not Valid');
+    if (!statusArr.includes(status)) throw new TypeError('The Provided Status is Not Valid');
     return this.setPresence({ status });
   }
 
