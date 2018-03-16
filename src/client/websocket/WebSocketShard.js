@@ -12,11 +12,28 @@ class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
     super();
 
+    /**
+     * The WebSocket Manager of this connection
+     * @type {WebSocketManager}
+     */
     this.manager = manager;
+
+    /**
+     * The id of the this shard.
+     * @type {number}
+     */
     this.id = id;
 
+    /**
+     * The current status of the shard
+     * @type {number}
+     */
     this.status = Status.IDLE;
 
+    /**
+     * The current sequence of the WebSocket
+     * @type {number}
+     */
     this.sequence = -1;
     this.pings = [];
     this.lastPingTimestamp = -1;
@@ -24,6 +41,10 @@ class WebSocketShard extends EventEmitter {
 
     this.trace = undefined;
 
+    /**
+     * Contains the rate limit queue and metadata
+     * @type {Object}
+     */
     this.ratelimit = {
       queue: [],
       total: 120,
@@ -37,10 +58,19 @@ class WebSocketShard extends EventEmitter {
     this.connect();
   }
 
-  debug(x) {
-    this.manager.debug(`[shard ${this.id}] ${x}`);
+  /**
+   * Emits a debug event.
+   * @param {string} message Debug message
+   */
+  debug(message) {
+    this.manager.debug(`[shard ${this.id}] ${message}`);
   }
 
+  /**
+   * Sends a heartbeat or sets an interval for sending heartbeats.
+   * @param {number} [time] If -1, clears the interval, any other number sets an interval
+   * If no value is given, a heartbeat will be sent instantly
+   */
   heartbeat(time) {
     if (!isNaN(time)) {
       if (time === -1) {
@@ -62,6 +92,9 @@ class WebSocketShard extends EventEmitter {
     });
   }
 
+  /**
+   * Acknowledges a heartbeat.
+   */
   ackHeartbeat() {
     const latency = Date.now() - this.lastPingTimestamp;
     this.debug(`Heartbeat acknowledged, latency of ${latency}ms`);
@@ -69,6 +102,10 @@ class WebSocketShard extends EventEmitter {
     if (this.pings.length > 3) this.pings.length = 3;
   }
 
+  /**
+   * Connects the shard to a gateway.
+   * @param {string} gateway The gateway to connect to
+   */
   connect() {
     this.inflate = new zlib.Inflate({
       chunkSize: 65535,
@@ -88,6 +125,11 @@ class WebSocketShard extends EventEmitter {
     this.status = Status.CONNECTING;
   }
 
+  /**
+   * Called whenever a packet is received
+   * @param {Object} packet Packet received
+   * @returns {boolean}
+   */
   onPacket(packet) {
     if (!packet) {
       this.debug('Received null packet');
@@ -134,10 +176,18 @@ class WebSocketShard extends EventEmitter {
     }
   }
 
+  /**
+   * Called whenever a connection is opened to the gateway.
+   * @param {Event} event Received open event
+   */
   onOpen() {
     this.debug('Connection open');
   }
 
+  /**
+   * Called whenever a message is received.
+   * @param {Event} event Event received
+   */
   onMessage({ data }) {
     if (data instanceof ArrayBuffer) data = new Uint8Array(data);
     const l = data.length;
@@ -162,6 +212,10 @@ class WebSocketShard extends EventEmitter {
     this.onPacket(packet);
   }
 
+  /**
+   * Called whenever an error occurs with the WebSocket.
+   * @param {Error} error The error that occurred
+   */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
       this.reconnect();
@@ -170,6 +224,15 @@ class WebSocketShard extends EventEmitter {
     this.manager.client.emit(Events.ERROR, error);
   }
 
+  /**
+   * @external CloseEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent}
+   */
+
+  /**
+   * Called whenever a connection to the gateway is closed.
+   * @param {CloseEvent} event Close event that was received
+   */
   onClose(event) {
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
@@ -180,10 +243,19 @@ class WebSocketShard extends EventEmitter {
     this.reconnect();
   }
 
+  /**
+   * Identifies the client on a connection.
+   * @param {number} [after] How long to wait before identifying
+   * @returns {void}
+   */
   identify() {
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 
+  /**
+   * Identifies as a new connection on the gateway.
+   * @returns {void}
+   */
   identifyNew() {
     if (!this.manager.client.token) {
       this.debug('No token available to identify a new session with');
@@ -200,6 +272,10 @@ class WebSocketShard extends EventEmitter {
     this.send({ op: OPCodes.IDENTIFY, d });
   }
 
+  /**
+   * Resumes a session on the gateway.
+   * @returns {void}
+   */
   identifyResume() {
     if (!this.sessionID) {
       this.debug('Warning: wanted to resume but session ID not available; identifying as a new session instead');
@@ -219,11 +295,19 @@ class WebSocketShard extends EventEmitter {
     });
   }
 
+  /**
+   * Adds data to the queue to be sent.
+   * @param {Object} data Packet to send
+   */
   send(data) {
     this.ratelimit.queue.push(data);
     this.processQueue();
   }
 
+  /**
+   * Sends data, bypassing the queue.
+   * @param {Object} data Packet to send
+   */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
@@ -232,6 +316,9 @@ class WebSocketShard extends EventEmitter {
     this.ws.send(WebSocket.pack(data));
   }
 
+  /**
+   * Processes the current WebSocket queue.
+   */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
     if (this.ratelimit.queue.length === 0) return;

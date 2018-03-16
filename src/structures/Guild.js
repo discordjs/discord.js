@@ -73,9 +73,18 @@ class Guild extends Base {
       if (!data.channels) this.available = false;
     }
 
+    /**
+     * The id of the shard this Guild belongs to.
+     * @type {number}
+     */
     this.shardId = data.shardId;
   }
 
+  /**
+   * The Shard this Guild belongs to.
+   * @type {WebSocketShard}
+   * @readonly
+   */
   get shard() {
     return this.client.ws.shards[this.shardId];
   }
