@@ -27,11 +27,9 @@ class GuildEmojiRoleStore extends DataStore {
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.set(role.id, role);
     }
-
-    return this.set(this);
+    const newRoles = [...new Set(roleOrRoles.concat(this.array()))];
+    return this.set(newRoles);
   }
 
   /**
@@ -48,11 +46,9 @@ class GuildEmojiRoleStore extends DataStore {
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.remove(role);
     }
-
-    return this.set(this);
+    const newRoles = this.keyArray().filter(role => !roleOrRoles.includes(role));
+    return this.set(newRoles);
   }
 
   /**
@@ -72,6 +68,12 @@ class GuildEmojiRoleStore extends DataStore {
    */
   set(roles) {
     return this.emoji.edit({ roles });
+  }
+
+  clone() {
+    const clone = new this.constructor(this.emoji);
+    clone._patch(this.keyArray());
+    return clone;
   }
 
   /**
