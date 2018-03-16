@@ -31,8 +31,8 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    if (!browser && !this.options.shard && 'SHARD_ID' in process.env) {
+      this.options.shard = Number(process.env.SHARD_ID);
     }
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
@@ -199,7 +199,10 @@ class Client extends BaseClient {
     }
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     this.ws.connect(gateway);
-    await new Promise(r => this.once(Events.READY, r));
+    await new Promise((resolve, reject) => {
+      this.once(Events.READY, resolve);
+      setTimeout(reject, this.options.shardCount * 25e3);
+    });
     return token;
   }
 
@@ -366,14 +369,10 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
