@@ -111,9 +111,16 @@ class WebSocketManager {
   connect(gateway = this.gateway) {
     this.gateway = gateway;
 
-    if (this.client.options.shardId) {
-      this.spawn(this.client.options.shardId);
+    if (typeof this.client.options.shards === 'number') {
+      this.debug('Spawning 1 shard');
+      this.spawn(this.client.options.shards);
+    } else if (Array.isArray(this.client.options.shards)) {
+      this.debug(`Spawning ${this.client.options.shards.length} shards`);
+      for (let i = 0; i < this.client.options.shards.length; i++) {
+        this.spawn(this.client.options.shards[i]);
+      }
     } else {
+      this.debug(`Spawning ${this.client.options.shardCount} shards`);
       for (let i = 0; i < this.client.options.shardCount; i++) {
         this.spawn(i);
       }
