@@ -37,7 +37,7 @@ class WebSocketShard extends EventEmitter {
     this.sequence = -1;
     this.pings = [];
     this.lastPingTimestamp = -1;
-    this.sessionId = undefined;
+    this.sessionID = undefined;
 
     this.trace = undefined;
 
@@ -138,10 +138,10 @@ class WebSocketShard extends EventEmitter {
 
     switch (packet.t) {
       case WSEvents.READY:
-        this.sessionId = packet.d.session_id;
+        this.sessionID = packet.d.session_id;
         this.trace = packet.d._trace;
         this.status = Status.READY;
-        this.debug(`READY ${this.trace.join(' -> ')} ${this.sessionId}`);
+        this.debug(`READY ${this.trace.join(' -> ')} ${this.sessionID}`);
         this.heartbeat();
         break;
       case WSEvents.RESUMED: {
@@ -163,7 +163,7 @@ class WebSocketShard extends EventEmitter {
       case OPCodes.RECONNECT:
         return this.reconnect();
       case OPCodes.INVALID_SESSION:
-        if (!packet.d) this.sessionId = null;
+        if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated');
         return this.reconnect();
