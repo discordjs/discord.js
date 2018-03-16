@@ -137,6 +137,14 @@ class TextBasedChannel {
     return Shared.search(this, options);
   }
 
+  /**
+   * Sends a typing indicator in the channel.
+   * @example
+   * // Start typing in a channel
+   * channel.startTyping()
+   *   .then(() => console.log(`Started typing in ${channel.name}`))
+   *   .catch(console.error);
+   */
   async sendTyping() {
     await this.client.api.channels(this.id).typing.post();
   }

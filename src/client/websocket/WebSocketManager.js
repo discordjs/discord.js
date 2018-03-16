@@ -12,25 +12,68 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
+/**
+ * WebSocket Manager of the client.
+ * @private
+ */
 class WebSocketManager {
   constructor(client) {
+    /**
+     * The client that instantiated this WebSocketManager
+     * @type {Client}
+     */
     this.client = client;
 
+    /**
+     * The gateway this WebSocketManager uses.
+     * @type {string}
+     */
     this.gateway = undefined;
 
+    /**
+     * An array of shards spawned by this WebSocketManager.
+     * @type {WebSockethard[]}
+     */
     this.shards = [];
+
+    /**
+     * An array of queued shards to be spawned by this WebSocketManager.
+     * @type {WebSocketShard[]}
+     */
     this.spawnQueue = [];
+
+    /**
+     * Whether or not this WebSocketManager is currently spawning shards.
+     * @type {boolean}
+     */
     this.spawning = false;
 
+    /**
+     * An array of queued events before this WebSocketManager became ready.
+     * @type {Immediate[]}
+     */
     this.packetQueue = [];
 
+    /**
+     * The current status of this WebSocketManager.
+     * @type {number}
+     */
     this.status = Status.IDLE;
   }
 
-  debug(x) {
-    this.client.emit(Events.DEBUG, `[connection] ${x}`);
+  /**
+   * Emits a debug event.
+   * @param {string} message Debug message
+   * @returns {void}
+   */
+  debug(message) {
+    this.client.emit(Events.DEBUG, `[connection] ${message}`);
   }
 
+  /**
+   * Used to spawn WebSocketShards.
+   * @param {WebSocketShard|WebSocketShard[]} query The WebSocketShards to be spawned
+   */
   spawn(query) {
     if (query !== undefined) {
       if (Array.isArray(query)) {
@@ -60,6 +103,11 @@ class WebSocketManager {
     }
   }
 
+  /**
+   * Creates a connection to a gateway.
+   * @param {string} [gateway] The gateway to connect to
+   * @returns {void}
+   */
   connect(gateway = this.gateway) {
     this.gateway = gateway;
 
@@ -72,6 +120,12 @@ class WebSocketManager {
     }
   }
 
+  /**
+   * Processes a packet and queues it if this WebSocketManager is not ready.
+   * @param {Object} packet The packet to be handled
+   * @param {WebSocketShard} shard The shard that will handle this packet
+   * @returns {boolean}
+   */
   handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
@@ -94,6 +148,10 @@ class WebSocketManager {
     return false;
   }
 
+  /**
+   * Checks whether the client is ready to be marked as ready.
+   * @returns {void}
+   */
   checkReady() {
     if (!(this.shards.filter(s => !!s).length === this.client.options.shardCount) ||
       !this.shards.every(s => s.status === Status.READY)) {
@@ -119,6 +177,10 @@ class WebSocketManager {
     return true;
   }
 
+  /**
+   * Causes the client to be marked as ready and emits the ready event.
+   * @returns {void}
+   */
   triggerReady() {
     if (this.status === Status.READY) {
       this.debug('Tried to mark self as ready, but already ready');

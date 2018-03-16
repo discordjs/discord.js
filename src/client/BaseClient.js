@@ -115,7 +115,7 @@ class BaseClient extends EventEmitter {
   }
 
   /**
-   * Sets an immediate that will be automagically cancelled if the client is destroyed.
+   * Sets an immediate that will be automatically cancelled if the client is destroyed.
    * @param {Function} fn Function to execute
    * @param {...*} args Arguments for the function
    * @returns {Immediate}
