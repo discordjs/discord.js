@@ -333,7 +333,7 @@ class RESTMethods {
   updateChannel(channel, _data, reason) {
     const data = {};
     data.name = (_data.name || channel.name).trim();
-    data.topic = _data.topic || channel.topic;
+    data.topic = typeof _data.topic !== 'undefined' ? _data.topic : channel.topic;
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || (channel.bitrate ? channel.bitrate * 1000 : undefined);
     data.user_limit = typeof _data.userLimit !== 'undefined' ? _data.userLimit : channel.userLimit;
