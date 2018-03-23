@@ -58,6 +58,11 @@ class WebSocketShard extends EventEmitter {
     this.connect();
   }
 
+  get ping() {
+    const sum = this.pings.reduce((a, b) => a + b, 0);
+    return sum / this.pings.length;
+  }
+
   /**
    * Emits a debug event.
    * @param {string} message Debug message
@@ -236,7 +241,7 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
-      this.client.emit(Events.DISCONNECT, event);
+      this.manager.client.emit(Events.DISCONNECT, event);
       this.debug(WSCodes[event.code]);
       return;
     }
@@ -284,7 +289,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`Attempting to resume session ${this.sessionID}`);
 
     const d = {
-      token: this.client.token,
+      token: this.manager.client.token,
       session_id: this.sessionID,
       seq: this.sequence,
     };

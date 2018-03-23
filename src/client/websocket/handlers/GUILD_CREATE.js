@@ -10,7 +10,7 @@ module.exports = async (client, { d: data }, shard) => {
     }
   } else {
     // A new guild
-    data.shardId = shard.id;
+    data.shardID = shard.id;
     guild = client.guilds.add(data);
     const emitEvent = client.ws.status === Status.READY;
     if (emitEvent) {

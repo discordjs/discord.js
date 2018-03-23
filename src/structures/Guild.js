@@ -72,7 +72,7 @@ class Guild extends Base {
      * The id of the shard this Guild belongs to.
      * @type {number}
      */
-    this.shardId = data.shardId;
+    this.shardID = data.shardID;
   }
 
   /**
@@ -81,7 +81,7 @@ class Guild extends Base {
    * @readonly
    */
   get shard() {
-    return this.client.ws.shards[this.shardId];
+    return this.client.ws.shards[this.shardID];
   }
 
   /* eslint-disable complexity */

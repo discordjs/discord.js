@@ -238,6 +238,7 @@ exports.Events = {
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
+  TYPING_STOP: 'typingStop',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   ERROR: 'error',
