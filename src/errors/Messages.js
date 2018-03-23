@@ -69,6 +69,8 @@ const Messages = {
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
   MESSAGE_NONCE_TYPE: 'Message nonce must fit in an unsigned 64-bit integer.',
 
+  TYPING_COUNT: 'Count must be at least 1',
+
   SPLIT_MAX_LEN: 'Message exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,

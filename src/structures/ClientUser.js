@@ -21,6 +21,8 @@ class ClientUser extends Structures.get('User') {
      */
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
+    this._typing = new Map();
+
     if (data.token) this.client.token = data.token;
   }
 

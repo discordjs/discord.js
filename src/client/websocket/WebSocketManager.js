@@ -62,6 +62,16 @@ class WebSocketManager {
   }
 
   /**
+   * The average ping of all WebSocket shards
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    const sum = this.shards.reduce((a, b) => a + b.ping, 0);
+    return sum / this.shards.length;
+  }
+
+  /**
    * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
@@ -136,7 +146,7 @@ class WebSocketManager {
   handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
       if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
-        this.packetQueue.push({ packet, shardId: shard.id });
+        this.packetQueue.push({ packet, shardID: shard.id });
         return false;
       }
     }
@@ -144,7 +154,7 @@ class WebSocketManager {
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
       this.client.setImmediate(() => {
-        this.handlePacket(item.packet, this.shards[item.shardId]);
+        this.handlePacket(item.packet, this.shards[item.shardID]);
       });
     }
 
