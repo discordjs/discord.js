@@ -389,6 +389,7 @@ class Collection extends Map {
 
   /**
    * Calls the `delete()` method on all items that have it.
+   * <warn>Warning: This deletes all the items within the collection, this action is IRREVERSIBLE!</warn>
    * @returns {Promise[]}
    */
   deleteAll() {
