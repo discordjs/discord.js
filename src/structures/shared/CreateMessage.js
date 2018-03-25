@@ -71,9 +71,9 @@ module.exports = async function createMessage(channel, options) {
     else options.files = options.embed.files;
   }
 
-  if (options.embed && webhook) options.embeds = [new Embed(options.embed)];
-  else if (options.embed) options.embed = new Embed(options.embed);
-  else if (options.embeds) options.embeds = options.embeds.map(e => new Embed(e));
+  if (options.embed && webhook) options.embeds = [new Embed(options.embed)._apiTransform()];
+  else if (options.embed) options.embed = new Embed(options.embed)._apiTransform();
+  else if (options.embeds) options.embeds = options.embeds.map(e => new Embed(e)._apiTransform());
 
   let files;
 
