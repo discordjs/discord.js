@@ -54,7 +54,7 @@
     "eslint": "^4.17.0",
     "json-filter-loader": "^1.0.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.11.0"
+    "webpack": "^4.2.0"
   },
   "engines": {
     "node": ">=8.0.0"
