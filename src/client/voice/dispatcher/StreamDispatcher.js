@@ -253,7 +253,10 @@ class StreamDispatcher extends Writable {
   }
 
   _setSpeaking(value) {
-    this.player.voiceConnection.setSpeaking(value);
+    
+    if(typeof this.player.voiceConnection != 'undefined')
+      this.player.voiceConnection.setSpeaking(value);
+    
     /**
      * Emitted when the dispatcher starts/stops speaking.
      * @event StreamDispatcher#speaking
