@@ -423,7 +423,14 @@ class VoiceConnection extends EventEmitter {
      * @param {User} user The user that has started/stopped speaking
      * @param {boolean} speaking Whether or not the user is speaking
      */
-    if (this.status === VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
+    if (this.status === VoiceStatus.CONNECTED) {
+      this.emit('speaking', user, speaking);
+      if (!speaking) {
+        for (const receiver of this.receivers) {
+          receiver.packets._stoppedSpeaking(user_id);
+        }
+      }
+    }
     guild._memberSpeakUpdate(user_id, speaking);
   }
 
