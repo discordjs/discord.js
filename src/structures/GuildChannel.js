@@ -540,10 +540,10 @@ class GuildChannel extends Channel {
   }
 
   /**
- * Whether the channel is manageable by the client user
- * @type {boolean}
- * @readonly
- */
+   * Whether the channel is manageable by the client user
+   * @type {boolean}
+   * @readonly
+   */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
     const permissions = this.permissionsFor(this.client.user);
