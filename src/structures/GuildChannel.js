@@ -546,8 +546,8 @@ class GuildChannel extends Channel {
  */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
-    if (this.permissionsFor(this.client.user).has([Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.VIEW_CHANNEL])) return true;
-    return false;
+    return this.permissionsFor(this.client.user).has([Permissions.FLAGS.MANAGE_CHANNELS,
+      Permissions.FLAGS.VIEW_CHANNEL]);
   }
 
   /**
