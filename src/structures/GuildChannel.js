@@ -540,6 +540,18 @@ class GuildChannel extends Channel {
   }
 
   /**
+ * Whether the channel is manageable in terms of role hierarchy by the client user
+ * @type {boolean}
+ * @readonly
+ */
+  get manageable() {
+    if (this.client.user.id === this.guild.ownerID) return true;
+    if (this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS) &&
+    this.permissionsFor(this.client.user).has(Permissions.FLAGS.VIEW_CHANNEL)) return true;
+    return false;
+  }
+
+  /**
    * Deletes this channel.
    * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<GuildChannel>}
