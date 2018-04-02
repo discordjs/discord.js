@@ -10,6 +10,8 @@ To get started, make sure you have:
   * `npm install node-opus`
 * a good network connection
 
+> If you are using a Raspberry Pi or any ARM cpu, you will need to install ffmpeg on your system and manually replace `node_modules/ffmpeg-binaries/bin/ffmpeg` with your system binary.
+
 ## Joining a voice channel
 The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
 as it allows us to obtain a `VoiceConnection` that we can start to stream audio with.
