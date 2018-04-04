@@ -1,4 +1,8 @@
 const libs = {
+  krypton: krypton => ({
+    close: (data, nonce, key) => krypton.do(krypton.sodium.encrypt({ data, key, nonce })).run(false),
+    open: () => null,
+  }),
   sodium: sodium => ({
     open: sodium.api.crypto_secretbox_open_easy,
     close: sodium.api.crypto_secretbox_easy,
@@ -19,6 +23,7 @@ exports.methods = {};
   for (const libName of Object.keys(libs)) {
     try {
       const lib = require(libName);
+      console.log('using', libName);
       if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready; // eslint-disable-line no-await-in-loop
       exports.methods = libs[libName](lib);
       break;
