@@ -23,7 +23,6 @@ exports.methods = {};
   for (const libName of Object.keys(libs)) {
     try {
       const lib = require(libName);
-      console.log('using', libName);
       if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready; // eslint-disable-line no-await-in-loop
       exports.methods = libs[libName](lib);
       break;
