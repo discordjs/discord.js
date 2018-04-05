@@ -133,6 +133,7 @@ class VoiceConnection extends EventEmitter {
       d: {
         speaking: this.speaking,
         delay: 0,
+        ssrc: this.authentication.ssrc,
       },
     }).catch(e => {
       this.emit('debug', e);
