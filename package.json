@@ -35,7 +35,7 @@
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "pako": "^1.0.0",
-    "prism-media": "^0.2.0",
+    "prism-media": "hydrabolt/prism-media",
     "snekfetch": "^3.6.0",
     "tweetnacl": "^1.0.0",
     "ws": "^4.0.0"
