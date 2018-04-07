@@ -286,7 +286,7 @@ class VoiceConnection extends EventEmitter {
   reconnect(token, endpoint) {
     this.authentication.token = token;
     this.authentication.endpoint = endpoint;
-
+    this.speaking = false;
     this.status = VoiceStatus.RECONNECTING;
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
@@ -331,7 +331,7 @@ class VoiceConnection extends EventEmitter {
    */
   cleanup() {
     this.player.destroy();
-
+    this.speaking = false;
     const { ws, udp } = this.sockets;
 
     if (ws) {
