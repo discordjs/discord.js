@@ -300,8 +300,8 @@ class Shard extends EventEmitter {
     if (respawn) this.spawn().catch(err => this.emit('error', err));
   }
   /**
-  * Kills the Shard
-  */
+   * Kills the Shard
+   */
   kill() {
     this.process.removeListener('exit', this._exitListener);
     this.process.kill();
