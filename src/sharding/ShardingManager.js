@@ -45,6 +45,7 @@ class ShardingManager extends EventEmitter {
 
     /**
     * Enables the ability to rebalance the Shards.
+    * @type {boolean}
     */
     this.autoShards = false;
 
