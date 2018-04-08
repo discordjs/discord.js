@@ -232,7 +232,7 @@ class VoiceWebSocket extends EventEmitter {
    * Sends a heartbeat packet.
    */
   sendHeartbeat() {
-    this.sendPacket({ op: VoiceOPCodes.HEARTBEAT, d: null }).catch(() => {
+    this.sendPacket({ op: VoiceOPCodes.HEARTBEAT, d: Math.floor(Math.random() * 10e10) }).catch(() => {
       this.emit('warn', 'Tried to send heartbeat, but connection is not open');
       this.clearHeartbeat();
     });
