@@ -44,10 +44,14 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
+    * Enables the ability to rebalance the Shards.
+    */
+    this.autoShards = false;
+
+    /**
     * Amount of shards that this manager is going to spawn
     * @type {number|string}
     */
-    this.autoShards = false;
     this.totalShards = options.totalShards;
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
@@ -104,7 +108,7 @@ class ShardingManager extends EventEmitter {
     return shard;
   }
   /**
-  * Kills all Shards without them Respawning.
+  * Kills all Shards without them respawning.
   */
   killAll() {
     let chk = false;
@@ -118,7 +122,7 @@ class ShardingManager extends EventEmitter {
     }
   }
   /**
-  * Checks the Shard Amount, then Respawns the Correct Amount of Shards.
+  * Checks the Shard amount, then respawns the correct amount of Shards.
   * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
   * @returns {Promise<Collection<number, Shard>>}
