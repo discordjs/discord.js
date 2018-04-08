@@ -131,7 +131,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Collection<number, Shard>>}
    */
   async rebalanceShards(delay = 5500, waitForReady = true) {
-    // Obtain/verify that the totalShards is set to 'auto' for shards to spawn ~ New Layout Suggested by Dim#4657
+    // Obtain/verify that the totalShards is set to 'auto' for shards to spawn
     if (!this.autoShards) throw new TypeError('CLIENT_INVALID_OPTION', 'Set totalShards', 'to auto.');
     this.totalShards = await Util.fetchRecommendedShards(this.token);
     let chk = false;
@@ -140,7 +140,7 @@ class ShardingManager extends EventEmitter {
       chk = true;
     }
 
-    // Kill all shards ~ Suggested by Dim#4657
+    // Kill all shards
     await Promise.all(this.shards.map(shard => shard.kill()));
 
     // Spawn the shards
