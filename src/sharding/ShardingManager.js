@@ -132,23 +132,20 @@ class ShardingManager extends EventEmitter {
    */
   async rebalanceShards(delay = 5500, waitForReady = true) {
     // Obtain/verify that the totalShards is set to 'auto' for shards to spawn
-    if (this.autoShards) {
-      this.totalShards = await Util.fetchRecommendedShards(this.token);
-    } else {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'Set totalShards', 'to auto.');
-    }
+    if (!this.autoShards) throw new TypeError('CLIENT_INVALID_OPTION', 'Set totalShards', 'to auto.');
+    this.totalShards = await Util.fetchRecommendedShards(this.token); //Suggested by Dim#4657
     let chk = false;
     if (this.respawn) {
       this.respawn = false;
       chk = true;
     }
-    const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.kill());
-    await Promise.all(promises);
-    promises.length = 0;
+
+    //Kill all shards
+    await Promise.all(this.shards.map(shard => shard.kill())); // Suggested by Dim#4657
 
     // Spawn the shards
     for (let s = 1; s <= this.totalShards; s++) {
+      const promises = [];
       const shard = this.createShard();
       promises.push(shard.spawn(waitForReady));
       if (delay > 0 && s !== this.totalShards) promises.push(Util.delayFor(delay));
