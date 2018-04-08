@@ -108,6 +108,7 @@ class ShardingManager extends EventEmitter {
     this.emit('shardCreate', shard);
     return shard;
   }
+  
   /**
    * Kills all Shards without them respawning.
    */
@@ -122,6 +123,7 @@ class ShardingManager extends EventEmitter {
       this.respawn = true;
     }
   }
+
   /**
    * Checks the Shard amount, then respawns the correct amount of Shards.
    * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
