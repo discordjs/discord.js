@@ -108,7 +108,7 @@ class ShardingManager extends EventEmitter {
     this.emit('shardCreate', shard);
     return shard;
   }
-  
+
   /**
    * Kills all Shards without them respawning.
    */
