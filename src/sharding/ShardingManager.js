@@ -140,7 +140,7 @@ class ShardingManager extends EventEmitter {
       chk = true;
     }
 
-    //Kill all shards ~ Suggested by Dim#4657
+    // Kill all shards ~ Suggested by Dim#4657
     await Promise.all(this.shards.map(shard => shard.kill()));
 
     // Spawn the shards
