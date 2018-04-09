@@ -113,15 +113,10 @@ class ShardingManager extends EventEmitter {
    * Kills all Shards without them respawning.
    */
   killAll() {
-    let chk = false;
-    if (this.respawn) {
-      this.respawn = false;
-      chk = true;
-    }
+    const _respawn = this.respawn;
+    this.respawn = false;
     for (const shard of this.shards.values()) shard.kill();
-    if (chk) {
-      this.respawn = true;
-    }
+    this.respawn = _respawn;
   }
 
   /**
@@ -134,27 +129,18 @@ class ShardingManager extends EventEmitter {
     // Obtain/verify that the totalShards is set to 'auto' for shards to spawn
     if (!this.autoShards) throw new TypeError('CLIENT_INVALID_OPTION', 'Set totalShards', 'to auto.');
     this.totalShards = await Util.fetchRecommendedShards(this.token);
-    let chk = false;
-    if (this.respawn) {
-      this.respawn = false;
-      chk = true;
-    }
+    const _respawn = this.respawn;
+    this.respawn = false;
 
     // Kill all shards
-    await Promise.all(this.shards.map(shard => shard.kill()));
+    this.killAll();
 
-    // Spawn the shards
-    for (let s = 1; s <= this.totalShards; s++) {
-      const promises = [];
-      const shard = this.createShard();
-      promises.push(shard.spawn(waitForReady));
-      if (delay > 0 && s !== this.totalShards) promises.push(Util.delayFor(delay));
-      await Promise.all(promises); // eslint-disable-line no-await-in-loop
-    }
-    if (chk) {
-      this.respawn = true;
-    }
-    return this.shards;
+    // Delete all spawned Shards in the collection
+    this.shards.deleteAll();
+
+    // Set the 'respawn' option back to what it was originally set too. then spawn shards.
+    this.respawn = _respawn;
+    return this.spawn(this.totalShards, delay, waitForReady);
   }
 
   /**

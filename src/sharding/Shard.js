@@ -299,6 +299,7 @@ class Shard extends EventEmitter {
 
     if (respawn) this.spawn().catch(err => this.emit('error', err));
   }
+
   /**
    * Kills the Shard
    */
