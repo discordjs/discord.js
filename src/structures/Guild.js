@@ -159,6 +159,12 @@ class Guild {
     this.explicitContentFilter = data.explicit_content_filter;
 
     /**
+     * The required MFA level for the guild
+     * @type {number}
+     */
+    this.mfaLevel = data.mfa_level;
+
+    /**
      * The timestamp the client user joined the guild at
      * @type {number}
      */
