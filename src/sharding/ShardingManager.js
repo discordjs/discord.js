@@ -47,7 +47,7 @@ class ShardingManager extends EventEmitter {
      * Enables the ability to rebalance the Shards.
      * @type {boolean}
      */
-    this.autoShards = false;
+    this.autoShards = (this.totalShards === 'auto');
 
     /**
      * Amount of shards that this manager is going to spawn
@@ -62,8 +62,6 @@ class ShardingManager extends EventEmitter {
       if (this.totalShards !== Math.floor(this.totalShards)) {
         throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
-    } else {
-      this.autoShards = true;
     }
 
     /**
