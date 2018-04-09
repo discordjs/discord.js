@@ -1033,6 +1033,15 @@ class VoiceStateCollection extends Collection {
     }
     super.set(id, voiceState);
   }
+
+  delete(id) {
+    const voiceState = this.get(id);
+    if (voiceState && voiceState.channel_id) {
+      const channel = this.guild.channels.get(voiceState.channel_id);
+      if (channel) channel.members.delete(id);
+    }
+    return super.delete(id);
+  }
 }
 
 module.exports = Guild;
