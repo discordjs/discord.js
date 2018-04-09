@@ -47,7 +47,7 @@ class ShardingManager extends EventEmitter {
      * Enables the ability to rebalance the Shards.
      * @type {boolean}
      */
-    this.autoShards = (this.totalShards === 'auto');
+    this.autoShards = this.totalShards === 'auto';
 
     /**
      * Amount of shards that this manager is going to spawn
@@ -127,17 +127,13 @@ class ShardingManager extends EventEmitter {
     // Obtain/verify that the totalShards is set to 'auto' for shards to spawn
     if (!this.autoShards) throw new TypeError('CLIENT_INVALID_OPTION', 'Set totalShards', 'to auto.');
     this.totalShards = await Util.fetchRecommendedShards(this.token);
-    const _respawn = this.respawn;
-    this.respawn = false;
 
     // Kill all shards
     this.killAll();
 
     // Delete all spawned Shards in the collection
-    this.shards.deleteAll();
+    this.shards.clear();
 
-    // Set the 'respawn' option back to what it was originally set too. then spawn shards.
-    this.respawn = _respawn;
     return this.spawn(this.totalShards, delay, waitForReady);
   }
 
