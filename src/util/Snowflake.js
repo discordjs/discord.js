@@ -27,12 +27,18 @@ class SnowflakeUtil {
   /**
    * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @param {number} time Timestamp value being generated
    * @returns {Snowflake} The generated snowflake
    */
-  static generate() {
+  static generate(time = new Date()) {
     if (INCREMENT >= 4095) INCREMENT = 0;
+
+    time = time.getTime ? time.getTime() : time;
+    if (typeof time === 'number') {
+      throw new Error(`Invalid timestamp`);
+    }
     // eslint-disable-next-line max-len
-    const BINARY = `${(Date.now() - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
+    const BINARY = `${(time - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
     return Util.binaryToID(BINARY);
   }
 
