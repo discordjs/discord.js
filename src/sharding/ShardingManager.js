@@ -44,12 +44,6 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
-     * Enables the ability to rebalance the Shards.
-     * @type {boolean}
-     */
-    this.autoShards = options.totalShards === 'auto';
-
-    /**
      * Amount of shards that this manager is going to spawn
      * @type {number|string}
      */
@@ -111,10 +105,7 @@ class ShardingManager extends EventEmitter {
    * Kills all Shards without them respawning.
    */
   killAll() {
-    const _respawn = this.respawn;
-    this.respawn = false;
     for (const shard of this.shards.values()) shard.kill();
-    this.respawn = _respawn;
   }
 
   /**
