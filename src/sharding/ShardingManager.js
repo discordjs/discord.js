@@ -130,7 +130,7 @@ class ShardingManager extends EventEmitter {
     // Delete all spawned Shards in the collection
     this.shards.clear();
 
-    return this.spawn(this.totalShards, delay, waitForReady);
+    return this.spawn('auto', delay, waitForReady);
   }
 
   /**
