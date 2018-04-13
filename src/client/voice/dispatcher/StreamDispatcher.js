@@ -7,8 +7,7 @@ const FRAME_LENGTH = 20;
 const CHANNELS = 2;
 const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
 
-const nonce = Buffer.alloc(24);
-nonce.fill(0);
+const nonce = Buffer.alloc(24).fill(0);
 
 /**
  * @external WritableStream
@@ -101,8 +100,7 @@ class StreamDispatcher extends Writable {
       this.emit('start');
       this.startTime = Date.now();
     }
-    this._playChunk(chunk);
-    this._step(done);
+    this._playChunk(chunk).then(() => this._step(done));
   }
 
   _destroy(err, cb) {
@@ -208,10 +206,10 @@ class StreamDispatcher extends Writable {
     this.count++;
   }
 
-  _playChunk(chunk) {
+  async _playChunk(chunk) {
     if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secretKey) return;
     this._setSpeaking(true);
-    this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
+    this._sendPacket(await this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
   _createPacket(sequence, timestamp, buffer) {

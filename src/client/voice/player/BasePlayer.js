@@ -2,6 +2,14 @@ const EventEmitter = require('events').EventEmitter;
 const { Readable: ReadableStream } = require('stream');
 const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
+const KryptonDispatcher = require('../dispatcher/KryptonDispatcher');
+
+let krypton;
+try {
+  krypton = require('krypton');
+} catch (err) {
+  krypton = null;
+}
 
 const FFMPEG_ARGUMENTS = [
   '-analyzeduration', '0',
@@ -56,36 +64,71 @@ class BasePlayer extends EventEmitter {
 
   playPCMStream(stream, options, streams = {}) {
     this.destroyDispatcher();
-    const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
-    if (options && options.volume === false) {
-      stream.pipe(opus);
+    if (krypton) {
+      options.opus = new krypton.opus.OpusEncoder(48000, 2);
+
+      if (options.volume && options.volume !== 1) {
+        options.chain = krypton.do(krypton.pcm.volume16({ volume: options.volume })).do(options.opus.encode());
+      } else {
+        options.chain = krypton.do(options.opus.encode());
+      }
+
+      const dispatcher = this.createDispatcher(options, streams);
+      stream.pipe(dispatcher);
+      return dispatcher;
+    } else {
+      const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
+      if (options && options.volume === false) {
+        stream.pipe(opus);
+        return this.playOpusStream(opus, options, streams);
+      }
+      const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
+      stream.pipe(volume).pipe(opus);
       return this.playOpusStream(opus, options, streams);
     }
-    const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
-    stream.pipe(volume).pipe(opus);
-    return this.playOpusStream(opus, options, streams);
   }
 
   playOpusStream(stream, options, streams = {}) {
     this.destroyDispatcher();
-    streams.opus = stream;
-    if (options.volume !== false && !streams.input) {
-      streams.input = stream;
-      const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
-      const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
-      streams.opus = stream
-        .pipe(decoder)
-        .pipe(volume)
-        .pipe(new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 }));
+    if (krypton) {
+      streams.opus = stream;
+
+      options.chain = krypton;
+
+      if (options.volume && options.volume !== 1) {
+        options.opus = new krypton.opus.OpusEncoder(48000, 2);
+
+        options.chain = krypton
+          .do(options.opus.decode())
+          .do(krypton.pcm.volume16({ volume: options.volume }))
+          .do(options.opus.encode());
+      }
+    } else {
+      streams.opus = stream;
+      if (options.volume !== false && !streams.volume) {
+        streams.input = stream;
+        const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
+        const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
+        streams.opus = stream
+          .pipe(decoder)
+          .pipe(volume)
+          .pipe(new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 }));
+      }
     }
+
     const dispatcher = this.createDispatcher(options, streams);
     streams.opus.pipe(dispatcher);
     return dispatcher;
   }
 
-  createDispatcher(options, streams, broadcast) {
+  createDispatcher(options, streams) {
     this.destroyDispatcher();
-    const dispatcher = this.dispatcher = new StreamDispatcher(this, options, streams, broadcast);
+    let dispatcher;
+    if (krypton) {
+      dispatcher = this.dispatcher = new KryptonDispatcher(this, options, streams);
+    } else {
+      dispatcher = this.dispatcher = new StreamDispatcher(this, options, streams);
+    }
     return dispatcher;
   }
 }
