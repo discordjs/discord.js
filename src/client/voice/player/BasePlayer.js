@@ -69,8 +69,8 @@ class BasePlayer extends EventEmitter {
     if (krypton) {
       options.opus = new krypton.opus.OpusEncoder(48000, 2);
 
-      if (options.volume) {
-        options.chain = krypton.do(krypton.pcm.volume16({ volume: options.volume })).do(options.opus.encode());
+      if (options.volume !== false) {
+        options.chain = krypton.do(krypton.pcm.volume16({ volume: options.volume || 1 })).do(options.opus.encode());
       } else {
         options.chain = krypton.do(options.opus.encode());
       }
@@ -96,12 +96,12 @@ class BasePlayer extends EventEmitter {
       streams.opus = stream;
       options.chain = krypton;
 
-      if (options.volume) {
+      if (options.volume !== false) {
         options.opus = new krypton.opus.OpusEncoder(48000, 2);
 
         options.chain = krypton
           .do(options.opus.decode())
-          .do(krypton.pcm.volume16({ volume: options.volume }))
+          .do(krypton.pcm.volume16({ volume: options.volume || 1 }))
           .do(options.opus.encode());
       }
     } else {
