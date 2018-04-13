@@ -270,6 +270,36 @@ class Message extends Base {
   }
 
   /**
+   * @typedef {Object} MessageEmoji
+   * @prop {string|Emoji} emoji Emoji value
+   * @prop {number} index Index in the message content of this emoji
+   */
+
+  /**
+   * Get emojis in this message's content
+   * @type {MessageEmoji[]}
+   * @readonly
+   */
+  get emojis() {
+    const matches = [];
+    let match;
+    const unicodeEmojiRegex = Constants.UnicodeEmojiRegex();
+    // eslint-disable-next-line no-cond-assign
+    while (match = unicodeEmojiRegex.exec(this.content)) {
+      matches.push({ emoji: match[0], index: match.index });
+    }
+    const customRe = /<:(\w+):(\d+)>/g;
+    // eslint-disable-next-line no-cond-assign
+    while (match = customRe.exec(this.content)) {
+      matches.push({
+        emoji: this.client.emojis.get(match[2]) || { name: match[1], id: match[2] },
+        index: match.index,
+      });
+    }
+    return matches.sort((a, b) => a.index - b.index);
+  }
+
+  /**
    * Creates a reaction collector.
    * @param {CollectorFilter} filter The filter to apply
    * @param {ReactionCollectorOptions} [options={}] Options to send to the collector

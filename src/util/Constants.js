@@ -722,6 +722,8 @@ exports.APIErrors = {
   REACTION_BLOCKED: 90001,
 };
 
+exports.UnicodeEmojiRegex = require('./UnicodeEmojiRegex');
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
