@@ -73,8 +73,14 @@ class RequestHandler {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
           } else if (err.status >= 500 && err.status < 600) {
-            this.queue.unshift(item);
-            finish(1e3 + this.client.options.restTimeOffset);
+            if (item.retried) {
+              item.reject(err);
+              finish();
+            } else {
+              item.retried = true;
+              this.queue.unshift(item);
+              finish(1e3 + this.client.options.restTimeOffset);
+            }
           } else {
             item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
             finish();
