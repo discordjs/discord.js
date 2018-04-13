@@ -2,13 +2,15 @@ const EventEmitter = require('events').EventEmitter;
 const { Readable: ReadableStream } = require('stream');
 const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
-const KryptonDispatcher = require('../dispatcher/KryptonDispatcher');
 
 let krypton;
+let KryptonDispatcher;
 try {
   krypton = require('krypton');
+  KryptonDispatcher = require('../dispatcher/KryptonDispatcher');
 } catch (err) {
   krypton = null;
+  KryptonDispatcher = null;
 }
 
 const FFMPEG_ARGUMENTS = [
@@ -92,7 +94,6 @@ class BasePlayer extends EventEmitter {
     this.destroyDispatcher();
     if (krypton) {
       streams.opus = stream;
-
       options.chain = krypton;
 
       if (options.volume && options.volume !== 1) {
