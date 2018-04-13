@@ -31,10 +31,10 @@ class GuildMemberStore extends DataStore {
    * @returns {?GuildMember}
    */
   resolve(member) {
-    const memberResolveable = super.resolve(member);
-    if (memberResolveable) return memberResolveable;
-    const userResolveable = this.client.users.resolveID(member);
-    if (userResolveable) return super.resolve(userResolveable);
+    const memberResolvable = super.resolve(member);
+    if (memberResolvable) return memberResolvable;
+    const userResolvable = this.client.users.resolveID(member);
+    if (userResolvable) return super.resolve(userResolvable);
     return null;
   }
 
@@ -44,10 +44,10 @@ class GuildMemberStore extends DataStore {
    * @returns {?Snowflake}
    */
   resolveID(member) {
-    const memberResolveable = super.resolveID(member);
-    if (memberResolveable) return memberResolveable;
-    const userResolveable = this.client.users.resolveID(member);
-    return this.has(userResolveable) ? userResolveable : null;
+    const memberResolvable = super.resolveID(member);
+    if (memberResolvable) return memberResolvable;
+    const userResolvable = this.client.users.resolveID(member);
+    return this.has(userResolvable) ? userResolvable : null;
   }
 
   /**
