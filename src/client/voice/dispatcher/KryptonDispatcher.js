@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const krypton = require('krypton');
 const StreamDispatcher = require('./StreamDispatcher');
 
@@ -46,22 +47,23 @@ class KryptonDispatcher extends StreamDispatcher {
     super.pause();
   }
 
-  _write(chunk, enc, done) {
+  async _write(chunk, enc, done) {
     if (['opus', 'ogg/opus', 'webm/opus'].includes(this._type)) {
       super._write(chunk, enc, done);
     } else {
       this._buffer = Buffer.concat([this._buffer, chunk]);
 
-      const func = () => {
-        super._write(this._buffer.slice(0, 3840), enc, () => {
-          if (this._buffer.length >= 3840) func();
-          else done();
-        });
+      const write = promisify(super._write).bind(this);
 
-        this._buffer = this._buffer.slice(3840);
-      };
+      let n = 0;
+      while (this._buffer.length >= 3840 * (n + 1)) {
+        await write(this._buffer.slice(3840 * n, 3840 * (n + 1)), enc);
+        n++;
+      }
 
-      func();
+      if (n > 0) this._buffer = this._buffer.slice(n * 3840);
+
+      done();
     }
   }
 
