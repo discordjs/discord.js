@@ -4,6 +4,9 @@ const StreamDispatcher = require('./StreamDispatcher');
 
 const nonce = Buffer.alloc(24).fill(0);
 
+nonce[0] = 0x80;
+nonce[1] = 0x78;
+
 const CTL = {
   BITRATE: 4002,
   FEC: 4012,
@@ -28,6 +31,7 @@ class KryptonDispatcher extends StreamDispatcher {
     this._chain = chain;
     this._buffer = Buffer.alloc(0);
     this._opus = opus;
+    this._superWrite = promisify(super._write).bind(this);
 
     krypton.count++;
   }
@@ -49,28 +53,27 @@ class KryptonDispatcher extends StreamDispatcher {
 
   async _write(chunk, enc, done) {
     if (['opus', 'ogg/opus', 'webm/opus'].includes(this._type)) {
-      super._write(chunk, enc, done);
+      return super._write(chunk, enc, done);
     } else {
       this._buffer = Buffer.concat([this._buffer, chunk]);
 
-      const write = promisify(super._write).bind(this);
-
       let n = 0;
       while (this._buffer.length >= 3840 * (n + 1)) {
-        await write(this._buffer.slice(3840 * n, 3840 * (n + 1)), enc);
+        try {
+          await this._superWrite(this._buffer.slice(3840 * n, 3840 * (n + 1)), enc);
+        } catch (err) {
+          return done(err);
+        }
         n++;
       }
 
       if (n > 0) this._buffer = this._buffer.slice(n * 3840);
-
-      done();
     }
+
+    return done();
   }
 
   async _createPacket(sequence, timestamp, buffer) {
-    nonce[0] = 0x80;
-    nonce[1] = 0x78;
-
     nonce.writeUIntBE(sequence, 2, 2);
     nonce.writeUIntBE(timestamp, 4, 4);
     nonce.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
