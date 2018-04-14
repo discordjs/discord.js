@@ -16,12 +16,7 @@ class GuildEmoji extends Emoji {
      */
     this.guild = guild;
 
-    /**
-     * A collection of roles this emoji is active for (empty if all), mapped by role ID
-     * @type {GuildEmojiRoleStore<Snowflake, Role>}
-     */
-    this.roles = new GuildEmojiRoleStore(this);
-
+    this._roles = null;
     this._patch(data);
   }
 
@@ -47,6 +42,14 @@ class GuildEmoji extends Emoji {
     const clone = super._clone();
     clone.roles = this.roles.clone();
     return clone;
+  }
+
+  /**
+   * A collection of roles this emoji is active for (empty if all), mapped by role ID
+   * @type {GuildEmojiRoleStore<Snowflake, Role>}
+   */
+  get roles() {
+    return new GuildEmojiRoleStore(this);
   }
 
   /**
