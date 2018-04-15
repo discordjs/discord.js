@@ -128,7 +128,7 @@ class GuildMemberRoleStore {
 
   clone() {
     const clone = new this.constructor(this.member);
-    clone._patch(this.filtered.keyArray());
+    clone._patch(this.keyArray());
     return clone;
   }
 
