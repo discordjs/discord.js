@@ -14,6 +14,7 @@ class GuildMemberRoleStore {
 
   /**
    * The filtered collection of roles of the member
+   * @type {RoleStore<SnowFlake, Role>}
    * @private
    */
   get _filtered() {

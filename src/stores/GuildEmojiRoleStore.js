@@ -14,6 +14,7 @@ class GuildEmojiRoleStore {
 
   /**
    * The filtered collection of roles of the guild emoji
+   * @type {RoleStore<SnowFlake, Role>}
    * @private
    */
   get _filtered() {
