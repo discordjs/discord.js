@@ -141,6 +141,8 @@ class WebSocketShard extends EventEmitter {
       return false;
     }
 
+    this.manager.client.emit(Events.RAW, packet);
+
     switch (packet.t) {
       case WSEvents.READY:
         this.sessionID = packet.d.session_id;
@@ -241,7 +243,7 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
-      this.manager.client.emit(Events.DISCONNECT, event);
+      this.manager.client.emit(Events.DISCONNECT, event, this.id);
       this.debug(WSCodes[event.code]);
       return;
     }
