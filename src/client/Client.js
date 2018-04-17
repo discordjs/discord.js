@@ -15,7 +15,7 @@ const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, browser } = require('../util/Constants');
+const { Events, WSCodes, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
@@ -200,8 +200,26 @@ class Client extends BaseClient {
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     this.ws.connect(gateway);
     await new Promise((resolve, reject) => {
-      this.once(Events.READY, resolve);
-      setTimeout(reject, this.options.shardCount * 25e3);
+      const onready = () => {
+        clearTimeout(timeout);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        resolve();
+      };
+      const ondisconnect = event => {
+        clearTimeout(timeout);
+        this.removeListener(Events.READY, onready);
+        if (WSCodes[event.code]) {
+          reject(new Error(WSCodes[event.code]));
+        }
+      };
+      const timeout = setTimeout(async () => {
+        this.removeListener(Events.READY, onready);
+        await this.destroy();
+        reject(new Error('WS_CONNECTION_TIMEOUT'));
+      }, this.options.shardCount * 25e3);
+      if (timeout.unref !== undefined) timeout.unref();
+      this.once(Events.READY, onready);
+      this.once(Events.DISCONNECT, ondisconnect);
     });
     return token;
   }

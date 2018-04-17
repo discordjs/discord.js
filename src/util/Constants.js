@@ -88,9 +88,9 @@ exports.UserAgent = browser ? null :
 
 exports.WSCodes = {
   1000: 'Connection gracefully closed',
-  4004: 'Tried to identify with an invalid token',
-  4010: 'Sharding data provided was invalid',
-  4011: 'Shard would be on too many guilds if connected',
+  4004: 'TOKEN_INVALID',
+  4010: 'SHARDING_INVALID',
+  4011: 'SHARDING_REQUIRED',
 };
 
 const AllowedImageFormats = [
