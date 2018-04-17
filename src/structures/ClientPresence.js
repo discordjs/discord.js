@@ -10,9 +10,9 @@ class ClientPresence extends Presence {
 
   async set(presence) {
     const packet = await this._parse(presence);
-    this.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
-    return this;
+    this.clientPresence.patch(packet);
+    this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
+    return this.clientPresence;
   }
 
   async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
