@@ -211,6 +211,16 @@ class WebSocketManager {
     this.client.emit(Events.READY);
     this.handlePacket();
   }
+
+  /*
+   * Broadcasts a message to every shard in this WebSocketManager.
+   * @param {*} packet The packet to send
+   */
+  broadcast(packet) {
+    for (const shard of this.shards) {
+      shard.send(packet);
+    }
+  }
 }
 
 module.exports = WebSocketManager;
