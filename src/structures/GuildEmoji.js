@@ -16,7 +16,7 @@ class GuildEmoji extends Emoji {
      */
     this.guild = guild;
 
-    this._roles = null;
+    this._roles = [];
     this._patch(data);
   }
 

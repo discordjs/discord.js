@@ -9,12 +9,12 @@ class GuildEmojiRoleStore {
   constructor(emoji) {
     this.emoji = emoji;
     this.guild = emoji.guild;
-    this.client = emoji.client;
+    Object.defineProperty(this, 'client', { value: emoji.client });
   }
 
   /**
    * The filtered collection of roles of the guild emoji
-   * @type {RoleStore<SnowFlake, Role>}
+   * @type {Collection<SnowFlake, Role>}
    * @private
    */
   get _filtered() {
@@ -29,14 +29,14 @@ class GuildEmojiRoleStore {
   add(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles]);
-
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
     }
-    const newRoles = [...new Set(roleOrRoles.concat(this.keys()))];
+
+    const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
     return this.set(newRoles);
   }
 
@@ -48,13 +48,13 @@ class GuildEmojiRoleStore {
   remove(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.remove([roleOrRoles]);
-
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
     }
+
     const newRoles = this.keyArray().filter(role => !roleOrRoles.includes(role));
     return this.set(newRoles);
   }
@@ -80,7 +80,7 @@ class GuildEmojiRoleStore {
 
   clone() {
     const clone = new this.constructor(this.emoji);
-    clone._patch(this.keyArray());
+    clone._patch(this.keyArray().slice());
     return clone;
   }
 

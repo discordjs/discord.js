@@ -39,7 +39,7 @@ class GuildMember extends Base {
      */
     this.lastMessageChannelID = null;
 
-    this._roles = null;
+    this._roles = [];
     if (data) this._patch(data);
   }
 
@@ -71,12 +71,12 @@ class GuildMember extends Base {
 
   _clone() {
     const clone = super._clone();
-    clone._roles = this._roles;
+    clone._roles = this._roles.slice();
     return clone;
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID
+   * A collection of roles that are applied to this GuildMember, mapped by the role ID
    * @type {GuildMemberRoleStore<Snowflake, Role>}
    * @readonly
    */

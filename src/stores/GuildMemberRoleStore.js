@@ -9,12 +9,12 @@ class GuildMemberRoleStore {
   constructor(member) {
     this.member = member;
     this.guild = member.guild;
-    this.client = member.client;
+    Object.defineProperty(this, 'client', { value: member.client });
   }
 
   /**
    * The filtered collection of roles of the member
-   * @type {RoleStore<SnowFlake, Role>}
+   * @type {Collection<SnowFlake, Role>}
    * @private
    */
   get _filtered() {
@@ -65,13 +65,16 @@ class GuildMemberRoleStore {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
       }
-      const newRoles = [...new Set(roleOrRoles.concat(...this.keys()))];
+
+      const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
       return this.set(newRoles, reason);
     } else {
-      if (this.guild.roles.resolve(roleOrRoles) === null) {
+      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      if (roleOrRoles === null) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
       }
+
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put();
       return this.member;
     }
@@ -90,13 +93,16 @@ class GuildMemberRoleStore {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
       }
+
       const newRoles = this.guild.roles.filter(role => !roleOrRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
-      if (this.guild.roles.resolve(roleOrRoles) === null) {
+      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      if (roleOrRoles === null) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true));
       }
+
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove();
       return this.member;
     }
