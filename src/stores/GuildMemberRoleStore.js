@@ -14,7 +14,7 @@ class GuildMemberRoleStore {
 
   /**
    * The filtered collection of roles of the member
-   * @type {Collection<SnowFlake, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @private
    */
   get _filtered() {
@@ -76,7 +76,10 @@ class GuildMemberRoleStore {
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put();
-      return this.member._clone()._patch([...this.keys(), roleOrRoles.id]);
+
+      const clone = this.member._clone();
+      clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
+      return clone;
     }
   }
 
@@ -104,7 +107,10 @@ class GuildMemberRoleStore {
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove();
-      return this.member._clone()._patch([...this.keys(), roleOrRoles.id]);
+
+      const clone = this.member._clone();
+      clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
+      return clone;
     }
   }
 

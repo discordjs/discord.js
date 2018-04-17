@@ -14,7 +14,7 @@ class GuildEmojiRoleStore {
 
   /**
    * The filtered collection of roles of the guild emoji
-   * @type {Collection<SnowFlake, Role>}
+   * @type {Collection<Snowflake, Role>}
    * @private
    */
   get _filtered() {
@@ -100,24 +100,6 @@ class GuildEmojiRoleStore {
   valueOf() {
     return this._filtered;
   }
-
-  /**
-   * Resolves a RoleResolvable to a Role object.
-   * @method resolve
-   * @memberof GuildEmojiRoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Role}
-   */
-
-  /**
-   * Resolves a RoleResolvable to a role ID string.
-   * @method resolveID
-   * @memberof GuildEmojiRoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
 Util.mixin(GuildEmojiRoleStore, ['set']);
