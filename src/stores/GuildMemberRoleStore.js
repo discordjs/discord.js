@@ -76,7 +76,7 @@ class GuildMemberRoleStore {
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put();
-      return this.member;
+      return this.member._clone()._patch([...this.keys(), roleOrRoles.id]);
     }
   }
 
@@ -104,7 +104,7 @@ class GuildMemberRoleStore {
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove();
-      return this.member;
+      return this.member._clone()._patch([...this.keys(), roleOrRoles.id]);
     }
   }
 
