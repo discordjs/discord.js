@@ -5,8 +5,9 @@ const { TypeError } = require('../errors');
 /**
  * Stores member roles
  */
-class GuildMemberRoleStore {
+class GuildMemberRoleStore extends Collection {
   constructor(member) {
+    super();
     this.member = member;
     this.guild = member.guild;
     Object.defineProperty(this, 'client', { value: member.client });

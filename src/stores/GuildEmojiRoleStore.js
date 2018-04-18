@@ -5,8 +5,9 @@ const { TypeError } = require('../errors');
 /**
  * Stores emoji roles
  */
-class GuildEmojiRoleStore {
+class GuildEmojiRoleStore extends Collection {
   constructor(emoji) {
+    super();
     this.emoji = emoji;
     this.guild = emoji.guild;
     Object.defineProperty(this, 'client', { value: emoji.client });
