@@ -522,15 +522,17 @@ class RESTMethods {
       if (member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
-        if (!oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
+        if (newMember.id === member.id && !oldMember._roles.includes(role.id) && newMember._roles.includes(role.id)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           resolve(newMember);
         }
       };
 
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      const timeout = this.client.setTimeout(() =>
-        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
+      const timeout = this.client.setTimeout(() => {
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
+        reject(new Error('Adding the role timeout out.'));
+      }, 10e3);
 
       return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
         .catch(err => {
@@ -546,15 +548,17 @@ class RESTMethods {
       if (!member._roles.includes(role.id)) return resolve(member);
 
       const listener = (oldMember, newMember) => {
-        if (oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
+        if (newMember.id === member.id && oldMember._roles.includes(role.id) && !newMember._roles.includes(role.id)) {
           this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           resolve(newMember);
         }
       };
 
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-      const timeout = this.client.setTimeout(() =>
-        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener), 10e3);
+      const timeout = this.client.setTimeout(() => {
+        this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
+        reject(new Error('Removing the role timeout out.'));
+      }, 10e3);
 
       return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
         .catch(err => {
