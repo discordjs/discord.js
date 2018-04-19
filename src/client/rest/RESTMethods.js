@@ -531,7 +531,7 @@ class RESTMethods {
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
       const timeout = this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-        reject(new Error('Adding the role timeout out.'));
+        reject(new Error('Adding the role timed out.'));
       }, 10e3);
 
       return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
@@ -557,7 +557,7 @@ class RESTMethods {
       this.client.on(Constants.Events.GUILD_MEMBER_UPDATE, listener);
       const timeout = this.client.setTimeout(() => {
         this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
-        reject(new Error('Removing the role timeout out.'));
+        reject(new Error('Removing the role timed out.'));
       }, 10e3);
 
       return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
