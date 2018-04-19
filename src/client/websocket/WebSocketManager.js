@@ -221,6 +221,15 @@ class WebSocketManager {
       shard.send(packet);
     }
   }
+
+  destroy() {
+    for (const shard of this.shards) {
+      this.gateway = undefined;
+      // lock calls to spawn
+      this.spawning = true;
+      shard.destroy();
+    }
+  }
 }
 
 module.exports = WebSocketManager;
