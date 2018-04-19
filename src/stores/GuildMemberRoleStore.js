@@ -77,7 +77,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true));
       }
 
-      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put();
+      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
       clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
@@ -108,7 +108,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true));
       }
 
-      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove();
+      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove({ reason });
 
       const clone = this.member._clone();
       clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
