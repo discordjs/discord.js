@@ -632,7 +632,7 @@ class RESTMethods {
     data.hoist = typeof _data.hoist !== 'undefined' ? _data.hoist : role.hoist;
     data.mentionable = typeof _data.mentionable !== 'undefined' ? _data.mentionable : role.mentionable;
 
-    if (_data.permissions) data.permissions = Permissions.resolve(_data.permissions);
+    if (typeof _data.permissions !== 'undefined') data.permissions = Permissions.resolve(_data.permissions);
     else data.permissions = role.permissions;
 
     return this.rest.makeRequest('patch', Endpoints.Guild(role.guild).Role(role.id), true, data, undefined, reason)
