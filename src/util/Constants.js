@@ -87,7 +87,6 @@ exports.UserAgent = browser ? null :
   `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
-  1000: 'Connection gracefully closed',
   4004: 'TOKEN_INVALID',
   4010: 'SHARDING_INVALID',
   4011: 'SHARDING_REQUIRED',
