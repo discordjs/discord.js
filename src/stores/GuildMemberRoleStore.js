@@ -4,6 +4,7 @@ const { TypeError } = require('../errors');
 
 /**
  * Stores member roles
+ * @extends {Collection}
  */
 class GuildMemberRoleStore extends Collection {
   constructor(member) {

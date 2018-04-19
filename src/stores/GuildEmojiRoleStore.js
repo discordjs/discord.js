@@ -4,6 +4,7 @@ const { TypeError } = require('../errors');
 
 /**
  * Stores emoji roles
+ * @extends {Collection}
  */
 class GuildEmojiRoleStore extends Collection {
   constructor(emoji) {
