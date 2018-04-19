@@ -141,7 +141,7 @@ class WebSocketShard extends EventEmitter {
       return false;
     }
 
-    this.manager.client.emit(Events.RAW, packet);
+    this.manager.client.emit(Events.RAW, packet, this.id);
 
     switch (packet.t) {
       case WSEvents.READY:
@@ -244,7 +244,7 @@ class WebSocketShard extends EventEmitter {
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       this.manager.client.emit(Events.DISCONNECT, event, this.id);
-      this.debug(WSCodes[event.code]);
+      this.debug(WSCodes[event.code] || `Got code ${event.code}, not reconnecting`);
       return;
     }
     this.reconnect();

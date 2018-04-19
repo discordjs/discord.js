@@ -145,7 +145,7 @@ class WebSocketManager {
    */
   handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
-      if (BeforeReadyWhitelist.indexOf(packet.t) === -1) {
+      if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.packetQueue.push({ packet, shardID: shard.id });
         return false;
       }
@@ -170,7 +170,7 @@ class WebSocketManager {
    * @returns {void}
    */
   checkReady() {
-    if (!(this.shards.filter(s => !!s).length === this.client.options.shardCount) ||
+    if (!(this.shards.filter(s => s).length === this.client.options.shardCount) ||
       !this.shards.every(s => s.status === Status.READY)) {
       return false;
     }
