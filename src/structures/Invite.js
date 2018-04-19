@@ -76,7 +76,7 @@ class Invite extends Base {
     if (data.inviter) {
       /**
        * The user who created this invite
-       * @type {User}
+       * @type {?User}
        */
       this.inviter = this.client.users.add(data.inviter);
     }

@@ -80,7 +80,9 @@ class GuildMemberStore extends DataStore {
    * guild.members.fetch('66564597481480192')
    *   .then(console.log)
    *   .catch(console.error);
-   * guild.members.fetch({ user, cache: false }) // Fetch and don't cache
+   * @example
+   * // Fetch a single member without caching
+   * guild.members.fetch({ user, cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
