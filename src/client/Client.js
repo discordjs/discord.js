@@ -214,9 +214,10 @@ class Client extends BaseClient {
         this.removeListener(Events.DISCONNECT, ondisconnect);
         resolve();
       };
-      const ondisconnect = event => {
+      const ondisconnect = async event => {
         clearTimeout(timeout);
         this.removeListener(Events.READY, onready);
+        await this.destroy();
         if (WSCodes[event.code]) {
           reject(new Error(WSCodes[event.code]));
         }
