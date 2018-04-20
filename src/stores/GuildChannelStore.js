@@ -34,6 +34,7 @@ class GuildChannelStore extends DataStore {
    * @param {string} name The name of the new channel
    * @param {Object} [options] Options
    * @param {string} [options.type='text'] The type of the new channel, either `text`, `voice`, or `category`
+   * @param {string} [options.topic] The topic for the new channel
    * @param {boolean} [options.nsfw] Whether the new channel is nsfw
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
@@ -58,11 +59,12 @@ class GuildChannelStore extends DataStore {
    *   ],
    * })
    */
-  create(name, { type, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
+  create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (parent) parent = this.client.channels.resolveID(parent);
     return this.client.api.guilds(this.guild.id).channels.post({
       data: {
         name,
+        topic,
         type: type ? ChannelTypes[type.toUpperCase()] : 'text',
         nsfw,
         bitrate,
