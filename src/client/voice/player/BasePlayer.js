@@ -69,8 +69,17 @@ class BasePlayer extends EventEmitter {
   playOpusStream(stream, options, streams = {}) {
     this.destroyDispatcher();
     streams.opus = stream;
+    if (options.volume !== false && !streams.input) {
+      streams.input = stream;
+      const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
+      const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
+      streams.opus = stream
+        .pipe(decoder)
+        .pipe(volume)
+        .pipe(new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 }));
+    }
     const dispatcher = this.createDispatcher(options, streams);
-    stream.pipe(dispatcher);
+    streams.opus.pipe(dispatcher);
     return dispatcher;
   }
 

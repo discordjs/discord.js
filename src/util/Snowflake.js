@@ -27,12 +27,19 @@ class SnowflakeUtil {
   /**
    * Generates a Discord snowflake.
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
+   * @param {number|Date} [timestamp=Date.now()] Timestamp or date of the snowflake to generate
    * @returns {Snowflake} The generated snowflake
    */
-  static generate() {
+  static generate(timestamp = Date.now()) {
+    if (timestamp instanceof Date) timestamp = timestamp.getTime();
+    if (typeof timestamp !== 'number' || isNaN(timestamp)) {
+      throw new TypeError(
+        `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`
+      );
+    }
     if (INCREMENT >= 4095) INCREMENT = 0;
     // eslint-disable-next-line max-len
-    const BINARY = `${(Date.now() - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
+    const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
     return Util.binaryToID(BINARY);
   }
 

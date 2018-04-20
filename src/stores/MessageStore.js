@@ -56,7 +56,7 @@ class MessageStore extends DataStore {
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
    * <info>The returned Collection does not contain the reactions of the messages.
-   * Those need to be fetched seperately.</info>
+   * Those need to be fetched separately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinned() {

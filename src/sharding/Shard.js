@@ -115,7 +115,7 @@ class Shard extends EventEmitter {
   /**
    * Kills and restarts the shard's process.
    * @param {number} [delay=500] How long to wait between killing the process and restarting it (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait the {@link Client} has become ready before resolving
+   * @param {boolean} [waitForReady=true] Whether to wait until the {@link Client} has become ready before resolving
    * @returns {Promise<ChildProcess>}
    */
   async respawn(delay = 500, waitForReady = true) {
