@@ -131,7 +131,7 @@ class Message extends Base {
     this.webhookID = data.webhook_id || null;
 
     /**
-     * Supplimental application information for group activities
+     * Supplemental application information for group activities
      * @type {?ClientApplication}
      */
     this.application = data.application ? new ClientApplication(this.client, data.application) : null;

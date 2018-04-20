@@ -24,8 +24,8 @@ class GuildChannelStore extends DataStore {
   /**
    * Can be used to overwrite permissions when creating a channel.
    * @typedef {Object} PermissionOverwriteOptions
-   * @property {PermissionResolvable[]|number} [allowed] The permissions to allow
-   * @property {PermissionResolvable[]|number} [denied] The permissions to deny
+   * @property {PermissionResolvable} [allowed] The permissions to allow
+   * @property {PermissionResolvable} [denied] The permissions to deny
    * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 

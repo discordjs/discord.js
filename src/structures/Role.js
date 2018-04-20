@@ -148,7 +148,7 @@ class Role extends Base {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {PermissionResolvable|PermissionResolvable[]} [permissions] The permissions of the role
+   * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -179,7 +179,7 @@ class Role extends Base {
     return this.client.api.guilds[this.guild.id].roles[this.id].patch({
       data: {
         name: data.name || this.name,
-        color: Util.resolveColor(data.color || this.color),
+        color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
         hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
         permissions: data.permissions,
         mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
@@ -252,12 +252,17 @@ class Role extends Base {
 
   /**
    * Sets the permissions of the role.
-   * @param {PermissionResolvable[]} permissions The permissions of the role
+   * @param {PermissionResolvable} permissions The permissions of the role
    * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
+   *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
+   *   .catch(console.error);
+   * @example
+   * // Remove all permissions from a role
+   * role.setPermissions(0)
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    */

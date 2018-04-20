@@ -24,6 +24,7 @@ const filename = `discord${process.env.VERSIONED ? `.${version}` : ''}${prod ? '
 
 module.exports = {
   entry: './src/index.js',
+  mode: prod ? 'production' : 'development',
   output: {
     path: path.resolve('./webpack'),
     filename,
@@ -35,6 +36,7 @@ module.exports = {
       { test: /\.md$/, loader: 'ignore-loader' },
       {
         test: require.resolve('./package.json'),
+        type: 'javascript/auto',
         use: {
           loader: 'json-filter-loader',
           options: {
