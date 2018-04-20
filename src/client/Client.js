@@ -166,6 +166,15 @@ class Client extends BaseClient {
   }
 
   /**
+   * How long it has been since the client last entered the `READY` state in milliseconds
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
