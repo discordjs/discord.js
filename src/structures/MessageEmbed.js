@@ -132,12 +132,13 @@ class MessageEmbed {
       proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
     } : null;
 
+    /**
+     * The files of this embed
+     * @type {Array<FileOptions|string|MessageAttachment>}
+     */
+    this.files = [];
+
     if (data.files) {
-      /**
-       * The files of this embed
-       * @type {?Object}
-       * @property {Array<FileOptions|string|MessageAttachment>} files Files to attach
-       */
       this.files = data.files.map(file => {
         if (file instanceof MessageAttachment) {
           return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
@@ -198,11 +199,9 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   attachFiles(files) {
+    files = files.map(file => file instanceof MessageAttachment ? file.file : file);
     if (this.files) this.files = this.files.concat(files);
     else this.files = files;
-    for (let file of files) {
-      if (file instanceof MessageAttachment) file = file.file;
-    }
     return this;
   }
 
