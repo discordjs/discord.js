@@ -12,7 +12,7 @@ class GuildMemberUpdateHandler extends AbstractHandler {
       const member = guild.members.get(data.user.id);
       if (member) {
         const old = member._update(data);
-        if (client.ws.connection.status === Status.READY) {
+        if (packet.shard.status === Status.READY) {
           /**
            * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
            * @event Client#guildMemberUpdate

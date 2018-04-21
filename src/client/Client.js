@@ -32,8 +32,9 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    if (!browser && !this.options.shardID && 'SHARD_ID' in process.env) {
+      this.options.shardID = Number(process.env.SHARD_ID);
+      if (isNaN(this.options.shardID)) this.options.shardID = JSON.parse(`[${process.env.SHARD_ID}]`);
     }
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
@@ -71,6 +72,7 @@ class Client extends BaseClient {
 
     /**
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * <warn>This is unavailable using 'auto' for the ClientOptions#shardCount.</warn>
      * @type {?ShardClientUtil}
      */
     this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
@@ -135,12 +137,6 @@ class Client extends BaseClient {
     this.broadcasts = [];
 
     /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
      * Timeouts set by {@link Client#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -179,21 +175,32 @@ class Client extends BaseClient {
   }
 
   /**
+   * Average heartbeat ping of each shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each shard
+   * @type {number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
+  }
+
+  /**
+   * An array of the average heartbeat ping of each shard, obtained by averaging the
+   * {@link WebSocketConnection#pings} property on each shard
+   * @type {number[]}
+   * @readonly
+   */
+  get pings() {
+    return this.ws.shards.map(sh => sh.ping);
+  }
+
+  /**
    * How long it has been since the client last entered the `READY` state in milliseconds
    * @type {?number}
    * @readonly
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -277,7 +284,7 @@ class Client extends BaseClient {
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;
-    this.ws.send({
+    this.ws.broadcast({
       op: 12,
       d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
     });
@@ -412,17 +419,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
-  }
-
-  /**
    * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
@@ -438,18 +434,16 @@ class Client extends BaseClient {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (!(options.shardID instanceof Array) && options.shardID !== null &&
+        (typeof options.shardID !== 'number' || isNaN(options.shardID))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardID', 'a number, null, or an array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
+    if (options.shardID < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardID', 'at least 0');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
@@ -467,9 +461,6 @@ class Client extends BaseClient {
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
-    }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');

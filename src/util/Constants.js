@@ -9,8 +9,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
  * and is therefore slightly riskier to use.
- * @property {number} [shardId=0] ID of the shard to run
- * @property {number} [shardCount=0] Total number of shards
+ * @property {?number} [shardID=null] ID of the shard to run
+ * @property {number} [shardCount=1] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
@@ -36,9 +36,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  */
 exports.DefaultOptions = {
   apiRequestMethod: 'sequential',
-  shardId: 0,
-  shardCount: 0,
-  internalSharding: false,
+  shardID: null,
+  shardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -199,6 +198,7 @@ exports.VoiceOPCodes = {
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   READY: 'ready',
+  SHARD_READY: 'shardReady',
   RESUMED: 'resumed',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',

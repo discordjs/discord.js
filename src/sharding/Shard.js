@@ -13,7 +13,7 @@ const { Error } = require('../errors');
 class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is spawning this shard
-   * @param {number} id ID of this shard
+   * @param {number|number[]} id ID or IDs of this shard
    * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
   constructor(manager, id, args = []) {
@@ -26,8 +26,8 @@ class Shard extends EventEmitter {
     this.manager = manager;
 
     /**
-     * ID of the shard
-     * @type {number}
+     * ID or IDs of the shard
+     * @type {number|number[]}
      */
     this.id = id;
 
@@ -107,7 +107,7 @@ class Shard extends EventEmitter {
       this.once('ready', resolve);
       this.once('disconnect', () => reject(new Error('SHARDING_READY_DISCONNECTED', this.id)));
       this.once('death', () => reject(new Error('SHARDING_READY_DIED', this.id)));
-      setTimeout(() => reject(new Error('SHARDING_READY_TIMEOUT', this.id)), 30000);
+      setTimeout(() => reject(new Error('SHARDING_READY_TIMEOUT', this.id)), 30000 * this.manager.shardsPerProcess);
     });
     return this.process;
   }

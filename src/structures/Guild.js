@@ -75,7 +75,7 @@ class Guild extends Base {
    * @param {*} data The raw data of the guild
    * @private
    */
-  _patch(data) {
+  _patch(data) { // eslint-disable-line complexity
     /**
      * The name of the guild
      * @type {string}
@@ -181,6 +181,12 @@ class Guild extends Base {
      * @type {number}
      */
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
+    /**
+     * The shard ID that this guild is on
+     * @type {?number}
+     */
+    this.shardID = data.shard ? data.shard.id : null;
 
     this.id = data.id;
     this.available = !data.unavailable;

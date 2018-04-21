@@ -90,6 +90,7 @@ const Messages = {
   GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
+  INVALID_SHARD: id => `Shard ${id} is an invalid shard.`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 

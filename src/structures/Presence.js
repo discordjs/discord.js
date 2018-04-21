@@ -36,6 +36,12 @@ class Presence {
      */
     this.activity = activity ? new Activity(this, activity) : null;
 
+    /**
+     * The shard of the presence
+     * @type {number|string}
+     */
+    this.shard = data.shard;
+
     return this;
   }
 

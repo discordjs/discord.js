@@ -152,8 +152,7 @@ class VoiceConnection extends EventEmitter {
       self_mute: false,
       self_deaf: false,
     }, options);
-
-    this.client.ws.send({
+    this.client.ws.shards.get(this.channel.guild.shardID).send({
       op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
