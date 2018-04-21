@@ -60,6 +60,8 @@ class PresenceUpdateHandler extends AbstractHandler {
 
 /**
  * Emitted whenever a user's details (e.g. username) are changed.
+ * <info>Disabling {@link Client#presenceUpdate} will cause this event to only fire
+ * on {@link ClientUser} update.</info>
  * @event Client#userUpdate
  * @param {User} oldUser The user before the update
  * @param {User} newUser The user after the update
