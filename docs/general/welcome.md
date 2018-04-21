@@ -24,7 +24,7 @@ v12 is still very much a work-in-progress, as we're aiming to make it the best i
 Only use it if you are fond of living life on the bleeding edge.
 
 ## About
-discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
 - Object-oriented
