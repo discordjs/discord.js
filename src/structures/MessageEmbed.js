@@ -200,8 +200,7 @@ class MessageEmbed {
    */
   attachFiles(files) {
     files = files.map(file => file instanceof MessageAttachment ? file.file : file);
-    if (this.files) this.files = this.files.concat(files);
-    else this.files = files;
+    this.files = this.files.concat(files);
     return this;
   }
 
