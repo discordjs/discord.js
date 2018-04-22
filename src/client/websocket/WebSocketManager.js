@@ -14,7 +14,6 @@ const BeforeReadyWhitelist = [
 
 /**
  * WebSocket Manager of the client.
- * @private
  */
 class WebSocketManager {
   constructor(client) {
