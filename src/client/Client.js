@@ -31,8 +31,8 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!browser && !this.options.shard && 'SHARD_ID' in process.env) {
-      this.options.shard = Number(process.env.SHARD_ID);
+    if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
+      this.options.shards = Number(process.env.SHARD_ID);
     }
     if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
@@ -44,7 +44,6 @@ class Client extends BaseClient {
     /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
-     * @private
      */
     this.ws = new WebSocketManager(this);
 
