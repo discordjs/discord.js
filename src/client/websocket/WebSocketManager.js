@@ -31,7 +31,7 @@ class WebSocketManager {
 
     /**
      * An array of shards spawned by this WebSocketManager.
-     * @type {WebSockethard[]}
+     * @type {WebSocketShard[]}
      */
     this.shards = [];
 
