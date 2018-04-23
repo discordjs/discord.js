@@ -1,0 +1,38 @@
+## Issue Welcome Comments ##
+
+# Comment to send on a user's first issue in the repository.
+firstIssueWelcomeComment: |
+  Thank you for opening this issue. Someone will soon be here to address this issue.
+  Since this is your first issue in this repository, please make sure follow the issue template and provide as much detail as possible.
+  
+  Note that the issue tracker is only for bug reports and enhancement suggestions. If this is a question, please ask it in the [Discord Server](https://discord.gg/bRCvFy9) instead of opening an issue – you will get redirected there anyway.
+  
+  Cheers,
+  Bastion
+
+# Comment to send on the user's forthcoming issues in the repository.
+issueWelcomeComment: |
+  Thank you for opening this issue. Someone will soon be here to address this issue.
+  
+  Note that the issue tracker is only for bug reports and enhancement suggestions. If this is a question, please ask it in the [Discord Server](https://discord.gg/bRCvFy9) instead of opening an issue – you will get redirected there anyway.
+  
+  Cheers,
+  Bastion
+
+
+## Pull Request Welcome Comments ##
+
+# Comment to send on a user's first pull request in the repository.
+firstPullRequestWelcomeComment: |
+  Thank you for opening this pull request. A maintainer will get by as soon as possible to review this pull request.
+  Since this is your first pull request in this repository, please make sure follow the pull request template and provide as much detail as possible.
+  
+  Cheers,
+  Bastion
+
+# Comment to send on the user's forthcoming pull requests in the repository.
+pullRequestWelcomeComment: |
+  Thank you for opening this pull request. A maintainer will get by as soon as possible to review this pull request.
+  
+  Cheers,
+  Bastion
