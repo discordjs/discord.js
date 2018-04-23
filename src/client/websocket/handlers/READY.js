@@ -1,6 +1,7 @@
-const ClientUser = require('../../../structures/ClientUser');
+let ClientUser;
 
 module.exports = (client, { d: data }, shard) => {
+  if (!ClientUser) ClientUser = require('../../../structures/ClientUser');
   const clientUser = new ClientUser(client, data.user);
   client.user = clientUser;
   client.readyAt = new Date();
