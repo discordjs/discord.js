@@ -8,6 +8,9 @@ try {
   zlib = require('pako');
 }
 
+/**
+ * Represents a Shard's Websocket connection.
+ */
 class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
     super();
