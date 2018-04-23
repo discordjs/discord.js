@@ -34,12 +34,22 @@ class TextChannel extends GuildChannel {
      * If the guild considers this channel NSFW
      * @type {boolean}
      * @readonly
+     * @private
      */
-    this.nsfw = data.nsfw || this.name === 'nsfw' || this.name.startsWith('nsfw-');
+    this._nsfw = Boolean(data.nsfw);
 
     this.lastMessageID = data.last_message_id;
 
     if (data.messages) for (const message of data.messages) this.messages.add(message);
+  }
+
+  /**
+   * If the Discord Client considers this channel NSFW
+   * @type {boolean}
+   * @readonly
+   */
+  get nsfw() {
+    return this._nsfw || /^nsfw(-|$)/.test(this.name);
   }
 
   /**
