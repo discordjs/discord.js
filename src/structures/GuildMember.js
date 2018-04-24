@@ -28,15 +28,6 @@ class GuildMember extends Base {
     this.user = {};
 
     /**
-     * A list of roles that are applied to this GuildMember, mapped by the role ID
-     * @type {GuildMemberRoleStore<Snowflake, Role>}
-     */
-
-    this.roles = new GuildMemberRoleStore(this);
-
-    if (data) this._patch(data);
-
-    /**
      * The ID of the last message sent by the member in their guild, if one was sent
      * @type {?Snowflake}
      */
@@ -47,6 +38,9 @@ class GuildMember extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+
+    this._roles = [];
+    if (data) this._patch(data);
   }
 
   _patch(data) {
@@ -71,14 +65,23 @@ class GuildMember extends Base {
      */
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
-    this.user = this.guild.client.users.add(data.user);
+    if (data.user) this.user = this.guild.client.users.add(data.user);
     if (data.roles) this.roles._patch(data.roles);
   }
 
   _clone() {
     const clone = super._clone();
-    clone.roles = this.roles.clone();
+    clone._roles = this._roles.slice();
     return clone;
+  }
+
+  /**
+   * A collection of roles that are applied to this GuildMember, mapped by the role ID
+   * @type {GuildMemberRoleStore<Snowflake, Role>}
+   * @readonly
+   */
+  get roles() {
+    return new GuildMemberRoleStore(this);
   }
 
   /**
