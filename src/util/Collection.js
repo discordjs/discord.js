@@ -373,11 +373,11 @@ class Collection extends Map {
    * @returns {Collection}
    * @example
    * collection
-   *  .inspect(user => console.log(user.username))
+   *  .tap(user => console.log(user.username))
    *  .filter(user => user.bot)
-   *  .inspect(user => console.log(user.username))
+   *  .tap(user => console.log(user.username));
    */
-  inspect(fn, thisArg) {
+  tap(fn, thisArg) {
     this.forEach(fn, thisArg);
     return this;
   }
