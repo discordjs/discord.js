@@ -233,18 +233,18 @@ class Collection extends Map {
 
   /**
    * Maps each item to another value. Identical in behavior to
-   * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map),
-   * but returns a Collection instead of an Array.
-   * @param {Function} fn Function that produces an element of the new collection, taking three arguments
+   * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
+   * @param {Function} fn Function that produces an element of the new array, taking three arguments
    * @param {*} [thisArg] Value to use as `this` when executing function
-   * @returns {Collection}
+   * @returns {Array}
    * @example users.map(user => user.tag);
    */
   map(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-    const results = new Collection();
-    for (const [key, val] of this) results.set(key, fn(val, key, this));
-    return results;
+    const arr = new Array(this.size);
+    let i = 0;
+    for (const [key, val] of this) arr[i++] = fn(val, key, this);
+    return arr;
   }
 
   /**
