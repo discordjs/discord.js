@@ -183,8 +183,7 @@ class Collection extends Map {
    * @param {Function} fn The function to test with (should return boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {*}
-   * @example
-   * users.findKey(user => user.username === 'Bob');
+   * @example users.findKey(user => user.username === 'Bob');
    */
   /* eslint-enable max-len */
   findKey(fn, thisArg) {
@@ -202,8 +201,7 @@ class Collection extends Map {
    * @param {Function} fn The function to test with (should return boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
-   * @example
-   * users.filter(user => user.username === 'Bob');
+   * @example users.filter(user => user.username === 'Bob');
    */
   filter(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
