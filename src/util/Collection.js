@@ -157,27 +157,29 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for all items where their specified property's value is identical to the given value
-   * (`item[prop] === value`).
-   * @param {string} prop The property to test against
-   * @param {*} value The expected value
-   * @returns {Array}
+   * Searches for the existence of a single item where its specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value.
+   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
+   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @returns {boolean}
    * @example
-   * collection.findAll('username', 'Bob');
+   * if (users.exists('username', 'Bob')) {
+   *  console.log('user here!');
+   * }
+   * @example
+   * if (users.exists(user => user.username === 'Bob')) {
+   *  console.log('user here!');
+   * }
    */
-  findAll(prop, value) {
-    if (typeof prop !== 'string') throw new TypeError('Key must be a string.');
-    if (typeof value === 'undefined') throw new Error('Value must be specified.');
-    const results = [];
-    for (const item of this.values()) {
-      if (item[prop] === value) results.push(item);
-    }
-    return results;
+  exists(propOrFn, value) {
+    return Boolean(this.find(propOrFn, value));
   }
 
   /**
    * Searches for a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this behaves like
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
    * should use the `get` method. See
@@ -186,9 +188,9 @@ class Collection extends Map {
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
-   * collection.find('username', 'Bob');
+   * users.find('username', 'Bob');
    * @example
-   * collection.find(val => val.username === 'Bob');
+   * users.find(user => user.username === 'Bob');
    */
   find(propOrFn, value) {
     if (typeof propOrFn === 'string') {
@@ -210,15 +212,16 @@ class Collection extends Map {
   /* eslint-disable max-len */
   /**
    * Searches for the key of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is identical to
-   * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex).
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this behaves like
+   * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
+   * but returns the key rather than the positional index.
    * @param {string|Function} propOrFn The property to test against, or the function to test with
    * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {*}
    * @example
-   * collection.findKey('username', 'Bob');
+   * users.findKey('username', 'Bob');
    * @example
-   * collection.findKey(val => val.username === 'Bob');
+   * users.findKey(user => user.username === 'Bob');
    */
   /* eslint-enable max-len */
   findKey(propOrFn, value) {
@@ -239,83 +242,77 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for the existence of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value.
-   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
-   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
-   * @returns {boolean}
-   * @example
-   * if (collection.exists('username', 'Bob')) {
-   *  console.log('user here!');
-   * }
-   * @example
-   * if (collection.exists(user => user.username === 'Bob')) {
-   *  console.log('user here!');
-   * }
-   */
-  exists(propOrFn, value) {
-    return Boolean(this.find(propOrFn, value));
-  }
-
-  /**
-   * Identical to
+   * Filters the collection for items where the specified property's value is identical to the given value
+   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is behaves like
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @param {string|Function} propOrFn The property to test against, or the function to test with
+   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
    * @returns {Collection}
+   * @example
+   * users.filter('username', 'Bob');
+   * @example
+   * users.filter(user => user.username === 'Bob');
    */
-  filter(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
-    const results = new Collection();
-    for (const [key, val] of this) {
-      if (fn(val, key, this)) results.set(key, val);
+  filter(propOrFn, value) {
+    if (typeof propOrFn === 'string') {
+      const results = new Collection();
+      for (const [key, val] of this) {
+        if (val[propOrFn] === value) results.set(key, val);
+      }
+      return results;
+    } else if (typeof propOrFn === 'function') {
+      const results = new Collection();
+      for (const [key, val] of this) {
+        if (propOrFn(val, key, this)) results.set(key, val);
+      }
+      return results;
+    } else {
+      throw new Error('First argument must be a property string or a function.');
     }
-    return results;
   }
 
   /**
-   * Identical to
-   * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter).
+   * Partitions the collection into two collections where the first collection
+   * contains the items that passed and the second contains the items that failed.
    * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
-   * @returns {Array}
+   * @returns {Collection[]}
+   * @example const [small, big] = guilds.partition(guild => guild.memberCount > 250);
    */
-  filterArray(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
-    const results = [];
+  partition(fn) {
+    const results = [new Collection(), new Collection()];
     for (const [key, val] of this) {
-      if (fn(val, key, this)) results.push(val);
+      if (fn(val, key, this)) {
+        results[0].set(key, val);
+      } else {
+        results[1].set(key, val);
+      }
     }
     return results;
   }
 
   /**
-   * Identical to
-   * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
-   * @param {Function} fn Function that produces an element of the new array, taking three arguments
-   * @param {*} [thisArg] Value to use as `this` when executing function
-   * @returns {Array}
+   * Maps each item to another value. Identical in behavior to
+   * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map),
+   * but returns a Collection instead of an Array.
+   * @param {Function} fn Function that produces an element of the new collection, taking three arguments
+   * @returns {Collection}
+   * @example users.map(user => user.tag);
    */
-  map(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
-    const arr = new Array(this.size);
-    let i = 0;
-    for (const [key, val] of this) arr[i++] = fn(val, key, this);
-    return arr;
+  map(fn) {
+    const results = new Collection();
+    for (const [key, val] of this) results.set(key, fn(val, key, this));
+    return results;
   }
 
   /**
-   * Identical to
+   * Checks if there exists an item that passes a test. Identical in behavior to
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
    * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
+   * @example users.some(user => user.discriminator === '0000');
    */
-  some(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
+  some(fn) {
     for (const [key, val] of this) {
       if (fn(val, key, this)) return true;
     }
@@ -323,14 +320,13 @@ class Collection extends Map {
   }
 
   /**
-   * Identical to
+   * Checks if all items passes a test. Identical in behavior to
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
    * @param {Function} fn Function used to test (should return a boolean)
-   * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
+   * @example users.every(user => !user.bot);
    */
-  every(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
+  every(fn) {
     for (const [key, val] of this) {
       if (!fn(val, key, this)) return false;
     }
@@ -338,12 +334,13 @@ class Collection extends Map {
   }
 
   /**
-   * Identical to
+   * Applies a function to produce a single value. Identical in behavior to
    * [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce).
    * @param {Function} fn Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
    * and `collection`
    * @param {*} [initialValue] Starting value for the accumulator
    * @returns {*}
+   * @example guilds.reduce((acc, guild) => acc + guild.memberCount);
    */
   reduce(fn, initialValue) {
     let accumulator;
@@ -423,6 +420,7 @@ class Collection extends Map {
    * If omitted, the collection is sorted according to each character's Unicode code point value,
    * according to the string conversion of each element.
    * @returns {Collection}
+   * @example users.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
    */
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
     return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
