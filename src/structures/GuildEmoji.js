@@ -40,7 +40,7 @@ class GuildEmoji extends Emoji {
 
   _clone() {
     const clone = super._clone();
-    clone.roles = this.roles.clone();
+    clone._roles = this._roles.slice();
     return clone;
   }
 
