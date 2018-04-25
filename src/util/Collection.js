@@ -98,7 +98,7 @@ class Collection extends Map {
    * Obtains the last value(s) in this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
    * @param {number} [amount] Amount of values to obtain from the end
-   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the end if
+   * @returns {*|Array<*>} A single value if no amount is provided or an array of values, starting from the start if
    * amount is negative
    */
   last(amount) {
@@ -113,7 +113,7 @@ class Collection extends Map {
    * Obtains the last key(s) in this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
    * @param {number} [amount] Amount of keys to obtain from the end
-   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the end if
+   * @returns {*|Array<*>} A single key if no amount is provided or an array of keys, starting from the start if
    * amount is negative
    */
   lastKey(amount) {
@@ -125,7 +125,7 @@ class Collection extends Map {
   }
 
   /**
-   * Obtains random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
+   * Obtains unique random value(s) from this collection. This relies on {@link Collection#array}, and thus the caching
    * mechanism applies here as well.
    * @param {number} [amount] Amount of values to obtain randomly
    * @returns {*|Array<*>} A single value if no amount is provided or an array of values
@@ -141,7 +141,7 @@ class Collection extends Map {
   }
 
   /**
-   * Obtains random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
+   * Obtains unique random key(s) from this collection. This relies on {@link Collection#keyArray}, and thus the caching
    * mechanism applies here as well.
    * @param {number} [amount] Amount of keys to obtain randomly
    * @returns {*|Array<*>} A single key if no amount is provided or an array
