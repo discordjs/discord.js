@@ -163,10 +163,12 @@ class Collection extends Map {
    * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
    * @param {Function} fn The function to test with (should return boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {*}
    * @example users.find(user => user.username === 'Bob');
    */
-  find(fn) {
+  find(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     for (const [key, val] of this) {
       if (fn(val, key, this)) return val;
     }
@@ -179,12 +181,14 @@ class Collection extends Map {
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
    * but returns the key rather than the positional index.
    * @param {Function} fn The function to test with (should return boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {*}
    * @example
    * users.findKey(user => user.username === 'Bob');
    */
   /* eslint-enable max-len */
-  findKey(fn) {
+  findKey(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     for (const [key, val] of this) {
       if (fn(val, key, this)) return key;
     }
@@ -196,11 +200,13 @@ class Collection extends Map {
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
    * @param {Function} fn The function to test with (should return boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    * @example
    * users.filter(user => user.username === 'Bob');
    */
-  filter(fn) {
+  filter(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     const results = new Collection();
     for (const [key, val] of this) {
       if (fn(val, key, this)) results.set(key, val);
@@ -232,10 +238,12 @@ class Collection extends Map {
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map),
    * but returns a Collection instead of an Array.
    * @param {Function} fn Function that produces an element of the new collection, taking three arguments
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    * @example users.map(user => user.tag);
    */
-  map(fn) {
+  map(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     const results = new Collection();
     for (const [key, val] of this) results.set(key, fn(val, key, this));
     return results;
@@ -245,10 +253,12 @@ class Collection extends Map {
    * Checks if there exists an item that passes a test. Identical in behavior to
    * [Array.some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
    * @param {Function} fn Function used to test (should return a boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    * @example users.some(user => user.discriminator === '0000');
    */
-  some(fn) {
+  some(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     for (const [key, val] of this) {
       if (fn(val, key, this)) return true;
     }
@@ -259,10 +269,12 @@ class Collection extends Map {
    * Checks if all items passes a test. Identical in behavior to
    * [Array.every()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
    * @param {Function} fn Function used to test (should return a boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
    * @example users.every(user => !user.bot);
    */
-  every(fn) {
+  every(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     for (const [key, val] of this) {
       if (!fn(val, key, this)) return false;
     }
