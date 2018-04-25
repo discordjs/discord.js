@@ -157,119 +157,55 @@ class Collection extends Map {
   }
 
   /**
-   * Searches for the existence of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value.
-   * <warn>Do not use this to check for an item by its ID. Instead, use `collection.has(id)`. See
-   * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) for details.</warn>
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
-   * @returns {boolean}
-   * @example
-   * if (users.exists('username', 'Bob')) {
-   *  console.log('user here!');
-   * }
-   * @example
-   * if (users.exists(user => user.username === 'Bob')) {
-   *  console.log('user here!');
-   * }
-   */
-  exists(propOrFn, value) {
-    return Boolean(this.find(propOrFn, value));
-  }
-
-  /**
-   * Searches for a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this behaves like
+   * Searches for a single item where the given function returns a truthy value. This behaves like
    * [Array.find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find).
    * <warn>All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
    * should use the `get` method. See
    * [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get) for details.</warn>
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @param {Function} fn The function to test with (should return boolean)
    * @returns {*}
-   * @example
-   * users.find('username', 'Bob');
-   * @example
-   * users.find(user => user.username === 'Bob');
+   * @example users.find(user => user.username === 'Bob');
    */
-  find(propOrFn, value) {
-    if (typeof propOrFn === 'string') {
-      if (typeof value === 'undefined') throw new Error('Value must be specified.');
-      for (const item of this.values()) {
-        if (item[propOrFn] === value) return item;
-      }
-      return undefined;
-    } else if (typeof propOrFn === 'function') {
-      for (const [key, val] of this) {
-        if (propOrFn(val, key, this)) return val;
-      }
-      return undefined;
-    } else {
-      throw new Error('First argument must be a property string or a function.');
+  find(fn) {
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) return val;
     }
+    return undefined;
   }
 
   /* eslint-disable max-len */
   /**
-   * Searches for the key of a single item where its specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this behaves like
+   * Searches for the key of a single item where the given function returns a truthy value. This behaves like
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
    * but returns the key rather than the positional index.
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @param {Function} fn The function to test with (should return boolean)
    * @returns {*}
-   * @example
-   * users.findKey('username', 'Bob');
    * @example
    * users.findKey(user => user.username === 'Bob');
    */
   /* eslint-enable max-len */
-  findKey(propOrFn, value) {
-    if (typeof propOrFn === 'string') {
-      if (typeof value === 'undefined') throw new Error('Value must be specified.');
-      for (const [key, val] of this) {
-        if (val[propOrFn] === value) return key;
-      }
-      return undefined;
-    } else if (typeof propOrFn === 'function') {
-      for (const [key, val] of this) {
-        if (propOrFn(val, key, this)) return key;
-      }
-      return undefined;
-    } else {
-      throw new Error('First argument must be a property string or a function.');
+  findKey(fn) {
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) return key;
     }
+    return undefined;
   }
 
   /**
-   * Filters the collection for items where the specified property's value is identical to the given value
-   * (`item[prop] === value`), or the given function returns a truthy value. In the latter case, this is behaves like
+   * Filters the collection for items where the given function returns a truthy value. This behaves like
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
-   * @param {string|Function} propOrFn The property to test against, or the function to test with
-   * @param {*} [value] The expected value - only applicable and required if using a property for the first argument
+   * @param {Function} fn The function to test with (should return boolean)
    * @returns {Collection}
-   * @example
-   * users.filter('username', 'Bob');
    * @example
    * users.filter(user => user.username === 'Bob');
    */
-  filter(propOrFn, value) {
-    if (typeof propOrFn === 'string') {
-      const results = new Collection();
-      for (const [key, val] of this) {
-        if (val[propOrFn] === value) results.set(key, val);
-      }
-      return results;
-    } else if (typeof propOrFn === 'function') {
-      const results = new Collection();
-      for (const [key, val] of this) {
-        if (propOrFn(val, key, this)) results.set(key, val);
-      }
-      return results;
-    } else {
-      throw new Error('First argument must be a property string or a function.');
+  filter(fn) {
+    const results = new Collection();
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) results.set(key, val);
     }
+    return results;
   }
 
   /**
