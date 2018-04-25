@@ -375,7 +375,7 @@ class Collection extends Map {
    * collection
    *  .inspect(user => console.log(user.username))
    *  .filter(user => user.bot)
-   *  .inspect(u => console.log(user.username))
+   *  .inspect(user => console.log(user.username))
    */
   inspect(fn, thisArg) {
     this.forEach(fn, thisArg);
