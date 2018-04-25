@@ -80,7 +80,7 @@ class GuildMemberRoleStore extends Collection {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
-      clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
+      clone.roles._patch([...this.keys(), roleOrRoles.id]);
       return clone;
     }
   }
@@ -99,7 +99,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true));
       }
 
-      const newRoles = this.guild.roles.filter(role => !roleOrRoles.includes(role.id));
+      const newRoles = this.filter(role => !roleOrRoles.includes(role));
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
@@ -108,10 +108,11 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true));
       }
 
-      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].remove({ reason });
+      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
 
       const clone = this.member._clone();
-      clone._patch({ roles: [...this.keys(), roleOrRoles.id] });
+      const newRoles = this.filter(role => role.id !== roleOrRoles.id);
+      clone.roles._patch([...newRoles.keys()]);
       return clone;
     }
   }
