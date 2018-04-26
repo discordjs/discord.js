@@ -84,7 +84,7 @@ class Invite {
     if (data.inviter) {
       /**
        * The user who created this invite
-       * @type {User}
+       * @type {?User}
        */
       this.inviter = this.client.dataManager.newUser(data.inviter);
     }

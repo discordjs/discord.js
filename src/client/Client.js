@@ -319,6 +319,10 @@ class Client extends EventEmitter {
    * Obtains an invite from Discord.
    * @param {InviteResolvable} invite Invite code or URL
    * @returns {Promise<Invite>}
+   * @example
+   * client.fetchInvite('https://discord.gg/bRCvFy9')
+   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`)
+   *   .catch(console.error);
    */
   fetchInvite(invite) {
     const code = this.resolver.resolveInviteCode(invite);
@@ -330,6 +334,10 @@ class Client extends EventEmitter {
    * @param {Snowflake} id ID of the webhook
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
+   * @example
+   * client.fetchWebhook('id', 'token')
+   *   .then(webhook => console.log(`Obtained webhook with name: ${webhook.name}`))
+   *   .catch(console.error);
    */
   fetchWebhook(id, token) {
     return this.rest.methods.getWebhook(id, token);
@@ -338,6 +346,10 @@ class Client extends EventEmitter {
   /**
    * Obtains the available voice regions from Discord.
    * @returns {Collection<string, VoiceRegion>}
+   * @example
+   * client.fetchVoiceRegions()
+   *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
+   *   .catch(console.error);
    */
   fetchVoiceRegions() {
     return this.rest.methods.fetchVoiceRegions();
@@ -383,6 +395,9 @@ class Client extends EventEmitter {
    * Obtains the OAuth Application of the bot from Discord.
    * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<OAuth2Application>}
+   * client.fetchApplication('id')
+   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
+   *   .catch(console.error);
    */
   fetchApplication(id = '@me') {
     return this.rest.methods.getApplication(id);

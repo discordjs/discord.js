@@ -316,9 +316,7 @@ class ClientUser extends User {
    *   .catch(console.error);
    * @example
    * // Fetch mentions from a guild
-   * client.user.fetchMentions({
-   *   guild: '222078108977594368'
-   * })
+   * client.user.fetchMentions({ guild: '222078108977594368' })
    *   .then(console.log)
    *   .catch(console.error);
    */

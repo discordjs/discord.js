@@ -284,6 +284,11 @@ class Role {
    * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
+   * @example
+   * // Remove all permissions from a role
+   * role.setPermissions(0)
+   *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
+   *   .catch(console.error);
    */
   setPermissions(permissions, reason) {
     return this.edit({ permissions }, reason);
