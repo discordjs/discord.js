@@ -372,7 +372,7 @@ class Collection extends Map {
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
    * @example
-   * users
+   * collection
    *  .tap(user => console.log(user.username))
    *  .filter(user => user.bot)
    *  .tap(user => console.log(user.username));
