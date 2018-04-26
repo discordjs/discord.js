@@ -165,7 +165,7 @@ class Collection extends Map {
    * @param {Function} fn The function to test with (should return boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {*}
-   * @example users.find(user => user.username === 'Bob');
+   * @example collection.find(user => user.username === 'Bob');
    */
   find(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
@@ -183,7 +183,7 @@ class Collection extends Map {
    * @param {Function} fn The function to test with (should return boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {*}
-   * @example users.findKey(user => user.username === 'Bob');
+   * @example collection.findKey(user => user.username === 'Bob');
    */
   /* eslint-enable max-len */
   findKey(fn, thisArg) {
@@ -201,7 +201,7 @@ class Collection extends Map {
    * @param {Function} fn The function to test with (should return boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection}
-   * @example users.filter(user => user.username === 'Bob');
+   * @example collection.filter(user => user.username === 'Bob');
    */
   filter(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
@@ -217,7 +217,7 @@ class Collection extends Map {
    * contains the items that passed and the second contains the items that failed.
    * @param {Function} fn Function used to test (should return a boolean)
    * @returns {Collection[]}
-   * @example const [small, big] = guilds.partition(guild => guild.memberCount > 250);
+   * @example const [big, small] = collection.partition(guild => guild.memberCount > 250);
    */
   partition(fn) {
     const results = [new Collection(), new Collection()];
@@ -237,7 +237,7 @@ class Collection extends Map {
    * @param {Function} fn Function that produces an element of the new array, taking three arguments
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Array}
-   * @example users.map(user => user.tag);
+   * @example collection.map(user => user.tag);
    */
   map(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
@@ -253,7 +253,7 @@ class Collection extends Map {
    * @param {Function} fn Function used to test (should return a boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
-   * @example users.some(user => user.discriminator === '0000');
+   * @example collection.some(user => user.discriminator === '0000');
    */
   some(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
@@ -269,7 +269,7 @@ class Collection extends Map {
    * @param {Function} fn Function used to test (should return a boolean)
    * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {boolean}
-   * @example users.every(user => !user.bot);
+   * @example collection.every(user => !user.bot);
    */
   every(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
@@ -286,7 +286,7 @@ class Collection extends Map {
    * and `collection`
    * @param {*} [initialValue] Starting value for the accumulator
    * @returns {*}
-   * @example guilds.reduce((acc, guild) => acc + guild.memberCount);
+   * @example collection.reduce((acc, guild) => acc + guild.memberCount, 0);
    */
   reduce(fn, initialValue) {
     let accumulator;
@@ -366,7 +366,7 @@ class Collection extends Map {
    * If omitted, the collection is sorted according to each character's Unicode code point value,
    * according to the string conversion of each element.
    * @returns {Collection}
-   * @example users.sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+   * @example collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
    */
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
     return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
