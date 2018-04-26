@@ -384,7 +384,7 @@ class Guild {
   }
 
   /**
-   * Whether to suppress everyone messages
+   * Whether to suppress everyone's messages
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    * @readonly
