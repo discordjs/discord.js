@@ -271,7 +271,7 @@ class ClientDataResolver {
           });
         }
       });
-    } else if (resource.pipe && typeof resource.pipe === 'function') {
+    } else if (resource && resource.pipe && typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
         const buffers = [];
         resource.once('error', reject);
