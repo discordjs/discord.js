@@ -255,6 +255,11 @@ class VoiceConnection extends EventEmitter {
        */
       this.emit('failed', new Error(reason));
     } else {
+      /**
+       * Emitted whenever the connection encounters an error.
+       * @event VoiceConnection#error
+       * @param {Error} error The encountered error
+       */
       this.emit('error', new Error(reason));
     }
     this.status = Constants.VoiceStatus.DISCONNECTED;
@@ -367,20 +372,10 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} data The received data
    * @private
    */
-  onReady({ port, ssrc }) {
+  onReady({ port, ssrc, ip }) {
     this.authentication.port = port;
     this.authentication.ssrc = ssrc;
-
-    const udp = this.sockets.udp;
-    /**
-     * Emitted whenever the connection encounters an error.
-     * @event VoiceConnection#error
-     * @param {Error} error The encountered error
-     */
-    udp.findEndpointAddress()
-      .then(address => {
-        udp.createUDPSocket(address);
-      }, e => this.emit('error', e));
+    this.sockets.udp.createUDPSocket(ip);
   }
 
   /**

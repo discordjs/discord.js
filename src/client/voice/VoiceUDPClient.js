@@ -1,5 +1,4 @@
 const udp = require('dgram');
-const dns = require('dns');
 const Constants = require('../../util/Constants');
 const EventEmitter = require('events').EventEmitter;
 
@@ -63,23 +62,6 @@ class VoiceConnectionUDPClient extends EventEmitter {
    */
   get discordPort() {
     return this.voiceConnection.authentication.port;
-  }
-
-  /**
-   * Tries to resolve the voice server endpoint to an address.
-   * @returns {Promise<string>}
-   */
-  findEndpointAddress() {
-    return new Promise((resolve, reject) => {
-      dns.lookup(this.voiceConnection.authentication.endpoint, (error, address) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        this.discordAddress = address;
-        resolve(address);
-      });
-    });
   }
 
   /**
