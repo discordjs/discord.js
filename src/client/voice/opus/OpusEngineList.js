@@ -24,5 +24,5 @@ exports.fetch = engineOptions => {
     if (fetched) return fetched;
   }
 
-  throw new Error('OPUS_ENGINE_MISSING');
+  throw new Error('Couldn\'t find an Opus engine.');
 };
