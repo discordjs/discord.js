@@ -20,7 +20,7 @@ class GuildMemberRoleStore extends Collection {
    * @private
    */
   get _filtered() {
-    const everyone = this.guild.roles.get(this.guild.id);
+    const everyone = this.guild.defaultRole;
     return this.guild.roles.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
   }
 
