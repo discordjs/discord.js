@@ -171,7 +171,7 @@ class StreamDispatcher extends VolumeInterface {
 
   processPacket(packet) {
     try {
-      if (this.destroyed) {
+      if (this.destroyed || !this.player.voiceConnection.authentication.secretKey) {
         this.setSpeaking(false);
         return;
       }
