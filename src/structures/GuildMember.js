@@ -440,6 +440,7 @@ class GuildMember extends Base {
       speaking: false,
       lastMessage: false,
       lastMessageID: false,
+      roles: true,
     });
   }
 
