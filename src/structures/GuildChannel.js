@@ -558,8 +558,8 @@ class GuildChannel extends Channel {
    * @example
    * // Delete the channel
    * channel.delete('making room for new channels')
-   *   .then() // Success
-   *   .catch(console.error); // Log error
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);

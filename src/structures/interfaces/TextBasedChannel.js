@@ -125,13 +125,12 @@ class TextBasedChannel {
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<MessageSearchResult>}
    * @example
-   * channel.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.results[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
-   * }).catch(console.error);
+   * channel.search({ content: 'discord.js', before: '2016-11-17' })
+   *   .then(res => {
+   *     const hit = res.results[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
+   *   })
+   *   .catch(console.error);
    */
   search(options = {}) {
     return Shared.search(this, options);

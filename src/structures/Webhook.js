@@ -125,8 +125,7 @@ class Webhook {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  /* eslint-enable max-len */
-  async send(content, options) { // eslint-disable-line complexity
+  async send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = null;

@@ -146,9 +146,7 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>}
    * @example
    * shard.fetchClientValue('guilds.size')
-   *   .then(count => {
-   *     console.log(`${count} guilds in shard ${shard.id}`);
-   *   })
+   *   .then(count => console.log(`${count} guilds in shard ${shard.id}`))
    *   .catch(console.error);
    */
   fetchClientValue(prop) {

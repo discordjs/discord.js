@@ -166,9 +166,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.size')
-   *   .then(results => {
-   *     console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-   *   })
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
   fetchClientValues(prop) {

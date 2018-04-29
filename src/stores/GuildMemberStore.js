@@ -87,7 +87,7 @@ class GuildMemberStore extends DataStore {
    *   .catch(console.error);
    * @example
    * // Fetch by query
-   * guild.members.fetch({ query: 'hydra' })
+   * guild.members.fetch({ query: 'hydra', limit: 1 })
    *   .then(console.log)
    *   .catch(console.error);
    */
