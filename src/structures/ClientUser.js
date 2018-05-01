@@ -279,10 +279,10 @@ class ClientUser extends User {
    * @param {Object} [options] Options for setting the activity
    * @param {string} [options.url] Twitch stream URL
    * @param {ActivityType|number} [options.type] Type of the activity
-   * @returns {Promise<Presence>}
+   * @returns {Promise<ClientUser>}
    * @example
    * client.user.setActivity('YouTube', { type: 'WATCHING' })
-   *   .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
+   *   .then(user => console.log(`Activity set to ${user.presence.game.name}`))
    *   .catch(console.error);
    */
   setActivity(name, { url, type } = {}) {
