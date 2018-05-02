@@ -16,8 +16,8 @@ class RESTManager {
     if (client.options.restSweepInterval > 0) {
       client.setInterval(() => {
         for (const handler in this.handlers) {
-          if (this.handlers[handler] && this.handlers[handler]._inactive) {
-            this.handlers[handler] = undefined;
+          if (this.handlers[handler]._inactive) {
+            delete this.handlers[handler];
           }
         }
       }, client.options.restSweepInterval * 1000);
