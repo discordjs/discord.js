@@ -26,6 +26,13 @@ class RequestHandler {
     this.handle();
   }
 
+  get _inactive() {
+    return this.queue.length === 0 &&
+      !this.limited &&
+      Date.now() > this.resetTime &&
+      (typeof this.busy === 'undefined' || this.busy === false);
+  }
+
   execute(item) {
     return new Promise((resolve, reject) => {
       const finish = timeout => {
