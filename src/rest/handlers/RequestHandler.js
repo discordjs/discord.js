@@ -27,10 +27,7 @@ class RequestHandler {
   }
 
   get _inactive() {
-    return this.queue.length === 0 &&
-      !this.limited &&
-      Date.now() > this.resetTime &&
-      (typeof this.busy === 'undefined' || this.busy === false);
+    return this.queue.length === 0 && !this.limited && Date.now() > this.resetTime && this.busy !== true;
   }
 
   execute(item) {
