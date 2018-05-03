@@ -1,4 +1,5 @@
 const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
+const Permissions = require('../util/Permissions');
 const Snowflake = require('../util/Snowflake');
 const Emoji = require('./Emoji');
 
@@ -45,8 +46,18 @@ class GuildEmoji extends Emoji {
   }
 
   /**
+   * Whether the emoji is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    return this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_EMOJIS);
+  }
+
+  /**
    * A collection of roles this emoji is active for (empty if all), mapped by role ID
    * @type {GuildEmojiRoleStore<Snowflake, Role>}
+   * @readonly
    */
   get roles() {
     return new GuildEmojiRoleStore(this);
