@@ -41,7 +41,7 @@ class VolumeInterface extends EventEmitter {
     volume = volume || this._volume;
     if (volume === 1) return buffer;
 
-    const out = new Buffer(buffer.length);
+    const out = Buffer.alloc(buffer.length);
     for (let i = 0; i < buffer.length; i += 2) {
       if (i >= buffer.length - 1) break;
       const uint = Math.min(32767, Math.max(-32767, Math.floor(volume * buffer.readInt16LE(i))));
