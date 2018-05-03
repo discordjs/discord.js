@@ -47,7 +47,8 @@ class BurstRequestHandler extends RequestHandler {
             this.resetTimeout = null;
           }, 1e3 + this.client.options.restTimeOffset);
         } else {
-          item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
+          item.reject(err.status >= 400 && err.status < 500 ?
+            new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
           this.handle();
         }
       } else {
