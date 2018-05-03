@@ -536,7 +536,7 @@ class RESTMethods {
 
       return this.rest.makeRequest('put', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
         .catch(err => {
-          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           this.client.clearTimeout(timeout);
           reject(err);
         });
@@ -562,7 +562,7 @@ class RESTMethods {
 
       return this.rest.makeRequest('delete', Endpoints.Member(member).Role(role.id), true, undefined, undefined, reason)
         .catch(err => {
-          this.client.removeListener(Constants.Events.GUILD_BAN_REMOVE, listener);
+          this.client.removeListener(Constants.Events.GUILD_MEMBER_UPDATE, listener);
           this.client.clearTimeout(timeout);
           reject(err);
         });
