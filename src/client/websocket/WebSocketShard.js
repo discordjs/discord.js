@@ -349,7 +349,7 @@ class WebSocketShard extends EventEmitter {
   reconnect() {
     this.heartbeat(-1);
     this.status = Status.RECONNECTING;
-    this.manager.spawn(this);
+    this.manager.spawn(this.id);
   }
 
   destroy() {
