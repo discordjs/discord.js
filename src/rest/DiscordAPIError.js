@@ -3,11 +3,17 @@
  * @extends Error
  */
 class DiscordAPIError extends Error {
-  constructor(path, error) {
+  constructor(path, error, method) {
     super();
     const flattened = this.constructor.flattenErrors(error.errors || error).join('\n');
     this.name = 'DiscordAPIError';
     this.message = error.message && flattened ? `${error.message}\n${flattened}` : error.message || flattened;
+
+    /**
+     * The HTTP method used for the request
+     * @type {string}
+     */
+    this.method = method;
 
     /**
      * The path of the request relative to the HTTP endpoint
