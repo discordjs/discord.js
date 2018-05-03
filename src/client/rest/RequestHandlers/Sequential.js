@@ -68,7 +68,8 @@ class SequentialRequestHandler extends RequestHandler {
             this.queue.unshift(item);
             this.restManager.client.setTimeout(resolve, 1e3 + this.restManager.client.options.restTimeOffset);
           } else {
-            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
+            item.reject(err.status >= 400 && err.status < 500 ?
+              new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
             resolve(err);
           }
         } else {
