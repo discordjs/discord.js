@@ -41,7 +41,7 @@ class Collection extends Map {
   /**
    * Creates an ordered array of the values of this collection, and caches it internally. The array will only be
    * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
-   * itself. If you don't want this caching behaviour, use `[...collection.values()]` or
+   * itself. If you don't want this caching behavior, use `[...collection.values()]` or
    * `Array.from(collection.values())` instead.
    * @returns {Array}
    */
@@ -53,7 +53,7 @@ class Collection extends Map {
   /**
    * Creates an ordered array of the keys of this collection, and caches it internally. The array will only be
    * reconstructed if an item is added to or removed from the collection, or if you change the length of the array
-   * itself. If you don't want this caching behaviour, use `[...collection.keys()]` or
+   * itself. If you don't want this caching behavior, use `[...collection.keys()]` or
    * `Array.from(collection.keys())` instead.
    * @returns {Array}
    */
@@ -195,7 +195,22 @@ class Collection extends Map {
   }
 
   /**
-   * Filters the collection for items where the given function returns a truthy value. This behaves like
+   * Removes entries that satisfy the provided filter function.
+   * @param {Function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {number} The number of removed entries
+   */
+  sweep(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    const previousSize = this.size;
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) this.delete(key);
+    }
+    return previousSize - this.size;
+  }
+
+  /**
+   * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
    * @param {Function} fn The function to test with (should return boolean)
@@ -305,6 +320,24 @@ class Collection extends Map {
       }
     }
     return accumulator;
+  }
+
+  /**
+   * Identical to
+   * [Map.forEach()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach),
+   * but returns the collection instead of undefined.
+   * @param {Function} fn Function to execute for each element
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   * @example
+   * collection
+   *  .tap(user => console.log(user.username))
+   *  .filter(user => user.bot)
+   *  .tap(user => console.log(user.username));
+   */
+  tap(fn, thisArg) {
+    this.forEach(fn, thisArg);
+    return this;
   }
 
   /**

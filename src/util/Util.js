@@ -437,7 +437,7 @@ class Util {
         const func = Collection.prototype[prop];
         if (prop === 'constructor' || typeof func !== 'function') return;
         store.prototype[prop] = function(...args) {
-          return func.apply(this._filtered, ...args);
+          return func.apply(this._filtered, args);
         };
       });
   }

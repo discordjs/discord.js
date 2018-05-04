@@ -1,4 +1,5 @@
 const DataResolver = require('../util/DataResolver');
+const { Channel } = require('./Channel');
 const { createMessage } = require('./shared');
 
 /**
@@ -125,8 +126,7 @@ class Webhook {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  /* eslint-enable max-len */
-  async send(content, options) { // eslint-disable-line complexity
+  async send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = null;
@@ -201,7 +201,7 @@ class Webhook {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
-    if (channel) channel = this.client.channels.resolveID(channel);
+    if (channel) channel = channel instanceof Channel ? channel.id : channel;
     return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,

@@ -13,6 +13,15 @@ class RESTManager {
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
     this.timeDifferences = [];
+    if (client.options.restSweepInterval > 0) {
+      client.setInterval(() => {
+        for (const handler in this.handlers) {
+          if (this.handlers[handler]._inactive) {
+            delete this.handlers[handler];
+          }
+        }
+      }, client.options.restSweepInterval * 1000);
+    }
   }
 
   get api() {

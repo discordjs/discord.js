@@ -37,6 +37,7 @@ class MessageCollector extends Collector {
       for (const message of messages.values()) this.handleDispose(message);
     }).bind(this);
 
+    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
     this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
     this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
@@ -45,6 +46,7 @@ class MessageCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_CREATE, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_DELETE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
+      this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
   }
 

@@ -56,9 +56,7 @@ class ShardClientUtil {
    * @returns {Promise<Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.size')
-   *   .then(results => {
-   *     console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-   *   })
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
    */
@@ -82,6 +80,10 @@ class ShardClientUtil {
    * Evaluates a script or function on all shards, in the context of the {@link Clients}.
    * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
+   * @example
+   * client.shard.broadcastEval('this.guilds.size')
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
+   *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
    */
   broadcastEval(script) {

@@ -26,6 +26,10 @@ class RequestHandler {
     this.handle();
   }
 
+  get _inactive() {
+    return this.queue.length === 0 && !this.limited && Date.now() > this.resetTime && this.busy !== true;
+  }
+
   execute(item) {
     return new Promise((resolve, reject) => {
       const finish = timeout => {
@@ -76,7 +80,8 @@ class RequestHandler {
             this.queue.unshift(item);
             finish(1e3 + this.client.options.restTimeOffset);
           } else {
-            item.reject(err.status >= 400 && err.status < 500 ? new DiscordAPIError(res.request.path, res.body) : err);
+            item.reject(err.status >= 400 && err.status < 500 ?
+              new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
             finish();
           }
         } else {

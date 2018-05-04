@@ -358,12 +358,9 @@ class Client extends BaseClient {
       if (!channel.messages) continue;
       channels++;
 
-      for (const message of channel.messages.values()) {
-        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
-          channel.messages.delete(message.id);
-          messages++;
-        }
-      }
+      messages += channel.messages.sweep(
+        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
+      );
     }
 
     this.emit(Events.DEBUG,
@@ -467,6 +464,9 @@ class Client extends BaseClient {
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
+    }
+    if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
     if (typeof options.internalSharding !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
