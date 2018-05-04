@@ -107,8 +107,8 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  send(content, options) { // eslint-disable-line complexity
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+  send(content, options) {
+    if (content && content.constructor === Object && !options) {
       options = content;
       content = null;
     } else if (!options) {
