@@ -365,6 +365,24 @@ class Collection extends Map {
   }
 
   /**
+   * Identical to
+   * [Map.forEach()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach),
+   * but returns the collection instead of undefined.
+   * @param {Function} fn Function to execute for each element
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   * @example
+   * collection
+   *  .tap(user => console.log(user.username))
+   *  .filter(user => user.bot)
+   *  .tap(user => console.log(user.username));
+   */
+  tap(fn, thisArg) {
+    this.forEach(fn, thisArg);
+    return this;
+  }
+
+  /**
    * Creates an identical shallow copy of this collection.
    * @returns {Collection}
    * @example const newColl = someColl.clone();
