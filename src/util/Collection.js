@@ -256,6 +256,21 @@ class Collection extends Map {
   }
 
   /**
+   * Removes entries that satisfy the provided filter function.
+   * @param {Function} fn Function used to test (should return a boolean)
+   * @param {Object} [thisArg] Value to use as `this` when executing function
+   * @returns {number} The number of removed entries
+   */
+  sweep(fn, thisArg) {
+    if (thisArg) fn = fn.bind(thisArg);
+    const previousSize = this.size;
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) this.delete(key);
+    }
+    return previousSize - this.size;
+  }
+
+  /**
    * Identical to
    * [Array.filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter),
    * but returns a Collection instead of an Array.
