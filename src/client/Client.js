@@ -358,12 +358,9 @@ class Client extends BaseClient {
       if (!channel.messages) continue;
       channels++;
 
-      for (const message of channel.messages.values()) {
-        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
-          channel.messages.delete(message.id);
-          messages++;
-        }
-      }
+      messages += channel.messages.sweep(
+        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
+      );
     }
 
     this.emit(Events.DEBUG,
