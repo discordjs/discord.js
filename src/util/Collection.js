@@ -201,7 +201,7 @@ class Collection extends Map {
    * @returns {number} The number of removed entries
    */
   sweep(fn, thisArg) {
-    if (thisArg) fn = fn.bind(thisArg);
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     const previousSize = this.size;
     for (const [key, val] of this) {
       if (fn(val, key, this)) this.delete(key);
@@ -231,10 +231,12 @@ class Collection extends Map {
    * Partitions the collection into two collections where the first collection
    * contains the items that passed and the second contains the items that failed.
    * @param {Function} fn Function used to test (should return a boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
    * @returns {Collection[]}
    * @example const [big, small] = collection.partition(guild => guild.memberCount > 250);
    */
-  partition(fn) {
+  partition(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     const results = [new Collection(), new Collection()];
     for (const [key, val] of this) {
       if (fn(val, key, this)) {
