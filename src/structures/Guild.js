@@ -182,6 +182,13 @@ class Guild extends Base {
      */
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
+    /**
+     * Whether members who have not explicitly set their notifications settings receive a notification
+     * for every message sent in this guild or not
+     * @type {boolean}
+     */
+    this.defaultMessageNotifications = !data.default_message_notifications;
+
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
