@@ -51,7 +51,8 @@ class GuildEmoji extends Emoji {
    * @readonly
    */
   get deletable() {
-    return this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed &&
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
