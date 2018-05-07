@@ -725,6 +725,17 @@ exports.APIErrors = {
   REACTION_BLOCKED: 90001,
 };
 
+/**
+ * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
+ * * ALL
+ * * MENTIONS
+ * @typedef {string} DefaultMessageNotifications
+ */
+exports.DefaultMessageNotifications = [
+  'ALL',
+  'MENTIONS',
+];
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;

@@ -2,7 +2,7 @@ const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, Events, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, Events, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -183,11 +183,10 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * Whether members who have not explicitly set their notifications settings receive a notification
-     * for every message sent in this guild or not
-     * @type {boolean}
+     * The value set for a guild's default message notifications
+     * @type {DefaultMessageNotifications}
      */
-    this.defaultMessageNotifications = !data.default_message_notifications;
+    this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications];
 
     this.id = data.id;
     this.available = !data.unavailable;
