@@ -931,10 +931,10 @@ class Guild extends Base {
       this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      Util.arraysEqual(this.features, guild.features) &&
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
-      this.embedEnabled === guild.embedEnabled;
+      this.embedEnabled === guild.embedEnabled &&
+      Util.arraysEqual(this.features, guild.features.slice());
 
     if (equal) {
       if (this.embedChannel) {
