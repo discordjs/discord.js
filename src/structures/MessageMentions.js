@@ -8,6 +8,28 @@ const GuildMember = require('./GuildMember');
 class MessageMentions {
   constructor(message, users, roles, everyone) {
     /**
+     * The client the message is from
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: message.client });
+
+    /**
+     * The guild the message is in
+     * @type {?Guild}
+     * @readonly
+     */
+    Object.defineProperty(this, 'guild', { value: message.guild });
+
+    /**
+     * The initial message content
+     * @type {string}
+     * @readonly
+     * @private
+     */
+    Object.defineProperty(this, '_content', { value: message.content });
+
+    /**
      * Whether `@everyone` or `@here` were mentioned
      * @type {boolean}
      */
@@ -50,35 +72,14 @@ class MessageMentions {
     }
 
     /**
-     * Content of the message
-     * @type {Message}
-     * @private
-     */
-    this._content = message.content;
-
-    /**
-     * The client the message is from
-     * @type {Client}
-     * @private
-     */
-    this._client = message.client;
-
-    /**
-     * The guild the message is in
-     * @type {?Guild}
-     * @private
-     */
-    this._guild = message.channel.guild;
-
-    /**
-     * Cached members for {@MessageMention#members}
+     * Cached members for {@link MessageMention#members}
      * @type {?Collection<Snowflake, GuildMember>}
      * @private
      */
     this._members = null;
 
     /**
-     * Cached channels for {@MessageMention#channels}
+     * Cached channels for {@link MessageMention#channels}
      * @type {?Collection<Snowflake, GuildChannel>}
      * @private
      */
@@ -92,10 +93,10 @@ class MessageMentions {
    */
   get members() {
     if (this._members) return this._members;
-    if (!this._guild) return null;
+    if (!this.guild) return null;
     this._members = new Collection();
     this.users.forEach(user => {
-      const member = this._guild.member(user);
+      const member = this.guild.member(user);
       if (member) this._members.set(member.user.id, member);
     });
     return this._members;
@@ -111,7 +112,7 @@ class MessageMentions {
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this._client.channels.get(matches[1]);
+      const chan = this.client.channels.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
