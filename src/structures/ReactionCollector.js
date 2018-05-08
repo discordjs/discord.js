@@ -39,6 +39,7 @@ class ReactionCollector extends Collector {
      */
     this.total = 0;
 
+    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on('messageReactionAdd', this.listener);
   }
 
@@ -77,6 +78,7 @@ class ReactionCollector extends Collector {
    */
   cleanup() {
     this.client.removeListener('messageReactionAdd', this.listener);
+    this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }
 }
 
