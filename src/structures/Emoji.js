@@ -1,5 +1,6 @@
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
+const Permissions = require('../util/Permissions');
 const Snowflake = require('../util/Snowflake');
 
 /**
@@ -74,6 +75,15 @@ class Emoji {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Whether the moej is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
