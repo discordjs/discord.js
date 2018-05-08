@@ -348,7 +348,7 @@ class ClientUser extends User {
 
   /**
    * Creates a guild.
-   * <warn>This is only available when using a user account.</warn>
+   * <warn>This is only available to bots in less than 10 guilds and user accounts.</warn>
    * @param {string} name The name of the guild
    * @param {string} [region] The region for the server
    * @param {BufferResolvable|Base64Resolvable} [icon=null] The icon for the guild
