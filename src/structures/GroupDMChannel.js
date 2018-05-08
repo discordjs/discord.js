@@ -183,7 +183,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Removes an user from this Group DM.
+   * Removes a user from this Group DM.
    * @param {UserResolvable} user User to remove
    * @returns {Promise<GroupDMChannel>}
    */
