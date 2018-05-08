@@ -52,7 +52,7 @@ class GuildEmoji extends Emoji {
    */
   get deletable() {
     return !this.managed &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_EMOJIS);
+      this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
