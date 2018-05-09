@@ -74,6 +74,14 @@ class Game {
   }
 
   /**
+   * When concatenated with a string, this automatically returns the game's name instead of the Game object.
+   * @returns {string}
+   */
+  toString() {
+    return this.name;
+  }
+
+  /**
    * Whether this game is equal to another game
    * @param {Game} game The game to compare with
    * @returns {boolean}
