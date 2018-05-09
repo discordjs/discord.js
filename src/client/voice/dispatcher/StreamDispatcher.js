@@ -118,7 +118,8 @@ class StreamDispatcher extends Writable {
    * Pauses playback
    */
   pause() {
-    this.pausedSince = Date.now();
+    if (!this.paused) this.pausedSince = Date.now();
+    this._setSpeaking(false);
   }
 
   /**
