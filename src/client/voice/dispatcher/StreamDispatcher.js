@@ -118,8 +118,8 @@ class StreamDispatcher extends Writable {
    * Pauses playback
    */
   pause() {
-    if (!this.paused) this.pausedSince = Date.now();
     this._setSpeaking(false);
+    if (!this.paused) this.pausedSince = Date.now();
   }
 
   /**
@@ -200,7 +200,9 @@ class StreamDispatcher extends Writable {
     if (this.pausedSince) return;
     if (!this.streams.broadcast) {
       const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
-      setTimeout(this._writeCallback.bind(this), next);
+      setTimeout(() => {
+        if (!this.pausedSince && this._writeCallback) this._writeCallback();
+      }, next);
     }
     this._sdata.sequence++;
     this._sdata.timestamp += TIMESTAMP_INC;
