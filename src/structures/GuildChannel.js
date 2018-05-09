@@ -4,6 +4,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
+const Invite = require('./Invite');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -330,6 +331,24 @@ class GuildChannel extends Channel {
   clone(name = this.name, withPermissions = true, withTopic = true, reason) {
     return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
       .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
+  }
+
+  /**
+   * Fetches a collection of invites to this guild channel.
+   * Resolves with a collection mapping invites by their codes.
+   * @returns {Promise<Collection<string, Invite>>}
+   */
+  fetchInvites() {
+    return this.client.rest.makeRequest('get', Constants.Endpoints.Channel(this.id).invites, true)
+      .then(data => {
+        const invites = new Collection();
+        for (let invite of data) {
+          invite = new Invite(this.client, invite);
+          invites.set(invite.code, invite);
+        }
+
+        return invites;
+      });
   }
 
   /**
