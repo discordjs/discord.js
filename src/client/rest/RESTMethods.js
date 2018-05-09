@@ -335,6 +335,7 @@ class RESTMethods {
     const data = {};
     data.name = (_data.name || channel.name).trim();
     data.topic = typeof _data.topic === 'undefined' ? channel.topic : _data.topic;
+    data.nsfw = typeof _data.nsfw === 'undefined' ? channel.nsfw : _data.nsfw;
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || (channel.bitrate ? channel.bitrate * 1000 : undefined);
     data.user_limit = typeof _data.userLimit !== 'undefined' ? _data.userLimit : channel.userLimit;
