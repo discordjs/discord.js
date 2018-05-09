@@ -416,12 +416,7 @@ class RESTMethods {
     return this.rest.makeRequest(
       'delete', Endpoints.Guild(guild).Member(member), true,
       undefined, undefined, reason)
-      .then(() =>
-        this.client.actions.GuildMemberRemove.handle({
-          guild_id: guild.id,
-          user: member.user,
-        }).member
-      );
+      .then(() => member);
   }
 
   createGuildRole(guild, data, reason) {
