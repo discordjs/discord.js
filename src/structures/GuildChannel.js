@@ -141,7 +141,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled) or `false` (disabled).
+   * An object mapping permission flags to `true` (enabled), `false` (disabled), or `null` (not set).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
@@ -161,6 +161,14 @@ class GuildChannel extends Channel {
    * // Overwrite permissions for a message author
    * message.channel.overwritePermissions(message.author, {
    *   SEND_MESSAGES: false
+   * })
+   *   .then(updated => console.log(updated.permissionOverwrites.get(message.author.id)))
+   *   .catch(console.error);
+   * @example
+   * // Overwite permissions for a message author and reset some
+   * message.channel.overwritePermissions(message.author, {
+   *   VIEW_CHANNEL: false,
+   *   SEND_MESSAGES: null
    * })
    *   .then(updated => console.log(updated.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
