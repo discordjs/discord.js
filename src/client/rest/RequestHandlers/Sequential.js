@@ -17,7 +17,10 @@ class SequentialRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
 
-    this.manager = restManager;
+    /**
+     * The client that instantiated this handler
+     * @type {Client}
+     */
     this.client = restManager.client;
 
     /**
@@ -85,14 +88,17 @@ class SequentialRequestHandler extends RequestHandler {
               /**
                * Emitted when the client hits a rate limit while making a request
                * @event Client#rateLimit
-               * @prop {number} requestLimit Number of requests that can be made to this endpoint
-               * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
-               * @prop {string} path Path used for request that triggered this event
+               * @param {Object} rateLimitInfo Object containing the rate limit info
+               * @prop {number} rateLimitInfo.requestLimit Number of requests that can be made to this endpoint
+               * @prop {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
+               * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
+               * @prop {string} rateLimitInfo.path Path used for request that triggered this event
                */
               this.client.emit(RATE_LIMIT, {
                 limit: this.requestLimit,
                 timeDifference: this.timeDifference,
                 path: item.request.path,
+                method: item.request.method,
               });
             }
             this.restManager.client.setTimeout(

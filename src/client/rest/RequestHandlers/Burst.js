@@ -59,6 +59,7 @@ class BurstRequestHandler extends RequestHandler {
               limit: this.limit,
               timeDifference: this.timeDifference,
               path: item.request.path,
+              method: item.request.method,
             });
           }
         }
