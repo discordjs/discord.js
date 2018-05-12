@@ -303,6 +303,7 @@ exports.VoiceOPCodes = {
 };
 
 exports.Events = {
+  RATE_LIMIT: 'rateLimit',
   READY: 'ready',
   RESUME: 'resume',
   GUILD_CREATE: 'guildCreate',

@@ -1,5 +1,6 @@
 const RequestHandler = require('./RequestHandler');
 const DiscordAPIError = require('../DiscordAPIError');
+const { Events: { RATE_LIMIT } } = require('../../../util/Constants');
 
 /**
  * Handles API Requests sequentially, i.e. we wait until the current request is finished before moving onto
@@ -15,6 +16,9 @@ class SequentialRequestHandler extends RequestHandler {
    */
   constructor(restManager, endpoint) {
     super(restManager, endpoint);
+
+    this.manager = restManager;
+    this.client = restManager.client;
 
     /**
      * The endpoint that this handler is handling
@@ -77,6 +81,20 @@ class SequentialRequestHandler extends RequestHandler {
           const data = res && res.body ? res.body : {};
           item.resolve(data);
           if (this.requestRemaining === 0) {
+            if (this.client.listenerCount(RATE_LIMIT)) {
+              /**
+               * Emitted when the client hits a rate limit while making a request
+               * @event Client#rateLimit
+               * @prop {number} requestLimit Number of requests that can be made to this endpoint
+               * @prop {number} timeDifference Delta-T in ms between your system and Discord servers
+               * @prop {string} path Path used for request that triggered this event
+               */
+              this.client.emit(RATE_LIMIT, {
+                limit: this.requestLimit,
+                timeDifference: this.timeDifference,
+                path: item.request.path,
+              });
+            }
             this.restManager.client.setTimeout(
               () => resolve(data),
               this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset

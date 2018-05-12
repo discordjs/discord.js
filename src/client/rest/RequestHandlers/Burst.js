@@ -1,5 +1,6 @@
 const RequestHandler = require('./RequestHandler');
 const DiscordAPIError = require('../DiscordAPIError');
+const { Events: { RATE_LIMIT } } = require('../../../util/Constants');
 
 class BurstRequestHandler extends RequestHandler {
   constructor(restManager, endpoint) {
@@ -52,6 +53,15 @@ class BurstRequestHandler extends RequestHandler {
           this.handle();
         }
       } else {
+        if (this.remaining === 0) {
+          if (this.client.listenerCount(RATE_LIMIT)) {
+            this.client.emit(RATE_LIMIT, {
+              limit: this.limit,
+              timeDifference: this.timeDifference,
+              path: item.request.path,
+            });
+          }
+        }
         this.globalLimit = false;
         const data = res && res.body ? res.body : {};
         item.resolve(data);
