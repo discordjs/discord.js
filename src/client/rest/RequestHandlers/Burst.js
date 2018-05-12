@@ -62,7 +62,8 @@ class BurstRequestHandler extends RequestHandler {
 
   handle() {
     super.handle();
-    if (this.remaining <= 0 || this.queue.length === 0 || this.globalLimit) return;
+    if (this.queue.length === 0) return;
+    if ((this.remaining <= 0 || this.globalLimit) && Date.now() - this.timeDifference < this.resetTime) return;
     this.execute(this.queue.shift());
     this.remaining--;
     this.handle();
