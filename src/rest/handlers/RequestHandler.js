@@ -14,11 +14,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return this.manager.globallyRateLimited || this.remaining <= 0;
-  }
-
-  set globallyLimited(limited) {
-    this.manager.globallyRateLimited = limited;
+    return (this.manager.globallyRateLimited || this.remaining <= 0) && Date.now() < this.resetTime;
   }
 
   push(request) {
@@ -30,15 +26,25 @@ class RequestHandler {
     return this.queue.length === 0 && !this.limited && Date.now() > this.resetTime && this.busy !== true;
   }
 
+  /* eslint-disable prefer-promise-reject-errors */
   execute(item) {
     return new Promise((resolve, reject) => {
       const finish = timeout => {
         if (timeout || this.limited) {
           if (!timeout) {
-            timeout = this.resetTime - Date.now() + this.manager.timeDifference + this.client.options.restTimeOffset;
+            timeout = this.resetTime - Date.now() + this.client.options.restTimeOffset;
           }
-          // eslint-disable-next-line prefer-promise-reject-errors
-          reject({ timeout });
+          if (!this.manager.globalTimeout && this.manager.globallyRateLimited) {
+            this.manager.globalTimeout = setTimeout(() => {
+              this.manager.globalTimeout = undefined;
+              this.manager.globallyRateLimited = false;
+              this.busy = false;
+              this.handle();
+            }, timeout);
+            reject({ });
+          } else {
+            reject({ timeout });
+          }
           if (this.client.listenerCount(RATE_LIMIT)) {
             /**
              * Emitted when the client hits a rate limit while making a request
@@ -46,7 +52,6 @@ class RequestHandler {
              * @param {Object} rateLimitInfo Object containing the rate limit info
              * @param {number} rateLimitInfo.timeout Timeout in ms
              * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
-             * @param {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
              * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
              * @param {string} rateLimitInfo.path Path used for request that triggered this event
              * @param {string} rateLimitInfo.route Route used for request that triggered this event
@@ -54,7 +59,6 @@ class RequestHandler {
             this.client.emit(RATE_LIMIT, {
               timeout,
               limit: this.limit,
-              timeDifference: this.manager.timeDifference,
               method: item.request.method,
               path: item.request.path,
               route: item.request.route,
@@ -66,11 +70,10 @@ class RequestHandler {
       };
       item.request.gen().end((err, res) => {
         if (res && res.headers) {
-          if (res.headers['x-ratelimit-global']) this.globallyLimited = true;
+          if (res.headers['x-ratelimit-global']) this.manager.globallyRateLimited = true;
           this.limit = Number(res.headers['x-ratelimit-limit']);
-          this.resetTime = Number(res.headers['x-ratelimit-reset']) * 1000;
+          this.resetTime = Date.now() + Number(res.headers['retry-after']);
           this.remaining = Number(res.headers['x-ratelimit-remaining']);
-          this.manager.timeDifference = Date.now() - new Date(res.headers.date).getTime();
         }
         if (err) {
           if (err.status === 429) {
@@ -94,7 +97,7 @@ class RequestHandler {
   }
 
   reset() {
-    this.globallyLimited = false;
+    this.manager.globallyRateLimited = false;
     this.remaining = 1;
   }
 }
