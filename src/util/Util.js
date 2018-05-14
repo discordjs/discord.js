@@ -119,9 +119,9 @@ class Util {
   }
 
   /**
-   * Checks whether the arrays are equal, also removes duplicated entries from b.
-   * @param {Array<*>} a Array which will not be modified.
-   * @param {Array<*>} b Array to remove duplicated entries from.
+   * Checks whether the arrays are equal.
+   * @param {Array<*>} a The first array to compare.
+   * @param {Array<*>} b The second array to compare.
    * @returns {boolean} Whether the arrays are equal.
    * @private
    */
