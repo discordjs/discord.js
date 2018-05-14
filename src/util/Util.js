@@ -129,12 +129,15 @@ class Util {
     if (a === b) return true;
     if (a.length !== b.length) return false;
 
+    // Clone the array b before starting to modify it
+    const clone = b.slice();
+
     for (const item of a) {
-      const ind = b.indexOf(item);
-      if (ind !== -1) b.splice(ind, 1);
+      const ind = clone.indexOf(item);
+      if (ind !== -1) clone.splice(ind, 1);
     }
 
-    return b.length === 0;
+    return clone.length === 0;
   }
 
   /**
