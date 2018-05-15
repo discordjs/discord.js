@@ -39,7 +39,6 @@ class GuildMember extends Base {
      */
     this.lastMessageChannelID = null;
 
-    
     /**
      * Whether the member has been removed from the guild
      * @type {boolean}

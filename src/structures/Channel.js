@@ -23,7 +23,6 @@ class Channel extends Base {
      */
     this.type = type ? type.toLowerCase() : 'unknown';
 
-    
     /**
      * Whether the channel has been deleted
      * @type {boolean}
