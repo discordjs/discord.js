@@ -11,6 +11,7 @@ class GuildRoleDeleteAction extends Action {
       role = guild.roles.get(data.role_id);
       if (role) {
         guild.roles.remove(data.role_id);
+        role.deleted = true;
         client.emit(Events.GUILD_ROLE_DELETE, role);
       }
     }
