@@ -157,6 +157,12 @@ class Message extends Base {
      * @private
      */
     this._edits = [];
+
+    /**
+     * Whether this message has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
   }
 
   /**
