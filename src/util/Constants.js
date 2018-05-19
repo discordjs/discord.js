@@ -234,7 +234,6 @@ exports.Events = {
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
-  USER_GUILD_SETTINGS_UPDATE: 'clientUserGuildSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
@@ -316,15 +315,10 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_REMOVE',
   'MESSAGE_REACTION_REMOVE_ALL',
   'USER_UPDATE',
-  'USER_NOTE_UPDATE',
-  'USER_SETTINGS_UPDATE',
-  'USER_GUILD_SETTINGS_UPDATE',
   'PRESENCE_UPDATE',
   'VOICE_STATE_UPDATE',
   'TYPING_START',
   'VOICE_SERVER_UPDATE',
-  'RELATIONSHIP_ADD',
-  'RELATIONSHIP_REMOVE',
 ]);
 
 /**
@@ -511,42 +505,6 @@ exports.UserSettingsMap = {
       mutualFriends: flags.all ? true : flags.mutualFriends || false,
     };
   },
-};
-
-exports.UserGuildSettingsMap = {
-  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
-    /**
-     * The type of message that should notify you.
-     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`
-     * @name ClientUserGuildSettings#messageNotifications
-     * @type {string}
-     */
-    return exports.MessageNotificationTypes[type];
-  },
-  /**
-   * Whether to receive mobile push notifications
-   * @name ClientUserGuildSettings#mobilePush
-   * @type {boolean}
-   */
-  mobile_push: 'mobilePush',
-  /**
-   * Whether the guild is muted or not
-   * @name ClientUserGuildSettings#muted
-   * @type {boolean}
-   */
-  muted: 'muted',
-  /**
-   * Whether to suppress everyone messages
-   * @name ClientUserGuildSettings#suppressEveryone
-   * @type {boolean}
-   */
-  suppress_everyone: 'suppressEveryone',
-  /**
-   * A collection containing all the channel overrides
-   * @name ClientUserGuildSettings#channelOverrides
-   * @type {Collection<ClientUserChannelOverride>}
-   */
-  channel_overrides: 'channelOverrides',
 };
 
 exports.UserChannelOverrideMap = {
