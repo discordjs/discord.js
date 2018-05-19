@@ -14,7 +14,6 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
-const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -96,17 +95,10 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelStore(this);
 
-    /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {ClientPresenceStore<Snowflake, Presence>}
-     */
-    this.presences = new ClientPresenceStore(this);
-
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -240,10 +232,6 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
-   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -267,20 +255,6 @@ class Client extends BaseClient {
   destroy() {
     super.destroy();
     return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
   }
 
   /**

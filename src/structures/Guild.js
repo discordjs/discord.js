@@ -7,7 +7,6 @@ const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
-const Shared = require('./shared');
 const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
@@ -344,79 +343,6 @@ class Guild extends Base {
   }
 
   /**
-   * The position of this guild
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?number}
-   * @readonly
-   */
-  get position() {
-    if (this.client.user.bot) return null;
-    if (!this.client.user.settings.guildPositions) return null;
-    return this.client.user.settings.guildPositions.indexOf(this.id);
-  }
-
-  /**
-   * Whether the guild is muted
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?boolean}
-   * @readonly
-   */
-  get muted() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.id).muted;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * The type of message that should notify you
-   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?string}
-   * @readonly
-   */
-  get messageNotifications() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.id).messageNotifications;
-    } catch (err) {
-      return null;
-    }
-  }
-
-  /**
-   * Whether to receive mobile push notifications
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?boolean}
-   * @readonly
-   */
-  get mobilePush() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.id).mobilePush;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * Whether to suppress everyone messages
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?boolean}
-   * @readonly
-   */
-  get suppressEveryone() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.id).suppressEveryone;
-    } catch (err) {
-      return null;
-    }
-  }
-
-  /**
    * The `@everyone` role of the guild
    * @type {?Role}
    * @readonly
@@ -586,26 +512,6 @@ class Guild extends Base {
     }
     return this.client.api.guilds(this.id).members(user).put({ data: options })
       .then(data => this.members.add(data));
-  }
-
-  /**
-   * Performs a search within the entire guild.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<MessageSearchResult>}
-   * @example
-   * guild.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * })
-   *   .then(res => {
-   *     const hit = res.results[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
-   *   })
-   *   .catch(console.error);
-   */
-  search(options = {}) {
-    return Shared.search(this, options);
   }
 
   /**
@@ -802,55 +708,6 @@ class Guild extends Base {
    */
   async setSplash(splash, reason) {
     return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
-  }
-
-  /**
-   * Sets the position of the guild in the guild listing.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {number} position Absolute or relative position
-   * @param {boolean} [relative=false] Whether to position relatively or absolutely
-   * @returns {Promise<Guild>}
-   */
-  setPosition(position, relative) {
-    if (this.client.user.bot) {
-      return Promise.reject(new Error('FEATURE_USER_ONLY'));
-    }
-    return this.client.user.settings.setGuildPosition(this, position, relative);
-  }
-
-  /**
-   * Marks all messages in this guild as read.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Guild>}
-   */
-  acknowledge() {
-    return this.client.api.guilds(this.id).ack
-      .post({ data: { token: this.client.rest._ackToken } })
-      .then(res => {
-        if (res.token) this.client.rest._ackToken = res.token;
-        return this;
-      });
-  }
-
-  /**
-   * Whether to allow direct messages from guild members.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {boolean} allow Whether to allow direct messages
-   * @returns {Promise<Guild>}
-   */
-  allowDMs(allow) {
-    if (this.client.user.bot) return Promise.reject(new Error('FEATURE_USER_ONLY'));
-    const settings = this.client.user.settings;
-    if (allow) return settings.removeRestrictedGuild(this);
-    else return settings.addRestrictedGuild(this);
-  }
-
-  /**
-   * Syncs this guild (already done automatically every 30 seconds).
-   * <warn>This is only available when using a user account.</warn>
-   */
-  sync() {
-    if (!this.client.user.bot) this.client.syncGuilds([this]);
   }
 
   /**

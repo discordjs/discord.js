@@ -25,7 +25,6 @@ module.exports = {
 
   // Stores
   ChannelStore: require('./stores/ChannelStore'),
-  ClientPresenceStore: require('./stores/ClientPresenceStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
   GuildEmojiStore: require('./stores/GuildEmojiStore'),
   GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
@@ -57,8 +56,6 @@ module.exports = {
     return require('./structures/ClientUser');
   },
   ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
-  ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
-  ClientUserSettings: require('./structures/ClientUserSettings'),
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),

@@ -1,6 +1,5 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Presence } = require('./Presence');
-const UserProfile = require('./UserProfile');
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { Error } = require('../errors');
@@ -151,16 +150,6 @@ class User extends Base {
   }
 
   /**
-   * The note that is set for the user
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?string}
-   * @readonly
-   */
-  get note() {
-    return this.client.user.notes.get(this.id) || null;
-  }
-
-  /**
    * Checks whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
@@ -219,26 +208,6 @@ class User extends Base {
     if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
     return this.client.api.channels(this.dmChannel.id).delete()
       .then(data => this.client.actions.ChannelDelete.handle(data).channel);
-  }
-
-  /**
-   * Gets the profile of the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<UserProfile>}
-   */
-  fetchProfile() {
-    return this.client.api.users(this.id).profile.get().then(data => new UserProfile(this, data));
-  }
-
-  /**
-   * Sets a note for the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} note The note to set for the user
-   * @returns {Promise<User>}
-   */
-  setNote(note) {
-    return this.client.api.users('@me').notes(this.id).put({ data: { note } })
-      .then(() => this);
   }
 
   /**

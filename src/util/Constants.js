@@ -21,7 +21,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
- * @property {boolean} [sync=false] Whether to periodically sync guilds (for user accounts)
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -46,7 +45,6 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
-  sync: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
@@ -380,13 +378,6 @@ exports.ExplicitContentFilterTypes = [
   'DISABLED',
   'NON_FRIENDS',
   'FRIENDS_AND_NON_FRIENDS',
-];
-
-exports.MessageNotificationTypes = [
-  'EVERYTHING',
-  'MENTIONS',
-  'NOTHING',
-  'INHERIT',
 ];
 
 exports.UserSettingsMap = {

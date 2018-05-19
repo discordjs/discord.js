@@ -494,20 +494,6 @@ class Message extends Base {
   }
 
   /**
-   * Marks the message as read.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<Message>}
-   */
-  acknowledge() {
-    return this.client.api.channels(this.channel.id).messages(this.id).ack
-      .post({ data: { token: this.client.rest._ackToken } })
-      .then(res => {
-        if (res.token) this.client.rest._ackToken = res.token;
-        return this;
-      });
-  }
-
-  /**
    * Fetches the webhook used to create this message.
    * @returns {Promise<?Webhook>}
    */

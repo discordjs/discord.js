@@ -182,16 +182,12 @@ class GroupDMChannel extends Channel {
    * @param {Object} options Options for this method
    * @param {UserResolvable} options.user User to add to this Group DM
    * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
-   * (only available under a bot account)
-   * @param {string} [options.nick] Permanent nickname to give the user (only available under a bot account)
+   * @param {string} [options.nick] Permanent nickname to give the user
    * @returns {Promise<GroupDMChannel>}
    */
   addUser({ user, accessToken, nick }) {
     const id = this.client.users.resolveID(user);
-    const data = this.client.user.bot ?
-      { nick, access_token: accessToken } :
-      { recipient: id };
-    return this.client.api.channels[this.id].recipients[id].put({ data })
+    return this.client.api.channels[this.id].recipients[id].put({ nick, access_token: accessToken })
       .then(() => this);
   }
 
