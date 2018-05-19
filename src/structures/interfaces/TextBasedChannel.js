@@ -256,7 +256,6 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically

@@ -365,7 +365,6 @@ class Client extends BaseClient {
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
