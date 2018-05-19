@@ -14,6 +14,7 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
+const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -94,6 +95,12 @@ class Client extends BaseClient {
      * @type {ChannelStore<Snowflake, Channel>}
      */
     this.channels = new ChannelStore(this);
+
+    /**
+     * Presences that have been received for the client user's friends, mapped by user IDs
+     * @type {ClientPresenceStore<Snowflake, Presence>}
+     */
+    this.presences = new ClientPresenceStore(this);
 
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
