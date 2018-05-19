@@ -187,16 +187,6 @@ class ClientUser extends Structures.get('User') {
     return this.client.api.users('@me').channels.post({ data })
       .then(res => this.client.channels.add(res));
   }
-
-  toJSON() {
-    return super.toJSON({
-      friends: false,
-      blocked: false,
-      notes: false,
-      settings: false,
-      guildSettings: false,
-    });
-  }
 }
 
 module.exports = ClientUser;

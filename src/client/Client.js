@@ -97,7 +97,7 @@ class Client extends BaseClient {
     this.channels = new ChannelStore(this);
 
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
+     * Presences that have been received for the client user, mapped by user IDs
      * @type {ClientPresenceStore<Snowflake, Presence>}
      */
     this.presences = new ClientPresenceStore(this);

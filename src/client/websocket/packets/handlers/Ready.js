@@ -9,9 +9,6 @@ class ReadyHandler extends AbstractHandler {
 
     client.ws.heartbeat();
 
-    data.user.user_settings = data.user_settings;
-    data.user.user_guild_settings = data.user_guild_settings;
-
     if (!ClientUser) ClientUser = require('../../../../structures/ClientUser');
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
@@ -20,26 +17,7 @@ class ReadyHandler extends AbstractHandler {
 
     for (const guild of data.guilds) client.guilds.add(guild);
     for (const privateDM of data.private_channels) client.channels.add(privateDM);
-
-    for (const relation of data.relationships) {
-      const user = client.users.add(relation.user);
-      if (relation.type === 1) {
-        client.user.friends.set(user.id, user);
-      } else if (relation.type === 2) {
-        client.user.blocked.set(user.id, user);
-      }
-    }
-
     for (const presence of data.presences || []) client.presences.add(presence);
-
-    if (data.notes) {
-      for (const user in data.notes) {
-        let note = data.notes[user];
-        if (!note.length) note = null;
-
-        client.user.notes.set(user, note);
-      }
-    }
 
     if (!client.users.has('1')) {
       client.users.add({
