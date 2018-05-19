@@ -507,24 +507,6 @@ exports.UserSettingsMap = {
   },
 };
 
-exports.UserChannelOverrideMap = {
-  message_notifications: function messageNotifications(type) { // eslint-disable-line func-name-matching
-    /**
-     * The type of message that should notify you.
-     * One of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
-     * @name ClientUserChannelOverride#messageNotifications
-     * @type {string}
-     */
-    return exports.MessageNotificationTypes[type];
-  },
-  /**
-   * Whether the channel is muted or not
-   * @name ClientUserChannelOverride#muted
-   * @type {boolean}
-   */
-  muted: 'muted',
-};
-
 /**
  * All flags users can have:
  * * STAFF
