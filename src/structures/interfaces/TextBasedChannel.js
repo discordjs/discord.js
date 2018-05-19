@@ -302,9 +302,7 @@ class TextBasedChannel {
     const props = ['send'];
     if (full) {
       props.push(
-        'acknowledge',
         'lastMessage',
-        'search',
         'bulkDelete',
         'startTyping',
         'stopTyping',
