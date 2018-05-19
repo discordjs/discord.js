@@ -61,7 +61,6 @@ class ReadyHandler extends AbstractHandler {
     client.setMaxListeners(data.guilds.length + 10);
 
     client.once('ready', () => {
-      client.syncGuilds();
       client.setMaxListeners(10);
       client.clearTimeout(t);
     });
