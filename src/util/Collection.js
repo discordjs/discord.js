@@ -185,8 +185,8 @@ class Collection extends Map {
    * @returns {*}
    * @example collection.findKey(user => user.username === 'Bob');
    */
-  /* eslint-enable max-len */
   findKey(fn, thisArg) {
+    /* eslint-enable max-len */
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
     for (const [key, val] of this) {
       if (fn(val, key, this)) return key;
