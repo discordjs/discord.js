@@ -38,7 +38,7 @@
     "prism-media": "^0.2.0",
     "snekfetch": "^3.6.0",
     "tweetnacl": "^1.0.0",
-    "ws": "^4.0.0"
+    "ws": "^5.1.1"
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
