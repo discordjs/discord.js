@@ -188,6 +188,29 @@ class Client extends BaseClient {
   }
 
   /**
+   * How long it has been since the client hast entered the `READY` state, but in a readable format
+   * @type {string}
+   * @readonly
+   */
+
+  get formattedUptime() {
+    const ms = this.uptime;
+    let d, h, m, s;
+    s = Math.floor(ms / 1000);
+    m = Math.floor(s / 60);
+    s %= 60;
+    h = Math.floor(m / 60);
+    m %= 60;
+    d = Math.floor(h / 24);
+    h %= 24;
+    const days = `${d === 0 ? '' : d} ${d === 1 ? 'day,' : d === 0 ? '' : 'days,'}`;
+    const hours = `${h === 0 ? '' : h} ${h === 1 ? 'hour,' : h === 0 ? '' : 'hours,'}`;
+    const minutes = `${m === 0 ? '' : m} ${m === 1 ? 'minute and' : m === 0 ? '' : 'minutes and'}`;
+    const seconds = `${s} ${s === 1 ? 'second' : 'seconds'}`;
+    return `${days} ${hours} ${minutes} ${seconds}`.trim();
+  }
+
+  /**
    * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
    * @type {number}
    * @readonly
