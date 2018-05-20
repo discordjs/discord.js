@@ -44,7 +44,6 @@ class WebSocketPacketManager {
     this.register(WSEvents.MESSAGE_UPDATE, require('./handlers/MessageUpdate'));
     this.register(WSEvents.MESSAGE_DELETE_BULK, require('./handlers/MessageDeleteBulk'));
     this.register(WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
-    this.register(WSEvents.GUILD_SYNC, require('./handlers/GuildSync'));
     this.register(WSEvents.MESSAGE_REACTION_ADD, require('./handlers/MessageReactionAdd'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE, require('./handlers/MessageReactionRemove'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE_ALL, require('./handlers/MessageReactionRemoveAll'));
