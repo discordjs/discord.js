@@ -206,7 +206,7 @@ class Client extends BaseClient {
     const days = `${d === 0 ? '' : d} ${d === 1 ? 'day,' : d === 0 ? '' : 'days,'}`;
     const hours = `${h === 0 ? '' : h} ${h === 1 ? 'hour,' : h === 0 ? '' : 'hours,'}`;
     const minutes = `${m === 0 ? '' : m} ${m === 1 ? 'minute and' : m === 0 ? '' : 'minutes and'}`;
-    const seconds = `${s === 0 ? '' : s} ${s === 1 ? 'second' : s === 0 ? '' : 'seconds'}`;
+    const seconds = `${s} ${s === 1 ? 'second' : 'seconds'}`;
     return `${days} ${hours} ${minutes} ${seconds}`.trim();
   }
 
