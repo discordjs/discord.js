@@ -5,8 +5,9 @@ try {
   if (!erlpack.pack) erlpack = null;
 } catch (err) {} // eslint-disable-line no-empty
 
-if (browser) {
-  exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
+/* eslint-disable no-undef */
+if (browser && window.WebSocket) {
+  exports.WebSocket = window.WebSocket;
 } else {
   try {
     exports.WebSocket = require('uws');
@@ -14,6 +15,7 @@ if (browser) {
     exports.WebSocket = require('ws');
   }
 }
+/* eslint-enable no-undef */
 
 exports.encoding = erlpack ? 'etf' : 'json';
 
