@@ -27,9 +27,8 @@ class Webhook {
     /**
      * The token for the webhook
      * @type {string}
-     * @readonly
      */
-    Object.defineProperty(this, 'token', { value: data.token });
+    Object.defineProperty(this, 'token', { value: data.token, writable: true });
 
     /**
      * The avatar for the webhook
