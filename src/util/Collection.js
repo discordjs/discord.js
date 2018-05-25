@@ -164,6 +164,7 @@ class Collection extends Map {
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {Array}
+   * @deprecated
    * @example
    * collection.findAll('username', 'Bob');
    */
@@ -248,6 +249,7 @@ class Collection extends Map {
    * @param {string} prop The property to test against
    * @param {*} value The expected value
    * @returns {boolean}
+   * @deprecated
    * @example
    * if (collection.exists('username', 'Bob')) {
    *  console.log('user here!');
@@ -295,6 +297,7 @@ class Collection extends Map {
    * @param {Function} fn Function used to test (should return a boolean)
    * @param {Object} [thisArg] Value to use as `this` when executing function
    * @returns {Array}
+   * @deprecated
    */
   filterArray(fn, thisArg) {
     if (thisArg) fn = fn.bind(thisArg);
@@ -460,16 +463,6 @@ class Collection extends Map {
   }
 }
 
-/**
- * Searches for all items where their specified property's value is identical to the given value
- * (`item[prop] === value`).
- * @param {string} prop The property to test against
- * @param {*} value The expected value
- * @returns {Array}
- * @deprecated
- * @example
- * collection.findAll('username', 'Bob');
- */
 Collection.prototype.findAll =
   util.deprecate(Collection.prototype.findAll, 'Collection#findAll: use Collection#filter instead');
 
