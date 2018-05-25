@@ -309,6 +309,27 @@ class Collection extends Map {
   }
 
   /**
+   * Partitions the collection into two collections where the first collection
+   * contains the items that passed and the second contains the items that failed.
+   * @param {Function} fn Function used to test (should return a boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection[]}
+   * @example const [big, small] = collection.partition(guild => guild.memberCount > 250);
+   */
+  partition(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
+    const results = [new Collection(), new Collection()];
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) {
+        results[0].set(key, val);
+      } else {
+        results[1].set(key, val);
+      }
+    }
+    return results;
+  }
+
+  /**
    * Identical to
    * [Array.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
    * @param {Function} fn Function that produces an element of the new array, taking three arguments
