@@ -391,7 +391,10 @@ class ClientUser extends User {
     return this.client.rest.methods.createGroupDM({
       recipients: recipients.map(u => this.client.resolver.resolveUserID(u.user)),
       accessTokens: recipients.map(u => u.accessToken),
-      nicks: recipients.map(u => u.nick),
+      nicks: recipients.reduce((o, r) => {
+        if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
+        return o;
+      }, {}),
     });
   }
 
