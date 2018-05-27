@@ -102,6 +102,29 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
+   * Kills all Shards without them respawning.
+   */
+  killAll() {
+    for (const shard of this.shards.values()) shard.kill();
+  }
+
+  /**
+   * Checks the Shard amount, then respawns the correct amount of Shards.
+   * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
+   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @returns {Promise<Collection<number, Shard>>}
+   */
+  async rebalanceShards(delay = 5500, waitForReady = true) {
+    // Kill all shards
+    this.killAll();
+
+    // Delete all spawned Shards in the collection
+    this.shards.clear();
+
+    return this.spawn('auto', delay, waitForReady);
+  }
+
+  /**
    * Spawns multiple shards.
    * @param {number} [amount=this.totalShards] Number of shards to spawn
    * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
