@@ -184,9 +184,10 @@ class Guild extends Base {
 
     /**
      * The value set for a guild's default message notifications
-     * @type {DefaultMessageNotifications}
+     * @type {DefaultMessageNotifications|number}
      */
-    this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications];
+    this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
+      data.default_message_notifications;
 
     this.id = data.id;
     this.available = !data.unavailable;
