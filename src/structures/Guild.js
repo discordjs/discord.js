@@ -482,7 +482,7 @@ class Guild extends Base {
    * // Fetch invite creator by their id
    * guild.fetchInvites()
    *  .then(invites => console.log(invites.find(invite => invite.inviter.id === '84484653687267328')))
-   *  .then(console.error);
+   *  .catch(console.error);
    */
   fetchInvites() {
     return this.client.api.guilds(this.id).invites.get()
