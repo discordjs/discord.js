@@ -119,28 +119,6 @@ class Util {
   }
 
   /**
-   * Checks whether the arrays are equal.
-   * @param {Array<*>} a The first array to compare.
-   * @param {Array<*>} b The second array to compare.
-   * @returns {boolean} Whether the arrays are equal.
-   * @private
-   */
-  static arraysEqual(a, b) {
-    if (a === b) return true;
-    if (a.length !== b.length) return false;
-
-    // Clone the array b before starting to modify it
-    const clone = b.slice();
-
-    for (const item of a) {
-      const ind = clone.indexOf(item);
-      if (ind !== -1) clone.splice(ind, 1);
-    }
-
-    return clone.length === 0;
-  }
-
-  /**
    * Shallow-copies an object with its class/prototype intact.
    * @param {Object} obj Object to clone
    * @returns {Object}

@@ -934,7 +934,10 @@ class Guild extends Base {
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
       this.embedEnabled === guild.embedEnabled &&
-      Util.arraysEqual(this.features, guild.features);
+      (this.features === guild.features || (
+        this.features.length === guild.features.length &&
+        this.features.every((feat, i) => feat === guild.features[i]))
+      );
 
     if (equal) {
       if (this.embedChannel) {
