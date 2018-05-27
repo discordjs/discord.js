@@ -63,10 +63,8 @@ class ClientManager {
 
   destroy() {
     this.client.ws.destroy();
-    if (!this.client.user) return Promise.resolve();
-    return this.client.api.logout.post().then(() => {
-      this.client.token = null;
-    });
+    if (this.client.user) this.client.token = null;
+    return Promise.resolve();
   }
 }
 
