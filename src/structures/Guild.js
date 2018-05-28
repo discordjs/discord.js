@@ -50,6 +50,12 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    /**
+     * Whether the bot has been removed from the guild
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (!data) return;
     if (data.unavailable) {
       /**

@@ -69,6 +69,12 @@ class Role extends Base {
      * @type {boolean}
      */
     this.mentionable = data.mentionable;
+
+    /**
+     * Whether the role has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
   }
 
   /**

@@ -11,6 +11,7 @@ class GuildMemberRemoveAction extends Action {
       guild.memberCount--;
       if (member) {
         guild.voiceStates.delete(member.id);
+        member.deleted = true;
         guild.members.remove(member.id);
         if (client.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }

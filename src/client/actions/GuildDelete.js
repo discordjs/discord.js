@@ -33,6 +33,7 @@ class GuildDeleteAction extends Action {
 
       // Delete guild
       client.guilds.remove(guild.id);
+      guild.deleted = true;
       client.emit(Events.GUILD_DELETE, guild);
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);

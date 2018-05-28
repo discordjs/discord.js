@@ -39,6 +39,12 @@ class GuildMember extends Base {
      */
     this.lastMessageChannelID = null;
 
+    /**
+     * Whether the member has been removed from the guild
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     this._roles = [];
     if (data) this._patch(data);
   }
