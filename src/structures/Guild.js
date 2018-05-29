@@ -944,10 +944,13 @@ class Guild extends Base {
       this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      Util.arraysEqual(this.features, guild.features) &&
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
-      this.embedEnabled === guild.embedEnabled;
+      this.embedEnabled === guild.embedEnabled &&
+      (this.features === guild.features || (
+        this.features.length === guild.features.length &&
+        this.features.every((feat, i) => feat === guild.features[i]))
+      );
 
     if (equal) {
       if (this.embedChannel) {
