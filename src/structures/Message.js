@@ -26,6 +26,12 @@ class Message extends Base {
      */
     this.channel = channel;
 
+    /**
+     * Whether this message has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this._patch(data);
   }
 
@@ -157,12 +163,6 @@ class Message extends Base {
      * @private
      */
     this._edits = [];
-
-    /**
-     * Whether this message has been deleted
-     * @type {boolean}
-     */
-    this.deleted = false;
   }
 
   /**
