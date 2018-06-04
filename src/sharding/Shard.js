@@ -57,10 +57,9 @@ class Shard {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      const sent = this.process.send(message, err => {
+      this.process.send(message, err => {
         if (err) reject(err); else resolve(this);
       });
-      if (!sent) throw new Error('Failed to send message to shard\'s process.');
     });
   }
 
