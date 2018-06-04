@@ -69,7 +69,7 @@ class GuildMember extends Base {
      * @type {number}
      * @name GuildMember#joinedTimestamp
      */
-    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(Number(data.joined_at)).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
     if (data.roles) this.roles._patch(data.roles);
