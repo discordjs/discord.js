@@ -200,12 +200,19 @@ class TextBasedChannel {
 
   /**
    * Gets the past messages sent in this channel. Resolves with a collection mapping message ID's to Message objects.
+   * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
+   * Those need to be fetched separately in such a case.</info>
    * @param {ChannelLogsQueryOptions} [options={}] Query parameters to pass in
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get messages
    * channel.fetchMessages({ limit: 10 })
    *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
+   * @example
+   * // Get messages and filter by user ID
+   * channel.fetchMessages()
+   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
   fetchMessages(options = {}) {
@@ -222,7 +229,14 @@ class TextBasedChannel {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
+   * <info>The returned Collection does not contain any reaction data of the messages.
+   * Those need to be fetched separately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
+   * @example
+   * // Get pinned messages
+   * channel.fetchPinnedMessages()
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchPinnedMessages() {
     return this.client.rest.methods.getChannelPinnedMessages(this).then(data => {
