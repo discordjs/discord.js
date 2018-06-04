@@ -36,6 +36,8 @@ class MessageStore extends DataStore {
 
   /**
    * Gets a message, or messages, from this channel.
+   * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
+   * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
@@ -48,6 +50,11 @@ class MessageStore extends DataStore {
    * channel.messages.fetch({ limit: 10 })
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
+   * @example
+   * // Get messages and filter by user ID
+   * channel.messages.fetch()
+   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
+   *   .catch(console.error);
    */
   fetch(message) {
     return typeof message === 'string' ? this._fetchId(message) : this._fetchMany(message);
@@ -55,9 +62,14 @@ class MessageStore extends DataStore {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain the reactions of the messages.
+   * <info>The returned Collection does not contain any reaction data of the messages.
    * Those need to be fetched separately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
+   * @example
+   * // Get pinned messages
+   * channel.fetchPinned()
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchPinned() {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {

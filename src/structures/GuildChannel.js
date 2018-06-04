@@ -178,7 +178,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Updates the permission overwrites for a channel
+   * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
    * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
