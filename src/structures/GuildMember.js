@@ -26,7 +26,7 @@ class GuildMember {
     this.guild = guild;
 
     /**
-     * The user that this guild member instance Represents
+     * The user that this member instance Represents
      * @type {User}
      */
     this.user = {};
@@ -35,13 +35,13 @@ class GuildMember {
     if (data) this.setup(data);
 
     /**
-     * The ID of the last message sent by the member in their guild, if one was sent
+     * The ID of the last message sent by this member in their guild, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the member in their guild, if one was sent
+     * The Message object of the last message sent by this member in their guild, if one was sent
      * @type {?Message}
      */
     this.lastMessage = null;
@@ -85,19 +85,19 @@ class GuildMember {
     this.voiceChannelID = data.channel_id;
 
     /**
-     * Whether this member is speaking
+     * Whether this member is speaking and the client is in the same channel
      * @type {boolean}
      */
     this.speaking = false;
 
     /**
-     * The nickname of this guild member, if they have one
+     * The nickname of this member, if they have one
      * @type {?string}
      */
     this.nickname = data.nick || null;
 
     /**
-     * The timestamp the member joined the guild at
+     * The timestamp this member joined the guild at
      * @type {number}
      */
     this.joinedTimestamp = new Date(data.joined_at).getTime();
@@ -107,7 +107,7 @@ class GuildMember {
   }
 
   /**
-   * The time the member joined the guild
+   * The time this member joined the guild
    * @type {Date}
    * @readonly
    */
@@ -116,7 +116,7 @@ class GuildMember {
   }
 
   /**
-   * The presence of this guild member
+   * The presence of this member
    * @type {Presence}
    * @readonly
    */
@@ -125,7 +125,7 @@ class GuildMember {
   }
 
   /**
-   * A list of roles that are applied to this GuildMember, mapped by the role ID
+   * A list of roles that are applied to this member, mapped by the role ID
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -144,7 +144,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member with the highest position
+   * The role of this member with the highest position
    * @type {Role}
    * @readonly
    */
@@ -153,7 +153,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to set their color
+   * The role of this member used to set their color
    * @type {?Role}
    * @readonly
    */
@@ -164,7 +164,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in base 10
+   * The displayed color of this member in base 10
    * @type {number}
    * @readonly
    */
@@ -174,7 +174,7 @@ class GuildMember {
   }
 
   /**
-   * The displayed color of the member in hexadecimal
+   * The displayed color of this member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -184,7 +184,7 @@ class GuildMember {
   }
 
   /**
-   * The role of the member used to hoist them in a separate category in the users list
+   * The role of this member used to hoist them in a separate category in the users list
    * @type {?Role}
    * @readonly
    */
@@ -231,7 +231,7 @@ class GuildMember {
   }
 
   /**
-   * The nickname of the member, or their username if they don't have one
+   * The nickname of this member, or their username if they don't have one
    * @type {string}
    * @readonly
    */
@@ -240,7 +240,7 @@ class GuildMember {
   }
 
   /**
-   * The overall set of permissions for the guild member, taking only roles into account
+   * The overall set of permissions for this member, taking only roles into account
    * @type {Permissions}
    * @readonly
    */
@@ -255,7 +255,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is manageable in terms of role hierarchy by the client user
+   * Whether this member is manageable in terms of role hierarchy by the client user
    * @type {boolean}
    * @readonly
    */
@@ -266,7 +266,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is kickable by the client user
+   * Whether this member is kickable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -275,7 +275,7 @@ class GuildMember {
   }
 
   /**
-   * Whether the member is bannable by the client user
+   * Whether this member is bannable by the client user
    * @type {boolean}
    * @readonly
    */
@@ -284,7 +284,7 @@ class GuildMember {
   }
 
   /**
-   * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
+   * Returns `channel.permissionsFor(guildMember)`. Returns permissions for this member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
    * @returns {?Permissions}
@@ -296,7 +296,7 @@ class GuildMember {
   }
 
   /**
-   * Checks if any of the member's roles have a permission.
+   * Checks if any of this member's roles have a permission.
    * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
    * **(deprecated)**
@@ -314,7 +314,7 @@ class GuildMember {
   }
 
   /**
-   * Checks whether the roles of the member allows them to perform specific actions.
+   * Checks whether the roles of this member allows them to perform specific actions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
@@ -326,7 +326,7 @@ class GuildMember {
   }
 
   /**
-   * Checks whether the roles of the member allows them to perform specific actions, and lists any missing permissions.
+   * Checks whether the roles of this member allows them to perform specific actions, and lists any missing permissions.
    * @param {PermissionResolvable[]} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {PermissionResolvable[]}
@@ -336,7 +336,7 @@ class GuildMember {
   }
 
   /**
-   * The data for editing a guild member.
+   * The data for editing this member.
    * @typedef {Object} GuildMemberEditData
    * @property {string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
@@ -346,7 +346,7 @@ class GuildMember {
    */
 
   /**
-   * Edit a guild member.
+   * Edits this member.
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
@@ -364,7 +364,7 @@ class GuildMember {
   }
 
   /**
-   * Mute/unmute a user.
+   * Mute/unmute this member.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
@@ -379,7 +379,7 @@ class GuildMember {
   }
 
   /**
-   * Deafen/undeafen a user.
+   * Deafen/undeafen this member.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
@@ -394,7 +394,7 @@ class GuildMember {
   }
 
   /**
-   * Moves the guild member to the given channel.
+   * Moves this member to the given channel.
    * @param {ChannelResolvable} channel The channel to move the member to
    * @returns {Promise<GuildMember>}
    * @example
@@ -408,7 +408,7 @@ class GuildMember {
   }
 
   /**
-   * Sets the roles applied to the member.
+   * Sets the roles applied to this member.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
@@ -428,7 +428,7 @@ class GuildMember {
   }
 
   /**
-   * Adds a single role to the member.
+   * Adds a single role to this member.
    * @param {RoleResolvable} role The role or ID of the role to add
    * @param {string} [reason] Reason for adding the role
    * @returns {Promise<GuildMember>}
@@ -445,7 +445,7 @@ class GuildMember {
   }
 
   /**
-   * Adds multiple roles to the member.
+   * Adds multiple roles to this member.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to add
    * @param {string} [reason] Reason for adding the roles
    * @returns {Promise<GuildMember>}
@@ -467,7 +467,7 @@ class GuildMember {
   }
 
   /**
-   * Removes a single role from the member.
+   * Removes a single role from this member.
    * @param {RoleResolvable} role The role or ID of the role to remove
    * @param {string} [reason] Reason for removing the role
    * @returns {Promise<GuildMember>}
@@ -484,7 +484,7 @@ class GuildMember {
   }
 
   /**
-   * Removes multiple roles from the member.
+   * Removes multiple roles from this member.
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role IDs to remove
    * @param {string} [reason] Reason for removing the roles
    * @returns {Promise<GuildMember>}
@@ -511,7 +511,7 @@ class GuildMember {
   }
 
   /**
-   * Set the nickname for the guild member.
+   * Set the nickname for this member.
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
@@ -526,7 +526,7 @@ class GuildMember {
   }
 
   /**
-   * Creates a DM channel between the client and the member.
+   * Creates a DM channel between the client and this member.
    * @returns {Promise<DMChannel>}
    */
   createDM() {
@@ -556,7 +556,7 @@ class GuildMember {
   }
 
   /**
-   * Ban this guild member.
+   * Ban this member.
    * @param {Object|number|string} [options] Ban options. If a number, the number of days to delete messages for, if a
    * string, the ban reason. Supplying an object allows you to do both.
    * @param {number} [options.days=0] Number of days of messages to delete
