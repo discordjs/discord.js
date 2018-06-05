@@ -81,12 +81,14 @@ class MessageReaction {
     const message = this.message;
     return message.client.rest.methods.getMessageReactionUsers(
       message, this.emoji.identifier, { after, before, limit }
-    ).then(users => {
-      for (const rawUser of users) {
+    ).then(data => {
+      const users = new Collection();
+      for (const rawUser of data) {
         const user = this.message.client.dataManager.newUser(rawUser);
         this.users.set(user.id, user);
+        users.set(user.id, user);
       }
-      return this.users;
+      return users;
     });
   }
 }
