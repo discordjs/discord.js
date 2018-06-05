@@ -350,16 +350,11 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * Obtains the OAuth Application of this bot from Discord.
    * @returns {Promise<ClientApplication>}
-   * @example
-   * client.fetchApplication('id')
-   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
-   *   .catch(console.error);
    */
-  fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+  fetchApplication() {
+    return this.api.oauth2.applications('@me').get()
       .then(app => new ClientApplication(this, app));
   }
 
