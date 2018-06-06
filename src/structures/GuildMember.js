@@ -65,11 +65,11 @@ class GuildMember extends Base {
     if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     /**
-     * The timestamp the member joined the guild at
-     * @type {number}
+     * The timestamp the member joined the guild at, if the data was received
+     * @type {?number}
      * @name GuildMember#joinedTimestamp
      */
-    if (data.joined_at) this.joinedTimestamp = new Date(Number(data.joined_at)).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
     if (data.roles) this.roles._patch(data.roles);
@@ -147,12 +147,12 @@ class GuildMember extends Base {
   get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
-   * The time this member joined the guild
-   * @type {Date}
+   * The time this member joined the guild, if the data was received
+   * @type {?Date}
    * @readonly
    */
   get joinedAt() {
-    return new Date(this.joinedTimestamp);
+    return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
   }
 
   /**
