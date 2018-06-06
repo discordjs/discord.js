@@ -88,7 +88,7 @@ class DataResolver {
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
+        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : res.raw);
       } else {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
