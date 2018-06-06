@@ -78,7 +78,7 @@ class RequestHandler {
         if (err) {
           if (err.statusCode === 429) {
             this.queue.unshift(item);
-            finish(Number(err.headers['retry-after']) + this.client.options.restTimeOffset);
+            finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
           } else if (err.statusCode >= 500 && err.statusCode < 600) {
             if (item.retried) {
               item.reject(err);
