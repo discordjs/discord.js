@@ -28,6 +28,13 @@ class GuildMember extends Base {
     this.user = {};
 
     /**
+     * The timestamp the member joined the guild at
+     * @type {?number}
+     * @name GuildMember#joinedTimestamp
+     */
+    this.joinedTimestamp = null;
+
+    /**
      * The ID of the last message sent by the member in their guild, if one was sent
      * @type {?Snowflake}
      */
@@ -64,11 +71,6 @@ class GuildMember extends Base {
      */
     if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
-    /**
-     * The timestamp the member joined the guild at, if the data was received
-     * @type {?number}
-     * @name GuildMember#joinedTimestamp
-     */
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
@@ -147,7 +149,7 @@ class GuildMember extends Base {
   get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
-   * The time this member joined the guild, if the data was received
+   * The time this member joined the guild
    * @type {?Date}
    * @readonly
    */
