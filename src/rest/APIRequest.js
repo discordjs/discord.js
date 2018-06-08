@@ -21,8 +21,9 @@ class APIRequest {
     const API = this.options.versioned === false ? this.client.options.http.api :
       `${this.client.options.http.api}/v${this.client.options.http.version}`;
 
-    const request = superagent[this.method](`${API}${this.path}`).agent(agent);
+    const request = superagent[this.method](`${API}${this.path}`);
 
+    if (typeof agent !== 'undefined') request.agent(agent);
     if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
     if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));
     if (!browser) request.set('User-Agent', UserAgent);
