@@ -1,9 +1,6 @@
 const querystring = require('querystring');
-const snekfetch = require('snekfetch');
-const https = require('https');
+const superagent = require('superagent');
 const { browser, UserAgent } = require('../util/Constants');
-
-if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
 class APIRequest {
   constructor(rest, method, path, options) {
@@ -21,7 +18,7 @@ class APIRequest {
     const API = this.options.versioned === false ? this.client.options.http.api :
       `${this.client.options.http.api}/v${this.client.options.http.version}`;
 
-    const request = snekfetch[this.method](`${API}${this.path}`, { agent });
+    const request = superagent[this.method](`${API}${this.path}`);
 
     if (this.options.auth !== false) request.set('Authorization', this.rest.getAuth());
     if (this.options.reason) request.set('X-Audit-Log-Reason', encodeURIComponent(this.options.reason));

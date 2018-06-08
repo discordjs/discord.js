@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const snekfetch = require('snekfetch');
+const superagent = require('superagent');
 const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -88,7 +88,7 @@ class DataResolver {
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
+        return superagent.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
       } else {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
