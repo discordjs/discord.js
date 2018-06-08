@@ -27,7 +27,7 @@ class APIRequest {
 
     if (this.options.files) {
       for (const file of this.options.files) if (file && file.file) request.attach(file.name, file.file, file.name);
-      if (typeof this.options.data !== 'undefined') request.attach('payload_json', JSON.stringify(this.options.data));
+      if (typeof this.options.data !== 'undefined') request.field('payload_json', JSON.stringify(this.options.data));
     } else if (typeof this.options.data !== 'undefined') {
       request.send(this.options.data);
     }
