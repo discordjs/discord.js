@@ -10,7 +10,7 @@ class APIRequest {
   constructor(rest, method, path, options) {
     this.rest = rest;
     this.client = rest.client;
-    this.method = method.toUpperCase();
+    this.method = method;
     this.route = options.route;
     this.options = options;
 
