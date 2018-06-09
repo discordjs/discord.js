@@ -26,6 +26,8 @@ class DataStore extends Collection {
 
   remove(key) { return this.delete(Snowflake.coerce(key)); }
 
+  get(key) { return this.get(Snowflake.coerce(key)); }
+
   /**
    * Resolves a data entry to a data Object.
    * @param {string|Object} idOrInstance The id or instance of something in this DataStore
@@ -34,8 +36,9 @@ class DataStore extends Collection {
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
     // eslint-disable-next-line valid-typeof
-    if (typeof idOrInstance === 'bigint') return this.get(Snowflake.coerce(idOrInstance)) || null;
-    if (typeof idOrInstance === 'string') return this.get(Snowflake.coerce(idOrInstance)) || null;
+    if (typeof idOrInstance === 'bigint' || typeof idOrInstance === 'string') {
+      return this.get(idOrInstance) || null;
+    }
     return null;
   }
 
