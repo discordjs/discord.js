@@ -567,7 +567,8 @@ class Guild {
   fetchMember(user, cache = true) {
     user = this.client.resolver.resolveUser(user);
     if (!user) return Promise.reject(new Error('Invalid or uncached id provided.'));
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    const member = this.members.get(user.id);
+    if (member && member.joinedTimestamp) return Promise.resolve(member);
     return this.client.rest.methods.getGuildMember(this, user, cache);
   }
 

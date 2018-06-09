@@ -2,7 +2,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
-const Presence = require('./Presence').Presence;
+const { Presence } = require('./Presence');
 const util = require('util');
 
 /**
@@ -30,6 +30,12 @@ class GuildMember {
      * @type {User}
      */
     this.user = {};
+
+    /**
+     * The timestamp this member joined the guild at
+     * @type {number}
+     */
+    this.joinedTimestamp = null;
 
     this._roles = [];
     if (data) this.setup(data);
@@ -96,11 +102,7 @@ class GuildMember {
      */
     this.nickname = data.nick || null;
 
-    /**
-     * The timestamp this member joined the guild at
-     * @type {number}
-     */
-    this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     this.user = data.user;
     this._roles = data.roles;
@@ -112,7 +114,7 @@ class GuildMember {
    * @readonly
    */
   get joinedAt() {
-    return new Date(this.joinedTimestamp);
+    return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
   }
 
   /**
