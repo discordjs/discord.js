@@ -2,7 +2,7 @@ const querystring = require('querystring');
 const FormData = require('form-data');
 const https = require('https');
 const { browser, UserAgent } = require('../util/Constants');
-var fetch = require('node-fetch');
+const fetch = require('node-fetch');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
