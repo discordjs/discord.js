@@ -1,6 +1,6 @@
-const snekfetch = require('snekfetch');
 const Collection = require('./Collection');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
@@ -90,15 +90,14 @@ class Util {
    * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
-    return new Promise((resolve, reject) => {
-      if (!token) throw new DiscordError('TOKEN_MISSING');
-      snekfetch.get(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`)
-        .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-        .end((err, res) => {
-          if (err) reject(err);
-          resolve(res.body.shards * (1000 / guildsPerShard));
-        });
-    });
+    if (!token) throw new DiscordError('TOKEN_MISSING');
+    return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
+      method: 'GET',
+      headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
+    }).then(res => {
+      if (res.ok) return res.json();
+      throw res;
+    }).then(data => data.shards * (1000 / guildsPerShard));
   }
 
   /**
