@@ -99,7 +99,7 @@ class User {
     for (const guild of this.client.guilds.values()) {
       if (guild.presences.has(this.id)) return guild.presences.get(this.id);
     }
-    return new Presence();
+    return new Presence(undefined, this.client);
   }
 
   /**

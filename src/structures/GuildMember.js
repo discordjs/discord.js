@@ -123,7 +123,7 @@ class GuildMember {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence();
+    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(undefined, this.client);
   }
 
   /**

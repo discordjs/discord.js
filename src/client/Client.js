@@ -486,7 +486,7 @@ class Client extends EventEmitter {
       this.presences.get(id).update(presence);
       return;
     }
-    this.presences.set(id, new Presence(presence));
+    this.presences.set(id, new Presence(presence, this));
   }
 
   /**

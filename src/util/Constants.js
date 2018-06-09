@@ -206,6 +206,8 @@ const Endpoints = exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       Avatar: (userID, hash) => `${root}/avatars/${userID}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png?size=2048'}`,
       Icon: (guildID, hash) => `${root}/icons/${guildID}/${hash}.jpg`,
+      AppIcon: (clientID, hash) => `${root}/app-icons/${clientID}/${hash}.png`,
+      AppAsset: (clientID, hash) => `${root}/app-assets/${clientID}/${hash}.png`,
       GDMIcon: (channelID, hash) => `${root}/channel-icons/${channelID}/${hash}.jpg?size=2048`,
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
     };
@@ -365,6 +367,15 @@ exports.ActivityTypes = [
   'LISTENING',
   'WATCHING',
 ];
+
+exports.ActivityFlags = {
+  INSTANCE: 1 << 0,
+  JOIN: 1 << 1,
+  SPECTATE: 1 << 2,
+  JOIN_REQUEST: 1 << 3,
+  SYNC: 1 << 4,
+  PLAY: 1 << 5,
+};
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
