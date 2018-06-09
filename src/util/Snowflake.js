@@ -78,9 +78,9 @@ class SnowflakeUtil {
 }
 
 SnowflakeUtil.coerce = encoding === 'etf' ?
-  snowflake => typeof flake === 'string' ? BigInt(snowflake) : snowflake :
+  snowflake => typeof snowflake === 'string' ? BigInt(snowflake) : snowflake :
   // eslint-disable-next-line valid-typeof
-  snowflake => typeof flake === 'bigint' ? snowflake.toString() : snowflake;
+  snowflake => typeof snowflake === 'bigint' ? snowflake.toString() : snowflake;
 
 SnowflakeUtil.compare = encoding === 'etf' ?
   (a, b) => SnowflakeUtil.coerce(b) - SnowflakeUtil.coerce(a) :
