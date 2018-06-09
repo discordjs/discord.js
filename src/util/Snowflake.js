@@ -83,7 +83,7 @@ SnowflakeUtil.coerce = encoding === 'etf' ?
   snowflake => typeof flake === 'bigint' ? snowflake.toString() : snowflake;
 
 SnowflakeUtil.compare = encoding === 'etf' ?
-  (a, b) => SnowflakeUtil.coerce(a) - SnowflakeUtil.coerce(b) :
+  (a, b) => SnowflakeUtil.coerce(b) - SnowflakeUtil.coerce(a) :
   (oldA, oldB) => {
     const a = SnowflakeUtil.coerce(oldA);
     const b = SnowflakeUtil.coerce(oldB);

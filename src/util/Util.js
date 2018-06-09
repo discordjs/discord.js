@@ -302,7 +302,7 @@ class Util {
    */
   static discordSort(collection) {
     const SnowflakeUtil = require('./Snowflake');
-    return collection.sort((a, b) => b.rawPosition - a.rawPosition || SnowflakeUtil.compare(b, a));
+    return collection.sort((a, b) => b.rawPosition - a.rawPosition || SnowflakeUtil.compare(a, b));
   }
 
   /**
