@@ -1,4 +1,5 @@
 const Util = require('../util/Util');
+const { encoding } = require('../WebSocket');
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -21,7 +22,7 @@ class SnowflakeUtil {
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
    *       number of ms since Discord epoch       worker  pid    increment
    * ```
-   * @typedef {string} Snowflake
+   * @typedef {string|bigint} Snowflake
    */
 
   /**
@@ -75,5 +76,19 @@ class SnowflakeUtil {
     return res;
   }
 }
+
+SnowflakeUtil.coerce = encoding === 'etf' ?
+  snowflake => typeof flake === 'string' ? BigInt(snowflake) : snowflake :
+  // eslint-disable-next-line valid-typeof
+  snowflake => typeof flake === 'bigint' ? snowflake.toString() : snowflake;
+
+SnowflakeUtil.compare = encoding === 'etf' ?
+  (a, b) => SnowflakeUtil.coerce(a) - SnowflakeUtil.coerce(b) :
+  (oldA, oldB) => {
+    const a = SnowflakeUtil.coerce(oldA);
+    const b = SnowflakeUtil.coerce(oldB);
+    return parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
+      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10));
+  };
 
 module.exports = SnowflakeUtil;

@@ -1,5 +1,6 @@
 {
   "extends": "eslint:recommended",
+   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaVersion": 2017
   },
@@ -10,6 +11,9 @@
   "overrides": [
     { "files": ["*.browser.js"], "env": { "browser": true } }
   ],
+  "globals": {
+    "BigInt": false
+  },
   "rules": {
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",

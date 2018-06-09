@@ -1,4 +1,5 @@
 const Collection = require('../util/Collection');
+const Snowflake = require('../util/Snowflake');
 let Structures;
 
 /**
@@ -15,7 +16,7 @@ class DataStore extends Collection {
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    const existing = this.get(id || data.id);
+    const existing = this.get(Snowflake.coerce(id || data.id));
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
@@ -23,7 +24,7 @@ class DataStore extends Collection {
     return entry;
   }
 
-  remove(key) { return this.delete(key); }
+  remove(key) { return this.delete(Snowflake.coerce(key)); }
 
   /**
    * Resolves a data entry to a data Object.
@@ -32,7 +33,9 @@ class DataStore extends Collection {
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
-    if (typeof idOrInstance === 'string') return this.get(idOrInstance) || null;
+    // eslint-disable-next-line valid-typeof
+    if (typeof idOrInstance === 'bigint') return this.get(Snowflake.coerce(idOrInstance)) || null;
+    if (typeof idOrInstance === 'string') return this.get(Snowflake.coerce(idOrInstance)) || null;
     return null;
   }
 
@@ -43,7 +46,8 @@ class DataStore extends Collection {
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string') return idOrInstance;
+    // eslint-disable-next-line valid-typeof
+    if (typeof idOrInstance === 'string' || typeof idOrInstance === 'bigint') return idOrInstance;
     return null;
   }
 }

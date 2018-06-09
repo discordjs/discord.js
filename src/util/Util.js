@@ -35,6 +35,9 @@ class Util {
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
+      // If it's a BigInt, coerce it to a string
+      // eslint-disable-next-line valid-typeof
+      if (typeof element === 'bigint') out[newProp] = `${element}n`;
       // If it's a collection, make the array of keys
       if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
       // If it's an array, flatten each element
@@ -298,11 +301,8 @@ class Util {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.sort((a, b) =>
-      a.rawPosition - b.rawPosition ||
-      parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
-    );
+    const SnowflakeUtil = require('./Snowflake');
+    return collection.sort((a, b) => b.rawPosition - a.rawPosition || SnowflakeUtil.compare(b, a));
   }
 
   /**
