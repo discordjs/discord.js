@@ -34,7 +34,7 @@ class Client extends BaseClient {
     if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
       this.options.shards = Number(process.env.SHARD_ID);
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
     this.options.shardCount = this.options.shardCount || 1;
