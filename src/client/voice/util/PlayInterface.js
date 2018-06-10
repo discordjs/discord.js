@@ -72,10 +72,10 @@ class PlayInterface {
       return this.player.playOpusStream(resource, options);
     } else if (type === 'ogg/opus') {
       if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-      return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()));
+      return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()), options);
     } else if (type === 'webm/opus') {
       if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-      return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()));
+      return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()), options);
     }
     throw new Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
   }

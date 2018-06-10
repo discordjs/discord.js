@@ -144,7 +144,9 @@ class ShardingManager extends EventEmitter {
     if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
       this.shardList = [...Array(amount).keys()];
     }
-    if (this.totalShards === 'auto' || this.totalShards !== amount) this.totalShards = amount;
+    if (this.totalShards === 'auto' || this.totalShards !== amount) {
+      this.totalShards = amount;
+    }
 
     if (this.shardList.some(shardId => shardId >= amount)) {
       throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',

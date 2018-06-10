@@ -43,6 +43,12 @@ class GuildEmoji extends Emoji {
     if (data.roles) this.roles._patch(data.roles);
   }
 
+  _clone() {
+    const clone = super._clone();
+    clone.roles = this.roles.clone();
+    return clone;
+  }
+
   /**
    * The timestamp the emoji was created at
    * @type {number}
@@ -94,7 +100,11 @@ class GuildEmoji extends Emoji {
         name: data.name,
         roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined,
       }, reason })
-      .then(() => this);
+      .then(() => {
+        const clone = this._clone();
+        clone._patch(data);
+        return clone;
+      });
   }
 
   /**
@@ -129,12 +139,14 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
+        other.roles.size === this.roles.size &&
         other.roles.every(role => this.roles.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
+        other.roles.length === this.roles.size &&
         other.roles.every(role => this.roles.has(role))
       );
     }

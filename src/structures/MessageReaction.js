@@ -62,21 +62,17 @@ class MessageReaction {
   }
 
   _add(user) {
-    if (!this.users.has(user.id)) {
-      this.users.set(user.id, user);
-      if (!this.me || user.id !== this.message.client.user.id) this.count++;
-    }
+    this.users.set(user.id, user);
+    if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
     if (!this.me) this.me = user.id === this.message.client.user.id;
   }
 
   _remove(user) {
-    if (this.users.has(user.id)) {
-      this.users.delete(user.id);
-      this.count--;
-      if (user.id === this.message.client.user.id) this.me = false;
-      if (this.count <= 0) {
-        this.message.reactions.remove(this.emoji.id || this.emoji.name);
-      }
+    this.users.delete(user.id);
+    if (!this.me || user.id !== this.message.client.user.id) this.count--;
+    if (user.id === this.message.client.user.id) this.me = false;
+    if (this.count <= 0) {
+      this.message.reactions.remove(this.emoji.id || this.emoji.name);
     }
   }
 }

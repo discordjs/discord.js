@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
@@ -16,7 +15,7 @@ const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, browser } = require('../util/Constants');
+const { Events, WSCodes, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
@@ -32,26 +31,20 @@ class Client extends BaseClient {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
     // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
+      this.options.shards = Number(process.env.SHARD_ID);
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
+    this.options.shardCount = this.options.shardCount || 1;
+    this.options.actualShardCount = this.options.actualShardCount || 1;
 
     this._validateOptions();
 
     /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
-
-    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
-     * @private
      */
     this.ws = new WebSocketManager(this);
 
@@ -134,66 +127,9 @@ class Client extends BaseClient {
      */
     this.broadcasts = [];
 
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
-     * Timeouts set by {@link Client#setTimeout} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._timeouts = new Set();
-
-    /**
-     * Intervals set by {@link Client#setInterval} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._intervals = new Set();
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Timestamp of the latest ping's start time
-   * @type {number}
-   * @readonly
-   * @private
-   */
-  get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?Status}
-   * @readonly
-   */
-  get status() {
-    return this.ws.connection ? this.ws.connection.status : null;
-  }
-
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -229,6 +165,25 @@ class Client extends BaseClient {
   }
 
   /**
+   * How long it has been since the client last entered the `READY` state in milliseconds
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+
+  /**
+   * The shard id or a list of shard ids seperate by ','
+   * @type {string}
+   * @readonly
+   */
+  get shardIds() {
+    return Array.isArray(this.options.shards) ? this.options.shards.join(',') : this.options.shards;
+  }
+
+  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
@@ -249,38 +204,56 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token = this.token) {
-    return new Promise((resolve, reject) => {
-      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-      token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
-    }).catch(e => {
-      this.destroy();
-      return Promise.reject(e);
+  async login(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Authenticating using token ${token}`);
+    let endpoint = this.api.gateway;
+    if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
+    const res = await endpoint.get();
+    const gateway = `${res.url}/`;
+    if (this.options.shardCount === 'auto') {
+      this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
+      this.options.shardCount = res.shards;
+      this.options.actualShardCount = res.shards;
+    }
+    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
+    this.ws.connect(gateway);
+    await new Promise((resolve, reject) => {
+      const onready = () => {
+        clearTimeout(timeout);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        resolve();
+      };
+      const ondisconnect = async event => {
+        clearTimeout(timeout);
+        this.removeListener(Events.READY, onready);
+        await this.destroy();
+        if (WSCodes[event.code]) {
+          reject(new Error(WSCodes[event.code]));
+        }
+      };
+      const timeout = setTimeout(async () => {
+        this.removeListener(Events.READY, onready);
+        await this.destroy();
+        reject(new Error('WS_CONNECTION_TIMEOUT'));
+      }, this.options.shardCount * 25e3);
+      if (timeout.unref !== undefined) timeout.unref();
+      this.once(Events.READY, onready);
+      this.once(Events.DISCONNECT, ondisconnect);
     });
+    return token;
   }
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {Promise}
    */
-  destroy() {
-    super.destroy();
-    return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
+  async destroy() {
+    await super.destroy();
+    this.ws.destroy();
+    this.token = null;
+    return true;
   }
 
   /**
@@ -392,20 +365,15 @@ class Client extends BaseClient {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {PermissionResolvable[]|number} [permissions] Permissions to request
+   * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
-   *   .then(link => {
-   *     console.log(`Generated bot invite link: ${link}`);
-   *   }).catch(console.error);
+   *   .then(link => console.log(`Generated bot invite link: ${link}`))
+   *   .catch(console.error);
    */
   generateInvite(permissions) {
-    if (permissions) {
-      if (permissions instanceof Array) permissions = Permissions.resolve(permissions);
-    } else {
-      permissions = 0;
-    }
+    permissions = typeof permissions === 'undefined' ? 0 : Permissions.resolve(permissions);
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
@@ -418,17 +386,6 @@ class Client extends BaseClient {
       pings: false,
       presences: false,
     });
-  }
-
-  /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
   }
 
   /**
@@ -448,17 +405,13 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }

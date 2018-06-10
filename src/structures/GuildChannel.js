@@ -540,6 +540,18 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Whether the channel is manageable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get manageable() {
+    if (this.client.user.id === this.guild.ownerID) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has([Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.VIEW_CHANNEL]);
+  }
+
+  /**
    * Deletes this channel.
    * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<GuildChannel>}

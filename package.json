@@ -36,6 +36,7 @@
   "dependencies": {
     "pako": "^1.0.0",
     "prism-media": "^0.2.0",
+    "setimmediate": "^1.0.5",
     "snekfetch": "^3.6.0",
     "tweetnacl": "^1.0.0",
     "ws": "^4.0.0"
@@ -43,8 +44,8 @@
   "peerDependencies": {
     "bufferutil": "^3.0.0",
     "erlpack": "discordapp/erlpack",
-    "sodium": "^2.0.0",
     "libsodium-wrappers": "^0.7.0",
+    "sodium": "^2.0.0",
     "uws": "^9.14.0",
     "zlib-sync": "^0.1.0"
   },
@@ -54,7 +55,8 @@
     "eslint": "^4.17.0",
     "json-filter-loader": "^1.0.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
-    "webpack": "^3.11.0"
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   },
   "engines": {
     "node": ">=8.0.0"

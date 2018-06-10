@@ -12,7 +12,7 @@ class GuildEmojisUpdateAction extends Action {
       const cachedEmoji = guild.emojis.get(emoji.id);
       if (cachedEmoji) {
         deletions.delete(emoji.id);
-        if (!cachedEmoji.equals(emoji, true)) {
+        if (!cachedEmoji.equals(emoji)) {
           // Emoji updated
           this.client.actions.GuildEmojiUpdate.handle(cachedEmoji, emoji);
         }

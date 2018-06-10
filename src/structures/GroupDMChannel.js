@@ -178,7 +178,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Adds an user to this Group DM.
+   * Adds a user to this Group DM.
    * @param {Object} options Options for this method
    * @param {UserResolvable} options.user User to add to this Group DM
    * @param {string} [options.accessToken] Access token to use to add the user to this Group DM
@@ -196,7 +196,7 @@ class GroupDMChannel extends Channel {
   }
 
   /**
-   * Removes an user from this Group DM.
+   * Removes a user from this Group DM.
    * @param {UserResolvable} user User to remove
    * @returns {Promise<GroupDMChannel>}
    */

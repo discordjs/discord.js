@@ -45,7 +45,7 @@ class MessageStore extends DataStore {
    *   .catch(console.error);
    * @example
    * // Get messages
-   * channel.messages.fetch({limit: 10})
+   * channel.messages.fetch({ limit: 10 })
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    */
@@ -56,7 +56,7 @@ class MessageStore extends DataStore {
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
    * <info>The returned Collection does not contain the reactions of the messages.
-   * Those need to be fetched seperately.</info>
+   * Those need to be fetched separately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
    */
   fetchPinned() {
@@ -67,26 +67,22 @@ class MessageStore extends DataStore {
     });
   }
 
-  _fetchId(messageID) {
+  async _fetchId(messageID) {
     if (!this.client.user.bot) {
-      return this._fetchMany({ limit: 1, around: messageID })
-        .then(messages => {
-          const msg = messages.get(messageID);
-          if (!msg) throw new Error('MESSAGE_MISSING');
-          return msg;
-        });
+      const messages = await this._fetchMany({ limit: 1, around: messageID });
+      const msg = messages.get(messageID);
+      if (!msg) throw new Error('MESSAGE_MISSING');
+      return msg;
     }
-    return this.client.api.channels[this.channel.id].messages[messageID].get()
-      .then(data => this.add(data));
+    const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
+    return this.add(data);
   }
 
-  _fetchMany(options = {}) {
-    return this.client.api.channels[this.channel.id].messages.get({ query: options })
-      .then(data => {
-        const messages = new Collection();
-        for (const message of data) messages.set(message.id, this.add(message));
-        return messages;
-      });
+  async _fetchMany(options = {}) {
+    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
+    const messages = new Collection();
+    for (const message of data) messages.set(message.id, this.add(message));
+    return messages;
   }
 
 
