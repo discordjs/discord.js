@@ -53,6 +53,13 @@ class User extends Base {
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
+     * The locale of the user's client (ISO 639-1)
+     * @type {?string}
+     * @name User#locale
+     */
+    if (data.locale) this.locale = data.locale;
+
+    /**
      * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */
