@@ -67,8 +67,24 @@ class Guild extends Base {
       this._patch(data);
       if (!data.channels) this.available = false;
     }
+
+    /**
+     * The id of the shard this Guild belongs to.
+     * @type {number}
+     */
+    this.shardID = data.shardID;
   }
 
+  /**
+   * The Shard this Guild belongs to.
+   * @type {WebSocketShard}
+   * @readonly
+   */
+  get shard() {
+    return this.client.ws.shards[this.shardID];
+  }
+
+  /* eslint-disable complexity */
   /**
    * Sets up the guild.
    * @param {*} data The raw data of the guild
@@ -170,6 +186,12 @@ class Guild extends Base {
     this.explicitContentFilter = data.explicit_content_filter;
 
     /**
+     * The required MFA level for the guild
+     * @type {number}
+     */
+    this.mfaLevel = data.mfa_level;
+
+    /**
      * The timestamp the client user joined the guild at
      * @type {number}
      */
@@ -210,7 +232,7 @@ class Guild extends Base {
       }
     }
 
-    this.voiceStates = new VoiceStateCollection(this);
+    if (!this.voiceStates) this.voiceStates = new VoiceStateCollection(this);
     if (data.voice_states) {
       for (const voiceState of data.voice_states) this.voiceStates.set(voiceState.user_id, voiceState);
     }
@@ -1025,6 +1047,15 @@ class VoiceStateCollection extends Collection {
       if (newChannel) newChannel.members.set(member.user.id, member);
     }
     super.set(id, voiceState);
+  }
+
+  delete(id) {
+    const voiceState = this.get(id);
+    if (voiceState && voiceState.channel_id) {
+      const channel = this.guild.channels.get(voiceState.channel_id);
+      if (channel) channel.members.delete(id);
+    }
+    return super.delete(id);
   }
 }
 

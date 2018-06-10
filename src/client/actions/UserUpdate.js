@@ -1,9 +1,22 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const User = require('../../structures/User');
 
 class UserUpdateAction extends Action {
   handle(data) {
     const client = this.client;
+
+    const newUser = new User(client, data.user);
+    const oldUser = new User(client, client.users.get(data.user.id));
+    client.users.set(newUser.id, newUser);
+
+    if (!oldUser.equals(newUser)) {
+      client.emit(Events.USER_UPDATE, oldUser, newUser);
+      return {
+        old: oldUser,
+        updated: newUser,
+      };
+    }
 
     if (client.user) {
       if (client.user.equals(data)) {
@@ -12,11 +25,9 @@ class UserUpdateAction extends Action {
           updated: client.user,
         };
       }
-
-      const oldUser = client.user._update(data);
-      client.emit(Events.USER_UPDATE, oldUser, client.user);
+      const oldClient = client.user._update(data);
       return {
-        old: oldUser,
+        old: oldClient,
         updated: client.user,
       };
     }

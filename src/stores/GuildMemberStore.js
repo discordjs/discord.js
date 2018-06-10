@@ -31,10 +31,10 @@ class GuildMemberStore extends DataStore {
    * @returns {?GuildMember}
    */
   resolve(member) {
-    const memberResolveable = super.resolve(member);
-    if (memberResolveable) return memberResolveable;
-    const userResolveable = this.client.users.resolveID(member);
-    if (userResolveable) return super.resolve(userResolveable);
+    const memberResolvable = super.resolve(member);
+    if (memberResolvable) return memberResolvable;
+    const userResolvable = this.client.users.resolveID(member);
+    if (userResolvable) return super.resolve(userResolvable);
     return null;
   }
 
@@ -44,10 +44,10 @@ class GuildMemberStore extends DataStore {
    * @returns {?Snowflake}
    */
   resolveID(member) {
-    const memberResolveable = super.resolveID(member);
-    if (memberResolveable) return memberResolveable;
-    const userResolveable = this.client.users.resolveID(member);
-    return this.has(userResolveable) ? userResolveable : null;
+    const memberResolvable = super.resolveID(member);
+    if (memberResolvable) return memberResolvable;
+    const userResolvable = this.client.users.resolveID(member);
+    return this.has(userResolvable) ? userResolvable : null;
   }
 
   /**
@@ -80,7 +80,9 @@ class GuildMemberStore extends DataStore {
    * guild.members.fetch('66564597481480192')
    *   .then(console.log)
    *   .catch(console.error);
-   * guild.members.fetch({ user, cache: false }) // Fetch and don't cache
+   * @example
+   * // Fetch a single member without caching
+   * guild.members.fetch({ user, cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
@@ -187,7 +189,7 @@ class GuildMemberStore extends DataStore {
         resolve(query || limit ? new Collection() : this);
         return;
       }
-      this.guild.client.ws.send({
+      this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,

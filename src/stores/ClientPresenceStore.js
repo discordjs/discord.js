@@ -22,7 +22,7 @@ class ClientPresenceStore extends PresenceStore {
   async setClientPresence(presence) {
     const packet = await this._parse(presence);
     this.clientPresence.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
     return this.clientPresence;
   }
 

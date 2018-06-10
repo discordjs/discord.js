@@ -11,10 +11,18 @@ class PacketHandler extends EventEmitter {
     this.streams = new Map();
   }
 
-  makeStream(user) {
-    if (this.streams.has(user)) return this.streams.get(user);
+  _stoppedSpeaking(userID) {
+    if (this.streams.has(userID)) {
+      const { stream, end } = this.streams.get(userID);
+      if (end === 'silence') stream.push(null);
+    }
+  }
+
+  makeStream(user, end) {
+    if (this.streams.has(user)) return this.streams.get(user).stream;
     const stream = new Readable();
-    this.streams.set(user, stream);
+    stream.on('end', () => this.streams.delete(user));
+    this.streams.set(user, { stream, end });
     return stream;
   }
 
@@ -49,8 +57,9 @@ class PacketHandler extends EventEmitter {
     const ssrc = buffer.readUInt32BE(8);
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
-    const stream = this.streams.get(user.id);
+    let stream = this.streams.get(user.id);
     if (!stream) return;
+    stream = stream.stream;
     const opusPacket = this.parseBuffer(buffer);
     if (opusPacket instanceof Error) {
       this.emit('error', opusPacket);

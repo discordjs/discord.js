@@ -114,7 +114,7 @@ class Collector extends EventEmitter {
 
   /**
    * Returns a promise that resolves with the next collected element;
-   * rejects with collected elements if the collector finishes without receving a next element
+   * rejects with collected elements if the collector finishes without receiving a next element
    * @type {Promise}
    * @readonly
    */
