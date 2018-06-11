@@ -52,14 +52,14 @@ class PresenceUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a guild member's presence changes, or they change one of their details.
+ * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
  * @event Client#presenceUpdate
  * @param {GuildMember} oldMember The member before the presence update
  * @param {GuildMember} newMember The member after the presence update
  */
 
 /**
- * Emitted whenever a user's details (e.g. username) are changed.
+ * Emitted whenever a user's details (e.g. username, avatar) is changed.
  * <info>Disabling {@link Client#presenceUpdate} will cause this event to only fire
  * on {@link ClientUser} update.</info>
  * @event Client#userUpdate
