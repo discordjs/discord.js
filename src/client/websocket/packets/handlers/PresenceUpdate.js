@@ -52,7 +52,7 @@ class PresenceUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever a guild member's presence (e.g. status, activity) are changed.
+ * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
  * @event Client#presenceUpdate
  * @param {GuildMember} oldMember The member before the presence update
  * @param {GuildMember} newMember The member after the presence update
