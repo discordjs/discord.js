@@ -14,7 +14,7 @@ class GuildMemberUpdateHandler extends AbstractHandler {
         const old = member._update(data);
         if (client.ws.connection.status === Status.READY) {
           /**
-           * Emitted whenever a guild member's details (e.g. role, nickname) is changed
+           * Emitted whenever a guild member's details (e.g. role, nickname) are changed
            * @event Client#guildMemberUpdate
            * @param {GuildMember} oldMember The member before the update
            * @param {GuildMember} newMember The member after the update
