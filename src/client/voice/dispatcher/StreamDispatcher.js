@@ -248,7 +248,7 @@ class StreamDispatcher extends Writable {
     packetBuffer.writeUIntBE(this.player.voiceConnection.authentication.ssrc, 8, 4);
 
     packetBuffer.copy(nonce, 0, 0, 12);
-    return Buffer.concat([packetBuffer, ...this._encrypt(buffer, sequence)]);
+    return Buffer.concat([packetBuffer, ...this._encrypt(buffer)]);
   }
 
   _sendPacket(packet) {
