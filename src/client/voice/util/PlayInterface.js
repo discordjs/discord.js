@@ -6,7 +6,7 @@ const { Error } = require('../../../errors');
  * Options that can be passed to stream-playing methods:
  * @typedef {Object} StreamOptions
  * @property {StreamType} [type='unknown'] The type of stream.
- * @property {number} [seek=0] The time to seek to
+ * @property {number} [seek=0] The time to seek to, will be ignored when playing `ogg/opus` or `webm/opus` streams
  * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
  * this stream to improve performance.
  * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
