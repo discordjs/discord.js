@@ -199,7 +199,10 @@ class StreamDispatcher extends Writable {
   }
 
   _step(done) {
-    this._writeCallback = done;
+    this._writeCallback = () => {
+      this._writeCallback = null;
+      done();
+    };
     if (this.pausedSince) return;
     if (!this.streams.broadcast) {
       const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
