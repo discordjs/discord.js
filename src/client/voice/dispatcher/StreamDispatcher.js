@@ -214,6 +214,11 @@ class StreamDispatcher extends Writable {
     this.count++;
   }
 
+  _final(callback) {
+    this._writeCallback = null;
+    callback();
+  }
+
   _playChunk(chunk) {
     if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secretKey) return;
     this._setSpeaking(true);
