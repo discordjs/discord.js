@@ -239,7 +239,7 @@ class GuildMember extends Base {
    */
   
   get displayTag() {
-    return this.nickname ? this.nickname + this.user.discriminator : this.user.tag;
+    return this.nickname ? this.nickname + '#' + this.user.discriminator : this.user.tag;
   }
 
   /**
