@@ -70,10 +70,10 @@ class RequestHandler {
       };
       item.request.make().then(res => {
         if (res && res.headers) {
-          if (res.headers['x-ratelimit-global']) this.manager.globallyRateLimited = true;
-          this.limit = Number(res.headers['x-ratelimit-limit']);
-          this.resetTime = Date.now() + Number(res.headers['retry-after']);
-          this.remaining = Number(res.headers['x-ratelimit-remaining']);
+          if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
+          this.limit = Number(res.headers.get('x-ratelimit-limit') || Infinity);
+          this.resetTime = Number(res.headers.get('x-ratelimit-reset') || 0);
+          this.remaining = Number(res.headers.get('x-ratelimit-remaining') || 1);
         }
 
         if (res.ok) {
@@ -84,7 +84,7 @@ class RequestHandler {
 
         if (res.status === 429) {
           this.queue.unshift(item);
-          finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
+          finish(Number(res.headers.get('retry-after')) + this.client.options.restTimeOffset);
         } else if (res.status >= 500 && res.status < 600) {
           if (item.retried) {
             item.reject(res);
