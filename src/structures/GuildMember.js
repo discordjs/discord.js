@@ -230,14 +230,14 @@ class GuildMember extends Base {
   get displayName() {
     return this.nickname || this.user.username;
   }
-  
+
   /**
    * The display tag of a user, a normal tag if they don't have a nickname
    * If someone's nickname is hydrabolt, but their username is hydar, displayTag will be hydrabolt#0001
    * @type {string}
    * @readonly
    */
-  
+
   get displayTag() {
     return this.nickname ? this.nickname + '#' + this.user.discriminator : this.user.tag;
   }
