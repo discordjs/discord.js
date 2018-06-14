@@ -232,6 +232,17 @@ class GuildMember extends Base {
   }
 
   /**
+   * The display tag of a user, a normal tag if they don't have a nickname
+   * If someone's username is hydrabolt, but their nickname is hydar, displayTag will be hydar#0001
+   * @type {string}
+   * @readonly
+   */
+
+  get displayTag() {
+    return this.nickname ? `${this.nickname}#${this.user.discriminator}` : this.user.tag;
+  }
+
+  /**
    * The overall set of permissions for this member, taking only roles into account
    * @type {Permissions}
    * @readonly
