@@ -1,104 +1,82 @@
+const handlers = require('./handlers');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
-const RequestBucket = require('./RequestBucket');
 const { Error } = require('../errors');
 const { Endpoints } = require('../util/Constants');
 const Collection = require('../util/Collection');
 
-/**
- * Rest manager.
- * @private
- */
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
-    /**
-     * @type {Client}
-     */
     this.client = client;
-
-    /**
-     * Request buckets, mapped by bucket
-     * @type {Collection<string, RequestHandler>}
-     */
-    this.buckets = new Collection();
-
-    /**
-     * Whether we're globally limited
-     * @type {boolean}
-     */
+    this.handlers = new Collection();
     this.globallyRateLimited = false;
-
-    /**
-     * The token prefix to use when generating authorization headers
-     * @type {string}
-     */
     this.tokenPrefix = tokenPrefix;
-
-    /**
-     * Whether to use a versioned endpoint. Default to true.
-     * @type {boolean}
-     */
     this.versioned = true;
-
+    this.timeDifferences = [];
     if (client.options.restSweepInterval > 0) {
       client.setInterval(() => {
-        this.buckets.sweep(handler => handler.queue.idle());
+        this.handlers.sweep(handler => handler._inactive);
       }, client.options.restSweepInterval * 1000);
     }
   }
 
-
-  /**
-   * The authorization header to use
-   * @readonly
-   * @type {string}
-   */
-  get auth() {
-    const token = this.client.token || this.client.accessToken;
-    const prefixed = !!this.client.application || (this.client.user && this.client.user.bot);
-    if (token) {
-      if (prefixed) return `${this.tokenPrefix} ${token}`;
-      return token;
-    } else {
-      throw new Error('TOKEN_MISSING');
-    }
-  }
-
-  /**
-   * Make a new API router
-   * @readonly
-   * @type {APIRouter}
-   */
   get api() {
     return routeBuilder(this);
   }
 
-  /**
-   * The CDN endpoint
-   * @readonly
-   * @type {string}
-   */
+  get timeDifference() {
+    return Math.round(this.timeDifferences.reduce((a, b) => a + b, 0) / this.timeDifferences.length);
+  }
+
+  set timeDifference(ms) {
+    this.timeDifferences.unshift(ms);
+    if (this.timeDifferences.length > 5) this.timeDifferences.length = 5;
+  }
+
+  getAuth() {
+    const token = this.client.token || this.client.accessToken;
+    const prefixed = !!this.client.application || (this.client.user && this.client.user.bot);
+    if (token && prefixed) return `${this.tokenPrefix} ${token}`;
+    else if (token) return token;
+    throw new Error('TOKEN_MISSING');
+  }
+
   get cdn() {
     return Endpoints.CDN(this.client.options.http.cdn);
   }
 
-  /**
-   * Make a request
-   * @param {string} method The HTTP verb to use
-   * @param {string} url The Discord URL
-   * @param {*} options Options to send
-   * @returns {Promise<any>}
-   */
-  request(method, url, options = {}) {
-    const req = new APIRequest(this, method, url, options);
-    let bucket = this.buckets.get(req.route);
+  push(handler, apiRequest) {
+    return new Promise((resolve, reject) => {
+      handler.push({
+        request: apiRequest,
+        resolve,
+        reject,
+      });
+    });
+  }
 
-    if (!bucket) {
-      bucket = new RequestBucket(this, req.route);
-      this.buckets.set(req.route, bucket);
+  getRequestHandler() {
+    const method = this.client.options.apiRequestMethod;
+    if (typeof method === 'function') return method;
+    const handler = handlers[method];
+    if (!handler) throw new Error('RATELIMIT_INVALID_METHOD');
+    return handler;
+  }
+
+  request(method, url, options = {}) {
+    const apiRequest = new APIRequest(this, method, url, options);
+    let handler = this.handlers.get(apiRequest.route);
+
+    if (!handler) {
+      handler = new handlers.RequestHandler(this, this.getRequestHandler());
+      this.handlers.set(apiRequest.route, handler);
     }
 
-    return bucket.enqueue(req);
+    return this.push(handler, apiRequest);
+  }
+
+  set endpoint(endpoint) {
+    this.client.options.http.api = endpoint;
   }
 }
 

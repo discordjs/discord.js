@@ -24,7 +24,7 @@ class APIRequest {
     const url = API + this.path;
     let headers = {};
 
-    if (this.options.auth !== false) headers.Authorization = this.rest.auth;
+    if (this.options.auth !== false) headers.Authorization = this.rest.getAuth();
     if (this.options.reason) headers['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);
     if (!browser) headers['User-Agent'] = UserAgent;
     if (this.options.headers) headers = Object.assign(headers, this.options.headers);
