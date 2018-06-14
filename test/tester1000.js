@@ -4,13 +4,14 @@ const { token, prefix, owner } = require('./auth.js');
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
-const client = new Discord.Client();
+const client = new Discord.Client({ apiRequestConcurrency: Infinity, restTimeOffset: 0 });
 
 client.on('debug', log);
 client.on('ready', () => {
   log('READY', client.user.tag, client.user.id);
 });
-client.on('rateLimit', log);
+client.on('rateLimit', info => log(`ratelimited for ${info.timeout} ms`));
+client.on('error', log);
 
 const commands = {
   eval: message => {
@@ -24,9 +25,21 @@ const commands = {
       console.error(err.stack);
       res = err.message;
     }
-    message.channel.send(res, { code: 'js' });
+    if (res.length > 6000) {
+      message.channel.send('response too long; check console');
+      // eslint-disable-next-line no-console
+      console.log(res);
+    } else {
+      message.channel.send(res, { code: 'js', split: true });
+    }
   },
   ping: message => message.reply('pong'),
+  spam: async message => {
+    const start = Date.now();
+    await Promise.all(Array.from({ length: 10 }, (_, i) => message.channel.send(`spam${i}`)));
+    const diff = Date.now() - start;
+    message.channel.send(`total time: \`${diff}ms\``);
+  },
 };
 
 client.on('message', message => {

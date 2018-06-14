@@ -5,10 +5,6 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
- * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
- * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
- * and is therefore slightly riskier to use.
  * @property {number} [shardId=0] ID of the shard to run
  * @property {number} [shardCount=0] Total number of shards
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
@@ -28,6 +24,9 @@ const browser = exports.browser = typeof window !== 'undefined';
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
+ * @property {number} [restConcurrency=1] The number REST calls to execute concurrently. Increasing this value above
+ * 1 will not guarantee delivery order but may result in increased performance. There is greater risk of hitting
+ * ratelimits when using concurrency above 1.
  * @property {PresenceData} [presence] Presence data to use upon login
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
@@ -37,7 +36,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
   internalSharding: false,
@@ -51,6 +49,7 @@ exports.DefaultOptions = {
   disabledEvents: [],
   restTimeOffset: 500,
   restSweepInterval: 60,
+  restConcurrency: 1,
   presence: {},
 
   /**
