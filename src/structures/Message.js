@@ -243,7 +243,7 @@ class Message extends Base {
    * @readonly
    */
   get jumpToURL() {
-    return `https://discordapp.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}?jump=${this.id}`;
+    return `https://discordapp.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
   }
 
   /**
