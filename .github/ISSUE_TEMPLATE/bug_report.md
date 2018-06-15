@@ -1,3 +1,9 @@
+---
+name: Bug report
+about: Report incorrect or unexpected behavior of discord.js
+
+---
+
 <!--
 If you need help with discord.js installation or usage, please go to the discord.js Discord server instead:
   https://discord.gg/bRCvFy9
