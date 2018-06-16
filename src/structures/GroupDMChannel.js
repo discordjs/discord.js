@@ -94,6 +94,10 @@ class GroupDMChannel extends Channel {
       }
     }
 
+    /**
+     * The ID of the last message in the channel, if one was sent
+     * @type {?Snowflake}
+     */
     this.lastMessageID = data.last_message_id;
   }
 
