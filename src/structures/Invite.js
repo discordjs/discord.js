@@ -3,7 +3,7 @@ const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ * <warn>The only guaranteed properties are `code` and `channel`. Other properties can be missing.</warn>
  * @extends {Base}
  */
 class Invite extends Base {
@@ -17,7 +17,7 @@ class Invite extends Base {
      * The guild the invite is for
      * @type {Guild}
      */
-    this.guild = this.client.guilds.add(data.guild, false);
+    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : undefined;
 
     /**
      * The code for this invite
@@ -41,13 +41,13 @@ class Invite extends Base {
      * The number of text channels the guild this invite goes to has
      * @type {number}
      */
-    this.textChannelCount = data.guild.text_channel_count;
+    this.textChannelCount = data.guild ? data.guild.text_channel_count : undefined;
 
     /**
      * The number of voice channels the guild this invite goes to has
      * @type {number}
      */
-    this.voiceChannelCount = data.guild.voice_channel_count;
+    this.voiceChannelCount = data.guild ? data.guild.voice_channel_count : undefined;
 
     /**
      * Whether or not this invite is temporary
