@@ -30,7 +30,11 @@ class TextChannel extends GuildChannel {
      * @readonly
      */
     this.nsfw = Boolean(data.nsfw);
-
+    
+    /**
+     * The ID of the last message sent in this channel, if one was sent
+     * @type {?Snowflake}
+     */
     this.lastMessageID = data.last_message_id;
   }
 
