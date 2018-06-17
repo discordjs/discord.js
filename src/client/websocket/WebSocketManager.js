@@ -173,7 +173,7 @@ class WebSocketManager {
    * @returns {void}
    */
   checkReady() {
-    if ((!(this.shards.filter(s => s).length === this.client.options.actualShardCount)) ||
+    if (!(this.shards.filter(s => s).length === this.client.options.actualShardCount) ||
       !this.shards.filter(s => s).every(s => s.status === Status.READY)) {
       return false;
     }
