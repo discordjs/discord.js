@@ -15,9 +15,9 @@ class Invite extends Base {
   _patch(data) {
     /**
      * The guild the invite is for
-     * @type {Guild}
+     * @type {?Guild}
      */
-    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : undefined;
+    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
 
     /**
      * The code for this invite
@@ -27,59 +27,57 @@ class Invite extends Base {
 
     /**
      * The approximate number of online members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.presenceCount = data.approximate_presence_count;
+    this.presenceCount = data.approximate_presence_count || null;
 
     /**
      * The approximate total number of members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.memberCount = data.approximate_member_count;
+    this.memberCount = data.approximate_member_count || null;
 
     /**
      * The number of text channels the guild this invite goes to has
-     * @type {number}
+     * @type {?number}
      */
-    this.textChannelCount = data.guild ? data.guild.text_channel_count : undefined;
+    this.textChannelCount = data.guild ? data.guild.text_channel_count : null;
 
     /**
      * The number of voice channels the guild this invite goes to has
-     * @type {number}
+     * @type {?number}
      */
-    this.voiceChannelCount = data.guild ? data.guild.voice_channel_count : undefined;
+    this.voiceChannelCount = data.guild ? data.guild.voice_channel_count : null;
 
     /**
      * Whether or not this invite is temporary
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.temporary = data.temporary;
+    this.temporary = data.temporary || null;
 
     /**
      * The maximum age of the invite, in seconds
      * @type {?number}
      */
-    this.maxAge = data.max_age;
+    this.maxAge = data.max_age || null;
 
     /**
      * How many times this invite has been used
-     * @type {number}
+     * @type {?number}
      */
-    this.uses = data.uses;
+    this.uses = data.uses || null;
 
     /**
      * The maximum uses of this invite
-     * @type {number}
+     * @type {?number}
      */
-    this.maxUses = data.max_uses;
+    this.maxUses = data.max_uses || null;
 
-    if (data.inviter) {
-      /**
-       * The user who created this invite
-       * @type {?User}
-       */
-      this.inviter = this.client.users.add(data.inviter);
-    }
+    /**
+     * The user who created this invite
+     * @type {?User}
+     */
+    this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
 
     /**
      * The channel the invite is for
@@ -89,36 +87,36 @@ class Invite extends Base {
 
     /**
      * The timestamp the invite was created at
-     * @type {number}
+     * @type {?number}
      */
-    this.createdTimestamp = new Date(data.created_at).getTime();
+    this.createdTimestamp = new Date(data.created_at).getTime() || null;
   }
 
   /**
    * The time the invite was created at
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get createdAt() {
-    return new Date(this.createdTimestamp);
+    return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
   }
 
   /**
    * The timestamp the invite will expire at
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get expiresTimestamp() {
-    return this.createdTimestamp + (this.maxAge * 1000);
+    return this.createdTimestamp ? this.createdTimestamp + (this.maxAge * 1000) : null;
   }
 
   /**
    * The time the invite will expire at
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get expiresAt() {
-    return new Date(this.expiresTimestamp);
+    return this.expiresTimestamp ? new Date(this.expiresTimestamp) : null;
   }
 
   /**
