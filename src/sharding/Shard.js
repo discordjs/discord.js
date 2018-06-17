@@ -113,7 +113,7 @@ class Shard extends EventEmitter {
   }
 
   /**
-   * Immediately kills the shard and does not restart it.
+   * Immediately kills the shard's process and does not restart it.
    */
   kill() {
     this.process.removeListener('exit', this._exitListener);
