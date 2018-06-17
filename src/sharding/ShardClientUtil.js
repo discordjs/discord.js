@@ -37,10 +37,9 @@ class ShardClientUtil {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      const sent = process.send(message, err => {
+      process.send(message, err => {
         if (err) reject(err); else resolve();
       });
-      if (!sent) throw new Error('Failed to send message to master process.');
     });
   }
 
