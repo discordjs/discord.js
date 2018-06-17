@@ -1,6 +1,5 @@
 const Util = require('../util/Util');
 const { Events } = require('../util/Constants');
-const { Error } = require('../errors');
 
 /**
  * Helper class for sharded clients spawned as a child process, such as from a {@link ShardingManager}.
@@ -43,10 +42,9 @@ class ShardClientUtil {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      const sent = process.send(message, err => {
+      process.send(message, err => {
         if (err) reject(err); else resolve();
       });
-      if (!sent) throw new Error('SHARDING_PARENT_CONNECTION');
     });
   }
 
