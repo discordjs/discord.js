@@ -76,10 +76,10 @@ class RequestHandler {
           this.remaining = Number(res.headers['x-ratelimit-remaining']);
         }
         if (err) {
-          if (err.status === 429) {
+          if (err.statusCode === 429) {
             this.queue.unshift(item);
             finish(Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
-          } else if (err.status >= 500 && err.status < 600) {
+          } else if (err.statusCode >= 500 && err.statusCode < 600) {
             if (item.retried) {
               item.reject(err);
               finish();
@@ -89,7 +89,7 @@ class RequestHandler {
               finish(1e3 + this.client.options.restTimeOffset);
             }
           } else {
-            item.reject(err.status >= 400 && err.status < 500 ?
+            item.reject(err.statusCode >= 400 && err.statusCode < 500 ?
               new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
             finish();
           }
