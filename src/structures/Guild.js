@@ -634,6 +634,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    */
 
   /**
@@ -667,6 +668,11 @@ class Guild extends Base {
     if (data.splash) _data.splash = data.splash;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
+    }
+    if (typeof data.defaultMessageNotifications !== 'undefined') {
+      _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
+        DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
+        Number(data.defaultMessageNotifications);
     }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
