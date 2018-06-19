@@ -99,13 +99,13 @@ class MessageAttachment {
     this.proxyURL = data.proxy_url;
 
     /**
-     * The height of this attachment (if an image)
+     * The height of this attachment (if an image or video)
      * @type {?number}
      */
     this.height = data.height;
 
     /**
-     * The width of this attachment (if an image)
+     * The width of this attachment (if an image or video)
      * @type {?number}
      */
     this.width = data.width;
