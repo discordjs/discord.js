@@ -634,7 +634,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
-   * @property {string|number} [defaultMessageNotifications] The default message notifications
+   * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    */
 
   /**
