@@ -55,7 +55,7 @@ class Message {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.dataManager.newUser(data.author);
+    this.author = this.client.dataManager.newUser(data.author, !data.webhook_id);
 
     /**
      * Represents the author of the message as a guild member
