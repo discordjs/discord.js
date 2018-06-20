@@ -2,12 +2,9 @@ const DiscordAPIError = require('../DiscordAPIError');
 const { Events: { RATE_LIMIT }, browser } = require('../../util/Constants');
 
 function parseResponse(res) {
-  let method;
-  if (res.headers.get('content-type').startsWith('application/json')) method = 'json';
-  else if (browser) method = 'blob';
-  else method = 'buffer';
-
-  return res[method]();
+  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
+  if (browser) return res.blob();
+  return res.buffer();
 }
 
 class RequestHandler {
