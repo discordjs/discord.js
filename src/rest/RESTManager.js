@@ -12,7 +12,6 @@ class RESTManager {
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
-    this.timeDifferences = [];
     if (client.options.restSweepInterval > 0) {
       client.setInterval(() => {
         this.handlers.sweep(handler => handler._inactive);
@@ -22,15 +21,6 @@ class RESTManager {
 
   get api() {
     return routeBuilder(this);
-  }
-
-  get timeDifference() {
-    return Math.round(this.timeDifferences.reduce((a, b) => a + b, 0) / this.timeDifferences.length);
-  }
-
-  set timeDifference(ms) {
-    this.timeDifferences.unshift(ms);
-    if (this.timeDifferences.length > 5) this.timeDifferences.length = 5;
   }
 
   getAuth() {
