@@ -32,7 +32,7 @@ class RequestHandler {
       const finish = timeout => {
         if (timeout || this.limited) {
           if (!timeout) {
-            timeout = this.resetTime - Date.now() + this.client.options.restTimeOffset;
+            timeout = this.resetTime - Date.now() + this.manager.timeDifference + this.client.options.restTimeOffset;
           }
           if (!this.manager.globalTimeout && this.manager.globallyRateLimited) {
             this.manager.globalTimeout = setTimeout(() => {
@@ -52,6 +52,7 @@ class RequestHandler {
              * @param {Object} rateLimitInfo Object containing the rate limit info
              * @param {number} rateLimitInfo.timeout Timeout in ms
              * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
+             * @param {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
              * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
              * @param {string} rateLimitInfo.path Path used for request that triggered this event
              * @param {string} rateLimitInfo.route Route used for request that triggered this event
@@ -59,6 +60,7 @@ class RequestHandler {
             this.client.emit(RATE_LIMIT, {
               timeout,
               limit: this.limit,
+              timeDifference: this.manager.timeDifference,
               method: item.request.method,
               path: item.request.path,
               route: item.request.route,
@@ -72,8 +74,9 @@ class RequestHandler {
         if (res && res.headers) {
           if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
           this.limit = Number(res.headers.get('x-ratelimit-limit') || Infinity);
-          this.resetTime = Number(res.headers.get('x-ratelimit-reset') || 0);
+          this.resetTime = Number(res.headers.get('x-ratelimit-reset') || 0) * 1000;
           this.remaining = Number(res.headers.get('x-ratelimit-remaining') || 1);
+          this.manager.timeDifference = Date.now() - new Date(res.headers.get('date')).getTime();
         }
 
         if (res.ok) {
