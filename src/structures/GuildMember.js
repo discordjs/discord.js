@@ -48,6 +48,11 @@ class GuildMember {
   }
 
   setup(data) {
+      /**
+   * The ID of the member's avatar
+   * @type {string}
+   */
+    this.avatar = data.user.avatar;
     /**
      * Whether this member is deafened server-wide
      * @type {boolean}
@@ -144,6 +149,70 @@ class GuildMember {
   }
 
   /**
+   * A link to the member's avatar
+   * @type {string}
+   * @readonly
+   */
+  get avatarURL() {
+    return this.user.avatarURL;
+  }
+
+  /**
+   * A link to the member's default avatar
+   * @type {string}
+   * @readonly
+   */
+  get defaultAvatarURL() {
+    return this.user.defaultAvatarURL;
+  }
+
+  /**
+   * A discriminator based on username for the member
+   * @type {string}
+   * @readonly
+   */
+  get discriminator() {
+    return this.user.discriminator;
+  }
+
+  /**
+   * The DM between the client's user and this member
+   * @type {DMChannel}
+   * @readonly
+   */
+  get dmChannel() {
+    return this.user.dmChannel;
+  }
+
+  /**
+   * The note that is set for the member
+   * <warn>This is only available when using a user account.</warn>
+   * @type {?string}
+   * @readonly
+   */
+  get note() {
+    return this.user.note;
+  }
+
+  /**
+   * The Discord "tag" for this user
+   * @type {string}
+   * @readonly
+   */
+  get tag() {
+    return this.user.tag;
+  }
+
+  /**
+   * Whether or not the member is a bot
+   * @type {Boolean}
+   * @readonly
+   */
+  get bot() {
+    return this.user.bot;
+  }
+
+  /**
    * The role of the member with the highest position
    * @type {Role}
    * @readonly
@@ -231,6 +300,15 @@ class GuildMember {
   }
 
   /**
+   * The username of the member
+   * @type {string}
+   * @readonly
+   */
+  get username() {
+    return this.user.username;
+  }
+
+  /**
    * The nickname of the member, or their username if they don't have one
    * @type {string}
    * @readonly
@@ -278,6 +356,36 @@ class GuildMember {
     const clientMember = this.guild.member(this.client.user);
     if (!clientMember.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return false;
     return clientMember.highestRole.comparePositionTo(this.highestRole) > 0;
+  }
+
+  /**
+   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * @param {ChannelResolvable} channel The channel to get the time in
+   * @returns {number}
+   */
+  typingDurationIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
+  }
+
+  /**
+   * Check whether the user is typing in a channel.
+   * @param {ChannelResolvable} channel The channel to check in
+   * @returns {boolean}
+   */
+  typingIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id);
+  }
+
+  /**
+   * Get the time that the user started typing.
+   * @param {ChannelResolvable} channel The channel to get the time in
+   * @returns {?Date}
+   */
+  typingSinceIn(channel) {
+    channel = this.client.resolver.resolveChannel(channel);
+    return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
   }
 
   /**
