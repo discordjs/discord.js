@@ -1,5 +1,11 @@
 const DiscordAPIError = require('../DiscordAPIError');
-const { Events: { RATE_LIMIT } } = require('../../util/Constants');
+const { Events: { RATE_LIMIT }, browser } = require('../../util/Constants');
+
+function parseResponse(res) {
+  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
+  if (browser) return res.blob();
+  return res.buffer();
+}
 
 class RequestHandler {
   constructor(manager, handler) {
@@ -81,7 +87,7 @@ class RequestHandler {
         }
 
         if (res.ok) {
-          res.json().then(item.resolve, item.reject);
+          parseResponse(res).then(item.resolve, item.reject);
           finish();
           return;
         }
@@ -99,7 +105,7 @@ class RequestHandler {
             finish(1e3 + this.client.options.restTimeOffset);
           }
         } else {
-          res.json().then(data => {
+          parseResponse(res).then(data => {
             item.reject(res.status >= 400 && res.status < 500 ?
               new DiscordAPIError(item.path, data, item.method) : res);
           }, item.reject);
