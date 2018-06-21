@@ -21,7 +21,6 @@ class UserNoteUpdateAction extends Action {
 
 /**
  * Emitted whenever a note is updated.
- * <warn>This is only available when using a user account.</warn>
  * @event Client#userNoteUpdate
  * @param {User} user The user the note belongs to
  * @param {string} oldNote The note content before the update
