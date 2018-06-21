@@ -72,9 +72,12 @@ class RequestHandler {
         if (res && res.headers) {
           if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
           this.limit = Number(res.headers.get('x-ratelimit-limit') || Infinity);
-          // eslint-disable-next-line max-len
-          this.resetTime = (Number(res.headers.get('x-ratelimit-reset') || 0) * 1e3) - new Date(res.headers.get('date')).getTime() + Date.now();
-          this.remaining = Number(res.headers.get('x-ratelimit-remaining') || 1);
+          const reset = res.headers.get('x-ratelimit-reset');
+          this.resetTime = reset !== null ?
+            (Number(reset) * 1e3) - new Date(res.headers.get('date') || Date.now()).getTime() + Date.now() :
+            Date.now();
+          const remaining = res.headers.get('x-ratelimit-remaining');
+          this.remaining = remaining !== null ? Number(remaining) : 1;
         }
 
         if (res.ok) {
