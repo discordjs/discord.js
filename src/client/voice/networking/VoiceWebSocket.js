@@ -68,7 +68,7 @@ class VoiceWebSocket extends EventEmitter {
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
-    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 3 });
+    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 4 });
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -154,9 +154,10 @@ class VoiceWebSocket extends EventEmitter {
    */
   onPacket(packet) {
     switch (packet.op) {
+      case VoiceOPCodes.HELLO:
+        this.setHeartbeat(packet.d.heartbeat_interval);
+        break;
       case VoiceOPCodes.READY:
-        // *.75 to correct for discord devs taking longer to fix things than i do to release versions
-        this.setHeartbeat(packet.d.heartbeat_interval * 0.75);
         /**
          * Emitted once the voice WebSocket receives the ready packet.
          * @param {Object} packet The received packet
