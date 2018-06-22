@@ -11,13 +11,6 @@ const WebSocket = require('../../../WebSocket');
 class VoiceWebSocket extends EventEmitter {
   constructor(connection) {
     super();
-
-    /**
-     * The client of this voice WebSocket
-     * @type {Client}
-     */
-    this.client = connection.voiceManager.client;
-
     /**
      * The Voice Connection that this WebSocket serves
      * @type {VoiceConnection}
@@ -33,6 +26,14 @@ class VoiceWebSocket extends EventEmitter {
     this.connect();
     this.dead = false;
     this.connection.on('closing', this.shutdown.bind(this));
+  }
+
+  /**
+   * The client of this voice WebSocket
+   * @type {Client}
+   */
+  get client() {
+    return this.connection.voiceManager.client;
   }
 
   shutdown() {

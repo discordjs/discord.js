@@ -37,12 +37,6 @@ class VoiceConnection extends EventEmitter {
     this.voiceManager = voiceManager;
 
     /**
-     * The client that instantiated this connection
-     * @type {Client}
-     */
-    this.client = voiceManager.client;
-
-    /**
      * The voice channel this connection is currently serving
      * @type {VoiceChannel}
      */
@@ -114,6 +108,14 @@ class VoiceConnection extends EventEmitter {
     this.sockets = {};
 
     this.authenticate();
+  }
+
+  /**
+   * The client that instantiated this connection
+   * @type {Client}
+   */
+  get client() {
+    return this.voiceManager.client;
   }
 
   /**
