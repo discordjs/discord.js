@@ -107,7 +107,7 @@ class Guild extends Base {
     this.region = data.region;
 
     /**
-     * The full amount of members in this guild as of `READY`
+     * The full amount of members in this guild
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;
