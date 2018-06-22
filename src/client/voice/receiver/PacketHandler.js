@@ -11,11 +11,13 @@ class PacketHandler extends EventEmitter {
     this.streams = new Map();
   }
 
+  get connection() {
+    return this.receiver.connection;
+  }
+
   _stoppedSpeaking(userID) {
-    if (this.streams.has(userID)) {
-      const { stream, end } = this.streams.get(userID);
-      if (end === 'silence') stream.push(null);
-    }
+    const streamInfo = this.streams.get(userID);
+    if (streamInfo && streamInfo.end === 'silence') streamInfo.stream.push(null);
   }
 
   makeStream(user, end) {
@@ -63,7 +65,7 @@ class PacketHandler extends EventEmitter {
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.receiver.connection.ssrcMap.get(ssrc); }
+  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
 
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);

@@ -9,20 +9,20 @@ const WebSocket = require('../../../WebSocket');
  * @private
  */
 class VoiceWebSocket extends EventEmitter {
-  constructor(voiceConnection) {
+  constructor(connection) {
     super();
 
     /**
      * The client of this voice WebSocket
      * @type {Client}
      */
-    this.client = voiceConnection.voiceManager.client;
+    this.client = connection.voiceManager.client;
 
     /**
      * The Voice Connection that this WebSocket serves
      * @type {VoiceConnection}
      */
-    this.voiceConnection = voiceConnection;
+    this.connection = connection;
 
     /**
      * How many connection attempts have been made
@@ -32,7 +32,7 @@ class VoiceWebSocket extends EventEmitter {
 
     this.connect();
     this.dead = false;
-    this.voiceConnection.on('closing', this.shutdown.bind(this));
+    this.connection.on('closing', this.shutdown.bind(this));
   }
 
   shutdown() {
@@ -68,7 +68,7 @@ class VoiceWebSocket extends EventEmitter {
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
-    this.ws = WebSocket.create(`wss://${this.voiceConnection.authentication.endpoint}/`, { v: 4 });
+    this.ws = WebSocket.create(`wss://${this.connection.authentication.endpoint}/`, { v: 4 });
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -110,10 +110,10 @@ class VoiceWebSocket extends EventEmitter {
     this.sendPacket({
       op: OPCodes.DISPATCH,
       d: {
-        server_id: this.voiceConnection.channel.guild.id,
+        server_id: this.connection.channel.guild.id,
         user_id: this.client.user.id,
-        token: this.voiceConnection.authentication.token,
-        session_id: this.voiceConnection.authentication.sessionID,
+        token: this.connection.authentication.token,
+        session_id: this.connection.authentication.sessionID,
       },
     }).catch(() => {
       this.emit('error', new Error('VOICE_JOIN_SOCKET_CLOSED'));
@@ -176,6 +176,15 @@ class VoiceWebSocket extends EventEmitter {
          * @event VoiceWebSocket#sessionDescription
          */
         this.emit('sessionDescription', packet.d.mode, key);
+        break;
+      case VoiceOPCodes.CLIENT_CONNECT:
+        this.connection.ssrcMap.set(+packet.d.audio_ssrc, packet.d.user_id);
+        break;
+      case VoiceOPCodes.CLIENT_DISCONNECT:
+        for (const receiver of this.connection.receivers) {
+          const streamInfo = receiver.packets.streams.get(packet.d.user_id);
+          if (streamInfo) streamInfo.stream.push(null);
+        }
         break;
       case VoiceOPCodes.SPEAKING:
         /**
