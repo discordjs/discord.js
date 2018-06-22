@@ -1,8 +1,6 @@
-const Util = require('../util/Util');
-
 // Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000;
-let INCREMENT = 0;
+const EPOCH = 1420070400000n;
+let INCREMENT = 0n;
 
 /**
  * A container for useful snowflake-related methods.
@@ -21,7 +19,7 @@ class SnowflakeUtil {
    *  000000111011000111100001101001000101000000  00001  00000  000000000000
    *       number of ms since Discord epoch       worker  pid    increment
    * ```
-   * @typedef {string} Snowflake
+   * @typedef {bigint} Snowflake
    */
 
   /**
@@ -37,10 +35,8 @@ class SnowflakeUtil {
         `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`
       );
     }
-    if (INCREMENT >= 4095) INCREMENT = 0;
-    // eslint-disable-next-line max-len
-    const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
-    return Util.binaryToID(BINARY);
+    if (INCREMENT >= 4095n) INCREMENT = 0n;
+    return ((BigInt(timestamp) - EPOCH) << 22n) + (1n << 17n) + (INCREMENT++);
   }
 
   /**
@@ -60,13 +56,12 @@ class SnowflakeUtil {
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */
   static deconstruct(snowflake) {
-    const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');
     const res = {
-      timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
-      workerID: parseInt(BINARY.substring(42, 47), 2),
-      processID: parseInt(BINARY.substring(47, 52), 2),
-      increment: parseInt(BINARY.substring(52, 64), 2),
-      binary: BINARY,
+      timestamp: Number((snowflake >> 22n) + EPOCH),
+      workerID: Number((snowflake >> 17n) & 0x1fn),
+      processID: Number((snowflake >> 12n) & 0x1fn),
+      increment: Number(snowflake & 0xfffn),
+      binary: snowflake.toString(2)
     };
     Object.defineProperty(res, 'date', {
       get: function get() { return new Date(this.timestamp); },

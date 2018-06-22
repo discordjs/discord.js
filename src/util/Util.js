@@ -33,10 +33,14 @@ class Util {
 
       const element = obj[prop];
       const elemIsObj = isObject(element);
-      const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+      let valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
+      if (typeof valueOf === 'bigint') valueOf = valueOf.toString();
+
+      // If it's a bigint
+      if (typeof element === 'bigint') out[newProp] = element.toString();
       // If it's a collection, make the array of keys
-      if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      else if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys()).map(String);
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value

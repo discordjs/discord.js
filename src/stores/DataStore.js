@@ -27,23 +27,23 @@ class DataStore extends Collection {
 
   /**
    * Resolves a data entry to a data Object.
-   * @param {string|Object} idOrInstance The id or instance of something in this DataStore
+   * @param {bigint|Object} idOrInstance The id or instance of something in this DataStore
    * @returns {?Object} An instance from this DataStore
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
-    if (typeof idOrInstance === 'string') return this.get(idOrInstance) || null;
+    if (typeof idOrInstance === 'bigint') return this.get(idOrInstance) || null;
     return null;
   }
 
   /**
    * Resolves a data entry to a instance ID.
-   * @param {string|Instance} idOrInstance The id or instance of something in this DataStore
+   * @param {bigint|Instance} idOrInstance The id or instance of something in this DataStore
    * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string') return idOrInstance;
+    if (typeof idOrInstance === 'bigint') return idOrInstance;
     return null;
   }
 }

@@ -1,7 +1,7 @@
 {
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2018
   },
   "env": {
     "es6": true,
@@ -10,6 +10,9 @@
   "overrides": [
     { "files": ["*.browser.js"], "env": { "browser": true } }
   ],
+  "globals": {
+    "BigInt": false
+  },
   "rules": {
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",

@@ -43,7 +43,7 @@ class ReadyHandler extends AbstractHandler {
 
     if (!client.users.has('1')) {
       client.users.add({
-        id: '1',
+        id: 1n,
         username: 'Clyde',
         discriminator: '0000',
         avatar: 'https://discordapp.com/assets/f78426a064bc9dd24847519259bc42af.png',
