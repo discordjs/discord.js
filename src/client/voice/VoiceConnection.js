@@ -137,7 +137,7 @@ class VoiceConnection extends EventEmitter {
     this.sockets.ws.sendPacket({
       op: VoiceOPCodes.SPEAKING,
       d: {
-        speaking: this.speaking,
+        speaking: this.speaking ? 1 : 0,
         delay: 0,
         ssrc: this.authentication.ssrc,
       },
@@ -426,6 +426,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   onSpeaking({ user_id, ssrc, speaking }) {
+    speaking = Boolean(speaking);
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
     this.ssrcMap.set(+ssrc, user);
