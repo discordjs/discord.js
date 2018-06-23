@@ -271,6 +271,17 @@ class GuildMember extends Base {
   }
 
   /**
+   * Checks if this member has a role
+   * @param {Role} role The role to check for
+   * @returns {boolean}
+   */
+  hasRole(role) {
+    role = this.guild.roles.resolve(role);
+    if (!role) throw new Error('GUILD_ROLE_ESOLVE');
+    return this.roles.array().includes(role);
+  }
+
+  /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
