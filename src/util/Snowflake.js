@@ -1,5 +1,3 @@
-// Discord epoch (2015-01-01T00:00:00.000Z)
-const EPOCH = 1420070400000n;
 let INCREMENT = 0n;
 
 /**
@@ -36,7 +34,7 @@ class SnowflakeUtil {
       );
     }
     if (INCREMENT >= 4095n) INCREMENT = 0n;
-    return ((BigInt(timestamp) - EPOCH) << 22n) + (1n << 17n) + (INCREMENT++);
+    return ((BigInt(timestamp) - SnowflakeUtil.EPOCH) << 22n) + (1n << 17n) + (INCREMENT++);
   }
 
   /**
@@ -57,7 +55,7 @@ class SnowflakeUtil {
    */
   static deconstruct(snowflake) {
     const res = {
-      timestamp: Number((snowflake >> 22n) + EPOCH),
+      timestamp: Number((snowflake >> 22n) + SnowflakeUtil.EPOCH),
       workerID: Number((snowflake >> 17n) & 0x1fn),
       processID: Number((snowflake >> 12n) & 0x1fn),
       increment: Number(snowflake & 0xfffn),
@@ -70,5 +68,8 @@ class SnowflakeUtil {
     return res;
   }
 }
+
+// Discord epoch (2015-01-01T00:00:00.000Z)
+SnowflakeUtil.EPOCH = 1420070400000n;
 
 module.exports = SnowflakeUtil;
