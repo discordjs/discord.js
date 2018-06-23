@@ -29,7 +29,7 @@ class RequestHandler {
   }
 
   get _inactive() {
-    return this.queue.length === 0 && !this.limited && Date.now() > this.resetTime && this.busy !== true;
+    return this.queue.length === 0 && !this.limited && this.busy !== true;
   }
 
   /* eslint-disable prefer-promise-reject-errors */
@@ -78,8 +78,12 @@ class RequestHandler {
         if (res && res.headers) {
           if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
           this.limit = Number(res.headers.get('x-ratelimit-limit') || Infinity);
-          this.resetTime = Number(res.headers.get('x-ratelimit-reset') || 0);
-          this.remaining = Number(res.headers.get('x-ratelimit-remaining') || 1);
+          const reset = res.headers.get('x-ratelimit-reset');
+          this.resetTime = reset !== null ?
+            (Number(reset) * 1e3) - new Date(res.headers.get('date') || Date.now()).getTime() + Date.now() :
+            Date.now();
+          const remaining = res.headers.get('x-ratelimit-remaining');
+          this.remaining = remaining !== null ? Number(remaining) : 1;
         }
 
         if (res.ok) {
