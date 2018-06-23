@@ -32,6 +32,7 @@ class DataStore extends Collection {
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
+    // eslint-disable-next-line valid-typeof
     if (typeof idOrInstance === 'bigint') return this.get(idOrInstance) || null;
     return null;
   }
@@ -43,6 +44,7 @@ class DataStore extends Collection {
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
+    // eslint-disable-next-line valid-typeof
     if (typeof idOrInstance === 'bigint') return idOrInstance;
     return null;
   }

@@ -35,9 +35,11 @@ class Util {
       const elemIsObj = isObject(element);
       let valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
+      // eslint-disable-next-line valid-typeof
       if (typeof valueOf === 'bigint') valueOf = valueOf.toString();
 
       // If it's a bigint
+      // eslint-disable-next-line valid-typeof
       if (typeof element === 'bigint') out[newProp] = element.toString();
       // If it's a collection, make the array of keys
       else if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys()).map(String);
