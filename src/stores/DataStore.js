@@ -1,5 +1,4 @@
 const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
 let Structures;
 
 /**
@@ -16,17 +15,13 @@ class DataStore extends Collection {
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    const existing = this.get(Snowflake.coerce(id || data.id));
+    const existing = this.get(id || data.id);
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
     if (cache) this.set(id || entry.id, entry);
     return entry;
   }
-
-  remove(key) { return this.delete(Snowflake.coerce(key)); }
-
-  get(key) { return this.get(Snowflake.coerce(key)); }
 
   /**
    * Resolves a data entry to a data Object.
