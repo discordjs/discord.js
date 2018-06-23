@@ -695,7 +695,7 @@ class Guild extends Base {
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
-  setDefaultMessageNotification(defaultMessageNotifications, reason) {
+  setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications }, reason);
   }
   /* eslint-enable max-len */
