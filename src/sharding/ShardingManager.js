@@ -22,6 +22,7 @@ class ShardingManager extends EventEmitter {
    * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
+   * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
   constructor(file, options = {}) {
@@ -30,6 +31,7 @@ class ShardingManager extends EventEmitter {
       totalShards: 'auto',
       respawn: true,
       shardArgs: [],
+      execArgv: [],
       token: null,
     }, options);
 
@@ -71,6 +73,12 @@ class ShardingManager extends EventEmitter {
     this.shardArgs = options.shardArgs;
 
     /**
+     * An array of arguments to pass to the executable
+     * @type {string[]}
+     */
+    this.execArgv = options.execArgv;
+
+    /**
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
@@ -90,7 +98,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Shard}
    */
   createShard(id = this.shards.size) {
-    const shard = new Shard(this, id, this.shardArgs);
+    const shard = new Shard(this, id);
     this.shards.set(id, shard);
     /**
      * Emitted upon creating a shard.
