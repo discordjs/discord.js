@@ -70,6 +70,9 @@ class SnowflakeUtil {
 }
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
-SnowflakeUtil.EPOCH = 1420070400000n;
+Object.defineProperty(SnowflakeUtil, 'EPOCH', {
+  value: 1420070400000n,
+  writable: false
+});
 
 module.exports = SnowflakeUtil;
