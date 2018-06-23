@@ -23,6 +23,8 @@ class DataStore extends Collection {
     return entry;
   }
 
+  remove(key) { return this.delete(key); }
+
   /**
    * Resolves a data entry to a data Object.
    * @param {bigint|Object} idOrInstance The id or instance of something in this DataStore
