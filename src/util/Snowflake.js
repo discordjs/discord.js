@@ -56,9 +56,9 @@ class SnowflakeUtil {
   static deconstruct(snowflake) {
     const res = {
       timestamp: Number((snowflake >> 22n) + SnowflakeUtil.EPOCH),
-      workerID: Number((snowflake >> 17n) & 0x1fn),
-      processID: Number((snowflake >> 12n) & 0x1fn),
-      increment: Number(snowflake & 0xfffn),
+      workerID: Number((snowflake >> 17n) & 0b11111n),
+      processID: Number((snowflake >> 12n) & 0b11111n),
+      increment: Number(snowflake & 0b111111111111n),
       binary: snowflake.toString(2)
     };
     Object.defineProperty(res, 'date', {

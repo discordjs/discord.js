@@ -1,9 +1,11 @@
 const { browser } = require('./util/Constants');
 const querystring = require('querystring');
+let earl = false;
 try {
   var erlpack = require('erlpack');
 } catch (err) {
   erlpack = require('earl');
+  earl = true;
 }
 
 if (browser) {
@@ -21,7 +23,7 @@ exports.encoding = 'etf';
 exports.pack = erlpack.pack;
 
 exports.unpack = data => {
-  if (!(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
+  if (!earl && !(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
   return erlpack.unpack(data);
 };
 

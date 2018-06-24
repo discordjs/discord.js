@@ -3,14 +3,14 @@ const { Events: { RATE_LIMIT }, browser } = require('../../util/Constants');
 const id = /(?:^|_)id$/;
 
 function parseResponse(res) {
-  if (res.headers.get('content-type').startsWith('application/json')) return res.json().then(bigIntify);
+  if (res.headers.get('content-type').startsWith('application/json')) return res.json().then(toBigInt);
   if (browser) return res.blob();
   return res.buffer();
 }
 
-function bigIntify(data) {
+function toBigInt(data) {
   for (const [key, value] of Object.entries(data)) {
-    if (value && value.constructor === Object) bigIntify(value);
+    if (value && value.constructor === Object) toBigInt(value);
     if (id.test(key)) data[key] = BigInt(value);
   }
   return data;
