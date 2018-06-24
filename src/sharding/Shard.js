@@ -34,13 +34,13 @@ class Shard extends EventEmitter {
      * Arguments for the shard's process
      * @type {string[]}
      */
-    this.args = manager.args;
+    this.args = manager.shardArgs || [];
 
     /**
      * Arguments for the shard's process executable
      * @type {string[]}
      */
-    this.execArgv = manager.execArgv;
+    this.execArgv = manager.execArgv || [];
 
     /**
      * Environment variables for the shard's process
