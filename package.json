@@ -39,7 +39,7 @@
     "pako": "^1.0.0",
     "prism-media": "^0.3.0",
     "tweetnacl": "^1.0.0",
-    "ws": "^4.0.0"
+    "ws": "^5.2.0"
   },
   "peerDependencies": {
     "bufferutil": "^3.0.0",
