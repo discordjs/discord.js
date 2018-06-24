@@ -1,6 +1,6 @@
 const DiscordAPIError = require('../DiscordAPIError');
 const { Events: { RATE_LIMIT }, browser } = require('../../util/Constants');
-const id = /id$/;
+const id = /(?:^|_)id$/;
 
 function parseResponse(res) {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json().then(bigIntify);
