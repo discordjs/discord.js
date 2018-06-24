@@ -1,11 +1,10 @@
 const { browser } = require('./util/Constants');
 const querystring = require('querystring');
-let earl = false, erlpack;
+let erlpack;
 try {
   erlpack = require('erlpack');
 } catch (err) {
   erlpack = require('earl');
-  earl = true;
 }
 
 if (browser) {
@@ -22,10 +21,7 @@ exports.encoding = 'etf';
 
 exports.pack = erlpack.pack;
 
-exports.unpack = data => {
-  if (!earl && !(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
-  return erlpack.unpack(data);
-};
+exports.unpack = data => erlpack.unpack(data);
 
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');
