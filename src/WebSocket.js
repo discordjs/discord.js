@@ -1,8 +1,8 @@
 const { browser } = require('./util/Constants');
 const querystring = require('querystring');
-let earl = false;
+let earl = false, erlpack;
 try {
-  var erlpack = require('erlpack');
+  erlpack = require('erlpack');
 } catch (err) {
   erlpack = require('earl');
   earl = true;
