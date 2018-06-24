@@ -2,8 +2,9 @@ const { browser } = require('./util/Constants');
 const querystring = require('querystring');
 try {
   var erlpack = require('erlpack');
-  if (!erlpack.pack) erlpack = null;
-} catch (err) {} // eslint-disable-line no-empty
+} catch (err) {
+  erlpack = require('earl');
+}
 
 if (browser) {
   exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
@@ -15,12 +16,11 @@ if (browser) {
   }
 }
 
-exports.encoding = erlpack ? 'etf' : 'json';
+exports.encoding = 'etf';
 
-exports.pack = erlpack ? erlpack.pack : JSON.stringify;
+exports.pack = erlpack.pack;
 
 exports.unpack = data => {
-  if (!erlpack || data[0] === '{') return JSON.parse(data);
   if (!(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
   return erlpack.unpack(data);
 };

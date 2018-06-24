@@ -1,5 +1,4 @@
 const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
 let Structures;
 
 /**
@@ -16,7 +15,7 @@ class DataStore extends Collection {
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    const existing = this.get(Snowflake.coerce(id || data.id));
+    const existing = this.get(id || data.id);
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
@@ -24,33 +23,29 @@ class DataStore extends Collection {
     return entry;
   }
 
-  remove(key) { return this.delete(Snowflake.coerce(key)); }
-
-  get(key) { return this.get(Snowflake.coerce(key)); }
+  remove(key) { return this.delete(key); }
 
   /**
    * Resolves a data entry to a data Object.
-   * @param {string|Object} idOrInstance The id or instance of something in this DataStore
+   * @param {bigint|Object} idOrInstance The id or instance of something in this DataStore
    * @returns {?Object} An instance from this DataStore
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
     // eslint-disable-next-line valid-typeof
-    if (typeof idOrInstance === 'bigint' || typeof idOrInstance === 'string') {
-      return this.get(idOrInstance) || null;
-    }
+    if (typeof idOrInstance === 'bigint') return this.get(idOrInstance) || null;
     return null;
   }
 
   /**
    * Resolves a data entry to a instance ID.
-   * @param {string|Instance} idOrInstance The id or instance of something in this DataStore
+   * @param {bigint|Instance} idOrInstance The id or instance of something in this DataStore
    * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
     // eslint-disable-next-line valid-typeof
-    if (typeof idOrInstance === 'string' || typeof idOrInstance === 'bigint') return idOrInstance;
+    if (typeof idOrInstance === 'bigint') return idOrInstance;
     return null;
   }
 }

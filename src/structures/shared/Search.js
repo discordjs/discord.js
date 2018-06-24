@@ -1,4 +1,5 @@
 const Util = require('../../util/Util');
+const Snowflake = require('../../util/Snowflake');
 const { TypeError } = require('../../errors');
 
 /**
@@ -40,17 +41,17 @@ module.exports = function search(target, options) {
   if (typeof options === 'string') options = { content: options };
   if (options.before) {
     if (!(options.before instanceof Date)) options.before = new Date(options.before);
-    options.maxID = Util.binaryToID((options.before.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
+    options.maxID = (BigInt(options.before.getTime()) - Snowflake.EPOCH) << 22n;
   }
   if (options.after) {
     if (!(options.after instanceof Date)) options.after = new Date(options.after);
-    options.minID = Util.binaryToID((options.after.getTime() - 14200704e5).toString(2) + '0'.repeat(22));
+    options.minID = (BigInt(options.after.getTime()) - Snowflake.EPOCH) << 22n;
   }
   if (options.during) {
     if (!(options.during instanceof Date)) options.during = new Date(options.during);
-    const t = options.during.getTime() - 14200704e5;
-    options.minID = Util.binaryToID(t.toString(2) + '0'.repeat(22));
-    options.maxID = Util.binaryToID((t + 864e5).toString(2) + '0'.repeat(22));
+    const t = options.during.getTime();
+    options.minID = (BigInt(t) - Snowflake.EPOCH) << 22n;
+    options.maxID = (BigInt(t + 864e5) - Snowflake.EPOCH) << 22n;
   }
   if (options.channel) options.channel = target.client.channels.resolveID(options.channel);
   if (options.author) options.author = target.client.users.resolveID(options.author);

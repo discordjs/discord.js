@@ -1,10 +1,19 @@
 const DiscordAPIError = require('../DiscordAPIError');
 const { Events: { RATE_LIMIT }, browser } = require('../../util/Constants');
+const id = /(?:^|_)id$/;
 
 function parseResponse(res) {
-  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
+  if (res.headers.get('content-type').startsWith('application/json')) return res.json().then(bigIntify);
   if (browser) return res.blob();
   return res.buffer();
+}
+
+function bigIntify(data) {
+  for (const [key, value] of Object.entries(data)) {
+    if (value && value.constructor === Object) bigIntify(value);
+    if (id.test(key)) data[key] = BigInt(value);
+  }
+  return data;
 }
 
 class RequestHandler {
