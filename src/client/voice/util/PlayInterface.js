@@ -47,7 +47,7 @@ class PlayInterface {
    * connection.play('/home/hydrabolt/audio.mp3', { volume: 0.5 });
    * @example
    * // Play a ReadableStream
-   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { filter: 'audioonly' }));
+   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { quality: 'highestaudio' }));
    * @example
    * // Play a voice broadcast
    * const broadcast = client.createVoiceBroadcast();
