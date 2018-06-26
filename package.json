@@ -52,7 +52,7 @@
   "devDependencies": {
     "@types/node": "^10.0.3",
     "discord.js-docgen": "discordjs/docgen",
-    "eslint": "^4.17.0",
+    "eslint": "^5.0.1",
     "json-filter-loader": "^1.0.0",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^4.5.0",
