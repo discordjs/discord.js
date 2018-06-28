@@ -744,3 +744,32 @@ function keyMirror(arr) {
   for (const value of arr) tmp[value] = value;
   return tmp;
 }
+
+/**
+ * Lists of all required permissions for each permission
+ * @type {{CREATE_INSTANT_INVITE: string[], ADD_REACTIONS: string[], SEND_MESSAGES: string[], SEND_TTS_MESSAGES: string[], MANAGE_MESSAGES: string[], EMBED_LINKS: string[], ATTACH_FILES: string[], READ_MESSAGE_HISTORY: string[], MENTION_EVERYONE: string[], USE_EXTERNAL_EMOJIS: string[], CONNECT: string[], SPEAK: string[], MUTE_MEMBERS: string[], DEAFEN_MEMBERS: string[], MOVE_MEMBERS: string[], USE_VAD: string[], MANAGE_WEBHOOKS: string[]}}
+ */
+exports.requiredChannelPerms = {
+  CREATE_INSTANT_INVITE: ['VIEW_CHANNEL', 'CREATE_INSTANT_INVITE'],
+  ADD_REACTIONS        : ['VIEW_CHANNEL', 'ADD_REACTIONS', 'ADD_REACTIONS'],
+  SEND_MESSAGES        : ['VIEW_CHANNEL', 'SEND_MESSAGES'],
+  SEND_TTS_MESSAGES    : ['VIEW_CHANNEL', 'SEND_MESSAGES', 'SEND_TTS_MESSAGES'],
+  MANAGE_MESSAGES      : ['VIEW_CHANNEL', 'MANAGE_MESSAGES'],
+  EMBED_LINKS          : ['VIEW_CHANNEL', 'SEND_MESSAGES', 'EMBED_LINKS'],
+  ATTACH_FILES         : ['VIEW_CHANNEL', 'SEND_MESSAGES', 'ATTACH_FILES'],
+  READ_MESSAGE_HISTORY : ['VIEW_CHANNEL', 'READ_MESSAGE_HISTORY'],
+  MENTION_EVERYONE     : ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MENTION_EVERYONE'],
+  // NOTE: Sending a message with an external emoji will require SEND_MESSAGES and reacting with an external emoji will require ADD_REACTIONS
+  USE_EXTERNAL_EMOJIS  : ['VIEW_CHANNEL'],
+  CONNECT              : ['VIEW_CHANNEL', 'CONNECT'],
+  SPEAK                : ['VIEW_CHANNEL', 'SPEAK'],
+  MUTE_MEMBERS         : ['VIEW_CHANNEL', 'MUTE_MEMBERS'],
+  DEAFEN_MEMBERS       : ['VIEW_CHANNEL', 'DEAFEN_MEMBERS'],
+  MOVE_MEMBERS         : ['VIEW_CHANNEL', 'MOVE_MEMBERS'],
+  USE_VAD              : ['VIEW_CHANNEL', 'USE_VAD'],
+  MANAGE_WEBHOOKS      : ['VIEW_CHANNEL', 'MANAGE_WEBHOOKS'],
+};
+
+exports.implicitPerms = {
+  MANAGE_ROLES: ['MANAGE_CHANNELS']
+};
