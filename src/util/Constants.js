@@ -1,7 +1,6 @@
 const Package = exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
 const browser = exports.browser = typeof window !== 'undefined';
-const { FLAGS } = require('./Permissions');
 
 /**
  * Options for a client.
@@ -745,5 +744,3 @@ function keyMirror(arr) {
   for (const value of arr) tmp[value] = value;
   return tmp;
 }
-
-
