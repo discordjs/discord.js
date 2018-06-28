@@ -1,4 +1,5 @@
 const { RangeError } = require('../errors');
+const { requiredChannelPerms, implicitPerms } = require('./Constants');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -23,12 +24,15 @@ class Permissions {
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
-  has(permission, checkAdmin = true) {
+  has(permission, checkAdmin = true, checkRequired = false) {
     if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    return (this.bitfield & permission) === permission;
+    if (!checkRequired) return (this.bitfield & permission) === permission;
+    if (requiredChannelPerms[permission]) return requiredChannelPerms[permission].every(p => this.has(p, checkAdmin));
   }
+
+
 
   /**
    * Gets all given permissions that are missing from the bitfield.
