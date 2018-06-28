@@ -20,8 +20,9 @@ class Permissions {
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [checkRequired=false] Whether to check all required permissions for this permission as well
+   * @param {Object} [options] Options
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {boolean} [options.checkRequired=false] Whether to check all required permissions for this permission as well
    * @returns {boolean}
    */
   has(permission, { checkAdmin = true, checkRequired = false } = {}) {
