@@ -32,8 +32,6 @@ class Permissions {
     if (requiredChannelPerms[permission]) return requiredChannelPerms[permission].every(p => this.has(p, checkAdmin));
   }
 
-
-
   /**
    * Gets all given permissions that are missing from the bitfield.
    * @param {PermissionResolvable} permissions Permission(s) to check for
