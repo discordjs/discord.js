@@ -1,5 +1,4 @@
 const { RangeError } = require('../errors');
-const { requiredChannelPerms, implicitPerms } = require('./Constants');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -25,12 +24,12 @@ class Permissions {
    * @param {boolean} [checkRequired=false] Whether to check all required permissions for this permission as well
    * @returns {boolean}
    */
-  has(permission, { checkAdmin = true, checkRequired = false }) {
+  has(permission, { checkAdmin = true, checkRequired = false } = {}) {
     if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    const requiredPermissions = requiredChannelPerms[permission];
-    const implicitPermission = implicitPerms[permission];
+    const requiredPermissions = Permissions.REQUIRED_CHANNEL_PERMS[permission];
+    const implicitPermission = Permissions.IMPLICIT_PERMS[permission];
     if (!checkRequired || (!requiredPermissions && !implicitPermission)) {
       return (this.bitfield & permission) === permission;
     }
@@ -229,7 +228,7 @@ Permissions.DEFAULT = 104324097;
  * Lists of all required permissions for each permission
  * @typedef Object<PermissionResolvable, PermissionResolvable[]>
  */
-Permissions.requiredChannelPerms = {
+Permissions.REQUIRED_CHANNEL_PERMS = {
   [Permissions.FLAGS.CREATE_INSTANT_INVITE]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CREATE_INSTANT_INVITE],
   [Permissions.FLAGS.ADD_REACTIONS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.ADD_REACTIONS, Permissions.FLAGS.ADD_REACTIONS],
   [Permissions.FLAGS.SEND_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES],
@@ -256,7 +255,7 @@ Permissions.requiredChannelPerms = {
  * Lists all the permissions that automatically grants each permission
  * @type String<PermissionResolvable>
  */
-Permissions.implicitPerms = {
+Permissions.IMPLICIT_PERMS = {
   [Permissions.FLAGS.MANAGE_CHANNELS]: Permissions.FLAGS.MANAGE_ROLES,
   [Permissions.FLAGS.CHANGE_NICKNAME]: Permissions.FLAGS.MANAGE_NICKNAMES,
 };
