@@ -223,42 +223,6 @@ class TextBasedChannel {
   }
 
   /**
-   * Whether or not the client has the permission to view a channel
-   * @returns {boolean}
-   * @readonly
-   */
-  get readable() {
-    return !this.guild || this.permissionsFor(this.guild.me).has('VIEW_CHANNEL');
-  }
-
-  /**
-   * Whether or not the client has all necessary permissions to send a message
-   * @returns {boolean}
-   * @readonly
-   */
-  get sendable() {
-    return !this.guild || (this.readable && this.permissionsFor(this.guild.me).has('SEND_MESSAGES'));
-  }
-
-  /**
-   * Whether or not the client has all necessary permissions to send an attachment
-   * @returns {boolean}
-   * @readonly
-   */
-  get attachable() {
-      return !this.guild || (this.sendable && this.permissionsFor(this.guild.me).has('ATTACH_FILES'));
-  }
-
-  /**
-   * Whether or not the client has all necessary permissions to send an embed
-   * @returns {boolean}
-   * @readonly
-   */
-  get embedable() {
-      return !this.guild || (this.sendable && this.permissionsFor(this.guild.me).has('EMBED_LINKS'));
-  }
-
-  /**
    * Creates a Message Collector.
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
