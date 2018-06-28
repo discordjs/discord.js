@@ -25,12 +25,17 @@ class Permissions {
    * @param {boolean} [checkRequired=false] Whether to check all required permissions for this permission as well
    * @returns {boolean}
    */
-  has(permission, checkAdmin = true, checkRequired = false) {
+  has(permission, { checkAdmin = true, checkRequired = false }) {
     if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    if (!checkRequired) return (this.bitfield & permission) === permission;
-    if (requiredChannelPerms[permission]) return requiredChannelPerms[permission].every(p => this.has(p, checkAdmin));
+    const requiredPermissions = requiredChannelPerms[permission];
+    const implicitPermission = implicitPerms[permission];
+    if (!checkRequired || (!requiredPermissions && !implicitPermission)) {
+      return (this.bitfield & permission) === permission;
+    }
+    if (requiredPermissions) return requiredPermissions.every(p => this.has(p, checkAdmin));
+    return this.has(implicitPermission, checkAdmin);
   }
 
   /**
