@@ -748,7 +748,7 @@ function keyMirror(arr) {
 
 /**
  * Lists of all required permissions for each permission
- * @type {{CREATE_INSTANT_INVITE: string[], ADD_REACTIONS: string[], SEND_MESSAGES: string[], SEND_TTS_MESSAGES: string[], MANAGE_MESSAGES: string[], EMBED_LINKS: string[], ATTACH_FILES: string[], READ_MESSAGE_HISTORY: string[], MENTION_EVERYONE: string[], USE_EXTERNAL_EMOJIS: string[], CONNECT: string[], SPEAK: string[], MUTE_MEMBERS: string[], DEAFEN_MEMBERS: string[], MOVE_MEMBERS: string[], USE_VAD: string[], MANAGE_WEBHOOKS: string[]}}
+ * @typedef Object<PermissionFlag, PermissionFlag[]>
  */
 exports.requiredChannelPerms = {
   CREATE_INSTANT_INVITE: [FLAGS.VIEW_CHANNEL, FLAGS.CREATE_INSTANT_INVITE],
