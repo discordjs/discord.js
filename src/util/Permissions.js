@@ -225,4 +225,40 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  */
 Permissions.DEFAULT = 104324097;
 
+/**
+ * Lists of all required permissions for each permission
+ * @typedef Object<PermissionResolvable, PermissionResolvable[]>
+ */
+Permissions.requiredChannelPerms = {
+  [Permissions.FLAGS.CREATE_INSTANT_INVITE]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CREATE_INSTANT_INVITE],
+  [Permissions.FLAGS.ADD_REACTIONS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.ADD_REACTIONS, Permissions.FLAGS.ADD_REACTIONS],
+  [Permissions.FLAGS.SEND_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES],
+  [Permissions.FLAGS.SEND_TTS_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.SEND_TTS_MESSAGES],
+  [Permissions.FLAGS.MANAGE_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MANAGE_MESSAGES],
+  [Permissions.FLAGS.EMBED_LINKS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.EMBED_LINKS],
+  [Permissions.FLAGS.ATTACH_FILES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.ATTACH_FILES],
+  [Permissions.FLAGS.READ_MESSAGE_HISTORY]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.READ_MESSAGE_HISTORY],
+  [Permissions.FLAGS.MENTION_EVERYONE]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.MENTION_EVERYONE],
+  /* NOTE: Sending a message with an external emoji will require SEND_MESSAGES and reacting with an external emoji will
+   require ADD_REACTIONS
+  */
+  [Permissions.FLAGS.USE_EXTERNAL_EMOJIS]: [Permissions.FLAGS.VIEW_CHANNEL],
+  [Permissions.FLAGS.CONNECT]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT],
+  [Permissions.FLAGS.SPEAK]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SPEAK],
+  [Permissions.FLAGS.MUTE_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MUTE_MEMBERS],
+  [Permissions.FLAGS.DEAFEN_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.DEAFEN_MEMBERS],
+  [Permissions.FLAGS.MOVE_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MOVE_MEMBERS],
+  [Permissions.FLAGS.USE_VAD]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.USE_VAD],
+  [Permissions.FLAGS.MANAGE_WEBHOOKS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MANAGE_WEBHOOKS],
+};
+
+/**
+ * Lists all the permissions that automatically grants each permission
+ * @type String<PermissionResolvable>
+ */
+Permissions.implicitPerms = {
+  [Permissions.FLAGS.MANAGE_CHANNELS]: Permissions.FLAGS.MANAGE_ROLES,
+  [Permissions.FLAGS.CHANGE_NICKNAME]: Permissions.FLAGS.MANAGE_NICKNAMES,
+};
+
 module.exports = Permissions;
