@@ -748,7 +748,7 @@ function keyMirror(arr) {
 
 /**
  * Lists of all required permissions for each permission
- * @typedef Object<PermissionFlag, PermissionFlag[]>
+ * @typedef Object<PermissionResolvable, PermissionResolvable[]>
  */
 exports.requiredChannelPerms = {
   CREATE_INSTANT_INVITE: [FLAGS.VIEW_CHANNEL, FLAGS.CREATE_INSTANT_INVITE],
