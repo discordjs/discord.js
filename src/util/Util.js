@@ -1,4 +1,3 @@
-const Collection = require('./Collection');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -403,6 +402,7 @@ class Util {
    */
   /* eslint-disable func-names */
   static mixin(store, ignored) {
+    const Collection = require('./Collection');
     Object.getOwnPropertyNames(Collection.prototype)
       .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
         if (ignored.includes(prop)) return;
