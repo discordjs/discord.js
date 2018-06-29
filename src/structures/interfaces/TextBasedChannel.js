@@ -454,7 +454,7 @@ class TextBasedChannel {
       if (filterOld) {
         messages = messages.filter(m => Date.now() - Snowflake.deconstruct(m.id).date.getTime() < 1209600000);
       }
-      if (messages.length === 0) return new Collection();
+      if (messages.length === 0) return Promise.resolve(new Collection());
       if (messages.length === 1) {
         return messages[0].delete().then(() => new Collection([[messages[0].id, messages[0]]]));
       }
