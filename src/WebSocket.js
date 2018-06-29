@@ -21,7 +21,7 @@ exports.encoding = 'etf';
 
 exports.pack = erlpack.pack;
 
-exports.unpack = data => erlpack.unpack(data);
+exports.unpack = erlpack.unpack;
 
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');

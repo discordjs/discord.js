@@ -42,7 +42,7 @@ class Util {
       // eslint-disable-next-line valid-typeof
       if (typeof element === 'bigint') out[newProp] = element.toString();
       // If it's a collection, make the array of keys
-      else if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys()).map(String);
+      else if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys(), String);
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
