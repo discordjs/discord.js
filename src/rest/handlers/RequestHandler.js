@@ -15,7 +15,7 @@ class RequestHandler {
     this.limit = Infinity;
     this.resetTime = null;
     this.remaining = 1;
-
+    this.busy = false;
     this.queue = [];
   }
 

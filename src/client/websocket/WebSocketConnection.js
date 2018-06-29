@@ -45,6 +45,12 @@ class WebSocketConnection extends EventEmitter {
     this.sequence = -1;
 
     /**
+     * The current sessionID of the WebSocket
+     * @type {string}
+     */
+    this.sessionID = null;
+
+    /**
      * The current status of the client
      * @type {number}
      */
