@@ -21,21 +21,19 @@ class Permissions {
    * Checks whether the bitfield has a permission, or multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {Object} [options] Options
-   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [options.checkRequired=false] Whether to check all required permissions for this permission as well
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the admin permission to override
+   * @param {boolean} [options.checkRequired=false] Whether to check required permissions
    * @returns {boolean}
    */
   has(permission, { checkAdmin = true, checkRequired = false } = {}) {
-    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
+    if (permission instanceof Array) return permission.every(p => this.has(p, { checkAdmin }));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    const requiredPermissions = Permissions.REQUIRED_CHANNEL_PERMS[permission];
-    const implicitPermission = Permissions.IMPLICIT_PERMS[permission];
-    if (!checkRequired || (!requiredPermissions && !implicitPermission)) {
-      return (this.bitfield & permission) === permission;
-    }
-    if (requiredPermissions) return requiredPermissions.every(p => this.has(p, checkAdmin));
-    return this.has(implicitPermission, checkAdmin);
+    const requiredPerms = Permissions.REQUIRED_CHANNEL_PERMS[permission];
+    const implicitPerms = Permissions.IMPLICIT_PERMS[permission];
+    if (!checkRequired || (!requiredPerms && !implicitPerms)) return (this.bitfield & permission) === permission;
+    if (requiredPerms) return requiredPerms.every(p => this.has(p, { checkAdmin }));
+    return this.has(implicitPerms, { checkAdmin });
   }
 
   /**
@@ -46,7 +44,7 @@ class Permissions {
    */
   missing(permissions, checkAdmin = true) {
     if (!(permissions instanceof Array)) permissions = new this.constructor(permissions).toArray(false);
-    return permissions.filter(p => !this.has(p, checkAdmin));
+    return permissions.filter(p => !this.has(p, { checkAdmin }));
   }
 
   /**
@@ -97,7 +95,7 @@ class Permissions {
    */
   serialize(checkAdmin = true) {
     const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
+    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, { checkAdmin });
     return serialized;
   }
 
@@ -107,7 +105,7 @@ class Permissions {
    * @returns {string[]}
    */
   toArray(checkAdmin = true) {
-    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
+    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, { checkAdmin }));
   }
 
   toJSON() {
