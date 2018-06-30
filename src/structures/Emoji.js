@@ -22,6 +22,12 @@ class Emoji {
      */
     this.guild = guild;
 
+    /**
+     * Whether this emoji has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     this.setup(data);
   }
 

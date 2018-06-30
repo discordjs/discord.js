@@ -21,6 +21,12 @@ class Role {
      */
     this.guild = guild;
 
+    /**
+     * Whether the role has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this.setup(data);
   }
 

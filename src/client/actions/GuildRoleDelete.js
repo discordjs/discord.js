@@ -22,6 +22,7 @@ class GuildRoleDeleteAction extends Action {
       } else {
         role = this.deleted.get(guild.id + data.role_id) || null;
       }
+      if (role) role.deleted = true;
     }
 
     return { role };

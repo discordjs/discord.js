@@ -20,6 +20,7 @@ class MessageDeleteAction extends Action {
       } else {
         message = this.deleted.get(channel.id + data.id) || null;
       }
+      if (message) message.deleted = true;
     }
 
     return { message };

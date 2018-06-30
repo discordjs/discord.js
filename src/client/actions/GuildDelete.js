@@ -38,6 +38,7 @@ class GuildDeleteAction extends Action {
     } else {
       guild = this.deleted.get(data.id) || null;
     }
+    if (guild) guild.deleted = true;
 
     return { guild };
   }

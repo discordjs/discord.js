@@ -24,6 +24,12 @@ class Channel {
      */
     this.type = null;
 
+    /**
+     * Whether the channel has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this.setup(data);
   }
 

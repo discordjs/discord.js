@@ -51,6 +51,12 @@ class GuildMember {
      * @type {?Message}
      */
     this.lastMessage = null;
+
+    /**
+     * Whether the member has been removed from the guild
+     * @type {boolean}
+     */
+    this.deleted = false;
   }
 
   setup(data) {

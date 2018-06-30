@@ -22,6 +22,7 @@ class GuildMemberRemoveAction extends Action {
       } else {
         member = this.deleted.get(guild.id + data.user.id) || null;
       }
+      if (member) member.deleted = true;
     }
     return { guild, member };
   }

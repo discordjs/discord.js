@@ -17,6 +17,7 @@ class ChannelDeleteAction extends Action {
     } else {
       channel = this.deleted.get(data.id) || null;
     }
+    if (channel) channel.deleted = true;
 
     return { channel };
   }
