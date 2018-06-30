@@ -271,7 +271,9 @@ class Client extends EventEmitter {
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
-   * client.login('my token');
+   * client.login('my token')
+   *  .then(console.log)
+   *  .catch(console.error);
    */
   login(token = this.token) {
     return this.rest.methods.login(token);
@@ -390,6 +392,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains the OAuth Application of the bot from Discord.
+   * <warn>Bots can only fetch their own profile.</warn>
    * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<OAuth2Application>}
    * client.fetchApplication('id')
