@@ -273,7 +273,7 @@ class Client extends EventEmitter {
    * @example
    * client.login('my token');
    */
-  login(token) {
+  login(token = this.token) {
     return this.rest.methods.login(token);
   }
 
