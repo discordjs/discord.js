@@ -1,5 +1,5 @@
 const DataResolver = require('../util/DataResolver');
-const { Channel } = require('./Channel');
+const Channel = require('./Channel');
 const { createMessage } = require('./shared');
 
 /**
