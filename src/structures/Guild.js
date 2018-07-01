@@ -688,6 +688,18 @@ class Guild extends Base {
     return this.edit({ explicitContentFilter }, reason);
   }
 
+  /* eslint-disable max-len */
+  /**
+   * Edits the setting of the default message notifications of the guild.
+   * @param {DefaultMessageNotifications|number} defaultMessageNotifications The new setting for the default message notifications
+   * @param {string} [reason] Reason for changing the setting of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setDefaultMessageNotifications(defaultMessageNotifications, reason) {
+    return this.edit({ defaultMessageNotifications }, reason);
+  }
+  /* eslint-enable max-len */
+
   /**
    * Edits the name of the guild.
    * @param {string} name The new name of the guild
