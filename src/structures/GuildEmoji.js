@@ -1,5 +1,6 @@
 const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
 const Permissions = require('../util/Permissions');
+const { Error } = require('../errors');
 const Snowflake = require('../util/Snowflake');
 const Emoji = require('./Emoji');
 
@@ -87,6 +88,9 @@ class GuildEmoji extends Emoji {
    * @returns {Promise<User>}
    */
   fetchAuthor() {
+    if (this.managed) {
+      return Promise.reject(new Error('EMOJI_MANAGED'));
+    }
     return this.client.api.guilds(this.guild.id).emojis(this.id).get()
       .then(emoji => this.client.users.add(emoji.user));
   }
