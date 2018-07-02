@@ -36,6 +36,8 @@ class MessageStore extends DataStore {
 
   /**
    * Gets a message, or messages, from this channel.
+   * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
+   * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
@@ -45,8 +47,13 @@ class MessageStore extends DataStore {
    *   .catch(console.error);
    * @example
    * // Get messages
-   * channel.messages.fetch({limit: 10})
+   * channel.messages.fetch({ limit: 10 })
    *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
+   * @example
+   * // Get messages and filter by user ID
+   * channel.messages.fetch()
+   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
   fetch(message) {
@@ -55,9 +62,14 @@ class MessageStore extends DataStore {
 
   /**
    * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain the reactions of the messages.
-   * Those need to be fetched seperately.</info>
+   * <info>The returned Collection does not contain any reaction data of the messages.
+   * Those need to be fetched separately.</info>
    * @returns {Promise<Collection<Snowflake, Message>>}
+   * @example
+   * // Get pinned messages
+   * channel.fetchPinned()
+   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   *   .catch(console.error);
    */
   fetchPinned() {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {
@@ -67,26 +79,22 @@ class MessageStore extends DataStore {
     });
   }
 
-  _fetchId(messageID) {
+  async _fetchId(messageID) {
     if (!this.client.user.bot) {
-      return this._fetchMany({ limit: 1, around: messageID })
-        .then(messages => {
-          const msg = messages.get(messageID);
-          if (!msg) throw new Error('MESSAGE_MISSING');
-          return msg;
-        });
+      const messages = await this._fetchMany({ limit: 1, around: messageID });
+      const msg = messages.get(messageID);
+      if (!msg) throw new Error('MESSAGE_MISSING');
+      return msg;
     }
-    return this.client.api.channels[this.channel.id].messages[messageID].get()
-      .then(data => this.add(data));
+    const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
+    return this.add(data);
   }
 
-  _fetchMany(options = {}) {
-    return this.client.api.channels[this.channel.id].messages.get({ query: options })
-      .then(data => {
-        const messages = new Collection();
-        for (const message of data) messages.set(message.id, this.add(message));
-        return messages;
-      });
+  async _fetchMany(options = {}) {
+    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
+    const messages = new Collection();
+    for (const message of data) messages.set(message.id, this.add(message));
+    return messages;
   }
 
 

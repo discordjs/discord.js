@@ -1,5 +1,5 @@
-const snekfetch = require('snekfetch');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
@@ -13,9 +13,44 @@ class Util {
   }
 
   /**
+   * Flatten an object. Any properties that are collections will get converted to an array of keys.
+   * @param {Object} obj The object to flatten.
+   * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
+   * @returns {Object}
+   */
+  static flatten(obj, ...props) {
+    const isObject = d => typeof d === 'object' && d !== null;
+    if (!isObject(obj)) return obj;
+
+    props = Object.assign(...Object.keys(obj).filter(k => !k.startsWith('_')).map(k => ({ [k]: true })), ...props);
+
+    const out = {};
+
+    for (let [prop, newProp] of Object.entries(props)) {
+      if (!newProp) continue;
+      newProp = newProp === true ? prop : newProp;
+
+      const element = obj[prop];
+      const elemIsObj = isObject(element);
+      const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
+
+      // If it's a collection, make the array of keys
+      if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      // If it's an array, flatten each element
+      else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
+      // If it's an object with a primitive `valueOf`, use that value
+      else if (valueOf && !isObject(valueOf)) out[newProp] = valueOf;
+      // If it's a primitive
+      else if (!elemIsObj) out[newProp] = element;
+    }
+
+    return out;
+  }
+
+  /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
    * @param {string} text Content to split
-   * @param {SplitOptions} [options] Options controlling the behaviour of the split
+   * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string|string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
@@ -54,15 +89,14 @@ class Util {
    * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
-    return new Promise((resolve, reject) => {
-      if (!token) throw new DiscordError('TOKEN_MISSING');
-      snekfetch.get(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`)
-        .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-        .end((err, res) => {
-          if (err) reject(err);
-          resolve(res.body.shards * (1000 / guildsPerShard));
-        });
-    });
+    if (!token) throw new DiscordError('TOKEN_MISSING');
+    return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
+      method: 'GET',
+      headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
+    }).then(res => {
+      if (res.ok) return res.json();
+      throw res;
+    }).then(data => data.shards * (1000 / guildsPerShard));
   }
 
   /**
@@ -80,25 +114,6 @@ class Util {
     const m = text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/);
     if (!m) return null;
     return { animated: Boolean(m[1]), name: m[2], id: m[3] };
-  }
-
-  /**
-   * Checks whether the arrays are equal, also removes duplicated entries from b.
-   * @param {Array<*>} a Array which will not be modified.
-   * @param {Array<*>} b Array to remove duplicated entries from.
-   * @returns {boolean} Whether the arrays are equal.
-   * @private
-   */
-  static arraysEqual(a, b) {
-    if (a === b) return true;
-    if (a.length !== b.length) return false;
-
-    for (const item of a) {
-      const ind = b.indexOf(item);
-      if (ind !== -1) b.splice(ind, 1);
-    }
-
-    return b.length === 0;
   }
 
   /**
@@ -284,8 +299,8 @@ class Util {
   static discordSort(collection) {
     return collection.sort((a, b) =>
       a.rawPosition - b.rawPosition ||
-      parseInt(a.id.slice(0, -10)) - parseInt(b.id.slice(0, -10)) ||
-      parseInt(a.id.slice(10)) - parseInt(b.id.slice(10))
+      parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
+      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
     );
   }
 
@@ -377,6 +392,34 @@ class Util {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
+  }
+
+  /**
+   * Adds methods from collections and maps onto the provided store
+   * @param {DataStore} store The store to mixin
+   * @param {string[]} ignored The properties to ignore
+   * @private
+   */
+  /* eslint-disable func-names */
+  static mixin(store, ignored) {
+    const Collection = require('./Collection');
+    Object.getOwnPropertyNames(Collection.prototype)
+      .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
+        if (ignored.includes(prop)) return;
+        if (prop === 'size') {
+          Object.defineProperty(store.prototype, prop, {
+            get: function() {
+              return this._filtered[prop];
+            },
+          });
+          return;
+        }
+        const func = Collection.prototype[prop];
+        if (prop === 'constructor' || typeof func !== 'function') return;
+        store.prototype[prop] = function(...args) {
+          return func.apply(this._filtered, args);
+        };
+      });
   }
 }
 

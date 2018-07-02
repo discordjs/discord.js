@@ -11,6 +11,7 @@ class MessageDeleteAction extends Action {
       message = channel.messages.get(data.id);
       if (message) {
         channel.messages.delete(message.id);
+        message.deleted = true;
         client.emit(Events.MESSAGE_DELETE, message);
       }
     }

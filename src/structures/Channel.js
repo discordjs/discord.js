@@ -23,6 +23,12 @@ class Channel extends Base {
      */
     this.type = type ? type.toLowerCase() : 'unknown';
 
+    /**
+     * Whether the channel has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this._patch(data);
   }
 
@@ -113,6 +119,10 @@ class Channel extends Base {
       }
     }
     return channel;
+  }
+
+  toJSON(...props) {
+    return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
 

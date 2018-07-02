@@ -1,16 +1,26 @@
-const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
+const Util = require('../util/Util');
 const { TypeError } = require('../errors');
 
 /**
  * Stores emoji roles
- * @extends {DataStore}
+ * @extends {Collection}
  */
-class GuildEmojiRoleStore extends DataStore {
+class GuildEmojiRoleStore extends Collection {
   constructor(emoji) {
-    super(emoji.client, null, require('../structures/GuildEmoji'));
+    super();
     this.emoji = emoji;
     this.guild = emoji.guild;
+    Object.defineProperty(this, 'client', { value: emoji.client });
+  }
+
+  /**
+   * The filtered collection of roles of the guild emoji
+   * @type {Collection<Snowflake, Role>}
+   * @private
+   */
+  get _filtered() {
+    return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));
   }
 
   /**
@@ -21,17 +31,15 @@ class GuildEmojiRoleStore extends DataStore {
   add(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles]);
-
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.set(role.id, role);
     }
 
-    return this.set(this);
+    const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
+    return this.set(newRoles);
   }
 
   /**
@@ -42,17 +50,15 @@ class GuildEmojiRoleStore extends DataStore {
   remove(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.remove([roleOrRoles]);
-
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
         'Array or Collection of Roles or Snowflakes', true));
-    } else {
-      for (const role of roleOrRoles) super.remove(role);
     }
 
-    return this.set(this);
+    const newRoles = this.keyArray().filter(role => !roleOrRoles.includes(role));
+    return this.set(newRoles);
   }
 
   /**
@@ -74,37 +80,30 @@ class GuildEmojiRoleStore extends DataStore {
     return this.emoji.edit({ roles });
   }
 
+  clone() {
+    const clone = new this.constructor(this.emoji);
+    clone._patch(this.keyArray().slice());
+    return clone;
+  }
+
   /**
    * Patches the roles for this store
    * @param {Snowflake[]} roles The new roles
    * @private
    */
   _patch(roles) {
-    this.clear();
-
-    for (let role of roles) {
-      role = this.guild.roles.resolve(role);
-      if (role) super.set(role.id, role);
-    }
+    this.emoji._roles = roles;
   }
 
-  /**
-   * Resolves a RoleResolvable to a Role object.
-   * @method resolve
-   * @memberof GuildEmojiRoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Role}
-   */
+  *[Symbol.iterator]() {
+    yield* this._filtered.entries();
+  }
 
-  /**
-   * Resolves a RoleResolvable to a role ID string.
-   * @method resolveID
-   * @memberof GuildEmojiRoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Snowflake}
-   */
+  valueOf() {
+    return this._filtered;
+  }
 }
+
+Util.mixin(GuildEmojiRoleStore, ['set']);
 
 module.exports = GuildEmojiRoleStore;

@@ -2,7 +2,7 @@ const Invite = require('./Invite');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, Events, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, Events, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -50,6 +50,12 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    /**
+     * Whether the bot has been removed from the guild
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (!data) return;
     if (data.unavailable) {
       /**
@@ -69,6 +75,7 @@ class Guild extends Base {
     }
   }
 
+  /* eslint-disable complexity */
   /**
    * Sets up the guild.
    * @param {*} data The raw data of the guild
@@ -100,7 +107,7 @@ class Guild extends Base {
     this.region = data.region;
 
     /**
-     * The full amount of members in this guild as of `READY`
+     * The full amount of members in this guild
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;
@@ -170,10 +177,23 @@ class Guild extends Base {
     this.explicitContentFilter = data.explicit_content_filter;
 
     /**
+     * The required MFA level for the guild
+     * @type {number}
+     */
+    this.mfaLevel = data.mfa_level;
+
+    /**
      * The timestamp the client user joined the guild at
      * @type {number}
      */
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
+    /**
+     * The value set for a guild's default message notifications
+     * @type {DefaultMessageNotifications|number}
+     */
+    this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
+      data.default_message_notifications;
 
     this.id = data.id;
     this.available = !data.unavailable;
@@ -210,7 +230,7 @@ class Guild extends Base {
       }
     }
 
-    this.voiceStates = new VoiceStateCollection(this);
+    if (!this.voiceStates) this.voiceStates = new VoiceStateCollection(this);
     if (data.voice_states) {
       for (const voiceState of data.voice_states) this.voiceStates.set(voiceState.user_id, voiceState);
     }
@@ -301,11 +321,11 @@ class Guild extends Base {
 
   /**
    * The owner of the guild
-   * @type {GuildMember}
+   * @type {?GuildMember}
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID);
+    return this.members.get(this.ownerID) || null;
   }
 
   /**
@@ -411,11 +431,11 @@ class Guild extends Base {
 
   /**
    * The `@everyone` role of the guild
-   * @type {Role}
+   * @type {?Role}
    * @readonly
    */
   get defaultRole() {
-    return this.roles.get(this.id);
+    return this.roles.get(this.id) || null;
   }
 
   /**
@@ -424,7 +444,7 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    return this.members.get(this.client.user.id);
+    return this.members.get(this.client.user.id) || null;
   }
 
   /**
@@ -466,6 +486,16 @@ class Guild extends Base {
    * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
+   * @example
+   * // Fetch invites
+   * guild.fetchInvites()
+   *   .then(invites => console.log(`Fetched ${invites.size} invites`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch invite creator by their id
+   * guild.fetchInvites()
+   *  .then(invites => console.log(invites.find(invite => invite.inviter.id === '84484653687267328')))
+   *  .catch(console.error);
    */
   fetchInvites() {
     return this.client.api.guilds(this.id).invites.get()
@@ -482,6 +512,11 @@ class Guild extends Base {
   /**
    * Fetches all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * guild.fetchWebhooks()
+   *   .then(webhooks => console.log(`Fetched ${webhooks.size} webhooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.api.guilds(this.id).webhooks.get().then(data => {
@@ -515,7 +550,7 @@ class Guild extends Base {
    * @example
    * // Output audit log entries
    * guild.fetchAuditLogs()
-   *   .then(audit => console.log(audit.entries))
+   *   .then(audit => console.log(audit.entries.first()))
    *   .catch(console.error);
    */
   fetchAuditLogs(options = {}) {
@@ -575,10 +610,12 @@ class Guild extends Base {
    * guild.search({
    *   content: 'discord.js',
    *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.results[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
-   * }).catch(console.error);
+   * })
+   *   .then(res => {
+   *     const hit = res.results[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
+   *   })
+   *   .catch(console.error);
    */
   search(options = {}) {
     return Shared.search(this, options);
@@ -597,6 +634,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    */
 
   /**
@@ -610,7 +648,7 @@ class Guild extends Base {
    *   name: 'Discord Guild',
    *   region: 'london',
    * })
-   *   .then(updated => console.log(`New guild name ${updated.name} in region ${updated.region}`))
+   *   .then(updated => console.log(`New guild name ${updated} in region ${updated.region}`))
    *   .catch(console.error);
    */
   edit(data, reason) {
@@ -631,6 +669,11 @@ class Guild extends Base {
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
+    if (typeof data.defaultMessageNotifications !== 'undefined') {
+      _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
+        DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
+        Number(data.defaultMessageNotifications);
+    }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
@@ -645,6 +688,18 @@ class Guild extends Base {
     return this.edit({ explicitContentFilter }, reason);
   }
 
+  /* eslint-disable max-len */
+  /**
+   * Edits the setting of the default message notifications of the guild.
+   * @param {DefaultMessageNotifications|number} defaultMessageNotifications The new setting for the default message notifications
+   * @param {string} [reason] Reason for changing the setting of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setDefaultMessageNotifications(defaultMessageNotifications, reason) {
+    return this.edit({ defaultMessageNotifications }, reason);
+  }
+  /* eslint-enable max-len */
+
   /**
    * Edits the name of the guild.
    * @param {string} name The new name of the guild
@@ -653,7 +708,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild name
    * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild.name}`))
+   *  .then(updated => console.log(`Updated guild name to ${guild}`))
    *  .catch(console.error);
    */
   setName(name, reason) {
@@ -698,7 +753,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild AFK channel
    * guild.setAFKChannel(channel)
-   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel}`))
+   *  .then(updated => console.log(`Updated guild AFK channel to ${guild.afkChannel.name}`))
    *  .catch(console.error);
    */
   setAFKChannel(afkChannel, reason) {
@@ -713,7 +768,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild system channel
    * guild.setSystemChannel(channel)
-   *  .then(updated => console.log(`Updated guild system channel to ${guild.systemChannel}`))
+   *  .then(updated => console.log(`Updated guild system channel to ${guild.systemChannel.name}`))
    *  .catch(console.error);
    */
   setSystemChannel(systemChannel, reason) {
@@ -758,7 +813,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild owner
    * guild.setOwner(guild.members.first())
-   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.username}`))
+   *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
    *  .catch(console.error);
    */
   setOwner(owner, reason) {
@@ -842,7 +897,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    * @example
    * guild.setChannelPositions([{ channel: channelID, position: newChannelIndex }])
-   *   .then(guild => console.log(`Updated channel positions for ${guild.id}`))
+   *   .then(guild => console.log(`Updated channel positions for ${guild}`))
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
@@ -907,10 +962,13 @@ class Guild extends Base {
       this.memberCount === guild.memberCount &&
       this.large === guild.large &&
       this.icon === guild.icon &&
-      Util.arraysEqual(this.features, guild.features) &&
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
-      this.embedEnabled === guild.embedEnabled;
+      this.embedEnabled === guild.embedEnabled &&
+      (this.features === guild.features || (
+        this.features.length === guild.features.length &&
+        this.features.every((feat, i) => feat === guild.features[i]))
+      );
 
     if (equal) {
       if (this.embedChannel) {
@@ -932,6 +990,19 @@ class Guild extends Base {
    */
   toString() {
     return this.name;
+  }
+
+  toJSON() {
+    const json = super.toJSON({
+      available: false,
+      createdTimestamp: true,
+      nameAcronym: true,
+      presences: false,
+      voiceStates: false,
+    });
+    json.iconURL = this.iconURL();
+    json.splashURL = this.splashURL();
+    return json;
   }
 
   /**
@@ -995,6 +1066,15 @@ class VoiceStateCollection extends Collection {
       if (newChannel) newChannel.members.set(member.user.id, member);
     }
     super.set(id, voiceState);
+  }
+
+  delete(id) {
+    const voiceState = this.get(id);
+    if (voiceState && voiceState.channel_id) {
+      const channel = this.guild.channels.get(voiceState.channel_id);
+      if (channel) channel.members.delete(id);
+    }
+    return super.delete(id);
   }
 }
 

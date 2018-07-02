@@ -4,6 +4,7 @@ const { Events } = require('../../util/Constants');
 class GuildEmojiDeleteAction extends Action {
   handle(emoji) {
     emoji.guild.emojis.remove(emoji.id);
+    emoji.deleted = true;
     this.client.emit(Events.GUILD_EMOJI_DELETE, emoji);
     return { emoji };
   }

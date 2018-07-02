@@ -1,3 +1,5 @@
+const Util = require('../util/Util');
+
 /**
  * Represents an attachment in a message.
  * @param {BufferResolvable|Stream} file The file
@@ -97,16 +99,20 @@ class MessageAttachment {
     this.proxyURL = data.proxy_url;
 
     /**
-     * The height of this attachment (if an image)
+     * The height of this attachment (if an image or video)
      * @type {?number}
      */
     this.height = data.height;
 
     /**
-     * The width of this attachment (if an image)
+     * The width of this attachment (if an image or video)
      * @type {?number}
      */
     this.width = data.width;
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

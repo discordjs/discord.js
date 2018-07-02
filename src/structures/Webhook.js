@@ -1,4 +1,5 @@
 const DataResolver = require('../util/DataResolver');
+const Channel = require('./Channel');
 const { createMessage } = require('./shared');
 
 /**
@@ -88,13 +89,44 @@ class Webhook {
    * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
-   * // Send a message
+   * // Send a basic message
    * webhook.send('hello!')
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
+   * @example
+   * // Send a remote file
+   * webhook.send({
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send a local file
+   * webhook.send({
+   *   files: [{
+   *     attachment: 'entire/path/to/file.jpg',
+   *     name: 'file.jpg'
+   *   }]
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send an embed with a local image inside
+   * webhook.send('This is an embed', {
+   *   embeds: [{
+   *     thumbnail: {
+   *          url: 'attachment://file.jpg'
+   *       }
+   *    }],
+   *    files: [{
+   *       attachment: 'entire/path/to/file.jpg',
+   *       name: 'file.jpg'
+   *    }]
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
-  /* eslint-enable max-len */
-  async send(content, options) { // eslint-disable-line complexity
+  async send(content, options) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
       content = null;
@@ -169,7 +201,7 @@ class Webhook {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
       return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
     }
-    if (channel) channel = this.client.channels.resolveID(channel);
+    if (channel) channel = channel instanceof Channel ? channel.id : channel;
     return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,

@@ -14,9 +14,8 @@ class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is spawning this shard
    * @param {number} id ID of this shard
-   * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
-  constructor(manager, id, args = []) {
+  constructor(manager, id) {
     super();
 
     /**
@@ -35,7 +34,13 @@ class Shard extends EventEmitter {
      * Arguments for the shard's process
      * @type {string[]}
      */
-    this.args = args;
+    this.args = manager.shardArgs || [];
+
+    /**
+     * Arguments for the shard's process executable
+     * @type {?string[]}
+     */
+    this.execArgv = manager.execArgv;
 
     /**
      * Environment variables for the shard's process
@@ -91,7 +96,9 @@ class Shard extends EventEmitter {
   async spawn(waitForReady = true) {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
 
-    this.process = childProcess.fork(path.resolve(this.manager.file), this.args, { env: this.env })
+    this.process = childProcess.fork(path.resolve(this.manager.file), this.args, {
+      env: this.env, execArgv: this.execArgv,
+    })
       .on('message', this._handleMessage.bind(this))
       .on('exit', this._exitListener);
 
@@ -113,15 +120,22 @@ class Shard extends EventEmitter {
   }
 
   /**
-   * Kills and restarts the shard's process.
-   * @param {number} [delay=500] How long to wait between killing the process and restarting it (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait the {@link Client} has become ready before resolving
-   * @returns {Promise<ChildProcess>}
+   * Immediately kills the shard's process and does not restart it.
    */
-  async respawn(delay = 500, waitForReady = true) {
+  kill() {
     this.process.removeListener('exit', this._exitListener);
     this.process.kill();
     this._handleExit(false);
+  }
+
+  /**
+   * Kills and restarts the shard's process.
+   * @param {number} [delay=500] How long to wait between killing the process and restarting it (in milliseconds)
+   * @param {boolean} [waitForReady=true] Whether to wait until the {@link Client} has become ready before resolving
+   * @returns {Promise<ChildProcess>}
+   */
+  async respawn(delay = 500, waitForReady = true) {
+    this.kill();
     if (delay > 0) await Util.delayFor(delay);
     return this.spawn(waitForReady);
   }
@@ -133,10 +147,9 @@ class Shard extends EventEmitter {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      const sent = this.process.send(message, err => {
+      this.process.send(message, err => {
         if (err) reject(err); else resolve(this);
       });
-      if (!sent) throw new Error('SHARDING_CHILD_CONNECTION');
     });
   }
 
@@ -146,9 +159,7 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>}
    * @example
    * shard.fetchClientValue('guilds.size')
-   *   .then(count => {
-   *     console.log(`${count} guilds in shard ${shard.id}`);
-   *   })
+   *   .then(count => console.log(`${count} guilds in shard ${shard.id}`))
    *   .catch(console.error);
    */
   fetchClientValue(prop) {

@@ -53,16 +53,23 @@ class User extends Base {
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
     /**
+     * The locale of the user's client (ISO 639-1)
+     * @type {?string}
+     * @name User#locale
+     */
+    if (data.locale) this.locale = data.locale;
+
+    /**
      * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the user, if one was sent
-     * @type {?Message}
+     * The ID of the channel for the last message sent by the user, if one was sent
+     * @type {?Snowflake}
      */
-    this.lastMessage = null;
+    this.lastMessageChannelID = null;
   }
 
   /**
@@ -81,6 +88,16 @@ class User extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The Message object of the last message sent by the user, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    const channel = this.client.channels.get(this.lastMessageChannelID);
+    return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
   /**
@@ -186,7 +203,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id);
+    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id) || null;
   }
 
   /**
@@ -256,6 +273,19 @@ class User extends Base {
    */
   toString() {
     return `<@${this.id}>`;
+  }
+
+  toJSON(...props) {
+    const json = super.toJSON({
+      createdTimestamp: true,
+      defaultAvatarURL: true,
+      tag: true,
+      lastMessage: false,
+      lastMessageID: false,
+    }, ...props);
+    json.avatarURL = this.avatarURL();
+    json.displayAvatarURL = this.displayAvatarURL();
+    return json;
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

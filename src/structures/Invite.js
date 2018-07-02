@@ -76,7 +76,7 @@ class Invite extends Base {
     if (data.inviter) {
       /**
        * The user who created this invite
-       * @type {User}
+       * @type {?User}
        */
       this.inviter = this.client.users.add(data.inviter);
     }
@@ -148,6 +148,21 @@ class Invite extends Base {
    */
   toString() {
     return this.url;
+  }
+
+  toJSON() {
+    return super.toJSON({
+      url: true,
+      expiresTimestamp: true,
+      presenceCount: false,
+      memberCount: false,
+      textChannelCount: false,
+      voiceChannelCount: false,
+      uses: false,
+      channel: 'channelID',
+      inviter: 'inviterID',
+      guild: 'guildID',
+    });
   }
 }
 

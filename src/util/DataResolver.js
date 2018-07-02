@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -27,7 +27,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
@@ -83,30 +83,26 @@ class DataResolver {
    * @returns {Promise<Buffer>}
    */
   static resolveFile(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (!browser && resource instanceof Buffer) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {
-      return new Promise((resolve, reject) => {
-        if (/^https?:\/\//.test(resource)) {
-          snekfetch.get(resource)
-            .end((err, res) => {
-              if (err) return reject(err);
-              if (!(res.body instanceof Buffer)) return reject(new TypeError('REQ_BODY_TYPE'));
-              return resolve(res.body);
-            });
-        } else {
+      if (/^https?:\/\//.test(resource)) {
+        return fetch(resource).then(res => browser ? res.blob() : res.buffer());
+      } else if (!browser) {
+        return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
             if (!stats || !stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2); else resolve(data);
+              if (err2) reject(err2);
+              else resolve(data);
             });
             return null;
           });
-        }
-      });
+        });
+      }
     } else if (resource.pipe && typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
         const buffers = [];

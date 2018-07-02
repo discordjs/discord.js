@@ -26,6 +26,12 @@ class Message extends Base {
      */
     this.channel = channel;
 
+    /**
+     * Whether this message has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
+
     if (data) this._patch(data);
   }
 
@@ -131,7 +137,7 @@ class Message extends Base {
     this.webhookID = data.webhook_id || null;
 
     /**
-     * Supplimental application information for group activities
+     * Supplemental application information for group activities
      * @type {?ClientApplication}
      */
     this.application = data.application ? new ClientApplication(this.client, data.application) : null;
@@ -341,9 +347,9 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return this.author.id === this.client.user.id || (this.guild &&
+    return !this.deleted && (this.author.id === this.client.user.id || (this.guild &&
       this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
-    );
+    ));
   }
 
   /**
@@ -372,7 +378,7 @@ class Message extends Base {
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *   .then(msg => console.log(`Updated the content of a message from ${msg.author}`))
+   *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
   async edit(content, options) {
@@ -417,6 +423,16 @@ class Message extends Base {
    * Adds a reaction to the message.
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
+   * @example
+   * // React to a message with a unicode emoji
+   * message.react('🤔')
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // React to a message with a custom emoji
+   * message.react(message.guild.emojis.get('123456789012345678'))
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   react(emoji) {
     emoji = this.client.emojis.resolveIdentifier(emoji);
@@ -441,7 +457,7 @@ class Message extends Base {
    * @example
    * // Delete a message
    * message.delete()
-   *   .then(msg => console.log(`Deleted message from ${msg.author}`))
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
   delete({ timeout = 0, reason } = {}) {
@@ -470,7 +486,7 @@ class Message extends Base {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *   .then(msg => console.log(`Sent a reply to ${msg.author}`))
+   *   .then(msg => console.log(`Sent a reply to ${msg.author.username}`))
    *   .catch(console.error);
    */
   reply(content, options) {
@@ -545,6 +561,18 @@ class Message extends Base {
    */
   toString() {
     return this.content;
+  }
+
+  toJSON() {
+    return super.toJSON({
+      channel: 'channelID',
+      author: 'authorID',
+      application: 'applicationID',
+      guild: 'guildID',
+      cleanContent: true,
+      member: false,
+      reactions: false,
+    });
   }
 }
 

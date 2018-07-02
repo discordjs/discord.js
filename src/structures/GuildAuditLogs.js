@@ -1,6 +1,7 @@
 const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
+const Util = require('../util/Util');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
@@ -57,7 +58,7 @@ const Targets = {
  * * INVITE_DELETE: 42
  * * WEBHOOK_CREATE: 50
  * * WEBHOOK_UPDATE: 51
- * * WEBHOOK_DELETE: 50
+ * * WEBHOOK_DELETE: 52
  * * EMOJI_CREATE: 60
  * * EMOJI_UPDATE: 61
  * * EMOJI_DELETE: 62
@@ -220,6 +221,10 @@ class GuildAuditLogs {
 
     return 'ALL';
   }
+
+  toJSON() {
+    return Util.flatten(this);
+  }
 }
 
 /**
@@ -370,6 +375,10 @@ class GuildAuditLogsEntry {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  toJSON() {
+    return Util.flatten(this, { createdTimestamp: true });
   }
 }
 

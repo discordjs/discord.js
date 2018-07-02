@@ -3,10 +3,12 @@ module.exports = function burst() {
   this.execute(this.queue.shift())
     .then(this.handle.bind(this))
     .catch(({ timeout }) => {
-      this.client.setTimeout(() => {
-        this.reset();
-        this.handle();
-      }, timeout);
+      if (timeout) {
+        this.client.setTimeout(() => {
+          this.reset();
+          this.handle();
+        }, timeout);
+      }
     });
   this.remaining--;
   this.handle();

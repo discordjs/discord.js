@@ -39,7 +39,7 @@ class GuildStore extends DataStore {
 
   /**
    * Creates a guild.
-   * <warn>This is only available when using a user account.</warn>
+   * <warn>This is only available to bots in less than 10 guilds and user accounts.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
    * @param {string} [options.region] The region for the server, defaults to the closest one available

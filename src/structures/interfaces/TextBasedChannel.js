@@ -21,12 +21,15 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+  }
 
-    /**
-     * The Message object of the last message in the channel, if one was sent
-     * @type {?Message}
-     */
-    this.lastMessage = null;
+  /**
+   * The Message object of the last message in the channel, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    return this.messages.get(this.lastMessageID) || null;
   }
 
   /**
@@ -67,9 +70,41 @@ class TextBasedChannel {
    * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
    * @returns {Promise<Message|Message[]>}
    * @example
-   * // Sends a message
+   * // Send a basic message
    * channel.send('hello!')
    *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
+   * @example
+   * // Send a remote file
+   * channel.send({
+   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send a local file
+   * channel.send({
+   *   files: [{
+   *     attachment: 'entire/path/to/file.jpg',
+   *     name: 'file.jpg'
+   *   }]
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Send an embed with a local image inside
+   * channel.send('This is an embed', {
+   *   embed: {
+   *     thumbnail: {
+   *          url: 'attachment://file.jpg'
+   *       }
+   *    },
+   *    files: [{
+   *       attachment: 'entire/path/to/file.jpg',
+   *       name: 'file.jpg'
+   *    }]
+   * })
+   *   .then(console.log)
    *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
@@ -90,13 +125,12 @@ class TextBasedChannel {
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<MessageSearchResult>}
    * @example
-   * channel.search({
-   *   content: 'discord.js',
-   *   before: '2016-11-17'
-   * }).then(res => {
-   *   const hit = res.results[0].find(m => m.hit).content;
-   *   console.log(`I found: **${hit}**, total results: ${res.total}`);
-   * }).catch(console.error);
+   * channel.search({ content: 'discord.js', before: '2016-11-17' })
+   *   .then(res => {
+   *     const hit = res.results[0].find(m => m.hit).content;
+   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
+   *   })
+   *   .catch(console.error);
    */
   search(options = {}) {
     return Shared.search(this, options);
@@ -302,6 +336,7 @@ class TextBasedChannel {
     if (full) {
       props.push(
         'acknowledge',
+        'lastMessage',
         'search',
         'bulkDelete',
         'startTyping',

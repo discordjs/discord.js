@@ -24,6 +24,12 @@ class Emoji extends Base {
      * @type {?Snowflake}
      */
     this.id = emoji.id;
+
+    /**
+     * Whether this emoji has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
   }
 
   /**
@@ -60,6 +66,15 @@ class Emoji extends Base {
    */
   toString() {
     return this.id ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
+  }
+
+  toJSON() {
+    return super.toJSON({
+      guild: 'guildID',
+      createdTimestamp: true,
+      url: true,
+      identifier: true,
+    });
   }
 }
 

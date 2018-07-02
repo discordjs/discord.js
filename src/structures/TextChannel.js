@@ -13,6 +13,10 @@ const MessageStore = require('../stores/MessageStore');
 class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
+    /**
+     * A collection containing the messages sent to this channel
+     * @type {MessageStore<Snowflake, Message>}
+     */
     this.messages = new MessageStore(this);
     this._typing = new Map();
   }
@@ -31,8 +35,12 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = Boolean(data.nsfw);
+    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
 
+    /**
+     * The ID of the last message sent in this channel, if one was sent
+     * @type {?Snowflake}
+     */
     this.lastMessageID = data.last_message_id;
 
     if (data.messages) for (const message of data.messages) this.messages.add(message);
@@ -51,6 +59,11 @@ class TextChannel extends GuildChannel {
   /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
+   * @example
+   * // Fetch webhooks
+   * channel.fetchWebhooks()
+   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
+   *   .catch(console.error);
    */
   fetchWebhooks() {
     return this.client.api.channels[this.id].webhooks.get().then(data => {
@@ -68,8 +81,12 @@ class TextChannel extends GuildChannel {
    * @param {string} [options.reason] Reason for creating the webhook
    * @returns {Promise<Webhook>} webhook The created webhook
    * @example
-   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
-   *   .then(webhook => console.log(`Created webhook ${webhook}`))
+   * // Create a webhook for the current channel
+   * channel.createWebhook('Snek', {
+   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *   reason: 'Needed a cool new Webhook'
+   * })
+   *   .then(console.log)
    *   .catch(console.error)
    */
   async createWebhook(name, { avatar, reason } = {}) {
@@ -83,6 +100,7 @@ class TextChannel extends GuildChannel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
+  get lastMessage() {}
   send() {}
   search() {}
   startTyping() {}

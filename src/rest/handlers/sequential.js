@@ -7,10 +7,12 @@ module.exports = function sequential() {
       this.handle();
     })
     .catch(({ timeout }) => {
-      this.client.setTimeout(() => {
-        this.reset();
-        this.busy = false;
-        this.handle();
-      }, timeout);
+      if (timeout) {
+        this.client.setTimeout(() => {
+          this.reset();
+          this.busy = false;
+          this.handle();
+        }, timeout);
+      }
     });
 };

@@ -200,6 +200,11 @@ class ClientUser extends Structures.get('User') {
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
    * @returns {Promise<Presence>}
+   * @example
+   * // Set the client user's presence
+   * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setPresence(data) {
     return this.client.presences.setClientPresence(data);
@@ -218,6 +223,11 @@ class ClientUser extends Structures.get('User') {
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
    * @returns {Promise<Presence>}
+   * @example
+   * // Set the client user's status
+   * client.user.setStatus('idle')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setStatus(status) {
     return this.setPresence({ status });
@@ -230,6 +240,11 @@ class ClientUser extends Structures.get('User') {
    * @param {string} [options.url] Twitch stream URL
    * @param {ActivityType|number} [options.type] Type of the activity
    * @returns {Promise<Presence>}
+   * @example
+   * // Set the client user's activity
+   * client.user.setActivity('discord.js', { type: 'WATCHING' })
+   *   .then(presence => console.log(`Activity set to ${presence.game.name}`))
+   *   .catch(console.error);
    */
   setActivity(name, { url, type } = {}) {
     if (!name) return this.setPresence({ activity: null });
@@ -254,8 +269,20 @@ class ClientUser extends Structures.get('User') {
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
-   * @param {Guild|Snowflake} [options.guild] Limit the search to a specific guild
+   * @param {GuildResolvable} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
+   * @example
+   * // Fetch mentions
+   * client.user.fetchMentions()
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Fetch mentions from a guild
+   * client.user.fetchMentions({
+   *   guild: '222078108977594368'
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   fetchMentions(options = {}) {
     if (options.guild instanceof Guild) options.guild = options.guild.id;
@@ -280,6 +307,14 @@ class ClientUser extends Structures.get('User') {
    * Creates a Group DM.
    * @param {GroupDMRecipientOptions[]} recipients The recipients
    * @returns {Promise<GroupDMChannel>}
+   * @example
+   * // Create a Group DM with a token provided from OAuth
+   * client.user.createGroupDM([{
+   *   user: '66564597481480192',
+   *   accessToken: token
+   * }])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   createGroupDM(recipients) {
     const data = this.bot ? {
@@ -291,6 +326,16 @@ class ClientUser extends Structures.get('User') {
     } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => this.client.channels.add(res));
+  }
+
+  toJSON() {
+    return super.toJSON({
+      friends: false,
+      blocked: false,
+      notes: false,
+      settings: false,
+      guildSettings: false,
+    });
   }
 }
 

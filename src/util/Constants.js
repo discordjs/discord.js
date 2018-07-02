@@ -26,6 +26,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
+ * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
+ * (or 0 for never)
  * @property {PresenceData} [presence] Presence data to use upon login
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
@@ -48,6 +50,7 @@ exports.DefaultOptions = {
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   restTimeOffset: 500,
+  restSweepInterval: 60,
   presence: {},
 
   /**
@@ -194,6 +197,9 @@ exports.VoiceOPCodes = {
   HEARTBEAT: 3,
   SESSION_DESCRIPTION: 4,
   SPEAKING: 5,
+  HELLO: 8,
+  CLIENT_CONNECT: 12,
+  CLIENT_DISCONNECT: 13,
 };
 
 exports.Events = {
@@ -721,6 +727,17 @@ exports.APIErrors = {
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   REACTION_BLOCKED: 90001,
 };
+
+/**
+ * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
+ * * ALL
+ * * MENTIONS
+ * @typedef {string} DefaultMessageNotifications
+ */
+exports.DefaultMessageNotifications = [
+  'ALL',
+  'MENTIONS',
+];
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

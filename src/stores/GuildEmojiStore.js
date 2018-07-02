@@ -91,7 +91,7 @@ class GuildEmojiStore extends DataStore {
   /**
    * Data that can be resolved to give an emoji identifier. This can be:
    * * The unicode representation of an emoji
-   * * An EmojiResolveable
+   * * An EmojiResolvable
    * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
    */
 
@@ -101,8 +101,9 @@ class GuildEmojiStore extends DataStore {
    * @returns {?string}
    */
   resolveIdentifier(emoji) {
-    const emojiResolveable = this.resolve(emoji);
-    if (emojiResolveable) return emojiResolveable.identifier;
+    const emojiResolvable = this.resolve(emoji);
+    if (emojiResolvable) return emojiResolvable.identifier;
+    if (emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
       if (!emoji.includes('%')) return encodeURIComponent(emoji);
       else return emoji;

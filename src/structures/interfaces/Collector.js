@@ -1,4 +1,5 @@
 const Collection = require('../../util/Collection');
+const Util = require('../../util/Util');
 const EventEmitter = require('events');
 
 /**
@@ -113,7 +114,7 @@ class Collector extends EventEmitter {
 
   /**
    * Returns a promise that resolves with the next collected element;
-   * rejects with collected elements if the collector finishes without receving a next element
+   * rejects with collected elements if the collector finishes without receiving a next element
    * @type {Promise}
    * @readonly
    */
@@ -170,6 +171,10 @@ class Collector extends EventEmitter {
   checkEnd() {
     const reason = this.endReason();
     if (reason) this.stop(reason);
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 
   /* eslint-disable no-empty-function, valid-jsdoc */
