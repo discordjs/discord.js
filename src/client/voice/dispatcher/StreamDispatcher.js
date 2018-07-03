@@ -143,7 +143,7 @@ class StreamDispatcher extends VolumeInterface {
      * @param {string} info The debug info
      */
     this.setSpeaking(true);
-    while (repeats--) {
+    while (repeats-- && this.player.voiceConnection.sockets.udp) {
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
           this.setSpeaking(false);
