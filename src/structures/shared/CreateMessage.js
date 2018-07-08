@@ -20,7 +20,7 @@ module.exports = async function createMessage(channel, options) {
     if (isNaN(options.nonce) || options.nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
-  let { content } = options;
+  let { content, reply } = options;
   if (options instanceof MessageEmbed) options = webhook ? { embeds: [options] } : { embed: options };
   if (options instanceof MessageAttachment) options = { files: [options.file] };
 
@@ -36,9 +36,9 @@ module.exports = async function createMessage(channel, options) {
     }
   }
 
-  if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
-    const id = channel.client.users.resolveID(options.reply);
-    const mention = `<@${options.reply instanceof GuildMember && options.reply.nickname ? '!' : ''}${id}>`;
+  if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+    const id = channel.client.users.resolveID(reply);
+    const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
     if (options.split) options.split.prepend = `${mention}, ${options.split.prepend || ''}`;
     content = `${mention}${typeof options.content !== 'undefined' ? `, ${options.content}` : ''}`;
   }
