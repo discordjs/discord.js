@@ -117,8 +117,13 @@ class TextBasedChannel {
       options = {};
     }
 
+    const { reply } = options;
     if (options instanceof Attachment) options = { files: [options.file] };
-    if (options instanceof RichEmbed) options = { embed: options };
+    if (options instanceof RichEmbed) {
+      if (options.reply) options.reply = undefined;
+      options = { embed: options };
+    }
+    options.reply = reply;
 
     if (options.embed && options.embed.file) {
       if (options.files) options.files.push(options.embed.file);
