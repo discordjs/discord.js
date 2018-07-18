@@ -336,7 +336,7 @@ class GuildAuditLogsEntry {
         id: data.target_id,
         guild,
       });
-      changes.channel = guild.channels.get(changes.channel_id);
+      changes.channel = { id: changes.channel_id };
       this.target = new Invite(guild.client, changes);
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.get(data.target_id);
