@@ -406,7 +406,7 @@ class Client extends EventEmitter {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {PermissionResolvable|PermissionResolvable[]} [permissions] Permissions to request
+   * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
    * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])

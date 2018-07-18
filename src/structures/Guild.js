@@ -969,8 +969,8 @@ class Guild {
   /**
    * Can be used to overwrite permissions when creating a channel.
    * @typedef {Object} ChannelCreationOverwrites
-   * @property {PermissionResolvable[]|number} [allow] The permissions to allow
-   * @property {PermissionResolvable[]|number} [deny] The permissions to deny
+   * @property {PermissionResolvable|number} [allow] The permissions to allow
+   * @property {PermissionResolvable|number} [deny] The permissions to deny
    * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 

@@ -5,6 +5,7 @@ const Constants = require('../../util/Constants');
 const Endpoints = Constants.Endpoints;
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
+const resolvePermissions = require('../../structures/shared/resolvePermissions');
 
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
@@ -251,34 +252,10 @@ class RESTMethods {
   }
 
   createChannel(guild, channelName, channelType, overwrites, reason) {
-    if (overwrites instanceof Collection || overwrites instanceof Array) {
-      overwrites = overwrites.map(overwrite => {
-        let allow = overwrite.allow || overwrite._allowed;
-        let deny = overwrite.deny || overwrite._denied;
-        if (allow instanceof Array) allow = Permissions.resolve(allow);
-        if (deny instanceof Array) deny = Permissions.resolve(deny);
-
-        const role = this.client.resolver.resolveRole(guild, overwrite.id);
-        if (role) {
-          overwrite.id = role.id;
-          overwrite.type = 'role';
-        } else {
-          overwrite.id = this.client.resolver.resolveUserID(overwrite.id);
-          overwrite.type = 'member';
-        }
-
-        return {
-          allow,
-          deny,
-          type: overwrite.type,
-          id: overwrite.id,
-        };
-      });
-    }
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name: channelName,
       type: channelType ? Constants.ChannelTypes[channelType.toUpperCase()] : 'text',
-      permission_overwrites: overwrites,
+      permission_overwrites: resolvePermissions.call(this, overwrites, guild),
     }, undefined, reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
@@ -343,6 +320,8 @@ class RESTMethods {
     data.bitrate = _data.bitrate || (channel.bitrate ? channel.bitrate * 1000 : undefined);
     data.user_limit = typeof _data.userLimit !== 'undefined' ? _data.userLimit : channel.userLimit;
     data.parent_id = _data.parent;
+    data.permission_overwrites = _data.permissionOverwrites ?
+      resolvePermissions.call(this, _data.permissionOverwrites, channel.guild) : undefined;
     return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data, undefined, reason).then(newData =>
       this.client.actions.ChannelUpdate.handle(newData).updated
     );

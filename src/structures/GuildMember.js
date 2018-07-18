@@ -305,7 +305,7 @@ class GuildMember {
 
   /**
    * Checks if any of this member's roles have a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
    * **(deprecated)**
    * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
@@ -323,7 +323,7 @@ class GuildMember {
 
   /**
    * Checks whether the roles of this member allows them to perform specific actions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
    * @returns {boolean}
    * @deprecated
@@ -335,11 +335,12 @@ class GuildMember {
 
   /**
    * Checks whether the roles of this member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
+   * @returns {PermissionResolvable}
    */
   missingPermissions(permissions, explicit = false) {
+    if (!(permissions instanceof Array)) permissions = [permissions];
     return this.permissions.missing(permissions, explicit);
   }
 

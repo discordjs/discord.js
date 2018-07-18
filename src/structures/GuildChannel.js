@@ -141,6 +141,28 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Replaces the permission overwrites for a channel
+   * @param {Object} [options] Options
+   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {string} [options.reason] Reason for updating the channel overwrites
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * channel.replacePermissionOverwrites({
+   * overwrites: [
+   *   {
+   *      id: message.author.id,
+   *      denied: ['VIEW_CHANNEL'],
+   *   },
+   * ],
+   *   reason: 'Needed to change permissions'
+   * });
+   */
+  replacePermissionOverwrites({ overwrites, reason } = {}) {
+    return this.edit({ permissionOverwrites: overwrites, reason })
+      .then(() => this);
+  }
+
+  /**
    * An object mapping permission flags to `true` (enabled), `false` (disabled), or `null` (not set).
    * ```js
    * {
@@ -213,6 +235,21 @@ class GuildChannel extends Channel {
     }
 
     return this.client.rest.methods.setChannelOverwrite(this, payload, reason).then(() => this);
+  }
+
+  /**
+   * Locks in the permission overwrites from the parent channel.
+   * @returns {Promise<GuildChannel>}
+   */
+  lockPermissions() {
+    if (!this.parent) return Promise.reject(new TypeError('Could not find a parent to this guild channel.'));
+    const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
+      deny: overwrite.deny.bitfield,
+      allow: overwrite.allow.bitfield,
+      id: overwrite.id,
+      type: overwrite.type,
+    }));
+    return this.edit({ permissionOverwrites });
   }
 
   /**

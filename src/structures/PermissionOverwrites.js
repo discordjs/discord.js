@@ -1,3 +1,5 @@
+const Permissions = require('../util/Permissions');
+
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
  */
@@ -27,8 +29,29 @@ class PermissionOverwrites {
      */
     this.type = data.type;
 
+    /**
+     * The permissions that are denied for the user or role as a bitfield.
+     * @type {number}
+     */
     this.deny = data.deny;
+
+    /**
+     * The permissions that are allowed for the user or role as a bitfield.
+     * @type {number}
+     */
     this.allow = data.allow;
+
+    /**
+     * The permissions that are denied for the user or role.
+     * @type {Permissions}
+     */
+    this.denied = new Permissions(data.deny).freeze();
+
+    /**
+     * The permissions that are allowed for the user or role.
+     * @type {Permissions}
+     */
+    this.allowed = new Permissions(data.allow).freeze();
   }
 
   /**

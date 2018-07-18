@@ -153,7 +153,7 @@ class Role {
 
   /**
    * Checks if the role has a permission.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permission
    * **(deprecated)**
    * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
@@ -175,7 +175,7 @@ class Role {
 
   /**
    * Checks if the role has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the role to explicitly have the exact permissions
    * @returns {boolean}
    * @deprecated
@@ -201,7 +201,7 @@ class Role {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {PermissionResolvable[]|number} [permissions] The permissions of the role
+   * @property {PermissionResolvable|number} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -282,7 +282,7 @@ class Role {
 
   /**
    * Set the permissions of the role.
-   * @param {PermissionResolvable|PermissionResolvable[]} permissions The permissions of the role
+   * @param {PermissionResolvable} permissions The permissions of the role
    * @param {string} [reason] Reason for changing the role's permissions
    * @returns {Promise<Role>}
    * @example

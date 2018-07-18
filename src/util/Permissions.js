@@ -9,7 +9,7 @@ const util = require('util');
 class Permissions {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
-   * @param {number|PermissionResolvable[]} permissions Permissions or bitfield to read from
+   * @param {number|PermissionResolvable} permissions Permissions or bitfield to read from
    */
   constructor(member, permissions) {
     permissions = typeof member === 'object' && !(member instanceof Array) ? permissions : member;
@@ -53,7 +53,7 @@ class Permissions {
 
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission Permission(s) to check for
+   * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
@@ -66,11 +66,12 @@ class Permissions {
 
   /**
    * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable[]} permissions Permissions to check for
+   * @param {PermissionResolvable} permissions Permissions to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {PermissionResolvable[]}
+   * @returns {PermissionResolvable}
    */
   missing(permissions, checkAdmin = true) {
+    if (!(permissions instanceof Array)) permissions = [permissions];
     return permissions.filter(p => !this.has(p, checkAdmin));
   }
 
@@ -128,7 +129,7 @@ class Permissions {
 
   /**
    * Checks whether the user has all specified permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
    * @returns {boolean}
    * @see {@link Permissions#has}
@@ -140,14 +141,22 @@ class Permissions {
 
   /**
    * Checks whether the user has all specified permissions, and lists any missing permissions.
-   * @param {PermissionResolvable[]} permissions The permissions to check for
+   * @param {PermissionResolvable} permissions The permissions to check for
    * @param {boolean} [explicit=false] Whether to require the user to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
+   * @returns {PermissionResolvable}
    * @see {@link Permissions#missing}
    * @deprecated
    */
   missingPermissions(permissions, explicit = false) {
     return this.missing(permissions, !explicit);
+  }
+
+  /**
+   * Freezes these permissions, making them immutable.
+   * @returns {Permissions} These permissions
+   */
+  freeze() {
+    return Object.freeze(this);
   }
 
   valueOf() {
@@ -158,12 +167,12 @@ class Permissions {
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
-   * @typedef {string|number} PermissionResolvable
+   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
    */
 
   /**
    * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable|PermissionResolvable[]} permission - Permission(s) to resolve
+   * @param {PermissionResolvable} permission - Permission(s) to resolve
    * @returns {number}
    */
   static resolve(permission) {
