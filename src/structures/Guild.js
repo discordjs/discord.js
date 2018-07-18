@@ -74,6 +74,7 @@ class Guild {
     }
   }
 
+  /* eslint-disable complexity */
   /**
    * Sets up the guild.
    * @param {*} data The raw data of the guild
@@ -175,6 +176,13 @@ class Guild {
      * @type {number}
      */
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
+
+    /**
+     * The value set for a guild's default message notifications
+     * @type {DefaultMessageNotifications|number}
+     */
+    this.defaultMessageNotifications = Constants.DefaultMessageNotifications[data.default_message_notifications] ||
+      data.default_message_notifications;
 
     this.id = data.id;
     this.available = !data.unavailable;
@@ -688,6 +696,11 @@ class Guild {
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
+    if (typeof data.defaultMessageNotifications !== 'undefined') {
+      _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
+        Constants.DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
+        Number(data.defaultMessageNotifications);
+    }
     return this.client.rest.methods.updateGuild(this, _data, reason);
   }
 
@@ -699,6 +712,17 @@ class Guild {
    */
   setExplicitContentFilter(explicitContentFilter, reason) {
     return this.edit({ explicitContentFilter }, reason);
+  }
+
+  /* eslint-disable max-len */
+  /**
+   * Edits the setting of the default message notifications of the guild.
+   * @param {DefaultMessageNotifications|number} defaultMessageNotifications The new setting for the default message notifications
+   * @param {string} [reason] Reason for changing the setting of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setDefaultMessageNotifications(defaultMessageNotifications, reason) {
+    return this.edit({ defaultMessageNotifications }, reason);
   }
 
   /**

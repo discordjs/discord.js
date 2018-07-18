@@ -815,3 +815,14 @@ exports.APIErrors = {
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
   REACTION_BLOCKED: 90001,
 };
+
+/**
+ * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
+ * * ALL
+ * * MENTIONS
+ * @typedef {string} DefaultMessageNotifications
+ */
+exports.DefaultMessageNotifications = [
+  'ALL',
+  'MENTIONS',
+];
