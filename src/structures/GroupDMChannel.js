@@ -118,7 +118,7 @@ class GroupDMChannel extends Channel {
    * Gets the URL to this Group DM's icon.
    * @param {Object} [options={}] Options for the icon url
    * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
    * @returns {?string}
    */
   iconURL({ format, size } = {}) {
