@@ -115,7 +115,7 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
-   * @param {ImageURLOptions} [options] The options to provide
+   * @param {ImageURLOptions} [options] Options for the Image URL
    * @returns {?string}
    */
   avatarURL({ format, size } = {}) {
@@ -135,7 +135,7 @@ class User extends Base {
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
-   * @param {ImageURLOptions} [options] The options to provide
+   * @param {ImageURLOptions} [options] Options for the Image URL
    * @returns {string}
    */
   displayAvatarURL(options) {

@@ -116,7 +116,7 @@ class GroupDMChannel extends Channel {
 
   /**
    * Gets the URL to this Group DM's icon.
-   * @param {ImageURLOptions} [options] The options to provide
+   * @param {ImageURLOptions} [options] Options for the Image URL
    * @returns {?string}
    */
   iconURL({ format, size } = {}) {
