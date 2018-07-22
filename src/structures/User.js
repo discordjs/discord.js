@@ -115,10 +115,7 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
-   * @param {Object} [options={}] Options for the avatar url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
-   * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] The options to provide
    * @returns {?string}
    */
   avatarURL({ format, size } = {}) {
@@ -138,10 +135,7 @@ class User extends Base {
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
-   * @param {Object} [options={}] Options for the avatar url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
-   * it will be `gif` for animated avatars or otherwise `webp`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] The options to provide
    * @returns {string}
    */
   displayAvatarURL(options) {

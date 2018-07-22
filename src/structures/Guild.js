@@ -288,9 +288,7 @@ class Guild extends Base {
 
   /**
    * The URL to this guild's icon.
-   * @param {Object} [options={}] Options for the icon url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] The options to provide
    * @returns {?string}
    */
   iconURL({ format, size } = {}) {
@@ -309,9 +307,7 @@ class Guild extends Base {
 
   /**
    * The URL to this guild's splash.
-   * @param {Object} [options={}] Options for the splash url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] The options to provide
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {

@@ -111,6 +111,13 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
+/**
+ * Options for Image URLs.
+ * @typedef {Object} ImageURLOptions
+ * @property {string} [format]  One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
+ * it will be `gif` for animated avatars or otherwise `webp`
+ * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+ */
 
 exports.Endpoints = {
   CDN(root) {

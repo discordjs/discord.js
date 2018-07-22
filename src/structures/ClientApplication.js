@@ -121,9 +121,7 @@ class ClientApplication extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {Object} [options={}] Options for the icon url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] Options for the Image URL
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {
@@ -133,9 +131,7 @@ class ClientApplication extends Base {
 
   /**
    * A link to this application's cover image.
-   * @param {Object} [options={}] Options for the cover image url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options] Options for the Image URL
    * @returns {?string} URL to the cover image
    */
   coverImage({ format, size } = {}) {
