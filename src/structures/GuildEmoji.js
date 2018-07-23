@@ -22,21 +22,21 @@ class GuildEmoji extends Emoji {
   }
 
   _patch(data) {
-    this.name = data.name;
+    if (data.name) this.name = data.name;
 
     /**
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
      */
-    this.requiresColons = data.require_colons;
+    if (data.require_colons) this.requiresColons = data.require_colons;
 
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
      */
-    this.managed = data.managed;
+    if (data.managed) this.managed = data.managed;
 
-    if (data.roles) this.roles._patch(data.roles);
+    if (data.roles) this._roles = data.roles;
   }
 
   _clone() {
@@ -110,10 +110,11 @@ class GuildEmoji extends Emoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
+    if (data.roles) data.roles = data.roles.map(r => r.id ? r.id : r);
     return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
-        roles: data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined,
+        roles: data.roles || undefined,
       }, reason })
       .then(() => {
         const clone = this._clone();
