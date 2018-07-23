@@ -110,11 +110,11 @@ class GuildEmoji extends Emoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
-    if (data.roles) data.roles = data.roles.map(r => r.id ? r.id : r);
+    data.roles = data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined;
     return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
-        roles: data.roles || undefined,
+        roles: data.roles,
       }, reason })
       .then(() => {
         const clone = this._clone();
