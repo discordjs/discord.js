@@ -28,13 +28,13 @@ class GuildEmoji extends Emoji {
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
      */
-    if (data.require_colons) this.requiresColons = data.require_colons;
+    if (typeof data.require_colons !== 'undefined') this.requiresColons = data.require_colons;
 
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
      */
-    if (data.managed) this.managed = data.managed;
+    if (typeof data.managed !== 'undefined') this.managed = data.managed;
 
     if (data.roles) this._roles = data.roles;
   }
@@ -110,11 +110,11 @@ class GuildEmoji extends Emoji {
    *   .catch(console.error);
    */
   edit(data, reason) {
-    data.roles = data.roles ? data.roles.map(r => r.id ? r.id : r) : undefined;
+    const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
     return this.client.api.guilds(this.guild.id).emojis(this.id)
       .patch({ data: {
         name: data.name,
-        roles: data.roles,
+        roles,
       }, reason })
       .then(() => {
         const clone = this._clone();
