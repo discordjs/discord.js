@@ -39,7 +39,7 @@ class RichEmbed {
 
     /**
      * Timestamp for this Embed
-     * @type {Date}
+     * @type {number}
      */
     this.timestamp = data.timestamp;
 
@@ -133,7 +133,7 @@ class RichEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=current date] The timestamp
+   * @param {Date} [timestamp=new Date()] The timestamp
    * @returns {RichEmbed} This embed
    */
   setTimestamp(timestamp = new Date()) {
@@ -214,6 +214,36 @@ class RichEmbed {
     if (file instanceof Attachment) file = file.file;
     this.file = file;
     return this;
+  }
+
+  /**
+   * Transforms the embed object to be processed.
+   * @returns {Object} The raw data of this embed
+   * @private
+   */
+  _apiTransform() {
+    return {
+      title: this.title,
+      type: 'rich',
+      description: this.description,
+      url: this.url,
+      timestamp: this.timestamp ? new Date(this.timestamp) : null,
+      color: this.color,
+      fields: this.fields,
+      thumbnail: this.thumbnail,
+      image: this.image ? {
+        url: this.image.url,
+      } : null,
+      author: this.author ? {
+        name: this.author.name,
+        url: this.author.url,
+        icon_url: this.author.iconURL,
+      } : null,
+      footer: this.footer ? {
+        text: this.footer.text,
+        icon_url: this.footer.iconURL,
+      } : null,
+    };
   }
 }
 

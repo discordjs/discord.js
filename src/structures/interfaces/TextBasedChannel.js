@@ -135,6 +135,8 @@ class TextBasedChannel {
       else options.files = [options.file];
     }
 
+    if (options.embed) options.embed = new RichEmbed(options.embed)._apiTransform();
+
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];

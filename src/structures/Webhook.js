@@ -178,6 +178,8 @@ class Webhook {
       else options.files = files;
     }
 
+    if (options.embeds) options.embeds = options.embeds.map(e => new RichEmbed(e)._apiTransform());
+
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
         let file = options.files[i];
