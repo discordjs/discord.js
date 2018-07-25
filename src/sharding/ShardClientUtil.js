@@ -10,6 +10,9 @@ class ShardClientUtil {
   constructor(client) {
     this.client = client;
     process.on('message', this._handleMessage.bind(this));
+    client.on('ready', () => { process.send({ _ready: true }); });
+    client.on('disconnect', () => { process.send({ _disconnect: true }); });
+    client.on('reconnecting', () => { process.send({ _reconnecting: true }); });
   }
 
   /**

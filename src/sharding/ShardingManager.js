@@ -67,6 +67,12 @@ class ShardingManager extends EventEmitter {
     this.shardArgs = options.shardArgs;
 
     /**
+     * Arguments for the shard's process executable
+     * @type {?string[]}
+     */
+    this.execArgv = options.execArgv;
+
+    /**
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
@@ -188,6 +194,26 @@ class ShardingManager extends EventEmitter {
     const promises = [];
     for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
     return Promise.all(promises);
+  }
+
+  /**
+   * Kills all running shards and respawns them.
+   * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
+   * @param {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
+   * (in milliseconds)
+   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @param {number} [currentShardIndex=0] The shard index to start respawning at
+   * @returns {Promise<Collection<string, Shard>>}
+   */
+  respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true, currentShardIndex = 0) {
+    let s = 0;
+    const shard = this.shards.get(currentShardIndex);
+    const promises = [shard.respawn(respawnDelay, waitForReady)];
+    if (++s < this.shards.size && shardDelay > 0) promises.push(Util.delayFor(shardDelay));
+    return Promise.all(promises).then(() => {
+      if (++currentShardIndex === this.shards.size) return this.shards;
+      return this.respawnAll(shardDelay, respawnDelay, waitForReady, currentShardIndex);
+    });
   }
 }
 
