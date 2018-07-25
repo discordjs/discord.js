@@ -2,7 +2,7 @@ const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
+const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -330,9 +330,8 @@ class Util {
    * @private
    */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path)[3];
-    if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
-    return f;
+    let res = parse(path);
+    return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
 
   /**
