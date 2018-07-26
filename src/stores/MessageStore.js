@@ -86,7 +86,10 @@ class MessageStore extends DataStore {
   async _fetchMany(options = {}) {
     const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
     const messages = new Collection();
-    for (const message of data) messages.set(message.id, this.add(message));
+    
+    const parsed = data.reverse().map(m => this.add(m))
+    for (const message of parsed.reverse()) messages.set(message.id, message)
+    
     return messages;
   }
 
