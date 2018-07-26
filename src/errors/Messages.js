@@ -94,6 +94,7 @@ const Messages = {
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
+  EMOJI_MANAGED: 'Emoji is managed and has no Author.',
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 };
