@@ -593,3 +593,10 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
     Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
   }
 };
+
+TextBasedChannel.prototype.acknowledge = util.deprecate(
+  TextBasedChannel.prototype.acknowledge, 'TextBasedChannel#acknowledge: userbot methods will be removed'
+);
+
+TextBasedChannel.prototype.search =
+  util.deprecate(TextBasedChannel.prototype.search, 'TextBasedChannel#search: userbot methods will be removed');

@@ -266,8 +266,8 @@ class Client extends EventEmitter {
    * Logs the client in, establishing a websocket connection to Discord.
    * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
    * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
+   * Bot accounts also have access to many features that user accounts cannot utilise. Automating a user account is
+   * considered a violation of the ToS.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -395,11 +395,12 @@ class Client extends EventEmitter {
    * <warn>Bots can only fetch their own profile.</warn>
    * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<OAuth2Application>}
-   * client.fetchApplication('id')
+   * client.fetchApplication()
    *   .then(application => console.log(`Obtained application with name: ${application.name}`)
    *   .catch(console.error);
    */
   fetchApplication(id = '@me') {
+    if (id !== '@me') process.emitWarning('fetchApplication: use "@me" as an argument', 'DeprecationWarning');
     return this.rest.methods.getApplication(id);
   }
 

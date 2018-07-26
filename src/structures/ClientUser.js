@@ -303,6 +303,7 @@ class ClientUser extends User {
 
   /**
    * Fetches messages that mentioned the client's user.
+   * <warn>This is only available when using a user account.</warn>
    * @param {Object} [options] Options for the fetch
    * @param {number} [options.limit=25] Maximum number of mentions to retrieve
    * @param {boolean} [options.roles=true] Whether to include role mentions
@@ -411,5 +412,20 @@ class ClientUser extends User {
 
 ClientUser.prototype.setGame =
   util.deprecate(ClientUser.prototype.setGame, 'ClientUser#setGame: use ClientUser#setActivity instead');
+
+ClientUser.prototype.addFriend =
+  util.deprecate(ClientUser.prototype.addFriend, 'ClientUser#addFriend: userbot methods will be removed');
+
+ClientUser.prototype.removeFriend =
+  util.deprecate(ClientUser.prototype.removeFriend, 'ClientUser#removeFriend: userbot methods will be removed');
+
+ClientUser.prototype.setPassword =
+  util.deprecate(ClientUser.prototype.setPassword, 'ClientUser#setPassword: userbot methods will be removed');
+
+ClientUser.prototype.setEmail =
+  util.deprecate(ClientUser.prototype.setEmail, 'ClientUser#setEmail: userbot methods will be removed');
+
+ClientUser.prototype.fetchMentions =
+  util.deprecate(ClientUser.prototype.fetchMentions, 'ClientUser#fetchMentions: userbot methods will be removed');
 
 module.exports = ClientUser;

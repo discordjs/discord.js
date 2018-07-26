@@ -2,6 +2,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Constants = require('../util/Constants');
 const Presence = require('./Presence').Presence;
 const Snowflake = require('../util/Snowflake');
+const util = require('util');
 
 /**
  * Represents a user on Discord.
@@ -299,5 +300,23 @@ class User {
 }
 
 TextBasedChannel.applyToClass(User);
+
+User.prototype.block =
+  util.deprecate(User.prototype.block, 'User#block: userbot methods will be removed');
+
+User.prototype.unblock =
+  util.deprecate(User.prototype.unblock, 'User#unblock: userbot methods will be removed');
+
+User.prototype.addFriend =
+  util.deprecate(User.prototype.addFriend, 'User#addFriend: userbot methods will be removed');
+
+User.prototype.removeFriend =
+  util.deprecate(User.prototype.removeFriend, 'User#removeFriend: userbot methods will be removed');
+
+User.prototype.setNote =
+  util.deprecate(User.prototype.setNote, 'User#setNote, userbot methods will be removed');
+
+User.prototype.fetchProfile =
+  util.deprecate(User.prototype.fetchProfile, 'User#fetchProfile: userbot methods will be removed');
 
 module.exports = User;
