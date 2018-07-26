@@ -116,9 +116,9 @@ class GuildEmoji extends Emoji {
         name: data.name,
         roles,
       }, reason })
-      .then(() => {
+      .then(newData => {
         const clone = this._clone();
-        clone._patch(data);
+        clone._patch(newData);
         return clone;
       });
   }
