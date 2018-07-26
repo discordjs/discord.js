@@ -37,9 +37,6 @@ class WebSocketPacketManager {
     this.register(WSEvents.CHANNEL_PINS_UPDATE, require('./handlers/ChannelPinsUpdate'));
     this.register(WSEvents.PRESENCE_UPDATE, require('./handlers/PresenceUpdate'));
     this.register(WSEvents.USER_UPDATE, require('./handlers/UserUpdate'));
-    this.register(WSEvents.USER_NOTE_UPDATE, require('./handlers/UserNoteUpdate'));
-    this.register(WSEvents.USER_SETTINGS_UPDATE, require('./handlers/UserSettingsUpdate'));
-    this.register(WSEvents.USER_GUILD_SETTINGS_UPDATE, require('./handlers/UserGuildSettingsUpdate'));
     this.register(WSEvents.VOICE_STATE_UPDATE, require('./handlers/VoiceStateUpdate'));
     this.register(WSEvents.TYPING_START, require('./handlers/TypingStart'));
     this.register(WSEvents.MESSAGE_CREATE, require('./handlers/MessageCreate'));
@@ -47,9 +44,6 @@ class WebSocketPacketManager {
     this.register(WSEvents.MESSAGE_UPDATE, require('./handlers/MessageUpdate'));
     this.register(WSEvents.MESSAGE_DELETE_BULK, require('./handlers/MessageDeleteBulk'));
     this.register(WSEvents.VOICE_SERVER_UPDATE, require('./handlers/VoiceServerUpdate'));
-    this.register(WSEvents.GUILD_SYNC, require('./handlers/GuildSync'));
-    this.register(WSEvents.RELATIONSHIP_ADD, require('./handlers/RelationshipAdd'));
-    this.register(WSEvents.RELATIONSHIP_REMOVE, require('./handlers/RelationshipRemove'));
     this.register(WSEvents.MESSAGE_REACTION_ADD, require('./handlers/MessageReactionAdd'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE, require('./handlers/MessageReactionRemove'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE_ALL, require('./handlers/MessageReactionRemoveAll'));

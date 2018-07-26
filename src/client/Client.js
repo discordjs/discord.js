@@ -97,8 +97,7 @@ class Client extends BaseClient {
     this.channels = new ChannelStore(this);
 
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
-     * <warn>This is only filled when using a user account.</warn>
+     * Presences that have been received for the client user, mapped by user IDs
      * @type {ClientPresenceStore<Snowflake, Presence>}
      */
     this.presences = new ClientPresenceStore(this);
@@ -106,7 +105,7 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -240,10 +239,6 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
-   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -262,25 +257,11 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {Promise}
+   * @returns {void}
    */
   destroy() {
     super.destroy();
     return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
   }
 
   /**
@@ -369,22 +350,16 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * Obtains the OAuth Application of this bot from Discord.
    * @returns {Promise<ClientApplication>}
-   * @example
-   * client.fetchApplication('id')
-   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
-   *   .catch(console.error);
    */
-  fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+  fetchApplication() {
+    return this.api.oauth2.applications('@me').get()
       .then(app => new ClientApplication(this, app));
   }
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example

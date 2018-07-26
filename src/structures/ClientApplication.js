@@ -171,26 +171,6 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Resets the app's secret.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<ClientApplication>}
-   */
-  resetSecret() {
-    return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new ClientApplication(this.client, app));
-  }
-
-  /**
-   * Resets the app's bot token.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<ClientApplication>}
-   */
-  resetToken() {
-    return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
-  }
-
-  /**
    * When concatenated with a string, this automatically returns the application's name instead of the
    * ClientApplication object.
    * @returns {string}

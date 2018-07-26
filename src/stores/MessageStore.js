@@ -1,7 +1,6 @@
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
 const Message = require('../structures/Message');
-const { Error } = require('../errors');
 
 /**
  * Stores messages for text-based channels.
@@ -80,12 +79,6 @@ class MessageStore extends DataStore {
   }
 
   async _fetchId(messageID) {
-    if (!this.client.user.bot) {
-      const messages = await this._fetchMany({ limit: 1, around: messageID });
-      const msg = messages.get(messageID);
-      if (!msg) throw new Error('MESSAGE_MISSING');
-      return msg;
-    }
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
     return this.add(data);
   }

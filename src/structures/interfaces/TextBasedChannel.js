@@ -120,23 +120,6 @@ class TextBasedChannel {
   }
 
   /**
-   * Performs a search within the channel.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<MessageSearchResult>}
-   * @example
-   * channel.search({ content: 'discord.js', before: '2016-11-17' })
-   *   .then(res => {
-   *     const hit = res.results[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
-   *   })
-   *   .catch(console.error);
-   */
-  search(options = {}) {
-    return Shared.search(this, options);
-  }
-
-  /**
    * Starts a typing indicator in the channel.
    * @param {number} [count=1] The number of times startTyping should be considered to have been called
    * @returns {Promise} Resolves once the bot stops typing gracefully, or rejects when an error occurs
@@ -273,7 +256,6 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
@@ -316,28 +298,11 @@ class TextBasedChannel {
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
-  /**
-   * Marks all messages in this channel as read.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
-   */
-  acknowledge() {
-    if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
-      .post({ data: { token: this.client.rest._ackToken } })
-      .then(res => {
-        if (res.token) this.client.rest._ackToken = res.token;
-        return this;
-      });
-  }
-
   static applyToClass(structure, full = false, ignore = []) {
     const props = ['send'];
     if (full) {
       props.push(
-        'acknowledge',
         'lastMessage',
-        'search',
         'bulkDelete',
         'startTyping',
         'stopTyping',

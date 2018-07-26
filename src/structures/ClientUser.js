@@ -1,10 +1,5 @@
 const Structures = require('../util/Structures');
-const Collection = require('../util/Collection');
-const ClientUserSettings = require('./ClientUserSettings');
-const ClientUserGuildSettings = require('./ClientUserGuildSettings');
-const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
-const Guild = require('./Guild');
 
 /**
  * Represents the logged in client's Discord user.
@@ -20,74 +15,13 @@ class ClientUser extends Structures.get('User') {
      */
     this.verified = data.verified;
 
-    /**
-     * The email of this account
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?string}
-     */
-    this.email = data.email;
     this._typing = new Map();
 
     /**
-     * A Collection of friends for the logged in user
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, User>}
-     */
-    this.friends = new Collection();
-
-    /**
-     * A Collection of blocked users for the logged in user
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, User>}
-     */
-    this.blocked = new Collection();
-
-    /**
-     * A Collection of notes for the logged in user
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, string>}
-     */
-    this.notes = new Collection();
-
-    /**
-     * If the user has Discord premium (nitro)
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
-     */
-    this.premium = typeof data.premium === 'boolean' ? data.premium : null;
-
-    /**
-     * If the user has MFA enabled on their account
-     * <warn>This is only filled when using a user account.</warn>
+     * If the bot's {@link ClientApplication#owner Owner} has MFA enabled on their account
      * @type {?boolean}
      */
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
-
-    /**
-     * If the user has ever used a mobile device on Discord
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
-     */
-    this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
-
-    /**
-     * Various settings for this user
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?ClientUserSettings}
-     */
-    this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
-
-    /**
-     * All of the user's guild settings
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {Collection<Snowflake, ClientUserGuildSettings>}
-     */
-    this.guildSettings = new Collection();
-    if (data.user_guild_settings) {
-      for (const settings of data.user_guild_settings) {
-        this.guildSettings.set(settings.guild_id, new ClientUserGuildSettings(this.client, settings));
-      }
-    }
 
     if (data.token) this.client.token = data.token;
   }
@@ -101,15 +35,7 @@ class ClientUser extends Structures.get('User') {
     return this.client.presences.clientPresence;
   }
 
-  edit(data, passcode) {
-    if (!this.bot) {
-      if (typeof passcode !== 'object') {
-        data.password = passcode;
-      } else {
-        data.code = passcode.mfaCode;
-        data.password = passcode.password;
-      }
-    }
+  edit(data) {
     return this.client.api.users('@me').patch({ data })
       .then(newData => {
         this.client.token = newData.token;
@@ -122,7 +48,6 @@ class ClientUser extends Structures.get('User') {
    * <info>Changing usernames in Discord is heavily rate limited, with only 2 requests
    * every hour. Use this sparingly!</info>
    * @param {string} username The new username
-   * @param {string} [password] Current password (only for user accounts)
    * @returns {Promise<ClientUser>}
    * @example
    * // Set username
@@ -130,43 +55,8 @@ class ClientUser extends Structures.get('User') {
    *   .then(user => console.log(`My new username is ${user.username}`))
    *   .catch(console.error);
    */
-  setUsername(username, password) {
-    return this.edit({ username }, password);
-  }
-
-  /**
-   * Changes the email for the client user's account.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} email New email to change to
-   * @param {string} password Current password
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // Set email
-   * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
-   *   .then(user => console.log(`My new email is ${user.email}`))
-   *   .catch(console.error);
-   */
-  setEmail(email, password) {
-    return this.edit({ email }, password);
-  }
-
-  /**
-   * Changes the password for the client user's account.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} newPassword New password to change to
-   * @param {Object|string} options Object containing an MFA code, password or both.
-   * Can be just a string for the password.
-   * @param {string} [options.oldPassword] Current password
-   * @param {string} [options.mfaCode] Timed MFA Code
-   * @returns {Promise<ClientUser>}
-   * @example
-   * // Set password
-   * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
-   *   .then(user => console.log('New password set!'))
-   *   .catch(console.error);
-   */
-  setPassword(newPassword, options) {
-    return this.edit({ new_password: newPassword }, { password: options.oldPassword, mfaCode: options.mfaCode });
+  setUsername(username) {
+    return this.edit({ username });
   }
 
   /**
@@ -263,36 +153,6 @@ class ClientUser extends Structures.get('User') {
   }
 
   /**
-   * Fetches messages that mentioned the client's user.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Object} [options={}] Options for the fetch
-   * @param {number} [options.limit=25] Maximum number of mentions to retrieve
-   * @param {boolean} [options.roles=true] Whether to include role mentions
-   * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
-   * @param {GuildResolvable} [options.guild] Limit the search to a specific guild
-   * @returns {Promise<Message[]>}
-   * @example
-   * // Fetch mentions
-   * client.user.fetchMentions()
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
-   * // Fetch mentions from a guild
-   * client.user.fetchMentions({
-   *   guild: '222078108977594368'
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  fetchMentions(options = {}) {
-    if (options.guild instanceof Guild) options.guild = options.guild.id;
-    Util.mergeDefault({ limit: 25, roles: true, everyone: true, guild: null }, options);
-
-    return this.client.api.users('@me').mentions.get({ query: options })
-      .then(data => data.map(m => this.client.channels.get(m.channel_id).messages.add(m, false)));
-  }
-
-  /**
    * An object containing either a user or access token, and an optional nickname.
    * @typedef {Object} GroupDMRecipientOptions
    * @property {UserResolvable} [user] User to add to the Group DM
@@ -326,16 +186,6 @@ class ClientUser extends Structures.get('User') {
     } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
     return this.client.api.users('@me').channels.post({ data })
       .then(res => this.client.channels.add(res));
-  }
-
-  toJSON() {
-    return super.toJSON({
-      friends: false,
-      blocked: false,
-      notes: false,
-      settings: false,
-      guildSettings: false,
-    });
   }
 }
 
