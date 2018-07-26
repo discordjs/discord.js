@@ -161,6 +161,7 @@ class Emoji {
    * @returns {Promise<User>}
    */
   fetchAuthor() {
+    if (this.managed) return Promise.reject(new TypeError('Emoji is managed and has no Author.'));
     return this.client.rest.makeRequest('get', Constants.Endpoints.Guild(this.guild).Emoji(this.id), true)
       .then(emoji => this.client.dataManager.newUser(emoji.user));
   }
