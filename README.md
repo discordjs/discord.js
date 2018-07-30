@@ -24,7 +24,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 - Object-oriented
 - Predictable abstractions
 - Performant
-- 100% coverage of the Discord API
+- 100% coverage of the public Discord API
 
 ## Installation
 **Node.js 8.0.0 or newer is required.**  
