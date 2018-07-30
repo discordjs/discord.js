@@ -142,7 +142,7 @@ class GuildMemberStore extends DataStore {
    *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
-    if (options.days && options.days >= 1) options['delete-message-days'] = options.days;
+    if (options.days >= 1) options['delete-message-days'] = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api.guilds(this.guild.id).bans[id].put({ query: options })
