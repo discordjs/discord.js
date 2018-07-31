@@ -111,6 +111,13 @@ class RequestHandler {
           }, item.reject);
           finish();
         }
+      }).catch(error => {
+        // This library isn't transparent, in certain cases, it may reject with a FetchError:
+        // https://github.com/bitinn/node-fetch/blob/master/ERROR-HANDLING.md
+        item.reject(error.code && error.code >= 400 && error.code < 500 ?
+          new DiscordAPIError(item.request.route, error, item.request.method) :
+          error);
+        return finish();
       });
     });
   }
