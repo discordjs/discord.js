@@ -1,5 +1,6 @@
+const { Readable: ReadableStream } = require('stream');
 const VolumeInterface = require('./util/VolumeInterface');
-const Prism = require('prism-media');
+const prism = require('prism-media');
 const OpusEncoders = require('./opus/OpusEngineList');
 const Collection = require('../../util/Collection');
 
@@ -36,11 +37,6 @@ class VoiceBroadcast extends VolumeInterface {
     this._dispatchers = new Collection();
     this._encoders = new Collection();
     /**
-     * The audio transcoder that this broadcast uses
-     * @type {Prism}
-     */
-    this.prism = new Prism();
-    /**
      * The current audio transcoder that is being used
      * @type {Object}
      */
@@ -67,7 +63,7 @@ class VoiceBroadcast extends VolumeInterface {
     if (!currentTranscoder) return null;
     const transcoder = currentTranscoder.transcoder;
     const options = currentTranscoder.options;
-    return (transcoder && transcoder.output) || options.stream;
+    return transcoder || options.stream;
   }
 
   unregisterDispatcher(dispatcher, old) {
@@ -118,7 +114,7 @@ class VoiceBroadcast extends VolumeInterface {
 
   killCurrentTranscoder() {
     if (this.currentTranscoder) {
-      if (this.currentTranscoder.transcoder) this.currentTranscoder.transcoder.kill();
+      if (this.currentTranscoder.transcoder) this.currentTranscoder.transcoder.destroy();
       this.currentTranscoder = null;
       this.emit('end');
     }
@@ -171,11 +167,12 @@ class VoiceBroadcast extends VolumeInterface {
 
   _playTranscodable(media, options) {
     this.killCurrentTranscoder();
-    const transcoder = this.prism.transcode({
-      type: 'ffmpeg',
-      media,
-      ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek || 0)]),
-    });
+    const isStream = media instanceof ReadableStream;
+
+    const args = isStream ? ffmpegArguments.slice() : ['-i', media, ...ffmpegArguments];
+    if (options.seek) args.push('-ss', String(options.seek || 0));
+
+    const transcoder = new prism.FFmpeg({ args });
     /**
      * Emitted whenever an error occurs.
      * @event VoiceBroadcast#error
@@ -199,7 +196,10 @@ class VoiceBroadcast extends VolumeInterface {
       transcoder,
       options,
     };
-    transcoder.output.once('readable', () => this._startPlaying());
+    transcoder.once('readable', () => this._startPlaying());
+    if (isStream) {
+      media.pipe(transcoder);
+    }
     return this;
   }
 

@@ -5,7 +5,6 @@ const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
-const Prism = require('prism-media');
 
 /**
  * Represents a connection to a guild's voice server.
@@ -33,17 +32,6 @@ class VoiceConnection extends EventEmitter {
      * @type {Client}
      */
     this.client = voiceManager.client;
-
-    /**
-     * @external Prism
-     * @see {@link https://github.com/hydrabolt/prism-media}
-     */
-
-    /**
-     * The audio transcoder for this connection
-     * @type {Prism}
-     */
-    this.prism = new Prism();
 
     /**
      * The voice channel this connection is currently serving
