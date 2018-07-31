@@ -40,8 +40,8 @@ class RequestHandler {
   }
 
   _calculateReset(reset, serverDate) {
-    const offset = new Date(serverDate) - Date.now();
-    return new Date(Number(reset) * 1000) - offset;
+    const offset = new Date(serverDate).getTime() - Date.now();
+    return new Date(Number(reset) * 1000).getTime() - offset;
   }
 
   execute(item) {
@@ -148,7 +148,7 @@ class RequestHandler {
               if (res.status >= 400 && res.status < 500) {
                 return item.reject(new DiscordAPIError(item.request.route, data, item.request.method));
               }
-              // Not sure about here
+              return null;
             }, err => item.reject(
               new HTTPError(err.message, err.constructor.name, err.status, item.request.method, item.request.route)
             ));
