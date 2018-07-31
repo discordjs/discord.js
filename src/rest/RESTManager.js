@@ -1,4 +1,4 @@
-const handlers = require('./handlers');
+const RequestHandler = require('./RequestHandler');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
@@ -12,6 +12,7 @@ class RESTManager {
     this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
+    this.globalTimeout = null;
     if (client.options.restSweepInterval > 0) {
       client.setInterval(() => {
         this.handlers.sweep(handler => handler._inactive);
@@ -45,20 +46,12 @@ class RESTManager {
     });
   }
 
-  getRequestHandler() {
-    const method = this.client.options.apiRequestMethod;
-    if (typeof method === 'function') return method;
-    const handler = handlers[method];
-    if (!handler) throw new Error('RATELIMIT_INVALID_METHOD');
-    return handler;
-  }
-
   request(method, url, options = {}) {
     const apiRequest = new APIRequest(this, method, url, options);
     let handler = this.handlers.get(apiRequest.route);
 
     if (!handler) {
-      handler = new handlers.RequestHandler(this, this.getRequestHandler());
+      handler = new RequestHandler(this);
       this.handlers.set(apiRequest.route, handler);
     }
 
