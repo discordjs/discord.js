@@ -5,7 +5,6 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
  * and is therefore slightly riskier to use.
@@ -36,7 +35,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
   internalSharding: false,
