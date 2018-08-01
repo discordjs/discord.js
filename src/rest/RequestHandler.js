@@ -39,9 +39,12 @@ class RequestHandler {
     return this.queue.length === 0 && !this.limited && this.busy !== true;
   }
 
+  _getAPIOffset(serverDate) {
+    return new Date(serverDate).getTime() - Date.now();
+  }
+
   _calculateReset(reset, serverDate) {
-    const offset = new Date(serverDate).getTime() - Date.now();
-    return new Date(Number(reset) * 1000).getTime() - offset;
+    return new Date(Number(reset) * 1000).getTime() - this._getAPIOffset(serverDate);
   }
 
   execute(item) {
@@ -69,6 +72,11 @@ class RequestHandler {
           this.remaining = remaining ? Number(remaining) : 1;
           this.reset = reset ? this._calculateReset(reset, serverDate) + 100 : Date.now();
           this.retryAfter = retryAfter ? Number(retryAfter) : -1;
+
+          // https://github.com/discordapp/discord-api-docs/issues/182
+          if (item.request.route.includes('reactions')) {
+            this.reset = Date.now() + this._getAPIOffset() + 250;
+          }
         }
 
         // After calculations, pre-emptively stop farther requests
@@ -95,7 +103,7 @@ class RequestHandler {
             });
           }
 
-          if (this.manager.globallyRateLimited) {
+          if (this.manager.globallyRateLimited && !this.manager.globalTimeout) {
             // Set a global rate limit for all of the handlers instead of each one individually
             this.manager.globalTimeout = this.manager.client.setTimeout(() => {
               this.manager.globalTimeout = null;
@@ -121,7 +129,7 @@ class RequestHandler {
         if (res.ok) {
           return parseResponse(res)
             .then(success => {
-              // Nothing wrong with the request, proeeed with the next
+              // Nothing wrong with the request, proceed with the next
               item.resolve(success);
               this.run();
             });
