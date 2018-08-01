@@ -37,6 +37,12 @@ class Message extends Base {
 
   _patch(data) { // eslint-disable-line complexity
     /**
+     * The data of the message
+     * @type {object}
+     */
+    this.data = data;
+
+    /**
      * The ID of the message
      * @type {Snowflake}
      */
