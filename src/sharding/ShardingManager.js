@@ -95,6 +95,12 @@ class ShardingManager extends EventEmitter {
     this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
 
     /**
+     * An array of arguments to pass to the executable
+     * @type {string[]}
+     */
+    this.execArgv = options.execArgv;
+
+    /**
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
@@ -114,7 +120,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Shard}
    */
   createShard(id = this.shards.size) {
-    const shard = new Shard(this, id, this.shardArgs);
+    const shard = new Shard(this, id);
     this.shards.set(id, shard);
     /**
      * Emitted upon creating a shard.
