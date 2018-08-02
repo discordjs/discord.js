@@ -6,7 +6,7 @@ const { Error } = require('../../../errors');
  * Options that can be passed to stream-playing methods:
  * @typedef {Object} StreamOptions
  * @property {StreamType} [type='unknown'] The type of stream.
- * @property {number} [seek=0] The time to seek to
+ * @property {number} [seek=0] The time to seek to, will be ignored when playing `ogg/opus` or `webm/opus` streams
  * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
  * this stream to improve performance.
  * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
@@ -47,7 +47,7 @@ class PlayInterface {
    * connection.play('/home/hydrabolt/audio.mp3', { volume: 0.5 });
    * @example
    * // Play a ReadableStream
-   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { filter: 'audioonly' }));
+   * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { quality: 'highestaudio' }));
    * @example
    * // Play a voice broadcast
    * const broadcast = client.createVoiceBroadcast();

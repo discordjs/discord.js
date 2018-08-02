@@ -13,6 +13,7 @@ class ChannelDeleteAction extends Action {
 
     if (channel) {
       client.channels.remove(channel.id);
+      channel.deleted = true;
       client.emit(Events.CHANNEL_DELETE, channel);
     }
 

@@ -56,9 +56,6 @@ module.exports = {
     // This is a getter so that it properly extends any custom User class
     return require('./structures/ClientUser');
   },
-  ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
-  ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
-  ClientUserSettings: require('./structures/ClientUserSettings'),
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),

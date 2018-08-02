@@ -212,6 +212,7 @@ class WebSocketShard extends EventEmitter {
     let packet;
     try {
       packet = WebSocket.unpack(this.inflate.result);
+      this.manager.client.emit('raw', packet);
     } catch (err) {
       this.manager.client.emit(Events.ERROR, err);
       return;

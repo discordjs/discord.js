@@ -87,7 +87,7 @@ class GuildMemberStore extends DataStore {
    *   .catch(console.error);
    * @example
    * // Fetch by query
-   * guild.members.fetch({ query: 'hydra' })
+   * guild.members.fetch({ query: 'hydra', limit: 1 })
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -178,7 +178,7 @@ class GuildMemberStore extends DataStore {
 
   _fetchSingle({ user, cache }) {
     const existing = this.get(user);
-    if (existing) return Promise.resolve(existing);
+    if (existing && existing.joinedTimestamp) return Promise.resolve(existing);
     return this.client.api.guilds(this.guild.id).members(user).get()
       .then(data => this.add(data, cache));
   }

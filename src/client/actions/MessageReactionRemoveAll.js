@@ -17,7 +17,7 @@ class MessageReactionRemoveAll extends Action {
 }
 
 /**
- * Emitted whenever all reactions are removed from a message.
+ * Emitted whenever all reactions are removed from a cached message.
  * @event Client#messageReactionRemoveAll
  * @param {Message} message The message the reactions were removed from
  */

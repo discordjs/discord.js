@@ -35,8 +35,12 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = Boolean(data.nsfw);
+    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
 
+    /**
+     * The ID of the last message sent in this channel, if one was sent
+     * @type {?Snowflake}
+     */
     this.lastMessageID = data.last_message_id;
 
     if (data.messages) for (const message of data.messages) this.messages.add(message);

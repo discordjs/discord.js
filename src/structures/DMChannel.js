@@ -27,6 +27,10 @@ class DMChannel extends Channel {
      */
     this.recipient = this.client.users.add(data.recipients[0]);
 
+    /**
+     * The ID of the last message in the channel, if one was sent
+     * @type {?Snowflake}
+     */
     this.lastMessageID = data.last_message_id;
   }
 

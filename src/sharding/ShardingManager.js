@@ -23,6 +23,7 @@ class ShardingManager extends EventEmitter {
    * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
+   * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
   constructor(file, options = {}) {
@@ -82,10 +83,16 @@ class ShardingManager extends EventEmitter {
     this.respawn = options.respawn;
 
     /**
-     * An array of arguments to pass to shards
+     * An array of arguments to pass to the executable
      * @type {string[]}
      */
-    this.shardArgs = options.shardArgs;
+    this.execArgv = options.execArgv;
+
+    /**
+     * Token to use for obtaining the automatic shard count, and passing to shards
+     * @type {?string}
+     */
+    this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
 
     /**
      * Token to use for obtaining the automatic shard count, and passing to shards
@@ -177,25 +184,12 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the {@link Client}s.
-   * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array<*>>} Results of the script execution
-   */
-  broadcastEval(script) {
-    const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.eval(script));
-    return Promise.all(promises);
-  }
-
-  /**
    * Fetches a client property value of each shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.size')
-   *   .then(results => {
-   *     console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`);
-   *   })
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
   fetchClientValues(prop) {
@@ -216,7 +210,7 @@ class ShardingManager extends EventEmitter {
    */
   async respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
     let s = 0;
-    for (const shard of this.shards) {
+    for (const shard of this.shards.values()) {
       const promises = [shard.respawn(respawnDelay, waitForReady)];
       if (++s < this.shards.size && shardDelay > 0) promises.push(Util.delayFor(shardDelay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop

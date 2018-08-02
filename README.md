@@ -18,7 +18,7 @@
 </div>
 
 ## About
-discord.js is a powerful [node.js](https://nodejs.org) module that allows you to interact with the
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
 [Discord API](https://discordapp.com/developers/docs/intro) very easily.
 
 - Object-oriented

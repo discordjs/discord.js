@@ -1,4 +1,3 @@
-const nonce = Buffer.alloc(24);
 const secretbox = require('../util/Secretbox');
 const EventEmitter = require('events');
 
@@ -7,15 +6,18 @@ class Readable extends require('stream').Readable { _read() {} } // eslint-disab
 class PacketHandler extends EventEmitter {
   constructor(receiver) {
     super();
+    this.nonce = Buffer.alloc(24);
     this.receiver = receiver;
     this.streams = new Map();
   }
 
+  get connection() {
+    return this.receiver.connection;
+  }
+
   _stoppedSpeaking(userID) {
-    if (this.streams.has(userID)) {
-      const { stream, end } = this.streams.get(userID);
-      if (end === 'silence') stream.push(null);
-    }
+    const streamInfo = this.streams.get(userID);
+    if (streamInfo && streamInfo.end === 'silence') streamInfo.stream.push(null);
   }
 
   makeStream(user, end) {
@@ -27,10 +29,22 @@ class PacketHandler extends EventEmitter {
   }
 
   parseBuffer(buffer) {
-    // Reuse nonce buffer
-    buffer.copy(nonce, 0, 0, 12);
+    const { secretKey, encryptionMode } = this.receiver.connection.authentication;
 
-    let packet = secretbox.methods.open(buffer.slice(12), nonce, this.receiver.connection.authentication.secretKey);
+    // Choose correct nonce depending on encryption
+    let end;
+    if (encryptionMode === 'xsalsa20_poly1305_lite') {
+      buffer.copy(this.nonce, 0, buffer.length - 4);
+      end = buffer.length - 4;
+    } else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
+      buffer.copy(this.nonce, 0, buffer.length - 24);
+      end = buffer.length - 24;
+    } else {
+      buffer.copy(this.nonce, 0, 0, 12);
+    }
+
+    // Open packet
+    let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secretKey);
     if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
 
@@ -51,7 +65,7 @@ class PacketHandler extends EventEmitter {
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.receiver.connection.ssrcMap.get(ssrc); }
+  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
 
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);

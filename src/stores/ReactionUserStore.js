@@ -1,3 +1,4 @@
+const Collection = require('../util/Collection');
 const DataStore = require('./DataStore');
 const { Error } = require('../errors');
 
@@ -21,14 +22,16 @@ class ReactionUserStore extends DataStore {
    */
   async fetch({ limit = 100, after, before } = {}) {
     const message = this.reaction.message;
-    const users = await this.client.api.channels[message.channel.id].messages[message.id]
+    const data = await this.client.api.channels[message.channel.id].messages[message.id]
       .reactions[this.reaction.emoji.identifier]
       .get({ query: { limit, before, after } });
-    for (const rawUser of users) {
+    const users = new Collection();
+    for (const rawUser of data) {
       const user = this.client.users.add(rawUser);
       this.set(user.id, user);
+      users.set(user.id, user);
     }
-    return this;
+    return users;
   }
 
   /**

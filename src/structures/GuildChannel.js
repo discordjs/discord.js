@@ -6,7 +6,6 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
-const { MessageNotificationTypes } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
 
 /**
@@ -178,7 +177,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Updates the permission overwrites for a channel
+   * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
    * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
@@ -558,42 +557,11 @@ class GuildChannel extends Channel {
    * @example
    * // Delete the channel
    * channel.delete('making room for new channels')
-   *   .then() // Success
-   *   .catch(console.error); // Log error
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);
-  }
-
-  /**
-   * Whether the channel is muted
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?boolean}
-   * @readonly
-   */
-  get muted() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).muted;
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * The type of message that should notify you
-   * one of `EVERYTHING`, `MENTIONS`, `NOTHING`, `INHERIT`
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?string}
-   * @readonly
-   */
-  get messageNotifications() {
-    if (this.client.user.bot) return null;
-    try {
-      return this.client.user.guildSettings.get(this.guild.id).channelOverrides.get(this.id).messageNotifications;
-    } catch (err) {
-      return MessageNotificationTypes[3];
-    }
   }
 }
 

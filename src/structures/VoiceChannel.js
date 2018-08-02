@@ -1,6 +1,7 @@
 const GuildChannel = require('./GuildChannel');
 const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const { Error } = require('../errors');
 
 /**
@@ -52,6 +53,15 @@ class VoiceChannel extends GuildChannel {
    */
   get full() {
     return this.userLimit > 0 && this.members.size >= this.userLimit;
+  }
+
+  /**
+   * Whether the channel is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT);
   }
 
   /**

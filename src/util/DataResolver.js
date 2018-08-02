@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -27,7 +27,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app\.com\/invite|\.gg)\/([\w-]{2,255})/i;
+    const inviteRegex = /discord(?:app\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;
@@ -83,13 +83,13 @@ class DataResolver {
    * @returns {Promise<Buffer>}
    */
   static resolveFile(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (!browser && resource instanceof Buffer) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
-      } else {
+        return fetch(resource).then(res => browser ? res.blob() : res.buffer());
+      } else if (!browser) {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {

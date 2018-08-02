@@ -6,14 +6,12 @@ const Messages = {
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
 
-  FEATURE_USER_ONLY: 'Only user accounts are able to make use of this feature.',
-
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_TIMEOUT: 'The connection to the gateway timed out.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  PERMISSION_INVALID: 'Invalid permission string or number.',
+  PERMISSIONS_INVALID: 'Invalid permission string or number.',
 
   RATELIMIT_INVALID_METHOD: 'Unknown rate limiting method.',
 
@@ -95,6 +93,7 @@ const Messages = {
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
+  EMOJI_MANAGED: 'Emoji is managed and has no Author.',
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 };

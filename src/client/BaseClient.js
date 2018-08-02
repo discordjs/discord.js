@@ -13,19 +13,6 @@ class BaseClient extends EventEmitter {
     super();
 
     /**
-     * The options the client was instantiated with
-     * @type {ClientOptions}
-     */
-    this.options = Util.mergeDefault(DefaultOptions, options);
-
-    /**
-     * The REST manager of the client
-     * @type {RESTManager}
-     * @private
-     */
-    this.rest = new RESTManager(this, options._tokenType);
-
-    /**
      * Timeouts set by {@link BaseClient#setTimeout} that are still active
      * @type {Set<Timeout>}
      * @private
@@ -45,6 +32,19 @@ class BaseClient extends EventEmitter {
      * @private
      */
     this._immediates = new Set();
+
+    /**
+     * The options the client was instantiated with
+     * @type {ClientOptions}
+     */
+    this.options = Util.mergeDefault(DefaultOptions, options);
+
+    /**
+     * The REST manager of the client
+     * @type {RESTManager}
+     * @private
+     */
+    this.rest = new RESTManager(this, options._tokenType);
   }
 
   /**

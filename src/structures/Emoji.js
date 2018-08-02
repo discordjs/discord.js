@@ -24,6 +24,12 @@ class Emoji extends Base {
      * @type {?Snowflake}
      */
     this.id = emoji.id;
+
+    /**
+     * Whether this emoji has been deleted
+     * @type {boolean}
+     */
+    this.deleted = false;
   }
 
   /**

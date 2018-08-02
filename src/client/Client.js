@@ -90,8 +90,7 @@ class Client extends BaseClient {
     this.channels = new ChannelStore(this);
 
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
-     * <warn>This is only filled when using a user account.</warn>
+     * Presences that have been received for the client user, mapped by user IDs
      * @type {ClientPresenceStore<Snowflake, Presence>}
      */
     this.presences = new ClientPresenceStore(this);
@@ -99,7 +98,7 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -195,10 +194,6 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
-   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -247,7 +242,7 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {Promise}
+   * @returns {void}
    */
   async destroy() {
     await super.destroy();
@@ -262,9 +257,8 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    * @example
    * client.fetchInvite('https://discord.gg/bRCvFy9')
-   *  .then(invite => {
-   *    console.log(`Obtained invite with code: ${invite.code}`);
-   *  }).catch(console.error);
+   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`)
+   *   .catch(console.error);
    */
   fetchInvite(invite) {
     const code = DataResolver.resolveInviteCode(invite);
@@ -279,9 +273,8 @@ class Client extends BaseClient {
    * @returns {Promise<Webhook>}
    * @example
    * client.fetchWebhook('id', 'token')
-   *  .then(webhook => {
-   *    console.log(`Obtained webhook with name: ${webhook.name}`);
-   *  }).catch(console.error);
+   *   .then(webhook => console.log(`Obtained webhook with name: ${webhook.name}`))
+   *   .catch(console.error);
    */
   fetchWebhook(id, token) {
     return this.api.webhooks(id, token).get().then(data => new Webhook(this, data));
@@ -292,9 +285,8 @@ class Client extends BaseClient {
    * @returns {Collection<string, VoiceRegion>}
    * @example
    * client.fetchVoiceRegions()
-   *  .then(regions => {
-   *    console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`);
-   *  }).catch(console.error);
+   *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
+   *   .catch(console.error);
    */
   fetchVoiceRegions() {
     return this.api.voice.regions.get().then(res => {
@@ -334,12 +326,9 @@ class Client extends BaseClient {
       if (!channel.messages) continue;
       channels++;
 
-      for (const message of channel.messages.values()) {
-        if (now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs) {
-          channel.messages.delete(message.id);
-          messages++;
-        }
-      }
+      messages += channel.messages.sweep(
+        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
+      );
     }
 
     this.emit(Events.DEBUG,
@@ -348,23 +337,16 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * Obtains the OAuth Application of this bot from Discord.
    * @returns {Promise<ClientApplication>}
-   * @example
-   * client.fetchApplication('id')
-   *  .then(application => {
-   *    console.log(`Obtained application with name: ${application.name}`);
-   *  }).catch(console.error);
    */
-  fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+  fetchApplication() {
+    return this.api.oauth2.applications('@me').get()
       .then(app => new ClientApplication(this, app));
   }
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
@@ -404,7 +386,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
@@ -429,6 +411,9 @@ class Client extends BaseClient {
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
+    }
+    if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
     if (typeof options.internalSharding !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
