@@ -125,9 +125,15 @@ class TextBasedChannel {
     }
     options.reply = reply;
 
-    if (options.embed && options.embed.file) {
-      if (options.files) options.files.push(options.embed.file);
-      else options.files = [options.embed.file];
+    if (options.embed) {
+      if (options.embed.file) {
+        if (options.files) options.files.push(options.embed.file);
+        else options.files = [options.embed.file];
+      }
+      if (options.embed.files) {
+        if (options.files) options.files = options.files.concat(options.embed.files);
+        else options.files = options.embed.files;
+      }
     }
 
     if (options.file) {

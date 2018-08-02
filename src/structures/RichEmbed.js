@@ -72,6 +72,12 @@ class RichEmbed {
      * @type {FileOptions|string|Attachment}
      */
     this.file = data.file;
+
+    /**
+     * The files to upload alongside this Embed
+     * @type {Array<FileOptions|string|Attachment>}
+     */
+    this.files = [];
   }
 
   /**
@@ -213,6 +219,18 @@ class RichEmbed {
     if (this.file) throw new RangeError('You may not upload more than one file at once.');
     if (file instanceof Attachment) file = file.file;
     this.file = file;
+    return this;
+  }
+
+  /**
+   * Sets the files to upload alongside the embed. A file can be accessed via `attachment://fileName.extension` when
+   * setting an embed image or author/footer icons. Multiple files can be attached.
+   * @param {Array<FileOptions|string|Attachment>} files Files to attach
+   * @returns {RichEmbed}
+   */
+  attachFiles(files) {
+    files = files.map(file => file instanceof Attachment ? file.file : file);
+    this.files = this.files.concat(files);
     return this;
   }
 
