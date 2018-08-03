@@ -180,7 +180,7 @@ class Client extends BaseClient {
   get shardIds() {
     return Array.isArray(this.options.shards) ? this.options.shards.join(',') : this.options.shards;
   }
-  
+
   /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}

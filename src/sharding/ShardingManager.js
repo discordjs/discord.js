@@ -95,18 +95,6 @@ class ShardingManager extends EventEmitter {
     this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
 
     /**
-     * An array of arguments to pass to the executable
-     * @type {string[]}
-     */
-    this.execArgv = options.execArgv;
-
-    /**
-     * Token to use for obtaining the automatic shard count, and passing to shards
-     * @type {?string}
-     */
-    this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
-
-    /**
      * A collection of shards that this manager has spawned
      * @type {Collection<number, Shard>}
      */
