@@ -176,7 +176,7 @@ class WebSocketShard extends EventEmitter {
         if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated');
-        return this.reconnect();
+        return this.reconnect('invalidated');
       case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
       case OPCodes.HEARTBEAT:
@@ -347,9 +347,10 @@ class WebSocketShard extends EventEmitter {
     }
   }
 
-  reconnect() {
+  reconnect(event) {
     this.heartbeat(-1);
     this.status = Status.RECONNECTING;
+    if (event === 'invalidated') this.emit(event);
     this.manager.spawn(this.id);
   }
 
