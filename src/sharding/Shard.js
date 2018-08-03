@@ -25,7 +25,7 @@ class Shard extends EventEmitter {
     this.manager = manager;
 
     /**
-     * ID of the shard
+     * ID of the shard in the manager
      * @type {number}
      */
     this.id = id;

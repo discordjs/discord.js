@@ -34,10 +34,11 @@ class Client extends BaseClient {
     if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
       this.options.shards = Number(process.env.SHARD_ID);
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
+    if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
     this.options.shardCount = this.options.shardCount || 1;
+    this.options.actualShardCount = this.options.actualShardCount || 1;
 
     this._validateOptions();
 
@@ -174,6 +175,15 @@ class Client extends BaseClient {
   }
 
   /**
+   * The shard id or a list of shard ids seperate by ','
+   * @type {string}
+   * @readonly
+   */
+  get shardIds() {
+    return Array.isArray(this.options.shards) ? this.options.shards.join(',') : this.options.shards;
+  }
+
+  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
@@ -201,6 +211,7 @@ class Client extends BaseClient {
     if (this.options.shardCount === 'auto') {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
+      this.options.actualShardCount = res.shards;
     }
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     this.ws.connect(gateway);
@@ -376,7 +387,7 @@ class Client extends BaseClient {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }

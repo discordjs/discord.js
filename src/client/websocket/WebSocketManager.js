@@ -95,17 +95,21 @@ class WebSocketManager {
     }
     if (this.spawning) return;
     this.spawning = true;
-    const item = this.spawnQueue.shift();
+    let item = this.spawnQueue.shift();
     if (item === undefined) {
       this.spawning = false;
       return;
     }
+    if (typeof item === 'string' && !isNaN(item)) item = Number(item);
     if (typeof item === 'number') {
       const shard = new WebSocketShard(this, item);
       this.shards[item] = shard;
       shard.once(Events.READY, () => {
         this.spawning = false;
         this.client.setTimeout(() => this.spawn(), 5000);
+      });
+      shard.once('invalidated', () => {
+        this.spawning = false;
       });
     } else if (item instanceof WebSocketShard) {
       item.reconnect();
@@ -169,8 +173,8 @@ class WebSocketManager {
    * @returns {void}
    */
   checkReady() {
-    if (!(this.shards.filter(s => s).length === this.client.options.shardCount) ||
-      !this.shards.every(s => s.status === Status.READY)) {
+    if (!(this.shards.filter(s => s).length === this.client.options.actualShardCount) ||
+      !this.shards.filter(s => s).every(s => s.status === Status.READY)) {
       return false;
     }
 
@@ -228,6 +232,7 @@ class WebSocketManager {
 
     // Destroy all shards
     for (const shard of this.shards) {
+      if (!shard) continue;
       shard.destroy();
     }
   }
