@@ -1,4 +1,5 @@
 const Attachment = require('./Attachment');
+const MessageEmbed = require('./MessageEmbed');
 let ClientDataResolver;
 
 /**
@@ -247,19 +248,21 @@ class RichEmbed {
       url: this.url,
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
-      fields: this.fields,
-      thumbnail: this.thumbnail,
+      fields: this.fields ? this.fields.map(field => ({ name: field.name, value: field.value })) : null,
+      thumbnail: this.thumbnail ? {
+        url: this.thumbnail.url,
+      } : null,
       image: this.image ? {
         url: this.image.url,
       } : null,
       author: this.author ? {
         name: this.author.name,
         url: this.author.url,
-        icon_url: this.author.iconURL,
+        icon_url: this.author instanceof MessageEmbed.Author ? this.author.iconURL : this.author.icon_url,
       } : null,
       footer: this.footer ? {
         text: this.footer.text,
-        icon_url: this.footer.iconURL,
+        icon_url: this.footer instanceof MessageEmbed.Footer ? this.footer.iconURL : this.footer.icon_url,
       } : null,
     };
   }

@@ -7,6 +7,7 @@ const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 const resolvePermissions = require('../../structures/shared/resolvePermissions');
 
+const RichEmbed = require('../../structures/RichEmbed');
 const User = require('../../structures/User');
 const GuildMember = require('../../structures/GuildMember');
 const Message = require('../../structures/Message');
@@ -139,6 +140,8 @@ class RESTMethods {
       const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
+
+    if (embed instanceof RichEmbed) embed = embed._apiTransform();
 
     return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
       content, embed,
