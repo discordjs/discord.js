@@ -84,7 +84,7 @@ class RequestHandler {
 
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (item.request.route.includes('reactions')) {
-        this.reset = Date.now() + this._getAPIOffset() + 250;
+        this.reset = Date.now() + this._getAPIOffset(serverDate) + 250;
       }
     }
 
