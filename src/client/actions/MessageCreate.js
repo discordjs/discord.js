@@ -12,7 +12,7 @@ class MessageCreateAction extends Action {
       const user = message.author;
       let member = null;
       if (message.member && channel.guild) member = channel.guild.members.add(message.member);
-      else if (channel.guild) channel.guild.member(user);
+      else if (channel.guild) member = channel.guild.member(user);
       channel.lastMessageID = data.id;
       if (user) {
         user.lastMessageID = data.id;
