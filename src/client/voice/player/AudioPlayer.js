@@ -1,5 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
-const Prism = require('prism-media');
+const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 const Collection = require('../../../util/Collection');
 const OpusEncoders = require('../opus/OpusEngineList');
@@ -25,11 +25,6 @@ class AudioPlayer extends EventEmitter {
      * @type {VoiceConnection}
      */
     this.voiceConnection = voiceConnection;
-    /**
-     * The prism transcoder that the player uses
-     * @type {Prism}
-     */
-    this.prism = new Prism();
     this.streams = new Collection();
     this.currentStream = {};
     this.streamingData = {
@@ -68,7 +63,7 @@ class AudioPlayer extends EventEmitter {
   destroyCurrentStream() {
     const transcoder = this.transcoder;
     const dispatcher = this.dispatcher;
-    if (transcoder) transcoder.kill();
+    if (transcoder) transcoder.destroy();
     if (dispatcher) {
       const end = dispatcher.listeners('end')[0];
       const error = dispatcher.listeners('error')[0];
@@ -94,15 +89,13 @@ class AudioPlayer extends EventEmitter {
   playUnknownStream(stream, options = {}) {
     this.destroy();
     this.opusEncoder = OpusEncoders.fetch(options);
-    const transcoder = this.prism.transcode({
-      type: 'ffmpeg',
-      media: stream,
-      ffmpegArguments: ffmpegArguments.concat(['-ss', String(options.seek || 0)]),
+    const transcoder = new prism.FFmpeg({
+      args: ffmpegArguments.concat(['-ss', String(options.seek || 0)]),
     });
     this.destroyCurrentStream();
     this.currentStream = {
-      transcoder: transcoder,
-      output: transcoder.output,
+      transcoder,
+      output: transcoder,
       input: stream,
     };
     transcoder.on('error', e => {
@@ -110,7 +103,8 @@ class AudioPlayer extends EventEmitter {
       if (this.listenerCount('error') > 0) this.emit('error', e);
       this.emit('warn', `prism transcoder error - ${e}`);
     });
-    return this.playPCMStream(transcoder.output, options, true);
+    stream.pipe(transcoder);
+    return this.playPCMStream(transcoder, options, true);
   }
 
   playPCMStream(stream, options = {}, fromUnknown = false) {
