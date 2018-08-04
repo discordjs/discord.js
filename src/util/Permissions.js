@@ -148,6 +148,7 @@ class Permissions {
  * * `MANAGE_GUILD` (edit the guild information, region, etc.)
  * * `ADD_REACTIONS` (add new reactions to messages)
  * * `VIEW_AUDIT_LOG`
+ * * `PRIORITY_SPEAKER`
  * * `VIEW_CHANNEL`
  * * `SEND_MESSAGES`
  * * `SEND_TTS_MESSAGES`
@@ -180,6 +181,7 @@ Permissions.FLAGS = {
   MANAGE_GUILD: 1 << 5,
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
+  PRIORITY_SPEAKER: 1 << 8,
 
   VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
