@@ -102,8 +102,14 @@ class WebSocketManager {
     }
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
     if (typeof item === 'number') {
-      const shard = new WebSocketShard(this, item);
-      this.shards[item] = shard;
+      let shard;
+      if (!this.shards[item]) {
+        shard = new WebSocketShard(this, item);
+        this.shards[item] = shard;
+      } else {
+        shard = this.shards[item];
+        shard.identify();
+      }
       shard.once(Events.READY, () => {
         this.spawning = false;
         this.client.setTimeout(() => this.spawn(), 5000);
