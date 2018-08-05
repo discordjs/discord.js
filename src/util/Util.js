@@ -383,6 +383,44 @@ class Util {
   }
 
   /**
+   * The content to have all mentions replaced by the equivalent text.
+   * @param {string} str The string to be converted
+   * @param {Message} message The message object to reference
+   * @returns {string}
+   */
+  static cleanContent(str, message) {
+    return str
+      .replace(/@(everyone|here)/g, '@\u200b$1')
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        if (message.channel.type === 'dm' || message.channel.type === 'group') {
+          return message.client.users.has(id) ? `@${message.client.users.get(id).username}` : input;
+        }
+
+        const member = message.channel.guild.members.get(id);
+        if (member) {
+          if (member.nickname) return `@${member.nickname}`;
+          return `@${member.user.username}`;
+        } else {
+          const user = message.client.users.get(id);
+          if (user) return `@${user.username}`;
+          return input;
+        }
+      })
+      .replace(/<#[0-9]+>/g, input => {
+        const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
+        if (channel) return `#${channel.name}`;
+        return input;
+      })
+      .replace(/<@&[0-9]+>/g, input => {
+        if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
+        const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        if (role) return `@${role.name}`;
+        return input;
+      });
+  }
+
+  /**
    * Creates a Promise that resolves after a specified duration.
    * @param {number} ms How long to wait before resolving (in milliseconds)
    * @returns {Promise<void>}
