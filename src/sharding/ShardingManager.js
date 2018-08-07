@@ -203,7 +203,7 @@ class ShardingManager extends EventEmitter {
    * (in milliseconds)
    * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
    * @param {number} [currentShardIndex=0] The shard index to start respawning at
-   * @returns {Promise<Collection<string, Shard>>}
+   * @returns {Promise<Collection<number, Shard>>}
    */
   respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true, currentShardIndex = 0) {
     let s = 0;
