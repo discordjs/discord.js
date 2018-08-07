@@ -17,7 +17,10 @@ class PacketHandler extends EventEmitter {
 
   _stoppedSpeaking(userID) {
     const streamInfo = this.streams.get(userID);
-    if (streamInfo && streamInfo.end === 'silence') streamInfo.stream.push(null);
+    if (streamInfo && streamInfo.end === 'silence') {
+      this.streams.delete(userID);
+      streamInfo.stream.push(null);
+    }
   }
 
   makeStream(user, end) {

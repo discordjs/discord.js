@@ -184,7 +184,10 @@ class VoiceWebSocket extends EventEmitter {
       case VoiceOPCodes.CLIENT_DISCONNECT:
         for (const receiver of this.connection.receivers) {
           const streamInfo = receiver.packets.streams.get(packet.d.user_id);
-          if (streamInfo) streamInfo.stream.push(null);
+          if (streamInfo) {
+            receiver.packets.streams.delete(packet.d.user_id);
+            streamInfo.stream.push(null);
+          }
         }
         break;
       case VoiceOPCodes.SPEAKING:
