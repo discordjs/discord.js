@@ -40,7 +40,7 @@ class RichEmbed {
 
     /**
      * Timestamp for this Embed
-     * @type {number}
+     * @type {Date}
      */
     this.timestamp = data.timestamp;
 
