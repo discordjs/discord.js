@@ -132,8 +132,6 @@ class ShardClientUtil {
       } catch (err) {
         this._respond('eval', { _eval: message._eval, _error: Util.makePlainError(err) });
       }
-    } else {
-      this.send(message);
     }
   }
 
