@@ -12,7 +12,11 @@ class MessageEmbed {
 
   setup(data) { // eslint-disable-line complexity
     /**
-     * The type of this embed
+     * The type of this embed, either:
+     * * `image` - an image embed
+     * * `video` - a video embed
+     * * `link` - a link embed
+     * * `rich` - a rich embed
      * @type {string}
      */
     this.type = data.type;
@@ -36,7 +40,7 @@ class MessageEmbed {
     this.url = data.url;
 
     /**
-     * The color of the embed
+     * The color of this embed
      * @type {?number}
      */
     this.color = data.color;
