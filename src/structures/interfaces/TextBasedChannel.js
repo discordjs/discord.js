@@ -452,7 +452,8 @@ class TextBasedChannel {
   /**
    * Bulk delete given messages that are newer than two weeks.
    * <warn>This is only available when using a bot account.</warn>
-   * @param {Collection<Snowflake, Message>|Message[]|number} messages Messages or number of messages to delete
+   * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
+   * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
    * @example
@@ -462,16 +463,16 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   bulkDelete(messages, filterOld = false) {
-    if (messages instanceof Collection) messages = [...messages.values()];
-    if (messages instanceof Array) {
+    if (messages instanceof Array || messages instanceof Collection) {
+      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
-        messages = messages.filter(m => Date.now() - Snowflake.deconstruct(m.id).date.getTime() < 1209600000);
+        messageIDs = messageIDs.filter(id => Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000);
       }
-      if (messages.length === 0) return Promise.resolve(new Collection());
-      if (messages.length === 1) {
-        return messages[0].delete().then(() => new Collection([[messages[0].id, messages[0]]]));
+      if (messageIDs.length === 0) return Promise.resolve(new Collection());
+      if (messageIDs.length === 1) {
+        return this.fetchMessage(messageIDs[0]).then(m => m.delete()).then(m => new Collection([[m.id, m]]));
       }
-      return this.client.rest.methods.bulkDeleteMessages(this, messages);
+      return this.client.rest.methods.bulkDeleteMessages(this, messageIDs);
     }
     if (!isNaN(messages)) return this.fetchMessages({ limit: messages }).then(msgs => this.bulkDelete(msgs, filterOld));
     throw new TypeError('The messages must be an Array, Collection, or number.');

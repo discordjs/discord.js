@@ -179,13 +179,12 @@ class RESTMethods {
   }
 
   bulkDeleteMessages(channel, messages) {
-    const ids = messages.map(m => m.id);
     return this.rest.makeRequest('post', Endpoints.Channel(channel).messages.bulkDelete, true, {
-      messages: ids,
+      messages: messages,
     }).then(() =>
       this.client.actions.MessageDeleteBulk.handle({
         channel_id: channel.id,
-        ids,
+        ids: messages,
       }).messages
     );
   }
