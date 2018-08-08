@@ -163,6 +163,10 @@ class Message extends Base {
      * @private
      */
     this._edits = [];
+
+    if (data.member && this.guild && this.author) {
+      this.guild.members.add(Object.assign(data.member, { user: this.author }));
+    }
   }
 
   /**
