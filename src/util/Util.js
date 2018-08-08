@@ -394,29 +394,26 @@ class Util {
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm' || message.channel.type === 'group') {
-          return message.client.users.has(id) ? `@${message.client.users.get(id).username}` : input;
+          const user = message.client.users.get(id);
+          return user ? `@${user.username}` : input;
         }
 
         const member = message.channel.guild.members.get(id);
         if (member) {
-          if (member.nickname) return `@${member.nickname}`;
-          return `@${member.user.username}`;
+          return member.displayName;
         } else {
           const user = message.client.users.get(id);
-          if (user) return `@${user.username}`;
-          return input;
+          return user ? `@${user.username}` : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
         const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
-        if (channel) return `#${channel.name}`;
-        return input;
+        return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
         if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
         const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
-        if (role) return `@${role.name}`;
-        return input;
+        return role ? `@${role.name}` : input;
       });
   }
 
