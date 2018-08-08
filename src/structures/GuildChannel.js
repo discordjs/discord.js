@@ -163,10 +163,11 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * An object mapping permission flags to `true` (enabled), `false` (disabled), or `null` (not set).
+   * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
+   *  'EMBED_LINKS': null,
    *  'ATTACH_FILES': false,
    * }
    * ```
