@@ -140,6 +140,7 @@ class GuildChannel extends Channel {
     };
   }
 
+  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites for a channel
    * @param {Object} [options] Options
@@ -161,6 +162,7 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: overwrites, reason })
       .then(() => this);
   }
+  /* eslint-enable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
