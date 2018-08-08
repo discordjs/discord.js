@@ -499,7 +499,7 @@ class Message extends Base {
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *   .then((msg) => console.log(`Sent a reply to ${message.mentions.users.first().username}`))
+   *   .then((msg) => console.log(`Sent a reply to ${msg.mentions.users.first().username}`))
    *   .catch(console.error);
    */
   reply(content, options) {
