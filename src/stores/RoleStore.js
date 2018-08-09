@@ -18,6 +18,31 @@ class RoleStore extends DataStore {
   }
 
   /**
+   * Data that can be resolved to a Role object. This can be:
+   * * A Role
+   * * A Snowflake
+   * @typedef {Role|Snowflake} RoleResolvable
+   */
+
+  /**
+   * Resolves a RoleResolvable to a Role object.
+   * @method resolve
+   * @memberof RoleStore
+   * @instance
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Role}
+   */
+
+  /**
+   * Resolves a RoleResolvable to a role ID string.
+   * @method resolveID
+   * @memberof RoleStore
+   * @instance
+   * @param {RoleResolvable} role The role resolvable to resolve
+   * @returns {?Snowflake}
+   */
+
+  /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
@@ -63,31 +88,7 @@ class RoleStore extends DataStore {
   get highest() {
     return this.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.first());
   }
-
-  /**
-   * Resolves a RoleResolvable to a Role object.
-   * @method resolve
-   * @memberof RoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Role}
-   */
-
-  /**
-   * Resolves a RoleResolvable to a role ID string.
-   * @method resolveID
-   * @memberof RoleStore
-   * @instance
-   * @param {RoleResolvable} role The role resolvable to resolve
-   * @returns {?Snowflake}
-   */
+ 
 }
-
-/**
- * Data that can be resolved to a Role object. This can be:
- * * A Role
- * * A Snowflake
- * @typedef {Role|Snowflake} RoleResolvable
- */
 
 module.exports = RoleStore;
