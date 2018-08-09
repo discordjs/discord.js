@@ -65,29 +65,29 @@ class RoleStore extends DataStore {
   }
 
   /**
-   * Data that can be resolved to a Role object. This can be:
-   * * A Role
-   * * A Snowflake
-   * @typedef {Role|Snowflake} RoleResolvable
-   */
-
-  /**
    * Resolves a RoleResolvable to a Role object.
+   * @method resolve
+   * @memberof RoleStore
+   * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
    * @returns {?Role}
    */
-  resolve(role) {
-    return super.resolve(role);
-  }
 
   /**
    * Resolves a RoleResolvable to a role ID string.
+   * @method resolveID
+   * @memberof RoleStore
+   * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
    * @returns {?Snowflake}
    */
-  resolveID(role) {
-    return super.resolveID(role);
-  }
 }
+
+/**
+ * Data that can be resolved to a Role object. This can be:
+ * * A Role
+ * * A Snowflake
+ * @typedef {Role|Snowflake} RoleResolvable
+ */
 
 module.exports = RoleStore;
