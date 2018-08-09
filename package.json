@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "11.3.2",
+  "version": "11.4.0",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
