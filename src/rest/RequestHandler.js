@@ -79,18 +79,18 @@ class RequestHandler {
 
       this.limit = limit ? Number(limit) : Infinity;
       this.remaining = remaining ? Number(remaining) : 1;
-      this.reset = (reset ? this._calculateReset(reset, serverDate) : Date.now()) + this.client.options.restTimeOffset;
+      this.reset = reset ? this._calculateReset(reset, serverDate) : Date.now();
       this.retryAfter = retryAfter ? Number(retryAfter) : -1;
 
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (item.request.route.includes('reactions')) {
-        this.reset = Date.now() + this._getAPIOffset(serverDate) + 250 + this.client.options.restTimeOffset;
+        this.reset = Date.now() + this._getAPIOffset(serverDate) + 250;
       }
     }
 
     // After calculations, pre-emptively stop farther requests
     if (this.limited) {
-      const timeout = this.reset - Date.now();
+      const timeout = this.reset + this.client.options.restTimeOffset - Date.now();
 
       if (this.manager.client.listenerCount(RATE_LIMIT)) {
         /**
