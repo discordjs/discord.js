@@ -88,7 +88,6 @@ class RoleStore extends DataStore {
   get highest() {
     return this.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.first());
   }
- 
 }
 
 module.exports = RoleStore;
