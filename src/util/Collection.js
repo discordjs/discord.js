@@ -333,12 +333,29 @@ class Collection extends Map {
    * @returns {Collection}
    * @example
    * collection
-   *  .tap(user => console.log(user.username))
+   *  .each(user => console.log(user.username))
    *  .filter(user => user.bot)
-   *  .tap(user => console.log(user.username));
+   *  .each(user => console.log(user.username));
+   */
+  each(fn, thisArg) {
+    this.forEach(fn, thisArg);
+    return this;
+  }
+
+  /**
+   * Runs a function on the collection and returns the collection.
+   * @param {Function} fn Function to execute
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   * @example
+   * collection
+   *  .tap(coll => coll.size)
+   *  .filter(user => user.bot)
+   *  .tap(coll => coll.size)
    */
   tap(fn, thisArg) {
-    this.forEach(fn, thisArg);
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
+    fn(this);
     return this;
   }
 
@@ -363,18 +380,6 @@ class Collection extends Map {
       for (const [key, val] of coll) newColl.set(key, val);
     }
     return newColl;
-  }
-
-  /**
-   * Calls the `delete()` method on all items that have it.
-   * @returns {Promise[]}
-   */
-  deleteAll() {
-    const returns = [];
-    for (const item of this.values()) {
-      if (item.delete) returns.push(item.delete());
-    }
-    return returns;
   }
 
   /**
