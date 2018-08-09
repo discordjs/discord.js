@@ -88,7 +88,7 @@ class RequestHandler {
       }
     }
 
-    // After calculations, pre-emptively stop farther requests
+    // After calculations, pre-emptively stop further requests
     if (this.limited) {
       const timeout = this.reset + this.client.options.restTimeOffset - Date.now();
 
