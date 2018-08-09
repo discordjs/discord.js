@@ -180,7 +180,7 @@ class GuildChannel extends Channel {
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>|Collection<Snowlfake, PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>|Collection<Snowflake, PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
