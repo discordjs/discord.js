@@ -879,26 +879,6 @@ class Guild extends Base {
       c.type === channel.type && (category || c.parent === channel.parent)
     ));
   }
-
-  /**
-   * Handles a user speaking update in a voice channel.
-   * @param {Snowflake} user ID of the user that the update is for
-   * @param {boolean} speaking Whether the user is speaking
-   * @private
-   */
-  _memberSpeakUpdate(user, speaking) {
-    const member = this.members.get(user);
-    if (member && member.speaking !== speaking) {
-      member.speaking = speaking;
-      /**
-       * Emitted once a guild member starts/stops speaking.
-       * @event Client#guildMemberSpeaking
-       * @param {GuildMember} member The member that started/stopped speaking
-       * @param {boolean} speaking Whether or not the member is speaking
-       */
-      this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
-    }
-  }
 }
 
 // TODO: Document this thing
@@ -914,7 +894,6 @@ class VoiceStateCollection extends Collection {
       if (member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
         member.voiceChannel.members.delete(member.id);
       }
-      if (!voiceState.channel_id) member.speaking = null;
       const newChannel = this.guild.channels.get(voiceState.channel_id);
       if (newChannel) newChannel.members.set(member.user.id, member);
     }

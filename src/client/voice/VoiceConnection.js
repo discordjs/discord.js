@@ -1,7 +1,7 @@
 const VoiceWebSocket = require('./networking/VoiceWebSocket');
 const VoiceUDP = require('./networking/VoiceUDPClient');
 const Util = require('../../util/Util');
-const { OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
+const { OPCodes, VoiceOPCodes, VoiceStatus, Events } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/Receiver');
 const EventEmitter = require('events');
@@ -94,11 +94,18 @@ class VoiceConnection extends EventEmitter {
     this.once('closing', () => this.player.destroy());
 
     /**
-     * Map SSRC to speaking values
-     * @type {Map<number, boolean>}
+     * Map SSRC values to user IDs
+     * @type {Map<number, Snowflake>}
      * @private
      */
     this.ssrcMap = new Map();
+
+    /**
+     * Tracks which users are talking
+     * @type {Map<Snowflake, boolean>}
+     * @private
+     */
+    this._speaking = new Map();
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
@@ -431,6 +438,8 @@ class VoiceConnection extends EventEmitter {
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
     this.ssrcMap.set(+ssrc, user_id);
+    const old = this._speaking.get(user_id);
+    this._speaking.set(user_id, speaking);
     /**
      * Emitted whenever a user starts/stops speaking.
      * @event VoiceConnection#speaking
@@ -445,7 +454,19 @@ class VoiceConnection extends EventEmitter {
         }
       }
     }
-    guild._memberSpeakUpdate(user_id, speaking);
+
+    if (guild && user && old !== speaking) {
+      const member = guild.member(user);
+      if (member) {
+        /**
+         * Emitted once a guild member starts/stops speaking.
+         * @event Client#guildMemberSpeaking
+         * @param {GuildMember} member The member that started/stopped speaking
+         * @param {boolean} speaking Whether or not the member is speaking
+         */
+        this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
+      }
+    }
   }
 
   /**

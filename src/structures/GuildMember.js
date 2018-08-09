@@ -56,14 +56,19 @@ class GuildMember extends Base {
     if (data) this._patch(data);
   }
 
-  _patch(data) {
-    /**
-     * Whether this member is speaking and the client is in the same channel
-     * @type {boolean}
-     * @name GuildMember#speaking
-     */
-    if (typeof this.speaking === 'undefined') this.speaking = false;
+  /**
+   * Whether this member is speaking. If the client isn't sure, then this will be undefined. Otherwise it will be
+   * true/false
+   * @type {?boolean}
+   * @name GuildMember#speaking
+   */
+  get speaking() {
+    return this.voiceChannel && this.voiceChannel.connection ?
+      Boolean(this.voiceChannel.connection._speaking.get(this.id)) :
+      undefined;
+  }
 
+  _patch(data) {
     /**
      * The nickname of this member, if they have one
      * @type {?string}
