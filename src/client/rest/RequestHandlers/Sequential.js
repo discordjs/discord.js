@@ -91,7 +91,7 @@ class SequentialRequestHandler extends RequestHandler {
                * @param {Object} rateLimitInfo Object containing the rate limit info
                * @prop {number} rateLimitInfo.requestLimit Number of requests that can be made to this endpoint
                * @prop {number} rateLimitInfo.timeDifference Delta-T in ms between your system and Discord servers
-               * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
+               * @prop {string} rateLimitInfo.method HTTP method used for request that triggered this event
                * @prop {string} rateLimitInfo.path Path used for request that triggered this event
                */
               this.client.emit(RATE_LIMIT, {
