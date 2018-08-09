@@ -176,10 +176,11 @@ class GuildChannel extends Channel {
       .freeze();
   }
 
+  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>|Collection<Snowlfake, PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -197,6 +198,7 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
       .then(() => this);
   }
+  /* eslint-disable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
