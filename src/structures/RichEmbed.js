@@ -248,7 +248,9 @@ class RichEmbed {
       url: this.url,
       timestamp: this.timestamp ? new Date(this.timestamp) : null,
       color: this.color,
-      fields: this.fields ? this.fields.map(field => ({ name: field.name, value: field.value })) : null,
+      fields: this.fields ?
+        this.fields.map(field => ({ name: field.name, value: field.value, inline: field.inline })) :
+        null,
       thumbnail: this.thumbnail ? {
         url: this.thumbnail.url,
       } : null,
