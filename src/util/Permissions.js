@@ -82,11 +82,13 @@ class Permissions {
    */
   add(...permissions) {
     let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) !== perm) total |= perm;
+      total |= perm;
     }
-    return new this.constructor(this.member, this.bitfield | total);
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
+    this.bitfield |= total;
+    return this;
   }
 
   /**
@@ -96,11 +98,13 @@ class Permissions {
    */
   remove(...permissions) {
     let total = 0;
-    for (let p = 0; p < permissions.length; p++) {
+    for (let p = permissions.length - 1; p >= 0; p--) {
       const perm = this.constructor.resolve(permissions[p]);
-      if ((this.bitfield & perm) === perm) total |= perm;
+      total |= perm;
     }
-    return new this.constructor(this.member, this.bitfield & ~total);
+    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
+    this.bitfield &= ~total;
+    return this;
   }
 
   /**

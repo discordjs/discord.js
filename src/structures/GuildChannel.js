@@ -74,44 +74,63 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Gets the overall set of permissions for a user in this channel, taking into account roles and permission
-   * overwrites.
+   * Gets the overall set of permissions for a user in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
    * @returns {?Permissions}
    */
-  permissionsFor(member) {
+  memberPermissions(member) {
     member = this.client.resolver.resolveGuildMember(this.guild, member);
     if (!member) return null;
+
     if (member.id === this.guild.ownerID) return new Permissions(member, Permissions.ALL);
 
-    let permissions = 0;
-
     const roles = member.roles;
-    for (const role of roles.values()) permissions |= role.permissions;
+    const permissions = new Permissions(roles.map(role => role.permissions));
 
-    const admin = Boolean(permissions & Permissions.FLAGS.ADMINISTRATOR);
-    if (admin) return new Permissions(Permissions.ALL);
+    if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
 
     const overwrites = this.overwritesFor(member, true, roles);
 
-    if (overwrites.everyone) {
-      permissions &= ~overwrites.everyone.deny;
-      permissions |= overwrites.everyone.allow;
-    }
+    return permissions
+      .remove(overwrites.everyone ? overwrites.everyone.deny : 0)
+      .add(overwrites.everyone ? overwrites.everyone.allow : 0)
+      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : 0)
+      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : 0)
+      .remove(overwrites.member ? overwrites.member.deny : 0)
+      .add(overwrites.member ? overwrites.member.allow : 0)
+      .freeze();
+  }
 
-    let allow = 0;
-    for (const overwrite of overwrites.roles) {
-      permissions &= ~overwrite.deny;
-      allow |= overwrite.allow;
-    }
-    permissions |= allow;
+  /**
+   * Gets the overall set of permissions for a role in this channel, taking into account channel overwrites.
+   * @param {RoleResolvable} role The role that you want to obtain the overall permissions for
+   * @returns {?Permissions}
+   */
+  rolePermissions(role) {
+    if (role.permissions & Permissions.FLAGS.ADMINISTRATOR) return new Permissions(Permissions.ALL).freeze();
 
-    if (overwrites.member) {
-      permissions &= ~overwrites.member.deny;
-      permissions |= overwrites.member.allow;
-    }
+    const everyoneOverwrites = this.permissionOverwrites.get(this.guild.id);
+    const roleOverwrites = this.permissionOverwrites.get(role.id);
 
-    return new Permissions(member, permissions);
+    return new Permissions(role.permissions)
+      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0)
+      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0)
+      .remove(roleOverwrites ? roleOverwrites.deny : 0)
+      .add(roleOverwrites ? roleOverwrites.allow : 0)
+      .freeze();
+  }
+
+  /**
+   * Get the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
+   * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @returns {?Permissions}
+   */
+  permissionsFor(memberOrRole) {
+    const member = this.guild.member(memberOrRole);
+    if (member) return this.memberPermissions(member);
+    const role = this.client.resolver.resolveRole(this.guild, memberOrRole);
+    if (role) return this.rolePermissions(role);
+    return null;
   }
 
   overwritesFor(member, verified = false, roles = null) {
