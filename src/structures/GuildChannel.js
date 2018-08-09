@@ -159,10 +159,11 @@ class GuildChannel extends Channel {
     };
   }
 
+  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites for a channel
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>|Collection<Snowflake, ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -180,12 +181,14 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: overwrites, reason })
       .then(() => this);
   }
+  /* eslint-enable max-len */
 
   /**
-   * An object mapping permission flags to `true` (enabled), `false` (disabled), or `null` (not set).
+   * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
+   *  'EMBED_LINKS': null,
    *  'ATTACH_FILES': false,
    * }
    * ```
