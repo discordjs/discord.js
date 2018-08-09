@@ -201,7 +201,7 @@ class GuildChannel extends Channel {
   /* eslint-disable max-len */
 
   /**
-   * An object mapping permission flags to `true` (enabled), `null` (default) or `false` (disabled).
+   * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
    * ```js
    * {
    *  'SEND_MESSAGES': true,
