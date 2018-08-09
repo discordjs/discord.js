@@ -234,7 +234,6 @@ class VoiceConnection extends EventEmitter {
     const { token, endpoint, sessionID } = this.authentication;
 
     if (token && endpoint && sessionID) {
-      clearTimeout(this.connectTimeout);
       this.status = VoiceStatus.CONNECTING;
       /**
        * Emitted when we successfully initiate a voice connection.
