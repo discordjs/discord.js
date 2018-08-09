@@ -198,7 +198,7 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
       .then(() => this);
   }
-  /* eslint-disable max-len */
+  /* eslint-enable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
