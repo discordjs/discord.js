@@ -36,25 +36,29 @@ module.exports = async function createMessage(channel, options) {
     }
   }
 
+  if (options.split && typeof options.split !== 'object') options.split = {};
+  let mentionPart = '';
   if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
     const id = channel.client.users.resolveID(reply);
-    const mention = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>`;
-    if (options.split) options.split.prepend = `${mention}, ${options.split.prepend || ''}`;
-    content = `${mention}${typeof options.content !== 'undefined' ? `, ${options.content}` : ''}`;
+    mentionPart = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>, `;
+    if (options.split) options.split.prepend = `${mentionPart}${options.split.prepend || ''}`;
   }
 
-  if (content) {
-    options.content = Util.resolveString(content);
-    if (options.split && typeof options.split !== 'object') options.split = {};
+  if (content || mentionPart) {
+    options.content = Util.resolveString(content || '');
     // Wrap everything in a code block
     if (typeof options.code !== 'undefined' && (typeof options.code !== 'boolean' || options.code === true)) {
       options.content = Util.escapeMarkdown(options.content, true);
-      options.content =
-        `\`\`\`${typeof options.code !== 'boolean' ? options.code || '' : ''}\n${options.content}\n\`\`\``;
+      options.content = `${mentionPart}\`\`\`${typeof options.code !== 'boolean' ?
+        options.code || '' : ''}\n${options.content}\n\`\`\``;
       if (options.split) {
-        options.split.prepend = `\`\`\`${typeof options.code !== 'boolean' ? options.code || '' : ''}\n`;
-        options.split.append = '\n```';
+        options.split.prepend =
+          `${options.split.prepend || ''}\`\`\`${typeof options.code !== 'boolean' ? options.code || '' : ''}\n`;
+
+        options.split.append = `\n\`\`\`${options.split.append || ''}`;
       }
+    } else if (mentionPart) {
+      options.content = mentionPart + (options.content || '');
     }
 
     // Add zero-width spaces to @everyone/@here
