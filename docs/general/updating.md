@@ -1,3 +1,6 @@
+# Version 11.4.0
+v11.4.0 backports many new features such as Rich Presence and bugfixes from v11.3.0.
+See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.4.0) for a full list of changes, including information about deprecations.
 # Version 11.3.0
 v11.3.0 backports many new features and bug fixes from the in-development v12.
 See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.3.0) for a full list of changes, including information about deprecations.
