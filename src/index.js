@@ -83,6 +83,7 @@ module.exports = {
   UserConnection: require('./structures/UserConnection'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),
+  VoiceState: require('./structures/VoiceState'),
   Webhook: require('./structures/Webhook'),
 
   WebSocket: require('./WebSocket'),

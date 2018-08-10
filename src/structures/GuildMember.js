@@ -56,18 +56,6 @@ class GuildMember extends Base {
     if (data) this._patch(data);
   }
 
-  /**
-   * Whether this member is speaking. If the client isn't sure, then this will be undefined. Otherwise it will be
-   * true/false
-   * @type {?boolean}
-   * @name GuildMember#speaking
-   */
-  get speaking() {
-    return this.voiceChannel && this.voiceChannel.connection ?
-      Boolean(this.voiceChannel.connection._speaking.get(this.id)) :
-      null;
-  }
-
   _patch(data) {
     /**
      * The nickname of this member, if they have one
@@ -107,51 +95,9 @@ class GuildMember extends Base {
     return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
-  get voiceState() {
-    return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
+  get voice() {
+    return this.guild.voiceStates.get(this.id);
   }
-
-  /**
-   * Whether this member is deafened server-wide
-   * @type {boolean}
-   * @readonly
-   */
-  get serverDeaf() { return this.voiceState.deaf; }
-
-  /**
-   * Whether this member is muted server-wide
-   * @type {boolean}
-   * @readonly
-   */
-  get serverMute() { return this.voiceState.mute; }
-
-  /**
-   * Whether this member is self-muted
-   * @type {boolean}
-   * @readonly
-   */
-  get selfMute() { return this.voiceState.self_mute; }
-
-  /**
-   * Whether this member is self-deafened
-   * @type {boolean}
-   * @readonly
-   */
-  get selfDeaf() { return this.voiceState.self_deaf; }
-
-  /**
-   * The voice session ID of this member (if any)
-   * @type {?Snowflake}
-   * @readonly
-   */
-  get voiceSessionID() { return this.voiceState.session_id; }
-
-  /**
-   * The voice channel ID of this member, (if any)
-   * @type {?Snowflake}
-   * @readonly
-   */
-  get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
    * The time this member joined the guild
@@ -189,33 +135,6 @@ class GuildMember extends Base {
   get displayHexColor() {
     const role = this.roles.color;
     return (role && role.hexColor) || '#000000';
-  }
-
-  /**
-   * Whether this member is muted in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get mute() {
-    return this.selfMute || this.serverMute;
-  }
-
-  /**
-   * Whether this member is deafened in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get deaf() {
-    return this.selfDeaf || this.serverDeaf;
-  }
-
-  /**
-   * The voice channel this member is in, if any
-   * @type {?VoiceChannel}
-   * @readonly
-   */
-  get voiceChannel() {
-    return this.guild.channels.get(this.voiceChannelID) || null;
   }
 
   /**
@@ -344,11 +263,6 @@ class GuildMember extends Base {
       const clone = this._clone();
       data.user = this.user;
       clone._patch(data);
-      clone._frozenVoiceState = {};
-      Object.assign(clone._frozenVoiceState, this.voiceState);
-      if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
-      if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
-      if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;
       return clone;
     });
   }

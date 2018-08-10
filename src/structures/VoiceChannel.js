@@ -1,5 +1,4 @@
 const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const { Error } = require('../errors');
@@ -9,17 +8,6 @@ const { Error } = require('../errors');
  * @extends {GuildChannel}
  */
 class VoiceChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-
-    /**
-     * The members in this voice channel
-     * @type {Collection<Snowflake, GuildMember>}
-     * @name VoiceChannel#members
-     */
-    Object.defineProperty(this, 'members', { value: new Collection() });
-  }
-
   _patch(data) {
     super._patch(data);
     /**
@@ -33,6 +21,17 @@ class VoiceChannel extends GuildChannel {
      * @type {number}
      */
     this.userLimit = data.user_limit;
+  }
+
+  /**
+   * The members in this voice channel
+   * @type {Collection<Snowflake, GuildMember>}
+   * @name VoiceChannel#members
+   */
+  get members() {
+    return this.guild.voiceStates
+      .filter(state => state.channelID === this.id && state.member)
+      .map(state => state.member);
   }
 
   /**

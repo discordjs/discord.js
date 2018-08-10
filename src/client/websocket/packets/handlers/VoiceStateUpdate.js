@@ -9,28 +9,27 @@ class VoiceStateUpdateHandler extends AbstractHandler {
 
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
+      // Update the state
+      const oldState = guild.voiceStates.get(data.user_id);
+      if (oldState) oldState._patch(data);
+      else guild.voiceStates.add(data);
+
       const member = guild.members.get(data.user_id);
       if (member) {
-        const oldMember = member._clone();
-        oldMember._frozenVoiceState = oldMember.voiceState;
-
         if (member.user.id === client.user.id && data.channel_id) {
           client.emit('self.voiceStateUpdate', data);
         }
-
-        guild.voiceStates.set(member.user.id, data);
-
-        client.emit(Events.VOICE_STATE_UPDATE, oldMember, member);
+        client.emit(Events.VOICE_STATE_UPDATE, oldState, member.voiceState);
       }
     }
   }
 }
 
 /**
- * Emitted whenever a user changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
+ * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
  * @event Client#voiceStateUpdate
- * @param {GuildMember} oldMember The member before the voice state update
- * @param {GuildMember} newMember The member after the voice state update
+ * @param {VoiceState} oldState The voice state before the update
+ * @param {VoiceState} newState The voice state after the update
  */
 
 module.exports = VoiceStateUpdateHandler;

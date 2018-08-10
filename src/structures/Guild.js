@@ -12,6 +12,7 @@ const RoleStore = require('../stores/RoleStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
 const PresenceStore = require('../stores/PresenceStore');
+const VoiceStateStore = require('../stores/VoiceStateStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -229,9 +230,13 @@ class Guild extends Base {
       }
     }
 
-    if (!this.voiceStates) this.voiceStates = new VoiceStateCollection(this);
+    if (!this.voiceStates) this.voiceStates = new VoiceStateStore(this);
     if (data.voice_states) {
-      for (const voiceState of data.voice_states) this.voiceStates.set(voiceState.user_id, voiceState);
+      for (const voiceState of data.voice_states) {
+        const existing = this.voiceStates.get(voiceState.user_id);
+        if (existing) existing._patch(voiceState);
+        else this.voiceStates.add(voiceState);
+      }
     }
 
     if (!this.emojis) {
@@ -878,35 +883,6 @@ class Guild extends Base {
     return Util.discordSort(this.channels.filter(c =>
       c.type === channel.type && (category || c.parent === channel.parent)
     ));
-  }
-}
-
-// TODO: Document this thing
-class VoiceStateCollection extends Collection {
-  constructor(guild) {
-    super();
-    this.guild = guild;
-  }
-
-  set(id, voiceState) {
-    const member = this.guild.members.get(id);
-    if (member) {
-      if (member.voiceChannel && member.voiceChannel.id !== voiceState.channel_id) {
-        member.voiceChannel.members.delete(member.id);
-      }
-      const newChannel = this.guild.channels.get(voiceState.channel_id);
-      if (newChannel) newChannel.members.set(member.user.id, member);
-    }
-    super.set(id, voiceState);
-  }
-
-  delete(id) {
-    const voiceState = this.get(id);
-    if (voiceState && voiceState.channel_id) {
-      const channel = this.guild.channels.get(voiceState.channel_id);
-      if (channel) channel.members.delete(id);
-    }
-    return super.delete(id);
   }
 }
 

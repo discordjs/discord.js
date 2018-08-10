@@ -33,7 +33,7 @@ client.on('message', m => {
   if (!m.guild) return;
   if (m.author.id !== '66564597481480192') return;
   if (m.content.startsWith('/join')) {
-    const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voiceChannel;
+    const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voice.channel;
     if (channel && channel.type === 'voice') {
       channel.join().then(conn => {
         const receiver = conn.createReceiver();

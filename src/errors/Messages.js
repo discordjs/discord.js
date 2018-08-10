@@ -53,6 +53,8 @@ const Messages = {
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
 
+  VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
+
   OPUS_ENGINE_MISSING: 'Couldn\'t find an Opus engine.',
 
   UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',
