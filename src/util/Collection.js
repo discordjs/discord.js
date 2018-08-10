@@ -220,7 +220,7 @@ class Collection extends Map {
    */
   filter(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-    const results = new Collection();
+    const results = new this.constructor[Symbol.species]();
     for (const [key, val] of this) {
       if (fn(val, key, this)) results.set(key, val);
     }
@@ -237,7 +237,7 @@ class Collection extends Map {
    */
   partition(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-    const results = [new Collection(), new Collection()];
+    const results = [new this.constructor[Symbol.species](), new this.constructor[Symbol.species]()];
     for (const [key, val] of this) {
       if (fn(val, key, this)) {
         results[0].set(key, val);
@@ -365,7 +365,7 @@ class Collection extends Map {
    * @example const newColl = someColl.clone();
    */
   clone() {
-    return new this.constructor(this);
+    return new this.constructor[Symbol.species](this);
   }
 
   /**
@@ -409,7 +409,8 @@ class Collection extends Map {
    * @example collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
    */
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
-    return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
+    return new this.constructor[Symbol.species]([...this.entries()]
+      .sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
   }
 
   toJSON() {
