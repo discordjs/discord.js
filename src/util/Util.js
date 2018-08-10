@@ -323,7 +323,7 @@ class Util {
   }
 
   /**
-   * Alternative to Node's `path.basename` that we have for some (probably stupid) reason.
+   * Alternative to Node's `path.basename`, removing query string after the extension if it exists.
    * @param {string} path Path to get the basename of
    * @param {string} [ext] File extension to remove
    * @returns {string} Basename of the path
