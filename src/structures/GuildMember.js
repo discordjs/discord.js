@@ -65,7 +65,7 @@ class GuildMember extends Base {
   get speaking() {
     return this.voiceChannel && this.voiceChannel.connection ?
       Boolean(this.voiceChannel.connection._speaking.get(this.id)) :
-      undefined;
+      null;
   }
 
   _patch(data) {
