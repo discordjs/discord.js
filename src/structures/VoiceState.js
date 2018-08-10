@@ -22,32 +22,32 @@ class VoiceState extends Base {
   _patch(data) {
     /**
      * Whether this member is deafened server-wide
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.serverDeaf = data.deaf;
     /**
      * Whether this member is muted server-wide
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.serverMute = data.mute;
     /**
      * Whether this member is self-deafened
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.selfDeaf = data.self_deaf;
     /**
      * Whether this member is self-muted
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.selfMute = data.self_mute;
     /**
      * The session ID of this member's connection
-     * @type {String}
+     * @type {?string}
      */
     this.sessionID = data.session_id;
     /**
      * The ID of the voice channel that this member is in
-     * @type {Snowflake}
+     * @type {?Snowflake}
      */
     this.channelID = data.channel_id;
     return this;
@@ -55,7 +55,7 @@ class VoiceState extends Base {
 
   /**
    * The member that this voice state belongs to
-   * @type {GuildMember}
+   * @type {?GuildMember}
    */
   get member() {
     return this.guild.members.get(this.id);
@@ -63,7 +63,7 @@ class VoiceState extends Base {
 
   /**
    * The channel that the member is connected to
-   * @type {VoiceChannel}
+   * @type {?VoiceChannel}
    */
   get channel() {
     return this.guild.channels.get(this.channelID);
@@ -71,7 +71,7 @@ class VoiceState extends Base {
 
   /**
    * Whether this member is either self-deafened or server-deafened
-   * @type {boolean}
+   * @type {?boolean}
    */
   get deaf() {
     return this.serverDeaf || this.selfDeaf;
@@ -79,7 +79,7 @@ class VoiceState extends Base {
 
   /**
    * Whether this member is either self-muted or server-muted
-   * @type {boolean}
+   * @type {?boolean}
    */
   get mute() {
     return this.serverMute || this.selfMute;
@@ -88,7 +88,7 @@ class VoiceState extends Base {
   /**
    * Whether this member is currently speaking. A boolean if the information is available (aka
    * the bot is connected to any voice channel in the guild), otherwise this is null
-   * @type {boolean|null}
+   * @type {?boolean}
    */
   get speaking() {
     return this.channel && this.channel.connection ?

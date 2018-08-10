@@ -3,6 +3,7 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const GuildMemberRoleStore = require('../stores/GuildMemberRoleStore');
 const Base = require('./Base');
+const VoiceState = require('./VoiceState');
 const { Presence } = require('./Presence');
 const { Error } = require('../errors');
 
@@ -96,7 +97,7 @@ class GuildMember extends Base {
   }
 
   get voice() {
-    return this.guild.voiceStates.get(this.id);
+    return this.guild.voiceStates.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
 
   /**
