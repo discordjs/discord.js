@@ -50,6 +50,7 @@ class VoiceState extends Base {
      * @type {Snowflake}
      */
     this.channelID = data.channel_id;
+    return this;
   }
 
   /**

@@ -9,7 +9,7 @@ class VoiceStateStore extends DataStore {
 
   add(data, cache = true) {
     const existing = this.get(data.user_id);
-    if (existing) return existing;
+    if (existing) return existing._patch(data);
 
     const entry = new VoiceState(this.guild, data);
     if (cache) this.set(data.user_id, entry);

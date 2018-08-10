@@ -233,9 +233,7 @@ class Guild extends Base {
     if (!this.voiceStates) this.voiceStates = new VoiceStateStore(this);
     if (data.voice_states) {
       for (const voiceState of data.voice_states) {
-        const existing = this.voiceStates.get(voiceState.user_id);
-        if (existing) existing._patch(voiceState);
-        else this.voiceStates.add(voiceState);
+        this.voiceStates.add(voiceState);
       }
     }
 

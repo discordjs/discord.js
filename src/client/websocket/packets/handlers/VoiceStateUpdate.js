@@ -10,16 +10,15 @@ class VoiceStateUpdateHandler extends AbstractHandler {
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
       // Update the state
-      const oldState = guild.voiceStates.get(data.user_id);
-      if (oldState) oldState._patch(data);
-      else guild.voiceStates.add(data);
-
+      let oldState = guild.voiceStates.get(data.user_id);
+      if (oldState) oldState = oldState._clone();
+      const newState = guild.voiceStates.add(data);
       const member = guild.members.get(data.user_id);
       if (member) {
         if (member.user.id === client.user.id && data.channel_id) {
           client.emit('self.voiceStateUpdate', data);
         }
-        client.emit(Events.VOICE_STATE_UPDATE, oldState, member.voiceState);
+        client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
       }
     }
   }
@@ -28,7 +27,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
 /**
  * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
  * @event Client#voiceStateUpdate
- * @param {VoiceState} oldState The voice state before the update
+ * @param {?VoiceState} oldState The voice state before the update
  * @param {VoiceState} newState The voice state after the update
  */
 
