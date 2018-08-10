@@ -18,8 +18,8 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11.3 documentation.
-The v11.3 release contains backports of many features and bug fixes from the in-development v12, such as categories and animated emoji support.
+Welcome to the discord.js v11.4 documentation.
+The v11.4 release contains bugfixes from v11.3 and backports features such as Rich Presence.
 
 v12 is still very much a work-in-progress, as we're aiming to make it the best it can possibly be before releasing.
 If you are fond of living life on the bleeding-edge, check out the master branch.
