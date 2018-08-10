@@ -14,7 +14,25 @@ const { ActivityTypes, ActivityFlags } = require('../util/Constants');
 class Presence {
   constructor(client, data = {}) {
     Object.defineProperty(this, 'client', { value: client });
+    this.userID = data.user.id;
+    this.guild = data.guild;
     this.patch(data);
+  }
+
+  /**
+   * The user of this presence
+   * @type {User}
+   */
+  get user() {
+    return this.client.users.get(this.userID);
+  }
+
+  /**
+   * The member of this presence
+   * @type {GuildMember}
+   */
+  get member() {
+    return this.guild.members.get(this.userID);
   }
 
   patch(data) {

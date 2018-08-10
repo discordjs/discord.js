@@ -29,8 +29,9 @@ var count = 0;
 
 process.on('unhandledRejection', console.log);
 
-client.on('voiceStateUpdate', (a, b) => {
-  console.log(a ? a.channelID : null, b ? b.channelID : null, b.member.user.username);
+client.on('presenceUpdate', (a, b) => {
+  if (b.userID !== '66564597481480192') return;
+  console.log(a ? a.status : null, b.status, b.user.username);
 });
 
 client.on('message', m => {

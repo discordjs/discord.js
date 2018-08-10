@@ -9,6 +9,7 @@ class ReadyHandler extends AbstractHandler {
 
     client.ws.heartbeat();
 
+    client.presences.clientPresence.userID = data.user.id;
     if (!ClientUser) ClientUser = require('../../../../structures/ClientUser');
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;
@@ -17,7 +18,6 @@ class ReadyHandler extends AbstractHandler {
 
     for (const guild of data.guilds) client.guilds.add(guild);
     for (const privateDM of data.private_channels) client.channels.add(privateDM);
-    for (const presence of data.presences || []) client.presences.add(presence);
 
     if (!client.users.has('1')) {
       client.users.add({

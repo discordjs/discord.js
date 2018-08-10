@@ -23,6 +23,8 @@ class PresenceUpdateHandler extends AbstractHandler {
     }
 
     if (guild) {
+      let oldPresence = guild.presences.get(user.id);
+      if (oldPresence) oldPresence = oldPresence._clone();
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
         member = guild.members.add({
@@ -35,17 +37,13 @@ class PresenceUpdateHandler extends AbstractHandler {
       }
       if (member) {
         if (client.listenerCount(Events.PRESENCE_UPDATE) === 0) {
-          guild.presences.add(data);
+          guild.presences.add(Object.assign(data, { guild: this }));
           return;
         }
-        const oldMember = member._clone();
-        if (member.presence) {
-          oldMember.frozenPresence = member.presence._clone();
-        }
-        guild.presences.add(data);
-        client.emit(Events.PRESENCE_UPDATE, oldMember, member);
+        guild.presences.add(Object.assign(data, { guild: this }));
+        client.emit(Events.PRESENCE_UPDATE, oldPresence, member.presence);
       } else {
-        guild.presences.add(data);
+        guild.presences.add(Object.assign(data, { guild: this }));
       }
     }
   }

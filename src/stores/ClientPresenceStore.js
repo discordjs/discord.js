@@ -16,6 +16,8 @@ class ClientPresenceStore extends PresenceStore {
       afk: false,
       since: null,
       activity: null,
+      user: { id: null },
+      guild_id: null,
     });
   }
 
