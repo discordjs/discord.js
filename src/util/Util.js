@@ -2,7 +2,7 @@ const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
+const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -323,16 +323,15 @@ class Util {
   }
 
   /**
-   * Alternative to Node's `path.basename` that we have for some (probably stupid) reason.
+   * Alternative to Node's `path.basename`, removing query string after the extension if it exists.
    * @param {string} path Path to get the basename of
    * @param {string} [ext] File extension to remove
    * @returns {string} Basename of the path
    * @private
    */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path)[3];
-    if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
-    return f;
+    let res = parse(path);
+    return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
 
   /**
