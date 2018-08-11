@@ -274,6 +274,7 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites });
   }
 
+  /* eslint-disable max-len */
   /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
@@ -284,7 +285,7 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
    * @property {string} [parent] The parent ID of the channel
-   * @property {Array<ChannelCreationOverwrites>} [permissionOverwrites] An array of overwrites to set for the channel
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>|Collection<Snowflake, ChannelCreationOverwrites>} [options.overwrites] An array or collection of overwrites to set for the channel
    */
 
   /**
