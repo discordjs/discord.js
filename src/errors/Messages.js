@@ -98,7 +98,7 @@ const Messages = {
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 
-  VANITY_URL: 'The guild feature VANITY_URL is not enabled',
+  VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
