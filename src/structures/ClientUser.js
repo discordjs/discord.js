@@ -32,7 +32,7 @@ class ClientUser extends Structures.get('User') {
    * @type {Presence}
    */
   get presence() {
-    return this.client.presences.clientPresence;
+    return this.client.presence;
   }
 
   edit(data) {
@@ -97,7 +97,7 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setPresence(data) {
-    return this.client.presences.setClientPresence(data);
+    return this.client.presence.setClientPresence(data);
   }
 
   /**

@@ -105,7 +105,6 @@ class User extends Base {
    * @readonly
    */
   get presence() {
-    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
     for (const guild of this.client.guilds.values()) {
       if (guild.presences.has(this.id)) return guild.presences.get(this.id);
     }

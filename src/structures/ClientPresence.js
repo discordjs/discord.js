@@ -1,31 +1,18 @@
-const PresenceStore = require('./PresenceStore');
+const { Presence } = require('./Presence');
 const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
-const { Presence } = require('../structures/Presence');
 const { TypeError } = require('../errors');
 
-/**
- * Stores the client presence and other presences.
- * @extends {PresenceStore}
- */
-class ClientPresenceStore extends PresenceStore {
-  constructor(...args) {
-    super(...args);
-    this.clientPresence = new Presence(this.client, {
-      status: 'online',
-      afk: false,
-      since: null,
-      activity: null,
-      user: { id: null },
-      guild_id: null,
-    });
+class ClientPresence extends Presence {
+  constructor(client, data = {}) {
+    super(client, Object.assign(data, { status: 'online', user: { id: null } }));
   }
 
   async setClientPresence(presence) {
     const packet = await this._parse(presence);
-    this.clientPresence.patch(packet);
+    this.patch(packet);
     this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
-    return this.clientPresence;
+    return this;
   }
 
   async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
@@ -45,7 +32,7 @@ class ClientPresenceStore extends PresenceStore {
     const packet = {
       afk: afk != null ? afk : false, // eslint-disable-line eqeqeq
       since: since != null ? since : null, // eslint-disable-line eqeqeq
-      status: status || this.clientPresence.status,
+      status: status || this.status,
       game: activity ? {
         type: activity.type,
         name: activity.name,
@@ -67,7 +54,7 @@ class ClientPresenceStore extends PresenceStore {
     };
 
     if ((status || afk || since) && !activity) {
-      packet.game = this.clientPresence.activity;
+      packet.game = this.activity;
     }
 
     if (packet.game) {
@@ -79,4 +66,4 @@ class ClientPresenceStore extends PresenceStore {
   }
 }
 
-module.exports = ClientPresenceStore;
+module.exports = ClientPresence;

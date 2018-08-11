@@ -9,7 +9,7 @@ class ReadyHandler extends AbstractHandler {
 
     client.ws.heartbeat();
 
-    client.presences.clientPresence.userID = data.user.id;
+    client.presence.userID = data.user.id;
     if (!ClientUser) ClientUser = require('../../../../structures/ClientUser');
     const clientUser = new ClientUser(client, data.user);
     client.user = clientUser;

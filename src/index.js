@@ -25,7 +25,6 @@ module.exports = {
 
   // Stores
   ChannelStore: require('./stores/ChannelStore'),
-  ClientPresenceStore: require('./stores/ClientPresenceStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
   GuildEmojiStore: require('./stores/GuildEmojiStore'),
   GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
@@ -74,6 +73,7 @@ module.exports = {
   MessageReaction: require('./structures/MessageReaction'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
+  ClientPresence: require('./structures/ClientPresence'),
   ReactionCollector: require('./structures/ReactionCollector'),
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,

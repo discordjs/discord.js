@@ -73,6 +73,7 @@ const structures = {
   Message: require('../structures/Message'),
   MessageReaction: require('../structures/MessageReaction'),
   Presence: require('../structures/Presence').Presence,
+  ClientPresence: require('../structures/ClientPresence'),
   VoiceState: require('../structures/VoiceState'),
   Role: require('../structures/Role'),
   User: require('../structures/User'),
