@@ -392,19 +392,23 @@ class Guild extends Base {
    */
 
   /**
-   * Fetches a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, BanInfo>>}
+   * Fetches a single banned user or a collection of banned users in this guild.
+   * @param {string} [id] The id if the banned user.
+   * @returns {Promise<Collection<Snowflake, BanInfo>> | Promise<BanInfo>}
    */
-  fetchBans() {
-    return this.client.api.guilds(this.id).bans.get().then(bans =>
-      bans.reduce((collection, ban) => {
+  fetchBans(id) {
+    return this.client.api.guilds(this.id).bans.get(id).then(data => {
+      if (id) {
+        return { reason: data.reason, user: this.client.users.add(data.user) };
+      }
+      return data.reduce((collection, ban) => {
         collection.set(ban.user.id, {
-          reason: ban.reason,
-          user: this.client.users.add(ban.user),
+          reason: data.reason,
+          user: this.client.users.add(data.user),
         });
         return collection;
-      }, new Collection())
-    );
+      }, new Collection());
+    });
   }
 
   /**
