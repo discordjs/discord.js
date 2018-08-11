@@ -1,6 +1,7 @@
 const GuildChannel = require('./GuildChannel');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Collection = require('../util/Collection');
 const { Error } = require('../errors');
 
 /**
@@ -29,9 +30,9 @@ class VoiceChannel extends GuildChannel {
    * @name VoiceChannel#members
    */
   get members() {
-    return this.guild.voiceStates
+    return new Collection(this.guild.voiceStates
       .filter(state => state.channelID === this.id && state.member)
-      .map(state => state.member);
+      .map(state => state.member));
   }
 
   /**
