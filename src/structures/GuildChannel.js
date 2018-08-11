@@ -284,6 +284,7 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
    * @property {string} [parent] The parent ID of the channel
+   * @property {Array<ChannelCreationOverwrites>} [permissionOverwrites] An array of overwrites to set for the channel
    */
 
   /**
