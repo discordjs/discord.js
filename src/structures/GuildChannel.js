@@ -285,7 +285,7 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
    * @property {string} [parent] The parent ID of the channel
-   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>|Collection<Snowflake, ChannelCreationOverwrites>} [options.overwrites] An array or collection of overwrites to set for the channel
+   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>|Collection<Snowflake, ChannelCreationOverwrites>} [overwrites] An array or collection of overwrites to set for the channel
    */
 
   /**
