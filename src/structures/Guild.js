@@ -450,7 +450,7 @@ class Guild extends Base {
     if (!this.features.includes('VANITY_URL')) {
       return Promise.reject(new Error('VANITY_URL'));
     }
-    return this.client.api.guilds(this.id)['vanity-url'].get()
+    return this.client.api.guilds(this.id, 'vanity-url').get()
       .then(res => res.code);
   }
 
