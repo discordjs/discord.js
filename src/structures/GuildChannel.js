@@ -180,7 +180,7 @@ class GuildChannel extends Channel {
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>|Collection<Snowflake, PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites] Permission overwrites the channel gets updated with
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -297,6 +297,7 @@ class GuildChannel extends Channel {
     return members;
   }
 
+  /* eslint-disable max-len*/
   /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
@@ -308,16 +309,16 @@ class GuildChannel extends Channel {
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
-   * @property {OverwriteData[]} [permissionOverwrites] An array of overwrites to set for the channel
+   * @property {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites] Permission overwrites for the channel
    */
+  /* eslint-enable max-len*/
 
   /**
    * The data for a permission overwrite
    * @typedef {Object} OverwriteData
-   * @property {string} id The id of the overwrite
-   * @property {string} type The type of the overwrite, either role or member
-   * @property {number} allow The bitfield for the allowed permissions
-   * @property {number} deny The bitfield for the denied permissions
+   * @property {PermissionResolvable} [allowed] The permissions to allow
+   * @property {PermissionResolvable} [denied] The permissions to deny
+   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
    */
 
   /**
