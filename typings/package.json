@@ -1,0 +1,16 @@
+{
+  "name": "discord.js-typings",
+  "version": "12.0.0",
+  "description": "Typings for Discord.js",
+  "devDependencies": {
+    "tslint": "^3.15.1",
+    "tslint-config-typings": "^0.2.4",
+    "typescript": "^2.2.1"
+  },
+  "scripts": {
+    "lint": "tslint index.d.ts discord.js-test.ts"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.0"
+  }
+}
