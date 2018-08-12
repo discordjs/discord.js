@@ -55,7 +55,9 @@ class ClientDataManager {
       channel = new GroupDMChannel(this.client, data);
     } else {
       guild = guild || this.client.guilds.get(data.guild_id);
-      if (guild) {
+      if (already) {
+        channel = this.client.channels.get(data.id);
+      } else if (guild) {
         if (data.type === Constants.ChannelTypes.TEXT) {
           channel = new TextChannel(guild, data);
           guild.channels.set(channel.id, channel);
