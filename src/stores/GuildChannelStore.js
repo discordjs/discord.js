@@ -20,7 +20,7 @@ class GuildChannelStore extends DataStore {
 
     return Channel.create(this.client, data, this.guild);
   }
-  /* eslint-disable max-len */
+
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
@@ -31,7 +31,8 @@ class GuildChannelStore extends DataStore {
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
-   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites] Permission overwrites of the new channel
+   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * Permission overwrites of the new channel
    * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -51,7 +52,7 @@ class GuildChannelStore extends DataStore {
    *   ],
    * })
    */
-  /* eslint-enable max-len */
+
   create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (parent) parent = this.client.channels.resolveID(parent);
     return this.client.api.guilds(this.guild.id).channels.post({

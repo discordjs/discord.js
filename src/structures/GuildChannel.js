@@ -176,11 +176,11 @@ class GuildChannel extends Channel {
       .freeze();
   }
 
-  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites] Permission overwrites the channel gets updated with
+   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * Permission overwrites the channel gets updated with
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -198,7 +198,6 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
       .then(() => this);
   }
-  /* eslint-enable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
@@ -297,7 +296,6 @@ class GuildChannel extends Channel {
     return members;
   }
 
-  /* eslint-disable max-len*/
   /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
@@ -308,17 +306,18 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
-   * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
-   * @property {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites] Permission overwrites for the channel
+   * @property {boolean} [lockPermissions]
+   * Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
+   * Permission overwrites for the channel
    */
-  /* eslint-enable max-len*/
 
   /**
    * The data for a permission overwrite
    * @typedef {Object} OverwriteData
    * @property {PermissionResolvable} [allowed] The permissions to allow
    * @property {PermissionResolvable} [denied] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
+   * @property {RoleResolvable|GuildMemberResolvable} memberOrRole Role or member this overwrite is for
    */
 
   /**
