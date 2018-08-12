@@ -32,7 +32,7 @@ class VoiceChannel extends GuildChannel {
   get members() {
     return new Collection(this.guild.voiceStates
       .filter(state => state.channelID === this.id && state.member)
-      .map(state => state.member));
+      .map(state => [state.id, state.member]));
   }
 
   /**
