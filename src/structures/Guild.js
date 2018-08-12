@@ -393,7 +393,7 @@ class Guild extends Base {
 
   /**
    * Fetches a single banned user or a collection of banned users in this guild.
-   * @param {string} [id] The id if the banned user.
+   * @param {string} [id] Optionally id of a banned user.
    * @returns {Promise<Collection<Snowflake, BanInfo>> | Promise<BanInfo>}
    */
   fetchBans(id) {
