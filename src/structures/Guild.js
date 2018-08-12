@@ -402,13 +402,10 @@ class Guild extends Base {
         if (id) {
           return { reason: data.reason, user: this.client.users.add(data.user) };
         }
-        return data.reduce((collection, ban) => {
-          collection.set(ban.user.id, {
-            reason: ban.reason,
-            user: this.client.users.add(ban.user),
-          });
-          return collection;
-        }, new Collection());
+        return data.reduce((collection, ban) => collection.set(ban.user.id, {
+          reason: ban.reason,
+          user: this.client.users.add(ban.user),
+        }), new Collection());
       });
   }
 
