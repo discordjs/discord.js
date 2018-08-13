@@ -15,11 +15,7 @@ class GuildMemberStore extends DataStore {
   }
 
   add(data, cache = true) {
-    const existing = this.get(data.user.id);
-    if (existing) return existing._patch(data);
-    const entry = new GuildMember(this.client, data, this.guild);
-    if (cache) this.set(data.user.id, entry);
-    return entry;
+    return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
   /**
