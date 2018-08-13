@@ -22,8 +22,9 @@ function buildRoute(manager) {
             return r;
           }).join('/'),
         }, options)).catch(error => {
+          stackTrace.name = error.name;
           stackTrace.message = error.message;
-          error.stack = `${error.constructor.name}:${stackTrace.stack.substring(6)}`;
+          error.stack = stackTrace.stack;
           throw error;
         });
       }
