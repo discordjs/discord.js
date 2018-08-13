@@ -164,7 +164,7 @@ class Message extends Base {
      */
     this._edits = [];
 
-    if (this.member) {
+    if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
