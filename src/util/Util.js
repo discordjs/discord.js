@@ -399,7 +399,7 @@ class Util {
 
         const member = message.channel.guild.members.get(id);
         if (member) {
-          return member.displayName;
+          return `@${member.displayName}`;
         } else {
           const user = message.client.users.get(id);
           return user ? `@${user.username}` : input;
