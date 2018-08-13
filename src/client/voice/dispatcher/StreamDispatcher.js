@@ -121,8 +121,11 @@ class StreamDispatcher extends Writable {
    * Pauses playback
    */
   pause() {
+    if (this.paused) return;
+    if (this.streams.opus) this.streams.opus.unpipe(this);
+    this._writeCallback();
     this._setSpeaking(false);
-    if (!this.paused) this.pausedSince = Date.now();
+    this.pausedSince = Date.now();
   }
 
   /**
@@ -142,6 +145,7 @@ class StreamDispatcher extends Writable {
    */
   resume() {
     if (!this.pausedSince) return;
+    if (this.streams.opus) this.streams.opus.pipe(this);
     this._pausedTime += Date.now() - this.pausedSince;
     this.pausedSince = null;
     if (typeof this._writeCallback === 'function') this._writeCallback();
