@@ -12,8 +12,11 @@ function buildRoute(manager) {
       if (reflectors.includes(name)) return () => route.join('/');
       if (methods.includes(name)) {
         // Preserve async stack
-        const stackTrace = {};
-        Error.captureStackTrace(stackTrace, this.get);
+        let stackTrace = null;
+        if (Error.captureStackTrace) {
+          stackTrace = {};
+          Error.captureStackTrace(stackTrace, this.get);
+        }
 
         return options => manager.request(name, route.join('/'), Object.assign({
           versioned: manager.versioned,
@@ -22,7 +25,7 @@ function buildRoute(manager) {
             return r;
           }).join('/'),
         }, options)).catch(error => {
-          if (error instanceof Error) {
+          if (stackTrace && (error instanceof Error)) {
             stackTrace.name = error.name;
             stackTrace.message = error.message;
             error.stack = stackTrace.stack;
