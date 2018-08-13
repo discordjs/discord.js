@@ -22,9 +22,11 @@ function buildRoute(manager) {
             return r;
           }).join('/'),
         }, options)).catch(error => {
-          stackTrace.name = error.name;
-          stackTrace.message = error.message;
-          error.stack = stackTrace.stack;
+          if (error instanceof Error) {
+            stackTrace.name = error.name;
+            stackTrace.message = error.message;
+            error.stack = stackTrace.stack;
+          }
           throw error;
         });
       }
