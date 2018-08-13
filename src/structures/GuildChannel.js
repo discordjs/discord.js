@@ -159,11 +159,11 @@ class GuildChannel extends Channel {
     };
   }
 
-  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites for a channel
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>|Collection<Snowflake, ChannelCreationOverwrites>} [options.overwrites] Permission overwrites
+   * @param {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * Permission overwrites
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -181,7 +181,6 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: overwrites, reason })
       .then(() => this);
   }
-  /* eslint-enable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
@@ -283,6 +282,9 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
+   * @property {string} [parent] The parent ID of the channel
+   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [overwrites]
+   * Overwrites of the channel
    */
 
   /**

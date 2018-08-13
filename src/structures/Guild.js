@@ -714,17 +714,16 @@ class Guild {
     return this.edit({ explicitContentFilter }, reason);
   }
 
-  /* eslint-disable max-len */
   /**
    * Edits the setting of the default message notifications of the guild.
-   * @param {DefaultMessageNotifications|number} defaultMessageNotifications The new setting for the default message notifications
+   * @param {DefaultMessageNotifications|number} defaultMessageNotifications
+   * The new setting for the default message notifications
    * @param {string} [reason] Reason for changing the setting of the default message notifications
    * @returns {Promise<Guild>}
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications }, reason);
   }
-  /* eslint-enable max-len */
 
   /**
    * Edit the name of the guild.
@@ -968,7 +967,7 @@ class Guild {
   }
 
   /**
-   * Can be used to overwrite permissions when creating a channel or replacing overwrites.
+   * Overwrites to use when creating a channel or replacing overwrites
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable} [allow] The permissions to allow
    * **(deprecated)**
@@ -976,14 +975,14 @@ class Guild {
    * @property {PermissionResolvable} [deny] The permissions to deny
    * **(deprecated)**
    * @property {PermissionResolvable} [denied] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
+   * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
    */
 
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string} [type='text'] The type of the new channel, either `text` or `voice` or `category`
-   * @param {Array<PermissionOverwrites|ChannelCreationOverwrites>} [overwrites] Permission overwrites
+   * @param {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [overwrites] Permission overwrites
    * @param {string} [reason] Reason for creating this channel
    * @returns {Promise<CategoryChannel|TextChannel|VoiceChannel>}
    * @example
