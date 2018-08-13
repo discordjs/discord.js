@@ -123,7 +123,7 @@ class StreamDispatcher extends Writable {
   pause() {
     if (this.paused) return;
     if (this.streams.opus) this.streams.opus.unpipe(this);
-    this._writeCallback();
+    if (this._writeCallback) this._writeCallback();
     this._setSpeaking(false);
     this.pausedSince = Date.now();
   }
