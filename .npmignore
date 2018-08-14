@@ -24,3 +24,5 @@ webpack/
 webpack.config.js
 .github/
 test/
+tsconfig.json
+tslint.json
