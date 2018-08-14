@@ -96,6 +96,11 @@ class GuildMember extends Base {
     return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
+  /**
+   * The voice state of this member
+   * @type {VoiceState}
+   * @readonly
+   */
   get voice() {
     return this.guild.voiceStates.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
