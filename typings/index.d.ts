@@ -77,7 +77,6 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
-
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
 		private readonly _pingTimestamp: number;
@@ -95,7 +94,6 @@ declare module 'discord.js' {
 		public guilds: GuildStore;
 		public readonly ping: number;
 		public pings: number[];
-		public presences: ClientPresenceStore;
 		public readyAt: Date;
 		public readonly readyTimestamp: number;
 		public shard: ShardClientUtil;
@@ -133,12 +131,13 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
 		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
 		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
-		public on(event: 'guildMemberUpdate' | 'presenceUpdate' | 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready' | 'reconnecting', listener: () => void): this;
 		public on(event: 'resumed', listener: (replayed: number) => void): this;
@@ -147,6 +146,7 @@ declare module 'discord.js' {
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
+		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
@@ -165,12 +165,13 @@ declare module 'discord.js' {
 		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
 		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
 		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
-		public once(event: 'guildMemberUpdate' | 'presenceUpdate' | 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;	
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready' | 'reconnecting', listener: () => void): this;
 		public once(event: 'resumed', listener: (replayed: number) => void): this;
@@ -179,6 +180,7 @@ declare module 'discord.js' {
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public once(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
+		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
@@ -580,7 +582,6 @@ declare module 'discord.js' {
 	export class GuildMember extends PartialTextBasedChannel(Base) {
 		constructor(client: Client, data: object, guild: Guild);
 		public readonly bannable: boolean;
-		public readonly deaf: boolean;
 		public deleted: boolean;
 		public readonly displayColor: number;
 		public readonly displayHexColor: string;
@@ -591,20 +592,12 @@ declare module 'discord.js' {
 		public joinedTimestamp: number;
 		public readonly kickable: boolean;
 		public readonly manageable: boolean;
-		public readonly mute: boolean;
 		public nickname: string;
 		public readonly permissions: Permissions;
 		public readonly presence: Presence;
 		public roles: GuildMemberRoleStore;
-		public readonly selfDeaf: boolean;
-		public readonly selfMute: boolean;
-		public readonly serverDeaf: boolean;
-		public readonly serverMute: boolean;
-		public readonly speaking: boolean;
 		public user: User;
-		public readonly voiceChannel: VoiceChannel;
-		public readonly voiceChannelID: Snowflake;
-		public readonly voiceSessionID: string;
+		public readonly voice: VoiceState;
 		public ban(options?: BanOptions): Promise<GuildMember>;
 		public createDM(): Promise<DMChannel>;
 		public deleteDM(): Promise<DMChannel>;
@@ -832,6 +825,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object);
 		public activity: Activity;
 		public status: 'online' | 'offline' | 'idle' | 'dnd';
+		public readonly user: User;
+		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
 	}
 
@@ -1015,7 +1010,7 @@ declare module 'discord.js' {
 		public setBitrate(value: number | 'auto'): boolean;
 		public setPLP(value: number): boolean;
 		public setFEC(enabled: boolean): boolean;
-		public pause(): void;
+		public pause(silence?: boolean): void;
 		public resume(): void;
 
 		public on(event: 'close', listener: () => void): this;
@@ -1265,6 +1260,26 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
+	export class VoiceState extends Base {
+		constructor(guild: Guild, data: object);
+		public readonly channel?: VoiceChannel;
+		public channelID?: Snowflake;
+		public readonly deaf?: boolean;
+		public guild: Guild;
+		public id: Snowflake;
+		public readonly member: GuildMember;
+		public readonly mute?: boolean;
+		public selfDeaf?: boolean;
+		public selfMute?: boolean;
+		public serverDeaf?: boolean;
+		public serverMute?: boolean;
+		public sessionID?: string;
+		public readonly speaking?: boolean;
+
+		public setDeaf(mute: boolean, reason?: string): Promise<GuildMember>;
+		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+	}
+
 	class VolumeInterface extends EventEmitter {
 		constructor(options?: { volume?: number })
 		public readonly volume: number;
@@ -1300,10 +1315,6 @@ declare module 'discord.js' {
 	export class ChannelStore extends DataStore<Snowflake, Channel, typeof Channel, ChannelResolvable> {
 		constructor(client: Client, iterable: Iterable<any>, options?: { lru: boolean });
 		constructor(client: Client, options?: { lru: boolean });
-	}
-
-	export class ClientPresenceStore extends PresenceStore {
-		public setClientPresence(data: PresenceData): Promise<Presence>;
 	}
 
 	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
