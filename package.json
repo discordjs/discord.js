@@ -10,6 +10,7 @@
     "docs:test": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src *.js",
     "lint:fix": "eslint --fix src",
+    "lint:typings": "tslint index.d.ts discord.js-test.ts",
     "build:browser": "webpack",
     "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
@@ -54,6 +55,9 @@
     "discord.js-docgen": "discordjs/docgen",
     "eslint": "^5.0.1",
     "json-filter-loader": "^1.0.0",
+    "tslint": "^3.15.1",
+    "tslint-config-typings": "^0.2.4",
+    "typescript": "^3.0.1",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^4.5.0",
     "webpack-cli": "^3.0.1"
