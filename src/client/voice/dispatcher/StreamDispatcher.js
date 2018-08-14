@@ -2,6 +2,7 @@ const VolumeInterface = require('../util/VolumeInterface');
 const { Writable } = require('stream');
 
 const secretbox = require('../util/Secretbox');
+const Silence = require('../util/Silence');
 
 const FRAME_LENGTH = 20;
 const CHANNELS = 2;
@@ -41,6 +42,7 @@ class StreamDispatcher extends Writable {
     this.player = player;
     this.streamOptions = streamOptions;
     this.streams = streams;
+    this.streams.silence = new Silence();
 
     this._nonce = 0;
     this._nonceBuffer = Buffer.alloc(24);
@@ -59,6 +61,7 @@ class StreamDispatcher extends Writable {
     this.broadcast = this.streams.broadcast;
 
     this._pausedTime = 0;
+    this._silentPausedTime = 0;
     this.count = 0;
 
     this.on('finish', () => {
@@ -119,12 +122,17 @@ class StreamDispatcher extends Writable {
 
   /**
    * Pauses playback
+   * @param {boolean} [silence=false] Whether to play silence while paused to prevent audio glitches
    */
-  pause() {
+  pause(silence = false) {
     if (this.paused) return;
     if (this.streams.opus) this.streams.opus.unpipe(this);
-    if (this._writeCallback) this._writeCallback();
-    this._setSpeaking(false);
+    if (silence) {
+      this.streams.silence.pipe(this);
+      this._silence = true;
+    } else {
+      this._setSpeaking(false);
+    }
     this.pausedSince = Date.now();
   }
 
@@ -138,15 +146,23 @@ class StreamDispatcher extends Writable {
    * Total time that this dispatcher has been paused
    * @type {number}
    */
-  get pausedTime() { return this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0); }
+  get pausedTime() {
+    return this._silentPausedTime + this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0);
+  }
 
   /**
    * Resumes playback
    */
   resume() {
     if (!this.pausedSince) return;
+    this.streams.silence.unpipe(this);
     if (this.streams.opus) this.streams.opus.pipe(this);
-    this._pausedTime += Date.now() - this.pausedSince;
+    if (this._silence) {
+      this._silentPausedTime += Date.now() - this.pausedSince;
+      this._silence = false;
+    } else {
+      this._pausedTime += Date.now() - this.pausedSince;
+    }
     this.pausedSince = null;
     if (typeof this._writeCallback === 'function') this._writeCallback();
   }
@@ -207,11 +223,10 @@ class StreamDispatcher extends Writable {
       this._writeCallback = null;
       done();
     };
-    if (this.pausedSince) return;
     if (!this.streams.broadcast) {
-      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
+      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this._pausedTime);
       setTimeout(() => {
-        if (!this.pausedSince && this._writeCallback) this._writeCallback();
+        if ((!this.pausedSince || this._silence) && this._writeCallback) this._writeCallback();
       }, next);
     }
     this._sdata.sequence++;
