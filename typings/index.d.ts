@@ -1997,7 +1997,9 @@ declare module 'discord.js' {
 
 	type PermissionOverwriteOptions = PermissionObject;
 
-	type PermissionResolvable = Permissions | PermissionString | number | (Permissions | PermissionString | number)[];
+	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
+
+	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
 
 	type PresenceData = {
 		status?: PresenceStatus;
