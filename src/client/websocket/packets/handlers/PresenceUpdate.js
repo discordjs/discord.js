@@ -35,7 +35,7 @@ class PresenceUpdateHandler extends AbstractHandler {
         });
         client.emit(Events.GUILD_MEMBER_AVAILABLE, member);
       }
-      guild.presences.add(Object.assign(data, { guild }))
+      guild.presences.add(Object.assign(data, { guild }));
       if (member && client.listenerCount(Events.PRESENCE_UPDATE)) {
         client.emit(Events.PRESENCE_UPDATE, oldPresence, member.presence);
       }
