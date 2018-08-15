@@ -166,7 +166,7 @@ class Message {
     const clone = Util.cloneObject(this);
     this._edits.unshift(clone);
 
-    if ('editedTimestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
