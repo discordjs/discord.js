@@ -124,7 +124,7 @@ class GuildMember extends Base {
       user: {
         id: this.id,
       },
-      guild: this,
+      guild: this.guild,
     });
   }
 

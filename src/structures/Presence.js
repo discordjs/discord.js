@@ -21,18 +21,18 @@ class Presence {
 
   /**
    * The user of this presence
-   * @type {User}
+   * @type {?User}
    */
   get user() {
-    return this.client.users.get(this.userID);
+    return this.client.users.get(this.userID) || null;
   }
 
   /**
    * The member of this presence
-   * @type {GuildMember}
+   * @type {?GuildMember}
    */
   get member() {
-    return this.guild.members.get(this.userID);
+    return this.guild.members.get(this.userID) || null;
   }
 
   patch(data) {
