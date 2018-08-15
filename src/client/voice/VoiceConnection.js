@@ -420,6 +420,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.secretKey = secret;
 
     this.status = VoiceStatus.CONNECTED;
+    clearTimeout(this.connectTimeout);
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.
