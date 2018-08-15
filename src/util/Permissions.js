@@ -190,6 +190,7 @@ class Permissions {
    */
   static resolve(permission) {
     if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
+    if (permission instanceof Permissions) return permission.bitfield;
     if (typeof permission === 'string') permission = this.FLAGS[permission];
     if (typeof permission !== 'number' || permission < 0) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
     return permission;
