@@ -1,5 +1,11 @@
 const secretbox = require('../util/Secretbox');
+const { VoiceCodecs } = require('../../../util/Constants');
 const EventEmitter = require('events');
+
+const PayloadTypes = {};
+for (let codec of Object.values(VoiceCodecs)) {
+  PayloadTypes[codec.payload_type] = codec.name;
+}
 
 class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
@@ -15,19 +21,19 @@ class PacketHandler extends EventEmitter {
     return this.receiver.connection;
   }
 
-  _stoppedSpeaking(userID) {
-    const streamInfo = this.streams.get(userID);
-    if (streamInfo && streamInfo.end === 'silence') {
-      this.streams.delete(userID);
-      streamInfo.stream.push(null);
-    }
-  }
+  makeStream(user, { mode }) {
+    const streamMap = this.streams.get(user) || {};
+    if (streamMap[mode]) return streamMap[mode];
 
-  makeStream(user, end) {
-    if (this.streams.has(user)) return this.streams.get(user).stream;
     const stream = new Readable();
-    stream.on('end', () => this.streams.delete(user));
-    this.streams.set(user, { stream, end });
+    stream.on('end', () => {
+      const existing = this.streams.get(user);
+      if (existing) existing[mode] = null;
+    });
+
+    streamMap[mode] = { stream, mode };
+
+    this.streams.set(user, streamMap);
     return stream;
   }
 
@@ -50,7 +56,7 @@ class PacketHandler extends EventEmitter {
     if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
     // Strip RTP Header Extensions (one-byte only)
-    if (packet[0] === 0xBE && packet[1] === 0xDE && packet.length > 4) {
+    if (header.hasExtension && packet[0] === 0xBE && packet[1] === 0xDE && packet.length > 4) {
       const headerExtensionLength = packet.readUInt16BE(2);
       let offset = 4;
       for (let i = 0; i < headerExtensionLength; i++) {
@@ -81,22 +87,22 @@ class PacketHandler extends EventEmitter {
     const header = parseRTPHeader(buffer);
     const { user } = this.resolveSSRC(header.ssrc);
     if (!user) return;
-    let stream = this.streams.get(user.id);
-    if (!stream) return;
-    stream = stream.stream;
-    const opusPacket = this.parseBuffer(header, buffer);
-    if (opusPacket instanceof Error) {
-      this.emit('error', opusPacket);
+    const streams = this.streams.get(user.id);
+    if (!streams || !streams[header.payloadType]) return;
+    const stream = streams[header.payloadType].stream;
+    const packet = this.parseBuffer(header, buffer);
+    if (packet instanceof Error) {
+      this.emit('error', packet);
       return;
     }
-    stream.push(opusPacket);
+    stream.push(packet);
   }
 }
 
 function parseRTPHeader(buffer) {
   return {
     hasExtension: Boolean(buffer[0] & (1 << 4)),
-    payloadType: buffer[1] & ~(1 << 7),
+    payloadType: PayloadTypes[buffer[1] & ~(1 << 7)],
     ssrc: buffer.readUInt32BE(8),
   };
 }

@@ -446,11 +446,6 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
-      if (!speaking) {
-        for (const receiver of this.receivers) {
-          receiver.packets._stoppedSpeaking(user_id);
-        }
-      }
     }
 
     if (guild && user && old !== speaking) {
