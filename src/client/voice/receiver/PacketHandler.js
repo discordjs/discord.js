@@ -50,7 +50,6 @@ class PacketHandler extends EventEmitter {
     let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secret_key);
     if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
-
     // Strip RTP Header Extensions (one-byte only)
     if (packet[0] === 0xBE && packet[1] === 0xDE && packet.length > 4) {
       const headerExtensionLength = packet.readUInt16BE(2);
@@ -64,20 +63,24 @@ class PacketHandler extends EventEmitter {
       while (packet[offset] === 0) offset++;
       packet = packet.slice(offset);
     }
-
     return packet;
   }
 
-  userFromSSRC(ssrc) {
-    for (const [user_id, { audio_ssrc }] of this.connection.ssrcMap) {
-      if (audio_ssrc === ssrc) return this.connection.client.users.get(user_id);
+  resolveSSRC(ssrc) {
+    for (const [user_id, { audio_ssrc, video_ssrc }] of this.connection.ssrcMap) {
+      let type;
+      if (ssrc === audio_ssrc) type = 'audio';
+      else if (ssrc === video_ssrc) type = 'video';
+      else continue;
+      const user = this.connection.client.users.get(user_id);
+      return { user, type };
     }
-    return null;
+    return { user: null, type: null };
   }
 
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);
-    const user = this.userFromSSRC(ssrc);
+    const { user } = this.resolveSSRC(ssrc);
     if (!user) return;
     let stream = this.streams.get(user.id);
     if (!stream) return;

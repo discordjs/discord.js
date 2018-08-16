@@ -434,7 +434,8 @@ class VoiceConnection extends EventEmitter {
     speaking = Boolean(speaking);
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
-    this.ssrcMap.set(+ssrc, user_id);
+    if (!this.ssrcMap.has(user_id)) this.ssrcMap.set(user_id, { audio_ssrc: ssrc });
+    else this.ssrcMap.get(user_id).audio_ssrc = ssrc;
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**
