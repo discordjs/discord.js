@@ -55,12 +55,6 @@ class VoiceConnection extends EventEmitter {
     this.speaking = false;
 
     /**
-     * An array of Voice Receivers that have been created for this connection
-     * @type {VoiceReceiver[]}
-     */
-    this.receivers = [];
-
-    /**
      * The authentication data needed to connect to the voice server
      * @type {Object}
      * @private
@@ -113,6 +107,12 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this.sockets = {};
+
+    /**
+     * The voice receiver of this connection
+     * @type {VoiceReceiver}
+     */
+    this.receiver = null;
 
     this.authenticate();
   }
@@ -417,6 +417,7 @@ class VoiceConnection extends EventEmitter {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
     clearTimeout(this.connectTimeout);
+    this.receiver = new VoiceReceiver(this);
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.
@@ -460,17 +461,6 @@ class VoiceConnection extends EventEmitter {
         this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
       }
     }
-  }
-
-  /**
-   * Creates a VoiceReceiver so you can start listening to voice data.
-   * It's recommended to only create one of these.
-   * @returns {VoiceReceiver}
-   */
-  createReceiver() {
-    const receiver = new VoiceReceiver(this);
-    this.receivers.push(receiver);
-    return receiver;
   }
 
   play() {} // eslint-disable-line no-empty-function
