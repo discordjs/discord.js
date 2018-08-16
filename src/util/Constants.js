@@ -207,6 +207,29 @@ exports.VoiceOPCodes = {
   CLIENT_DISCONNECT: 13,
 };
 
+exports.VoiceCodecs = {
+  opus: {
+    name: 'opus',
+    type: 'audio',
+    payload_type: 120,
+    priority: 1000,
+  },
+  VP8: {
+    name: 'VP8',
+    type: 'video',
+    payload_type: 101,
+    rtx_payload_type: 102,
+    priority: 1000,
+  },
+  VP9: {
+    name: 'VP9',
+    type: 'video',
+    payload_type: 103,
+    rtx_payload_type: 104,
+    priority: 2000,
+  },
+};
+
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   READY: 'ready',

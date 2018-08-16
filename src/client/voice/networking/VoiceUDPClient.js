@@ -1,5 +1,5 @@
 const udp = require('dgram');
-const { VoiceOPCodes } = require('../../../util/Constants');
+const { VoiceOPCodes, VoiceCodecs } = require('../../../util/Constants');
 const EventEmitter = require('events');
 const { Error } = require('../../../errors');
 
@@ -105,6 +105,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
             address: packet.address,
             port: packet.port,
             mode: this.voiceConnection.authentication.mode,
+            codecs: Array.from(Object.values(VoiceCodecs)),
           },
         },
       });
