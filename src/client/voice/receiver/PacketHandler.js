@@ -68,7 +68,12 @@ class PacketHandler extends EventEmitter {
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
+  userFromSSRC(ssrc) {
+    for (const [user_id, { audio_ssrc }] of this.connection.ssrcMap) {
+      if (audio_ssrc === ssrc) return this.connection.client.users.get(user_id);
+    }
+    return null;
+  }
 
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);
