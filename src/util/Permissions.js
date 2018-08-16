@@ -1,120 +1,11 @@
-const { RangeError } = require('../errors');
+const BitField = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
  * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
  * that override their default permissions.
  */
-class Permissions {
-  /**
-   * @param {PermissionResolvable} permissions Permission(s) to read from
-   */
-  constructor(permissions) {
-    /**
-     * Bitfield of the packed permissions
-     * @type {number}
-     */
-    this.bitfield = this.constructor.resolve(permissions);
-  }
-
-  /**
-   * Checks whether the bitfield has a permission, or multiple permissions.
-   * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {boolean}
-   */
-  has(permission, checkAdmin = true) {
-    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
-    permission = this.constructor.resolve(permission);
-    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    return (this.bitfield & permission) === permission;
-  }
-
-  /**
-   * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable} permissions Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  missing(permissions, checkAdmin = true) {
-    if (!(permissions instanceof Array)) permissions = new this.constructor(permissions).toArray(false);
-    return permissions.filter(p => !this.has(p, checkAdmin));
-  }
-
-  /**
-   * Freezes these permissions, making them immutable.
-   * @returns {Permissions} These permissions
-   */
-  freeze() {
-    return Object.freeze(this);
-  }
-
-  /**
-   * Adds permissions to these ones.
-   * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
-   */
-  add(...permissions) {
-    let total = 0;
-    for (let p = permissions.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(permissions[p]);
-      total |= perm;
-    }
-    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
-    this.bitfield |= total;
-    return this;
-  }
-
-  /**
-   * Removes permissions from these.
-   * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions} These permissions or new permissions if the instance is frozen.
-   */
-  remove(...permissions) {
-    let total = 0;
-    for (let p = permissions.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(permissions[p]);
-      total |= perm;
-    }
-    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
-    this.bitfield &= ~total;
-    return this;
-  }
-
-  /**
-   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
-   * permission is available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {Object}
-   */
-  serialize(checkAdmin = true) {
-    const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
-    return serialized;
-  }
-
-  /**
-   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  toArray(checkAdmin = true) {
-    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
-  }
-
-  toJSON() {
-    return this.bitfield;
-  }
-
-  valueOf() {
-    return this.bitfield;
-  }
-
-  *[Symbol.iterator]() {
-    const keys = this.toArray();
-    while (keys.length) yield keys.shift();
-  }
-
+class Permissions extends BitField {
   /**
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
@@ -125,16 +16,43 @@ class Permissions {
    */
 
   /**
-   * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable} permission - Permission(s) to resolve
-   * @returns {number}
+   * Checks whether the bitfield has a permission, or multiple permissions.
+   * @param {PermissionResolvable} permission Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {boolean}
    */
-  static resolve(permission) {
-    if (typeof permission === 'number' && permission >= 0) return permission;
-    if (permission instanceof Permissions) return permission.bitfield;
-    if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (typeof permission === 'string') return this.FLAGS[permission];
-    throw new RangeError('PERMISSIONS_INVALID');
+  has(permission, checkAdmin = true) {
+    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
+    return super.has(permission);
+  }
+
+  /**
+   * Gets all given permissions that are missing from the bitfield.
+   * @param {PermissionResolvable} permissions Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {string[]}
+   */
+  missing(permissions, checkAdmin = true) {
+    return super.missing(permissions, checkAdmin);
+  }
+
+  /**
+   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
+   * permission is available.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {Object}
+   */
+  serialize(checkAdmin = true) {
+    return super.serialize(checkAdmin);
+  }
+
+  /**
+   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {string[]}
+   */
+  toArray(checkAdmin = true) {
+    return super.toArray(checkAdmin);
   }
 }
 
