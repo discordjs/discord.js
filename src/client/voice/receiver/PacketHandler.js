@@ -31,9 +31,8 @@ class PacketHandler extends EventEmitter {
     return stream;
   }
 
-  parseBuffer(buffer) {
+  parseBuffer(header, buffer) {
     const { secret_key, mode } = this.receiver.connection.authentication;
-
     // Choose correct nonce depending on encryption
     let end;
     if (mode === 'xsalsa20_poly1305_lite') {
@@ -79,19 +78,27 @@ class PacketHandler extends EventEmitter {
   }
 
   push(buffer) {
-    const ssrc = buffer.readUInt32BE(8);
-    const { user } = this.resolveSSRC(ssrc);
+    const header = parseRTPHeader(buffer);
+    const { user } = this.resolveSSRC(header.ssrc);
     if (!user) return;
     let stream = this.streams.get(user.id);
     if (!stream) return;
     stream = stream.stream;
-    const opusPacket = this.parseBuffer(buffer);
+    const opusPacket = this.parseBuffer(header, buffer);
     if (opusPacket instanceof Error) {
       this.emit('error', opusPacket);
       return;
     }
     stream.push(opusPacket);
   }
+}
+
+function parseRTPHeader(buffer) {
+  return {
+    hasExtension: Boolean(buffer[0] & (1 << 4)),
+    payloadType: buffer[1] & ~(1 << 7),
+    ssrc: buffer.readUInt32BE(8),
+  };
 }
 
 module.exports = PacketHandler;
