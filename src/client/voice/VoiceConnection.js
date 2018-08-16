@@ -396,29 +396,25 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} data The received data
    * @private
    */
-  onReady({ port, ssrc, ip, modes }) {
-    this.authentication.port = port;
-    this.authentication.ssrc = ssrc;
-    for (let mode of modes) {
+  onReady(data) {
+    this.authentication = data;
+    for (let mode of data.modes) {
       if (SUPPORTED_MODES.includes(mode)) {
-        this.authentication.encryptionMode = mode;
+        this.authentication.mode = mode;
         this.emit('debug', `Selecting the ${mode} mode`);
         break;
       }
     }
-    this.sockets.udp.createUDPSocket(ip);
+    this.sockets.udp.createUDPSocket(data.ip);
   }
 
   /**
    * Invoked when a session description is received.
-   * @param {string} mode The encryption mode
-   * @param {string} secret The secret key
+   * @param {Object} data The received data
    * @private
    */
-  onSessionDescription(mode, secret) {
-    this.authentication.encryptionMode = mode;
-    this.authentication.secretKey = secret;
-
+  onSessionDescription(data) {
+    Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
     clearTimeout(this.connectTimeout);
     /**

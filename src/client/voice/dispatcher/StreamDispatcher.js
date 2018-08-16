@@ -242,26 +242,26 @@ class StreamDispatcher extends Writable {
   }
 
   _playChunk(chunk) {
-    if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secretKey) return;
+    if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secret_key) return;
     this._setSpeaking(true);
     this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
   _encrypt(buffer) {
-    const { secretKey, encryptionMode } = this.player.voiceConnection.authentication;
-    if (encryptionMode === 'xsalsa20_poly1305_lite') {
+    const { secret_key, mode } = this.player.voiceConnection.authentication;
+    if (mode === 'xsalsa20_poly1305_lite') {
       this._nonce++;
       if (this._nonce > MAX_NONCE_SIZE) this._nonce = 0;
       this._nonceBuffer.writeUInt32BE(this._nonce, 0);
       return [
-        secretbox.methods.close(buffer, this._nonceBuffer, secretKey),
+        secretbox.methods.close(buffer, this._nonceBuffer, secret_key),
         this._nonceBuffer.slice(0, 4),
       ];
-    } else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
+    } else if (mode === 'xsalsa20_poly1305_suffix') {
       const random = secretbox.methods.random(24);
-      return [secretbox.methods.close(buffer, random, secretKey), random];
+      return [secretbox.methods.close(buffer, random, secret_key), random];
     } else {
-      return [secretbox.methods.close(buffer, nonce, secretKey)];
+      return [secretbox.methods.close(buffer, nonce, secret_key)];
     }
   }
 
