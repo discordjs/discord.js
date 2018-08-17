@@ -39,7 +39,7 @@ class BitField {
 
   /**
    * Freezes these bits, making them immutable.
-   * @returns {BitField} These bits
+   * @returns {ReadOnly<BitField>} These bits
    */
   freeze() {
     return Object.freeze(this);
