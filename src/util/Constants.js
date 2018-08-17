@@ -124,7 +124,6 @@ exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
-        if (userID === '1') return hash;
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
