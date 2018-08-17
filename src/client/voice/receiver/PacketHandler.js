@@ -1,6 +1,7 @@
 const secretbox = require('../util/Secretbox');
 const { VoiceCodecs } = require('../../../util/Constants');
 const EventEmitter = require('events');
+const VP8 = require('../util/VP8');
 
 const PayloadTypes = {};
 for (let codec of Object.values(VoiceCodecs)) {
@@ -64,7 +65,7 @@ class PacketHandler extends EventEmitter {
       let offset = 4;
       for (let i = 0; i < elements; i++) {
         const byte = packet[offset++],
-          id = byte & (0xF << 4),
+          id = (byte >> 4) & 0xF,
           length = (byte & 0xF) + 1;
 
         // Must ignore any IDs that are 0 or 15 (reserved for future extension)
