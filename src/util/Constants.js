@@ -374,12 +374,6 @@ exports.ActivityFlags = {
   PLAY: 1 << 5,
 };
 
-exports.ExplicitContentFilterTypes = [
-  'DISABLED',
-  'NON_FRIENDS',
-  'FRIENDS_AND_NON_FRIENDS',
-];
-
 exports.ChannelTypes = {
   TEXT: 0,
   DM: 1,
