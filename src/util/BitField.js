@@ -29,11 +29,12 @@ class BitField {
   /**
    * Gets all given bits that are missing from the bitfield.
    * @param {BitFieldResolvable} bits Bits(s) to check for
+   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
-  missing(bits, ...rest) {
+  missing(bits, ...hasParams) {
     if (!(bits instanceof Array)) bits = new this.constructor(bits).toArray(false);
-    return bits.filter(p => !this.has(p, ...rest));
+    return bits.filter(p => !this.has(p, ...hasParams));
   }
 
   /**
@@ -51,9 +52,8 @@ class BitField {
    */
   add(...bits) {
     let total = 0;
-    for (let p = bits.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(bits[p]);
-      total |= perm;
+    for (const bit of bits) {
+      total |= this.constructor.resolve(bit);
     }
     if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
     this.bitfield |= total;
@@ -67,9 +67,8 @@ class BitField {
    */
   remove(...bits) {
     let total = 0;
-    for (let p = bits.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(bits[p]);
-      total |= perm;
+    for (const bit of bits) {
+      total |= this.constructor.resolve(bit);
     }
     if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
     this.bitfield &= ~total;
@@ -79,20 +78,22 @@ class BitField {
   /**
    * Gets an object mapping field names to a {@link boolean} indicating whether the
    * bit is available.
+   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {Object}
    */
-  serialize(...rest) {
+  serialize(...hasParams) {
     const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, ...rest);
+    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, ...hasParams);
     return serialized;
   }
 
   /**
    * Gets an {@link Array} of bitfield names based on the bits available.
+   * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
-  toArray(...rest) {
-    return Object.keys(this.constructor.FLAGS).filter(bit => this.has(bit, ...rest));
+  toArray(...hasParams) {
+    return Object.keys(this.constructor.FLAGS).filter(bit => this.has(bit, ...hasParams));
   }
 
   toJSON() {
@@ -104,8 +105,7 @@ class BitField {
   }
 
   *[Symbol.iterator]() {
-    const keys = this.toArray();
-    while (keys.length) yield keys.shift();
+    yield* this.toArray();
   }
 
   /**

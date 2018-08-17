@@ -22,37 +22,8 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
+    if (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) return true;
     return super.has(permission);
-  }
-
-  /**
-   * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable} permissions Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  missing(permissions, checkAdmin = true) {
-    return super.missing(permissions, checkAdmin);
-  }
-
-  /**
-   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
-   * permission is available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {Object}
-   */
-  serialize(checkAdmin = true) {
-    return super.serialize(checkAdmin);
-  }
-
-  /**
-   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  toArray(checkAdmin = true) {
-    return super.toArray(checkAdmin);
   }
 }
 
