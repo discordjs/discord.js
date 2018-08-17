@@ -1100,11 +1100,10 @@ declare module 'discord.js' {
 		public readonly client: Client;
 		public readonly dispatcher: StreamDispatcher;
 		public player: object;
-		public receivers: VoiceReceiver[];
+		public receiver: VoiceReceiver;
 		public speaking: boolean;
 		public status: VoiceStatus;
 		public voiceManager: object;
-		public createReceiver(): VoiceReceiver;
 		public disconnect(): void;
 		public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
 
