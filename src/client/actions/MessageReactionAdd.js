@@ -9,6 +9,7 @@ const Action = require('./Action');
 
 class MessageReactionAdd extends Action {
   handle(data) {
+    this._patch(data);
     const user = data.user || this.client.users.get(data.user_id);
     if (!user) return false;
     // Verify channel
@@ -26,6 +27,12 @@ class MessageReactionAdd extends Action {
     });
     reaction._add(user);
     return { message, reaction, user };
+  }
+
+  _patch(data) {
+    data.user_id = BigInt(data.user_id);
+    data.channel_id = BigInt(data.channel_id);
+    data.messsage_id = BigInt(data.message_id);
   }
 }
 

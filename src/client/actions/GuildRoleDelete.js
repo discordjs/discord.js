@@ -4,6 +4,7 @@ const { Events } = require('../../util/Constants');
 class GuildRoleDeleteAction extends Action {
   handle(data) {
     const client = this.client;
+    this._patch(data);
     const guild = client.guilds.get(data.guild_id);
     let role;
 
@@ -17,6 +18,11 @@ class GuildRoleDeleteAction extends Action {
     }
 
     return { role };
+  }
+
+  _patch(data) {
+    data.guild_id = BigInt(data.guild_id);
+    data.role_id = BigInt(data.role_id);
   }
 }
 

@@ -4,6 +4,7 @@ const { Events, Status } = require('../../util/Constants');
 class GuildMemberRemoveAction extends Action {
   handle(data) {
     const client = this.client;
+    this._patch(data);
     const guild = client.guilds.get(data.guild_id);
     let member = null;
     if (guild) {
@@ -17,6 +18,11 @@ class GuildMemberRemoveAction extends Action {
       }
     }
     return { guild, member };
+  }
+
+  _patch(data) {
+    data.guild_id = BigInt(data.guild_id);
+    data.user.id = BigInt(data.user.id);
   }
 }
 

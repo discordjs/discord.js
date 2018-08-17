@@ -10,6 +10,7 @@ const { Events } = require('../../util/Constants');
 
 class MessageReactionRemove extends Action {
   handle(data) {
+    this._patch(data);
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
     // Verify channel
@@ -27,6 +28,13 @@ class MessageReactionRemove extends Action {
     this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, user);
 
     return { message, reaction, user };
+  }
+
+  _patch(data) {
+    data.user_id = BigInt(data.user_id);
+    data.channel_id = BigInt(data.channel_id);
+    data.message_id = BigInt(data.channel_id);
+    if (data.emoji.id) data.emoji.id = BigInt(data.emoji.id);
   }
 }
 

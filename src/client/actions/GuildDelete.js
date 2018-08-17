@@ -9,7 +9,7 @@ class GuildDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
-
+    this._patch(data);
     let guild = client.guilds.get(data.id);
     if (guild) {
       for (const channel of guild.channels.values()) {

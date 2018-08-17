@@ -2,6 +2,7 @@ const Action = require('./Action');
 
 class GuildEmojisUpdateAction extends Action {
   handle(data) {
+    this._patch(data);
     const guild = this.client.guilds.get(data.guild_id);
     if (!guild || !guild.emojis) return;
 
@@ -26,6 +27,10 @@ class GuildEmojisUpdateAction extends Action {
       // Emoji deleted
       this.client.actions.GuildEmojiDelete.handle(emoji);
     }
+  }
+
+  _patch(data) {
+    data.guild_id = BigInt(data.guild_id);
   }
 }
 

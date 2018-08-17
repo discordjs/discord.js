@@ -7,12 +7,17 @@ class GuildChannelsPositionUpdate extends Action {
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
       for (const partialChannel of data.channels) {
+        this._patch(partialChannel);
         const channel = guild.channels.get(partialChannel.id);
         if (channel) channel.rawPosition = partialChannel.position;
       }
     }
 
     return { guild };
+  }
+
+  _patch(data) {
+    data.id = BigInt(data.id);
   }
 }
 

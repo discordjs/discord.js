@@ -18,6 +18,11 @@ class MessageDeleteAction extends Action {
 
     return { message };
   }
+
+  _patch(data) {
+    data.channel_id = BigInt(data.channel_id);
+    data.id = BigInt(data.id);
+  }
 }
 
 /**

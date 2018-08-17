@@ -4,6 +4,7 @@ const { Events } = require('../../util/Constants');
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
     const emoji = guild.emojis.add(createdEmoji);
+    this._patch(createdEmoji);
     this.client.emit(Events.GUILD_EMOJI_CREATE, emoji);
     return { emoji };
   }

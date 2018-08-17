@@ -4,6 +4,7 @@ const { Events } = require('../../util/Constants');
 class GuildRoleCreate extends Action {
   handle(data) {
     const client = this.client;
+    this._patch(data);
     const guild = client.guilds.get(data.guild_id);
     let role;
     if (guild) {
@@ -12,6 +13,11 @@ class GuildRoleCreate extends Action {
       if (!already) client.emit(Events.GUILD_ROLE_CREATE, role);
     }
     return { role };
+  }
+
+  _patch(data) {
+    data.guild_id = BigInt(data.guild_id);
+    data.role.id = BigInt(data.role.id);
   }
 }
 

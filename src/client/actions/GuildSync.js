@@ -3,7 +3,6 @@ const Action = require('./Action');
 class GuildSync extends Action {
   handle(data) {
     const client = this.client;
-
     const guild = client.guilds.get(data.id);
     if (guild) {
       if (data.presences) {

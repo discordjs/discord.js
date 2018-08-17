@@ -18,6 +18,10 @@ class GenericAction {
   handle(data) {
     return data;
   }
+
+  _patch(data) {
+    if (data.id) data.id = BigInt(data.id);
+  }
 }
 
 module.exports = GenericAction;

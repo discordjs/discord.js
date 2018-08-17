@@ -9,6 +9,7 @@ class ChannelDeleteAction extends Action {
 
   handle(data) {
     const client = this.client;
+    this._patch(data);
     let channel = client.channels.get(data.id);
 
     if (channel) {

@@ -3,7 +3,7 @@ const Action = require('./Action');
 class MessageUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-
+    this._patch(data);
     const channel = client.channels.get(data.channel_id);
     if (channel) {
       const message = channel.messages.get(data.id);
@@ -17,6 +17,11 @@ class MessageUpdateAction extends Action {
     }
 
     return {};
+  }
+
+  _patch(data) {
+    data.channel_id = BigInt(data.channel_id);
+    data.id = BigInt(data.id);
   }
 }
 

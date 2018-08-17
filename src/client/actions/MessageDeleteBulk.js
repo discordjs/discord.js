@@ -5,12 +5,14 @@ const { Events } = require('../../util/Constants');
 class MessageDeleteBulkAction extends Action {
   handle(data) {
     const client = this.client;
+    this._patch(data);
     const channel = client.channels.get(data.channel_id);
 
     if (channel) {
       const ids = data.ids;
       const messages = new Collection();
-      for (const id of ids) {
+      for (let id of ids) {
+        id = BigInt(id);
         const message = channel.messages.get(id);
         if (message) {
           message.deleted = true;
@@ -23,6 +25,10 @@ class MessageDeleteBulkAction extends Action {
       return { messages };
     }
     return {};
+  }
+
+  _patch(data) {
+    data.channel_id = BigInt(data.channel_id);
   }
 }
 

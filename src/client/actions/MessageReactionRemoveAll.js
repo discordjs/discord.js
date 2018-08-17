@@ -3,6 +3,7 @@ const { Events } = require('../../util/Constants');
 
 class MessageReactionRemoveAll extends Action {
   handle(data) {
+    this._patch(data);
     const channel = this.client.channels.get(data.channel_id);
     if (!channel || channel.type === 'voice') return false;
 
@@ -13,6 +14,11 @@ class MessageReactionRemoveAll extends Action {
     this.client.emit(Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
     return { message };
+  }
+
+  _patch(data) {
+    data.channel_id = BigInt(data.channel_id);
+    data.message_id = BigInt(data.message_id);
   }
 }
 

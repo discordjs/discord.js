@@ -4,6 +4,7 @@ const { Events } = require('../../util/Constants');
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
+    this._patch(data);
     const channel = client.channels.get(data.channel_id);
     if (channel) {
       const existing = channel.messages.get(data.id);
@@ -26,6 +27,12 @@ class MessageCreateAction extends Action {
     }
 
     return {};
+  }
+
+  _patch(data) {
+    data.channel_id = BigInt(data.channel_id);
+    data.id = BigInt(data.id);
+    data.author.id = BigInt(data.author.id);
   }
 }
 
