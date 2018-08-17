@@ -37,7 +37,7 @@ class PacketHandler extends EventEmitter {
     return stream;
   }
 
-  parseBuffer(header, buffer) {
+  decryptBuffer(buffer) {
     const { secret_key, mode } = this.receiver.connection.authentication;
     // Choose correct nonce depending on encryption
     let end;
@@ -50,24 +50,43 @@ class PacketHandler extends EventEmitter {
     } else {
       buffer.copy(this.nonce, 0, 0, 12);
     }
-
-    // Open packet
-    let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secret_key);
+    const packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secret_key);
     if (!packet) return new Error('Failed to decrypt voice packet');
-    packet = Buffer.from(packet);
-    // Strip RTP Header Extensions (one-byte only)
+    return Buffer.from(packet);
+  }
+
+  // https://tools.ietf.org/html/rfc5285
+  parseRTPHeaderExtensions(header, packet) {
+    // Check for One-Byte Header (§4.2)
     if (header.hasExtension && packet[0] === 0xBE && packet[1] === 0xDE && packet.length > 4) {
-      const headerExtensionLength = packet.readUInt16BE(2);
+      const elements = packet.readUInt16BE(2),
+        extensionParts = [];
       let offset = 4;
-      for (let i = 0; i < headerExtensionLength; i++) {
-        const byte = packet[offset];
-        offset++;
-        if (byte === 0) continue;
-        offset += 1 + (0b1111 & (byte >> 4));
+      for (let i = 0; i < elements; i++) {
+        const byte = packet[offset++],
+          id = byte & (0xF << 4),
+          length = (byte & 0xF) + 1;
+
+        // Must ignore any IDs that are 0 or 15 (reserved for future extension)
+        if (id && id !== 15) extensionParts.push(packet.slice(offset, offset + length));
+        offset += length;
+
+        // Ignore any padding
+        while (packet[offset] === 0) offset++;
       }
-      while (packet[offset] === 0) offset++;
-      packet = packet.slice(offset);
+      return {
+        extension: Buffer.concat(extensionParts),
+        packet: packet.slice(offset),
+      };
     }
+    return { packet };
+  }
+
+  parseBuffer(header, payload) {
+    const buffer = this.decryptBuffer(payload);
+    if (buffer instanceof Error) return buffer;
+
+    const { packet } = this.parseRTPHeaderExtensions(header, buffer);
     return packet;
   }
 
