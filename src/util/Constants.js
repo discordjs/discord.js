@@ -250,6 +250,7 @@ exports.Events = {
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
+  WEBHOOK_UPDATE: 'webhookUpdate',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   ERROR: 'error',
@@ -293,6 +294,7 @@ exports.Events = {
  * * VOICE_SERVER_UPDATE
  * * RELATIONSHIP_ADD
  * * RELATIONSHIP_REMOVE
+ * * WEBHOOK_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -327,6 +329,7 @@ exports.WSEvents = keyMirror([
   'VOICE_STATE_UPDATE',
   'TYPING_START',
   'VOICE_SERVER_UPDATE',
+  'WEBHOOK_UPDATE',
 ]);
 
 /**
