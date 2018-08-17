@@ -40,12 +40,6 @@ class VoiceRegion {
      * @type {boolean}
      */
     this.custom = data.custom;
-
-    /**
-     * A sample hostname for what a connection might look like
-     * @type {string}
-     */
-    this.sampleHostname = data.sample_hostname;
   }
 
   toJSON() {
