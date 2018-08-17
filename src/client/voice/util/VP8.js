@@ -1,6 +1,15 @@
 // This should ideally be moved to prism at some point!
 
 // https://tools.ietf.org/html/rfc7741#section-4.2
+class Payload {
+  constructor(data) {
+    this.descriptor = new PayloadDescriptor(data);
+    if (this.descriptor.isStartOfVP8Partition && this.descriptor.partitionIndex === 0) {
+      this.header = new PayloadHeader(data.slice(this.descriptor.size));
+    }
+  }
+}
+
 class PayloadDescriptor {
   constructor(data) {
     this.data = data;
@@ -33,4 +42,21 @@ class PayloadDescriptor {
   get size() { return 5 + this._pictureIDOffset; }
 }
 
-exports.PayloadDescriptor = PayloadDescriptor;
+// https://tools.ietf.org/id/draft-ietf-payload-vp8-01.html#rfc.section.4.2
+class PayloadHeader {
+  constructor(data) {
+    this.data = data;
+  }
+
+  get size0() { return this.data[0] >> 5; }
+  get size1() { return this.data[1]; }
+  get size2() { return this.data[2]; }
+  // This is equivalent to the 1stPartitionSize
+  get size() { return this.size0 + (8 * this.size1) + (2048 * this.size2); }
+
+  get showFrame() { return this.data[0] && (1 << 4); }
+  get version() { return this.data[0] && 0xe; }
+  get inverseKeyFrame() { return this.data[0] & 1; }
+}
+
+module.exports = { Payload, PayloadDescriptor, PayloadHeader };
