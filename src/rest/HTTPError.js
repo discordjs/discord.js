@@ -25,8 +25,6 @@ class HTTPError extends Error {
      * @type {string}
      */
     this.path = path;
-
-    if (Error.captureStackTrace) Error.captureStackTrace(this, this.constructor);
   }
 }
 

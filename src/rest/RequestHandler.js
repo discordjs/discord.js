@@ -9,6 +9,14 @@ function parseResponse(res) {
   return res.buffer();
 }
 
+function getAPIOffset(serverDate) {
+  return new Date(serverDate).getTime() - Date.now();
+}
+
+function calculateReset(reset, serverDate) {
+  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
+}
+
 class RequestHandler {
   constructor(manager) {
     this.manager = manager;
@@ -21,8 +29,12 @@ class RequestHandler {
   }
 
   push(request) {
-    this.queue.push(request);
-    this.run();
+    if (this.busy) {
+      this.queue.push(request);
+      this.run();
+    } else {
+      this.execute(request);
+    }
   }
 
   run() {
@@ -38,14 +50,6 @@ class RequestHandler {
     return this.queue.length === 0 && !this.limited && this.busy !== true;
   }
 
-  _getAPIOffset(serverDate) {
-    return new Date(serverDate).getTime() - Date.now();
-  }
-
-  _calculateReset(reset, serverDate) {
-    return new Date(Number(reset) * 1000).getTime() - this._getAPIOffset(serverDate);
-  }
-
   /* eslint-disable-next-line complexity */
   async execute(item) {
     // Insert item back to the beginning if currently busy
@@ -55,15 +59,16 @@ class RequestHandler {
     }
 
     this.busy = true;
+    const { reject, request, resolve } = item;
 
     // Perform the request
     let res;
     try {
-      res = await item.request.make();
+      res = await request.make();
     } catch (error) {
       // NodeFetch error expected for all "operational" errors, such as 500 status code
       this.busy = false;
-      return item.reject(
+      return reject(
         new HTTPError(error.message, error.constructor.name, error.status, item.request.method, item.request.route)
       );
     }
@@ -79,18 +84,18 @@ class RequestHandler {
 
       this.limit = limit ? Number(limit) : Infinity;
       this.remaining = remaining ? Number(remaining) : 1;
-      this.reset = reset ? this._calculateReset(reset, serverDate) : Date.now();
+      this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
       this.retryAfter = retryAfter ? Number(retryAfter) : -1;
 
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (item.request.route.includes('reactions')) {
-        this.reset = Date.now() + this._getAPIOffset(serverDate) + 250;
+        this.reset = Date.now() + getAPIOffset(serverDate) + 250;
       }
     }
 
     // After calculations, pre-emptively stop further requests
     if (this.limited) {
-      const timeout = this.reset + this.client.options.restTimeOffset - Date.now();
+      const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
 
       if (this.manager.client.listenerCount(RATE_LIMIT)) {
         /**
@@ -106,9 +111,9 @@ class RequestHandler {
         this.manager.client.emit(RATE_LIMIT, {
           timeout,
           limit: this.limit,
-          method: item.request.method,
-          path: item.request.path,
-          route: item.request.route,
+          method: request.method,
+          path: request.path,
+          route: request.route,
         });
       }
 
@@ -138,7 +143,7 @@ class RequestHandler {
     if (res.ok) {
       const success = await parseResponse(res);
       // Nothing wrong with the request, proceed with the next
-      item.resolve(success);
+      resolve(success);
       return this.run();
     } else if (res.status === 429) {
       // A ratelimit was hit - this should never happen
@@ -149,8 +154,8 @@ class RequestHandler {
     } else if (res.status >= 500 && res.status < 600) {
       // Retry once for possible serverside issues
       if (item.retried) {
-        return item.reject(
-          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, item.request.route)
+        return reject(
+          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.route)
         );
       } else {
         item.retried = true;
@@ -162,12 +167,12 @@ class RequestHandler {
       try {
         const data = await parseResponse(res);
         if (res.status >= 400 && res.status < 500) {
-          return item.reject(new DiscordAPIError(item.request.route, data, item.request.method));
+          return reject(new DiscordAPIError(request.route, data, request.method));
         }
         return null;
       } catch (err) {
-        return item.reject(
-          new HTTPError(err.message, err.constructor.name, err.status, item.request.method, item.request.route)
+        return reject(
+          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.route)
         );
       }
     }
