@@ -65,7 +65,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT);
+    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**
@@ -75,8 +75,8 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (browser) return false;
-    if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
+    if (!this.permissionsFor(this.client.user).has('CONNECT', false)) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS', false)) return false;
     return true;
   }
 
@@ -86,7 +86,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has('SPEAK');
+    return this.permissionsFor(this.client.user).has('SPEAK', false);
   }
 
   /**
