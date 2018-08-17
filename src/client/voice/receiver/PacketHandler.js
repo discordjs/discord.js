@@ -1,7 +1,6 @@
 const secretbox = require('../util/Secretbox');
 const { VoiceCodecs } = require('../../../util/Constants');
 const EventEmitter = require('events');
-const VP8 = require('../util/VP8');
 
 const PayloadTypes = {};
 for (let codec of Object.values(VoiceCodecs)) {

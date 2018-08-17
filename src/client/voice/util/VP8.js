@@ -36,7 +36,7 @@ class PayloadDescriptor {
   get TL0PICIDX() { return this.hasTL0PICIDX ? this.data[3 + this._pictureIDOffset] : null; }
 
   get TID() { return this.hasTID ? this.data[4 + this._pictureIDOffset] >> 6 : null; }
-  get Y() { return (this.hadTID || this.hasKEYIDX) ? this.data[4 + this._pictureIDOffset] & (1 << 5) : null; }
+  get Y() { return this.hadTID || this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & (1 << 5) : null; }
   get KEYIDX() { return this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & 0x1f : null; }
 
   get size() { return 5 + this._pictureIDOffset; }
