@@ -97,6 +97,8 @@ const Messages = {
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
+
+  VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
