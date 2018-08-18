@@ -464,6 +464,29 @@ class Guild extends Base {
   }
 
   /**
+   * The Guild Embed object
+   * @typedef {Object} GuildEmbedData
+   * @property {boolean} enabled Whether the embed is enabled
+   * @property {?GuildChannel} channel The embed channel
+   */
+
+  /**
+   * Fetches the guild embed.
+   * @returns {Promise<GuildEmbedData>}
+   * @example
+   * // Fetches the guild embed
+   * guild.fetchEmbed()
+   *   .then(embed => console.log(`The embed is ${embed.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchEmbed() {
+    return this.client.api.guilds(this.id).embed.get().then(data => ({
+      enabled: data.enabled,
+      channel: data.channel_id ? this.channels.get(data.channel_id) : null,
+    }));
+  }
+
+  /**
    * Fetches audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
@@ -768,6 +791,22 @@ class Guild extends Base {
         channels: updatedChannels,
       }).guild
     );
+  }
+
+  /**
+   * Edits the guild's embed.
+   * @param {GuildEmbedData} embed The embed for the guild
+   * @param {string} reason Reason for changing the guild's embed
+   * @returns {Promise<Guild>}
+   */
+  setEmbed(embed, reason) {
+    return this.client.api.guilds(this.id).embed.patch({
+      data: {
+        enabled: embed.enabled,
+        channel_id: this.channels.resolveID(embed.channel),
+      },
+      reason,
+    });
   }
 
   /**
