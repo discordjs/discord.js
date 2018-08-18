@@ -7,15 +7,14 @@ class WebhookUpdate extends AbstractHandler {
     const data = packet.d;
     const guild = client.guilds.get(data.guild_id);
     const channel = client.channels.get(data.channel_id);
-    if (guild && channel) client.emit(Events.WEBHOOK_UPDATE, guild, channel);
+    if (guild && channel) client.emit(Events.WEBHOOKS_UPDATE, channel);
   }
 }
 
 /**
- * Emitted whenever a guild channel has it's webhooks changed.
+ * Emitted whenever a guild text channel has its webhooks changed.
  * @event Client#webhookUpdate
- * @param {Guild} guild The guild that had a webhook update
- * @param {GuildChannel} channel The channel that had a webhook update
+ * @param {TextChannel} channel The channel that had a webhook update
  */
 
 module.exports = WebhookUpdate;
