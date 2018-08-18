@@ -77,10 +77,10 @@ declare module 'discord.js' {
 		public missing(bits: BitFieldResolvable<S>, ...hasParams: any[]): S[];
 		public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
 		public serialize(...hasParams: BitFieldResolvable<S>[]): Record<S, boolean>;
-		public toArray(): string[];
+		public toArray(): S[];
 		public toJSON(): number;
 		public valueOf(): number;
-		public [Symbol.iterator](): Iterator<string>;
+		public [Symbol.iterator](): Iterator<S>;
 		public static resolve(bit?: BitFieldResolvable<string>): number;
 		public static FLAGS: object;
 	}
