@@ -1,7 +1,7 @@
 const AbstractHandler = require('./AbstractHandler');
 const { Events } = require('../../../../util/Constants');
 
-class WebhookUpdate extends AbstractHandler {
+class WebhooksUpdate extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
@@ -17,4 +17,4 @@ class WebhookUpdate extends AbstractHandler {
  * @param {TextChannel} channel The channel that had a webhook update
  */
 
-module.exports = WebhookUpdate;
+module.exports = WebhooksUpdate;

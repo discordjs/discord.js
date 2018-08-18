@@ -47,7 +47,7 @@ class WebSocketPacketManager {
     this.register(WSEvents.MESSAGE_REACTION_ADD, require('./handlers/MessageReactionAdd'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE, require('./handlers/MessageReactionRemove'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE_ALL, require('./handlers/MessageReactionRemoveAll'));
-    this.register(WSEvents.WEBHOOKS_UPDATES, require('./handlers/WebhooksUpdate'));
+    this.register(WSEvents.WEBHOOKS_UPDATE, require('./handlers/WebhooksUpdate'));
   }
 
   get client() {

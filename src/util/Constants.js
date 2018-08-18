@@ -292,7 +292,7 @@ exports.Events = {
  * * VOICE_STATE_UPDATE
  * * TYPING_START
  * * VOICE_SERVER_UPDATE
- * * WEBHOOK_UPDATE
+ * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
