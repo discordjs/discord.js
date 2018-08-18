@@ -140,7 +140,8 @@ declare module 'discord.js' {
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
-		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
+		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
+		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
@@ -171,6 +172,7 @@ declare module 'discord.js' {
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
+		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
@@ -1975,7 +1977,8 @@ declare module 'discord.js' {
 		| 'PRESENCE_UPDATE'
 		| 'VOICE_STATE_UPDATE'
 		| 'TYPING_START'
-		| 'VOICE_SERVER_UPDATE';
+		| 'VOICE_SERVER_UPDATE'
+		| 'WEBHOOKS_UPDATE';
 
 //#endregion
 }
