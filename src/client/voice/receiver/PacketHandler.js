@@ -1,5 +1,6 @@
 const secretbox = require('../util/Secretbox');
 const { VoiceCodecs } = require('../../../util/Constants');
+const VP8 = require('../util/VP8');
 const EventEmitter = require('events');
 
 const PayloadTypes = {};
@@ -15,6 +16,27 @@ class PacketHandler extends EventEmitter {
     this.nonce = Buffer.alloc(24);
     this.receiver = receiver;
     this.streams = new Map();
+    this.payloads = new Map();
+  }
+
+  // https://tools.ietf.org/html/rfc7741 - 4.5.1
+  _processPayloads(timestamp) {
+    const payloads = this.payloads.get(timestamp).sort((a, b) => a.header.sequence - b.header.sequence);
+    const [first, last] = [payloads[0], payloads[payloads.length - 1]];
+    const complete = (
+      first.payload.descriptor.isStartOfVP8Partition &&
+      first.payload.descriptor.partitionIndex === 0 &&
+      last.header.marker &&
+      last.header.sequence - first.header.sequence === payloads.length - 1
+    );
+  }
+
+  _storePayload(header, payload) {
+    if (!this.payloads.has(header.timestamp)) {
+      for (const key of this.payloads.keys()) this._processPayloads(key);
+      this.payloads.set(header.timestamp, []);
+    }
+    this.payloads.get(header.timestamp).push({ header, payload });
   }
 
   get connection() {
@@ -87,7 +109,8 @@ class PacketHandler extends EventEmitter {
     if (buffer instanceof Error) return buffer;
 
     const { packet } = this.parseRTPHeaderExtensions(header, buffer);
-    return packet;
+    this._storePayload(header, new VP8.Payload(packet));
+    return null;
   }
 
   resolveSSRC(ssrc) {
@@ -112,9 +135,9 @@ class PacketHandler extends EventEmitter {
     const packet = this.parseBuffer(header, buffer);
     if (packet instanceof Error) {
       this.emit('error', packet);
-      return;
+    } else if (packet) {
+      stream.push(packet);
     }
-    stream.push(packet);
   }
 }
 
@@ -122,6 +145,9 @@ function parseRTPHeader(buffer) {
   return {
     hasExtension: Boolean(buffer[0] & (1 << 4)),
     payloadType: PayloadTypes[buffer[1] & ~(1 << 7)],
+    marker: buffer[1] >> 7,
+    sequence: buffer.readUInt16BE(2),
+    timestamp: buffer.readUInt32BE(4),
     ssrc: buffer.readUInt32BE(8),
   };
 }
