@@ -227,8 +227,8 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   updateOverwrite(userOrRole, options, reason) {
-    const allow = new Permissions(0);
-    const deny = new Permissions(0);
+    const allow = new Permissions();
+    const deny = new Permissions();
     let type;
 
     const role = this.guild.roles.get(userOrRole);
@@ -251,14 +251,14 @@ class GuildChannel extends Channel {
 
     for (const perm in options) {
       if (options[perm] === true) {
-        allow.add(Permissions.FLAGS[perm] || 0);
-        deny.remove(Permissions.FLAGS[perm] || 0);
+        allow.add(Permissions.FLAGS[perm]);
+        deny.remove(Permissions.FLAGS[perm]);
       } else if (options[perm] === false) {
-        allow.remove(Permissions.FLAGS[perm] || 0);
-        deny.add(Permissions.FLAGS[perm] || 0);
+        allow.remove(Permissions.FLAGS[perm]);
+        deny.add(Permissions.FLAGS[perm]);
       } else if (options[perm] === null) {
-        allow.remove(Permissions.FLAGS[perm] || 0);
-        deny.remove(Permissions.FLAGS[perm] || 0);
+        allow.remove(Permissions.FLAGS[perm]);
+        deny.remove(Permissions.FLAGS[perm]);
       }
     }
 

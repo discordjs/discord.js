@@ -5,7 +5,7 @@ const { RangeError } = require('../errors');
  */
 class BitField {
   /**
-   * @param {BitFieldResolvable} bits Bits(s) to read from
+   * @param {BitFieldResolvable} [bits=0] Bits(s) to read from
    */
   constructor(bits) {
     /**
@@ -56,7 +56,7 @@ class BitField {
 
   /**
    * Adds bits to these ones.
-   * @param {...BitFieldResolvable} bits Bits to add
+   * @param {...BitFieldResolvable} [bits] Bits to add
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
   add(...bits) {
@@ -71,7 +71,7 @@ class BitField {
 
   /**
    * Removes bits from these.
-   * @param {...BitFieldResolvable} bits Bits to remove
+   * @param {...BitFieldResolvable} [bits] Bits to remove
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
   remove(...bits) {
@@ -128,10 +128,10 @@ class BitField {
 
   /**
    * Resolves bitfields to their numeric form.
-   * @param {BitFieldResolvable} bit - bit(s) to resolve
+   * @param {BitFieldResolvable} [bit=0] - bit(s) to resolve
    * @returns {number}
    */
-  static resolve(bit) {
+  static resolve(bit = 0) {
     if (typeof bit === 'number' && bit >= 0) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (bit instanceof Array) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
