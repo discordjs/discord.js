@@ -1562,6 +1562,7 @@ declare module 'discord.js' {
 		Message: typeof Message;
 		MessageReaction: typeof MessageReaction;
 		Presence: typeof Presence;
+		VoiceState: typeof VoiceState;
 		Role: typeof Role;
 		User: typeof User;
 	};
