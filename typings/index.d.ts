@@ -128,6 +128,7 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
 		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
@@ -158,11 +159,12 @@ declare module 'discord.js' {
 		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
 		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
-		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;	
+		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready' | 'reconnecting', listener: () => void): this;
 		public once(event: 'resumed', listener: (replayed: number) => void): this;
@@ -389,6 +391,8 @@ declare module 'discord.js' {
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
+		public fetchIntegrations(): Promise<Collection<string, Integration>>;
+		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -527,6 +531,25 @@ declare module 'discord.js' {
 		public setVoiceChannel(voiceChannel: ChannelResolvable): Promise<GuildMember>;
 		public toJSON(): object;
 		public toString(): string;
+	}
+
+	export class Integration extends Base {
+		constructor(client: Client, data: object, guild: Guild);
+		public guild: Guild;
+		public id: Snowflake;
+		public name: string;
+		public type: number;
+		public enabled: boolean;
+		public syncing: boolean;
+		public role: Role;
+		public user: User;
+		public account: IntegrationAccount;
+		public syncedAt: number;
+		public expireBehavior: number;
+		public expireGracePeriod: number;
+		public sync(): Promise<Integration>;
+		public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
+		public delete(reason?: string): Promise<Integration>;
 	}
 
 	export class Invite extends Base {
@@ -1743,6 +1766,21 @@ declare module 'discord.js' {
 		| 1024
 		| 2048;
 
+	type IntegrationData = {
+		id: string;
+		type: string;
+	};
+
+	type IntegrationEditData = {
+		expireBehavior?: number;
+		expireGracePeriod?: number;
+	};
+
+	type IntegrationAccount = {
+		id: string;
+		name: string;
+	};
+
 	type InviteOptions = {
 		temporary?: boolean;
 		maxAge?: number;
@@ -1968,6 +2006,7 @@ declare module 'discord.js' {
 		| 'GUILD_BAN_ADD'
 		| 'GUILD_BAN_REMOVE'
 		| 'GUILD_EMOJIS_UPDATE'
+		| 'GUILD_INTEGRATIONS_UPDATE'
 		| 'CHANNEL_CREATE'
 		| 'CHANNEL_DELETE'
 		| 'CHANNEL_UPDATE'

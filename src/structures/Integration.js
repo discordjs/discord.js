@@ -19,7 +19,7 @@ class Integration extends Base {
 
     /**
      * The integration id
-     * @type {string}
+     * @type {Snowflake}
      */
     this.id = data.id;
 
