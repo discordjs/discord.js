@@ -23,11 +23,25 @@ class RESTManager {
   }
 
   push(handler, apiRequest) {
+    // Preserve async stack
+    let stackTrace = null;
+    if (Error.captureStackTrace) {
+      stackTrace = {};
+      Error.captureStackTrace(stackTrace, this.makeRequest);
+    }
+
     return new Promise((resolve, reject) => {
       handler.push({
         request: apiRequest,
         resolve,
-        reject,
+        reject: error => {
+          if (stackTrace && (error instanceof Error)) {
+            stackTrace.name = error.name;
+            stackTrace.message = error.message;
+            error.stack = stackTrace.stack;
+          }
+          reject(error);
+        },
       });
     });
   }
