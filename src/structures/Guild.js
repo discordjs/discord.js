@@ -440,13 +440,13 @@ class Guild extends Base {
    * @returns {Promise<string>}
    * @example
    * // Fetch invites
-   * guild.fetchVanityURL()
+   * guild.fetchVanityURLCode()
    *   .then(code => {
    *     console.log(`Vanity URL: https://discord.gg/${code}`);
    *   })
    *   .catch(console.error);
    */
-  fetchVanityURL() {
+  fetchVanityURLCode() {
     if (!this.features.includes('VANITY_URL')) {
       return Promise.reject(new Error('VANITY_URL'));
     }
