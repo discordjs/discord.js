@@ -35,8 +35,9 @@ declare module 'discord.js' {
 		public equals(activity: Activity): boolean;
 	}
 
-	export class ActivityFlags extends BitField {
-		public static FLAGS: ActivityFlagsObject;
+	export class ActivityFlags extends BitField<ActivityFlagsString> {
+		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
+		public static FLAGS: Record<ActivityFlagsString, number>;
 	}
 
 	export class Base {
@@ -66,21 +67,21 @@ declare module 'discord.js' {
 		public broadcast: VoiceBroadcast;
 	}
 
-	export class BitField {
-		constructor(bits?: BitFieldResolvable);
+	export class BitField<S extends string> {
+		constructor(bits?: BitFieldResolvable<S>);
 		public bitfield: number;
-		public add(...bits: BitFieldResolvable[]): BitField;
-		public equals(bit: BitFieldResolvable): boolean;
-		public freeze(): Readonly<BitField>;
-		public has(bit: BitFieldResolvable): boolean;
-		public missing(bits: BitFieldResolvable, ...hasParams: any[]): string[];
-		public remove(...bits: BitFieldResolvable[]): BitField;
-		public serialize(...hasParams: BitFieldResolvable[]): Record<ActivityFlagsString, boolean>;
+		public add(...bits: BitFieldResolvable<S>[]): BitField<S>;
+		public equals(bit: BitFieldResolvable<S>): boolean;
+		public freeze(): Readonly<BitField<S>>;
+		public has(bit: BitFieldResolvable<S>): boolean;
+		public missing(bits: BitFieldResolvable<S>, ...hasParams: any[]): S[];
+		public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
+		public serialize(...hasParams: BitFieldResolvable<S>[]): Record<S, boolean>;
 		public toArray(): string[];
 		public toJSON(): number;
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<string>;
-		public static resolve(bit?: BitFieldResolvable): number;
+		public static resolve(bit?: BitFieldResolvable<string>): number;
 		public static FLAGS: object;
 	}
 
@@ -735,9 +736,9 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export class Permissions {
-		constructor(permissions: PermissionResolvable);
+	export class Permissions extends BitField<PermissionString> {
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
+		public has(bit: BitFieldResolvable<PermissionString>): boolean;
 
 		public static ALL: number;
 		public static DEFAULT: number;
@@ -965,8 +966,9 @@ declare module 'discord.js' {
 		public once(event: string, listener: Function): this;
 	}
 
-	export class Speaking extends BitField {
-		public static FLAGS: SpeakingFlagsObject;
+	export class Speaking extends BitField<SpeakingString> {
+		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
+		public static FLAGS: Record<SpeakingString, number>;
 	}
 
 	export class Structures {
@@ -1107,7 +1109,7 @@ declare module 'discord.js' {
 		private reconnect(token: string, endpoint: string): void;
 		private sendVoiceStateUpdate(options: object): void;
 		private setSessionID(sessionID: string): void;
-		private setSpeaking(value: BitFieldResolvable): void;
+		private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 		private setTokenAndEndpoint(token: string, endpoint: string): void;
 		private updateChannel(channel: VoiceChannel): void;
 
@@ -1370,8 +1372,6 @@ declare module 'discord.js' {
 
 //#region Typedefs
 
-	type ActivityFlagsObject = Record<ActivityFlagsString, number>;
-
 	type ActivityFlagsString = 'INSTANCE' | 'JOIN' | 'SPECTATE' | 'JOIN_REQUEST' | 'SYNC' | 'PLAY';
 
 	type ActivityType = 'PLAYING'
@@ -1457,7 +1457,7 @@ declare module 'discord.js' {
 
 	type Base64String = string;
 
-	type BitFieldResolvable = RecursiveArray<string | number | BitField> | string | number | BitField;
+	type BitFieldResolvable<T extends string> = RecursiveArray<string | number | BitField<T>> | string | number | BitField<T>;
 
 	type BufferResolvable = Buffer | string;
 
@@ -1934,9 +1934,7 @@ declare module 'discord.js' {
 		highWaterMark?: number;
 	};
 
-	type SpeakingFlagsObject = Record<SpeakingFlagsString, number>;
-
-	type SpeakingFlagsString = 'SPEAKING' | 'SOUNDSHARE';
+	type SpeakingString = 'SPEAKING' | 'SOUNDSHARE';
 
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
