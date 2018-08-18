@@ -386,13 +386,13 @@ declare module 'discord.js' {
 		public readonly verified: boolean;
 		public readonly voiceConnection: VoiceConnection;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;
-		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -535,21 +535,21 @@ declare module 'discord.js' {
 
 	export class Integration extends Base {
 		constructor(client: Client, data: object, guild: Guild);
+		public account: IntegrationAccount;
+		public enabled: boolean;
+		public expireBehavior: number;
+		public expireGracePeriod: number;
 		public guild: Guild;
 		public id: Snowflake;
 		public name: string;
-		public type: number;
-		public enabled: boolean;
-		public syncing: boolean;
 		public role: Role;
-		public user: User;
-		public account: IntegrationAccount;
 		public syncedAt: number;
-		public expireBehavior: number;
-		public expireGracePeriod: number;
-		public sync(): Promise<Integration>;
-		public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
+		public syncing: boolean;
+		public type: number;
+		public user: User;
 		public delete(reason?: string): Promise<Integration>;
+		public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
+		public sync(): Promise<Integration>;
 	}
 
 	export class Invite extends Base {
