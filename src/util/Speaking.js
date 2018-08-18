@@ -13,7 +13,7 @@ class Speaking extends BitField {}
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/voice-connections#speaking}
  */
-Speaking.flags = {
+Speaking.FLAGS = {
   SPEAKING: 1 << 0,
   SOUNDSHARE: 1 << 1,
 };

@@ -16,7 +16,7 @@ class ActivityFlags extends BitField {}
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags}
  */
-ActivityFlags.flags = {
+ActivityFlags.FLAGS = {
   INSTANCE: 1 << 0,
   JOIN: 1 << 1,
   SPECTATE: 1 << 2,
