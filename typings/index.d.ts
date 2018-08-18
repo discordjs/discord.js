@@ -1457,7 +1457,7 @@ declare module 'discord.js' {
 
 	type Base64String = string;
 
-	type BitFieldResolvable = string | number | BitField;
+	type BitFieldResolvable = RecursiveArray<string | number | BitField> | string | number | BitField;
 
 	type BufferResolvable = Buffer | string;
 
