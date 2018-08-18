@@ -1,7 +1,8 @@
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with an {@link Activity#speaking} bitfield.
+ * Data structure that makes it easy to interact with a {@link VoiceConnection#speaking}
+ * and {@link guildMemberSpeaking} event bitfields.
  */
 class Speaking extends BitField {}
 
@@ -11,7 +12,7 @@ class Speaking extends BitField {}
  * * `SPEAKING`
  * * `SOUNDSHARE`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags}
+ * @see {@link https://discordapp.com/developers/docs/topics/voice-connections#speaking}
  */
 Speaking.flags = {
   NONE: 1 << 0,
