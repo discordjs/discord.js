@@ -243,7 +243,6 @@ class StreamDispatcher extends Writable {
 
   _playChunk(chunk) {
     if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secret_key) return;
-    this._setSpeaking(1);
     this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
