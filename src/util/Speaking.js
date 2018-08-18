@@ -8,7 +8,6 @@ class Speaking extends BitField {}
 
 /**
  * Numeric speaking flags. All available properties:
- * * `NONE`
  * * `SPEAKING`
  * * `SOUNDSHARE`
  * @type {Object}
