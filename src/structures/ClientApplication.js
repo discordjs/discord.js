@@ -1,5 +1,5 @@
 const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
+const { ClientApplicationAssetTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Base = require('./Base');
 
@@ -39,22 +39,10 @@ class ClientApplication extends Base {
     this.icon = data.icon;
 
     /**
-     * The app's cover image hash
-     * @type {?string}
-     */
-    this.cover = data.cover_image;
-
-    /**
-     * The app's RPC origins
+     * The app's RPC origins, if enabled
      * @type {?string[]}
      */
-    this.rpcOrigins = data.rpc_origins;
-
-    /**
-     * The app's redirect URIs
-     * @type {string[]}
-     */
-    this.redirectURIs = data.redirect_uris;
+    this.rpcOrigins = data.rpc_origins || [];
 
     /**
      * If this app's bot requires a code grant when using the OAuth2 flow
@@ -69,36 +57,10 @@ class ClientApplication extends Base {
     this.botPublic = data.bot_public;
 
     /**
-     * If this app can use rpc
-     * @type {boolean}
+     * The owner of this OAuth application
+     * @type {User}
      */
-    this.rpcApplicationState = data.rpc_application_state;
-
-    /**
-     * Object containing basic info about this app's bot
-     * @type {Object}
-     */
-    this.bot = data.bot;
-
-    /**
-     * The flags for the app
-     * @type {number}
-     */
-    this.flags = data.flags;
-
-    /**
-     * OAuth2 secret for the application
-     * @type {string}
-     */
-    this.secret = data.secret;
-
-    if (data.owner) {
-      /**
-       * The owner of this OAuth application
-       * @type {?User}
-       */
-      this.owner = this.client.users.add(data.owner);
-    }
+    this.owner = this.client.users.add(data.owner);
   }
 
   /**
@@ -127,18 +89,6 @@ class ClientApplication extends Base {
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
     return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
-  }
-
-  /**
-   * A link to this application's cover image.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
-   * @returns {?string} URL to the cover image
-   */
-  coverImage({ format, size } = {}) {
-    if (!this.cover) return null;
-    return Endpoints
-      .CDN(this.client.options.http.cdn)
-      .AppIcon(this.id, this.cover, { format, size });
   }
 
   /**
