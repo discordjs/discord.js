@@ -1,7 +1,8 @@
 const Snowflake = require('../util/Snowflake');
 const { ClientApplicationAssetTypes } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
 const Base = require('./Base');
+
+const AssetTypes = Object.keys(ClientApplicationAssetTypes);
 
 /**
  * Represents a Client OAuth2 Application.
@@ -92,32 +93,24 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Get rich presence assets.
-   * @returns {Promise<Object>}
+   * Asset data.
+   * @typedef {Object} ClientAsset
+   * @property {Snowflake} id The asset ID
+   * @property {string} name The asset name
+   * @property {string} type The asset type
+   */
+
+  /**
+   * Gets the clients rich presence assets.
+   * @returns {Promise<Array<ClientAsset>>}
    */
   fetchAssets() {
-    const types = Object.keys(ClientApplicationAssetTypes);
     return this.client.api.oauth2.applications(this.id).assets.get()
       .then(assets => assets.map(a => ({
         id: a.id,
         name: a.name,
-        type: types[a.type - 1],
+        type: AssetTypes[a.type - 1],
       })));
-  }
-
-  /**
-   * Creates a rich presence asset.
-   * @param {string} name Name of the asset
-   * @param {Base64Resolvable} data Data of the asset
-   * @param {string} type Type of the asset. `big`, or `small`
-   * @returns {Promise}
-   */
-  async createAsset(name, data, type) {
-    return this.client.api.oauth2.applications(this.id).assets.post({ data: {
-      name,
-      type: ClientApplicationAssetTypes[type.toUpperCase()],
-      image: await DataResolver.resolveImage(data),
-    } });
   }
 
   /**
