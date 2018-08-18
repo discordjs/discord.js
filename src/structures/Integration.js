@@ -143,15 +143,6 @@ class Integration extends Base {
 
   toJSON() {
     return super.toJSON({
-      id: true,
-      name: true,
-      type: true,
-      enabled: true,
-      syncing: false,
-      account: true,
-      syncedAt: true,
-      expireBehavior: true,
-      expireGracePeriod: true,
       role: 'roleID',
       guild: 'guildID',
       user: 'userID',
