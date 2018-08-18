@@ -1152,7 +1152,6 @@ declare module 'discord.js' {
 		public id: string;
 		public name: string;
 		public optimal: boolean;
-		public sampleHostname: string;
 		public vip: boolean;
 		public toJSON(): object;
 	}
@@ -1479,12 +1478,6 @@ declare module 'discord.js' {
 		type: 'BIG' | 'SMALL';
 	};
 
-	type ClientApplicationCreateAssetOptions = {
-		name: string;
-		data: Base64Resolvable;
-		type: 'big' | 'small';
-	};
-
 	type ClientOptions = {
 		apiRequestMethod?: 'sequential' | 'burst';
 		presence?: PresenceData;
@@ -1569,6 +1562,7 @@ declare module 'discord.js' {
 		Message: typeof Message;
 		MessageReaction: typeof MessageReaction;
 		Presence: typeof Presence;
+		VoiceState: typeof VoiceState;
 		Role: typeof Role;
 		User: typeof User;
 	};
@@ -1922,8 +1916,6 @@ declare module 'discord.js' {
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
 	type StringResolvable = string | string[] | any;
-
-	type UserFlags = 'STAFF' | 'PARTNER' | 'HYPESQUAD';
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
 
