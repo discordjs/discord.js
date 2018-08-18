@@ -10,7 +10,7 @@
     "docs:test": "docgen --source src --custom docs/index.yml",
     "lint": "eslint src *.js",
     "lint:fix": "eslint --fix src",
-    "lint:typings": "tslint typings/index.d.ts typings/discord.js-test.ts",
+    "lint:typings": "tslint typings/index.d.ts",
     "build:browser": "webpack",
     "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
