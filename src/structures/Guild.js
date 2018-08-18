@@ -806,7 +806,7 @@ class Guild extends Base {
         channel_id: this.channels.resolveID(embed.channel),
       },
       reason,
-    });
+    }).then(() => this);
   }
 
   /**
