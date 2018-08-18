@@ -168,7 +168,7 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles into account
-   * @type {Permissions}
+   * @type {ReadOnly<Permissions>}
    * @readonly
    */
   get permissions() {

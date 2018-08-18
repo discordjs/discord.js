@@ -16,6 +16,15 @@ class BitField {
   }
 
   /**
+   * Checks if this bitfield equals another
+   * @param {BitFieldResolvable} bit Bit(s) to check for
+   * @returns {boolean}
+   */
+  equals(bit) {
+    return this.bitfield === this.constructor.resolve(bit);
+  }
+
+  /**
    * Checks whether the bitfield has a bit, or multiple bits.
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}

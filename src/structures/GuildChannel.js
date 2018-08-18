@@ -133,7 +133,7 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a member in this channel, taking into account channel overwrites.
    * @param {GuildMember} member The member to obtain the overall permissions for
-   * @returns {Permissions}
+   * @returns {ReadOnly<Permissions>}
    * @private
    */
   memberPermissions(member) {
@@ -159,7 +159,7 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a role in this channel, taking into account channel overwrites.
    * @param {Role} role The role to obtain the overall permissions for
-   * @returns {Permissions}
+   * @returns {ReadOnly<Permissions>}
    * @private
    */
   rolePermissions(role) {

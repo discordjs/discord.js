@@ -54,7 +54,7 @@ class Role extends Base {
 
     /**
      * The permissions of the role
-     * @type {Permissions}
+     * @type {ReadOnly<Permissions>}
      */
     this.permissions = new Permissions(data.permissions).freeze();
 
