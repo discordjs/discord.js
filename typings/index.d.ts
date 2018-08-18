@@ -1478,12 +1478,6 @@ declare module 'discord.js' {
 		type: 'BIG' | 'SMALL';
 	};
 
-	type ClientApplicationCreateAssetOptions = {
-		name: string;
-		data: Base64Resolvable;
-		type: 'big' | 'small';
-	};
-
 	type ClientOptions = {
 		apiRequestMethod?: 'sequential' | 'burst';
 		presence?: PresenceData;
@@ -1921,8 +1915,6 @@ declare module 'discord.js' {
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
 	type StringResolvable = string | string[] | any;
-
-	type UserFlags = 'STAFF' | 'PARTNER' | 'HYPESQUAD';
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
 
