@@ -162,7 +162,7 @@ declare module 'discord.js' {
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
-		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;	
+		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready' | 'reconnecting', listener: () => void): this;
 		public once(event: 'resumed', listener: (replayed: number) => void): this;
@@ -242,7 +242,7 @@ declare module 'discord.js' {
 		public lastKey(): K | undefined;
 		public lastKey(count: number): K[];
 		public map<T>(fn: (value: V, key: K, collection: Collection<K, V>) => T, thisArg?: any): T[];
-		public partition(fn: (value: V, key: K, collection: Collection<K, V>) => boolean): [Collection<K, V>, Collection<K, V>]
+		public partition(fn: (value: V, key: K, collection: Collection<K, V>) => boolean): [Collection<K, V>, Collection<K, V>];
 		public random(): V | undefined;
 		public random(count: number): V[];
 		public randomKey(): K | undefined;
@@ -330,7 +330,7 @@ declare module 'discord.js' {
 		public readonly owner: User;
 		public ownerID: Snowflake;
 		public recipients: Collection<Snowflake, User>;
-		public addUser(options: { user: UserResolvable, accessToken?: string, nick?: string }): Promise<GroupDMChannel>
+		public addUser(options: { user: UserResolvable, accessToken?: string, nick?: string }): Promise<GroupDMChannel>;
 		public edit (data: { icon?: string, name?: string }): Promise<GroupDMChannel>;
 		public equals(channel: GroupDMChannel): boolean;
 		public iconURL(options?: AvatarOptions): string;
@@ -1015,7 +1015,7 @@ declare module 'discord.js' {
 		public static cloneObject(obj: object): object;
 		public static convertToBuffer(ab: ArrayBuffer | string): Buffer;
 		public static delayFor(ms: number): Promise<void>;
-		public static discordSort<K, V extends { rawPosition: number; id: string; }>(collection: Collection<K, V>): Collection<K, V>
+		public static discordSort<K, V extends { rawPosition: number; id: string; }>(collection: Collection<K, V>): Collection<K, V>;
 		public static escapeMarkdown(text: string, onlyCodeBlock?: boolean, onlyInlineCode?: boolean): string;
 		public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
 		public static flatten(obj: object, ...props: { [key: string]: boolean | string }[]): object;
@@ -1033,7 +1033,7 @@ declare module 'discord.js' {
 			relative: boolean,
 			sorted: Collection<Snowflake, T>,
 			route: object,
-			reason?: string,
+			reason?: string
 		): Promise<{ id: Snowflake; position: number }[]>;
 		public static splitMessage(text: string, options?: SplitOptions): string | string[];
 		public static str2ab(str: string): ArrayBuffer;
@@ -1350,7 +1350,7 @@ declare module 'discord.js' {
 		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
 		send(options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
-	}
+	};
 
 //#endregion
 
@@ -1405,7 +1405,7 @@ declare module 'discord.js' {
 		BULK_DELETE_MESSAGE_TOO_OLD: number;
 		INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: number;
 		REACTION_BLOCKED: number;
-	}
+	};
 
 	type AddGuildMemberOptions = {
 		accessToken: String;
@@ -1445,7 +1445,7 @@ declare module 'discord.js' {
 		allow?: PermissionResolvable[] | number;
 		deny?: PermissionResolvable[] | number;
 		id: RoleResolvable | UserResolvable;
-	}
+	};
 
 	type ChannelData = {
 		name?: string;
@@ -1571,17 +1571,17 @@ declare module 'discord.js' {
 		Presence: typeof Presence;
 		Role: typeof Role;
 		User: typeof User;
-	}
+	};
 
 	type FetchMemberOptions = {
 		user: UserResolvable;
 		cache?: boolean;
-	}
+	};
 
 	type FetchMembersOptions = {
 		query?: string;
 		limit?: number;
-	}
+	};
 
 	type FileOptions = {
 		attachment: BufferResolvable;
@@ -1629,7 +1629,7 @@ declare module 'discord.js' {
 		EMOJI_CREATE?: number,
 		EMOJI_UPDATE?: number,
 		EMOJI_DELETE?: number,
-		MESSAGE_DELETE?: number,
+		MESSAGE_DELETE?: number
 	};
 
 	type GuildAuditLogsActionType = 'CREATE'
@@ -1809,7 +1809,7 @@ declare module 'discord.js' {
 		type: string;
 		allow?: string;
 		deny?: string;
-	}
+	};
 
 	type OverwriteType = 'member' | 'role';
 
@@ -1855,7 +1855,7 @@ declare module 'discord.js' {
 		allowed: PermissionResolvable;
 		denied: PermissionResolvable;
 		id: UserResolvable | RoleResolvable;
-	}
+	};
 
 	type PresenceData = {
 		status?: PresenceStatus;
@@ -1865,7 +1865,7 @@ declare module 'discord.js' {
 			type?: ActivityType | number;
 			url?: string;
 		}
-	}
+	};
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
@@ -1878,7 +1878,7 @@ declare module 'discord.js' {
 		method: string;
 		path: string;
 		route: string;
-	}
+	};
 
 	type ReactionCollectorOptions = CollectorOptions & {
 		max?: number;
