@@ -1705,7 +1705,7 @@ declare module 'discord.js' {
 
 	type GuildEmbedData = {
 		enabled: boolean;
-		channel?: GuildChannel;
+		channel?: GuildChannelResolvable;
 	};
 
 	type GuildFeatures = 'INVITE_SPLASH'
