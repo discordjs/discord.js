@@ -53,7 +53,7 @@ class VoiceConnection extends EventEmitter {
      * Our current speaking state
      * @type {ReadOnly<Speaking>}
      */
-    this.speaking = new Speaking(Speaking.flags.NONE).freeze();
+    this.speaking = new Speaking(0).freeze();
 
     /**
      * The authentication data needed to connect to the voice server
@@ -306,7 +306,7 @@ class VoiceConnection extends EventEmitter {
   reconnect(token, endpoint) {
     this.authentication.token = token;
     this.authentication.endpoint = endpoint;
-    this.speaking = new Speaking(Speaking.flags.NONE).freeze();
+    this.speaking = new Speaking(0).freeze();
     this.status = VoiceStatus.RECONNECTING;
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
@@ -351,7 +351,7 @@ class VoiceConnection extends EventEmitter {
    */
   cleanup() {
     this.player.destroy();
-    this.speaking = new Speaking(Speaking.flags.NONE).freeze();
+    this.speaking = new Speaking(0).freeze();
     const { ws, udp } = this.sockets;
 
     if (ws) {

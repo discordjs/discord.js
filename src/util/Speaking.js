@@ -15,9 +15,8 @@ class Speaking extends BitField {}
  * @see {@link https://discordapp.com/developers/docs/topics/voice-connections#speaking}
  */
 Speaking.flags = {
-  NONE: 1 << 0,
-  SPEAKING: 1 << 1,
-  SOUNDSHARE: 1 << 2,
+  SPEAKING: 1 << 0,
+  SOUNDSHARE: 1 << 1,
 };
 
 module.exports = Speaking;
