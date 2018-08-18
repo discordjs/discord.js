@@ -56,7 +56,7 @@
     "eslint": "^5.0.1",
     "json-filter-loader": "^1.0.0",
     "tslint": "^5.11.0",
-    "tslint-config-typings": "^0.2.4",
+    "tslint-config-typings": "^0.3.1",
     "typescript": "^3.0.1",
     "uglifyjs-webpack-plugin": "^1.1.8",
     "webpack": "^4.5.0",

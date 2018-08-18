@@ -55,12 +55,6 @@ class VoiceConnection extends EventEmitter {
     this.speaking = false;
 
     /**
-     * An array of Voice Receivers that have been created for this connection
-     * @type {VoiceReceiver[]}
-     */
-    this.receivers = [];
-
-    /**
      * The authentication data needed to connect to the voice server
      * @type {Object}
      * @private
@@ -113,6 +107,12 @@ class VoiceConnection extends EventEmitter {
      * @private
      */
     this.sockets = {};
+
+    /**
+     * The voice receiver of this connection
+     * @type {VoiceReceiver}
+     */
+    this.receiver = null;
 
     this.authenticate();
   }
@@ -396,30 +396,28 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} data The received data
    * @private
    */
-  onReady({ port, ssrc, ip, modes }) {
-    this.authentication.port = port;
-    this.authentication.ssrc = ssrc;
-    for (let mode of modes) {
+  onReady(data) {
+    this.authentication = data;
+    for (let mode of data.modes) {
       if (SUPPORTED_MODES.includes(mode)) {
-        this.authentication.encryptionMode = mode;
+        this.authentication.mode = mode;
         this.emit('debug', `Selecting the ${mode} mode`);
         break;
       }
     }
-    this.sockets.udp.createUDPSocket(ip);
+    this.sockets.udp.createUDPSocket(data.ip);
   }
 
   /**
    * Invoked when a session description is received.
-   * @param {string} mode The encryption mode
-   * @param {string} secret The secret key
+   * @param {Object} data The received data
    * @private
    */
-  onSessionDescription(mode, secret) {
-    this.authentication.encryptionMode = mode;
-    this.authentication.secretKey = secret;
-
+  onSessionDescription(data) {
+    Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
+    clearTimeout(this.connectTimeout);
+    this.receiver = new VoiceReceiver(this);
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.
@@ -449,9 +447,7 @@ class VoiceConnection extends EventEmitter {
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
       if (!speaking) {
-        for (const receiver of this.receivers) {
-          receiver.packets._stoppedSpeaking(user_id);
-        }
+        this.receiver.packets._stoppedSpeaking(user_id);
       }
     }
 
@@ -467,17 +463,6 @@ class VoiceConnection extends EventEmitter {
         this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
       }
     }
-  }
-
-  /**
-   * Creates a VoiceReceiver so you can start listening to voice data.
-   * It's recommended to only create one of these.
-   * @returns {VoiceReceiver}
-   */
-  createReceiver() {
-    const receiver = new VoiceReceiver(this);
-    this.receivers.push(receiver);
-    return receiver;
   }
 
   play() {} // eslint-disable-line no-empty-function

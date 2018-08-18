@@ -104,7 +104,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
           data: {
             address: packet.address,
             port: packet.port,
-            mode: this.voiceConnection.authentication.encryptionMode,
+            mode: this.voiceConnection.authentication.mode,
           },
         },
       });
