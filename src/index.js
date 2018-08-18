@@ -10,12 +10,15 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  ActivityFlags: require('./util/ActivityFlags'),
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   Permissions: require('./util/Permissions'),
+  Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Structures: require('./util/Structures'),
