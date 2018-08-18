@@ -1152,7 +1152,6 @@ declare module 'discord.js' {
 		public id: string;
 		public name: string;
 		public optimal: boolean;
-		public sampleHostname: string;
 		public vip: boolean;
 		public toJSON(): object;
 	}
