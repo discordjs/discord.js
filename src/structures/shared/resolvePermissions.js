@@ -14,8 +14,8 @@ module.exports = function resolvePermissions(overwrites) {
       }
 
       return {
-        allow: Permissions.resolve(overwrite.allowed),
-        deny: Permissions.resolve(overwrite.denied),
+        allow: Permissions.resolve(overwrite.allow),
+        deny: Permissions.resolve(overwrite.deny),
         type: overwrite.type,
         id: overwrite.id,
       };
