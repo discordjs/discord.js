@@ -796,7 +796,7 @@ class Guild extends Base {
   /**
    * Edits the guild's embed.
    * @param {GuildEmbedData} embed The embed for the guild
-   * @param {string} reason Reason for changing the guild's embed
+   * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
    */
   setEmbed(embed, reason) {
