@@ -468,7 +468,15 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(Object.assign(content, options, { reply: this.member || this.author }));
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content;
+      content = '';
+    }
+    if (!options) {
+      options = {};
+    }
+
+    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
   }
 
   /**
