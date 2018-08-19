@@ -4,6 +4,7 @@ const { browser } = require('../../util/Constants');
 const Util = require('../../util/Util');
 const { RangeError } = require('../../errors');
 
+// eslint-disable-next-line complexity
 function resolveContent(channel, options) {
   const User = require('../User');
   const GuildMember = require('../GuildMember');
@@ -21,7 +22,9 @@ function resolveContent(channel, options) {
   if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
     const id = channel.client.users.resolveID(options.reply);
     mentionPart = `<@${options.reply instanceof GuildMember && options.reply.nickname ? '!' : ''}${id}>, `;
-    if (isSplit) splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
+    if (isSplit) {
+      splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
+    }
   }
 
   if (content || mentionPart) {
