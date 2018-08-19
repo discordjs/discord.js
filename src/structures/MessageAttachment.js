@@ -3,10 +3,10 @@ const Util = require('../util/Util');
 /**
  * Represents an attachment in a message.
  * @param {BufferResolvable|Stream} attachment The file
- * @param {string} [name] The name of the file, if any
+ * @param {string} [name=null] The name of the file, if any
  */
 class MessageAttachment {
-  constructor(attachment, name, data) {
+  constructor(attachment, name = null, data) {
     this.attachment = attachment;
     this.name = name;
     if (data) this._patch(data);
@@ -15,10 +15,10 @@ class MessageAttachment {
   /**
    * Sets the file of this attachment.
    * @param {BufferResolvable|Stream} attachment The file
-   * @param {string} [name] The name of the file, if any
+   * @param {string} [name=null] The name of the file, if any
    * @returns {MessageAttachment} This attachment
    */
-  setFile(attachment, name) {
+  setFile(attachment, name = null) {
     this.attachment = attachment;
     this.name = name;
     return this;
