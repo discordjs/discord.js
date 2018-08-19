@@ -3,6 +3,7 @@ const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
+const transformOptions = require('../shared/transfromOptions');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -108,15 +109,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
-    }
-    if (!options.content) options.content = content;
-
-    return Shared.sendMessage(this, options);
+    return Shared.sendMessage(this, transformOptions(content, options));
   }
 
   /**

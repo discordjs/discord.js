@@ -1,6 +1,7 @@
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
 const { createMessage } = require('./shared');
+const transformOptions = require('./shared/transfromOptions');
 
 /**
  * Represents a webhook.
@@ -127,15 +128,7 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
-    }
-    if (!options.content) options.content = content;
-
-    const { data, files } = await createMessage(this, options);
+    const { data, files } = await createMessage(this, transformOptions(content, options));
 
     if (data.content instanceof Array) {
       const messages = [];
@@ -148,7 +141,6 @@ class Webhook {
       }
       return messages;
     }
-
 
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,

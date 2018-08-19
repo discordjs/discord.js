@@ -1,126 +1,131 @@
-const Embed = require('../MessageEmbed');
 const DataResolver = require('../../util/DataResolver');
 const MessageEmbed = require('../MessageEmbed');
-const MessageAttachment = require('../MessageAttachment');
 const { browser } = require('../../util/Constants');
 const Util = require('../../util/Util');
 const { RangeError } = require('../../errors');
 
-// eslint-disable-next-line complexity
-module.exports = async function createMessage(channel, options) {
+function resolveContent(channel, options) {
   const User = require('../User');
   const GuildMember = require('../GuildMember');
-  const Webhook = require('../Webhook');
-  const WebhookClient = require('../../client/WebhookClient');
 
-  const webhook = channel instanceof Webhook || channel instanceof WebhookClient;
+  // eslint-disable-next-line eqeqeq
+  let content = Util.resolveString(options.content == null ? '' : options.content);
+  const isSplit = typeof options.split !== 'undefined' && options.split !== false;
+  const isCode = typeof options.code !== 'undefined' && options.code !== false;
+  const splitOptions = isSplit ? {
+    prepend: options.split.prepend,
+    append: options.split.append,
+  } : undefined;
 
-  if (typeof options.nonce !== 'undefined') {
-    options.nonce = parseInt(options.nonce);
-    if (isNaN(options.nonce) || options.nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
-  }
-
-  let { content, reply } = options;
-  if (options instanceof MessageEmbed) options = webhook ? { embeds: [options] } : { embed: options };
-  if (options instanceof MessageAttachment) options = { files: [options.file] };
-
-  if (content instanceof Array || options instanceof Array) {
-    const which = content instanceof Array ? content : options;
-    const attachments = which.filter(item => item instanceof MessageAttachment);
-    const embeds = which.filter(item => item instanceof MessageEmbed);
-    if (attachments.length) options = { files: attachments };
-    if (embeds.length) options = { embeds };
-    if ((embeds.length || attachments.length) && content instanceof Array) {
-      content = null;
-      options.content = '';
-    }
-  }
-
-  if (options.split && typeof options.split !== 'object') options.split = {};
   let mentionPart = '';
-  if (reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
-    const id = channel.client.users.resolveID(reply);
-    mentionPart = `<@${reply instanceof GuildMember && reply.nickname ? '!' : ''}${id}>, `;
-    if (options.split) options.split.prepend = `${mentionPart}${options.split.prepend || ''}`;
+  if (options.reply && !(channel instanceof User || channel instanceof GuildMember) && channel.type !== 'dm') {
+    const id = channel.client.users.resolveID(options.reply);
+    mentionPart = `<@${options.reply instanceof GuildMember && options.reply.nickname ? '!' : ''}${id}>, `;
+    if (isSplit) splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
   }
 
   if (content || mentionPart) {
-    options.content = Util.resolveString(content || '');
-    // Wrap everything in a code block
-    if (typeof options.code !== 'undefined' && (typeof options.code !== 'boolean' || options.code === true)) {
-      options.content = Util.escapeMarkdown(options.content, true);
-      options.content = `${mentionPart}\`\`\`${typeof options.code !== 'boolean' ?
-        options.code || '' : ''}\n${options.content}\n\`\`\``;
-      if (options.split) {
-        options.split.prepend =
-          `${options.split.prepend || ''}\`\`\`${typeof options.code !== 'boolean' ? options.code || '' : ''}\n`;
-
-        options.split.append = `\n\`\`\`${options.split.append || ''}`;
+    if (isCode) {
+      const codeName = typeof options.code === 'string' ? options.code : '';
+      content = `${mentionPart}\`\`\`${codeName}\n${Util.escapeMarkdown(content, true)}\n\`\`\``;
+      if (isSplit) {
+        splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
+        splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
       }
     } else if (mentionPart) {
-      options.content = mentionPart + (options.content || '');
+      content = `${mentionPart}${content}`;
     }
 
-    // Add zero-width spaces to @everyone/@here
-    if (options.disableEveryone ||
-      (typeof options.disableEveryone === 'undefined' && channel.client.options.disableEveryone)) {
-      options.content = options.content.replace(/@(everyone|here)/g, '@\u200b$1');
+    const disableEveryone = typeof options.disableEveryone === 'undefined' ?
+      channel.client.options.disableEveryone :
+      options.disableEveryone;
+    if (disableEveryone) {
+      content = content.replace(/@(everyone|here)/g, '@\u200b$1');
     }
 
-    if (options.split) options.content = Util.splitMessage(options.content, options.split);
+    if (isSplit) {
+      content = Util.splitMessage(content, splitOptions);
+    }
   }
 
-  if (options.embed && options.embed.files) {
-    if (options.files) options.files = options.files.concat(options.embed.files);
-    else options.files = options.embed.files;
+  return content;
+}
+
+async function resolveFile(fileLike) {
+  let attachment;
+  if (typeof fileLike === 'string' || (!browser && Buffer.isBuffer(fileLike))) {
+    attachment = fileLike;
+  } else {
+    attachment = fileLike.attachment;
   }
 
-  if (options.embed && webhook) options.embeds = [new Embed(options.embed)._apiTransform()];
-  else if (options.embed) options.embed = new Embed(options.embed)._apiTransform();
-  else if (options.embeds) options.embeds = options.embeds.map(e => new Embed(e)._apiTransform());
-
-  let files;
-
-  if (options.files) {
-    for (let i = 0; i < options.files.length; i++) {
-      let file = options.files[i];
-      if (typeof file === 'string' || (!browser && Buffer.isBuffer(file))) file = { attachment: file };
-      if (!file.name) {
-        if (typeof file.attachment === 'string') {
-          file.name = Util.basename(file.attachment);
-        } else if (file.attachment && file.attachment.path) {
-          file.name = Util.basename(file.attachment.path);
-        } else if (file instanceof MessageAttachment) {
-          file = { attachment: file.file, name: Util.basename(file.file) || 'file.jpg' };
-        } else {
-          file.name = 'file.jpg';
-        }
-      } else if (file instanceof MessageAttachment) {
-        file = file.file;
+  // There are waaaaaaay too many ways for a name to show up, so let's just check them all.
+  // String, FileOptions | MessageAttachment, FileOptions | MessageAttachment, Stream, any.
+  let name = 'file.jpg';
+  for (const thing of [fileLike, fileLike.name, fileLike.attachment, fileLike.path, attachment]) {
+    if (typeof thing === 'string') {
+      const n = Util.basename(thing);
+      if (n) {
+        name = n;
+        break;
       }
-      options.files[i] = file;
     }
-
-    files = await Promise.all(options.files.map(file =>
-      DataResolver.resolveFile(file.attachment).then(resource => {
-        file.file = resource;
-        return file;
-      })
-    ));
   }
 
-  if (webhook) {
-    if (!options.username) options.username = this.name;
-    if (options.avatarURL) options.avatar_url = options.avatarURL;
+  const resource = await DataResolver.resolveFile(attachment);
+  return { attachment, name, file: resource };
+}
+
+module.exports = async function createMessage(channel, options) {
+  const Webhook = require('../Webhook');
+  const WebhookClient = require('../../client/WebhookClient');
+
+  const content = resolveContent(channel, options);
+  const tts = Boolean(options.tts);
+  let nonce;
+  if (typeof options.nonce !== 'undefined') {
+    nonce = parseInt(options.nonce);
+    if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
   }
 
-  return { data: {
-    content: options.content,
-    tts: options.tts,
-    nonce: options.nonce,
-    embed: options.embed,
-    embeds: options.embeds,
-    username: options.username,
-    avatar_url: options.avatar_url,
-  }, files };
+  const embedLikes = [];
+  if (options.embed) {
+    embedLikes.push(options.embed);
+  }
+  if (options.embeds) {
+    embedLikes.push(...options.embeds);
+  }
+  const embeds = embedLikes.map(e => new MessageEmbed(e)._apiTransform());
+
+  let username;
+  let avatarURL;
+  if (channel instanceof Webhook || channel instanceof WebhookClient) {
+    username = options.username || channel.name;
+    if (options.avatarURL) avatarURL = options.avatarURL;
+  }
+
+  const fileLikes = [];
+  if (options.files) {
+    fileLikes.push(...options.files);
+  }
+  for (const embed of embedLikes) {
+    if (embed.files) {
+      fileLikes.push(...embed.files);
+    }
+  }
+
+  const files = await Promise.all(fileLikes.map(resolveFile));
+
+  return {
+    data: {
+      content,
+      tts,
+      nonce,
+      embed: options.embed === null ? null : embeds[0],
+      embeds,
+      username,
+      avatar_url: avatarURL,
+    },
+    files,
+  };
 };

@@ -11,6 +11,7 @@ const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const { createMessage } = require('./shared');
+const transformOptions = require('./shared/transfromOptions');
 
 /**
  * Represents a message on Discord.
@@ -369,16 +370,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async edit(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
-    }
-    if (!options.content) options.content = content;
-
-    const { data } = await createMessage(this, options);
-
+    const { data } = await createMessage(this, transformOptions(content, options));
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data })
       .then(d => {
