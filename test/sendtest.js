@@ -70,6 +70,8 @@ const tests = [
       files: [{ attachment: await fetch(linkA) }],
     }),
   async m => m.channel.send({ files: [await read(fileA)] }),
+  m => m.channel.send({ files: [fileA] }),
+  m => m.channel.send(new Attachment(fileA)),
 ];
 
 client.on('message', async message => {

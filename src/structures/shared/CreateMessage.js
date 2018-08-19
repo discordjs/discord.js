@@ -56,23 +56,26 @@ function resolveContent(channel, options) {
 
 async function resolveFile(fileLike) {
   let attachment;
+  let name;
+
+  const findName = thing => {
+    if (typeof thing === 'string') {
+      return Util.basename(thing);
+    }
+
+    if (thing.path) {
+      return Util.basename(thing.path);
+    }
+
+    return 'file.jpg';
+  };
+
   if (typeof fileLike === 'string' || (!browser && Buffer.isBuffer(fileLike))) {
     attachment = fileLike;
+    name = findName(attachment);
   } else {
     attachment = fileLike.attachment;
-  }
-
-  // There are waaaaaaay too many ways for a name to show up, so let's just check them all.
-  // String, FileOptions | MessageAttachment, FileOptions | MessageAttachment, Stream, any.
-  let name = 'file.jpg';
-  for (const thing of [fileLike, fileLike.name, fileLike.attachment, fileLike.path, attachment]) {
-    if (typeof thing === 'string') {
-      const n = Util.basename(thing);
-      if (n) {
-        name = n;
-        break;
-      }
-    }
+    name = fileLike.name || findName(attachment);
   }
 
   const resource = await DataResolver.resolveFile(attachment);
