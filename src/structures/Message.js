@@ -476,7 +476,7 @@ class Message extends Base {
       options = {};
     }
 
-    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+    return this.channel.send(content, Object.assign({}, options, { reply: this.member || this.author }));
   }
 
   /**
