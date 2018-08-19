@@ -1,8 +1,54 @@
 const DataResolver = require('../../util/DataResolver');
 const MessageEmbed = require('../MessageEmbed');
+const MessageAttachment = require('../MessageAttachment');
 const { browser } = require('../../util/Constants');
 const Util = require('../../util/Util');
 const { RangeError } = require('../../errors');
+
+function partitionMessageAdditions(items) {
+  const embeds = [];
+  const files = [];
+  for (const item of items) {
+    if (item instanceof MessageEmbed) {
+      embeds.push(item);
+    } else if (item instanceof MessageAttachment) {
+      files.push(item);
+    }
+  }
+
+  return [embeds, files];
+}
+
+function transformOptions(content, options, isWebhook) {
+  if (!options && typeof content === 'object' && !(content instanceof Array)) {
+    options = content;
+    content = '';
+  }
+
+  if (!options) {
+    options = {};
+  }
+
+  if (options instanceof MessageEmbed) {
+    return isWebhook ? { content, embeds: [options] } : { content, embed: options };
+  }
+
+  if (options instanceof MessageAttachment) {
+    return { content, files: [options] };
+  }
+
+  if (options instanceof Array) {
+    const [embeds, files] = partitionMessageAdditions(options);
+    return isWebhook ? { content, embeds, files } : { content, embed: embeds[0], files };
+  } else if (content instanceof Array) {
+    const [embeds, files] = partitionMessageAdditions(content);
+    if (embeds.length || files.length) {
+      return isWebhook ? { embeds, files } : { embed: embeds[0], files };
+    }
+  }
+
+  return Object.assign({ content }, options);
+}
 
 // eslint-disable-next-line complexity
 function resolveContent(channel, options) {
@@ -82,9 +128,12 @@ async function resolveFile(fileLike) {
   return { attachment, name, file: resource };
 }
 
-module.exports = async function createMessage(channel, options) {
+module.exports = async function createMessage(channel, firstArg, secondArg) {
   const Webhook = require('../Webhook');
   const WebhookClient = require('../../client/WebhookClient');
+
+  const isWebhook = channel instanceof Webhook || channel instanceof WebhookClient;
+  const options = transformOptions(firstArg, secondArg);
 
   const content = resolveContent(channel, options);
   const tts = Boolean(options.tts);
@@ -95,17 +144,18 @@ module.exports = async function createMessage(channel, options) {
   }
 
   const embedLikes = [];
-  if (options.embed) {
+  if (isWebhook) {
+    if (options.embeds) {
+      embedLikes.push(...options.embeds);
+    }
+  } else if (options.embed) {
     embedLikes.push(options.embed);
-  }
-  if (options.embeds) {
-    embedLikes.push(...options.embeds);
   }
   const embeds = embedLikes.map(e => new MessageEmbed(e)._apiTransform());
 
   let username;
   let avatarURL;
-  if (channel instanceof Webhook || channel instanceof WebhookClient) {
+  if (isWebhook) {
     username = options.username || channel.name;
     if (options.avatarURL) avatarURL = options.avatarURL;
   }

@@ -3,7 +3,6 @@ const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
-const transformOptions = require('../shared/transformOptions');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -109,7 +108,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   send(content, options) { // eslint-disable-line complexity
-    return Shared.sendMessage(this, transformOptions(content, options));
+    return Shared.sendMessage(this, content, options);
   }
 
   /**

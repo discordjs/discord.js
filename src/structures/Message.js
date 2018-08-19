@@ -11,7 +11,6 @@ const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const { createMessage } = require('./shared');
-const transformOptions = require('./shared/transformOptions');
 
 /**
  * Represents a message on Discord.
@@ -370,7 +369,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async edit(content, options) {
-    const { data } = await createMessage(this, transformOptions(content, options));
+    const { data } = await createMessage(this, content, options);
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data })
       .then(d => {
@@ -469,7 +468,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(Object.assign(transformOptions(content, options), { reply: this.member || this.author }));
+    return this.channel.send(Object.assign(content, options, { reply: this.member || this.author }));
   }
 
   /**
