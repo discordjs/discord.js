@@ -592,30 +592,29 @@ declare module 'discord.js' {
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
+		public edit(options: MessageEditOptions | MessageEmbed): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions): Promise<Message | Message[]>;
+		public reply(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		public reply(options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
 	}
 
 	export class MessageAttachment {
-		constructor(file: BufferResolvable | Stream, name?: string);
-		private _attach(file: BufferResolvable | Stream, name: string): void;
+		constructor(attachment: BufferResolvable | Stream, name?: string);
 
-		public readonly attachment: BufferResolvable | Stream;
+		public attachment: BufferResolvable | Stream;
 		public height: number;
 		public id: Snowflake;
-		public readonly name: string;
+		public name?: string;
 		public proxyURL: string;
 		public url: string;
 		public width: number;
-		public setAttachment(file: BufferResolvable | Stream, name: string): this;
-		public setFile(attachment: BufferResolvable | Stream): this;
+		public setFile(attachment: BufferResolvable | Stream, name?: string): this;
 		public setName(name: string): this;
 		public toJSON(): object;
 	}
@@ -1325,8 +1324,8 @@ declare module 'discord.js' {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
 		readonly lastMessage: Message;
-		send(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1347,8 +1346,8 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		send(options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 
