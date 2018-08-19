@@ -469,13 +469,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+    return this.channel.send(Object.assign(transformOptions(content, options), { reply: this.member || this.author }));
   }
 
   /**
