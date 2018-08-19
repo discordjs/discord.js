@@ -15,12 +15,12 @@ class PayloadDescriptor {
     this.data = data;
   }
 
-  get hasExtendedControlBits() { return this.data[0] & (1 << 7); }
+  get hasExtendedControlBits() { return this.data[0] >> 7; }
   get isNonReferenceFrame() { return this.data[0] & (1 << 5); }
   get isStartOfVP8Partition() { return this.data[0] & (1 << 4); }
-  get partitionIndex() { return this.data[0] & 0b111; }
+  get partitionIndex() { return this.data[0] & 0x7; }
 
-  get hasPictureID() { return this.hasExtendedControlBits ? this.data[1] & (1 << 7) : null; }
+  get hasPictureID() { return this.hasExtendedControlBits ? this.data[1] >> 7 : null; }
   get hasTL0PICIDX() { return this.hasExtendedControlBits ? this.data[1] & (1 << 6) : null; }
   get hasTID() { return this.hasExtendedControlBits ? this.data[1] & (1 << 5) : null; }
   get hasKEYIDX() { return this.hasExtendedControlBits ? this.data[1] & (1 << 4) : null; }
@@ -28,7 +28,7 @@ class PayloadDescriptor {
   get pictureIDLength() { return this.hasPictureID ? this.data[2] >> 7 ? 15 : 7 : null; }
   get pictureID() {
     return this.pictureIDLength === 7 ?
-      this.data[2] & 0x7f :
+      this.data[2] & 0x7F :
       this.data.readUInt16BE(2) & ~0x8000;
   }
   get _pictureIDOffset() { return this.pictureIDLength === 7 ? 0 : 1; }
@@ -37,7 +37,7 @@ class PayloadDescriptor {
 
   get TID() { return this.hasTID ? this.data[4 + this._pictureIDOffset] >> 6 : null; }
   get Y() { return this.hadTID || this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & (1 << 5) : null; }
-  get KEYIDX() { return this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & 0x1f : null; }
+  get KEYIDX() { return this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & 0x1F : null; }
 
   get size() { return 5 + this._pictureIDOffset; }
 }
