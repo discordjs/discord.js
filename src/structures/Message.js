@@ -11,7 +11,7 @@ const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const { createMessage } = require('./shared');
-const transformOptions = require('./shared/transfromOptions');
+const transformOptions = require('./shared/transformOptions');
 
 /**
  * Represents a message on Discord.

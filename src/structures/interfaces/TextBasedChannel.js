@@ -3,7 +3,7 @@ const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
-const transformOptions = require('../shared/transfromOptions');
+const transformOptions = require('../shared/transformOptions');
 
 /**
  * Interface for classes that have text-channel-like features.

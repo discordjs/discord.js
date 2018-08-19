@@ -1,7 +1,7 @@
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
 const { createMessage } = require('./shared');
-const transformOptions = require('./shared/transfromOptions');
+const transformOptions = require('./shared/transformOptions');
 
 /**
  * Represents a webhook.
