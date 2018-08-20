@@ -48,6 +48,7 @@ module.exports = {
   // Structures
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
+  APIMessage: require('./structures/APIMessage'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
