@@ -56,7 +56,7 @@ class APIMessage {
     let content = Util.resolveString(this.options.content == null ? '' : this.options.content);
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
-    const splitOptions = isSplit ? Object.assign({}, this.options.split) : undefined;
+    const splitOptions = isSplit ? { ...this.options.split } : undefined;
 
     let mentionPart = '';
     if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
@@ -237,24 +237,24 @@ class APIMessage {
     }
 
     if (options instanceof MessageEmbed) {
-      return Object.assign(isWebhook ? { content, embeds: [options] } : { content, embed: options }, extra);
+      return isWebhook ? { content, embeds: [options], ...extra } : { content, embed: options, ...extra };
     }
 
     if (options instanceof MessageAttachment) {
-      return Object.assign({ content, files: [options] }, extra);
+      return { content, files: [options], ...extra };
     }
 
     if (options instanceof Array) {
       const [embeds, files] = this.partitionMessageAdditions(options);
-      return Object.assign(isWebhook ? { content, embeds, files } : { content, embed: embeds[0], files }, extra);
+      return isWebhook ? { content, embeds, files, ...extra } : { content, embed: embeds[0], files, ...extra };
     } else if (content instanceof Array) {
       const [embeds, files] = this.partitionMessageAdditions(content);
       if (embeds.length || files.length) {
-        return Object.assign(isWebhook ? { embeds, files } : { embed: embeds[0], files }, extra);
+        return isWebhook ? { embeds, files, ...extra } : { embed: embeds[0], files, ...extra };
       }
     }
 
-    return Object.assign({ content }, options, extra);
+    return { content, ...options, ...extra };
   }
 
   /**
