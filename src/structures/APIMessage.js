@@ -234,7 +234,7 @@ class APIMessage {
   /**
    * Partitions embeds and attachments.
    * @param {Array<MessageEmbed|MessageAttachment>} items Items to partition
-   * @returns {[MessageEmbed[], MessageAttachment[]]}
+   * @returns {Array<MessageEmbed[], MessageAttachment[]>}
    */
   static partitionMessageAdditions(items) {
     const embeds = [];
