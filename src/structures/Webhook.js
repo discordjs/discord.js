@@ -127,7 +127,7 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    const { data, files } = await APIMessage.create(content, options).resolve();
+    const { data, files } = await APIMessage.create(this, content, options).resolve();
 
     if (data.content instanceof Array) {
       const messages = [];
