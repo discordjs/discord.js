@@ -233,7 +233,7 @@ class APIMessage {
 
   /**
    * Partitions embeds and attachments.
-   * @param {(MessageEmbed|MessageAttachment)[]} items Items to partition
+   * @param {Array<MessageEmbed|MessageAttachment>} items Items to partition
    * @returns {[MessageEmbed[], MessageAttachment[]]}
    */
   static partitionMessageAdditions(items) {
