@@ -21,18 +21,6 @@ class APIMessage {
      * @type {MessageOptions|WebhookMessageOptions}
      */
     this.options = options;
-
-    /**
-     * Data sendable to the API
-     * @type {?Object}
-     */
-    this.data = null;
-
-    /**
-     * Files sendable to the API
-     * @type {?Object[]}
-     */
-    this.files = null;
   }
 
   /**
@@ -107,24 +95,10 @@ class APIMessage {
   }
 
   /**
-   * Resolves both data and files.
-   * @returns {APIMessage}
-   */
-  async resolve() {
-    this.resolveData();
-    await this.resolveFiles();
-    return this;
-  }
-
-  /**
    * Resolves data.
-   * @returns {APIMessage}
+   * @returns {Object}
    */
   resolveData() {
-    if (this.data) {
-      return this;
-    }
-
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
     let nonce;
@@ -150,7 +124,7 @@ class APIMessage {
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
-    this.data = {
+    return {
       content,
       tts,
       nonce,
@@ -159,18 +133,13 @@ class APIMessage {
       username,
       avatar_url: avatarURL,
     };
-    return this;
   }
 
   /**
    * Resolves files.
-   * @returns {Promise<APIMessage>}
+   * @returns {Promise<Object[]>}
    */
-  async resolveFiles() {
-    if (this.files) {
-      return this;
-    }
-
+  resolveFiles() {
     const embedLikes = [];
     if (this.isWebhook) {
       if (this.options.embeds) {
@@ -190,8 +159,7 @@ class APIMessage {
       }
     }
 
-    this.files = await Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
-    return this;
+    return Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
   }
 
   /**

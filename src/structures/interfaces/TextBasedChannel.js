@@ -115,7 +115,7 @@ class TextBasedChannel {
     }
 
     const apiMessage = APIMessage.create(this, content, options);
-    const { data } = apiMessage.resolveData();
+    const data = apiMessage.resolveData();
     if (data.content instanceof Array) {
       const messages = [];
       for (let i = 0; i < data.content.length; i++) {
@@ -133,7 +133,7 @@ class TextBasedChannel {
       return messages;
     }
 
-    const { files } = await apiMessage.resolveFiles();
+    const files = await apiMessage.resolveFiles();
     return this.client.api.channels[this.id].messages.post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
   }

@@ -127,7 +127,7 @@ class Webhook {
    */
   async send(content, options) {
     const apiMessage = APIMessage.create(this, content, options);
-    const { data } = apiMessage.resolveData();
+    const data = apiMessage.resolveData();
     if (data.content instanceof Array) {
       const messages = [];
       for (let i = 0; i < data.content.length; i++) {
@@ -146,7 +146,7 @@ class Webhook {
       return messages;
     }
 
-    const { files } = await apiMessage.resolveFiles();
+    const files = await apiMessage.resolveFiles();
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,
       query: { wait: true },
