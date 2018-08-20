@@ -2,10 +2,13 @@ const Util = require('../util/Util');
 
 /**
  * Represents an attachment in a message.
- * @param {BufferResolvable|Stream} attachment The file
- * @param {string} [name=null] The name of the file, if any
  */
 class MessageAttachment {
+  /**
+   * @param {BufferResolvable|Stream} attachment The file
+   * @param {string} [name=null] The name of the file, if any
+   * @param {Object} [data] Extra data
+   */
   constructor(attachment, name = null, data) {
     this.attachment = attachment;
     this.name = name;
