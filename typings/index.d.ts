@@ -51,7 +51,7 @@ declare module 'discord.js' {
 			extra?: MessageOptions | WebhookMessageOptions
 		): APIMessage;
 		public static partitionMessageAdditions(items: (MessageEmbed | MessageAttachment)[]): [MessageEmbed[], MessageAttachment[]];
-		public static resolveFile(fileLike: BufferResolvable | FileOptions | MessageAttachment): Promise<object>;
+		public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<object>;
 		public static transformOptions(
 			content: StringResolvable,
 			options: MessageOptions | WebhookMessageOptions | MessageAdditions,
@@ -1608,7 +1608,7 @@ declare module 'discord.js' {
 	};
 
 	type FileOptions = {
-		attachment: BufferResolvable;
+		attachment: BufferResolvable | Stream;
 		name?: string;
 	};
 
@@ -1811,7 +1811,7 @@ declare module 'discord.js' {
 		content?: string;
 		embed?: MessageEmbed | MessageEmbedOptions,
 		disableEveryone?: boolean;
-		files?: (FileOptions | BufferResolvable | MessageAttachment)[];
+		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 		reply?: UserResolvable;
@@ -1969,7 +1969,7 @@ declare module 'discord.js' {
 		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
 		disableEveryone?: boolean;
-		files?: (FileOptions | BufferResolvable | MessageAttachment)[];
+		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 	};

@@ -216,7 +216,10 @@ class APIMessage {
       return 'file.jpg';
     };
 
-    if (typeof fileLike === 'string' || (!browser && Buffer.isBuffer(fileLike))) {
+    const ownAttachment = typeof fileLike === 'string' ||
+      fileLike instanceof (browser ? ArrayBuffer : Buffer) ||
+      typeof fileLike.pipe === 'function';
+    if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);
     } else {
