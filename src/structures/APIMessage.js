@@ -9,7 +9,7 @@ const { RangeError } = require('../errors');
  * Represents a message to be sent to the API.
  */
 class APIMessage {
-  /*
+  /**
    * @param {MessageTarget} target - The target for this message to be sent to
    * @param {MessageOptions|WebhookMessageOptions} options - Options passed in from send
    */
