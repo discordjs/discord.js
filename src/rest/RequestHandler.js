@@ -61,39 +61,7 @@ class RequestHandler {
     this.busy = true;
     const { reject, request, resolve } = item;
 
-    // Perform the request
-    let res;
-    try {
-      res = await request.make();
-    } catch (error) {
-      // NodeFetch error expected for all "operational" errors, such as 500 status code
-      this.busy = false;
-      return reject(
-        new HTTPError(error.message, error.constructor.name, error.status, item.request.method, item.request.route)
-      );
-    }
-
-    if (res && res.headers) {
-      if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
-
-      const serverDate = res.headers.get('date');
-      const limit = res.headers.get('x-ratelimit-limit');
-      const remaining = res.headers.get('x-ratelimit-remaining');
-      const reset = res.headers.get('x-ratelimit-reset');
-      const retryAfter = res.headers.get('retry-after');
-
-      this.limit = limit ? Number(limit) : Infinity;
-      this.remaining = remaining ? Number(remaining) : 1;
-      this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
-      this.retryAfter = retryAfter ? Number(retryAfter) : -1;
-
-      // https://github.com/discordapp/discord-api-docs/issues/182
-      if (item.request.route.includes('reactions')) {
-        this.reset = Date.now() + getAPIOffset(serverDate) + 250;
-      }
-    }
-
-    // After calculations, pre-emptively stop further requests
+    // After calculations and requests have been done, pre-emptively stop further requests
     if (this.limited) {
       const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
 
@@ -132,8 +100,38 @@ class RequestHandler {
       } else {
         // Wait for the timeout to expire in order to avoid an actual 429
         await Util.delayFor(timeout);
-        this.busy = false;
-        return this.run();
+      }
+    }
+
+    // Perform the request
+    let res;
+    try {
+      res = await request.make();
+    } catch (error) {
+      // NodeFetch error expected for all "operational" errors, such as 500 status code
+      this.busy = false;
+      return reject(
+        new HTTPError(error.message, error.constructor.name, error.status, request.method, request.route)
+      );
+    }
+
+    if (res && res.headers) {
+      if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
+
+      const serverDate = res.headers.get('date');
+      const limit = res.headers.get('x-ratelimit-limit');
+      const remaining = res.headers.get('x-ratelimit-remaining');
+      const reset = res.headers.get('x-ratelimit-reset');
+      const retryAfter = res.headers.get('retry-after');
+
+      this.limit = limit ? Number(limit) : Infinity;
+      this.remaining = remaining ? Number(remaining) : 1;
+      this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
+      this.retryAfter = retryAfter ? Number(retryAfter) : -1;
+
+      // https://github.com/discordapp/discord-api-docs/issues/182
+      if (item.request.route.includes('reactions')) {
+        this.reset = Date.now() + getAPIOffset(serverDate) + 250;
       }
     }
 
