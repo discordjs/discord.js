@@ -35,6 +35,36 @@ declare module 'discord.js' {
 		public equals(activity: Activity): boolean;
 	}
 
+	export class APIMessage {
+		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+		public data?: object;
+		public readonly isUser: boolean;
+		public readonly isWebhook: boolean;
+		public files?: object[];
+		public options: MessageOptions | WebhookMessageOptions;
+		public target: MessageTarget;
+
+		public static create(
+			target: MessageTarget,
+			content?: StringResolvable,
+			options?: MessageOptions | WebhookMessageOptions | MessageAdditions,
+			extra?: MessageOptions | WebhookMessageOptions,
+		): APIMessage;
+		public static partitionMessageAdditions(items: (MessageEmbed | MessageAttachment)[]): [MessageEmbed[], MessageAttachment[]];
+		public static resolveFile(fileLike: BufferResolvable | FileOptions | MessageAttachment): Promise<object>;
+		public static transformOptions(
+			content: StringResolvable,
+			options: MessageOptions | WebhookMessageOptions | MessageAdditions,
+			extra?: MessageOptions | WebhookMessageOptions,
+			isWebhook?: boolean
+		): MessageOptions | WebhookMessageOptions;
+
+		public makeContent(): string | string[];
+		public resolve(): Promise<this>;
+		public resolveData(): this;
+		public resolveFiles(): Promise<this>;
+	}
+
 	export class Base {
 		constructor (client: Client);
 		public readonly client: Client;
@@ -597,8 +627,8 @@ declare module 'discord.js' {
 		public fetchWebhook(): Promise<Webhook>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		public reply(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
@@ -1324,8 +1354,8 @@ declare module 'discord.js' {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
 		readonly lastMessage: Message;
-		send(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1346,8 +1376,8 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[]): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 
@@ -1752,6 +1782,8 @@ declare module 'discord.js' {
 		maxProcessed?: number;
 	};
 
+	type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
+
 	type MessageEditOptions = {
 		content?: string;
 		embed?: MessageEmbedOptions | null;
@@ -1788,6 +1820,8 @@ declare module 'discord.js' {
 	type MessageReactionResolvable = MessageReaction | Snowflake;
 
 	type MessageResolvable = Message | Snowflake;
+
+	type MessageTarget = TextChannel | DMChannel | GroupDMChannel | User | GuildMember | Webhook | WebhookClient;
 
 	type MessageType = 'DEFAULT'
 		| 'RECIPIENT_ADD'
