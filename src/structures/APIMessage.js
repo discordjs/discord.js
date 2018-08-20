@@ -68,10 +68,7 @@ class APIMessage {
     let content = Util.resolveString(this.options.content == null ? '' : this.options.content);
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
-    const splitOptions = isSplit ? {
-      prepend: this.options.split.prepend,
-      append: this.options.split.append,
-    } : undefined;
+    const splitOptions = isSplit ? Object.assign({}, this.options.split) : undefined;
 
     let mentionPart = '';
     if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
