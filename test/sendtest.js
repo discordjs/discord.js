@@ -49,7 +49,6 @@ const tests = [
   m => m.channel.send({ files: [linkA] }),
   m => m.channel.send({ files: [new Attachment(linkA)] }),
   m => m.channel.send({ embed: new Embed().setDescription('a') }),
-  m => m.channel.send({ embeds: [new Embed().setDescription('a')] }),
   async m => m.channel.send({ files: [await fetch(linkA)] }),
   async m => m.channel.send({ files: [{ attachment: await fetch(linkA) }] }),
   m => m.channel.send({
@@ -72,13 +71,22 @@ const tests = [
   async m => m.channel.send({ files: [await read(fileA)] }),
   m => m.channel.send({ files: [fileA] }),
   m => m.channel.send(new Attachment(fileA)),
+  m => m.channel.send('x', new Attachment(fileA)),
+  async m =>
+    m.channel.send(fill('x').join('\n'), {
+      reply: m.author,
+      code: 'js',
+      split: true,
+      embed: new Embed().setImage('attachment://zero.png'),
+      files: [new Attachment(await fetch(linkA), 'zero.png')],
+    }),
 ];
 
 client.on('message', async message => {
   if (!(message.author.id === owner && message.content === 'do it')) return;
   for (const [i, test] of tests.entries()) {
     await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
-    await test(message);
+    await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
     await wait(1000);
   }
 });
