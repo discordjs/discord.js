@@ -150,7 +150,7 @@ class APIMessage {
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
-    const data = {
+    this.data = {
       content,
       tts,
       nonce,
@@ -159,8 +159,6 @@ class APIMessage {
       username,
       avatar_url: avatarURL,
     };
-
-    this.data = data;
     return this;
   }
 
