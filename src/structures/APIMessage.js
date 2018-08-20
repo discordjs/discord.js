@@ -317,5 +317,5 @@ module.exports = APIMessage;
 
 /**
  * Additional items that can be sent with a message.
- * @typedef {MessageEmbed|MessageAttachment|(MessageEmbed|MessageAttachment)[]} MessageAdditions
+ * @typedef {MessageEmbed|MessageAttachment|Array<MessageEmbed|MessageAttachment>} MessageAdditions
  */
