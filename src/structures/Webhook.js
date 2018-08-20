@@ -82,11 +82,10 @@ class Webhook {
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
-  /* eslint-disable max-len */
   /**
    * Sends a message with this webhook.
-   * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
+   * @param {StringResolvable} [content=''] The content to send
+   * @param {WebhookMessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a basic message

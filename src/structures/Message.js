@@ -359,7 +359,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable} [content] The new content for the message
+   * @param {StringResolvable} [content=''] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -458,8 +458,8 @@ class Message extends Base {
 
   /**
    * Replies to the message.
-   * @param {StringResolvable} [content] The content for the message
-   * @param {MessageOptions} [options] The options to provide
+   * @param {StringResolvable} [content=''] The content for the message
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message

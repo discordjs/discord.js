@@ -5,28 +5,63 @@ const { browser } = require('../util/Constants');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
+/**
+ * Represents a message to be sent to the API.
+ */
 class APIMessage {
-  constructor(channel, options) {
-    this.channel = channel;
+  constructor(target, options) {
+    /**
+     * The target for this message to be sent to
+     * @type {MessageTarget}
+     */
+    this.target = target;
+
+    /**
+     * Options passed in from send
+     * @type {MessageOptions|WebhookMessageOptions}
+     */
     this.options = options;
+
+    /**
+     * Data sendable to the API
+     * @type {?Object}
+     */
     this.data = null;
+
+    /**
+     * Files sendable to the API
+     * @type {?Object[]}
+     */
     this.files = null;
   }
 
+  /**
+   * Whether or not the target is a webhook.
+   * @type {boolean}
+   * @readonly
+   */
   get isWebhook() {
     const Webhook = require('./Webhook');
     const WebhookClient = require('../client/WebhookClient');
-    return this.channel instanceof Webhook || this.channel instanceof WebhookClient;
+    return this.target instanceof Webhook || this.target instanceof WebhookClient;
   }
 
+  /**
+   * Whether or not the target is a user.
+   * @type {boolean}
+   * @readonly
+   */
   get isUser() {
     const User = require('./User');
     const GuildMember = require('./GuildMember');
-    return this.channel instanceof User || this.channel instanceof GuildMember;
+    return this.target instanceof User || this.target instanceof GuildMember;
   }
 
-  // eslint-disable-next-line complexity
-  makeContent() {
+  /**
+   * Makes the content of this message.
+   * @returns {string|string[]}
+   */
+  makeContent() { // eslint-disable-line complexity
     const GuildMember = require('./GuildMember');
 
     // eslint-disable-next-line eqeqeq
@@ -39,8 +74,8 @@ class APIMessage {
     } : undefined;
 
     let mentionPart = '';
-    if (this.options.reply && !this.isUser && this.channel.type !== 'dm') {
-      const id = this.channel.client.users.resolveID(this.options.reply);
+    if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
+      const id = this.target.client.users.resolveID(this.options.reply);
       mentionPart = `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
       if (isSplit) {
         splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
@@ -60,7 +95,7 @@ class APIMessage {
       }
 
       const disableEveryone = typeof this.options.disableEveryone === 'undefined' ?
-        this.channel.client.options.disableEveryone :
+        this.target.client.options.disableEveryone :
         this.options.disableEveryone;
       if (disableEveryone) {
         content = content.replace(/@(everyone|here)/g, '@\u200b$1');
@@ -74,12 +109,20 @@ class APIMessage {
     return content;
   }
 
+  /**
+   * Resolves both data and files.
+   * @returns {APIMessage}
+   */
   async resolve() {
     this.resolveData();
     await this.resolveFiles();
     return this;
   }
 
+  /**
+   * Resolves data.
+   * @returns {APIMessage}
+   */
   resolveData() {
     if (this.data) {
       return this;
@@ -106,7 +149,7 @@ class APIMessage {
     let username;
     let avatarURL;
     if (this.isWebhook) {
-      username = this.options.username || this.channel.name;
+      username = this.options.username || this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
@@ -124,6 +167,10 @@ class APIMessage {
     return this;
   }
 
+  /**
+   * Resolves files.
+   * @returns {Promise<APIMessage>}
+   */
   async resolveFiles() {
     if (this.files) {
       return this;
@@ -152,6 +199,10 @@ class APIMessage {
     return this;
   }
 
+  /**
+   * Resolves a single file into an object sendable to the API.
+   * @param {BufferResolvable|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
+   */
   static async resolveFile(fileLike) {
     let attachment;
     let name;
@@ -180,6 +231,11 @@ class APIMessage {
     return { attachment, name, file: resource };
   }
 
+  /**
+   * Partitions embeds and attachments.
+   * @param {(MessageEmbed|MessageAttachment)[]} items Items to partition
+   * @returns {[MessageEmbed[], MessageAttachment[]]}
+   */
   static partitionMessageAdditions(items) {
     const embeds = [];
     const files = [];
@@ -194,6 +250,15 @@ class APIMessage {
     return [embeds, files];
   }
 
+  /**
+   * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
+   * this method will keep it the same, allowing for the reuse of the final options object.
+   * @param {StringResolvable} [content=''] Content to send
+   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
+   * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
+   * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
+   * @returns {MessageOptions|WebhookMessageOptions}
+   */
   static transformOptions(content, options, extra = {}, isWebhook = false) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
@@ -225,14 +290,32 @@ class APIMessage {
     return Object.assign({ content }, options, extra);
   }
 
-  static create(channel, content, options, extra = {}) {
+  /**
+   * Creates an `APIMessage` from user-level arguments.
+   * @param {MessageTarget} target Target to send to
+   * @param {StringResolvable} [content=''] Content to send
+   * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
+   * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
+   * @returns {MessageOptions|WebhookMessageOptions}
+   */
+  static create(target, content, options, extra = {}) {
     const Webhook = require('./Webhook');
     const WebhookClient = require('../client/WebhookClient');
 
-    const isWebhook = channel instanceof Webhook || channel instanceof WebhookClient;
+    const isWebhook = target instanceof Webhook || target instanceof WebhookClient;
     const transformed = this.transformOptions(content, options, extra, isWebhook);
-    return new this(channel, transformed);
+    return new this(target, transformed);
   }
 }
 
 module.exports = APIMessage;
+
+/**
+ * A target for a message.
+ * @typedef {TextChannel|DMChannel|GroupDMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
+ */
+
+/**
+ * Additional items that can be sent with a message.
+ * @typedef {MessageEmbed|MessageAttachment|(MessageEmbed|MessageAttachment)[]} MessageAdditions
+ */
