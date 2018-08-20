@@ -1,11 +1,14 @@
 const createMessage = require('./CreateMessage');
 
-module.exports = async function sendMessage(channel, options) { // eslint-disable-line complexity
+module.exports = async function sendMessage(channel, content, options) { // eslint-disable-line complexity
   const User = require('../User');
   const GuildMember = require('../GuildMember');
-  if (channel instanceof User || channel instanceof GuildMember) return channel.createDM().then(dm => dm.send(options));
 
-  const { data, files } = await createMessage(channel, options);
+  if (channel instanceof User || channel instanceof GuildMember) {
+    return channel.createDM().then(dm => dm.send(content, options));
+  }
+
+  const { data, files } = await createMessage(channel, content, options);
 
   if (data.content instanceof Array) {
     const messages = [];

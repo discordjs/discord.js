@@ -133,7 +133,7 @@ module.exports = async function createMessage(channel, firstArg, secondArg) {
   const WebhookClient = require('../../client/WebhookClient');
 
   const isWebhook = channel instanceof Webhook || channel instanceof WebhookClient;
-  const options = transformOptions(firstArg, secondArg);
+  const options = transformOptions(firstArg, secondArg, isWebhook);
 
   const content = resolveContent(channel, options);
   const tts = Boolean(options.tts);
