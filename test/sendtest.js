@@ -80,6 +80,7 @@ const tests = [
       embed: new Embed().setImage('attachment://zero.png'),
       files: [new Attachment(await fetch(linkA), 'zero.png')],
     }),
+  m => m.channel.send('Done!'),
 ];
 
 client.on('message', async message => {

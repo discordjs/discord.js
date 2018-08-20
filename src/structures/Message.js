@@ -10,7 +10,7 @@ const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const { createMessage } = require('./shared');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a message on Discord.
@@ -368,8 +368,8 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  async edit(content, options) {
-    const { data } = await createMessage(this, content, options);
+  edit(content, options) {
+    const { data } = APIMessage.create(this, content, options).resolveData();
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data })
       .then(d => {
@@ -468,15 +468,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    }
-    if (!options) {
-      options = {};
-    }
-
-    return this.channel.send(content, Object.assign({}, options, { reply: this.member || this.author }));
+    return this.channel.send(APIMessage.transformOptions(content, options, { reply: this.member || this.author }));
   }
 
   /**

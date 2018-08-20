@@ -1,6 +1,6 @@
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
-const { createMessage } = require('./shared');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a webhook.
@@ -127,7 +127,7 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    const { data, files } = await createMessage(this, content, options);
+    const { data, files } = await APIMessage.create(content, options).resolve();
 
     if (data.content instanceof Array) {
       const messages = [];
