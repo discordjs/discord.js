@@ -126,12 +126,18 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    const { data, files } = await APIMessage.create(this, content, options).resolve();
-
+    const apiMessage = APIMessage.create(this, content, options).resolveData();
+    const { data } = apiMessage;
     if (data.content instanceof Array) {
       const messages = [];
       for (let i = 0; i < data.content.length; i++) {
-        const opt = i === data.content.length - 1 ? { embeds: data.embeds, files } : {};
+        let opt;
+        if (i === data.content.length - 1) {
+          opt = { embeds: data.embeds, files: apiMessage.options.files };
+        } else {
+          opt = {};
+        }
+
         Object.assign(opt, { avatarURL: data.avatar_url, content: data.content[i], username: data.username });
         // eslint-disable-next-line no-await-in-loop
         const message = await this.send(data.content[i], opt);
@@ -140,6 +146,7 @@ class Webhook {
       return messages;
     }
 
+    const { files } = await apiMessage.resolveFiles();
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,
       query: { wait: true },

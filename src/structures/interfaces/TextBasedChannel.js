@@ -114,11 +114,18 @@ class TextBasedChannel {
       return this.createDM().then(dm => dm.send(content, options));
     }
 
-    const { data, files } = await APIMessage.create(this, content, options).resolve();
+    const apiMessage = APIMessage.create(this, content, options).resolveData();
+    const { data } = apiMessage;
     if (data.content instanceof Array) {
       const messages = [];
       for (let i = 0; i < data.content.length; i++) {
-        const opt = i === data.content.length - 1 ? { tts: data.tts, embed: data.embed, files } : { tts: data.tts };
+        let opt;
+        if (i === data.content.length - 1) {
+          opt = { tts: data.tts, embed: data.embed, files: apiMessage.options.files };
+        } else {
+          opt = { tts: data.tts };
+        }
+
         // eslint-disable-next-line no-await-in-loop
         const message = await this.send(data.content[i], opt);
         messages.push(message);
@@ -126,6 +133,7 @@ class TextBasedChannel {
       return messages;
     }
 
+    const { files } = await apiMessage.resolveFiles();
     return this.client.api.channels[this.id].messages.post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
   }

@@ -17,8 +17,8 @@ const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
 const fileA = './test/blobReach.png';
 
-const Embed = Discord.MessageEmbed;
-const Attachment = Discord.MessageAttachment;
+const embed = () => new Discord.MessageEmbed();
+const attach = (attachment, name) => new Discord.MessageAttachment(attachment, name);
 
 const tests = [
   m => m.channel.send('x'),
@@ -41,68 +41,74 @@ const tests = [
     files: [{ attachment: linkA, name: 'xyz.png' }],
   }),
 
-  m => m.channel.send('x', new Embed().setDescription('a')),
-  m => m.channel.send(new Embed().setDescription('a')),
-  m => m.channel.send({ embed: new Embed().setDescription('a') }),
-  m => m.channel.send([new Embed().setDescription('a'), new Embed().setDescription('b')]),
+  m => m.channel.send('x', embed().setDescription('a')),
+  m => m.channel.send(embed().setDescription('a')),
+  m => m.channel.send({ embed: embed().setDescription('a') }),
+  m => m.channel.send([embed().setDescription('a'), embed().setDescription('b')]),
 
-  m => m.channel.send('x', new Attachment(linkA)),
-  m => m.channel.send(new Attachment(linkA)),
+  m => m.channel.send('x', attach(linkA)),
+  m => m.channel.send(attach(linkA)),
   m => m.channel.send({ files: [linkA] }),
-  m => m.channel.send({ files: [new Attachment(linkA)] }),
-  async m => m.channel.send(new Attachment(await buffer(linkA))),
+  m => m.channel.send({ files: [attach(linkA)] }),
+  async m => m.channel.send(attach(await buffer(linkA))),
   async m => m.channel.send({ files: [await buffer(linkA)] }),
   async m => m.channel.send({ files: [{ attachment: await buffer(linkA) }] }),
-  m => m.channel.send([new Attachment(linkA), new Attachment(linkB)]),
+  m => m.channel.send([attach(linkA), attach(linkB)]),
 
   m => m.channel.send({ embed: { description: 'a' } }).then(m2 => m2.edit('x')),
-  m => m.channel.send(new Embed().setDescription('a')).then(m2 => m2.edit('x')),
-  m => m.channel.send({ embed: new Embed().setDescription('a') }).then(m2 => m2.edit('x')),
+  m => m.channel.send(embed().setDescription('a')).then(m2 => m2.edit('x')),
+  m => m.channel.send({ embed: embed().setDescription('a') }).then(m2 => m2.edit('x')),
 
   m => m.channel.send('x').then(m2 => m2.edit({ embed: { description: 'a' } })),
-  m => m.channel.send('x').then(m2 => m2.edit(new Embed().setDescription('a'))),
-  m => m.channel.send('x').then(m2 => m2.edit({ embed: new Embed().setDescription('a') })),
+  m => m.channel.send('x').then(m2 => m2.edit(embed().setDescription('a'))),
+  m => m.channel.send('x').then(m2 => m2.edit({ embed: embed().setDescription('a') })),
 
   m => m.channel.send({ embed: { description: 'a' } }).then(m2 => m2.edit({ embed: null })),
-  m => m.channel.send(new Embed().setDescription('a')).then(m2 => m2.edit({ embed: null })),
+  m => m.channel.send(embed().setDescription('a')).then(m2 => m2.edit({ embed: null })),
 
-  m => m.channel.send(['x', 'y'], [new Embed().setDescription('a'), new Attachment(linkB)]),
-  m => m.channel.send(['x', 'y'], [new Attachment(linkA), new Attachment(linkB)]),
+  m => m.channel.send(['x', 'y'], [embed().setDescription('a'), attach(linkB)]),
+  m => m.channel.send(['x', 'y'], [attach(linkA), attach(linkB)]),
 
-  m => m.channel.send([new Embed().setDescription('a'), new Attachment(linkB)]),
+  m => m.channel.send([embed().setDescription('a'), attach(linkB)]),
   m => m.channel.send({
-    embed: new Embed().setImage('attachment://two.png'),
-    files: [new Attachment(linkB, 'two.png')],
+    embed: embed().setImage('attachment://two.png'),
+    files: [attach(linkB, 'two.png')],
   }),
   m => m.channel.send({
-    embed: new Embed()
+    embed: embed()
       .setImage('attachment://two.png')
-      .attachFiles([new Attachment(linkB, 'two.png')]),
+      .attachFiles([attach(linkB, 'two.png')]),
   }),
-  async m =>
-    m.channel.send(['x', 'y', 'z'], {
-      code: 'js',
-      embed: new Embed()
-        .setImage('attachment://two.png')
-        .attachFiles([new Attachment(linkB, 'two.png')]),
-      files: [{ attachment: await buffer(linkA) }],
-    }),
+  async m => m.channel.send(['x', 'y', 'z'], {
+    code: 'js',
+    embed: embed()
+      .setImage('attachment://two.png')
+      .attachFiles([attach(linkB, 'two.png')]),
+    files: [{ attachment: await buffer(linkA) }],
+  }),
 
-  m => m.channel.send('x', new Attachment(fileA)),
+  m => m.channel.send('x', attach(fileA)),
   m => m.channel.send({ files: [fileA] }),
-  m => m.channel.send(new Attachment(fileA)),
+  m => m.channel.send(attach(fileA)),
   async m => m.channel.send({ files: [await read(fileA)] }),
-  async m =>
-    m.channel.send(fill('x').join('\n'), {
-      reply: m.author,
-      code: 'js',
-      split: true,
-      embed: new Embed().setImage('attachment://zero.png'),
-      files: [new Attachment(await buffer(linkA), 'zero.png')],
-    }),
+  async m => m.channel.send(fill('x'), {
+    reply: m.author,
+    code: 'js',
+    split: true,
+    embed: embed().setImage('attachment://zero.png'),
+    files: [attach(await buffer(linkA), 'zero.png')],
+  }),
 
-  m => m.channel.send('x', new Attachment(readStream(fileA))),
+  m => m.channel.send('x', attach(readStream(fileA))),
   m => m.channel.send({ files: [readStream(fileA)] }),
+  m => m.channel.send({ files: [{ attachment: readStream(fileA) }] }),
+  async m => m.channel.send(fill('xyz '), {
+    reply: m.author,
+    code: 'js',
+    split: { char: ' ', prepend: 'hello! ', append: '!!!' },
+    embed: embed().setImage('attachment://zero.png'),
+    files: [linkB, attach(await buffer(linkA), 'zero.png'), readStream(fileA)],
+  }),
 
   m => m.channel.send('Done!'),
 ];
@@ -117,8 +123,9 @@ client.on('message', async message => {
       await wait(1000);
     }
   } else if (match) {
-    const i = parseInt(match[1]) || 0;
-    const test = tests.slice(i)[0];
+    const n = parseInt(match[1]) || 0;
+    const test = tests.slice(n)[0];
+    const i = tests.indexOf(test);
     await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
     await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
   }
