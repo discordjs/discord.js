@@ -48,7 +48,7 @@ declare module 'discord.js' {
 			target: MessageTarget,
 			content?: StringResolvable,
 			options?: MessageOptions | WebhookMessageOptions | MessageAdditions,
-			extra?: MessageOptions | WebhookMessageOptions,
+			extra?: MessageOptions | WebhookMessageOptions
 		): APIMessage;
 		public static partitionMessageAdditions(items: (MessageEmbed | MessageAttachment)[]): [MessageEmbed[], MessageAttachment[]];
 		public static resolveFile(fileLike: BufferResolvable | FileOptions | MessageAttachment): Promise<object>;
