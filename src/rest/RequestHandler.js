@@ -165,7 +165,7 @@ class RequestHandler {
       try {
         const data = await parseResponse(res);
         if (res.status >= 400 && res.status < 500) {
-          return reject(new DiscordAPIError(request.route, data, request.method));
+          return reject(new DiscordAPIError(request.path, data, request.method));
         }
         return null;
       } catch (err) {
