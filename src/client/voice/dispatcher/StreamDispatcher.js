@@ -67,7 +67,7 @@ class StreamDispatcher extends Writable {
     this.on('finish', () => {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
-      this._setSpeaking(false);
+      this._setSpeaking(0);
     });
 
     if (typeof volume !== 'undefined') this.setVolume(volume);
@@ -131,7 +131,7 @@ class StreamDispatcher extends Writable {
       this.streams.silence.pipe(this);
       this._silence = true;
     } else {
-      this._setSpeaking(false);
+      this._setSpeaking(0);
     }
     this.pausedSince = Date.now();
   }
@@ -243,7 +243,6 @@ class StreamDispatcher extends Writable {
 
   _playChunk(chunk) {
     if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secret_key) return;
-    this._setSpeaking(true);
     this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
@@ -285,7 +284,7 @@ class StreamDispatcher extends Writable {
      * @event StreamDispatcher#debug
      * @param {string} info The debug info
      */
-    this._setSpeaking(true);
+    this._setSpeaking(1);
     while (repeats--) {
       if (!this.player.voiceConnection.sockets.udp) {
         this.emit('debug', 'Failed to send a packet - no UDP socket');
@@ -293,7 +292,7 @@ class StreamDispatcher extends Writable {
       }
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
-          this._setSpeaking(false);
+          this._setSpeaking(0);
           this.emit('debug', `Failed to send a packet - ${e}`);
         });
     }

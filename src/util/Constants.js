@@ -249,6 +249,7 @@ exports.Events = {
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
+  WEBHOOKS_UPDATE: 'webhookUpdate',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   ERROR: 'error',
@@ -290,6 +291,7 @@ exports.Events = {
  * * VOICE_STATE_UPDATE
  * * TYPING_START
  * * VOICE_SERVER_UPDATE
+ * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -324,6 +326,7 @@ exports.WSEvents = keyMirror([
   'VOICE_STATE_UPDATE',
   'TYPING_START',
   'VOICE_SERVER_UPDATE',
+  'WEBHOOKS_UPDATE',
 ]);
 
 /**
@@ -363,15 +366,6 @@ exports.ActivityTypes = [
   'LISTENING',
   'WATCHING',
 ];
-
-exports.ActivityFlags = {
-  INSTANCE: 1 << 0,
-  JOIN: 1 << 1,
-  SPECTATE: 1 << 2,
-  JOIN_REQUEST: 1 << 3,
-  SYNC: 1 << 4,
-  PLAY: 1 << 5,
-};
 
 exports.ChannelTypes = {
   TEXT: 0,
@@ -432,6 +426,7 @@ exports.Colors = {
  * * UNKNOWN_TOKEN
  * * UNKNOWN_USER
  * * UNKNOWN_EMOJI
+ * * UNKNOWN_WEBHOOK
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * MAXIMUM_GUILDS
@@ -478,6 +473,7 @@ exports.APIErrors = {
   UNKNOWN_TOKEN: 10012,
   UNKNOWN_USER: 10013,
   UNKNOWN_EMOJI: 10014,
+  UNKNOWN_WEBHOOK: 10015,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   MAXIMUM_GUILDS: 30001,
