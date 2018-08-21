@@ -107,7 +107,7 @@ class RequestHandler {
         } else {
           parseResponse(res).then(data => {
             item.reject(res.status >= 400 && res.status < 500 ?
-              new DiscordAPIError(item.request.route, data, item.request.method) : res);
+              new DiscordAPIError(item.request.path, data, item.request.method) : res);
           }, item.reject);
           finish();
         }
