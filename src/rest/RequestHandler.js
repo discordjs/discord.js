@@ -38,7 +38,7 @@ class RequestHandler {
   }
 
   run() {
-    if (this.queue.length === 0) return null;
+    if (this.queue.length === 0) return Promise.resolve();
     return this.execute(this.queue.shift());
   }
 
