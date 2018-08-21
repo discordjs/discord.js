@@ -31,15 +31,15 @@ class RequestHandler {
   push(request) {
     if (this.busy) {
       this.queue.push(request);
-      this.run();
+      return this.run();
     } else {
-      this.execute(request);
+      return this.execute(request);
     }
   }
 
   run() {
-    if (this.queue.length === 0) return;
-    this.execute(this.queue.shift());
+    if (this.queue.length === 0) return null;
+    return this.execute(this.queue.shift());
   }
 
   get limited() {

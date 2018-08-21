@@ -42,7 +42,7 @@ class RESTManager {
         request: apiRequest,
         resolve,
         reject,
-      });
+      }).catch(reject);
     });
   }
 
