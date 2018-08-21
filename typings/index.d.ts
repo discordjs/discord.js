@@ -395,6 +395,7 @@ declare module 'discord.js' {
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+		public fetchEmbed(): Promise<GuildEmbedData>;
 		public iconURL(options?: AvatarOptions): string;
 		public leave(): Promise<Guild>;
 		public member(user: UserResolvable): GuildMember;
@@ -410,6 +411,7 @@ declare module 'discord.js' {
 		public setSplash(splash: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
+		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public splashURL(options?: AvatarOptions): string;
 		public toJSON(): object;
 		public toString(): string;
@@ -1696,6 +1698,11 @@ declare module 'discord.js' {
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
 		splash?: Base64Resolvable;
+	};
+
+	type GuildEmbedData = {
+		enabled: boolean;
+		channel?: GuildChannelResolvable;
 	};
 
 	type GuildFeatures = 'INVITE_SPLASH'
