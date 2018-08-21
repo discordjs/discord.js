@@ -82,7 +82,7 @@ declare module 'discord.js' {
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
 		public static resolve(bit?: BitFieldResolvable<string>): number;
-		public static FLAGS: object;
+		public static FLAGS: { [key: string]: number };
 	}
 
 	export class CategoryChannel extends GuildChannel {
@@ -727,9 +727,9 @@ declare module 'discord.js' {
 
 	export class PermissionOverwrites {
 		constructor(guildChannel: GuildChannel, data: object);
-		public allowed: Readonly<Permissions>;
+		public allow: Readonly<Permissions>;
 		public readonly channel: GuildChannel;
-		public denied: Readonly<Permissions>;
+		public deny: Readonly<Permissions>;
 		public id: Snowflake;
 		public type: OverwriteType;
 		public delete(reason?: string): Promise<PermissionOverwrites>;
@@ -1457,7 +1457,7 @@ declare module 'discord.js' {
 
 	type Base64String = string;
 
-	type BitFieldResolvable<T extends string> = RecursiveArray<string | number | BitField<T>> | string | number | BitField<T>;
+	type BitFieldResolvable<T extends string> = RecursiveArray<T | number | BitField<T>> | T | number | BitField<T>;
 
 	type BufferResolvable = Buffer | string;
 
