@@ -66,14 +66,14 @@ class SequentialRequestHandler extends RequestHandler {
         if (err) {
           if (err.status === 429) {
             this.queue.unshift(item);
-            this.restManager.client.setTimeout(() => {
+            this.client.setTimeout(() => {
               this.globalLimit = false;
               resolve();
-            }, Number(res.headers['retry-after']) + this.restManager.client.options.restTimeOffset);
+            }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else if (err.status >= 500 && err.status < 600) {
             this.queue.unshift(item);
-            this.restManager.client.setTimeout(resolve, 1e3 + this.restManager.client.options.restTimeOffset);
+            this.client.setTimeout(resolve, 1e3 + this.client.options.restTimeOffset);
           } else {
             item.reject(err.status >= 400 && err.status < 500 ?
               new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
@@ -101,9 +101,9 @@ class SequentialRequestHandler extends RequestHandler {
                 method: item.request.method,
               });
             }
-            this.restManager.client.setTimeout(
+            this.client.setTimeout(
               () => resolve(data),
-              this.requestResetTime - Date.now() + this.timeDifference + this.restManager.client.options.restTimeOffset
+              this.requestResetTime - Date.now() + this.timeDifference + this.client.options.restTimeOffset
             );
           } else {
             resolve(data);
