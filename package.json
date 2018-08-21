@@ -37,21 +37,21 @@
     "prism-media": "^0.0.3",
     "snekfetch": "^3.6.4",
     "tweetnacl": "^1.0.0",
-    "ws": "^4.0.0"
+    "ws": "^6.0.0"
   },
   "peerDependencies": {
-    "bufferutil": "^3.0.3",
+    "bufferutil": "^4.0.0",
     "erlpack": "discordapp/erlpack",
+    "libsodium-wrappers": "^0.7.3",
     "node-opus": "^0.2.7",
     "opusscript": "^0.0.6",
     "sodium": "^2.0.3",
-    "libsodium-wrappers": "^0.7.3",
-    "uws": "^9.14.0"
+    "uws": "<=10.148.1"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
     "discord.js-docgen": "discordjs/docgen",
-    "eslint": "^4.18.0",
+    "eslint": "^5.4.0",
     "parallel-webpack": "^2.2.0",
     "tslint": "^3.15.1",
     "tslint-config-typings": "^0.2.4",
