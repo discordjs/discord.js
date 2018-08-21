@@ -1,5 +1,5 @@
 const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes } = require('../util/Constants');
+const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const Base = require('./Base');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
@@ -38,6 +38,12 @@ class ClientApplication extends Base {
      * @type {string}
      */
     this.icon = data.icon;
+
+    /**
+     * The app's cover image
+     * @type {?string}
+     */
+    this.cover = data.cover_image || null;
 
     /**
      * The app's RPC origins, if enabled
@@ -90,6 +96,18 @@ class ClientApplication extends Base {
   iconURL({ format, size } = {}) {
     if (!this.icon) return null;
     return this.client.rest.cdn.AppIcon(this.id, this.icon, { format, size });
+  }
+
+  /**
+   * A link to this application's cover image.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string} URL to the cover image
+   */
+  coverImage({ format, size } = {}) {
+    if (!this.cover) return null;
+    return Endpoints
+      .CDN(this.client.options.http.cdn)
+      .AppIcon(this.id, this.cover, { format, size });
   }
 
   /**

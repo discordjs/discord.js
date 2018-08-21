@@ -178,6 +178,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object);
 		public botPublic: boolean;
 		public botRequireCodeGrant: boolean;
+		public cover?: string;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public description: string;
@@ -188,6 +189,7 @@ declare module 'discord.js' {
 		public rpcOrigins: string[];
 		public fetchAssets(): Promise<ClientApplicationAsset>;
 		public iconURL(options?: AvatarOptions): string;
+		public coverImage(options?: AvatarOptions): string;
 		public toJSON(): object;
 		public toString(): string;
 	}
