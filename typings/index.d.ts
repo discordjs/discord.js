@@ -40,6 +40,33 @@ declare module 'discord.js' {
 		public static FLAGS: Record<ActivityFlagsString, number>;
 	}
 
+	export class APIMessage {
+		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+		public readonly isUser: boolean;
+		public readonly isWebhook: boolean;
+		public options: MessageOptions | WebhookMessageOptions;
+		public target: MessageTarget;
+
+		public static create(
+			target: MessageTarget,
+			content?: StringResolvable,
+			options?: MessageOptions | WebhookMessageOptions | MessageAdditions,
+			extra?: MessageOptions | WebhookMessageOptions
+		): APIMessage;
+		public static partitionMessageAdditions(items: (MessageEmbed | MessageAttachment)[]): [MessageEmbed[], MessageAttachment[]];
+		public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<object>;
+		public static transformOptions(
+			content: StringResolvable,
+			options: MessageOptions | WebhookMessageOptions | MessageAdditions,
+			extra?: MessageOptions | WebhookMessageOptions,
+			isWebhook?: boolean
+		): MessageOptions | WebhookMessageOptions;
+
+		public makeContent(): string | string[];
+		public resolveData(): object;
+		public resolveFiles(): Promise<object[]>;
+	}
+
 	export class Base {
 		constructor (client: Client);
 		public readonly client: Client;
@@ -618,30 +645,29 @@ declare module 'discord.js' {
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
+		public edit(options: MessageEditOptions | MessageEmbed): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions): Promise<Message | Message[]>;
+		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		public reply(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
 	}
 
 	export class MessageAttachment {
-		constructor(file: BufferResolvable | Stream, name?: string);
-		private _attach(file: BufferResolvable | Stream, name: string): void;
+		constructor(attachment: BufferResolvable | Stream, name?: string);
 
-		public readonly attachment: BufferResolvable | Stream;
+		public attachment: BufferResolvable | Stream;
 		public height: number;
 		public id: Snowflake;
-		public readonly name: string;
+		public name?: string;
 		public proxyURL: string;
 		public url: string;
 		public width: number;
-		public setAttachment(file: BufferResolvable | Stream, name: string): this;
-		public setFile(attachment: BufferResolvable | Stream): this;
+		public setFile(attachment: BufferResolvable | Stream, name?: string): this;
 		public setName(name: string): this;
 		public toJSON(): object;
 	}
@@ -1345,8 +1371,8 @@ declare module 'discord.js' {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
 		readonly lastMessage: Message;
-		send(content?: StringResolvable, options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageEmbed | MessageAttachment): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1367,8 +1393,8 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageEmbed | MessageAttachment | MessageAttachment[]): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 
@@ -1604,7 +1630,7 @@ declare module 'discord.js' {
 	};
 
 	type FileOptions = {
-		attachment: BufferResolvable;
+		attachment: BufferResolvable | Stream;
 		name?: string;
 	};
 
@@ -1783,6 +1809,8 @@ declare module 'discord.js' {
 		maxProcessed?: number;
 	};
 
+	type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
+
 	type MessageEditOptions = {
 		content?: string;
 		embed?: MessageEmbedOptions | null;
@@ -1810,7 +1838,7 @@ declare module 'discord.js' {
 		content?: string;
 		embed?: MessageEmbed | MessageEmbedOptions,
 		disableEveryone?: boolean;
-		files?: (FileOptions | BufferResolvable | MessageAttachment)[];
+		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 		reply?: UserResolvable;
@@ -1819,6 +1847,8 @@ declare module 'discord.js' {
 	type MessageReactionResolvable = MessageReaction | Snowflake;
 
 	type MessageResolvable = Message | Snowflake;
+
+	type MessageTarget = TextChannel | DMChannel | GroupDMChannel | User | GuildMember | Webhook | WebhookClient;
 
 	type MessageType = 'DEFAULT'
 		| 'RECIPIENT_ADD'
@@ -1968,7 +1998,7 @@ declare module 'discord.js' {
 		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
 		disableEveryone?: boolean;
-		files?: (FileOptions | BufferResolvable | MessageAttachment)[];
+		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 	};
