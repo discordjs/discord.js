@@ -20,14 +20,20 @@ class Permissions {
   /**
    * Checks whether the bitfield has a permission, or multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @param {Object} [options] Options
+   * @param {boolean} [options.checkAdmin=true] Whether to allow the admin permission to override
+   * @param {boolean} [options.checkRequired=false] Whether to check required permissions
    * @returns {boolean}
    */
-  has(permission, checkAdmin = true) {
-    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
+  has(permission, { checkAdmin = true, checkRequired = false } = {}) {
+    if (permission instanceof Array) return permission.every(p => this.has(p, { checkAdmin }));
     permission = this.constructor.resolve(permission);
     if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    return (this.bitfield & permission) === permission;
+    const requiredPerms = Permissions.REQUIRED_CHANNEL_PERMS[permission];
+    const implicitPerms = Permissions.IMPLICIT_PERMS[permission];
+    if (!checkRequired || (!requiredPerms && !implicitPerms)) return (this.bitfield & permission) === permission;
+    if (requiredPerms) return requiredPerms.every(p => this.has(p, { checkAdmin }));
+    return this.has(implicitPerms, { checkAdmin });
   }
 
   /**
@@ -38,7 +44,7 @@ class Permissions {
    */
   missing(permissions, checkAdmin = true) {
     if (!(permissions instanceof Array)) permissions = new this.constructor(permissions).toArray(false);
-    return permissions.filter(p => !this.has(p, checkAdmin));
+    return permissions.filter(p => !this.has(p, { checkAdmin }));
   }
 
   /**
@@ -89,7 +95,7 @@ class Permissions {
    */
   serialize(checkAdmin = true) {
     const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
+    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, { checkAdmin });
     return serialized;
   }
 
@@ -99,7 +105,7 @@ class Permissions {
    * @returns {string[]}
    */
   toArray(checkAdmin = true) {
-    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
+    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, { checkAdmin }));
   }
 
   toJSON() {
@@ -218,5 +224,41 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  * @type {number}
  */
 Permissions.DEFAULT = 104324097;
+
+/**
+ * Lists of all required permissions for each permission
+ * @typedef Object<PermissionResolvable, PermissionResolvable[]>
+ */
+Permissions.REQUIRED_CHANNEL_PERMS = {
+  [Permissions.FLAGS.CREATE_INSTANT_INVITE]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CREATE_INSTANT_INVITE],
+  [Permissions.FLAGS.ADD_REACTIONS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.ADD_REACTIONS, Permissions.FLAGS.ADD_REACTIONS],
+  [Permissions.FLAGS.SEND_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES],
+  [Permissions.FLAGS.SEND_TTS_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.SEND_TTS_MESSAGES],
+  [Permissions.FLAGS.MANAGE_MESSAGES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MANAGE_MESSAGES],
+  [Permissions.FLAGS.EMBED_LINKS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.EMBED_LINKS],
+  [Permissions.FLAGS.ATTACH_FILES]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.ATTACH_FILES],
+  [Permissions.FLAGS.READ_MESSAGE_HISTORY]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.READ_MESSAGE_HISTORY],
+  [Permissions.FLAGS.MENTION_EVERYONE]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.MENTION_EVERYONE],
+  /* NOTE: Sending a message with an external emoji will require SEND_MESSAGES and reacting with an external emoji will
+   require ADD_REACTIONS
+  */
+  [Permissions.FLAGS.USE_EXTERNAL_EMOJIS]: [Permissions.FLAGS.VIEW_CHANNEL],
+  [Permissions.FLAGS.CONNECT]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.CONNECT],
+  [Permissions.FLAGS.SPEAK]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SPEAK],
+  [Permissions.FLAGS.MUTE_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MUTE_MEMBERS],
+  [Permissions.FLAGS.DEAFEN_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.DEAFEN_MEMBERS],
+  [Permissions.FLAGS.MOVE_MEMBERS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MOVE_MEMBERS],
+  [Permissions.FLAGS.USE_VAD]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.USE_VAD],
+  [Permissions.FLAGS.MANAGE_WEBHOOKS]: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.MANAGE_WEBHOOKS],
+};
+
+/**
+ * Lists all the permissions that automatically grants each permission
+ * @type String<PermissionResolvable>
+ */
+Permissions.IMPLICIT_PERMS = {
+  [Permissions.FLAGS.MANAGE_CHANNELS]: Permissions.FLAGS.MANAGE_ROLES,
+  [Permissions.FLAGS.CHANGE_NICKNAME]: Permissions.FLAGS.MANAGE_NICKNAMES,
+};
 
 module.exports = Permissions;
