@@ -131,7 +131,7 @@ declare module 'discord.js' {
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
-		public generateInvite(permissions?: number | PermissionResolvable[]): Promise<string>;
+		public generateInvite(permissions?: PermissionResolvable): Promise<string>;
 		public login(token?: string): Promise<string>;
 		public sweepMessages(lifetime?: number): number;
 		public toJSON(): object;
@@ -743,12 +743,11 @@ declare module 'discord.js' {
 
 	export class Permissions extends BitField<PermissionString> {
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
-		public has(bit: BitFieldResolvable<PermissionString>): boolean;
 
 		public static ALL: number;
 		public static DEFAULT: number;
 		public static FLAGS: PermissionFlags;
-		public static resolve(permission: PermissionResolvable): number;
+		public static resolve(permission?: PermissionResolvable): number;
 	}
 
 	export class Presence {
@@ -1463,13 +1462,13 @@ declare module 'discord.js' {
 
 	type Base64String = string;
 
-	type BitFieldResolvable<T extends string> = RecursiveArray<T | number | BitField<T>> | T | number | BitField<T>;
+	type BitFieldResolvable<T extends string> = RecursiveArray<T | number | Readonly<BitField<T>>> | T | number | Readonly<BitField<T>>;
 
 	type BufferResolvable = Buffer | string;
 
 	type ChannelCreationOverwrites = {
-		allow?: PermissionResolvable[] | number;
-		deny?: PermissionResolvable[] | number;
+		allow?: PermissionResolvable | number;
+		deny?: PermissionResolvable | number;
 		id: RoleResolvable | UserResolvable;
 	};
 
@@ -1875,7 +1874,7 @@ declare module 'discord.js' {
 
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
-	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
+	type PermissionResolvable = BitFieldResolvable<PermissionString>;
 
 	type PermissionOverwriteOptions = {
 		allow: PermissionResolvable;
