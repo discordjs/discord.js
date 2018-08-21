@@ -3,6 +3,7 @@ const { owner, token } = require('./auth.js');
 
 const fetch = require('node-fetch');
 const fs = require('fs');
+const path = require('path');
 const util = require('util');
 
 const client = new Discord.Client();
@@ -15,7 +16,7 @@ const wait = util.promisify(setTimeout);
 
 const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
-const fileA = './test/blobReach.png';
+const fileA = path.join(__dirname, 'blobReach.png');
 
 const embed = () => new Discord.MessageEmbed();
 const attach = (attachment, name) => new Discord.MessageAttachment(attachment, name);
@@ -117,11 +118,13 @@ client.on('message', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   if (match && match[1] === 'it') {
+    /* eslint-disable no-await-in-loop */
     for (const [i, test] of tests.entries()) {
       await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
       await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
       await wait(1000);
     }
+    /* eslint-enable no-await-in-loop */
   } else if (match) {
     const n = parseInt(match[1]) || 0;
     const test = tests.slice(n)[0];
