@@ -168,7 +168,7 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles into account
-   * @type {ReadOnly<Permissions>}
+   * @type {Readonly<Permissions>}
    * @readonly
    */
   get permissions() {
@@ -209,7 +209,7 @@ class GuildMember extends Base {
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
-   * @returns {ReadOnly<Permissions>}
+   * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);

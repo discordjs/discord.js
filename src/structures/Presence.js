@@ -154,7 +154,7 @@ class Activity {
 
     /**
      * Flags that describe the activity
-     * @type {ReadOnly<ActivityFlags>}
+     * @type {Readonly<ActivityFlags>}
      */
     this.flags = new ActivityFlags(data.flags).freeze();
   }

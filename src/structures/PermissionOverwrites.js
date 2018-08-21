@@ -39,13 +39,13 @@ class PermissionOverwrites {
 
     /**
      * The permissions that are denied for the user or role.
-     * @type {ReadOnly<Permissions>}
+     * @type {Readonly<Permissions>}
      */
     this.deny = new Permissions(data.deny).freeze();
 
     /**
      * The permissions that are allowed for the user or role.
-     * @type {ReadOnly<Permissions>}
+     * @type {Readonly<Permissions>}
      */
     this.allow = new Permissions(data.allow).freeze();
   }

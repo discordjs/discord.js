@@ -51,7 +51,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * Our current speaking state
-     * @type {ReadOnly<Speaking>}
+     * @type {Readonly<Speaking>}
      */
     this.speaking = new Speaking().freeze();
 
@@ -97,7 +97,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * Tracks which users are talking
-     * @type {Map<Snowflake, ReadOnly<Speaking>>}
+     * @type {Map<Snowflake, Readonly<Speaking>>}
      * @private
      */
     this._speaking = new Map();
@@ -443,7 +443,7 @@ class VoiceConnection extends EventEmitter {
      * Emitted whenever a user changes speaking state.
      * @event VoiceConnection#speaking
      * @param {User} user The user that has changed speaking state
-     * @param {ReadOnly<Speaking>} speaking The speaking state of the user
+     * @param {Readonly<Speaking>} speaking The speaking state of the user
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
@@ -459,7 +459,7 @@ class VoiceConnection extends EventEmitter {
          * Emitted once a guild member changes speaking state.
          * @event Client#guildMemberSpeaking
          * @param {GuildMember} member The member that started/stopped speaking
-         * @param {ReadOnly<Speaking>} speaking The speaking state of the member
+         * @param {Readonly<Speaking>} speaking The speaking state of the member
          */
         this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);
       }
