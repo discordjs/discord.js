@@ -5,9 +5,8 @@ class WebhooksUpdate extends AbstractHandler {
   handle(packet) {
     const client = this.packetManager.client;
     const data = packet.d;
-    const guild = client.guilds.get(data.guild_id);
     const channel = client.channels.get(data.channel_id);
-    if (guild && channel) client.emit(Events.WEBHOOKS_UPDATE, channel);
+    if (channel) client.emit(Events.WEBHOOKS_UPDATE, channel);
   }
 }
 
