@@ -1380,6 +1380,7 @@ declare module 'discord.js' {
 		UNKNOWN_TOKEN: number;
 		UNKNOWN_USER: number;
 		UNKNOWN_EMOJI: number;
+		UNKNOWN_WEBHOOK: number;
 		BOT_PROHIBITED_ENDPOINT: number;
 		BOT_ONLY_ENDPOINT: number;
 		MAXIMUM_GUILDS: number;
