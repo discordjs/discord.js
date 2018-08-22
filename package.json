@@ -47,7 +47,7 @@
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.3",
     "sodium": "^2.0.3",
-    "uws": "<=10.148.1",
+    "@discordjs/uws": "^10.14.0",
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
@@ -69,6 +69,7 @@
     "https": false,
     "ws": false,
     "uws": false,
+    "@discordjs/uws": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
