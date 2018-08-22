@@ -16,7 +16,7 @@ const erlpack = (function findErlpack() {
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
-    return require('uws');
+    return require('@discordjs/uws');
   } catch (e) {
     return require('ws');
   }

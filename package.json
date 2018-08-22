@@ -46,7 +46,7 @@
     "node-opus": "^0.2.7",
     "opusscript": "^0.0.6",
     "sodium": "^2.0.3",
-    "uws": "<=10.148.1"
+    "@discordjs/uws": "^10.14.0"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
@@ -65,6 +65,7 @@
   "browser": {
     "ws": false,
     "uws": false,
+    "@discordjs/uws": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
