@@ -346,6 +346,7 @@ exports.Events = {
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
+  WEBHOOKS_UPDATE: 'webhookUpdate',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   ERROR: 'error',
@@ -414,6 +415,7 @@ exports.ActivityFlags = {
  * * VOICE_SERVER_UPDATE
  * * RELATIONSHIP_ADD
  * * RELATIONSHIP_REMOVE
+ * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = {
@@ -454,6 +456,7 @@ exports.WSEvents = {
   VOICE_SERVER_UPDATE: 'VOICE_SERVER_UPDATE',
   RELATIONSHIP_ADD: 'RELATIONSHIP_ADD',
   RELATIONSHIP_REMOVE: 'RELATIONSHIP_REMOVE',
+  WEBHOOKS_UPDATE: 'WEBHOOKS_UPDATE',
 };
 
 /**
