@@ -187,9 +187,9 @@ declare module 'discord.js' {
 		public name: string;
 		public owner: User;
 		public rpcOrigins: string[];
+		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
 		public iconURL(options?: AvatarOptions): string;
-		public coverImage(options?: AvatarOptions): string;
 		public toJSON(): object;
 		public toString(): string;
 	}
