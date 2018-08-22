@@ -47,27 +47,27 @@ class ClientApplication extends Base {
 
     /**
      * The app's RPC origins, if enabled
-     * @type {?string[]}
+     * @type {string[]}
      */
     this.rpcOrigins = data.rpc_origins || [];
 
     /**
      * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.botRequireCodeGrant = data.bot_require_code_grant;
+    this.botRequireCodeGrant = typeof data.bot_require_code_grant !== 'undefined' ? data.bot_require_code_grant : null;
 
     /**
      * If this app's bot is public
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.botPublic = data.bot_public;
+    this.botPublic = typeof data.bot_public !== 'undefined' ? data.bot_public : null;
 
     /**
      * The owner of this OAuth application
-     * @type {User}
+     * @type {?User}
      */
-    this.owner = this.client.users.add(data.owner);
+    this.owner = data.owner ? this.client.users.add(data.owner) : null;
   }
 
   /**

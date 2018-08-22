@@ -228,8 +228,8 @@ declare module 'discord.js' {
 
 	export class ClientApplication extends Base {
 		constructor(client: Client, data: object);
-		public botPublic: boolean;
-		public botRequireCodeGrant: boolean;
+		public botPublic?: boolean;
+		public botRequireCodeGrant?: boolean;
 		public cover?: string;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
@@ -237,7 +237,7 @@ declare module 'discord.js' {
 		public icon: string;
 		public id: Snowflake;
 		public name: string;
-		public owner: User;
+		public owner?: User;
 		public rpcOrigins: string[];
 		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
