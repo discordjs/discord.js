@@ -16,23 +16,15 @@ const createConfig = options => {
       'process.env': {
         __DISCORD_WEBPACK__: '"true"',
       },
+      'process.emitWarning': (any, ...more) => console.warn(any, more),
     }),
   ];
 
-  if (options.minify) {
-    plugins.push(new UglifyJSPlugin({
-      uglifyOptions: {
-        mangle: { keep_classnames: true },
-        compress: { keep_classnames: true },
-        output: { comments: false },
-      },
-    }));
-  }
-
-  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.minify ? '.min' : ''}.js`; // eslint-disable-line
+  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.mode === 'production' ? '.min' : ''}.js`; // eslint-disable-line
 
   return {
     entry: './browser.js',
+    mode: options.mode,
     output: {
       path: __dirname,
       filename,
@@ -50,9 +42,21 @@ const createConfig = options => {
       dgram: 'empty',
       zlib: 'empty',
       __dirname: true,
+      process: true,
+    },
+    optimization: {
+      minimizer: [
+        new UglifyJSPlugin({
+          uglifyOptions: {
+            mangle: { keep_classnames: true },
+            compress: { keep_classnames: true },
+            output: { comments: false },
+          },
+        }),
+      ],
     },
     plugins,
   };
 };
 
-module.exports = createVariants({}, { minify: [false, true] }, createConfig);
+module.exports = createVariants({}, { mode: ['development', 'production'] }, createConfig);
