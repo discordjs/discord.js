@@ -60,7 +60,7 @@ class RESTMethods {
   }
 
   fetchEmbed(guildID) {
-    this.rest.makeRequest('get', Endpoints.Guild(guildID).embed, true).then(data => ({
+    return this.rest.makeRequest('get', Endpoints.Guild(guildID).embed, true).then(data => ({
       enabled: data.enabled,
       channel: data.channel_id ? this.client.channels.get(data.channel_id) : null,
     }));
