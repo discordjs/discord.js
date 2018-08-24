@@ -58,7 +58,7 @@ class VoiceState extends Base {
    * @type {?GuildMember}
    */
   get member() {
-    return this.guild.members.get(this.id);
+    return this.guild.members.get(this.id) || null;
   }
 
   /**
@@ -66,7 +66,7 @@ class VoiceState extends Base {
    * @type {?VoiceChannel}
    */
   get channel() {
-    return this.guild.channels.get(this.channelID);
+    return this.guild.channels.get(this.channelID) || null;
   }
 
   /**

@@ -10,12 +10,15 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  ActivityFlags: require('./util/ActivityFlags'),
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   Permissions: require('./util/Permissions'),
+  Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Structures: require('./util/Structures'),
@@ -48,6 +51,7 @@ module.exports = {
   // Structures
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
+  APIMessage: require('./structures/APIMessage'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
@@ -80,7 +84,6 @@ module.exports = {
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
-  UserConnection: require('./structures/UserConnection'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),
   VoiceState: require('./structures/VoiceState'),

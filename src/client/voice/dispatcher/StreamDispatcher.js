@@ -2,6 +2,7 @@ const VolumeInterface = require('../util/VolumeInterface');
 const { Writable } = require('stream');
 
 const secretbox = require('../util/Secretbox');
+const Silence = require('../util/Silence');
 
 const FRAME_LENGTH = 20;
 const CHANNELS = 2;
@@ -41,6 +42,7 @@ class StreamDispatcher extends Writable {
     this.player = player;
     this.streamOptions = streamOptions;
     this.streams = streams;
+    this.streams.silence = new Silence();
 
     this._nonce = 0;
     this._nonceBuffer = Buffer.alloc(24);
@@ -59,12 +61,13 @@ class StreamDispatcher extends Writable {
     this.broadcast = this.streams.broadcast;
 
     this._pausedTime = 0;
+    this._silentPausedTime = 0;
     this.count = 0;
 
     this.on('finish', () => {
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
-      this._setSpeaking(false);
+      this._setSpeaking(0);
     });
 
     if (typeof volume !== 'undefined') this.setVolume(volume);
@@ -119,10 +122,18 @@ class StreamDispatcher extends Writable {
 
   /**
    * Pauses playback
+   * @param {boolean} [silence=false] Whether to play silence while paused to prevent audio glitches
    */
-  pause() {
-    this._setSpeaking(false);
-    if (!this.paused) this.pausedSince = Date.now();
+  pause(silence = false) {
+    if (this.paused) return;
+    if (this.streams.opus) this.streams.opus.unpipe(this);
+    if (silence) {
+      this.streams.silence.pipe(this);
+      this._silence = true;
+    } else {
+      this._setSpeaking(0);
+    }
+    this.pausedSince = Date.now();
   }
 
   /**
@@ -135,14 +146,23 @@ class StreamDispatcher extends Writable {
    * Total time that this dispatcher has been paused
    * @type {number}
    */
-  get pausedTime() { return this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0); }
+  get pausedTime() {
+    return this._silentPausedTime + this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0);
+  }
 
   /**
    * Resumes playback
    */
   resume() {
     if (!this.pausedSince) return;
-    this._pausedTime += Date.now() - this.pausedSince;
+    this.streams.silence.unpipe(this);
+    if (this.streams.opus) this.streams.opus.pipe(this);
+    if (this._silence) {
+      this._silentPausedTime += Date.now() - this.pausedSince;
+      this._silence = false;
+    } else {
+      this._pausedTime += Date.now() - this.pausedSince;
+    }
     this.pausedSince = null;
     if (typeof this._writeCallback === 'function') this._writeCallback();
   }
@@ -203,11 +223,10 @@ class StreamDispatcher extends Writable {
       this._writeCallback = null;
       done();
     };
-    if (this.pausedSince) return;
     if (!this.streams.broadcast) {
-      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this.pausedTime);
+      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this._pausedTime);
       setTimeout(() => {
-        if (!this.pausedSince && this._writeCallback) this._writeCallback();
+        if ((!this.pausedSince || this._silence) && this._writeCallback) this._writeCallback();
       }, next);
     }
     this._sdata.sequence++;
@@ -223,26 +242,25 @@ class StreamDispatcher extends Writable {
   }
 
   _playChunk(chunk) {
-    if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secretKey) return;
-    this._setSpeaking(true);
+    if (this.player.dispatcher !== this || !this.player.voiceConnection.authentication.secret_key) return;
     this._sendPacket(this._createPacket(this._sdata.sequence, this._sdata.timestamp, chunk));
   }
 
   _encrypt(buffer) {
-    const { secretKey, encryptionMode } = this.player.voiceConnection.authentication;
-    if (encryptionMode === 'xsalsa20_poly1305_lite') {
+    const { secret_key, mode } = this.player.voiceConnection.authentication;
+    if (mode === 'xsalsa20_poly1305_lite') {
       this._nonce++;
       if (this._nonce > MAX_NONCE_SIZE) this._nonce = 0;
       this._nonceBuffer.writeUInt32BE(this._nonce, 0);
       return [
-        secretbox.methods.close(buffer, this._nonceBuffer, secretKey),
+        secretbox.methods.close(buffer, this._nonceBuffer, secret_key),
         this._nonceBuffer.slice(0, 4),
       ];
-    } else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
+    } else if (mode === 'xsalsa20_poly1305_suffix') {
       const random = secretbox.methods.random(24);
-      return [secretbox.methods.close(buffer, random, secretKey), random];
+      return [secretbox.methods.close(buffer, random, secret_key), random];
     } else {
-      return [secretbox.methods.close(buffer, nonce, secretKey)];
+      return [secretbox.methods.close(buffer, nonce, secret_key)];
     }
   }
 
@@ -266,7 +284,7 @@ class StreamDispatcher extends Writable {
      * @event StreamDispatcher#debug
      * @param {string} info The debug info
      */
-    this._setSpeaking(true);
+    this._setSpeaking(1);
     while (repeats--) {
       if (!this.player.voiceConnection.sockets.udp) {
         this.emit('debug', 'Failed to send a packet - no UDP socket');
@@ -274,7 +292,7 @@ class StreamDispatcher extends Writable {
       }
       this.player.voiceConnection.sockets.udp.send(packet)
         .catch(e => {
-          this._setSpeaking(false);
+          this._setSpeaking(0);
           this.emit('debug', `Failed to send a packet - ${e}`);
         });
     }

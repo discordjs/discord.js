@@ -30,9 +30,13 @@ class VoiceChannel extends GuildChannel {
    * @name VoiceChannel#members
    */
   get members() {
-    return new Collection(this.guild.voiceStates
-      .filter(state => state.channelID === this.id && state.member)
-      .map(state => state.member));
+    const coll = new Collection();
+    for (const state of this.guild.voiceStates.values()) {
+      if (state.channelID === this.id && state.member) {
+        coll.set(state.id, state.member);
+      }
+    }
+    return coll;
   }
 
   /**
@@ -61,7 +65,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT);
+    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**
@@ -71,8 +75,8 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (browser) return false;
-    if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
+    if (!this.permissionsFor(this.client.user).has('CONNECT', false)) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS', false)) return false;
     return true;
   }
 
@@ -82,7 +86,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has('SPEAK');
+    return this.permissionsFor(this.client.user).has('SPEAK', false);
   }
 
   /**

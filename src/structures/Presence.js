@@ -1,5 +1,6 @@
 const Util = require('../util/Util');
-const { ActivityTypes, ActivityFlags } = require('../util/Constants');
+const ActivityFlags = require('../util/ActivityFlags');
+const { ActivityTypes } = require('../util/Constants');
 
 /**
  * Activity sent in a message.
@@ -21,18 +22,18 @@ class Presence {
 
   /**
    * The user of this presence
-   * @type {User}
+   * @type {?User}
    */
   get user() {
-    return this.client.users.get(this.userID);
+    return this.client.users.get(this.userID) || null;
   }
 
   /**
    * The member of this presence
-   * @type {GuildMember}
+   * @type {?GuildMember}
    */
   get member() {
-    return this.guild.members.get(this.userID);
+    return this.guild.members.get(this.userID) || null;
   }
 
   patch(data) {
@@ -150,15 +151,12 @@ class Activity {
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
 
     this.syncID = data.sync_id;
-    this._flags = data.flags;
-  }
 
-  get flags() {
-    const flags = [];
-    for (const [name, flag] of Object.entries(ActivityFlags)) {
-      if ((this._flags & flag) === flag) flags.push(name);
-    }
-    return flags;
+    /**
+     * Flags that describe the activity
+     * @type {Readonly<ActivityFlags>}
+     */
+    this.flags = new ActivityFlags(data.flags).freeze();
   }
 
   /**
