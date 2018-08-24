@@ -22,14 +22,6 @@ class GuildChannelStore extends DataStore {
   }
 
   /**
-   * Can be used to overwrite permissions when creating a channel.
-   * @typedef {Object} PermissionOverwriteOptions
-   * @property {PermissionResolvable} [allow] The permissions to allow
-   * @property {PermissionResolvable} [deny] The permissions to deny
-   * @property {RoleResolvable|UserResolvable} id ID of the role or member this overwrite is for
-   */
-
-  /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {Object} [options] Options
@@ -39,7 +31,8 @@ class GuildChannelStore extends DataStore {
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
-   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * Permission overwrites of the new channel
    * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
    * @example

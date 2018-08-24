@@ -176,11 +176,11 @@ class GuildChannel extends Channel {
       .freeze();
   }
 
-  /* eslint-disable max-len */
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {Array<PermissionOverwrites|PermissionOverwriteOptions>|Collection<Snowflake, PermissionOverwriteOptions>} [options.overwrites] Permission overwrites
+   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * Permission overwrites the channel gets updated with
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
@@ -198,7 +198,6 @@ class GuildChannel extends Channel {
     return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
       .then(() => this);
   }
-  /* eslint-enable max-len */
 
   /**
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
@@ -307,17 +306,18 @@ class GuildChannel extends Channel {
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
    * @property {Snowflake} [parentID] The parent ID of the channel
-   * @property {boolean} [lockPermissions] Lock the permissions of the channel to what the parent's permissions are
-   * @property {OverwriteData[]} [permissionOverwrites] An array of overwrites to set for the channel
+   * @property {boolean} [lockPermissions]
+   * Lock the permissions of the channel to what the parent's permissions are
+   * @property {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
+   * Permission overwrites for the channel
    */
 
   /**
    * The data for a permission overwrite
    * @typedef {Object} OverwriteData
-   * @property {string} id The id of the overwrite
-   * @property {string} type The type of the overwrite, either role or member
-   * @property {number} allow The bitfield for the allowed permissions
-   * @property {number} deny The bitfield for the denied permissions
+   * @property {PermissionResolvable} [allow] The permissions to allow
+   * @property {PermissionResolvable} [deny] The permissions to deny
+   * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
    */
 
   /**
