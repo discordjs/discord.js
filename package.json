@@ -46,7 +46,7 @@
     "node-opus": "^0.2.7",
     "opusscript": "^0.0.6",
     "sodium": "^2.0.3",
-    "@discordjs/uws": "^10.14.0"
+    "@discordjs/uws": "^10.149.0"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
