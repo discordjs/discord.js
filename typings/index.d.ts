@@ -42,8 +42,10 @@ declare module 'discord.js' {
 
 	export class APIMessage {
 		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+		public data?: object;
 		public readonly isUser: boolean;
 		public readonly isWebhook: boolean;
+		public files?: object[];
 		public options: MessageOptions | WebhookMessageOptions;
 		public target: MessageTarget;
 
@@ -63,8 +65,9 @@ declare module 'discord.js' {
 		): MessageOptions | WebhookMessageOptions;
 
 		public makeContent(): string | string[];
-		public resolveData(): object;
-		public resolveFiles(): Promise<object[]>;
+		public resolve(): Promise<this>;
+		public resolveData(): this;
+		public resolveFiles(): Promise<this>;
 	}
 
 	export class Base {
