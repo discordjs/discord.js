@@ -1,4 +1,5 @@
 const Invite = require('./Invite');
+const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
@@ -405,6 +406,42 @@ class Guild extends Base {
         return collection;
       }, new Collection())
     );
+  }
+
+  /**
+   * Fetches a collection of integrations to this guild.
+   * Resolves with a collection mapping integrations by their ids.
+   * @returns {Promise<Collection<string, Integration>>}
+   * @example
+   * // Fetch integrations
+   * guild.fetchIntegrations()
+   *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
+   *   .catch(console.error);
+   */
+  fetchIntegrations() {
+    return this.client.api.guilds(this.id).integrations.get().then(data =>
+      data.reduce((collection, integration) =>
+        collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection())
+    );
+  }
+
+  /**
+   * The data for creating an integration.
+   * @typedef {Object} IntegrationData
+   * @property {string} id The integration id
+   * @property {string} type The integration type
+   */
+
+  /**
+   * Creates an integration by attaching an integration object
+   * @param {IntegrationData} data The data for thes integration
+   * @param {string} reason Reason for creating the integration
+   * @returns {Promise<Guild>}
+   */
+  createIntegration(data, reason) {
+    return this.client.api.guilds(this.id).integrations.post({ data, reason })
+      .then(() => this);
   }
 
   /**

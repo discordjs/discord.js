@@ -178,6 +178,7 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
 		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
@@ -209,6 +210,7 @@ declare module 'discord.js' {
 		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
 		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
@@ -431,11 +433,13 @@ declare module 'discord.js' {
 		public readonly verified: boolean;
 		public readonly voiceConnection: VoiceConnection;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
+		public fetchIntegrations(): Promise<Collection<string, Integration>>;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
@@ -576,6 +580,25 @@ declare module 'discord.js' {
 		public setVoiceChannel(voiceChannel: ChannelResolvable): Promise<GuildMember>;
 		public toJSON(): object;
 		public toString(): string;
+	}
+
+	export class Integration extends Base {
+		constructor(client: Client, data: object, guild: Guild);
+		public account: IntegrationAccount;
+		public enabled: boolean;
+		public expireBehavior: number;
+		public expireGracePeriod: number;
+		public guild: Guild;
+		public id: Snowflake;
+		public name: string;
+		public role: Role;
+		public syncedAt: number;
+		public syncing: boolean;
+		public type: number;
+		public user: User;
+		public delete(reason?: string): Promise<Integration>;
+		public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
+		public sync(): Promise<Integration>;
 	}
 
 	export class Invite extends Base {
@@ -1789,6 +1812,21 @@ declare module 'discord.js' {
 		| 1024
 		| 2048;
 
+	type IntegrationData = {
+		id: string;
+		type: string;
+	};
+
+	type IntegrationEditData = {
+		expireBehavior?: number;
+		expireGracePeriod?: number;
+	};
+
+	type IntegrationAccount = {
+		id: string;
+		name: string;
+	};
+
 	type InviteOptions = {
 		temporary?: boolean;
 		maxAge?: number;
@@ -2018,6 +2056,7 @@ declare module 'discord.js' {
 		| 'GUILD_BAN_ADD'
 		| 'GUILD_BAN_REMOVE'
 		| 'GUILD_EMOJIS_UPDATE'
+		| 'GUILD_INTEGRATIONS_UPDATE'
 		| 'CHANNEL_CREATE'
 		| 'CHANNEL_DELETE'
 		| 'CHANNEL_UPDATE'
