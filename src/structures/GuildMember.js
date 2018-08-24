@@ -605,5 +605,7 @@ TextBasedChannel.applyToClass(GuildMember);
 
 GuildMember.prototype.hasPermissions = util.deprecate(GuildMember.prototype.hasPermissions,
   'GuildMember#hasPermissions is deprecated - use GuildMember#hasPermission, it now takes an array');
+GuildMember.prototype.missingPermissions = util.deprecate(GuildMember.prototype.missingPermissions,
+  'GuildMember#missingPermissions is deprecated - use GuildMember#permissions.missing, it now takes an array');
 
 module.exports = GuildMember;

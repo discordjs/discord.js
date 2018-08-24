@@ -970,11 +970,11 @@ class Guild {
    * Overwrites to use when creating a channel or replacing overwrites
    * @typedef {Object} ChannelCreationOverwrites
    * @property {PermissionResolvable} [allow] The permissions to allow
-   * **(deprecated)**
    * @property {PermissionResolvable} [allowed] The permissions to allow
-   * @property {PermissionResolvable} [deny] The permissions to deny
    * **(deprecated)**
+   * @property {PermissionResolvable} [deny] The permissions to deny
    * @property {PermissionResolvable} [denied] The permissions to deny
+   * **(deprecated)**
    * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
    */
 
