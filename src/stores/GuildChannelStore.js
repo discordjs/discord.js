@@ -52,7 +52,6 @@ class GuildChannelStore extends DataStore {
    *   ],
    * })
    */
-
   create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (parent) parent = this.client.channels.resolveID(parent);
     return this.client.api.guilds(this.guild.id).channels.post({
