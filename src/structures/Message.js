@@ -460,7 +460,7 @@ class Message extends Base {
 
   /**
    * Replies to the message.
-   * @param {StringResolvable} [content=''] The content for the message
+   * @param {StringResolvable|APIMessage} [content=''] The content for the message
    * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -470,7 +470,10 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(APIMessage.transformOptions(content, options, { reply: this.member || this.author }));
+    return this.channel.send(content instanceof APIMessage ?
+      content :
+      APIMessage.transformOptions(content, options, { reply: this.member || this.author })
+    );
   }
 
   /**

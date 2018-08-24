@@ -111,16 +111,6 @@ class APIMessage {
   }
 
   /**
-   * Resolves both data and files.
-   * @returns {APIMessage}
-   */
-  async resolve() {
-    this.resolveData();
-    await this.resolveFiles();
-    return this;
-  }
-
-  /**
    * Resolves data.
    * @returns {APIMessage}
    */
@@ -210,13 +200,11 @@ class APIMessage {
       let opt;
 
       if (i === this.data.content.length - 1) {
-        const changes = { content: this.data.content[i] };
-        data = { ...this.data, ...changes };
-        opt = { ...this.options, ...changes };
+        data = { ...this.data, content: this.data.content[i] };
+        opt = { ...this.options, content: this.data.content[i] };
       } else {
-        const changes = { content: this.data.content[i], embed: undefined, embeds: undefined };
-        data = { ...this.data, ...changes };
-        opt = { ...this.options, ...changes, files: undefined };
+        data = { content: this.data.content[i], tts: this.data.tts };
+        opt = { content: this.data.content[i], tts: this.data.tts };
       }
 
       const apiMessage = new APIMessage(this.target, opt);
