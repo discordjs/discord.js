@@ -90,6 +90,8 @@ class GuildEmoji extends Emoji {
   fetchAuthor() {
     if (this.managed) {
       return Promise.reject(new Error('EMOJI_MANAGED'));
+    } else if (!this.guild.me.permissions.has('MANAGE_EMOJIS')) {
+      return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
     }
     return this.client.api.guilds(this.guild.id).emojis(this.id).get()
       .then(emoji => this.client.users.add(emoji.user));
