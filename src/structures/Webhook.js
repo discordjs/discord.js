@@ -84,7 +84,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {StringResolvable} [content=''] The content to send
+   * @param {StringResolvable|APIMessage} [content=''] The content to send
    * @param {WebhookMessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
