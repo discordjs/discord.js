@@ -14,8 +14,8 @@ class GuildMemberStore extends DataStore {
     this.guild = guild;
   }
 
-  add(data, cache) {
-    return super.add(data, cache, { extras: [this.guild] });
+  add(data, cache = true) {
+    return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
   /**

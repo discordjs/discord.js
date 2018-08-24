@@ -5,7 +5,6 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {string} [apiRequestMethod='sequential'] One of `sequential` or `burst`. The sequential handler executes
  * all requests in the order they are triggered, whereas the burst handler runs multiple in parallel, and doesn't
  * provide the guarantee of any particular order. Burst mode is more likely to hit a 429 ratelimit error by its nature,
  * and is therefore slightly riskier to use.
@@ -36,7 +35,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  apiRequestMethod: 'sequential',
   shardId: 0,
   shardCount: 0,
   internalSharding: false,
@@ -124,7 +122,6 @@ exports.Endpoints = {
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
-        if (userID === '1') return hash;
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
@@ -250,6 +247,7 @@ exports.Events = {
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
+  WEBHOOKS_UPDATE: 'webhookUpdate',
   DISCONNECT: 'disconnect',
   RECONNECTING: 'reconnecting',
   ERROR: 'error',
@@ -291,8 +289,7 @@ exports.Events = {
  * * VOICE_STATE_UPDATE
  * * TYPING_START
  * * VOICE_SERVER_UPDATE
- * * RELATIONSHIP_ADD
- * * RELATIONSHIP_REMOVE
+ * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -327,6 +324,7 @@ exports.WSEvents = keyMirror([
   'VOICE_STATE_UPDATE',
   'TYPING_START',
   'VOICE_SERVER_UPDATE',
+  'WEBHOOKS_UPDATE',
 ]);
 
 /**
@@ -366,167 +364,6 @@ exports.ActivityTypes = [
   'LISTENING',
   'WATCHING',
 ];
-
-exports.ActivityFlags = {
-  INSTANCE: 1 << 0,
-  JOIN: 1 << 1,
-  SPECTATE: 1 << 2,
-  JOIN_REQUEST: 1 << 3,
-  SYNC: 1 << 4,
-  PLAY: 1 << 5,
-};
-
-exports.ExplicitContentFilterTypes = [
-  'DISABLED',
-  'NON_FRIENDS',
-  'FRIENDS_AND_NON_FRIENDS',
-];
-
-exports.UserSettingsMap = {
-  /**
-   * Automatically convert emoticons in your messages to emoji,
-   * for example when you type `:-)` Discord will convert it to 😃
-   * @name ClientUserSettings#convertEmoticons
-   * @type {boolean}
-   */
-  convert_emoticons: 'convertEmoticons',
-
-  /**
-   * If new guilds should automatically disable DMs between you and its members
-   * @name ClientUserSettings#defaultGuildsRestricted
-   * @type {boolean}
-   */
-  default_guilds_restricted: 'defaultGuildsRestricted',
-
-  /**
-   * Automatically detect accounts from services like Steam and Blizzard when you open the Discord client
-   * @name ClientUserSettings#detectPlatformAccounts
-   * @type {boolean}
-   */
-  detect_platform_accounts: 'detectPlatformAccounts',
-
-  /**
-   * Developer Mode exposes context menu items helpful for people writing bots using the Discord API
-   * @name ClientUserSettings#developerMode
-   * @type {boolean}
-   */
-  developer_mode: 'developerMode',
-
-  /**
-   * Allow playback and usage of the `/tts` command
-   * @name ClientUserSettings#enableTTSCommand
-   * @type {boolean}
-   */
-  enable_tts_command: 'enableTTSCommand',
-
-  /**
-   * The theme of the client. Either `light` or `dark`
-   * @name ClientUserSettings#theme
-   * @type {string}
-   */
-  theme: 'theme',
-
-  /**
-   * Last status set in the client
-   * @name ClientUserSettings#status
-   * @type {PresenceStatus}
-   */
-  status: 'status',
-
-  /**
-   * Display currently running game as status message
-   * @name ClientUserSettings#showCurrentGame
-   * @type {boolean}
-   */
-  show_current_game: 'showCurrentGame',
-
-  /**
-   * Display images, videos, and lolcats when uploaded directly to Discord
-   * @name ClientUserSettings#inlineAttachmentMedia
-   * @type {boolean}
-   */
-  inline_attachment_media: 'inlineAttachmentMedia',
-
-  /**
-   * Display images, videos, and lolcats when posted as links in chat
-   * @name ClientUserSettings#inlineEmbedMedia
-   * @type {boolean}
-   */
-  inline_embed_media: 'inlineEmbedMedia',
-
-  /**
-   * Language the Discord client will use, as an RFC 3066 language identifier
-   * @name ClientUserSettings#locale
-   * @type {string}
-   */
-  locale: 'locale',
-
-  /**
-   * Display messages in compact mode
-   * @name ClientUserSettings#messageDisplayCompact
-   * @type {boolean}
-   */
-  message_display_compact: 'messageDisplayCompact',
-
-  /**
-   * Show emoji reactions on messages
-   * @name ClientUserSettings#renderReactions
-   * @type {boolean}
-   */
-  render_reactions: 'renderReactions',
-
-  /**
-   * Array of snowflake IDs for guilds, in the order they appear in the Discord client
-   * @name ClientUserSettings#guildPositions
-   * @type {Snowflake[]}
-   */
-  guild_positions: 'guildPositions',
-
-  /**
-   * Array of snowflake IDs for guilds which you will not recieve DMs from
-   * @name ClientUserSettings#restrictedGuilds
-   * @type {Snowflake[]}
-   */
-  restricted_guilds: 'restrictedGuilds',
-
-  explicit_content_filter: function explicitContentFilter(type) { // eslint-disable-line func-name-matching
-    /**
-     * Safe direct messaging; force people's messages with images to be scanned before they are sent to you.
-     * One of `DISABLED`, `NON_FRIENDS`, `FRIENDS_AND_NON_FRIENDS`
-     * @name ClientUserSettings#explicitContentFilter
-     * @type {string}
-     */
-    return exports.ExplicitContentFilterTypes[type];
-  },
-  friend_source_flags: function friendSources(flags) { // eslint-disable-line func-name-matching
-    /**
-     * Who can add you as a friend
-     * @name ClientUserSettings#friendSources
-     * @type {Object}
-     * @property {boolean} all Mutual friends and mutual guilds
-     * @property {boolean} mutualGuilds Only mutual guilds
-     * @property {boolean} mutualFriends Only mutual friends
-     */
-    return {
-      all: flags.all || false,
-      mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
-      mutualFriends: flags.all ? true : flags.mutualFriends || false,
-    };
-  },
-};
-
-/**
- * All flags users can have:
- * * STAFF
- * * PARTNER
- * * HYPESQUAD
- * @typedef {string} UserFlags
- */
-exports.UserFlags = {
-  STAFF: 1 << 0,
-  PARTNER: 1 << 1,
-  HYPESQUAD: 1 << 2,
-};
 
 exports.ChannelTypes = {
   TEXT: 0,
@@ -587,6 +424,7 @@ exports.Colors = {
  * * UNKNOWN_TOKEN
  * * UNKNOWN_USER
  * * UNKNOWN_EMOJI
+ * * UNKNOWN_WEBHOOK
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * MAXIMUM_GUILDS
@@ -633,6 +471,7 @@ exports.APIErrors = {
   UNKNOWN_TOKEN: 10012,
   UNKNOWN_USER: 10013,
   UNKNOWN_EMOJI: 10014,
+  UNKNOWN_WEBHOOK: 10015,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   MAXIMUM_GUILDS: 30001,

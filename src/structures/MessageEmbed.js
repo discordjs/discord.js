@@ -1,4 +1,3 @@
-const MessageAttachment = require('./MessageAttachment');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -141,14 +140,8 @@ class MessageEmbed {
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
     this.files = [];
-
     if (data.files) {
-      this.files = data.files.map(file => {
-        if (file instanceof MessageAttachment) {
-          return typeof file.file === 'string' ? file.file : Util.cloneObject(file.file);
-        }
-        return file;
-      });
+      this.files = data.files;
     }
   }
 
@@ -203,7 +196,6 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   attachFiles(files) {
-    files = files.map(file => file instanceof MessageAttachment ? file.file : file);
     this.files = this.files.concat(files);
     return this;
   }

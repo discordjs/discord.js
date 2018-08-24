@@ -103,7 +103,7 @@ class DataResolver {
           });
         });
       }
-    } else if (resource.pipe && typeof resource.pipe === 'function') {
+    } else if (typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
         const buffers = [];
         resource.once('error', reject);

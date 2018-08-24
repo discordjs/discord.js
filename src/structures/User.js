@@ -141,7 +141,7 @@ class User extends Base {
   }
 
   /**
-   * The Discord "tag" (e.g. `hydrabolt#0086`) for this user
+   * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
    * @type {string}
    * @readonly
    */
@@ -185,7 +185,7 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.filter(c => c.type === 'dm').find(c => c.recipient.id === this.id) || null;
+    return this.client.channels.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
   }
 
   /**
