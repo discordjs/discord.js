@@ -16,7 +16,7 @@ const BeforeReadyWhitelist = [
  * WebSocket Manager of the client.
  */
 class WebSocketManager {
-  constructor(client) {
+  constructor(client, sessionStartLimit) {
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
@@ -58,6 +58,12 @@ class WebSocketManager {
      * @type {number}
      */
     this.status = Status.IDLE;
+
+    /**
+     * The current session limit of the client.
+     * @type {object}
+     */
+    this.sessionStartLimit = sessionStartLimit;
   }
 
   /**
@@ -77,6 +83,21 @@ class WebSocketManager {
    */
   debug(message) {
     this.client.emit(Events.DEBUG, `[connection] ${message}`);
+  }
+
+  async _handleSessionLimit(shard) {
+    if (!this.sessionStartLimit && this.spawnQueue.length) {
+      this.spawn();
+    } else if (this.sessionStartLimit) {
+      this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
+      const { remaining, reset_after } = this.sessionStartLimit;
+      if (remaining !== 0) {
+        this.spawn();
+      } else {
+        shard.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+        setTimeout(() => this.spawn(), this.sessionStartLimit.reset_after);
+      }
+    }
   }
 
   /**
@@ -106,7 +127,7 @@ class WebSocketManager {
       this.shards[item] = shard;
       shard.once(Events.READY, () => {
         this.spawning = false;
-        this.client.setTimeout(() => this.spawn(), 5000);
+        this.client.setTimeout(() => this._handleSessionLimit(shard), 5000);
       });
       shard.once('invalidated', () => {
         this.spawning = false;
