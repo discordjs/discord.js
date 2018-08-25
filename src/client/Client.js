@@ -209,7 +209,7 @@ class Client extends BaseClient {
     if (res.session_start_limit && res.session_start_limit.remaining === 0) {
       const { session_start_limit: { reset_after } } = res;
       this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
-      delayFor(reset_after);
+      await delayFor(reset_after);
     }
     const gateway = `${res.url}/`;
     if (this.options.shardCount === 'auto') {
@@ -218,7 +218,7 @@ class Client extends BaseClient {
       this.options.actualShardCount = res.shards;
     }
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
-    this.ws.connect(gateway, res.session_start_limit);
+    this.ws.connect(gateway);
     await new Promise((resolve, reject) => {
       const onready = () => {
         clearTimeout(timeout);

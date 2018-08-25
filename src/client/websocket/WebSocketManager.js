@@ -16,7 +16,7 @@ const BeforeReadyWhitelist = [
  * WebSocket Manager of the client.
  */
 class WebSocketManager {
-  constructor(client, sessionStartLimit) {
+  constructor(client) {
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
@@ -61,9 +61,9 @@ class WebSocketManager {
 
     /**
      * The current session limit of the client.
-     * @type {object}
+     * @type {?object}
      */
-    this.sessionStartLimit = sessionStartLimit;
+    this.sessionStartLimit = null;
   }
 
   /**
@@ -139,7 +139,7 @@ class WebSocketManager {
 
   /**
    * Creates a connection to a gateway.
-   * @param {string} [gateway] The gateway to connect to
+   * @param {string} [gateway=this.gateway] The gateway to connect to
    * @returns {void}
    */
   connect(gateway = this.gateway) {
