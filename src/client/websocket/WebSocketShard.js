@@ -1,8 +1,9 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, OPCodes, WSEvents, WSCodes } = require('../../util/Constants');
+let zlib;
 try {
-  var zlib = require('zlib-sync');
+  zlib = require('zlib-sync');
   if (!zlib.Inflate) zlib = require('pako');
 } catch (err) {
   zlib = require('pako');
@@ -12,7 +13,7 @@ try {
  * Represents a Shard's Websocket connection.
  */
 class WebSocketShard extends EventEmitter {
-  constructor(manager, id) {
+  constructor(manager, id, oldShard) {
     super();
 
     /**
@@ -37,11 +38,16 @@ class WebSocketShard extends EventEmitter {
      * The current sequence of the WebSocket
      * @type {number}
      */
-    this.sequence = -1;
+    this.sequence = oldShard ? oldShard.sequence : -1;
+
+    /**
+     * The current session id of the WebSocket
+     * @type {string}
+     */
+    this.sessionID = oldShard && oldShard.sessionID;
+
     this.pings = [];
     this.lastPingTimestamp = -1;
-    this.sessionID = undefined;
-
     this.trace = undefined;
 
     /**
@@ -57,6 +63,7 @@ class WebSocketShard extends EventEmitter {
     };
 
     this.inflate = null;
+    this.ws = null;
 
     this.connect();
   }
