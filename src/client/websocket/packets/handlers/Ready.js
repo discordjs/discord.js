@@ -17,7 +17,6 @@ class ReadyHandler extends AbstractHandler {
     client.users.set(clientUser.id, clientUser);
 
     for (const guild of data.guilds) client.guilds.add(guild);
-    for (const privateDM of data.private_channels) client.channels.add(privateDM);
 
     const t = client.setTimeout(() => {
       client.ws.connection.triggerReady();
