@@ -457,7 +457,7 @@ class RESTMethods {
     return this.rest.makeRequest('get', Endpoints.Channel(channel).Message(messageID), true);
   }
 
-  putGuildMember(guild, user, options) {
+  putGuildMember(guild, userID, options) {
     options.access_token = options.accessToken;
     if (options.roles) {
       const roles = options.roles;
@@ -465,7 +465,7 @@ class RESTMethods {
         options.roles = roles.map(role => role.id);
       }
     }
-    return this.rest.makeRequest('put', Endpoints.Guild(guild).Member(user.id), true, options)
+    return this.rest.makeRequest('put', Endpoints.Guild(guild).Member(userID), true, options)
       .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
   }
 

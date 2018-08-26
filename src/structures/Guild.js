@@ -563,7 +563,8 @@ class Guild {
    * @returns {Promise<GuildMember>}
    */
   addMember(user, options) {
-    if (this.members.has(user.id)) return Promise.resolve(this.members.get(user.id));
+    user = this.client.resolver.resolveUserID(user);
+    if (this.members.has(user)) return Promise.resolve(this.members.get(user));
     return this.client.rest.methods.putGuildMember(this, user, options);
   }
 
