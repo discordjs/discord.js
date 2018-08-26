@@ -265,8 +265,8 @@ class GuildChannel extends Channel {
   lockPermissions() {
     if (!this.parent) return Promise.reject(new TypeError('Could not find a parent to this guild channel.'));
     const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
-      deny: overwrite.deny.bitfield,
-      allow: overwrite.allow.bitfield,
+      deny: overwrite.denied.bitfield,
+      allow: overwrite.allowed.bitfield,
       id: overwrite.id,
       type: overwrite.type,
     }));
