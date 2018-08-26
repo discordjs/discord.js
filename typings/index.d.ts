@@ -940,14 +940,14 @@ declare module 'discord.js' {
 
 		public bitfield: number;
 		public member: GuildMember;
-		public add(...permissions: PermissionResolvable[]): this;
+		public add(...permissions: PermissionResolvable): this;
 		public freeze(): this;
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public hasPermission(permission: PermissionResolvable, explicit?: boolean): boolean;
 		public hasPermissions(permissions: PermissionResolvable, explicit?: boolean): boolean;
 		public missing(permissions: PermissionResolvable, checkAdmin?: boolean): PermissionResolvable;
 		public missingPermissions(permissions: PermissionResolvable, checkAdmin?: boolean): PermissionResolvable;
-		public remove(...permissions: PermissionResolvable[]): this;
+		public remove(...permissions: PermissionResolvable): this;
 		public serialize(checkAdmin?: boolean): PermissionObject;
 		public toArray(checkAdmin?: boolean): PermissionString[];
 		public valueOf(): number;
@@ -1601,10 +1601,10 @@ declare module 'discord.js' {
 	type BufferResolvable = Buffer | string;
 
 	type ChannelCreationOverwrites = {
-		allow?: PermissionResolvable | number;
-		deny?: PermissionResolvable | number;
-		allowed?: PermissionResolvable | number;
-		denied?: PermissionResolvable | number;
+		allow?: PermissionResolvable;
+		deny?: PermissionResolvable;
+		allowed?: PermissionResolvable;
+		denied?: PermissionResolvable;
 		id: RoleResolvable | UserResolvable;
 	};
 
