@@ -13,7 +13,7 @@ class UserGuildSettingsUpdateHandler extends AbstractHandler {
 }
 
 /**
- * Emitted whenever the client user's settings update.
+ * Emitted whenever the client user's guild update.
  * @event Client#clientUserGuildSettingsUpdate
  * @param {ClientUserGuildSettings} clientUserGuildSettings The new client user guild settings
  */
