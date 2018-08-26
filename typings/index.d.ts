@@ -151,6 +151,7 @@ declare module 'discord.js' {
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public on(event: 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'warn', listener: (info: string) => void): this;
+		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate', listener: (channel: Channel) => void): this;
@@ -198,6 +199,7 @@ declare module 'discord.js' {
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'warn', listener: (info: string) => void): this;
+		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
@@ -2128,6 +2130,7 @@ declare module 'discord.js' {
 		| 'VOICE_STATE_UPDATE'
 		| 'TYPING_START'
 		| 'VOICE_SERVER_UPDATE'
+		| 'WEBHOOKS_UPDATE'
 		| 'RELATIONSHIP_ADD'
 		| 'RELATIONSHIP_REMOVE';
 
