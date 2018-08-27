@@ -63,19 +63,21 @@ class PlayInterface {
       if (!this.player.playBroadcast) throw new Error('VOICE_PLAY_INTERFACE_NO_BROADCAST');
       return this.player.playBroadcast(resource, options);
     }
-    const type = options.type || 'unknown';
-    if (type === 'unknown') {
-      return this.player.playUnknown(resource, options);
-    } else if (type === 'converted') {
-      return this.player.playPCMStream(resource, options);
-    } else if (type === 'opus') {
-      return this.player.playOpusStream(resource, options);
-    } else if (type === 'ogg/opus') {
-      if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-      return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()), options);
-    } else if (type === 'webm/opus') {
-      if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-      return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()), options);
+    if (resource instanceof Readable || typeof resource === 'string') {
+      const type = options.type || 'unknown';
+      if (type === 'unknown') {
+        return this.player.playUnknown(resource, options);
+      } else if (type === 'converted') {
+        return this.player.playPCMStream(resource, options);
+      } else if (type === 'opus') {
+        return this.player.playOpusStream(resource, options);
+      } else if (type === 'ogg/opus') {
+        if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
+        return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()), options);
+      } else if (type === 'webm/opus') {
+        if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
+        return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()), options);
+      }
     }
     throw new Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
   }

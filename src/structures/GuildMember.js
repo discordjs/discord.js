@@ -168,7 +168,7 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles into account
-   * @type {Permissions}
+   * @type {Readonly<Permissions>}
    * @readonly
    */
   get permissions() {
@@ -209,7 +209,7 @@ class GuildMember extends Base {
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
-   * @returns {?Permissions}
+   * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
@@ -228,16 +228,6 @@ class GuildMember extends Base {
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.permissions.has(permission, checkAdmin));
-  }
-
-  /**
-   * Checks whether the roles of this member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return this.permissions.missing(permissions, explicit);
   }
 
   /**

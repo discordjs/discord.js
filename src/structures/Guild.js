@@ -1,4 +1,5 @@
 const Invite = require('./Invite');
+const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
@@ -408,6 +409,42 @@ class Guild extends Base {
   }
 
   /**
+   * Fetches a collection of integrations to this guild.
+   * Resolves with a collection mapping integrations by their ids.
+   * @returns {Promise<Collection<string, Integration>>}
+   * @example
+   * // Fetch integrations
+   * guild.fetchIntegrations()
+   *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
+   *   .catch(console.error);
+   */
+  fetchIntegrations() {
+    return this.client.api.guilds(this.id).integrations.get().then(data =>
+      data.reduce((collection, integration) =>
+        collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection())
+    );
+  }
+
+  /**
+   * The data for creating an integration.
+   * @typedef {Object} IntegrationData
+   * @property {string} id The integration id
+   * @property {string} type The integration type
+   */
+
+  /**
+   * Creates an integration by attaching an integration object
+   * @param {IntegrationData} data The data for thes integration
+   * @param {string} reason Reason for creating the integration
+   * @returns {Promise<Guild>}
+   */
+  createIntegration(data, reason) {
+    return this.client.api.guilds(this.id).integrations.post({ data, reason })
+      .then(() => this);
+  }
+
+  /**
    * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
@@ -432,6 +469,26 @@ class Guild extends Base {
         }
         return invites;
       });
+  }
+
+  /**
+   * Fetches the vanity url invite code to this guild.
+   * Resolves with a string matching the vanity url invite code, not the full url.
+   * @returns {Promise<string>}
+   * @example
+   * // Fetch invites
+   * guild.fetchVanityCode()
+   *   .then(code => {
+   *     console.log(`Vanity URL: https://discord.gg/${code}`);
+   *   })
+   *   .catch(console.error);
+   */
+  fetchVanityCode() {
+    if (!this.features.includes('VANITY_URL')) {
+      return Promise.reject(new Error('VANITY_URL'));
+    }
+    return this.client.api.guilds(this.id, 'vanity-url').get()
+      .then(res => res.code);
   }
 
   /**
@@ -461,6 +518,29 @@ class Guild extends Base {
       for (const region of res) regions.set(region.id, new VoiceRegion(region));
       return regions;
     });
+  }
+
+  /**
+   * The Guild Embed object
+   * @typedef {Object} GuildEmbedData
+   * @property {boolean} enabled Whether the embed is enabled
+   * @property {?GuildChannel} channel The embed channel
+   */
+
+  /**
+   * Fetches the guild embed.
+   * @returns {Promise<GuildEmbedData>}
+   * @example
+   * // Fetches the guild embed
+   * guild.fetchEmbed()
+   *   .then(embed => console.log(`The embed is ${embed.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchEmbed() {
+    return this.client.api.guilds(this.id).embed.get().then(data => ({
+      enabled: data.enabled,
+      channel: data.channel_id ? this.channels.get(data.channel_id) : null,
+    }));
   }
 
   /**
@@ -768,6 +848,22 @@ class Guild extends Base {
         channels: updatedChannels,
       }).guild
     );
+  }
+
+  /**
+   * Edits the guild's embed.
+   * @param {GuildEmbedData} embed The embed for the guild
+   * @param {string} [reason] Reason for changing the guild's embed
+   * @returns {Promise<Guild>}
+   */
+  setEmbed(embed, reason) {
+    return this.client.api.guilds(this.id).embed.patch({
+      data: {
+        enabled: embed.enabled,
+        channel_id: this.channels.resolveID(embed.channel),
+      },
+      reason,
+    }).then(() => this);
   }
 
   /**

@@ -54,7 +54,7 @@ class Role extends Base {
 
     /**
      * The permissions of the role
-     * @type {Permissions}
+     * @type {Readonly<Permissions>}
      */
     this.permissions = new Permissions(data.permissions).freeze();
 
@@ -203,7 +203,7 @@ class Role extends Base {
    * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
    * taking into account permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
-   * @returns {?Permissions}
+   * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);

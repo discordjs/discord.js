@@ -31,6 +31,7 @@ class WebSocketPacketManager {
     this.register(WSEvents.GUILD_ROLE_UPDATE, require('./handlers/GuildRoleUpdate'));
     this.register(WSEvents.GUILD_EMOJIS_UPDATE, require('./handlers/GuildEmojisUpdate'));
     this.register(WSEvents.GUILD_MEMBERS_CHUNK, require('./handlers/GuildMembersChunk'));
+    this.register(WSEvents.GUILD_INTEGRATIONS_UPDATE, require('./handlers/GuildIntegrationsUpdate'));
     this.register(WSEvents.CHANNEL_CREATE, require('./handlers/ChannelCreate'));
     this.register(WSEvents.CHANNEL_DELETE, require('./handlers/ChannelDelete'));
     this.register(WSEvents.CHANNEL_UPDATE, require('./handlers/ChannelUpdate'));
@@ -47,6 +48,7 @@ class WebSocketPacketManager {
     this.register(WSEvents.MESSAGE_REACTION_ADD, require('./handlers/MessageReactionAdd'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE, require('./handlers/MessageReactionRemove'));
     this.register(WSEvents.MESSAGE_REACTION_REMOVE_ALL, require('./handlers/MessageReactionRemoveAll'));
+    this.register(WSEvents.WEBHOOKS_UPDATE, require('./handlers/WebhooksUpdate'));
   }
 
   get client() {
