@@ -19,10 +19,6 @@ class RESTManager {
     }
   }
 
-  get globallyRateLimited() {
-    return Boolean(this.globalTimeout);
-  }
-
   get api() {
     return routeBuilder(this);
   }

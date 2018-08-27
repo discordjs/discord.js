@@ -43,7 +43,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return (this.manager.globallyRateLimited || this.remaining <= 0) && Date.now() < this.reset;
+    return (this.manager.globalTimeout || this.remaining <= 0) && Date.now() < this.reset;
   }
 
   get _inactive() {
@@ -85,7 +85,7 @@ class RequestHandler {
         });
       }
 
-      if (this.manager.globallyRateLimited) {
+      if (this.manager.globalTimeout) {
         await this.manager.globalTimeout;
       } else {
         // Wait for the timeout to expire in order to avoid an actual 429
