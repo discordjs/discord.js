@@ -9,7 +9,6 @@ class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = new Collection();
-    this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
     this.globalTimeout = null;
@@ -18,6 +17,10 @@ class RESTManager {
         this.handlers.sweep(handler => handler._inactive);
       }, client.options.restSweepInterval * 1000);
     }
+  }
+
+  get globallyRateLimited() {
+    return Boolean(this.globalTimeout);
   }
 
   get api() {

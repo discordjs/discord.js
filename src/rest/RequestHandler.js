@@ -124,9 +124,6 @@ class RequestHandler {
 
       // Handle global ratelimit
       if (res.headers.get('x-ratelimit-global')) {
-        // Set a global rate limit for all of the handlers instead of each one individually
-        this.manager.globallyRateLimited = true;
-
         // Set the manager's global timeout as the promise for other requests to "wait"
         this.manager.globalTimeout = Util.delayFor(this.retryAfter);
 
@@ -135,7 +132,6 @@ class RequestHandler {
 
         // Clean up global ratelimit
         this.manager.globalTimeout = null;
-        this.manager.globallyRateLimited = false;
       }
     }
 
