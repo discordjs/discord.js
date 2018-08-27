@@ -127,10 +127,10 @@ class RequestHandler {
         // Set the manager's global timeout as the promise for other requests to "wait"
         this.manager.globalTimeout = Util.delayFor(this.retryAfter);
 
-        // Wait for the global timeout to resolve before continue and set globally ratelimited to false
+        // Wait for the global timeout to resolve before continue
         await this.manager.globalTimeout;
 
-        // Clean up global ratelimit
+        // Clean up global timeout
         this.manager.globalTimeout = null;
       }
     }
