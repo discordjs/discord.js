@@ -531,6 +531,26 @@ class Guild {
   }
 
   /**
+   * The Guild Embed object
+   * @typedef {Object} GuildEmbedData
+   * @property {boolean} enabled Whether the embed is enabled
+   * @property {?ChannelResolvable} channel The embed channel
+   */
+
+  /**
+   * Fetches the guild embed.
+   * @returns {Promise<GuildEmbedData>}
+   * @example
+   * // Fetches the guild embed
+   * guild.fetchEmbed()
+   *   .then(embed => console.log(`The embed is ${embed.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchEmbed() {
+    return this.client.rest.methods.fetchEmbed(this.id);
+  }
+
+  /**
    * Fetch audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
@@ -1023,6 +1043,17 @@ class Guild {
    */
   setChannelPositions(channelPositions) {
     return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
+  }
+
+  /**
+   * Edits the guild's embed.
+   * @param {GuildEmbedData} embed The embed for the guild
+   * @param {string} [reason] Reason for changing the guild's embed
+   * @returns {Promise<Guild>}
+   */
+  setEmbed(embed, reason) {
+    return this.client.rest.methods.updateEmbed(this.id, embed, reason)
+      .then(() => this);
   }
 
   /**

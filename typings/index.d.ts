@@ -533,6 +533,7 @@ declare module 'discord.js' {
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, User>>;
+		public fetchEmbed(): Promise<GuildEmbedData>;
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
 		public fetchMembers(query?: string, limit?: number): Promise<Guild>;
@@ -547,6 +548,7 @@ declare module 'discord.js' {
 		public setChannelPosition(channel: string | GuildChannel, position: number, relative?: boolean): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
 		public setDefaultMessageNotification(defaultMessageNotifications: DefaultMessageNotifications, reason: string): Promise<Guild>;
+		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public setExcplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setName(name: string, reason?: string): Promise<Guild>;
@@ -1785,6 +1787,11 @@ declare module 'discord.js' {
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
 		splash?: Base64Resolvable;
+	};
+
+	type GuildEmbedData = {
+		enabled: boolean;
+		channel: ChannelResolvable;
 	};
 
 	type GuildMemberEditData = {

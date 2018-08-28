@@ -59,6 +59,13 @@ class RESTMethods {
     });
   }
 
+  fetchEmbed(guildID) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guildID).embed, true).then(data => ({
+      enabled: data.enabled,
+      channel: data.channel_id ? this.client.channels.get(data.channel_id) : null,
+    }));
+  }
+
   sendMessage(channel, content, { tts, nonce, embed, disableEveryone, split, code, reply } = {}, files = null) {
     return new Promise((resolve, reject) => { // eslint-disable-line complexity
       if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
@@ -851,6 +858,13 @@ class RESTMethods {
         channels,
       }).guild
     );
+  }
+
+  updateEmbed(guildID, embed, reason) {
+    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).embed, true, {
+      enabled: embed.enabled,
+      channel_id: this.client.resolver.resolveChannelID(embed.channel),
+    }, undefined, reason);
   }
 
   setRolePositions(guildID, roles) {
