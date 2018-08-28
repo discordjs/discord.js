@@ -26,7 +26,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
- * @property {number} [retryLimit=1] How many times to retry on 5XX errors
+ * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {PresenceData} [presence] Presence data to use upon login
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
