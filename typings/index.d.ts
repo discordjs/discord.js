@@ -130,6 +130,7 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'guildUnavailable', listener: (guild: Guild) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public on(event: 'message', listener: (message: Message) => void): this;
 		public on(event: 'messageDelete', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
@@ -178,6 +179,7 @@ declare module 'discord.js' {
 		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'guildUnavailable', listener: (guild: Guild) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public once(event: 'message', listener: (message: Message) => void): this;
 		public once(event: 'messageDelete', listener: (message: Message) => void): this;
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
@@ -2106,6 +2108,7 @@ declare module 'discord.js' {
 		| 'GUILD_MEMBER_REMOVE'
 		| 'GUILD_MEMBER_UPDATE'
 		| 'GUILD_MEMBERS_CHUNK'
+		| 'GUILD_INTEGRATIONS_UPDATE'
 		| 'GUILD_ROLE_CREATE'
 		| 'GUILD_ROLE_DELETE'
 		| 'GUILD_ROLE_UPDATE'
