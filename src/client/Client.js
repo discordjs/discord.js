@@ -436,6 +436,9 @@ class Client extends BaseClient {
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
     }
+    if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
+    }
   }
 }
 

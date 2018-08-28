@@ -151,12 +151,11 @@ class RequestHandler {
       return this.run();
     } else if (res.status >= 500 && res.status < 600) {
       // Retry once for possible serverside issues
-      if (item.retried) {
+      if (item.retries++ === this.manager.client.options.retryLimit) {
         return reject(
           new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.route)
         );
       } else {
-        item.retried = true;
         this.queue.unshift(item);
         return this.run();
       }
