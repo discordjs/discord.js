@@ -46,6 +46,7 @@ exports.DefaultOptions = {
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,
   presence: {},
