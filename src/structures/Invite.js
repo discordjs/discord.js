@@ -4,7 +4,8 @@ const Constants = require('../util/Constants');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ * <warn>The only guaranteed properties are `code`, `url`, `guild`, and `channel`.
+ * Other properties can be missing.</warn>
  */
 class Invite {
   constructor(client, data) {
