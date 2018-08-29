@@ -47,7 +47,7 @@ class TextChannel extends GuildChannel {
      * The ratelimit per user for this channel
      * @type {number}
      */
-    this.rateLimitPerUser = data.rate_limit_per_user;
+    this.rateLimitPerUser = data.rate_limit_per_user || 0;
 
     if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
