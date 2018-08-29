@@ -43,7 +43,23 @@ class TextChannel extends GuildChannel {
      */
     this.lastMessageID = data.last_message_id;
 
+    /**
+     * The ratelimit per user for this channel
+     * @type {number}
+     */
+    this.rateLimitPerUser = data.rate_limit_per_user;
+
     if (data.messages) for (const message of data.messages) this.messages.add(message);
+  }
+
+  /**
+   * Sets the rate limit per user for this channel.
+   * @param {number} rateLimitPerUser The new ratelimit
+   * @param {string} [reason] Reason for changing the channel's ratelimits
+   * @returns {Promise<TextChannel>}
+   */
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser }, reason);
   }
 
   /**
