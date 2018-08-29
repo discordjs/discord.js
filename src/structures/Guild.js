@@ -1114,7 +1114,8 @@ class Guild {
    * @returns {Promise}
    */
   deleteEmoji(emoji, reason) {
-    if (!(emoji instanceof Emoji)) emoji = this.emojis.get(emoji);
+    if (typeof emoji === 'string') emoji = this.emojis.get(emoji);
+    if (!(emoji instanceof Emoji)) throw new TypeError('Emoji must be either an instance of Emoji or an ID');
     return this.client.rest.methods.deleteEmoji(emoji, reason);
   }
 
