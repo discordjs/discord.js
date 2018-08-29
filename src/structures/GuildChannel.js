@@ -309,8 +309,8 @@ class GuildChannel extends Channel {
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
-   * @property {number} [rateLimitPerUser] The ratelimit per user for the channel
    * Permission overwrites for the channel
+   * @property {number} [rateLimitPerUser] The ratelimit per user for the channel
    */
 
   /**
