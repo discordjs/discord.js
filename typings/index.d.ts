@@ -1029,9 +1029,11 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: MessageStore;
 		public nsfw: boolean;
+		public rateLimitPerUser: number;
 		public topic: string;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
+		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 	}
 
@@ -1522,6 +1524,7 @@ declare module 'discord.js' {
 		bitrate?: number;
 		userLimit?: number;
 		parentID?: Snowflake;
+		rateLimitPerUser?: number;
 		lockPermissions?: boolean;
 		permissionOverwrites?: PermissionOverwrites[];
 	};
