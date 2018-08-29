@@ -616,10 +616,8 @@ declare module 'discord.js' {
 		public memberCount: number;
 		public presenceCount: number;
 		public temporary: boolean;
-		public textChannelCount: number;
 		public readonly url: string;
 		public uses: number;
-		public voiceChannelCount: number;
 		public delete(reason?: string): Promise<Invite>;
 		public toJSON(): object;
 		public toString(): string;
