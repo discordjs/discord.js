@@ -16,7 +16,12 @@ class ChannelPinsUpdate extends AbstractHandler {
     const data = packet.d;
     const channel = client.channels.get(data.channel_id);
     const time = new Date(data.last_pin_timestamp);
-    if (channel && time) client.emit(Events.CHANNEL_PINS_UPDATE, channel, time);
+    if (channel && time) {
+      // Discord sends null for last_pin_timestamp if the last pinned message was removed
+      channel.lastPinTimestamp = time.getTime() ? time.getTime() : null;
+
+      client.emit(Events.CHANNEL_PINS_UPDATE, channel, time);
+    }
   }
 }
 

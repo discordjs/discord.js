@@ -21,6 +21,12 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The timestamp when the last pinned message was pinned, if there was one
+     * @type {?number}
+     */
+    this.lastPinTimestamp = null;
   }
 
   /**
@@ -30,6 +36,15 @@ class TextBasedChannel {
    */
   get lastMessage() {
     return this.messages.get(this.lastMessageID) || null;
+  }
+
+  /**
+   * The date when the last pinned message was pinned, if there was one
+   * @type {?Date}
+   * @readonly
+   */
+  get lastPinAt() {
+    return this.lastPinTimestamp ? new Date(this.lastPinTimestamp) : null;
   }
 
   /**
@@ -322,6 +337,7 @@ class TextBasedChannel {
     if (full) {
       props.push(
         'lastMessage',
+        'lastPinAt',
         'bulkDelete',
         'startTyping',
         'stopTyping',
