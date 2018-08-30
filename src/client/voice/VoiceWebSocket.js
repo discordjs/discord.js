@@ -4,7 +4,7 @@ const EventEmitter = require('events').EventEmitter;
 
 let WebSocket;
 try {
-  WebSocket = require('uws');
+  WebSocket = require('@discordjs/uws');
 } catch (err) {
   WebSocket = require('ws');
 }
