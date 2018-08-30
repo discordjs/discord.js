@@ -127,7 +127,7 @@ class RequestHandler {
         // Set the manager's global timeout as the promise for other requests to "wait"
         this.manager.globalTimeout = Util.delayFor(this.retryAfter);
 
-        // Wait for the global timeout to resolve before continue
+        // Wait for the global timeout to resolve before continuing
         await this.manager.globalTimeout;
 
         // Clean up global timeout
@@ -140,7 +140,7 @@ class RequestHandler {
 
     if (res.ok) {
       const success = await parseResponse(res);
-      // Nothing wrong with the request, proceed with the next
+      // Nothing wrong with the request, proceed with the next one
       resolve(success);
       return this.run();
     } else if (res.status === 429) {

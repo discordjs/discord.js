@@ -1,3 +1,7 @@
+/**
+ * Represents a HTTP error from a request.
+ * @extends Error
+ */
 class HTTPError extends Error {
   constructor(message, name, code, method, path) {
     super(message);
