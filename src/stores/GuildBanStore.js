@@ -23,7 +23,7 @@ class GuildBanStore extends DataStore {
    * @param {Object} [options] Options
    * @param {Snowflake} [options.id] Optional id of a banned user.
    * @param {boolean} [options.cache] cache settings of this request
-   * @returns {Promise<Collection<Snowflake, BanInfo> | BanInfo>}
+   * @returns {Promise<Collection<Snowflake, BanInfo> | BanInfo | this>}
    * @example
    * // Fetch all bans in this guild
    * guild.bans.fetch()
@@ -35,21 +35,21 @@ class GuildBanStore extends DataStore {
    *  .then(ban => console.log(`User ${ban.user} was banned with reason ${ban.reason}`))
    *  .catch(console.error);
    */
-  fetch({ id, cache }) {
+  fetch({ id, cache = true }) {
     return this.client.api.guilds(this.guild.id).bans(id).get()
       .then(data => {
         let result;
         if (id) {
           result = { reason: data.reason, user: this.client.users.add(data.user) };
           this.add(result, cache);
+        } else if (cache) {
+          for (const ban of data) { this.add(ban, cache); }
+          return this;
         } else {
-          result = data.reduce((collection, ban) => {
-            this.add(ban, cache);
-            return collection.set(ban.user.id, {
-              reason: ban.reason,
-              user: this.client.users.add(ban.user),
-            });
-          }, new Collection());
+          return data.reduce((collection, ban) => collection.set(ban.user.id, {
+            reason: ban.reason,
+            user: this.client.users.add(ban.user),
+          }), new Collection());
         }
         return result;
       });
