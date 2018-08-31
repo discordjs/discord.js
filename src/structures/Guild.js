@@ -13,6 +13,7 @@ const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
 const PresenceStore = require('../stores/PresenceStore');
 const VoiceStateStore = require('../stores/VoiceStateStore');
+const GuildBanStore = require('../stores/GuildBanStore');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
@@ -49,6 +50,13 @@ class Guild extends Base {
      * @type {PresenceStore<Snowflake, Presence>}
      */
     this.presences = new PresenceStore(this.client);
+
+    /**
+     * A collection of banned members in this guild
+     * <warn>This will not be up to date until you fetched atleast one time</warn>
+     * @type {GuildBanStore<Snowflake, BanInfo>}
+     */
+    this.bans = new GuildBanStore(this);
 
     /**
      * Whether the bot has been removed from the guild
@@ -382,36 +390,6 @@ class Guild extends Base {
    */
   member(user) {
     return this.members.resolve(user);
-  }
-
-  /**
-   * An object containing information about a guild member's ban.
-   * @typedef {Object} BanInfo
-   * @property {User} user User that was banned
-   * @property {?string} reason Reason the user was banned
-   */
-
-  /**
-   * Fetches a single banned user or a collection of banned users in this guild.
-   * @param {string} [id] Optional id of a banned user.
-   * @returns {Promise<Collection<Snowflake, BanInfo> | BanInfo>}
-   * @example
-   * // Fetch all bans in this guild
-   * guild.fetchBans()
-   *   .then(bans => console.log(`${bans.size} users are banned from this Guild`))
-   *   .catch(console.error);
-   */
-  fetchBans(id) {
-    return this.client.api.guilds(this.id).bans(id).get()
-      .then(data => {
-        if (id) {
-          return { reason: data.reason, user: this.client.users.add(data.user) };
-        }
-        return data.reduce((collection, ban) => collection.set(ban.user.id, {
-          reason: ban.reason,
-          user: this.client.users.add(ban.user),
-        }), new Collection());
-      });
   }
 
   /**
