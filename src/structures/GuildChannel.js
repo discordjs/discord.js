@@ -1,7 +1,6 @@
 const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
-const resolvePermissions = require('./shared/resolvePermissions');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
@@ -195,7 +194,7 @@ class GuildChannel extends Channel {
    * });
    */
   overwritePermissions({ overwrites, reason } = {}) {
-    return this.edit({ permissionOverwrites: resolvePermissions.call(this, overwrites), reason })
+    return this.edit({ permissionOverwrites: overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)), reason })
       .then(() => this);
   }
 
@@ -317,7 +316,7 @@ class GuildChannel extends Channel {
    * @typedef {Object} OverwriteData
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
-   * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
+   * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
    */
 
   /**

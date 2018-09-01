@@ -2,7 +2,7 @@ const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
 const GuildChannel = require('../structures/GuildChannel');
-const resolvePermissions = require('../structures/shared/resolvePermissions');
+const PermissionOverwrites = require('../structures/PermissionOverwrites');
 
 /**
  * Stores guild channels.
@@ -63,7 +63,7 @@ class GuildChannelStore extends DataStore {
         bitrate,
         user_limit: userLimit,
         parent_id: parent,
-        permission_overwrites: resolvePermissions.call(this, overwrites),
+        permission_overwrites: overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
       },
       reason,
     }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
