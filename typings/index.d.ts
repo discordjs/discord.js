@@ -515,18 +515,18 @@ declare module 'discord.js' {
 		public rawPosition: number;
 		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
+		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public edit(data: ChannelData, reason?: string): Promise<GuildChannel>;
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<GuildChannel>;
 		public overwritePermissions(options?: { overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
-		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Permissions;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setTopic(topic: string, reason?: string): Promise<GuildChannel>;
-		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: Partial<PermissionObject>, reason?: string): Promise<GuildChannel>;
+		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 	}
 
 	export class GuildEmoji extends Emoji {
@@ -1907,7 +1907,7 @@ declare module 'discord.js' {
 
 	type PermissionObject = Record<PermissionString, boolean>;
 
-	type PermissionOverwriteOption = Record<PermissionString, boolean>;
+	type PermissionOverwriteOption = { [k in PermissionString]?: boolean };
 
 	type PermissionString = 'CREATE_INSTANT_INVITE'
 		| 'KICK_MEMBERS'
