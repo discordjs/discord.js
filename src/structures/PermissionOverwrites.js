@@ -53,7 +53,7 @@ class PermissionOverwrites {
   }
 
   /**
-   * Overwrites the permissions for a user or role in this channel.
+   * Updates this prermissionOverwrites.
    * @param {PermissionOverwriteOption} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
@@ -157,9 +157,9 @@ class PermissionOverwrites {
    */
 
   /**
-   * Deletes this Permission Overwrite.
-   * @param {OverwriteResolvable} overwrite The options for the update
-   * @param {Guild} guild Initial allowed permissions
+   * Resolves an overwrite into {@link RawOverwriteData}.
+   * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
+   * @param {Guild} guild The guild to resolve from
    * @returns {RawOverwriteData}
    */
   static resolve(overwrite, guild) {
