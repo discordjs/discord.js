@@ -311,6 +311,9 @@ class GuildChannel extends Channel {
         });
     }
 
+    const permission_overwrites = data.permissionOverwrites &&
+      data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
@@ -320,7 +323,7 @@ class GuildChannel extends Channel {
         user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
-        permission_overwrites: data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
+        permission_overwrites,
       },
       reason,
     });

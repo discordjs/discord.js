@@ -64,7 +64,7 @@ class GuildChannelStore extends DataStore {
         bitrate,
         user_limit: userLimit,
         parent_id: parent,
-        permission_overwrites: overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
+        permission_overwrites: overwrites && overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
       },
       reason,
     });
