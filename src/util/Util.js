@@ -39,7 +39,7 @@ class Util {
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
-      else if (valueOf && !isObject(valueOf)) out[newProp] = valueOf;
+      else if (valueOf !== null && !isObject(valueOf)) out[newProp] = valueOf;
       // If it's a primitive
       else if (!elemIsObj) out[newProp] = element;
     }
