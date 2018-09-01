@@ -64,6 +64,32 @@ class PermissionOverwrites {
   toJSON() {
     return Util.flatten(this);
   }
+
+  /**
+   * Resolves a PermissionOverwrites from options or from another overwrite.
+   * @param {OverwriteData|PermissionOverwrites} overwrite Overwrite to create from
+   * @param {Guild} guild Guild to base role data on
+   * @returns {PermissionOverwrites}
+   */
+  static resolve(overwrite, guild) {
+    const role = guild.roles.resolve(overwrite.id);
+    let id;
+    let type;
+    if (role) {
+      id = role.id;
+      type = 'role';
+    } else {
+      id = guild.client.users.resolveID(overwrite.id);
+      type = 'member';
+    }
+
+    return {
+      allow: Permissions.resolve(overwrite.allow),
+      deny: Permissions.resolve(overwrite.deny),
+      type,
+      id,
+    };
+  }
 }
 
 module.exports = PermissionOverwrites;
