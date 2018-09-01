@@ -1557,6 +1557,7 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		retryLimit?: number,
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
