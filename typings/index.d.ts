@@ -545,6 +545,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<GuildEmoji>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 		public equals(other: GuildEmoji | object): boolean;
+		public fetchAuthor(): Promise<User>;
 		public setName(name: string, reason?: string): Promise<GuildEmoji>;
 	}
 

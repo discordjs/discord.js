@@ -95,6 +95,8 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
+  MISSING_MANAGE_EMOJIS_PERMISSION:
+    guild => `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 
