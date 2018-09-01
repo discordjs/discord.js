@@ -109,8 +109,9 @@ class PermissionOverwrites {
   /**
    * Deletes this Permission Overwrite.
    * @param {PermissionOverwriteOption} options The options for the update
-   * @param {PermissionsResolvable} initialPermissions.allow Initial allowed permissions
-   * @param {PermissionsResolvable} initialPermissions.deny Initial denied permissions
+   * @param {Object} initialPermissions The initial permissions
+   * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
+   * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions
    * @returns {ResolvedOverwriteOptions}
    */
   static resolveOverwriteOptions(options, { allow, deny } = {}) {

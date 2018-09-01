@@ -519,10 +519,8 @@ declare module 'discord.js' {
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<GuildChannel>;
-		public overwritePermissions(
-			options: Array<Partial<PermissionOverwrites|PermissionOverwriteOptions>> | Collection<Snowflake, Partial<PermissionOverwriteOptions>>,
-			reason?: string
-		): Promise<GuildChannel>;
+		public overwritePermissions(options?: { overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
+		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Permissions;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
@@ -780,8 +778,11 @@ declare module 'discord.js' {
 		public deny: Readonly<Permissions>;
 		public id: Snowflake;
 		public type: OverwriteType;
+		public update(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
 		public delete(reason?: string): Promise<PermissionOverwrites>;
 		public toJSON(): object;
+		public static resolveOverwriteOptions(options: ResolvedOverwriteOptions, initialPermissions: { allow?: PermissionResolvable, deny?: PermissionResolvable }): ResolvedOverwriteOptions;
+		public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwriteData;
 	}
 
 	export class Permissions extends BitField<PermissionString> {
@@ -1524,7 +1525,7 @@ declare module 'discord.js' {
 		userLimit?: number;
 		parentID?: Snowflake;
 		lockPermissions?: boolean;
-		permissionOverwrites?: PermissionOverwrites[];
+		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 	};
 
 	type ChannelLogsQueryOptions = {
@@ -1741,7 +1742,7 @@ declare module 'discord.js' {
 		bitrate?: number;
 		userLimit?: number;
 		parent?: ChannelResolvable;
-		overwrites?: (PermissionOverwrites | ChannelCreationOverwrites)[];
+		overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		reason?: string
 	};
 
@@ -1892,17 +1893,21 @@ declare module 'discord.js' {
 		| 'GUILD_MEMBER_JOIN';
 
 	type OverwriteData = {
-		id: Snowflake;
-		type: string;
-		allow?: string;
-		deny?: string;
+		allow?: PermissionResolvable;
+		deny?: PermissionResolvable;
+		id: GuildMemberResolvable | RoleResolvable;
+		type?: OverwriteType;
 	};
+
+	type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
 	type OverwriteType = 'member' | 'role';
 
 	type PermissionFlags = Record<PermissionString, number>;
 
 	type PermissionObject = Record<PermissionString, boolean>;
+
+	type PermissionOverwriteOption = Record<PermissionString, boolean>;
 
 	type PermissionString = 'CREATE_INSTANT_INVITE'
 		| 'KICK_MEMBERS'
@@ -1967,10 +1972,22 @@ declare module 'discord.js' {
 		route: string;
 	};
 
+	type RawOverwriteData = {
+		id: Snowflake;
+		allow: number;
+		deny: number;
+		type: OverwriteType;
+	};
+
 	type ReactionCollectorOptions = CollectorOptions & {
 		max?: number;
 		maxEmojis?: number;
 		maxUsers?: number;
+	};
+
+	type ResolvedOverwriteOptions = {
+		allow: Permissions;
+		deny: Permissions;
 	};
 
 	type RoleData = {
