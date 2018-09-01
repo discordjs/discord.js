@@ -311,14 +311,7 @@ class GuildChannel extends Channel {
         });
     }
 
-    let permission_overwrites;
-    try {
-      permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
-    } catch (error) {
-      return Promise.reject(error);
-    }
-
-    return this.client.api.channels(this.id).patch({
+    const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
         topic: data.topic,
@@ -327,14 +320,14 @@ class GuildChannel extends Channel {
         user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
-        permission_overwrites,
+        permission_overwrites: data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
       },
       reason,
-    }).then(newData => {
-      const clone = this._clone();
-      clone._patch(newData);
-      return clone;
     });
+
+    const clone = this._clone();
+    clone._patch(newData);
+    return clone;
   }
 
   /**
