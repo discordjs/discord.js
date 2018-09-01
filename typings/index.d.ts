@@ -1907,7 +1907,7 @@ declare module 'discord.js' {
 
 	type PermissionObject = Record<PermissionString, boolean>;
 
-	type PermissionOverwriteOption = { [k in PermissionString]?: boolean };
+	type PermissionOverwriteOption = { [k in PermissionString]?: boolean | null };
 
 	type PermissionString = 'CREATE_INSTANT_INVITE'
 		| 'KICK_MEMBERS'
