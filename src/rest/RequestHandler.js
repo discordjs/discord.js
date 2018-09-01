@@ -43,7 +43,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return (this.manager.globallyRateLimited || this.remaining <= 0) && Date.now() < this.reset;
+    return (this.manager.globalTimeout || this.remaining <= 0) && Date.now() < this.reset;
   }
 
   get _inactive() {
@@ -85,18 +85,8 @@ class RequestHandler {
         });
       }
 
-      if (this.manager.globallyRateLimited && !this.manager.globalTimeout) {
-        // Set a global rate limit for all of the handlers instead of each one individually
-        this.manager.globalTimeout = this.manager.client.setTimeout(() => {
-          this.manager.globalTimeout = null;
-          this.manager.globallyRateLimited = false;
-          this.busy = false;
-          this.run();
-        }, timeout);
-      } else if (this.manager.globalTimeout) {
-        // Already waiting for a global rate limit to clear
-        this.queue.unshift(item);
-        return null;
+      if (this.manager.globalTimeout) {
+        await this.manager.globalTimeout;
       } else {
         // Wait for the timeout to expire in order to avoid an actual 429
         await Util.delayFor(timeout);
@@ -116,8 +106,6 @@ class RequestHandler {
     }
 
     if (res && res.headers) {
-      if (res.headers.get('x-ratelimit-global')) this.manager.globallyRateLimited = true;
-
       const serverDate = res.headers.get('date');
       const limit = res.headers.get('x-ratelimit-limit');
       const remaining = res.headers.get('x-ratelimit-remaining');
@@ -131,7 +119,19 @@ class RequestHandler {
 
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (item.request.route.includes('reactions')) {
-        this.reset = Date.now() + getAPIOffset(serverDate) + 250;
+        this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
+      }
+
+      // Handle global ratelimit
+      if (res.headers.get('x-ratelimit-global')) {
+        // Set the manager's global timeout as the promise for other requests to "wait"
+        this.manager.globalTimeout = Util.delayFor(this.retryAfter);
+
+        // Wait for the global timeout to resolve before continuing
+        await this.manager.globalTimeout;
+
+        // Clean up global timeout
+        this.manager.globalTimeout = null;
       }
     }
 
@@ -140,7 +140,7 @@ class RequestHandler {
 
     if (res.ok) {
       const success = await parseResponse(res);
-      // Nothing wrong with the request, proceed with the next
+      // Nothing wrong with the request, proceed with the next one
       resolve(success);
       return this.run();
     } else if (res.status === 429) {
@@ -150,13 +150,13 @@ class RequestHandler {
       await Util.delayFor(this.retryAfter);
       return this.run();
     } else if (res.status >= 500 && res.status < 600) {
-      // Retry once for possible serverside issues
-      if (item.retried) {
+      // Retry the specified number of times for possible serverside issues
+      if (item.retries === this.manager.client.options.retryLimit) {
         return reject(
           new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.route)
         );
       } else {
-        item.retried = true;
+        item.retries++;
         this.queue.unshift(item);
         return this.run();
       }

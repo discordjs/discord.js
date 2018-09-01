@@ -9,7 +9,6 @@ class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = new Collection();
-    this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
     this.globalTimeout = null;
@@ -42,6 +41,7 @@ class RESTManager {
         request: apiRequest,
         resolve,
         reject,
+        retries: 0,
       }).catch(reject);
     });
   }

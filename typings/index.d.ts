@@ -545,6 +545,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<GuildEmoji>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 		public equals(other: GuildEmoji | object): boolean;
+		public fetchAuthor(): Promise<User>;
 		public setName(name: string, reason?: string): Promise<GuildEmoji>;
 	}
 
@@ -616,10 +617,8 @@ declare module 'discord.js' {
 		public memberCount: number;
 		public presenceCount: number;
 		public temporary: boolean;
-		public textChannelCount: number;
 		public readonly url: string;
 		public uses: number;
-		public voiceChannelCount: number;
 		public delete(reason?: string): Promise<Invite>;
 		public toJSON(): object;
 		public toString(): string;
@@ -1549,7 +1548,6 @@ declare module 'discord.js' {
 	};
 
 	type ClientOptions = {
-		apiRequestMethod?: 'sequential' | 'burst';
 		presence?: PresenceData;
 		shardId?: number;
 		shardCount?: number;
@@ -1560,6 +1558,7 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		retryLimit?: number,
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
