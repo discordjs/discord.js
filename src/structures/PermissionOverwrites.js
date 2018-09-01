@@ -68,7 +68,7 @@ class PermissionOverwrites {
   update(options, reason) {
     const { allow, deny } = this.constructor.resolveOverwriteOptions(options, this);
 
-    return this.client.api.channels(this.channel.id).permissions[this.id]
+    return this.channel.client.api.channels(this.channel.id).permissions[this.id]
       .put({ data: { id: this.id, type: this.type, allow: allow.bitfield, deny: deny.bitfield }, reason })
       .then(() => this);
   }
