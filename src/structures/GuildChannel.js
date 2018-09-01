@@ -317,7 +317,7 @@ class GuildChannel extends Channel {
    * @typedef {Object} OverwriteData
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
-   * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
+   * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
    */
 
   /**
