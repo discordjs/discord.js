@@ -36,8 +36,8 @@ declare module 'discord.js' {
 	}
 
 	export class ActivityFlags extends BitField<ActivityFlagsString> {
-		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
 		public static FLAGS: Record<ActivityFlagsString, number>;
+		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
 	}
 
 	export class APIMessage {
@@ -108,8 +108,8 @@ declare module 'discord.js' {
 		public toJSON(): number;
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
+		public static FLAGS: object;
 		public static resolve(bit?: BitFieldResolvable<string>): number;
-		public static FLAGS: { [key: string]: number };
 	}
 
 	export class CategoryChannel extends GuildChannel {
@@ -1014,8 +1014,8 @@ declare module 'discord.js' {
 	}
 
 	export class Speaking extends BitField<SpeakingString> {
-		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
 		public static FLAGS: Record<SpeakingString, number>;
+		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
 	}
 
 	export class Structures {
