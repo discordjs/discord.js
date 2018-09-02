@@ -683,6 +683,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public name?: string;
 		public proxyURL: string;
+		public size: number;
 		public url: string;
 		public width: number;
 		public setFile(attachment: BufferResolvable | Stream, name?: string): this;
