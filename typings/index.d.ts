@@ -657,7 +657,7 @@ declare module 'discord.js' {
 		public system: boolean;
 		public tts: boolean;
 		public type: MessageType;
-		public url: string;
+		public readonly url: string;
 		public webhookID: Snowflake;
 		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
