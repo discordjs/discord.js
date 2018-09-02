@@ -401,6 +401,7 @@ declare module 'discord.js' {
 		public afkTimeout: number;
 		public applicationID: Snowflake;
 		public available: boolean;
+		public bans: GuildBanStore;
 		public channels: GuildChannelStore;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
@@ -438,7 +439,6 @@ declare module 'discord.js' {
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
-		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public fetchVanityCode(): Promise<string>;
@@ -1333,6 +1333,12 @@ declare module 'discord.js' {
 		public unban(user: UserResolvable, reason?: string): Promise<User>;
 	}
 
+	export class GuildBanStore extends DataStore<Snowflake, BanInfo> {
+		constructor(guild: Guild);
+		public add(ban: BanInfo, cache: boolean): BanInfo;
+		public fetch(options: FetchBanOptions): Promise<Collection<Snowflake, BanInfo> | BanInfo>;
+	}
+
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public create(name: string, options?: { region?: string, icon?: BufferResolvable | Base64Resolvable }): Promise<Guild>;
@@ -1500,6 +1506,17 @@ declare module 'discord.js' {
 		days?: number;
 		reason?: string;
 	};
+
+	type BanInfo = {
+		user: User;
+		fetched: boolean;
+		reason?: string;
+	}
+
+	type FetchBanOptions = {
+		id: Snowflake;
+		cache: boolean;
+	}
 
 	type Base64Resolvable = Buffer | Base64String;
 
