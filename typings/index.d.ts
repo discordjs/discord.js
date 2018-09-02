@@ -1664,7 +1664,7 @@ declare module 'discord.js' {
 		query?: string;
 		limit?: number;
 	};
-	
+
 	type FileOptions = {
 		attachment: BufferResolvable | Stream;
 		name?: string;
