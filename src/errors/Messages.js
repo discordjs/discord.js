@@ -10,7 +10,7 @@ const Messages = {
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  PERMISSIONS_INVALID: 'Invalid permission string or number.',
+  BITFIELD_INVALID: 'Invalid bitfield flag or number.',
 
   RATELIMIT_INVALID_METHOD: 'Unknown rate limiting method.',
 
@@ -95,8 +95,12 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
+  MISSING_MANAGE_EMOJIS_PERMISSION:
+    guild => `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
 
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
+
+  VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

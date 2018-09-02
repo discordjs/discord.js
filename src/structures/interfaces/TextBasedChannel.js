@@ -1,8 +1,8 @@
 const MessageCollector = require('../MessageCollector');
-const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
+const APIMessage = require('../APIMessage');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -66,8 +66,8 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
+   * @param {StringResolvable} [content=''] The content to send
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a basic message
@@ -107,16 +107,35 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  send(content, options) { // eslint-disable-line complexity
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
+  async send(content, options) {
+    const User = require('../User');
+    const GuildMember = require('../GuildMember');
+    if (this instanceof User || this instanceof GuildMember) {
+      return this.createDM().then(dm => dm.send(content, options));
     }
-    if (!options.content) options.content = content;
 
-    return Shared.sendMessage(this, options);
+    const apiMessage = APIMessage.create(this, content, options);
+    const data = apiMessage.resolveData();
+    if (data.content instanceof Array) {
+      const messages = [];
+      for (let i = 0; i < data.content.length; i++) {
+        let opt;
+        if (i === data.content.length - 1) {
+          opt = { tts: data.tts, embed: data.embed, files: apiMessage.options.files };
+        } else {
+          opt = { tts: data.tts };
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const message = await this.send(data.content[i], opt);
+        messages.push(message);
+      }
+      return messages;
+    }
+
+    const files = await apiMessage.resolveFiles();
+    return this.client.api.channels[this.id].messages.post({ data, files })
+      .then(d => this.client.actions.MessageCreate.handle(d).message);
   }
 
   /**

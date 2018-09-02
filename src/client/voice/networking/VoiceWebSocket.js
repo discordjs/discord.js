@@ -168,26 +168,22 @@ class VoiceWebSocket extends EventEmitter {
         break;
       /* eslint-disable no-case-declarations */
       case VoiceOPCodes.SESSION_DESCRIPTION:
-        const key = new Uint8Array(new ArrayBuffer(packet.d.secret_key.length));
-        for (const i in packet.d.secret_key) key[i] = packet.d.secret_key[i];
+        packet.d.secret_key = new Uint8Array(packet.d.secret_key);
         /**
          * Emitted once the Voice Websocket receives a description of this voice session.
-         * @param {string} encryptionMode The type of encryption being used
-         * @param {Uint8Array} secretKey The secret key used for encryption
+         * @param {Object} packet The received packet
          * @event VoiceWebSocket#sessionDescription
          */
-        this.emit('sessionDescription', packet.d.mode, key);
+        this.emit('sessionDescription', packet.d);
         break;
       case VoiceOPCodes.CLIENT_CONNECT:
         this.connection.ssrcMap.set(+packet.d.audio_ssrc, packet.d.user_id);
         break;
       case VoiceOPCodes.CLIENT_DISCONNECT:
-        for (const receiver of this.connection.receivers) {
-          const streamInfo = receiver.packets.streams.get(packet.d.user_id);
-          if (streamInfo) {
-            receiver.packets.streams.delete(packet.d.user_id);
-            streamInfo.stream.push(null);
-          }
+        const streamInfo = this.connection.receiver.packets.streams.get(packet.d.user_id);
+        if (streamInfo) {
+          this.connection.receiver.packets.streams.delete(packet.d.user_id);
+          streamInfo.stream.push(null);
         }
         break;
       case VoiceOPCodes.SPEAKING:

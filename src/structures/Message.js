@@ -10,7 +10,7 @@ const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const { createMessage } = require('./shared');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a message on Discord.
@@ -164,7 +164,9 @@ class Message extends Base {
      */
     this._edits = [];
 
-    if (data.member && this.guild && this.author) {
+    if (this.member && data.member) {
+      this.member._patch(data.member);
+    } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
   }
@@ -333,7 +335,7 @@ class Message extends Base {
    */
   get deletable() {
     return !this.deleted && (this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)
     ));
   }
 
@@ -344,7 +346,7 @@ class Message extends Base {
    */
   get pinnable() {
     return !this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES);
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false);
   }
 
   /**
@@ -357,7 +359,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable} [content] The new content for the message
+   * @param {StringResolvable} [content=''] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -366,17 +368,8 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  async edit(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
-    }
-    if (!options.content) options.content = content;
-
-    const { data } = await createMessage(this, options);
-
+  edit(content, options) {
+    const data = APIMessage.create(this, content, options).resolveData();
     return this.client.api.channels[this.channel.id].messages[this.id]
       .patch({ data })
       .then(d => {
@@ -465,8 +458,8 @@ class Message extends Base {
 
   /**
    * Replies to the message.
-   * @param {StringResolvable} [content] The content for the message
-   * @param {MessageOptions} [options] The options to provide
+   * @param {StringResolvable} [content=''] The content for the message
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
@@ -475,13 +468,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+    return this.channel.send(APIMessage.transformOptions(content, options, { reply: this.member || this.author }));
   }
 
   /**

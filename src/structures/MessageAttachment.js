@@ -2,75 +2,39 @@ const Util = require('../util/Util');
 
 /**
  * Represents an attachment in a message.
- * @param {BufferResolvable|Stream} file The file
- * @param {string} [name] The name of the file, if any
  */
 class MessageAttachment {
-  constructor(file, name, data) {
-    this.file = null;
+  /**
+   * @param {BufferResolvable|Stream} attachment The file
+   * @param {string} [name=null] The name of the file, if any
+   * @param {Object} [data] Extra data
+   */
+  constructor(attachment, name = null, data) {
+    this.attachment = attachment;
+    this.name = name;
     if (data) this._patch(data);
-    if (name) this.setAttachment(file, name);
-    else this._attach(file);
   }
 
   /**
-    * The name of the file
-    * @type {?string}
-    * @readonly
-    */
-  get name() {
-    return this.file.name;
-  }
-
-  /**
-    * The file
-    * @type {?BufferResolvable|Stream}
-    * @readonly
-    */
-  get attachment() {
-    return this.file.attachment;
-  }
-
-  /**
-    * Sets the file of this attachment.
-    * @param {BufferResolvable|Stream} file The file
-    * @param {string} name The name of the file
-    * @returns {MessageAttachment} This attachment
-    */
-  setAttachment(file, name) {
-    this.file = { attachment: file, name };
+   * Sets the file of this attachment.
+   * @param {BufferResolvable|Stream} attachment The file
+   * @param {string} [name=null] The name of the file, if any
+   * @returns {MessageAttachment} This attachment
+   */
+  setFile(attachment, name = null) {
+    this.attachment = attachment;
+    this.name = name;
     return this;
   }
 
   /**
-    * Sets the file of this attachment.
-    * @param {BufferResolvable|Stream} attachment The file
-    * @returns {MessageAttachment} This attachment
-    */
-  setFile(attachment) {
-    this.file = { attachment };
-    return this;
-  }
-
-  /**
-    * Sets the name of this attachment.
-    * @param {string} name The name of the image
-    * @returns {MessageAttachment} This attachment
-    */
+   * Sets the name of this attachment.
+   * @param {string} name The name of the file
+   * @returns {MessageAttachment} This attachment
+   */
   setName(name) {
-    this.file.name = name;
+    this.name = name;
     return this;
-  }
-
-  /**
-    * Sets the file of this attachment.
-    * @param {BufferResolvable|Stream} file The file
-    * @param {string} name The name of the file
-    * @private
-    */
-  _attach(file, name) {
-    if (typeof file === 'string') this.file = file;
-    else this.setAttachment(file, name);
   }
 
   _patch(data) {
@@ -102,13 +66,13 @@ class MessageAttachment {
      * The height of this attachment (if an image or video)
      * @type {?number}
      */
-    this.height = data.height;
+    this.height = typeof data.height !== 'undefined' ? data.height : null;
 
     /**
      * The width of this attachment (if an image or video)
      * @type {?number}
      */
-    this.width = data.width;
+    this.width = typeof data.width !== 'undefined' ? data.width : null;
   }
 
   toJSON() {

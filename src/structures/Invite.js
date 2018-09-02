@@ -3,7 +3,7 @@ const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code` and `channel`. Other properties can be missing.</warn>
+ * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
  * @extends {Base}
  */
 class Invite extends Base {
@@ -29,49 +29,37 @@ class Invite extends Base {
      * The approximate number of online members of the guild this invite is for
      * @type {?number}
      */
-    this.presenceCount = data.approximate_presence_count || null;
+    this.presenceCount = 'approximate_presence_count' in data ? data.approximate_presence_count : null;
 
     /**
      * The approximate total number of members of the guild this invite is for
      * @type {?number}
      */
-    this.memberCount = data.approximate_member_count || null;
-
-    /**
-     * The number of text channels the guild this invite goes to has
-     * @type {?number}
-     */
-    this.textChannelCount = data.guild ? data.guild.text_channel_count : null;
-
-    /**
-     * The number of voice channels the guild this invite goes to has
-     * @type {?number}
-     */
-    this.voiceChannelCount = data.guild ? data.guild.voice_channel_count : null;
+    this.memberCount = 'approximate_member_count' in data ? data.approximate_member_count : null;
 
     /**
      * Whether or not this invite is temporary
      * @type {?boolean}
      */
-    this.temporary = data.temporary || null;
+    this.temporary = 'temporary' in data ? data.temporary : null;
 
     /**
-     * The maximum age of the invite, in seconds
+     * The maximum age of the invite, in seconds, 0 if never expires
      * @type {?number}
      */
-    this.maxAge = data.max_age || null;
+    this.maxAge = 'max_age' in data ? data.max_age : null;
 
     /**
      * How many times this invite has been used
      * @type {?number}
      */
-    this.uses = data.uses || null;
+    this.uses = 'uses' in data ? data.uses : null;
 
     /**
      * The maximum uses of this invite
      * @type {?number}
      */
-    this.maxUses = data.max_uses || null;
+    this.maxUses = 'max_uses' in data ? data.max_uses : null;
 
     /**
      * The user who created this invite
@@ -81,7 +69,7 @@ class Invite extends Base {
 
     /**
      * The channel the invite is for
-     * @type {GuildChannel}
+     * @type {Channel}
      */
     this.channel = this.client.channels.add(data.channel, this.guild, false);
 
@@ -89,7 +77,7 @@ class Invite extends Base {
      * The timestamp the invite was created at
      * @type {?number}
      */
-    this.createdTimestamp = new Date(data.created_at).getTime() || null;
+    this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
   }
 
   /**
@@ -107,7 +95,7 @@ class Invite extends Base {
    * @readonly
    */
   get expiresTimestamp() {
-    return this.createdTimestamp ? this.createdTimestamp + (this.maxAge * 1000) : null;
+    return this.createdTimestamp && this.maxAge ? this.createdTimestamp + (this.maxAge * 1000) : null;
   }
 
   /**
@@ -116,7 +104,8 @@ class Invite extends Base {
    * @readonly
    */
   get expiresAt() {
-    return this.expiresTimestamp ? new Date(this.expiresTimestamp) : null;
+    const { expiresTimestamp } = this;
+    return expiresTimestamp ? new Date(expiresTimestamp) : null;
   }
 
   /**
@@ -154,8 +143,6 @@ class Invite extends Base {
       expiresTimestamp: true,
       presenceCount: false,
       memberCount: false,
-      textChannelCount: false,
-      voiceChannelCount: false,
       uses: false,
       channel: 'channelID',
       inviter: 'inviterID',
