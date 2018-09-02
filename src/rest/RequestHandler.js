@@ -153,7 +153,7 @@ class RequestHandler {
       // Retry the specified number of times for possible serverside issues
       if (item.retries === this.manager.client.options.retryLimit) {
         return reject(
-          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.route)
+          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.path)
         );
       } else {
         item.retries++;
@@ -170,7 +170,7 @@ class RequestHandler {
         return null;
       } catch (err) {
         return reject(
-          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.route)
+          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path)
         );
       }
     }
