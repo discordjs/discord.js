@@ -8,7 +8,11 @@ class GuildBanStore extends DataStore {
   }
 
   add(ban, cache) {
-    return super.add(ban, cache, { id: ban.user.id });
+    const existing = this.get(ban.user.id);
+    if (existing.reason === ban.reason && existing.fetched === ban.fetched) return existing;
+
+    if (cache) this.set(ban.user.id, ban);
+    return ban;
   }
 
   /**
@@ -16,6 +20,7 @@ class GuildBanStore extends DataStore {
    * @typedef {Object} BanInfo
    * @property {User} user User that was banned
    * @property {?string} reason Reason the user was banned
+   * @property {boolean} fetched If this BanInfo is fetched and will be accurate about the reason
    */
 
   /**
@@ -31,7 +36,7 @@ class GuildBanStore extends DataStore {
    *   .catch(console.error);
    * @example
    * // Fetch a single ban in this guild
-   * guild.bans.fetch('184632227894657025')
+   * guild.bans.fetch({ id: '184632227894657025' })
    *  .then(ban => console.log(`User ${ban.user} was banned with reason ${ban.reason}`))
    *  .catch(console.error);
    */
@@ -40,15 +45,18 @@ class GuildBanStore extends DataStore {
       .then(data => {
         let result;
         if (id) {
-          result = { reason: data.reason, user: this.client.users.add(data.user) };
+          result = { reason: data.reason, user: this.client.users.add(data.user), fetched: true };
           this.add(result, cache);
         } else if (cache) {
-          for (const ban of data) { this.add(ban, cache); }
+          for (const ban of data) {
+            this.add({ reason: ban.reason, user: this.client.users.add(ban.user), fetched: true }, cache);
+          }
           return this;
         } else {
           return data.reduce((collection, ban) => collection.set(ban.user.id, {
             reason: ban.reason,
             user: this.client.users.add(ban.user),
+            fetched: true,
           }), new Collection());
         }
         return result;
