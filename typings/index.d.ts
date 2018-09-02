@@ -1335,8 +1335,10 @@ declare module 'discord.js' {
 
 	export class GuildBanStore extends DataStore<Snowflake, BanInfo> {
 		constructor(guild: Guild);
-		public add(ban: BanInfo, cache: boolean): BanInfo;
-		public fetch(options: FetchBanOptions): Promise<Collection<Snowflake, BanInfo> | BanInfo>;
+		public add(ban: BanInfo, cache?: boolean): BanInfo;
+		public fetch(): Promise<GuildBanStore>;
+		public fetch(options: { cache: false }): Promise<Collection<Snowflake, BanInfo>>;
+		public fetch(options: FetchBanOptions): Promise<BanInfo>;
 	}
 
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
@@ -1510,13 +1512,8 @@ declare module 'discord.js' {
 	type BanInfo = {
 		user: User;
 		fetched: boolean;
-		reason?: string;
-	}
-
-	type FetchBanOptions = {
-		id: Snowflake;
-		cache: boolean;
-	}
+		reason: string | null;
+	};
 
 	type Base64Resolvable = Buffer | Base64String;
 
@@ -1653,6 +1650,11 @@ declare module 'discord.js' {
 		User: typeof User;
 	};
 
+	type FetchBanOptions = {
+		id: Snowflake;
+		cache?: boolean;
+	};
+
 	type FetchMemberOptions = {
 		user: UserResolvable;
 		cache?: boolean;
@@ -1662,7 +1664,7 @@ declare module 'discord.js' {
 		query?: string;
 		limit?: number;
 	};
-
+	
 	type FileOptions = {
 		attachment: BufferResolvable | Stream;
 		name?: string;
