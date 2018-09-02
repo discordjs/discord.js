@@ -94,7 +94,7 @@ class GuildChannel extends Channel {
   /**
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
-   * @returns {?Permissions}
+   * @returns {?Readonly<Permissions>}
    */
   permissionsFor(memberOrRole) {
     const member = this.guild.members.resolve(memberOrRole);

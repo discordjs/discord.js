@@ -523,7 +523,7 @@ declare module 'discord.js' {
 			options: Array<Partial<PermissionOverwrites|PermissionOverwriteOptions>> | Collection<Snowflake, Partial<PermissionOverwriteOptions>>,
 			reason?: string
 		): Promise<GuildChannel>;
-		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Permissions;
+		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions>;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
