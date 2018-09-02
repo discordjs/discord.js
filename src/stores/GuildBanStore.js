@@ -40,7 +40,7 @@ class GuildBanStore extends DataStore {
    *  .then(ban => console.log(`User ${ban.user} was banned with reason ${ban.reason}`))
    *  .catch(console.error);
    */
-  fetch({ id, cache = true }) {
+  fetch({ id, cache = true } = {}) {
     return this.client.api.guilds(this.guild.id).bans(id).get()
       .then(data => {
         let result;
