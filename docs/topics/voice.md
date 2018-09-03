@@ -79,7 +79,7 @@ These are just a subset of the options available (consult documentation for a fu
 
 ### What can I play?
 
-Discord.js allows you to play a lot of things:
+discord.js allows you to play a lot of things:
 
 ```js
 // ReadableStreams, in this example YouTube audio

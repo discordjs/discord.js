@@ -1,5 +1,5 @@
 /**
- * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
+ * Allows for the extension of built-in discord.js structures that are instantiated by {@link DataStore DataStores}.
  */
 class Structures {
   constructor() {
