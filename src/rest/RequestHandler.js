@@ -127,7 +127,7 @@ class RequestHandler {
         // Set the manager's global timeout as the promise for other requests to "wait"
         this.manager.globalTimeout = Util.delayFor(this.retryAfter);
 
-        // Wait for the global timeout to resolve before continue
+        // Wait for the global timeout to resolve before continuing
         await this.manager.globalTimeout;
 
         // Clean up global timeout
@@ -140,7 +140,7 @@ class RequestHandler {
 
     if (res.ok) {
       const success = await parseResponse(res);
-      // Nothing wrong with the request, proceed with the next
+      // Nothing wrong with the request, proceed with the next one
       resolve(success);
       return this.run();
     } else if (res.status === 429) {
@@ -150,13 +150,13 @@ class RequestHandler {
       await Util.delayFor(this.retryAfter);
       return this.run();
     } else if (res.status >= 500 && res.status < 600) {
-      // Retry once for possible serverside issues
-      if (item.retried) {
+      // Retry the specified number of times for possible serverside issues
+      if (item.retries === this.manager.client.options.retryLimit) {
         return reject(
-          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.route)
+          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.path)
         );
       } else {
-        item.retried = true;
+        item.retries++;
         this.queue.unshift(item);
         return this.run();
       }
@@ -170,7 +170,7 @@ class RequestHandler {
         return null;
       } catch (err) {
         return reject(
-          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.route)
+          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path)
         );
       }
     }

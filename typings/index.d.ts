@@ -36,8 +36,8 @@ declare module 'discord.js' {
 	}
 
 	export class ActivityFlags extends BitField<ActivityFlagsString> {
-		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
 		public static FLAGS: Record<ActivityFlagsString, number>;
+		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
 	}
 
 	export class APIMessage {
@@ -108,8 +108,8 @@ declare module 'discord.js' {
 		public toJSON(): number;
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
+		public static FLAGS: object;
 		public static resolve(bit?: BitFieldResolvable<string>): number;
-		public static FLAGS: { [key: string]: number };
 	}
 
 	export class CategoryChannel extends GuildChannel {
@@ -523,7 +523,7 @@ declare module 'discord.js' {
 			options: Array<Partial<PermissionOverwrites|PermissionOverwriteOptions>> | Collection<Snowflake, Partial<PermissionOverwriteOptions>>,
 			reason?: string
 		): Promise<GuildChannel>;
-		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Permissions;
+		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
@@ -545,6 +545,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<GuildEmoji>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 		public equals(other: GuildEmoji | object): boolean;
+		public fetchAuthor(): Promise<User>;
 		public setName(name: string, reason?: string): Promise<GuildEmoji>;
 	}
 
@@ -656,6 +657,7 @@ declare module 'discord.js' {
 		public system: boolean;
 		public tts: boolean;
 		public type: MessageType;
+		public readonly url: string;
 		public webhookID: Snowflake;
 		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
@@ -681,6 +683,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public name?: string;
 		public proxyURL: string;
+		public size: number;
 		public url: string;
 		public width: number;
 		public setFile(attachment: BufferResolvable | Stream, name?: string): this;
@@ -1013,8 +1016,8 @@ declare module 'discord.js' {
 	}
 
 	export class Speaking extends BitField<SpeakingString> {
-		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
 		public static FLAGS: Record<SpeakingString, number>;
+		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
 	}
 
 	export class Structures {
@@ -1389,6 +1392,8 @@ declare module 'discord.js' {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
 		readonly lastMessage: Message;
+		lastPinTimestamp: number;
+		readonly lastPinAt: Date;
 		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 	};
@@ -1560,6 +1565,7 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		retryLimit?: number,
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
