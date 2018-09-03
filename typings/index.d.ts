@@ -1390,6 +1390,8 @@ declare module 'discord.js' {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
 		readonly lastMessage: Message;
+		lastPinTimestamp: number;
+		readonly lastPinAt: Date;
 		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 	};

@@ -43,6 +43,12 @@ class TextChannel extends GuildChannel {
      */
     this.lastMessageID = data.last_message_id;
 
+    /**
+     * The timestamp when the last pinned message was pinned, if there was one
+     * @type {?number}
+     */
+    this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+
     if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
 
@@ -101,6 +107,7 @@ class TextChannel extends GuildChannel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   get lastMessage() {}
+  get lastPinAt() {}
   send() {}
   search() {}
   startTyping() {}
