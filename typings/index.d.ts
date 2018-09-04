@@ -315,8 +315,8 @@ declare module 'discord.js' {
 		public readonly next: Promise<V>;
 		public options: CollectorOptions;
 		public checkEnd(): void;
-		public handleCollect(...args: any[]): void;
-		public handleDispose(...args: any[]): void;
+		public handleCollect(...args: any[]): Promise<void>;
+		public handleDispose(...args: any[]): Promise<void>;
 		public stop(reason?: string): void;
 		public toJSON(): object;
 
