@@ -134,7 +134,7 @@ class User {
   }
 
   /**
-   * The Discord "tag" for this user
+   * The Discord "tag" for this user in the format username#1234.
    * @type {string}
    * @readonly
    */
