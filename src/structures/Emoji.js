@@ -84,7 +84,7 @@ class Emoji {
   }
 
   /**
-   * Whether the moej is deletable by the client user
+   * Whether the emoji is deletable by the client user
    * @type {boolean}
    * @readonly
    */
