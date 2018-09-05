@@ -74,11 +74,15 @@ class Collector extends EventEmitter {
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
+   * @returns {Promise<void>}
    */
-  handleCollect(...args) {
+  async handleCollect(...args) {
     const collect = this.collect(...args);
+    let filterResult = this.filter(...args, this.collected);
 
-    if (collect && this.filter(...args, this.collected)) {
+    if (filterResult instanceof Promise) filterResult = await filterResult;
+
+    if (collect && filterResult) {
       this.collected.set(collect, args[0]);
 
       /**
@@ -95,12 +99,16 @@ class Collector extends EventEmitter {
    * Call this to remove an element from the collection. Accepts any event data as parameters.
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#dispose
+   * @returns {Promise<void>}
    */
-  handleDispose(...args) {
+  async handleDispose(...args) {
     if (!this.options.dispose) return;
 
     const dispose = this.dispose(...args);
-    if (!dispose || !this.filter(...args) || !this.collected.has(dispose)) return;
+    let filterResult = this.filter(...args);
+
+    if (filterResult instanceof Promise) filterResult = await filterResult;
+    if (!dispose || !filterResult || !this.collected.has(dispose)) return;
     this.collected.delete(dispose);
 
     /**
