@@ -8,7 +8,7 @@ class GuildBanAdd extends Action {
     const guild = client.guilds.get(data.guild_id);
     const user = client.users.add(data.user);
     if (guild && user) {
-      guild.bans.add(new GuildBan(guild, { user }, false));
+      guild.bans.add(new GuildBan(guild, { user, reason: null }, false));
       client.emit(Events.GUILD_BAN_ADD, guild, user);
     }
   }
