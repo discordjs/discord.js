@@ -497,6 +497,14 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
+	export class GuildBan extends Base {
+		constructor(guild: Guild, data: object, fetched: boolean)
+		public reason: string;
+		public user: User;
+		public guild: Guild;
+		public fetched: boolean;
+	}
+
 	export class GuildChannel extends Channel {
 		constructor(guild: Guild, data: object);
 		private memberPermissions(member: GuildMember): Readonly<Permissions>;
@@ -1333,12 +1341,12 @@ declare module 'discord.js' {
 		public unban(user: UserResolvable, reason?: string): Promise<User>;
 	}
 
-	export class GuildBanStore extends DataStore<Snowflake, BanInfo> {
+	export class GuildBanStore extends DataStore<Snowflake, GuildBan> {
 		constructor(guild: Guild);
-		public add(ban: BanInfo, cache?: boolean): BanInfo;
+		public add(ban: GuildBan, cache?: boolean): GuildBan;
 		public fetch(): Promise<GuildBanStore>;
-		public fetch(options: { cache: false }): Promise<Collection<Snowflake, BanInfo>>;
-		public fetch(options: FetchBanOptions): Promise<BanInfo>;
+		public fetch(options: { cache: false }): Promise<Collection<Snowflake, GuildBan>>;
+		public fetch(options: FetchBanOptions): Promise<GuildBan>;
 	}
 
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
@@ -1507,12 +1515,6 @@ declare module 'discord.js' {
 	type BanOptions = {
 		days?: number;
 		reason?: string;
-	};
-
-	type BanInfo = {
-		user: User;
-		fetched: boolean;
-		reason: string | null;
 	};
 
 	type Base64Resolvable = Buffer | Base64String;

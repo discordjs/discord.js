@@ -55,7 +55,7 @@ class Guild extends Base {
     /**
      * A collection of banned members in this guild
      * <warn>This will not be up to date until you fetched at least one time</warn>
-     * @type {GuildBanStore<Snowflake, BanInfo>}
+     * @type {GuildBanStore<Snowflake, GuildBan>}
      */
     this.bans = new GuildBanStore(this);
 

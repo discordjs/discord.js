@@ -1,9 +1,17 @@
 const DataStore = require('./DataStore');
+const GuildBan = require('../structures/GuildBan');
 const Collection = require('../util/Collection');
 
+/**
+ * Stores guild bans
+ */
 class GuildBanStore extends DataStore {
   constructor(guild) {
-    super(guild.client);
+    super(guild.client, null, GuildBan);
+    /**
+     * The Guild of this Store
+     * @type {Guild}
+     */
     this.guild = guild;
   }
 
@@ -16,19 +24,11 @@ class GuildBanStore extends DataStore {
   }
 
   /**
-   * An object containing information about a guild member's ban.
-   * @typedef {Object} BanInfo
-   * @property {User} user User that was banned
-   * @property {?string} reason Reason the user was banned
-   * @property {boolean} fetched If this BanInfo is fetched and will be accurate about the reason
-   */
-
-  /**
-   * Fetch either a single BanInfo or a Collection of BanInfo Objects.
+   * Fetch either a single GuildBan or a Collection of GuildBan Instances.
    * @param {Object} [options] Options
    * @param {Snowflake} [options.id] Optional id of a banned user.
    * @param {boolean} [options.cache] cache settings of this request
-   * @returns {Promise<Collection<Snowflake, BanInfo> | BanInfo | this>}
+   * @returns {Promise<Collection<Snowflake, GuildBan> | GuildBan | this>}
    * @example
    * // Fetch all bans in this guild
    * guild.bans.fetch()
@@ -37,29 +37,29 @@ class GuildBanStore extends DataStore {
    * @example
    * // Fetch a single ban in this guild
    * guild.bans.fetch({ id: '184632227894657025' })
-   *  .then(ban => console.log(`User ${ban.user} was banned with reason ${ban.reason}`))
+   *  .then(ban => console.log(`User ${ban.user.tag} was banned with reason ${ban.reason}`))
    *  .catch(console.error);
    */
   fetch({ id, cache = true } = {}) {
+    const cached = this.get(id);
+    if (id && cached) return cached;
     return this.client.api.guilds(this.guild.id).bans(id).get()
       .then(data => {
-        let result;
         if (id) {
-          result = { reason: data.reason, user: this.client.users.add(data.user), fetched: true };
-          this.add(result, cache);
+          const ban = new GuildBan(this.guild, data, true);
+          this.add(ban, cache);
+          return ban;
         } else if (cache) {
           for (const ban of data) {
-            this.add({ reason: ban.reason, user: this.client.users.add(ban.user), fetched: true }, cache);
+            this.add(new GuildBan(this.guild, ban, true), cache);
           }
           return this;
         } else {
-          return data.reduce((collection, ban) => collection.set(ban.user.id, {
-            reason: ban.reason,
-            user: this.client.users.add(ban.user),
-            fetched: true,
-          }), new Collection());
+          return data.reduce(
+            (collection, ban) => collection.set(ban.user.id, new GuildBan(this.guild, ban, true)),
+            new Collection()
+          );
         }
-        return result;
       });
   }
 }
