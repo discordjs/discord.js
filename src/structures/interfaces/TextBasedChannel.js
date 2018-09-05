@@ -117,7 +117,7 @@ class TextBasedChannel {
 
     let apiMessage;
 
-    if (content instanceof apiMessage) {
+    if (content instanceof APIMessage) {
       apiMessage = content.resolveData();
     } else {
       apiMessage = APIMessage.create(this, content, options).resolveData();
