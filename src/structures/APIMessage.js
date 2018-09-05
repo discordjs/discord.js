@@ -195,7 +195,7 @@ class APIMessage {
 
     const apiMessages = [];
 
-    for (let i = 0; i < this.data.length; i++) {
+    for (let i = 0; i < this.data.content.length; i++) {
       let data;
       let opt;
 
