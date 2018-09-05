@@ -6,8 +6,8 @@ const Collection = require('../util/Collection');
  * Stores guild bans
  */
 class GuildBanStore extends DataStore {
-  constructor(guild) {
-    super(guild.client, null, GuildBan);
+  constructor(guild, iterable) {
+    super(guild.client, iterable, GuildBan);
     /**
      * The Guild of this Store
      * @type {Guild}
