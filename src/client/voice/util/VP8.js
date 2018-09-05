@@ -5,7 +5,7 @@ class Payload {
   constructor(data) {
     this.descriptor = new PayloadDescriptor(data);
     if (this.descriptor.isStartOfVP8Partition && this.descriptor.partitionIndex === 0) {
-      this.header = new PayloadHeader(data.slice(this.descriptor.size));
+      this.header = new PayloadHeader(data.slice(this.descriptor.length));
     }
   }
 }
@@ -13,33 +13,40 @@ class Payload {
 class PayloadDescriptor {
   constructor(data) {
     this.data = data;
+
+    this.length = 0;
+    this._main = this.data[this.length++];
+    if (this.hasExtendedControlBits) {
+      this._extendedControl = this.data[this.length++];
+      if (this.hasPictureID) {
+        this._pictureID = this.data[this.length++];
+        if (this._pictureID >> 7) {
+          this._pictureID = (this._pictureID << 8) + this.data[this.length++];
+        }
+      }
+      if (this.hasTL0PICIDX) this._TL0PICIDX = this.data[this.length++];
+      if (this.hasTID || this.hasKEYIDX) this._TIDYKEYIDX = this.data[this.length++];
+    }
   }
 
-  get hasExtendedControlBits() { return this.data[0] >> 7; }
-  get isNonReferenceFrame() { return this.data[0] & (1 << 5); }
-  get isStartOfVP8Partition() { return this.data[0] & (1 << 4); }
-  get partitionIndex() { return this.data[0] & 0x7; }
+  get hasExtendedControlBits() { return this._main >> 7; }
+  get isNonReferenceFrame() { return this._main & (1 << 5); }
+  get isStartOfVP8Partition() { return this._main & (1 << 4); }
+  get partitionIndex() { return this._main & 0x7; }
 
-  get hasPictureID() { return this.hasExtendedControlBits ? this.data[1] >> 7 : null; }
-  get hasTL0PICIDX() { return this.hasExtendedControlBits ? this.data[1] & (1 << 6) : null; }
-  get hasTID() { return this.hasExtendedControlBits ? this.data[1] & (1 << 5) : null; }
-  get hasKEYIDX() { return this.hasExtendedControlBits ? this.data[1] & (1 << 4) : null; }
+  get hasPictureID() { return this._extendedControl >> 7; }
+  get hasTL0PICIDX() { return this._extendedControl & (1 << 6); }
+  get hasTID() { return this._extendedControl & (1 << 5); }
+  get hasKEYIDX() { return this._extendedControl & (1 << 4); }
 
-  get pictureIDLength() { return this.hasPictureID ? this.data[2] >> 7 ? 15 : 7 : null; }
-  get pictureID() {
-    return this.pictureIDLength === 7 ?
-      this.data[2] & 0x7F :
-      this.data.readUInt16BE(2) & ~0x8000;
-  }
-  get _pictureIDOffset() { return this.pictureIDLength === 7 ? 0 : 1; }
+  get pictureIDLength() { return this._pictureID >> 7 ? 15 : 7; }
+  get pictureID() { return this.pictureIDLength === 7 ? this._pictureID & 0x7f : this._pictureID & 0x7fff; }
 
-  get TL0PICIDX() { return this.hasTL0PICIDX ? this.data[3 + this._pictureIDOffset] : null; }
+  get TL0PICIDX() { return this._TL0PICIDX; }
 
-  get TID() { return this.hasTID ? this.data[4 + this._pictureIDOffset] >> 6 : null; }
-  get Y() { return this.hadTID || this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & (1 << 5) : null; }
-  get KEYIDX() { return this.hasKEYIDX ? this.data[4 + this._pictureIDOffset] & 0x1F : null; }
-
-  get size() { return 5 + this._pictureIDOffset; }
+  get TID() { return this._TIDYKEYIDX >> 6; }
+  get Y() { return this._TIDYKEYIDX & (1 << 5); }
+  get KEYIDX() { return this._TIDYKEYIDX & 0x1F; }
 }
 
 // https://tools.ietf.org/id/draft-ietf-payload-vp8-01.html#rfc.section.4.2
