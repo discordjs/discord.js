@@ -16,7 +16,7 @@ declare module 'discord.js' {
 //#region Classes
 
 	export class Activity {
-		constructor(presence: Presence, data: object);
+		constructor(presence: Presence, data?: object);
 		public applicationID: Snowflake;
 		public assets: RichPresenceAssets;
 		public details: string;
@@ -117,7 +117,7 @@ declare module 'discord.js' {
 	}
 
 	export class Channel extends Base {
-		constructor(client: Client, data: object);
+		constructor(client: Client, data?: object);
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
@@ -342,7 +342,7 @@ declare module 'discord.js' {
 	}
 
 	export class DiscordAPIError extends Error {
-		constructor(path: string, error: object);
+		constructor(path: string, error: object, method: string);
 		private static flattenErrors(obj: object, key: string): string[];
 
 		public code: number;
@@ -351,7 +351,7 @@ declare module 'discord.js' {
 	}
 
 	export class DMChannel extends TextBasedChannel(Channel) {
-		constructor(client: Client, data: object);
+		constructor(client: Client, data?: object);
 		public messages: MessageStore;
 		public recipient: User;
 	}
@@ -369,7 +369,7 @@ declare module 'discord.js' {
 	}
 
 	export class GroupDMChannel extends TextBasedChannel(Channel) {
-		constructor(client: Client, data: object);
+		constructor(client: Client, data?: object);
 		public applicationID: Snowflake;
 		public icon: string;
 		public managed: boolean;
@@ -482,7 +482,7 @@ declare module 'discord.js' {
 	}
 
 	class GuildAuditLogsEntry {
-		constructor(guild: Guild, data: object);
+		constructor(logs: GuildAuditLogs, guild: Guild, data: object);
 		public action: GuildAuditLogsAction;
 		public actionType: GuildAuditLogsActionType;
 		public changes: AuditLogChange[];
@@ -498,7 +498,7 @@ declare module 'discord.js' {
 	}
 
 	export class GuildChannel extends Channel {
-		constructor(guild: Guild, data: object);
+		constructor(guild: Guild, data?: object);
 		private memberPermissions(member: GuildMember): Readonly<Permissions>;
 		private rolePermissions(role: Role): Readonly<Permissions>;
 
@@ -676,7 +676,7 @@ declare module 'discord.js' {
 	}
 
 	export class MessageAttachment {
-		constructor(attachment: BufferResolvable | Stream, name?: string);
+		constructor(attachment: BufferResolvable | Stream, name?: string, data?: object);
 
 		public attachment: BufferResolvable | Stream;
 		public height: number;
@@ -738,7 +738,7 @@ declare module 'discord.js' {
 	}
 
 	export class MessageMentions {
-		constructor(message: Message, users: any[], roles: any[], everyone: boolean);
+		constructor(message: Message, users: object[] | Collection<Snowflake, User>, roles: Snowflake[] | Collection<Snowflake, Role>, everyone: boolean);
 		private _channels: Collection<Snowflake, GuildChannel>;
 		private readonly _content: Message;
 		private _members: Collection<Snowflake, GuildMember>;
@@ -776,7 +776,7 @@ declare module 'discord.js' {
 	}
 
 	export class PermissionOverwrites {
-		constructor(guildChannel: GuildChannel, data: object);
+		constructor(guildChannel: GuildChannel, data?: object);
 		public allow: Readonly<Permissions>;
 		public readonly channel: GuildChannel;
 		public deny: Readonly<Permissions>;
@@ -796,7 +796,7 @@ declare module 'discord.js' {
 	}
 
 	export class Presence {
-		constructor(client: Client, data: object);
+		constructor(client: Client, data?: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
 		public status: 'online' | 'offline' | 'idle' | 'dnd';
@@ -884,7 +884,7 @@ declare module 'discord.js' {
 	}
 
 	export class Shard extends EventEmitter {
-		constructor(manager: ShardingManager, id: number, args?: string[]);
+		constructor(manager: ShardingManager, id: number);
 		private _evals: Map<string, Promise<any>>;
 		private _exitListener: Function;
 		private _fetches: Map<string, Promise<any>>;
@@ -1028,7 +1028,7 @@ declare module 'discord.js' {
 	}
 
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
-		constructor(guild: Guild, data: object);
+		constructor(guild: Guild, data?: object);
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: MessageStore;
 		public nsfw: boolean;
@@ -1061,17 +1061,6 @@ declare module 'discord.js' {
 		public typingDurationIn(channel: ChannelResolvable): number;
 		public typingIn(channel: ChannelResolvable): boolean;
 		public typingSinceIn(channel: ChannelResolvable): Date;
-	}
-
-	export class UserConnection {
-		constructor(user: User, data: object);
-		public id: string;
-		public integrations: object[];
-		public name: string;
-		public revoked: boolean;
-		public type: string;
-		public user: User;
-		public toJSON(): object;
 	}
 
 	export class Util {
@@ -1127,7 +1116,7 @@ declare module 'discord.js' {
 	}
 
 	export class VoiceChannel extends GuildChannel {
-		constructor(guild: Guild, data: object);
+		constructor(guild: Guild, data?: object);
 		public bitrate: number;
 		public readonly connection: VoiceConnection;
 		public readonly full: boolean;
@@ -1258,7 +1247,7 @@ declare module 'discord.js' {
 	}
 
 	export class Webhook extends WebhookMixin() {
-		constructor(client: Client, data: object);
+		constructor(client: Client, data?: object);
 		public avatar: string;
 		public channelID: Snowflake;
 		public guildID: Snowflake;
