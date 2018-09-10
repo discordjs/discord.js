@@ -134,7 +134,7 @@ class User {
   }
 
   /**
-   * The Discord "tag" for this user
+   * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
    * @type {string}
    * @readonly
    */
