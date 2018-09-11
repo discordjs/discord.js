@@ -1,7 +1,7 @@
 {
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2017
+    "ecmaVersion": 2018
   },
   "env": {
     "es6": true,
@@ -80,6 +80,7 @@
     "no-undef-init": "error",
 
     "callback-return": "error",
+    "getter-return": "off",
     "handle-callback-err": "error",
     "no-mixed-requires": "error",
     "no-new-require": "error",

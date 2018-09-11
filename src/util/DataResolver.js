@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const snekfetch = require('snekfetch');
+const fetch = require('node-fetch');
 const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -83,13 +83,13 @@ class DataResolver {
    * @returns {Promise<Buffer>}
    */
   static resolveFile(resource) {
-    if (resource instanceof Buffer) return Promise.resolve(resource);
+    if (!browser && resource instanceof Buffer) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return snekfetch.get(resource).then(res => res.body instanceof Buffer ? res.body : Buffer.from(res.text));
-      } else {
+        return fetch(resource).then(res => browser ? res.blob() : res.buffer());
+      } else if (!browser) {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
@@ -103,7 +103,7 @@ class DataResolver {
           });
         });
       }
-    } else if (resource.pipe && typeof resource.pipe === 'function') {
+    } else if (typeof resource.pipe === 'function') {
       return new Promise((resolve, reject) => {
         const buffers = [];
         resource.once('error', reject);

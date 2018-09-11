@@ -45,7 +45,6 @@ class UserStore extends DataStore {
 
   /**
    * Obtains a user from Discord, or the user cache if it's already available.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
    * @returns {Promise<User>}

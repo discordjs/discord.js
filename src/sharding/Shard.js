@@ -14,9 +14,8 @@ class Shard extends EventEmitter {
   /**
    * @param {ShardingManager} manager Manager that is spawning this shard
    * @param {number} id ID of this shard
-   * @param {string[]} [args=[]] Command line arguments to pass to the script
    */
-  constructor(manager, id, args = []) {
+  constructor(manager, id) {
     super();
 
     /**
@@ -35,7 +34,13 @@ class Shard extends EventEmitter {
      * Arguments for the shard's process
      * @type {string[]}
      */
-    this.args = args;
+    this.args = manager.shardArgs || [];
+
+    /**
+     * Arguments for the shard's process executable
+     * @type {?string[]}
+     */
+    this.execArgv = manager.execArgv;
 
     /**
      * Environment variables for the shard's process
@@ -91,7 +96,9 @@ class Shard extends EventEmitter {
   async spawn(waitForReady = true) {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
 
-    this.process = childProcess.fork(path.resolve(this.manager.file), this.args, { env: this.env })
+    this.process = childProcess.fork(path.resolve(this.manager.file), this.args, {
+      env: this.env, execArgv: this.execArgv,
+    })
       .on('message', this._handleMessage.bind(this))
       .on('exit', this._exitListener);
 
@@ -113,7 +120,7 @@ class Shard extends EventEmitter {
   }
 
   /**
-   * Kills this shard.
+   * Immediately kills the shard's process and does not restart it.
    */
   kill() {
     this.process.removeListener('exit', this._exitListener);

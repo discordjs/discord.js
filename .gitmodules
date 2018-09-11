@@ -1,3 +1,0 @@
-[submodule "typings"]
-	path = typings
-	url = https://github.com/discordjs/discord.js-typings

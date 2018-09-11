@@ -1,6 +1,6 @@
 const DataResolver = require('../util/DataResolver');
-const { Channel } = require('./Channel');
-const { createMessage } = require('./shared');
+const Channel = require('./Channel');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a webhook.
@@ -28,7 +28,7 @@ class Webhook {
      * The token for the webhook
      * @type {string}
      */
-    this.token = data.token;
+    Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -82,11 +82,10 @@ class Webhook {
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message.
    */
 
-  /* eslint-disable max-len */
   /**
    * Sends a message with this webhook.
-   * @param {StringResolvable} [content] The content to send
-   * @param {WebhookMessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] The options to provide
+   * @param {StringResolvable} [content=''] The content to send
+   * @param {WebhookMessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
    * // Send a basic message
@@ -127,20 +126,18 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
-    }
-    if (!options.content) options.content = content;
-
-    const { data, files } = await createMessage(this, options);
-
+    const apiMessage = APIMessage.create(this, content, options);
+    const data = apiMessage.resolveData();
     if (data.content instanceof Array) {
       const messages = [];
       for (let i = 0; i < data.content.length; i++) {
-        const opt = i === data.content.length - 1 ? { embeds: data.embeds, files } : {};
+        let opt;
+        if (i === data.content.length - 1) {
+          opt = { embeds: data.embeds, files: apiMessage.options.files };
+        } else {
+          opt = {};
+        }
+
         Object.assign(opt, { avatarURL: data.avatar_url, content: data.content[i], username: data.username });
         // eslint-disable-next-line no-await-in-loop
         const message = await this.send(data.content[i], opt);
@@ -149,7 +146,7 @@ class Webhook {
       return messages;
     }
 
-
+    const files = await apiMessage.resolveFiles();
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,
       query: { wait: true },

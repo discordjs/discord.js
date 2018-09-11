@@ -1,7 +1,8 @@
 const Snowflake = require('../util/Snowflake');
 const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
 const Base = require('./Base');
+
+const AssetTypes = Object.keys(ClientApplicationAssetTypes);
 
 /**
  * Represents a Client OAuth2 Application.
@@ -39,66 +40,34 @@ class ClientApplication extends Base {
     this.icon = data.icon;
 
     /**
-     * The app's cover image hash
+     * The app's cover image
      * @type {?string}
      */
-    this.cover = data.cover_image;
+    this.cover = data.cover_image || null;
 
     /**
-     * The app's RPC origins
-     * @type {?string[]}
-     */
-    this.rpcOrigins = data.rpc_origins;
-
-    /**
-     * The app's redirect URIs
+     * The app's RPC origins, if enabled
      * @type {string[]}
      */
-    this.redirectURIs = data.redirect_uris;
+    this.rpcOrigins = data.rpc_origins || [];
 
     /**
      * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.botRequireCodeGrant = data.bot_require_code_grant;
+    this.botRequireCodeGrant = typeof data.bot_require_code_grant !== 'undefined' ? data.bot_require_code_grant : null;
 
     /**
      * If this app's bot is public
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.botPublic = data.bot_public;
+    this.botPublic = typeof data.bot_public !== 'undefined' ? data.bot_public : null;
 
     /**
-     * If this app can use rpc
-     * @type {boolean}
+     * The owner of this OAuth application
+     * @type {?User}
      */
-    this.rpcApplicationState = data.rpc_application_state;
-
-    /**
-     * Object containing basic info about this app's bot
-     * @type {Object}
-     */
-    this.bot = data.bot;
-
-    /**
-     * The flags for the app
-     * @type {number}
-     */
-    this.flags = data.flags;
-
-    /**
-     * OAuth2 secret for the application
-     * @type {string}
-     */
-    this.secret = data.secret;
-
-    if (data.owner) {
-      /**
-       * The owner of this OAuth application
-       * @type {?User}
-       */
-      this.owner = this.client.users.add(data.owner);
-    }
+    this.owner = data.owner ? this.client.users.add(data.owner) : null;
   }
 
   /**
@@ -121,9 +90,7 @@ class ClientApplication extends Base {
 
   /**
    * A link to the application's icon.
-   * @param {Object} [options={}] Options for the icon url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the icon
    */
   iconURL({ format, size } = {}) {
@@ -133,9 +100,7 @@ class ClientApplication extends Base {
 
   /**
    * A link to this application's cover image.
-   * @param {Object} [options={}] Options for the cover image url
-   * @param {string} [options.format='webp'] One of `webp`, `png`, `jpg`
-   * @param {number} [options.size=128] One of `128`, `256`, `512`, `1024`, `2048`
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the cover image
    */
   coverImage({ format, size } = {}) {
@@ -146,52 +111,24 @@ class ClientApplication extends Base {
   }
 
   /**
-   * Get rich presence assets.
-   * @returns {Promise<Object>}
+   * Asset data.
+   * @typedef {Object} ClientAsset
+   * @property {Snowflake} id The asset ID
+   * @property {string} name The asset name
+   * @property {string} type The asset type
+   */
+
+  /**
+   * Gets the clients rich presence assets.
+   * @returns {Promise<Array<ClientAsset>>}
    */
   fetchAssets() {
-    const types = Object.keys(ClientApplicationAssetTypes);
     return this.client.api.oauth2.applications(this.id).assets.get()
       .then(assets => assets.map(a => ({
         id: a.id,
         name: a.name,
-        type: types[a.type - 1],
+        type: AssetTypes[a.type - 1],
       })));
-  }
-
-  /**
-   * Creates a rich presence asset.
-   * @param {string} name Name of the asset
-   * @param {Base64Resolvable} data Data of the asset
-   * @param {string} type Type of the asset. `big`, or `small`
-   * @returns {Promise}
-   */
-  async createAsset(name, data, type) {
-    return this.client.api.oauth2.applications(this.id).assets.post({ data: {
-      name,
-      type: ClientApplicationAssetTypes[type.toUpperCase()],
-      image: await DataResolver.resolveImage(data),
-    } });
-  }
-
-  /**
-   * Resets the app's secret.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<ClientApplication>}
-   */
-  resetSecret() {
-    return this.client.api.oauth2.applications[this.id].reset.post()
-      .then(app => new ClientApplication(this.client, app));
-  }
-
-  /**
-   * Resets the app's bot token.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<ClientApplication>}
-   */
-  resetToken() {
-    return this.client.api.oauth2.applications[this.id].bot.reset.post()
-      .then(app => new ClientApplication(this.client, Object.assign({}, this, { bot: app })));
   }
 
   /**

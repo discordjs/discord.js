@@ -11,10 +11,15 @@ class PacketHandler extends EventEmitter {
     this.streams = new Map();
   }
 
+  get connection() {
+    return this.receiver.connection;
+  }
+
   _stoppedSpeaking(userID) {
-    if (this.streams.has(userID)) {
-      const { stream, end } = this.streams.get(userID);
-      if (end === 'silence') stream.push(null);
+    const streamInfo = this.streams.get(userID);
+    if (streamInfo && streamInfo.end === 'silence') {
+      this.streams.delete(userID);
+      streamInfo.stream.push(null);
     }
   }
 
@@ -27,14 +32,14 @@ class PacketHandler extends EventEmitter {
   }
 
   parseBuffer(buffer) {
-    const { secretKey, encryptionMode } = this.receiver.connection.authentication;
+    const { secret_key, mode } = this.receiver.connection.authentication;
 
     // Choose correct nonce depending on encryption
     let end;
-    if (encryptionMode === 'xsalsa20_poly1305_lite') {
+    if (mode === 'xsalsa20_poly1305_lite') {
       buffer.copy(this.nonce, 0, buffer.length - 4);
       end = buffer.length - 4;
-    } else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
+    } else if (mode === 'xsalsa20_poly1305_suffix') {
       buffer.copy(this.nonce, 0, buffer.length - 24);
       end = buffer.length - 24;
     } else {
@@ -42,7 +47,7 @@ class PacketHandler extends EventEmitter {
     }
 
     // Open packet
-    let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secretKey);
+    let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secret_key);
     if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
 
@@ -63,7 +68,7 @@ class PacketHandler extends EventEmitter {
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.receiver.connection.ssrcMap.get(ssrc); }
+  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
 
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);

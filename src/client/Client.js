@@ -14,7 +14,7 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
-const ClientPresenceStore = require('../stores/ClientPresenceStore');
+const ClientPresence = require('../structures/ClientPresence');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -97,16 +97,16 @@ class Client extends BaseClient {
     this.channels = new ChannelStore(this);
 
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {ClientPresenceStore<Snowflake, Presence>}
+     * The presence of the Client
+     * @private
+     * @type {ClientPresence}
      */
-    this.presences = new ClientPresenceStore(this);
+    this.presence = new ClientPresence(this);
 
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -139,20 +139,6 @@ class Client extends BaseClient {
      * @type {number[]}
      */
     this.pings = [];
-
-    /**
-     * Timeouts set by {@link Client#setTimeout} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._timeouts = new Set();
-
-    /**
-     * Intervals set by {@link Client#setInterval} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._intervals = new Set();
 
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
@@ -240,10 +226,6 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
-   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -262,25 +244,11 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {Promise}
+   * @returns {void}
    */
   destroy() {
     super.destroy();
     return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
   }
 
   /**
@@ -369,22 +337,16 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * Obtains the OAuth Application of this bot from Discord.
    * @returns {Promise<ClientApplication>}
-   * @example
-   * client.fetchApplication('id')
-   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
-   *   .catch(console.error);
    */
-  fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+  fetchApplication() {
+    return this.api.oauth2.applications('@me').get()
       .then(app => new ClientApplication(this, app));
   }
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
@@ -393,7 +355,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   generateInvite(permissions) {
-    permissions = typeof permissions === 'undefined' ? 0 : Permissions.resolve(permissions);
+    permissions = Permissions.resolve(permissions);
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
@@ -473,6 +435,9 @@ class Client extends BaseClient {
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
+    }
+    if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
   }
 }

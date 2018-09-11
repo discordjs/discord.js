@@ -160,7 +160,7 @@ MessageMentions.EVERYONE_PATTERN = /@(everyone|here)/g;
  * Regular expression that globally matches user mentions like `<@81440962496172032>`
  * @type {RegExp}
  */
-MessageMentions.USERS_PATTERN = /<@!?(1|\d{17,19})>/g;
+MessageMentions.USERS_PATTERN = /<@!?(\d{17,19})>/g;
 
 /**
  * Regular expression that globally matches role mentions like `<@&297577916114403338>`

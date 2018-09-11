@@ -41,9 +41,9 @@ class ClientManager {
     const timeout = this.client.setTimeout(() => reject(new Error('WS_CONNECTION_TIMEOUT')), 1000 * 300);
     this.client.api.gateway.get().then(async res => {
       if (this.client.options.presence != null) { // eslint-disable-line eqeqeq
-        const presence = await this.client.presences._parse(this.client.options.presence);
+        const presence = await this.client.presence._parse(this.client.options.presence);
         this.client.options.ws.presence = presence;
-        this.client.presences.clientPresence.patch(presence);
+        this.client.presence.patch(presence);
       }
       const gateway = `${res.url}/`;
       this.client.emit(Events.DEBUG, `Using gateway ${gateway}`);
@@ -63,15 +63,7 @@ class ClientManager {
 
   destroy() {
     this.client.ws.destroy();
-    if (!this.client.user) return Promise.resolve();
-    if (this.client.user.bot) {
-      this.client.token = null;
-      return Promise.resolve();
-    } else {
-      return this.client.api.logout.post().then(() => {
-        this.client.token = null;
-      });
-    }
+    if (this.client.user) this.client.token = null;
   }
 }
 

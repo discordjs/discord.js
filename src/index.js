@@ -10,12 +10,15 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  ActivityFlags: require('./util/ActivityFlags'),
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   Permissions: require('./util/Permissions'),
+  Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Structures: require('./util/Structures'),
@@ -25,7 +28,6 @@ module.exports = {
 
   // Stores
   ChannelStore: require('./stores/ChannelStore'),
-  ClientPresenceStore: require('./stores/ClientPresenceStore'),
   GuildChannelStore: require('./stores/GuildChannelStore'),
   GuildEmojiStore: require('./stores/GuildEmojiStore'),
   GuildEmojiRoleStore: require('./stores/GuildEmojiRoleStore'),
@@ -49,6 +51,7 @@ module.exports = {
   // Structures
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
+  APIMessage: require('./structures/APIMessage'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
@@ -56,9 +59,6 @@ module.exports = {
     // This is a getter so that it properly extends any custom User class
     return require('./structures/ClientUser');
   },
-  ClientUserChannelOverride: require('./structures/ClientUserChannelOverride'),
-  ClientUserGuildSettings: require('./structures/ClientUserGuildSettings'),
-  ClientUserSettings: require('./structures/ClientUserSettings'),
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
@@ -68,6 +68,7 @@ module.exports = {
   GuildChannel: require('./structures/GuildChannel'),
   GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
+  Integration: require('./structures/Integration'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
   MessageAttachment: require('./structures/MessageAttachment'),
@@ -77,15 +78,16 @@ module.exports = {
   MessageReaction: require('./structures/MessageReaction'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
+  ClientPresence: require('./structures/ClientPresence'),
   ReactionCollector: require('./structures/ReactionCollector'),
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
   TextChannel: require('./structures/TextChannel'),
   User: require('./structures/User'),
-  UserConnection: require('./structures/UserConnection'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),
+  VoiceState: require('./structures/VoiceState'),
   Webhook: require('./structures/Webhook'),
 
   WebSocket: require('./WebSocket'),

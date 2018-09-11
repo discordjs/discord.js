@@ -45,7 +45,7 @@ class BasePlayer extends EventEmitter {
 
     const isStream = input instanceof ReadableStream;
 
-    const args = isStream ? FFMPEG_ARGUMENTS : ['-i', input, ...FFMPEG_ARGUMENTS];
+    const args = isStream ? FFMPEG_ARGUMENTS.slice() : ['-i', input, ...FFMPEG_ARGUMENTS];
     if (options.seek) args.push('-ss', String(options.seek));
 
     const ffmpeg = new prism.FFmpeg({ args });
@@ -64,7 +64,7 @@ class BasePlayer extends EventEmitter {
       stream.pipe(opus);
       return this.playOpusStream(opus, options, streams);
     }
-    const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
+    const volume = streams.volume = new prism.VolumeTransformer16LE({ volume: options ? options.volume : 1 });
     stream.pipe(volume).pipe(opus);
     return this.playOpusStream(opus, options, streams);
   }
@@ -75,7 +75,7 @@ class BasePlayer extends EventEmitter {
     if (options.volume !== false && !streams.input) {
       streams.input = stream;
       const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
-      const volume = streams.volume = new prism.VolumeTransformer16LE(null, { volume: options ? options.volume : 1 });
+      const volume = streams.volume = new prism.VolumeTransformer16LE({ volume: options ? options.volume : 1 });
       streams.opus = stream
         .pipe(decoder)
         .pipe(volume)

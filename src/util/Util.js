@@ -1,9 +1,8 @@
-const snekfetch = require('snekfetch');
-const Collection = require('./Collection');
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-const splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
+const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -90,15 +89,14 @@ class Util {
    * @returns {Promise<number>} The recommended number of shards
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
-    return new Promise((resolve, reject) => {
-      if (!token) throw new DiscordError('TOKEN_MISSING');
-      snekfetch.get(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`)
-        .set('Authorization', `Bot ${token.replace(/^Bot\s*/i, '')}`)
-        .end((err, res) => {
-          if (err) reject(err);
-          resolve(res.body.shards * (1000 / guildsPerShard));
-        });
-    });
+    if (!token) throw new DiscordError('TOKEN_MISSING');
+    return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
+      method: 'GET',
+      headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
+    }).then(res => {
+      if (res.ok) return res.json();
+      throw res;
+    }).then(data => data.shards * (1000 / guildsPerShard));
   }
 
   /**
@@ -325,16 +323,15 @@ class Util {
   }
 
   /**
-   * Alternative to Node's `path.basename` that we have for some (probably stupid) reason.
+   * Alternative to Node's `path.basename`, removing query string after the extension if it exists.
    * @param {string} path Path to get the basename of
    * @param {string} [ext] File extension to remove
    * @returns {string} Basename of the path
    * @private
    */
   static basename(path, ext) {
-    let f = splitPathRe.exec(path)[3];
-    if (ext && f.endsWith(ext)) f = f.slice(0, -ext.length);
-    return f;
+    let res = parse(path);
+    return ext && res.ext.startsWith(ext) ? res.name : res.base.split('?')[0];
   }
 
   /**
@@ -385,6 +382,41 @@ class Util {
   }
 
   /**
+   * The content to have all mentions replaced by the equivalent text.
+   * @param {string} str The string to be converted
+   * @param {Message} message The message object to reference
+   * @returns {string}
+   */
+  static cleanContent(str, message) {
+    return str
+      .replace(/@(everyone|here)/g, '@\u200b$1')
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        if (message.channel.type === 'dm' || message.channel.type === 'group') {
+          const user = message.client.users.get(id);
+          return user ? `@${user.username}` : input;
+        }
+
+        const member = message.channel.guild.members.get(id);
+        if (member) {
+          return `@${member.displayName}`;
+        } else {
+          const user = message.client.users.get(id);
+          return user ? `@${user.username}` : input;
+        }
+      })
+      .replace(/<#[0-9]+>/g, input => {
+        const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
+        return channel ? `#${channel.name}` : input;
+      })
+      .replace(/<@&[0-9]+>/g, input => {
+        if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
+        const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        return role ? `@${role.name}` : input;
+      });
+  }
+
+  /**
    * Creates a Promise that resolves after a specified duration.
    * @param {number} ms How long to wait before resolving (in milliseconds)
    * @returns {Promise<void>}
@@ -404,6 +436,7 @@ class Util {
    */
   /* eslint-disable func-names */
   static mixin(store, ignored) {
+    const Collection = require('./Collection');
     Object.getOwnPropertyNames(Collection.prototype)
       .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
         if (ignored.includes(prop)) return;

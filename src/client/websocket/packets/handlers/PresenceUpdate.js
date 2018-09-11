@@ -23,6 +23,8 @@ class PresenceUpdateHandler extends AbstractHandler {
     }
 
     if (guild) {
+      let oldPresence = guild.presences.get(user.id);
+      if (oldPresence) oldPresence = oldPresence._clone();
       let member = guild.members.get(user.id);
       if (!member && data.status !== 'offline') {
         member = guild.members.add({
@@ -33,19 +35,9 @@ class PresenceUpdateHandler extends AbstractHandler {
         });
         client.emit(Events.GUILD_MEMBER_AVAILABLE, member);
       }
-      if (member) {
-        if (client.listenerCount(Events.PRESENCE_UPDATE) === 0) {
-          guild.presences.add(data);
-          return;
-        }
-        const oldMember = member._clone();
-        if (member.presence) {
-          oldMember.frozenPresence = member.presence._clone();
-        }
-        guild.presences.add(data);
-        client.emit(Events.PRESENCE_UPDATE, oldMember, member);
-      } else {
-        guild.presences.add(data);
+      guild.presences.add(Object.assign(data, { guild }));
+      if (member && client.listenerCount(Events.PRESENCE_UPDATE)) {
+        client.emit(Events.PRESENCE_UPDATE, oldPresence, member.presence);
       }
     }
   }
@@ -54,8 +46,8 @@ class PresenceUpdateHandler extends AbstractHandler {
 /**
  * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
  * @event Client#presenceUpdate
- * @param {GuildMember} oldMember The member before the presence update
- * @param {GuildMember} newMember The member after the presence update
+ * @param {?Presence} oldPresence The presence before the update, if one at all
+ * @param {Presence} newPresence The presence after the update
  */
 
 /**

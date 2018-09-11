@@ -1,8 +1,8 @@
 const MessageCollector = require('../MessageCollector');
-const Shared = require('../shared');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
+const APIMessage = require('../APIMessage');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -21,6 +21,12 @@ class TextBasedChannel {
      * @type {?Snowflake}
      */
     this.lastMessageID = null;
+
+    /**
+     * The timestamp when the last pinned message was pinned, if there was one
+     * @type {?number}
+     */
+    this.lastPinTimestamp = null;
   }
 
   /**
@@ -30,6 +36,15 @@ class TextBasedChannel {
    */
   get lastMessage() {
     return this.messages.get(this.lastMessageID) || null;
+  }
+
+  /**
+   * The date when the last pinned message was pinned, if there was one
+   * @type {?Date}
+   * @readonly
+   */
+  get lastPinAt() {
+    return this.lastPinTimestamp ? new Date(this.lastPinTimestamp) : null;
   }
 
   /**
@@ -66,8 +81,8 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {StringResolvable} [content] Text for the message
-   * @param {MessageOptions|MessageEmbed|MessageAttachment|MessageAttachment[]} [options={}] Options for the message
+   * @param {StringResolvable} [content=''] The content to send
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Send a basic message
@@ -107,33 +122,35 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  send(content, options) { // eslint-disable-line complexity
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = null;
-    } else if (!options) {
-      options = {};
+  async send(content, options) {
+    const User = require('../User');
+    const GuildMember = require('../GuildMember');
+    if (this instanceof User || this instanceof GuildMember) {
+      return this.createDM().then(dm => dm.send(content, options));
     }
-    if (!options.content) options.content = content;
 
-    return Shared.sendMessage(this, options);
-  }
+    const apiMessage = APIMessage.create(this, content, options);
+    const data = apiMessage.resolveData();
+    if (data.content instanceof Array) {
+      const messages = [];
+      for (let i = 0; i < data.content.length; i++) {
+        let opt;
+        if (i === data.content.length - 1) {
+          opt = { tts: data.tts, embed: data.embed, files: apiMessage.options.files };
+        } else {
+          opt = { tts: data.tts };
+        }
 
-  /**
-   * Performs a search within the channel.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {MessageSearchOptions} [options={}] Options to pass to the search
-   * @returns {Promise<MessageSearchResult>}
-   * @example
-   * channel.search({ content: 'discord.js', before: '2016-11-17' })
-   *   .then(res => {
-   *     const hit = res.results[0].find(m => m.hit).content;
-   *     console.log(`I found: **${hit}**, total results: ${res.total}`);
-   *   })
-   *   .catch(console.error);
-   */
-  search(options = {}) {
-    return Shared.search(this, options);
+        // eslint-disable-next-line no-await-in-loop
+        const message = await this.send(data.content[i], opt);
+        messages.push(message);
+      }
+      return messages;
+    }
+
+    const files = await apiMessage.resolveFiles();
+    return this.client.api.channels[this.id].messages.post({ data, files })
+      .then(d => this.client.actions.MessageCreate.handle(d).message);
   }
 
   /**
@@ -273,7 +290,6 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
@@ -316,28 +332,12 @@ class TextBasedChannel {
     throw new TypeError('MESSAGE_BULK_DELETE_TYPE');
   }
 
-  /**
-   * Marks all messages in this channel as read.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
-   */
-  acknowledge() {
-    if (!this.lastMessageID) return Promise.resolve(this);
-    return this.client.api.channels[this.id].messages[this.lastMessageID].ack
-      .post({ data: { token: this.client.rest._ackToken } })
-      .then(res => {
-        if (res.token) this.client.rest._ackToken = res.token;
-        return this;
-      });
-  }
-
   static applyToClass(structure, full = false, ignore = []) {
     const props = ['send'];
     if (full) {
       props.push(
-        'acknowledge',
         'lastMessage',
-        'search',
+        'lastPinAt',
         'bulkDelete',
         'startTyping',
         'stopTyping',

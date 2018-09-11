@@ -1,7 +1,7 @@
 const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const Collection = require('../util/Collection');
 const { Error } = require('../errors');
 
 /**
@@ -9,17 +9,6 @@ const { Error } = require('../errors');
  * @extends {GuildChannel}
  */
 class VoiceChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-
-    /**
-     * The members in this voice channel
-     * @type {Collection<Snowflake, GuildMember>}
-     * @name VoiceChannel#members
-     */
-    Object.defineProperty(this, 'members', { value: new Collection() });
-  }
-
   _patch(data) {
     super._patch(data);
     /**
@@ -33,6 +22,21 @@ class VoiceChannel extends GuildChannel {
      * @type {number}
      */
     this.userLimit = data.user_limit;
+  }
+
+  /**
+   * The members in this voice channel
+   * @type {Collection<Snowflake, GuildMember>}
+   * @name VoiceChannel#members
+   */
+  get members() {
+    const coll = new Collection();
+    for (const state of this.guild.voiceStates.values()) {
+      if (state.channelID === this.id && state.member) {
+        coll.set(state.id, state.member);
+      }
+    }
+    return coll;
   }
 
   /**
@@ -61,7 +65,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT);
+    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**
@@ -71,8 +75,8 @@ class VoiceChannel extends GuildChannel {
    */
   get joinable() {
     if (browser) return false;
-    if (!this.permissionsFor(this.client.user).has('CONNECT')) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS')) return false;
+    if (!this.permissionsFor(this.client.user).has('CONNECT', false)) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS', false)) return false;
     return true;
   }
 
@@ -82,7 +86,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has('SPEAK');
+    return this.permissionsFor(this.client.user).has('SPEAK', false);
   }
 
   /**
