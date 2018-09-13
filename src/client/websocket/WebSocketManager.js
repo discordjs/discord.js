@@ -81,7 +81,7 @@ class WebSocketManager {
 
   /**
    * Used to spawn WebSocketShards.
-   * @param {WebSocketShard|WebSocketShard[]} query The WebSocketShards to be spawned
+   * @param {?WebSocketShard|WebSocketShard[]|number|string} query The WebSocketShards to be spawned
    */
   spawn(query) {
     if (query !== undefined) {
@@ -93,13 +93,16 @@ class WebSocketManager {
         this.spawnQueue.push(query);
       }
     }
+
     if (this.spawning) return;
     this.spawning = true;
-    let item = this.spawnQueue.shift();
-    if (item === undefined) {
+
+    if (!this.spawnQueue.length) {
       this.spawning = false;
       return;
     }
+    let item = this.spawnQueue.shift();
+
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
     if (typeof item === 'number') {
       const shard = new WebSocketShard(this, item, this.shards[item]);
@@ -225,12 +228,15 @@ class WebSocketManager {
     }
   }
 
+  /**
+   * Destroys all shards.
+   * @returns {void}
+   */
   destroy() {
     this.gateway = undefined;
-    // lock calls to spawn
+    // Lock calls to spawn
     this.spawning = true;
 
-    // Destroy all shards
     for (const shard of this.shards) {
       if (!shard) continue;
       shard.destroy();

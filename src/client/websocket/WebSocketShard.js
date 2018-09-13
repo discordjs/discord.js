@@ -46,9 +46,23 @@ class WebSocketShard extends EventEmitter {
      */
     this.sessionID = oldShard && oldShard.sessionID;
 
+    /**
+     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
+     * @type {number[]}
+     */
     this.pings = [];
+
+    /**
+     * The last time a ping was sent (a timestamp)
+     * @type {number}
+     */
     this.lastPingTimestamp = -1;
-    this.trace = undefined;
+
+    /**
+     * List of servers the shard is connected to
+     * @type {string[]}
+     */
+    this.trace = [];
 
     /**
      * Contains the rate limit queue and metadata
@@ -62,12 +76,31 @@ class WebSocketShard extends EventEmitter {
       timer: null,
     };
 
-    this.inflate = null;
+    /**
+     * The WebSocket connection for the current shard
+     * @type {?WebSocket}
+     */
     this.ws = null;
+
+    /**
+     * @external Inflate
+     * @see {@link https://www.npmjs.com/package/zlib-sync}
+     */
+
+    /**
+     * The compression to use
+     * @type {?Inflate}
+     */
+    this.inflate = null;
 
     this.connect();
   }
 
+  /**
+   * Average heartbeat ping of the websocket, obtained by averaging the WebSocketShard#pings property
+   * @type {number}
+   * @readonly
+   */
   get ping() {
     const sum = this.pings.reduce((a, b) => a + b, 0);
     return sum / this.pings.length;
@@ -355,6 +388,11 @@ class WebSocketShard extends EventEmitter {
     }
   }
 
+  /**
+   * Triggers a shard reconnect.
+   * @param {?string} [event] The event for the shard to emit
+   * @returns {void}
+   */
   reconnect(event) {
     this.heartbeat(-1);
     this.status = Status.RECONNECTING;
@@ -362,6 +400,10 @@ class WebSocketShard extends EventEmitter {
     this.manager.spawn(this.id);
   }
 
+  /**
+   * Destroys the current shard and terminates its connection.
+   * @returns {void}
+   */
   destroy() {
     this.heartbeat(-1);
     this.expectingClose = true;
