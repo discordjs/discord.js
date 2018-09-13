@@ -239,6 +239,7 @@ class WebSocketShard extends EventEmitter {
       this.reconnect();
       return;
     }
+    this.emit('invalidated');
     this.manager.client.emit(Events.ERROR, error);
   }
 
@@ -258,7 +259,7 @@ class WebSocketShard extends EventEmitter {
       this.debug(WSCodes[event.code] || `Got code ${event.code}, not reconnecting`);
       return;
     }
-    this.reconnect();
+    this.reconnect('invalidated');
   }
 
   /**
