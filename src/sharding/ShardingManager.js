@@ -83,6 +83,12 @@ class ShardingManager extends EventEmitter {
     this.respawn = options.respawn;
 
     /**
+     * An array of arguments to pass to shards
+     * @type {string[]}
+     */
+    this.shardArgs = options.shardArgs;
+
+    /**
      * An array of arguments to pass to the executable
      * @type {string[]}
      */
@@ -174,6 +180,17 @@ class ShardingManager extends EventEmitter {
   broadcast(message) {
     const promises = [];
     for (const shard of this.shards.values()) promises.push(shard.send(message));
+    return Promise.all(promises);
+  }
+
+  /**
+   * Evaluates a script on all shards, in the context of the {@link Client}s.
+   * @param {string} script JavaScript to run on each shard
+   * @returns {Promise<Array<*>>} Results of the script execution
+   */
+  broadcastEval(script) {
+    const promises = [];
+    for (const shard of this.shards.values()) promises.push(shard.eval(script));
     return Promise.all(promises);
   }
 
