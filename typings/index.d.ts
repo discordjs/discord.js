@@ -7,7 +7,6 @@
 // License: MIT
 
 declare module 'discord.js' {
-	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
 
@@ -195,6 +194,8 @@ declare module 'discord.js' {
 		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: ClientAnyEvents) => void)): this;
+
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
 		public once(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		public once(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
@@ -227,6 +228,38 @@ declare module 'discord.js' {
 		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public once(event: string, listener: Function): this;
 	}
+
+	type ClientAnyEvents = { type: 'channelCreate' | 'channelDelete', data: [Channel] }
+		| { type: 'channelPinsUpdate', data: [Channel, Date] }
+		| { type: 'channelUpdate', data: [Channel, Channel] }
+		| { type: 'debug' | 'warn', data: [string] }
+		| { type: 'disconnect', data: [any] }
+		| { type: 'emojiCreate' | 'emojiDelete', data: [GuildEmoji] }
+		| { type: 'emojiUpdate', data: [GuildEmoji, GuildEmoji] }
+		| { type: 'error', data: [Error] }
+		| { type: 'guildBanAdd' | 'guildBanRemove', data: [Guild, User] }
+		| { type: 'guildCreate' | 'guildDelete' | 'guildUnavailable', data: [Guild] }
+		| { type: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', data: [GuildMember] }
+		| { type: 'guildMembersChunk', data: [Collection<Snowflake, GuildMember>, Guild] }
+		| { type: 'guildMemberSpeaking', data: [GuildMember, Readonly<Speaking>] }
+		| { type: 'guildMemberUpdate', data: [GuildMember, GuildMember] }
+		| { type: 'guildUpdate', data: [Guild, Guild] }
+		| { type: 'guildIntegrationsUpdate', data: [Guild] }
+		| { type: 'message' | 'messageDelete' | 'messageReactionRemoveAll', data: [Message] }
+		| { type: 'messageDeleteBulk', data: [Collection<Snowflake, Message>] }
+		| { type: 'messageReactionAdd' | 'messageReactionRemove', data: [MessageReaction, User] }
+		| { type: 'messageUpdate', data: [Message, Message] }
+		| { type: 'presenceUpdate', data: [Presence | undefined, Presence] }
+		| { type: 'rateLimit', data: [RateLimitData] }
+		| { type: 'ready' | 'reconnecting', data: [] }
+		| { type: 'resumed', data: [number] }
+		| { type: 'roleCreate' | 'roleDelete', data: [Role] }
+		| { type: 'roleUpdate', data: [Role, Role] }
+		| { type: 'typingStart' | 'typingStop', data: [Channel, User] }
+		| { type: 'userUpdate', data: [User, User] }
+		| { type: 'voiceStateUpdate', data: [VoiceState, VoiceState] }
+		| { type: 'webhookUpdate', data: [TextChannel] };
+
 
 	export class ClientApplication extends Base {
 		constructor(client: Client, data: object);
@@ -329,10 +362,16 @@ declare module 'discord.js' {
 		public on(event: 'dispose', listener: (...args: any[]) => void): this;
 		public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 
+		public on(event: '*', listener: ((emitted: CollectorAnyEvents<K, V>) => void)): this;
+
 		public once(event: 'collect', listener: (...args: any[]) => void): this;
 		public once(event: 'dispose', listener: (...args: any[]) => void): this;
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 	}
+
+	type CollectorAnyEvents<K, V> =  { type: 'collect', data: any[] }
+			| { type: 'dispose', data: any[] }
+			| { type: 'end', data: [Collection<K, V>, string] };
 
 	export class DataResolver {
 		public static resolveBase64(data: Base64Resolvable): string;
@@ -366,6 +405,19 @@ declare module 'discord.js' {
 		public readonly url: string;
 		public toJSON(): object;
 		public toString(): string;
+	}
+
+	class EventEmitter<EventTypes extends string | symbol = string | symbol> {
+		eventNames(): EventTypes[];
+		listeners(event: EventTypes): ((...args: any[]) => void)[];
+		listenerCount(event: EventTypes): number;
+		emit(event: EventTypes, ...args: Array<any>): boolean;
+		on(event: EventTypes, fn: ((...args: any[]) => void)): this;
+		on(event: '*', fn: ((emitted: EventEmitterAny) => void)): this;
+		once(event: EventTypes, fn: ((...args: any[]) => void)): this;
+		removeListener(event: EventTypes, fn?: ((...args: any[]) => void)): this;
+		off(event: EventTypes, fn?: ((...args: any[]) => void)): this;
+		removeAllListeners(event?: EventTypes): this;
 	}
 
 	export class GroupDMChannel extends TextBasedChannel(Channel) {
@@ -825,12 +877,19 @@ declare module 'discord.js' {
 		public on(event: 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: ReactionCollectorAnyEvents) => void)): this;
+
 		public once(event: 'collect', listener: (reaction: MessageReaction, user: User) => void): this;
 		public once(event: 'dispose', listener: (reaction: MessageReaction, user: User) => void): this;
 		public once(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction>, reason: string) => void): this;
 		public once(event: 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
 		public once(event: string, listener: Function): this;
-}
+	}
+
+	type ReactionCollectorAnyEvents = { type: 'collect', data: [MessageReaction, User] }
+		| { type: 'dispose', data: [MessageReaction, User] }
+		| { type: 'end', data: [Collection<Snowflake, MessageReaction>, string] }
+		| { type: 'remove', data: [MessageReaction, User] };
 
 	export class ReactionEmoji extends Emoji {
 		constructor(reaction: MessageReaction, emoji: object);
@@ -913,6 +972,8 @@ declare module 'discord.js' {
 		public on(event: 'spawn', listener: (child: ChildProcess) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: ShardAnyEvents) => void)): this;
+
 		public once(event: 'death', listener: (child: ChildProcess) => void): this;
 		public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
@@ -920,6 +981,12 @@ declare module 'discord.js' {
 		public once(event: 'spawn', listener: (child: ChildProcess) => void): this;
 		public once(event: string, listener: Function): this;
 	}
+
+	type ShardAnyEvents = { type: 'death', data: [ChildProcess] }
+		| { type: 'disconnect' | 'ready' | 'reconnecting', data: [] }
+		| { type: 'error', data: [Error] }
+		| { type: 'message', data: [any] }
+		| { type: 'spawn', data: [ChildProcess] };
 
 	export class ShardClientUtil {
 		constructor(client: Client);
@@ -961,8 +1028,12 @@ declare module 'discord.js' {
 
 		public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
+		public on(event: '*', listener: ((emitted: ShardingManagerAnyEvents) => void)): this;
+
 		public once(event: 'shardCreate', listener: (shard: Shard) => void): this;
 	}
+
+	type ShardingManagerAnyEvents =  { type: 'shardCreate', data: [Shard] };
 
 	export class SnowflakeUtil {
 		public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
@@ -1001,6 +1072,8 @@ declare module 'discord.js' {
 		public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: StreamDispatcherAnyEvents) => void)): this;
+
 		public once(event: 'close', listener: () => void): this;
 		public once(event: 'debug', listener: (info: string) => void): this;
 		public once(event: 'drain', listener: () => void): this;
@@ -1011,9 +1084,21 @@ declare module 'discord.js' {
 		public once(event: 'start', listener: () => void): this;
 		public once(event: 'speaking', listener: (speaking: boolean) => void): this;
 		public once(event: 'unpipe', listener: (src: Readable) => void): this;
-		public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
+		public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
 		public once(event: string, listener: Function): this;
 	}
+
+	type StreamDispatcherAnyEvents = { type: 'close', data: [] }
+		| { type: 'debug', data: [string] }
+		| { type: 'drain', data: [] }
+		| { type: 'end', data: [] }
+		| { type: 'error', data: [Error] }
+		| { type: 'finish', data: [] }
+		| { type: 'pipe', data: [Readable] }
+		| { type: 'start', data: [] }
+		| { type: 'speaking', data: [boolean] }
+		| { type: 'unpipe', data: [Readable] }
+		| { type: 'volumeChange', data: [number, number] };
 
 	export class Speaking extends BitField<SpeakingString> {
 		public static FLAGS: Record<SpeakingString, number>;
@@ -1107,6 +1192,8 @@ declare module 'discord.js' {
 		public on(event: 'warn', listener: (warning: string | Error) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: VoiceBroadcastAnyEvents) => void)): this;
+
 		public once(event: 'end', listener: () => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
 		public once(event: 'subscribe', listener: (dispatcher: StreamDispatcher) => void): this;
@@ -1114,6 +1201,13 @@ declare module 'discord.js' {
 		public once(event: 'warn', listener: (warning: string | Error) => void): this;
 		public once(event: string, listener: Function): this;
 	}
+
+	type VoiceBroadcastAnyEvents = { type: 'end', data: [] }
+		| { type: 'error', data: [Error] }
+		| { type: 'subscribe', data: [StreamDispatcher] }
+		| { type: 'unsubscribe', data: [StreamDispatcher] }
+		| { type: 'warn', data: [string | Error] };
+
 
 	export class VoiceChannel extends GuildChannel {
 		constructor(guild: Guild, data?: object);
@@ -1175,6 +1269,8 @@ declare module 'discord.js' {
 		public on(event: 'warn', listener: (warning: string | Error) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: VoiceConnectionAnyEvents) => void)): this;
+
 		public once(event: 'authenticated', listener: () => void): this;
 		public once(event: 'closing', listener: () => void): this;
 		public once(event: 'debug', listener: (message: string) => void): this;
@@ -1189,6 +1285,19 @@ declare module 'discord.js' {
 		public once(event: string, listener: Function): this;
 	}
 
+	type VoiceConnectionAnyEvents = { type: 'authenticated', data: [] }
+		| { type: 'closing', data: [] }
+		| { type: 'debug', data: [string] }
+		| { type: 'disconnect', data: [Error] }
+		| { type: 'error', data: [Error] }
+		| { type: 'failed', data: [Error] }
+		| { type: 'newSession', data: [] }
+		| { type: 'ready', data: [] }
+		| { type: 'reconnecting', data: [] }
+		| { type: 'speaking', data: [User, Readonly<Speaking>] }
+		| { type: 'warn', data: [string | Error] };
+
+
 	class VoiceReceiver extends EventEmitter {
 		constructor(connection: VoiceConnection);
 		public createStream(user: UserResolvable, options?: { mode?: 'opus' | 'pcm', end?: 'silence' | 'manual' }): Readable;
@@ -1196,9 +1305,13 @@ declare module 'discord.js' {
 		public on(event: 'debug', listener: (error: Error | string) => void): this;
 		public on(event: string, listener: Function): this;
 
+		public on(event: '*', listener: ((emitted: VoiceReceiverAnyEvents) => void)): this;
+
 		public once(event: 'debug', listener: (error: Error | string) => void): this;
 		public once(event: string, listener: Function): this;
 	}
+
+	type VoiceReceiverAnyEvents = { type: 'debug', data: [Error | string] };
 
 	export class VoiceRegion {
 		constructor(data: object);
@@ -1243,8 +1356,12 @@ declare module 'discord.js' {
 
 		public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
 
+		public on(event: '*', listener: ((emitted: VolumeInterfaceAnyEvents) => void)): this;
+
 		public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
 	}
+
+	type VolumeInterfaceAnyEvents =  { type: 'volumeChange', data: [number, number] };
 
 	export class Webhook extends WebhookMixin() {
 		constructor(client: Client, data?: object);
@@ -1610,6 +1727,8 @@ declare module 'discord.js' {
 	type EmojiIdentifierResolvable = string | EmojiResolvable;
 
 	type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
+
+	type EventEmitterAny = { type: string | Symbol, data?: any[] };
 
 	type Extendable = {
 		GuildEmoji: typeof GuildEmoji;

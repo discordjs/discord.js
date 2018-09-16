@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+const EventEmitter = require('../../util/EventEmitter');
 const { Events, OPCodes, Status, WSCodes } = require('../../util/Constants');
 const PacketManager = require('./packets/WebSocketPacketManager');
 const WebSocket = require('../../WebSocket');

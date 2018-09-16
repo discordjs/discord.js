@@ -1,6 +1,6 @@
 const udp = require('dgram');
 const { VoiceOPCodes } = require('../../../util/Constants');
-const EventEmitter = require('events');
+const EventEmitter = require('../../../util/EventEmitter');
 const { Error } = require('../../../errors');
 
 /**

@@ -45,6 +45,7 @@
   "peerDependencies": {
     "bufferutil": "^4.0.0",
     "erlpack": "discordapp/erlpack",
+    "eventemitter3": "^3.1.0",
     "libsodium-wrappers": "^0.7.3",
     "sodium": "^2.0.3",
     "@discordjs/uws": "^10.149.0",

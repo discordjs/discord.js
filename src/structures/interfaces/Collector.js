@@ -1,6 +1,6 @@
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
-const EventEmitter = require('events');
+const EventEmitter = require('../../util/EventEmitter');
 
 /**
  * Filter to be applied to the collector.
