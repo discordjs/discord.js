@@ -1,5 +1,5 @@
 const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
-const EventEmitter = require('events');
+const EventEmitter = require('../../../util/EventEmitter');
 const { Error } = require('../../../errors');
 const WebSocket = require('../../../WebSocket');
 

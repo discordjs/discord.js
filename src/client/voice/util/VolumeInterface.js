@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+const EventEmitter = require('../../../util/EventEmitter');
 
 /**
  * An interface class for volume transformation.

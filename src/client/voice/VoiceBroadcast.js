@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+const EventEmitter = require('../../util/EventEmitter');
 const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
 const DispatcherSet = require('./util/DispatcherSet');
 const PlayInterface = require('./util/PlayInterface');
