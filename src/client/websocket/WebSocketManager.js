@@ -224,6 +224,7 @@ class WebSocketManager {
    */
   broadcast(packet) {
     for (const shard of this.shards) {
+      if (!shard) continue;
       shard.send(packet);
     }
   }
