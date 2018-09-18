@@ -31,7 +31,7 @@ class ShardingManager extends EventEmitter {
       totalShards: 'auto',
       respawn: true,
       shardArgs: [],
-      token: process.env.CLIENT_TOKEN,
+      token: process.env.DISCORD_TOKEN,
     }, options);
 
     /**
