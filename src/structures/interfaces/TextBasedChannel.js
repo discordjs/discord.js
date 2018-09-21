@@ -73,7 +73,7 @@ class TextBasedChannel {
   /**
    * Options for splitting a message.
    * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {number} [maxLength=2000] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
    * @property {string} [prepend=''] Text to prepend to every piece except the first
    * @property {string} [append=''] Text to append to every piece except the last
