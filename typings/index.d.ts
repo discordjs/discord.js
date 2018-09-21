@@ -42,8 +42,10 @@ declare module 'discord.js' {
 
 	export class APIMessage {
 		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+		public data?: object;
 		public readonly isUser: boolean;
 		public readonly isWebhook: boolean;
+		public files?: object[];
 		public options: MessageOptions | WebhookMessageOptions;
 		public target: MessageTarget;
 
@@ -63,8 +65,10 @@ declare module 'discord.js' {
 		): MessageOptions | WebhookMessageOptions;
 
 		public makeContent(): string | string[];
-		public resolveData(): object;
-		public resolveFiles(): Promise<object[]>;
+		public resolve(): Promise<this>;
+		public resolveData(): this;
+		public resolveFiles(): Promise<this>;
+		public split(): APIMessage[];
 	}
 
 	export class Base {
@@ -663,13 +667,13 @@ declare module 'discord.js' {
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
-		public edit(options: MessageEditOptions | MessageEmbed): Promise<Message>;
+		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
 		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
@@ -1382,7 +1386,7 @@ declare module 'discord.js' {
 		lastPinTimestamp: number;
 		readonly lastPinAt: Date;
 		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1404,7 +1408,7 @@ declare module 'discord.js' {
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 

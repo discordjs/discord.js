@@ -25,6 +25,18 @@ class APIMessage {
      * @type {MessageOptions|WebhookMessageOptions}
      */
     this.options = options;
+
+    /**
+     * Data sendable to the API
+     * @type {?Object}
+     */
+    this.data = null;
+
+    /**
+     * Files sendable to the API
+     * @type {?Object[]}
+     */
+    this.files = null;
   }
 
   /**
@@ -100,9 +112,11 @@ class APIMessage {
 
   /**
    * Resolves data.
-   * @returns {Object}
+   * @returns {APIMessage}
    */
   resolveData() {
+    if (this.data) return this;
+
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
     let nonce;
@@ -128,7 +142,7 @@ class APIMessage {
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
-    return {
+    this.data = {
       content,
       tts,
       nonce,
@@ -137,13 +151,16 @@ class APIMessage {
       username,
       avatar_url: avatarURL,
     };
+    return this;
   }
 
   /**
    * Resolves files.
-   * @returns {Promise<Object[]>}
+   * @returns {Promise<APIMessage>}
    */
-  resolveFiles() {
+  async resolveFiles() {
+    if (this.files) return this;
+
     const embedLikes = [];
     if (this.isWebhook) {
       if (this.options.embeds) {
@@ -163,7 +180,39 @@ class APIMessage {
       }
     }
 
-    return Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
+    this.files = await Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
+    return this;
+  }
+
+  /**
+   * Converts this APIMessage into an array of APIMessages for each split content
+   * @returns {APIMessage[]}
+   */
+  split() {
+    if (!this.data) this.resolveData();
+
+    if (!(this.data.content instanceof Array)) return [this];
+
+    const apiMessages = [];
+
+    for (let i = 0; i < this.data.content.length; i++) {
+      let data;
+      let opt;
+
+      if (i === this.data.content.length - 1) {
+        data = { ...this.data, content: this.data.content[i] };
+        opt = { ...this.options, content: this.data.content[i] };
+      } else {
+        data = { content: this.data.content[i], tts: this.data.tts };
+        opt = { content: this.data.content[i], tts: this.data.tts };
+      }
+
+      const apiMessage = new APIMessage(this.target, opt);
+      apiMessage.data = data;
+      apiMessages.push(apiMessage);
+    }
+
+    return apiMessages;
   }
 
   /**
