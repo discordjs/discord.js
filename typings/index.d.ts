@@ -606,9 +606,9 @@ declare module 'discord.js' {
 
 	export class HTTPError extends Error {
 		constructor(message: string, name: string, code: number, method: string, path: string);
-		public name: string;
 		public code: number;
 		public method: string;
+		public name: string;
 		public path: string;
 	}
 
