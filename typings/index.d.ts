@@ -604,6 +604,14 @@ declare module 'discord.js' {
 		public sync(): Promise<Integration>;
 	}
 
+	export class HTTPError extends Error {
+		constructor(message: string, name: string, code: number, method: string, path: string);
+		public name: string;
+		public code: number;
+		public method: string;
+		public path: string;
+	}
+
 	export class Invite extends Base {
 		constructor(client: Client, data: object);
 		public channel: GuildChannel | GroupDMChannel;
