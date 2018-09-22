@@ -11,6 +11,10 @@ class MessageAttachment {
    */
   constructor(attachment, name = null, data) {
     this.attachment = attachment;
+    /**
+     * The name of this attachment
+     * @type {?string}
+     */
     this.name = name;
     if (data) this._patch(data);
   }
