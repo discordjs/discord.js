@@ -30,7 +30,8 @@ module.exports = ChannelPinsUpdate;
 /**
  * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event, not much information
  * can be provided easily here - you need to manually check the pins yourself.
+ * <warn>The `time` parameter will be a Unix Epoch Date object when there are no pins left.</warn>
  * @event Client#channelPinsUpdate
  * @param {DMChannel|GroupDMChannel|TextChannel} channel The channel that the pins update occured in
- * @param {Date} time The time of the pins update
+ * @param {Date} time The time when the last pinned message was pinned
  */
