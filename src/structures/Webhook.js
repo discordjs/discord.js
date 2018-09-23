@@ -1,6 +1,6 @@
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
-let APIMessage = require('./APIMessage');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a webhook.
