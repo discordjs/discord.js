@@ -1,6 +1,6 @@
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
-let APIMessage;
+let APIMessage = require('./APIMessage');
 
 /**
  * Represents a webhook.
@@ -15,7 +15,6 @@ class Webhook {
      */
     Object.defineProperty(this, 'client', { value: client });
     if (data) this._patch(data);
-    if (!APIMessage) APIMessage = require('./APIMessage');
   }
 
   _patch(data) {
