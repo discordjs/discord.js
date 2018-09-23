@@ -62,10 +62,6 @@ const tests = [
   () => hook.send(embed().setDescription('a')),
   () => hook.send({ embed: embed().setDescription('a') }),
 
-  () => hook.send('x').then(m2 => m2.edit({ embed: { description: 'a' } })),
-  () => hook.send('x').then(m2 => m2.edit(embed().setDescription('a'))),
-  () => hook.send('x').then(m2 => m2.edit({ embed: embed().setDescription('a') })),
-
   () => hook.send({ embeds: [{ description: 'a' }] }),
   () => hook.send(embed().setDescription('a')),
 
