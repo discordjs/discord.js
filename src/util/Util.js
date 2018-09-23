@@ -245,6 +245,7 @@ class Util {
    * ```
    * or one of the following strings:
    * - `DEFAULT`
+   * - `WHITE`
    * - `AQUA`
    * - `GREEN`
    * - `BLUE`
