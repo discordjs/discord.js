@@ -175,7 +175,6 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addField(name, value, inline) {
-    if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     this.fields.push(this.constructor.checkField(name, value, inline));
     return this;
   }
@@ -199,7 +198,6 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   spliceField(index, deleteCount, name, value, inline) {
-    if (name && this.fields.length - deleteCount >= 25) throw new RangeError('EMBED_FIELD_COUNT');
     if (name && value) {
       this.fields.splice(index, deleteCount, this.constructor.checkField(name, value, inline));
     } else {
