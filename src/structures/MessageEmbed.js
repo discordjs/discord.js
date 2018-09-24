@@ -356,9 +356,9 @@ class MessageEmbed {
    */
   static checkField(name, value, inline = false) {
     name = Util.resolveString(name);
-    if (!String(name)) throw new RangeError('EMBED_FIELD_NAME');
+    if (!name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!String(value)) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
   }
 }
