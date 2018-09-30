@@ -216,7 +216,7 @@ class VoiceWebSocket extends EventEmitter {
     }
     if (this.heartbeatInterval) {
       /**
-       * Emitted whenver the voice WebSocket encounters a non-fatal error.
+       * Emitted whenever the voice WebSocket encounters a non-fatal error.
        * @param {string} warn The warning
        * @event VoiceWebSocket#warn
        */

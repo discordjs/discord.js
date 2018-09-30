@@ -32,6 +32,6 @@ module.exports = ChannelPinsUpdate;
  * can be provided easily here - you need to manually check the pins yourself.
  * <warn>The `time` parameter will be a Unix Epoch Date object when there are no pins left.</warn>
  * @event Client#channelPinsUpdate
- * @param {DMChannel|GroupDMChannel|TextChannel} channel The channel that the pins update occured in
+ * @param {DMChannel|GroupDMChannel|TextChannel} channel The channel that the pins update occurred in
  * @param {Date} time The time when the last pinned message was pinned
  */

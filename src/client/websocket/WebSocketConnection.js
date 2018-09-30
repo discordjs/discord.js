@@ -337,7 +337,7 @@ class WebSocketConnection extends EventEmitter {
    * Causes a reconnection to the gateway.
    */
   reconnect() {
-    this.debug('Attemping to reconnect in 5500ms...');
+    this.debug('Attempting to reconnect in 5500ms...');
     /**
      * Emitted whenever the client tries to reconnect to the WebSocket.
      * @event Client#reconnecting
