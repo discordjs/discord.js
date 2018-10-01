@@ -537,6 +537,7 @@ declare module 'discord.js' {
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
 		public fetchMembers(query?: string, limit?: number): Promise<Guild>;
+		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 		public leave(): Promise<Guild>;

@@ -682,6 +682,11 @@ class RESTMethods {
     });
   }
 
+  getGuildVanityCode(guild) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).vanityURL, true)
+      .then(res => res.code);
+  }
+
   pruneGuildMembers(guild, days, dry, reason) {
     return this.rest.makeRequest(dry ?
       'get' :

@@ -141,6 +141,7 @@ const Endpoints = exports.Endpoints = {
       roles: `${base}/roles`,
       emojis: `${base}/emojis`,
       search: `${base}/messages/search`,
+      vanityURL: `${base}/vanity-url`,
       voiceRegions: `${base}/regions`,
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
