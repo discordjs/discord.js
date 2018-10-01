@@ -53,7 +53,7 @@ class PermissionOverwrites {
   }
 
   /**
-   * Updates this prermissionOverwrites.
+   * Updates this permissionOverwrites.
    * @param {PermissionOverwriteOption} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
