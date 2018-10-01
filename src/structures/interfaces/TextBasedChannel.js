@@ -30,6 +30,12 @@ class TextBasedChannel {
      * @type {?Message}
      */
     this.lastMessage = null;
+
+    /**
+     * The timestamp when the last pinned message was pinned, if there was one
+     * @type {?number}
+     */
+    this.lastPinTimestamp = null;
   }
 
   /**
@@ -390,6 +396,15 @@ class TextBasedChannel {
   }
 
   /**
+   * The date when the last pinned message was pinned, if there was one
+   * @type {?Date}
+   * @readonly
+   */
+  get lastPinAt() {
+    return this.lastPinTimestamp ? new Date(this.lastPinTimestamp) : null;
+  }
+
+  /**
    * Creates a Message Collector
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
@@ -584,6 +599,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'fetchMessages',
       'fetchMessage',
       'search',
+      'lastPinAt',
       'bulkDelete',
       'startTyping',
       'stopTyping',

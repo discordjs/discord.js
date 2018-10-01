@@ -1552,6 +1552,8 @@ declare module 'discord.js' {
 	};
 
 	type TextBasedChannelFields = {
+		lastPinTimestamp: number;
+		readonly lastPinAt: Date;
 		typing: boolean;
 		typingCount: number;
 		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<string, Message>>;
