@@ -509,7 +509,7 @@ class Client extends EventEmitter {
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
-  _validateOptions(options = this.options) {
+  _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
       throw new TypeError('The shardCount option must be a number.');
     }
@@ -540,6 +540,9 @@ class Client extends EventEmitter {
       throw new TypeError('The restWsBridgeTimeout option must be a number.');
     }
     if (!(options.disabledEvents instanceof Array)) throw new TypeError('The disabledEvents option must be an Array.');
+    if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
+      throw new TypeError('The retryLimit  options must be a number.');
+    }
   }
 }
 

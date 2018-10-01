@@ -72,8 +72,14 @@ class SequentialRequestHandler extends RequestHandler {
             }, Number(res.headers['retry-after']) + this.client.options.restTimeOffset);
             if (res.headers['x-ratelimit-global']) this.globalLimit = true;
           } else if (err.status >= 500 && err.status < 600) {
-            this.queue.unshift(item);
-            this.client.setTimeout(resolve, 1e3 + this.client.options.restTimeOffset);
+            if (item.retries === this.client.options.retryLimit) {
+              item.reject(err);
+              resolve();
+            } else {
+              item.retries++;
+              this.queue.unshift(item);
+              this.client.setTimeout(resolve, 1e3 + this.client.options.restTimeOffset);
+            }
           } else {
             item.reject(err.status >= 400 && err.status < 500 ?
               new DiscordAPIError(res.request.path, res.body, res.request.method) : err);
