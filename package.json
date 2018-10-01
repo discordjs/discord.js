@@ -36,8 +36,8 @@
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "form-data": "^2.3.2",
-    "node-fetch": "^2.1.2",
-    "pako": "^1.0.0",
+    "node-fetch": "^2.2.0",
+    "pako": "^1.0.6",
     "prism-media": "amishshah/prism-media",
     "tweetnacl": "^1.0.0",
     "ws": "^6.0.0"
@@ -51,16 +51,16 @@
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
-    "@types/node": "^10.7.1",
+    "@types/node": "^10.11.3",
     "discord.js-docgen": "discordjs/docgen",
-    "eslint": "^5.4.0",
+    "eslint": "^5.6.1",
     "json-filter-loader": "^1.0.0",
     "terser-webpack-plugin": "^1.1.0",
     "tslint": "^5.11.0",
     "tslint-config-typings": "^0.3.1",
-    "typescript": "^3.0.1",
-    "webpack": "^4.17.0",
-    "webpack-cli": "^3.1.0"
+    "typescript": "^3.1.1",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2"
   },
   "engines": {
     "node": ">=8.0.0"
