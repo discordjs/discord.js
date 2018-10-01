@@ -22,10 +22,7 @@ class ReadyHandler extends AbstractHandler {
       client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
 
-    client.setMaxListeners(data.guilds.length + 10);
-
     client.once('ready', () => {
-      client.setMaxListeners(10);
       client.clearTimeout(t);
     });
 

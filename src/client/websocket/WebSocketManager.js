@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+const EventEmitter = require('../../util/EventEmitter');
 const { Events, Status } = require('../../util/Constants');
 const WebSocketConnection = require('./WebSocketConnection');
 

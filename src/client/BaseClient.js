@@ -1,4 +1,4 @@
-const EventEmitter = require('events');
+const EventEmitter = require('../util/EventEmitter');
 const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
 const { DefaultOptions } = require('../util/Constants');

@@ -1,5 +1,5 @@
 const childProcess = require('child_process');
-const EventEmitter = require('events');
+const EventEmitter = require('../util/EventEmitter');
 const path = require('path');
 const Util = require('../util/Util');
 const { Error } = require('../errors');

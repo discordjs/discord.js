@@ -1,5 +1,5 @@
 const secretbox = require('../util/Secretbox');
-const EventEmitter = require('events');
+const EventEmitter = require('../../../util/EventEmitter');
 
 class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
