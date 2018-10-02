@@ -52,7 +52,7 @@ class GuildChannelStore extends DataStore {
    *   ],
    * })
    */
-  async create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
+  async create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, rateLimitPerUser, reason } = {}) {
     if (parent) parent = this.client.channels.resolveID(parent);
 
     const data = await this.client.api.guilds(this.guild.id).channels.post({
@@ -65,6 +65,7 @@ class GuildChannelStore extends DataStore {
         user_limit: userLimit,
         parent_id: parent,
         permission_overwrites: overwrites && overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
+        rate_limit_per_user: rateLimitPerUser,
       },
       reason,
     });
