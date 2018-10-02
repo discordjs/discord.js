@@ -33,6 +33,7 @@ class GuildChannelStore extends DataStore {
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
    * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.overwrites]
    * Permission overwrites of the new channel
+   * @param {number} [options.rateLimitPerUser] The ratelimit per user for the channel
    * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
    * @example
