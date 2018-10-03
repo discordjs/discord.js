@@ -152,7 +152,6 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Connects the shard to a gateway.
-   * @param {string} gateway The gateway to connect to
    */
   connect() {
     this.inflate = new zlib.Inflate({

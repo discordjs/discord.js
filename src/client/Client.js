@@ -16,6 +16,7 @@ const GuildStore = require('../stores/GuildStore');
 const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, WSCodes, browser } = require('../util/Constants');
+const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const { Error, TypeError, RangeError } = require('../errors');
 
@@ -205,6 +206,11 @@ class Client extends BaseClient {
     let endpoint = this.api.gateway;
     if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
     const res = await endpoint.get();
+    if (res.session_start_limit && res.session_start_limit.remaining === 0) {
+      const { session_start_limit: { reset_after } } = res;
+      this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      await delayFor(reset_after);
+    }
     const gateway = `${res.url}/`;
     if (this.options.shardCount === 'auto') {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
