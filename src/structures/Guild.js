@@ -505,6 +505,26 @@ class Guild {
   }
 
   /**
+   * Fetches the vanity url invite code to this guild.
+   * Resolves with a string matching the vanity url invite code, not the full url.
+   * @returns {Promise<string>}
+   * @example
+   * // Fetch invites
+   * guild.fetchVanityCode()
+   *   .then(code => {
+   *     console.log(`Vanity URL: https://discord.gg/${code}`);
+   *   })
+   *   .catch(console.error);
+   */
+  fetchVanityCode() {
+    if (!this.features.includes('VANITY_URL')) {
+      return Promise.reject(new Error('This guild does not have the VANITY_URL feature enabled.'));
+    }
+    return this.client.rest.methods.getGuildVanityCode(this);
+  }
+
+
+  /**
    * Fetch all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    * @example
