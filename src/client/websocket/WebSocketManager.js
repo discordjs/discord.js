@@ -86,17 +86,13 @@ class WebSocketManager {
   }
 
   async _handleSessionLimit(shard) {
-    if (!this.sessionStartLimit && this.spawnQueue.length) {
+    this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
+    const { remaining, reset_after } = this.sessionStartLimit;
+    if (remaining !== 0) {
       this.spawn();
-    } else if (this.sessionStartLimit) {
-      this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
-      const { remaining, reset_after } = this.sessionStartLimit;
-      if (remaining !== 0) {
-        this.spawn();
-      } else {
-        shard.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
-        setTimeout(() => this.spawn(), this.sessionStartLimit.reset_after);
-      }
+    } else {
+      shard.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      setTimeout(() => this.spawn(), this.sessionStartLimit.reset_after);
     }
   }
 
