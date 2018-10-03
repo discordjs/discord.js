@@ -42,6 +42,7 @@ class RESTManager {
           }
           reject(error);
         },
+        retries: 0,
       });
     });
   }

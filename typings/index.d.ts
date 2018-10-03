@@ -1647,6 +1647,7 @@ declare module 'discord.js' {
 		sync?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		retryLimit?: number;
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
