@@ -331,6 +331,8 @@ class RESTMethods {
     data.parent_id = _data.parent;
     data.permission_overwrites = _data.permissionOverwrites ?
       resolvePermissions.call(this, _data.permissionOverwrites, channel.guild) : undefined;
+    data.rate_limit_per_user = typeof _data.rateLimitPerUser !== 'undefined' ?
+      _data.rateLimitPerUser : channel.rateLimitPerUser;
     return this.rest.makeRequest('patch', Endpoints.Channel(channel), true, data, undefined, reason).then(newData =>
       this.client.actions.ChannelUpdate.handle(newData).updated
     );

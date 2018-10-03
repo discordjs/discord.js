@@ -1201,6 +1201,7 @@ declare module 'discord.js' {
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
 		public topic: string;
+		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 		public setNSFW(nsfw: boolean, reason: string): Promise<this>;
@@ -1619,6 +1620,7 @@ declare module 'discord.js' {
 		nsfw?: boolean;
 		bitrate?: number;
 		userLimit?: number;
+		rateLimitPerUser?: number;
 	};
 
 	type ChannelLogsQueryOptions = {
