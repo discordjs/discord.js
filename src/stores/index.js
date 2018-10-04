@@ -1,0 +1,16 @@
+for (const store of [
+  'ChannelStore',
+  'GuildChannelStore',
+  'GuildEmojiRoleStore',
+  'GuildEmojiStore',
+  'GuildMemberRoleStore',
+  'GuildMemberStore',
+  'GuildStore',
+  'MessageStore',
+  'PresenceStore',
+  'ReactionStore',
+  'ReactionUserStore',
+  'RoleStore',
+  'UserStore',
+  'VoiceStateStore',
+]) exports[store] = require(`./${store}`);

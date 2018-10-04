@@ -11,10 +11,7 @@ const Invite = require('../structures/Invite');
 const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const VoiceBroadcast = require('./voice/VoiceBroadcast');
-const UserStore = require('../stores/UserStore');
-const ChannelStore = require('../stores/ChannelStore');
-const GuildStore = require('../stores/GuildStore');
-const GuildEmojiStore = require('../stores/GuildEmojiStore');
+const Stores = require('../stores');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -75,18 +72,22 @@ class Client extends BaseClient {
      */
     this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
 
+    if (this.options.disabledStores) {
+      for (const store of this.options.disabledStores) Stores[store].disable();
+    }
+
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
      * @type {UserStore<Snowflake, User>}
      */
-    this.users = new UserStore(this);
+    this.users = new Stores.UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
      * @type {GuildStore<Snowflake, Guild>}
      */
-    this.guilds = new GuildStore(this);
+    this.guilds = new Stores.GuildStore(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
@@ -94,7 +95,7 @@ class Client extends BaseClient {
      * is a member of, and all DM channels
      * @type {ChannelStore<Snowflake, Channel>}
      */
-    this.channels = new ChannelStore(this);
+    this.channels = new Stores.ChannelStore(this);
 
     const ClientPresence = Structures.get('ClientPresence');
     /**
@@ -199,7 +200,7 @@ class Client extends BaseClient {
    * @readonly
    */
   get emojis() {
-    const emojis = new GuildEmojiStore({ client: this });
+    const emojis = new Stores.GuildEmojiStore({ client: this });
     for (const guild of this.guilds.values()) {
       if (guild.available) for (const emoji of guild.emojis.values()) emojis.set(emoji.id, emoji);
     }

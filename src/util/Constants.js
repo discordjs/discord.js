@@ -29,6 +29,10 @@ const browser = exports.browser = typeof window !== 'undefined';
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
  * most impact is typically `TYPING_START`.
+ * @property {string[]} [disabledStores] An array of stores to disable. Any new data will not be added to these stores.
+ * Use with caution, since this may disable certain events if a resource can't be found and make some expected resources
+ * unavailable. The specified strings should be the constructor names of the stores, e.g. 'GuildEmojiStore',
+ * 'GuildMemberStore'.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
@@ -43,6 +47,7 @@ exports.DefaultOptions = {
   disableEveryone: false,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  disabledStores: [],
   retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,

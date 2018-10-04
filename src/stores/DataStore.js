@@ -6,6 +6,26 @@ let Structures;
  * @extends {Collection}
  */
 class DataStore extends Collection {
+  /**
+   * Disable caching data in all new stores of this type.
+   * @static
+   * @returns {true}
+   */
+  static disable() {
+    this.disabled = true;
+    return this.disabled;
+  }
+
+  /**
+   * Enable caching data in all new stores of this type.
+   * @static
+   * @returns {false}
+   */
+  static enable() {
+    this.disabled = false;
+    return this.disabled;
+  }
+
   constructor(client, iterable, holds) {
     super();
     if (!Structures) Structures = require('../util/Structures');
@@ -17,7 +37,14 @@ class DataStore extends Collection {
      * Whether this store is disabled.
      * @type {boolean}
      */
-    this.disabled = false;
+    this.disabled = this.constructor.disabled;
+
+    /**
+     * A count of elements that would be in this store if it wasn't disabled. Equal to the size property if this store
+     * has never been disabled.
+     * @type {number}
+     */
+    this.count = 0;
   }
 
   /**
@@ -49,9 +76,20 @@ class DataStore extends Collection {
 
   remove(key) { return this.delete(key); }
 
+  clear() {
+    this.count = 0;
+    return super.clear();
+  }
+
+  delete(key) {
+    this.count -= 1;
+    return super.delete(key);
+  }
+
   set(key, value) {
-    if (this.disabled) return this;
-    return super.set(key, value);
+    this.count += 1;
+    if (!this.disabled) super.set(key, value);
+    return this;
   }
 
   /**
@@ -80,5 +118,7 @@ class DataStore extends Collection {
     return Collection;
   }
 }
+
+DataStore.disabled = false;
 
 module.exports = DataStore;
