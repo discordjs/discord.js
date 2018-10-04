@@ -7,6 +7,9 @@ const Base = require('./Base');
  * @property {string} name The name of the account
  */
 
+/**
+ *  Represents a guild integration.
+ */
 class Integration extends Base {
   constructor(client, data, guild) {
     super(client);
