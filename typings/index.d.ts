@@ -1286,9 +1286,13 @@ declare module 'discord.js' {
 	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
 		constructor(client: Client, iterable: Iterable<any>, holds: VConstructor);
 		public static readonly [Symbol.species]: typeof Collection;
+		public static disabled: boolean;
+		public static disable(): boolean;
+		public static enable(): boolean;
 		public client: Client;
 		public holds: VConstructor;
 		public disabled: boolean;
+		public count: number;
 		public disable(): boolean;
 		public enable(): boolean;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
@@ -1572,6 +1576,7 @@ declare module 'discord.js' {
 		restTimeOffset?: number;
 		retryLimit?: number,
 		disabledEvents?: WSEventType[];
+		disabledStores?: string[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
 	};
