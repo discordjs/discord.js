@@ -43,11 +43,16 @@ class DataStore extends Collection {
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache && !this.disabled) this.set(id || entry.id, entry);
+    if (cache) this.set(id || entry.id, entry);
     return entry;
   }
 
   remove(key) { return this.delete(key); }
+
+  set(key, value) {
+    if (this.disabled) return this;
+    return super.set(key, value);
+  }
 
   /**
    * Resolves a data entry to a data Object.
