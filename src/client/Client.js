@@ -14,10 +14,10 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
-const ClientPresence = require('../structures/ClientPresence');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -96,6 +96,7 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelStore(this);
 
+    const ClientPresence = Structures.get('ClientPresence');
     /**
      * The presence of the Client
      * @private
