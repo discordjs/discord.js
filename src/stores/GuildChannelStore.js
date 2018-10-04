@@ -2,7 +2,7 @@ const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
 const GuildChannel = require('../structures/GuildChannel');
-const resolvePermissions = require('../structures/shared/resolvePermissions');
+const PermissionOverwrites = require('../structures/PermissionOverwrites');
 
 /**
  * Stores guild channels.
@@ -31,7 +31,7 @@ class GuildChannelStore extends DataStore {
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
-   * @param {OverwriteData[]|Collection<Snowflake, PermissionOverwrites>} [options.overwrites]
+   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.overwrites]
    * Permission overwrites of the new channel
    * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
@@ -52,9 +52,10 @@ class GuildChannelStore extends DataStore {
    *   ],
    * })
    */
-  create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
+  async create(name, { type, topic, nsfw, bitrate, userLimit, parent, overwrites, reason } = {}) {
     if (parent) parent = this.client.channels.resolveID(parent);
-    return this.client.api.guilds(this.guild.id).channels.post({
+
+    const data = await this.client.api.guilds(this.guild.id).channels.post({
       data: {
         name,
         topic,
@@ -63,10 +64,11 @@ class GuildChannelStore extends DataStore {
         bitrate,
         user_limit: userLimit,
         parent_id: parent,
-        permission_overwrites: resolvePermissions.call(this, overwrites),
+        permission_overwrites: overwrites && overwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
       },
       reason,
-    }).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    });
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
