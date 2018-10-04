@@ -276,14 +276,15 @@ class GuildChannel extends Channel {
   /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
+   * @property {string} [type] The type of the channel (Only when creating)
    * @property {string} [name] The name of the channel
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
-   * @property {string} [parent] The parent ID of the channel
-   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [overwrites]
+   * @property {CategoryChannel|Snowflake} [parent] The parent or parent ID of the channel
+   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
    * Overwrites of the channel
    */
 
@@ -398,8 +399,12 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   clone(name = this.name, withPermissions = true, withTopic = true, reason) {
-    return this.guild.createChannel(name, this.type, withPermissions ? this.permissionOverwrites : [], reason)
-      .then(channel => withTopic ? channel.setTopic(this.topic) : channel);
+    return this.guild.createChannel(name, {
+      type: this.type,
+      overwritePermissions: withPermissions ? this.overwritePermissions : undefined,
+      topic: withTopic ? this.topic : undefined,
+      reason,
+    });
   }
 
   /**
