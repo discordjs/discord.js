@@ -42,6 +42,12 @@ class TextChannel extends GuildChannel {
      * @type {?number}
      */
     this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+
+    /**
+     * The ratelimit per user for this channel
+     * @type {number}
+     */
+    this.rateLimitPerUser = data.rate_limit_per_user || 0;
   }
 
   /**
@@ -101,6 +107,16 @@ class TextChannel extends GuildChannel {
         this.client.rest.methods.createWebhook(this, name, data, reason)
       );
     }
+  }
+
+  /**
+   * Sets the rate limit per user for this channel.
+   * @param {number} rateLimitPerUser The new ratelimit
+   * @param {string} [reason] Reason for changing the channel's ratelimits
+   * @returns {Promise<TextChannel>}
+   */
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser }, reason);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

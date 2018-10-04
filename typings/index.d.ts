@@ -537,6 +537,7 @@ declare module 'discord.js' {
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
 		public fetchMembers(query?: string, limit?: number): Promise<Guild>;
+		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 		public leave(): Promise<Guild>;
@@ -1201,6 +1202,7 @@ declare module 'discord.js' {
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
 		public topic: string;
+		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 		public setNSFW(nsfw: boolean, reason: string): Promise<this>;
@@ -1621,6 +1623,7 @@ declare module 'discord.js' {
 		nsfw?: boolean;
 		bitrate?: number;
 		userLimit?: number;
+		rateLimitPerUser?: number;
 	};
 
 	type ChannelLogsQueryOptions = {
@@ -1649,6 +1652,7 @@ declare module 'discord.js' {
 		sync?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		retryLimit?: number;
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;

@@ -24,6 +24,8 @@ exports.Package = require('../../package.json');
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
+ * @property {number} [retryLimit=Infinity] How many times to retry on 5XX errors
+ * (Infinity for indefinite amount of retries)
  * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
  * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
  * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
@@ -42,6 +44,7 @@ exports.DefaultOptions = {
   disableEveryone: false,
   sync: false,
   restWsBridgeTimeout: 5000,
+  retryLimit: Infinity,
   disabledEvents: [],
   restTimeOffset: 500,
 
@@ -141,6 +144,7 @@ const Endpoints = exports.Endpoints = {
       roles: `${base}/roles`,
       emojis: `${base}/emojis`,
       search: `${base}/messages/search`,
+      vanityURL: `${base}/vanity-url`,
       voiceRegions: `${base}/regions`,
       webhooks: `${base}/webhooks`,
       ack: `${base}/ack`,
