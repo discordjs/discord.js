@@ -1288,6 +1288,8 @@ declare module 'discord.js' {
 		public static readonly [Symbol.species]: typeof Collection;
 		public client: Client;
 		public holds: VConstructor;
+		public disabled: boolean;
+		public disable(disabled: boolean): boolean;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
 		public remove(key: K): void;
 		public resolve(resolvable: R): V;
