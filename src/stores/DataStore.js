@@ -21,12 +21,20 @@ class DataStore extends Collection {
   }
 
   /**
-   * Enable or disable caching anything in this store.
-   * @param {boolean} [disabled=true] Whether to disable this store
-   * @returns {boolean}
+   * Disable caching data in this store.
+   * @returns {true}
    */
-  disable(disabled = true) {
-    this.disabled = disabled;
+  disable() {
+    this.disabled = true;
+    return this.disabled;
+  }
+
+  /**
+   * Enable caching data in this store.
+   * @returns {false}
+   */
+  enable() {
+    this.disabled = false;
     return this.disabled;
   }
 
