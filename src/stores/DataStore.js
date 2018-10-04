@@ -28,11 +28,6 @@ class DataStore extends Collection {
 
   constructor(client, iterable, holds) {
     super();
-    if (!Structures) Structures = require('../util/Structures');
-    Object.defineProperty(this, 'client', { value: client });
-    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
-    if (iterable) for (const item of iterable) this.add(item);
-
     /**
      * Whether this store is disabled.
      * @type {boolean}
@@ -45,6 +40,11 @@ class DataStore extends Collection {
      * @type {number}
      */
     this.count = 0;
+
+    if (!Structures) Structures = require('../util/Structures');
+    Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
+    if (iterable) for (const item of iterable) this.add(item);
   }
 
   /**
