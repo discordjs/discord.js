@@ -12,6 +12,22 @@ class DataStore extends Collection {
     Object.defineProperty(this, 'client', { value: client });
     Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
     if (iterable) for (const item of iterable) this.add(item);
+
+    /**
+     * Whether this store is disabled.
+     * @type {boolean}
+     */
+    this.disabled = false;
+  }
+
+  /**
+   * Enable or disable caching anything in this store.
+   * @param {boolean} [disabled=true] Whether to disable this store
+   * @returns {boolean}
+   */
+  disable(disabled = true) {
+    this.disabled = disabled;
+    return this.disabled;
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
@@ -19,7 +35,7 @@ class DataStore extends Collection {
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.set(id || entry.id, entry);
+    if (cache && !this.disabled) this.set(id || entry.id, entry);
     return entry;
   }
 
