@@ -279,7 +279,7 @@ declare module 'discord.js' {
 		public array(): V[];
 		public clone(): Collection<K, V>;
 		public concat(...collections: Collection<K, V>[]): Collection<K, V>;
-		public each(fn: (value: V, key: K, collection: Collection<K, V>) => void, thisArg?: any): void;
+		public each(fn: (value: V, key: K, collection: Collection<K, V>) => void, thisArg?: any): Collection<K, V>;
 		public equals(collection: Collection<any, any>): boolean;
 		public every(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public filter(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): Collection<K, V>;
