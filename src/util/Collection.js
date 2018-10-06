@@ -349,9 +349,9 @@ class Collection extends Map {
    * @returns {Collection}
    * @example
    * collection
-   *  .tap(coll => console.log(`${coll.size} users including bots`))
+   *  .tap(coll => console.log(`${coll.size} users, including bots`))
    *  .filter(user => user.bot)
-   *  .tap(coll => console.log(`${coll.size} users without bots`))
+   *  .tap(coll => console.log(`${coll.size} users, excluding bots`))
    */
   tap(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
