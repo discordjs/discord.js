@@ -43,15 +43,10 @@ class MessageReaction {
    * @readonly
    */
   get emoji() {
-    if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
-    if (this._emoji.id) {
-      const emojis = this.message.client.emojis;
-      if (emojis.has(this._emoji.id)) {
-        const emoji = emojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
-      }
+    if (!(this._emoji instanceof GuildEmoji) && this._emoji.id) {
+      const emoji = this.message.client.emojis.get(this._emoji.id);
+      if (emoji) this._emoji = emoji;
     }
     return this._emoji;
   }

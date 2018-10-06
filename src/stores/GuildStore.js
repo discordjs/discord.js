@@ -51,7 +51,8 @@ class GuildStore extends DataStore {
       return new Promise((resolve, reject) =>
         this.client.api.guilds.post({ data: { name, region, icon } })
           .then(data => {
-            if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
+            const cached = this.client.guilds.get(data.id);
+            if (cached) return resolve(cached);
 
             const handleGuild = guild => {
               if (guild.id === data.id) {
