@@ -115,6 +115,7 @@ class VoiceWebSocket extends EventEmitter {
         user_id: this.client.user.id,
         token: this.connection.authentication.token,
         session_id: this.connection.authentication.sessionID,
+        video: true,
       },
     }).catch(() => {
       this.emit('error', new Error('VOICE_JOIN_SOCKET_CLOSED'));
@@ -177,13 +178,13 @@ class VoiceWebSocket extends EventEmitter {
         this.emit('sessionDescription', packet.d);
         break;
       case VoiceOPCodes.CLIENT_CONNECT:
-        this.connection.ssrcMap.set(+packet.d.audio_ssrc, packet.d.user_id);
+        const { user_id, video_ssrc, audio_ssrc } = packet.d;
+        this.connection.ssrcMap.set(user_id, { audio_ssrc, video_ssrc });
         break;
       case VoiceOPCodes.CLIENT_DISCONNECT:
         const streamInfo = this.connection.receiver.packets.streams.get(packet.d.user_id);
         if (streamInfo) {
           this.connection.receiver.packets.streams.delete(packet.d.user_id);
-          streamInfo.stream.push(null);
         }
         break;
       case VoiceOPCodes.SPEAKING:

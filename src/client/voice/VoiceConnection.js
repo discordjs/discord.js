@@ -436,7 +436,8 @@ class VoiceConnection extends EventEmitter {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
-    this.ssrcMap.set(+ssrc, user_id);
+    if (!this.ssrcMap.has(user_id)) this.ssrcMap.set(user_id, { audio_ssrc: ssrc });
+    else this.ssrcMap.get(user_id).audio_ssrc = ssrc;
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**
@@ -447,9 +448,6 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
-      if (!speaking) {
-        this.receiver.packets._stoppedSpeaking(user_id);
-      }
     }
 
     if (guild && user && old !== speaking) {
