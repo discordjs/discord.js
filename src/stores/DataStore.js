@@ -34,13 +34,6 @@ class DataStore extends Collection {
      */
     this.disabled = this.constructor.disabled;
 
-    /**
-     * A count of elements that would be in this store if it wasn't disabled. Equal to the size property if this store
-     * has never been disabled.
-     * @type {number}
-     */
-    this.count = 0;
-
     if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
     Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
@@ -76,20 +69,8 @@ class DataStore extends Collection {
 
   remove(key) { return this.delete(key); }
 
-  clear() {
-    this.count = 0;
-    return super.clear();
-  }
-
-  delete(key) {
-    this.count -= 1;
-    return super.delete(key);
-  }
-
   set(key, value) {
-    this.count += 1;
-    if (!this.disabled) super.set(key, value);
-    return this;
+    return super.set(key, this.disabled ? null : value);
   }
 
   /**
