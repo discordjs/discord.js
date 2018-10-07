@@ -97,7 +97,7 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setPresence(data) {
-    return this.client.presence.setClientPresence(data);
+    return this.client.presence.set(data);
   }
 
   /**
@@ -124,11 +124,17 @@ class ClientUser extends Structures.get('User') {
   }
 
   /**
+   * Options for setting an activity
+   * @typedef ActivityOptions
+   * @type {Object}
+   * @property {string} [url] Twitch stream URL
+   * @property {ActivityType|number} [type] Type of the activity
+   */
+
+  /**
    * Sets the activity the client user is playing.
-   * @param {?string} name Activity being played
-   * @param {Object} [options] Options for setting the activity
-   * @param {string} [options.url] Twitch stream URL
-   * @param {ActivityType|number} [options.type] Type of the activity
+   * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
+   * @param {ActivityOptions} [options] Options for setting the activity
    * @returns {Promise<Presence>}
    * @example
    * // Set the client user's activity
@@ -136,11 +142,11 @@ class ClientUser extends Structures.get('User') {
    *   .then(presence => console.log(`Activity set to ${presence.game.name}`))
    *   .catch(console.error);
    */
-  setActivity(name, { url, type } = {}) {
+  setActivity(name, options = {}) {
     if (!name) return this.setPresence({ activity: null });
-    return this.setPresence({
-      activity: { name, type, url },
-    });
+
+    const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
+    return this.setPresence({ activity });
   }
 
   /**
