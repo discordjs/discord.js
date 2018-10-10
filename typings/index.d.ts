@@ -370,6 +370,8 @@ declare module 'discord.js' {
 	export class Emoji extends Base {
 		constructor(client: Client, emoji: object);
 		public animated: boolean;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
 		public readonly deletable: boolean;
 		public id: Snowflake;
 		public name: string;
@@ -544,8 +546,6 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
 
-		public readonly createdAt: Date;
-		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public guild: Guild;
 		public managed: boolean;
