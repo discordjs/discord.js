@@ -533,7 +533,7 @@ declare module 'discord.js' {
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<GuildChannel>;
-		public overwritePermissions(options?: { overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
+		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
@@ -1757,7 +1757,7 @@ declare module 'discord.js' {
 		bitrate?: number;
 		userLimit?: number;
 		parent?: ChannelResolvable;
-		overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		rateLimitPerUser?: number;
 		reason?: string
 	};

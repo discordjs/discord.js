@@ -178,13 +178,13 @@ class GuildChannel extends Channel {
   /**
    * Replaces the permission overwrites in this channel.
    * @param {Object} [options] Options
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.overwrites]
+   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites]
    * Permission overwrites the channel gets updated with
    * @param {string} [options.reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
    * channel.overwritePermissions({
-   * overwrites: [
+   * permissionOverwrites: [
    *   {
    *      id: message.author.id,
    *      deny: ['VIEW_CHANNEL'],
@@ -193,9 +193,8 @@ class GuildChannel extends Channel {
    *   reason: 'Needed to change permissions'
    * });
    */
-  overwritePermissions({ overwrites, reason } = {}) {
-    return this.edit({ permissionOverwrites: overwrites, reason })
-      .then(() => this);
+  overwritePermissions(options = {}) {
+    return this.edit(options).then(() => this);
   }
 
   /**
@@ -465,10 +464,11 @@ class GuildChannel extends Channel {
    */
   clone(options = {}) {
     if (typeof options.withPermissions === 'undefined') options.withPermissions = true;
+    if (typeof options.withTopic === 'undefined') options.withTopic = true;
     Util.mergeDefault({
       name: this.name,
-      overwrites: options.withPermissions ? this.permissionOverwrites : [],
-      withTopic: true,
+      permissionOverwrites: options.withPermissions ? this.permissionOverwrites : [],
+      topic: options.withTopic ? this.topic : undefined,
       nsfw: this.nsfw,
       parent: this.parent,
       bitrate: this.bitrate,
@@ -476,8 +476,7 @@ class GuildChannel extends Channel {
       reason: null,
     }, options);
     options.type = this.type;
-    return this.guild.channels.create(options.name, options)
-      .then(channel => options.withTopic ? channel.setTopic(this.topic) : channel);
+    return this.guild.channels.create(options.name, options);
   }
 
   /**
