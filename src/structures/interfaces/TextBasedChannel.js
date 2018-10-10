@@ -73,7 +73,7 @@ class TextBasedChannel {
   /**
    * Options for splitting a message.
    * @typedef {Object} SplitOptions
-   * @property {number} [maxLength=1950] Maximum character length per message piece
+   * @property {number} [maxLength=2000] Maximum character length per message piece
    * @property {string} [char='\n'] Character to split the message with
    * @property {string} [prepend=''] Text to prepend to every piece except the first
    * @property {string} [append=''] Text to append to every piece except the last
@@ -81,7 +81,7 @@ class TextBasedChannel {
 
   /**
    * Sends a message to this channel.
-   * @param {StringResolvable} [content=''] The content to send
+   * @param {StringResolvable|APIMessage} [content=''] The content to send
    * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
@@ -125,30 +125,23 @@ class TextBasedChannel {
   async send(content, options) {
     const User = require('../User');
     const GuildMember = require('../GuildMember');
+
     if (this instanceof User || this instanceof GuildMember) {
       return this.createDM().then(dm => dm.send(content, options));
     }
 
-    const apiMessage = APIMessage.create(this, content, options);
-    const data = apiMessage.resolveData();
-    if (data.content instanceof Array) {
-      const messages = [];
-      for (let i = 0; i < data.content.length; i++) {
-        let opt;
-        if (i === data.content.length - 1) {
-          opt = { tts: data.tts, embed: data.embed, files: apiMessage.options.files };
-        } else {
-          opt = { tts: data.tts };
-        }
+    let apiMessage;
 
-        // eslint-disable-next-line no-await-in-loop
-        const message = await this.send(data.content[i], opt);
-        messages.push(message);
+    if (content instanceof APIMessage) {
+      apiMessage = content.resolveData();
+    } else {
+      apiMessage = APIMessage.create(this, content, options).resolveData();
+      if (apiMessage.data.content instanceof Array) {
+        return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
-      return messages;
     }
 
-    const files = await apiMessage.resolveFiles();
+    const { data, files } = await apiMessage.resolveFiles();
     return this.client.api.channels[this.id].messages.post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
   }

@@ -84,7 +84,7 @@ class Webhook {
 
   /**
    * Sends a message with this webhook.
-   * @param {StringResolvable} [content=''] The content to send
+   * @param {StringResolvable|APIMessage} [content=''] The content to send
    * @param {WebhookMessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Object>}
    * @example
@@ -126,27 +126,18 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(content, options) {
-    const apiMessage = APIMessage.create(this, content, options);
-    const data = apiMessage.resolveData();
-    if (data.content instanceof Array) {
-      const messages = [];
-      for (let i = 0; i < data.content.length; i++) {
-        let opt;
-        if (i === data.content.length - 1) {
-          opt = { embeds: data.embeds, files: apiMessage.options.files };
-        } else {
-          opt = {};
-        }
+    let apiMessage;
 
-        Object.assign(opt, { avatarURL: data.avatar_url, content: data.content[i], username: data.username });
-        // eslint-disable-next-line no-await-in-loop
-        const message = await this.send(data.content[i], opt);
-        messages.push(message);
+    if (content instanceof APIMessage) {
+      apiMessage = content.resolveData();
+    } else {
+      apiMessage = APIMessage.create(this, content, options).resolveData();
+      if (apiMessage.data.content instanceof Array) {
+        return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
-      return messages;
     }
 
-    const files = await apiMessage.resolveFiles();
+    const { data, files } = await apiMessage.resolveFiles();
     return this.client.api.webhooks(this.id, this.token).post({
       data, files,
       query: { wait: true },

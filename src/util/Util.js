@@ -2,6 +2,7 @@ const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const isObject = d => typeof d === 'object' && d !== null;
 const { parse } = require('path');
 
 /**
@@ -19,7 +20,6 @@ class Util {
    * @returns {Object}
    */
   static flatten(obj, ...props) {
-    const isObject = d => typeof d === 'object' && d !== null;
     if (!isObject(obj)) return obj;
 
     props = Object.assign(...Object.keys(obj).filter(k => !k.startsWith('_')).map(k => ({ [k]: true })), ...props);
@@ -39,7 +39,7 @@ class Util {
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
-      else if (valueOf && !isObject(valueOf)) out[newProp] = valueOf;
+      else if (typeof valueOf !== 'object') out[newProp] = valueOf;
       // If it's a primitive
       else if (!elemIsObj) out[newProp] = element;
     }
@@ -245,6 +245,7 @@ class Util {
    * ```
    * or one of the following strings:
    * - `DEFAULT`
+   * - `WHITE`
    * - `AQUA`
    * - `GREEN`
    * - `BLUE`

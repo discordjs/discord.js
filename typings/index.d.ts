@@ -37,13 +37,15 @@ declare module 'discord.js' {
 
 	export class ActivityFlags extends BitField<ActivityFlagsString> {
 		public static FLAGS: Record<ActivityFlagsString, number>;
-		public static resolve(permission: BitFieldResolvable<ActivityFlagsString>): number;
+		public static resolve(bit?: BitFieldResolvable<ActivityFlagsString>): number;
 	}
 
 	export class APIMessage {
 		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+		public data?: object;
 		public readonly isUser: boolean;
 		public readonly isWebhook: boolean;
+		public files?: object[];
 		public options: MessageOptions | WebhookMessageOptions;
 		public target: MessageTarget;
 
@@ -63,8 +65,10 @@ declare module 'discord.js' {
 		): MessageOptions | WebhookMessageOptions;
 
 		public makeContent(): string | string[];
-		public resolveData(): object;
-		public resolveFiles(): Promise<object[]>;
+		public resolve(): Promise<this>;
+		public resolveData(): this;
+		public resolveFiles(): Promise<this>;
+		public split(): APIMessage[];
 	}
 
 	export class Base {
@@ -109,7 +113,7 @@ declare module 'discord.js' {
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
 		public static FLAGS: object;
-		public static resolve(bit?: BitFieldResolvable<string>): number;
+		public static resolve(bit?: BitFieldResolvable<any>): number;
 	}
 
 	export class CategoryChannel extends GuildChannel {
@@ -275,7 +279,7 @@ declare module 'discord.js' {
 		public array(): V[];
 		public clone(): Collection<K, V>;
 		public concat(...collections: Collection<K, V>[]): Collection<K, V>;
-		public each(fn: (value: V, key: K, collection: Collection<K, V>) => void, thisArg?: any): void;
+		public each(fn: (value: V, key: K, collection: Collection<K, V>) => void, thisArg?: any): Collection<K, V>;
 		public equals(collection: Collection<any, any>): boolean;
 		public every(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public filter(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): Collection<K, V>;
@@ -515,20 +519,18 @@ declare module 'discord.js' {
 		public rawPosition: number;
 		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
+		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public edit(data: ChannelData, reason?: string): Promise<GuildChannel>;
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<GuildChannel>;
-		public overwritePermissions(
-			options: Array<Partial<PermissionOverwrites|PermissionOverwriteOptions>> | Collection<Snowflake, Partial<PermissionOverwriteOptions>>,
-			reason?: string
-		): Promise<GuildChannel>;
+		public overwritePermissions(options?: { overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<GuildChannel>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setTopic(topic: string, reason?: string): Promise<GuildChannel>;
-		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: Partial<PermissionObject>, reason?: string): Promise<GuildChannel>;
+		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 	}
 
 	export class GuildEmoji extends Emoji {
@@ -602,6 +604,14 @@ declare module 'discord.js' {
 		public sync(): Promise<Integration>;
 	}
 
+	export class HTTPError extends Error {
+		constructor(message: string, name: string, code: number, method: string, path: string);
+		public code: number;
+		public method: string;
+		public name: string;
+		public path: string;
+	}
+
 	export class Invite extends Base {
 		constructor(client: Client, data: object);
 		public channel: GuildChannel | GroupDMChannel;
@@ -648,7 +658,7 @@ declare module 'discord.js' {
 		public readonly guild: Guild;
 		public hit: boolean;
 		public id: Snowflake;
-		public member: GuildMember;
+		public readonly member: GuildMember;
 		public mentions: MessageMentions;
 		public nonce: string;
 		public readonly pinnable: boolean;
@@ -663,13 +673,13 @@ declare module 'discord.js' {
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
-		public edit(options: MessageEditOptions | MessageEmbed): Promise<Message>;
+		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
 		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
@@ -782,8 +792,11 @@ declare module 'discord.js' {
 		public deny: Readonly<Permissions>;
 		public id: Snowflake;
 		public type: OverwriteType;
+		public update(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
 		public delete(reason?: string): Promise<PermissionOverwrites>;
 		public toJSON(): object;
+		public static resolveOverwriteOptions(options: ResolvedOverwriteOptions, initialPermissions: { allow?: PermissionResolvable, deny?: PermissionResolvable }): ResolvedOverwriteOptions;
+		public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwriteData;
 	}
 
 	export class Permissions extends BitField<PermissionString> {
@@ -1017,7 +1030,7 @@ declare module 'discord.js' {
 
 	export class Speaking extends BitField<SpeakingString> {
 		public static FLAGS: Record<SpeakingString, number>;
-		public static resolve(permission: BitFieldResolvable<SpeakingString>): number;
+		public static resolve(bit?: BitFieldResolvable<SpeakingString>): number;
 	}
 
 	export class Structures {
@@ -1032,9 +1045,11 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: MessageStore;
 		public nsfw: boolean;
+		public rateLimitPerUser: number;
 		public topic: string;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
+		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 	}
 
@@ -1382,7 +1397,7 @@ declare module 'discord.js' {
 		lastPinTimestamp: number;
 		readonly lastPinAt: Date;
 		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1404,7 +1419,7 @@ declare module 'discord.js' {
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 
@@ -1516,8 +1531,9 @@ declare module 'discord.js' {
 		bitrate?: number;
 		userLimit?: number;
 		parentID?: Snowflake;
+		rateLimitPerUser?: number;
 		lockPermissions?: boolean;
-		permissionOverwrites?: PermissionOverwrites[];
+		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 	};
 
 	type ChannelLogsQueryOptions = {
@@ -1734,7 +1750,7 @@ declare module 'discord.js' {
 		bitrate?: number;
 		userLimit?: number;
 		parent?: ChannelResolvable;
-		overwrites?: (PermissionOverwrites | ChannelCreationOverwrites)[];
+		overwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		reason?: string
 	};
 
@@ -1885,17 +1901,21 @@ declare module 'discord.js' {
 		| 'GUILD_MEMBER_JOIN';
 
 	type OverwriteData = {
-		id: Snowflake;
-		type: string;
-		allow?: string;
-		deny?: string;
+		allow?: PermissionResolvable;
+		deny?: PermissionResolvable;
+		id: GuildMemberResolvable | RoleResolvable;
+		type?: OverwriteType;
 	};
+
+	type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
 	type OverwriteType = 'member' | 'role';
 
 	type PermissionFlags = Record<PermissionString, number>;
 
 	type PermissionObject = Record<PermissionString, boolean>;
+
+	type PermissionOverwriteOption = { [k in PermissionString]?: boolean | null };
 
 	type PermissionString = 'CREATE_INSTANT_INVITE'
 		| 'KICK_MEMBERS'
@@ -1960,10 +1980,22 @@ declare module 'discord.js' {
 		route: string;
 	};
 
+	type RawOverwriteData = {
+		id: Snowflake;
+		allow: number;
+		deny: number;
+		type: OverwriteType;
+	};
+
 	type ReactionCollectorOptions = CollectorOptions & {
 		max?: number;
 		maxEmojis?: number;
 		maxUsers?: number;
+	};
+
+	type ResolvedOverwriteOptions = {
+		allow: Permissions;
+		deny: Permissions;
 	};
 
 	type RoleData = {
