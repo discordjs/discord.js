@@ -727,7 +727,7 @@ declare module 'discord.js' {
 		public color: number;
 		public readonly createdAt: Date;
 		public description: string;
-		public fields: { name: string; value: string; inline?: boolean; }[];
+		public fields: EmbedField[];
 		public files: (MessageAttachment | string | FileOptions)[];
 		public footer: { text?: string; iconURL?: string; proxyIconURL?: string };
 		public readonly hexColor: string;
@@ -751,7 +751,10 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
+		public spliceField(index: number, deleteCount: number, name?: StringResolvable, value?: StringResolvable, inline?: boolean): this;
 		public toJSON(): object;
+
+		public static checkField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
 	}
 
 	export class MessageMentions {
@@ -1629,6 +1632,8 @@ declare module 'discord.js' {
 		name?: string;
 		roles?: Collection<Snowflake, Role> | RoleResolvable[];
 	};
+
+	type EmbedField = { name: string, value: string, inline?: boolean };
 
 	type EmojiIdentifierResolvable = string | EmojiResolvable;
 
