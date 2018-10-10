@@ -29,6 +29,12 @@ class DMChannel extends Channel {
      * @type {?Snowflake}
      */
     this.lastMessageID = data.last_message_id;
+
+    /**
+     * The timestamp when the last pinned message was pinned, if there was one
+     * @type {?number}
+     */
+    this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
   }
 
   /**
@@ -42,6 +48,7 @@ class DMChannel extends Channel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
+  get lastPinAt() {}
   send() {}
   sendMessage() {}
   sendEmbed() {}
