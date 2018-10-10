@@ -1022,9 +1022,12 @@ class Guild {
   /**
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
-   * @param {string} [type='text'] The type of the new channel, either `text` or `voice` or `category`
-   * @param {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [overwrites] Permission overwrites
-   * @param {string} [reason] Reason for creating this channel
+   * @param {string|ChannelData} [typeOrOptions='text']
+   * The type of the new channel, either `text` or `voice` or `category`. **(deprecated, use options)**
+   * Alternatively options for the new channel, overriding the following parameters.
+   * @param {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
+   * Permission overwrites **(deprecated, use options)**
+   * @param {string} [reason] Reason for creating this channel **(deprecated, use options)**
    * @returns {Promise<CategoryChannel|TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
@@ -1041,8 +1044,21 @@ class Guild {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  createChannel(name, type, overwrites, reason) {
-    return this.client.rest.methods.createChannel(this, name, type, overwrites, reason);
+  createChannel(name, typeOrOptions, permissionOverwrites, reason) {
+    if (!typeOrOptions || (typeof typeOrOptions === 'string')) {
+      if (typeOrOptions) {
+        process.emitWarning(
+          'Guild#createChannel: Create channels with an options object instead of separate parameters',
+          'DeprecationWarning'
+        );
+      }
+      typeOrOptions = {
+        type: typeOrOptions,
+        permissionOverwrites,
+        reason,
+      };
+    }
+    return this.client.rest.methods.createChannel(this, name, typeOrOptions);
   }
 
   /**

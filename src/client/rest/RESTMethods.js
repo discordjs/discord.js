@@ -260,12 +260,19 @@ class RESTMethods {
     });
   }
 
-  createChannel(guild, channelName, channelType, overwrites, reason) {
+  createChannel(guild, name, { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, reason }) {
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
-      name: channelName,
-      type: channelType ? Constants.ChannelTypes[channelType.toUpperCase()] : 'text',
-      permission_overwrites: resolvePermissions.call(this, overwrites, guild),
-    }, undefined, reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
+      name,
+      topic,
+      type: type ? Constants.ChannelTypes[type.toUpperCase()] : 'text',
+      nsfw,
+      bitrate,
+      user_limit: userLimit,
+      parent_id: parent instanceof Channel ? parent.id : parent,
+      permission_overwrites: resolvePermissions.call(this, permissionOverwrites, guild),
+    },
+    undefined,
+    reason).then(data => this.client.actions.ChannelCreate.handle(data).channel);
   }
 
   createDM(recipient) {
@@ -328,7 +335,7 @@ class RESTMethods {
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || (channel.bitrate ? channel.bitrate * 1000 : undefined);
     data.user_limit = typeof _data.userLimit !== 'undefined' ? _data.userLimit : channel.userLimit;
-    data.parent_id = _data.parent;
+    data.parent_id = _data.parent instanceof Channel ? _data.parent.id : _data.parent;
     data.permission_overwrites = _data.permissionOverwrites ?
       resolvePermissions.call(this, _data.permissionOverwrites, channel.guild) : undefined;
     data.rate_limit_per_user = typeof _data.rateLimitPerUser !== 'undefined' ?

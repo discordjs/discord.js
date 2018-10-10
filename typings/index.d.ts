@@ -524,7 +524,8 @@ declare module 'discord.js' {
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
 		public allowDMs(allow: boolean): Promise<Guild>;
 		public ban(user: UserResolvable, options?: BanOptions | number | string): Promise<GuildMember | User | string>;
-		public createChannel(name: string, type?: 'category' | 'text' | 'voice', overwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
+		public createChannel(name: string, options?: ChannelData): Promise<CategoryChannel | TextChannel | VoiceChannel>;
+		public createChannel(name: string, type?: 'category' | 'text' | 'voice', permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
 		public createEmoji(attachment: BufferResolvable | Base64Resolvable, name: string, roles?: Collection<Snowflake, Role> | Role[], reason?: string): Promise<Emoji>;
 		public createRole(data?: RoleData, reason?: string): Promise<Role>;
 		public delete(): Promise<Guild>;
@@ -1617,12 +1618,15 @@ declare module 'discord.js' {
 	};
 
 	type ChannelData = {
+		type?: 'category' | 'text' | 'voice';
 		name?: string;
 		position?: number;
 		topic?: string;
 		nsfw?: boolean;
 		bitrate?: number;
 		userLimit?: number;
+		parent?: ChannelResolvable;
+		permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[];
 		rateLimitPerUser?: number;
 	};
 
