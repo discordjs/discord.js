@@ -260,11 +260,18 @@ declare module 'discord.js' {
 		public connectToWebSocket(token: string, resolve: Function, reject: Function): void;
 	}
 
+	export interface ActivityOptions {
+		name?: string;
+		url?: string;
+		type?: ActivityType | number;
+	}
+
 	export class ClientUser extends User {
 		public mfaEnabled: boolean;
 		public verified: boolean;
 		public createGroupDM(recipients: GroupDMRecipientOptions[]): Promise<GroupDMChannel>;
-		public setActivity(name: string, options?: { url?: string, type?: ActivityType | number }): Promise<Presence>;
+		public setActivity(options?: ActivityOptions): Promise<Presence>;
+		public setActivity(name: string, options?: ActivityOptions): Promise<Presence>;
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;

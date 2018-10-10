@@ -8,7 +8,7 @@ class ClientPresence extends Presence {
     super(client, Object.assign(data, { status: 'online', user: { id: null } }));
   }
 
-  async setClientPresence(presence) {
+  async set(presence) {
     const packet = await this._parse(presence);
     this.patch(packet);
     this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
