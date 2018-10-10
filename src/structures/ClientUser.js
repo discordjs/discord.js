@@ -139,7 +139,7 @@ class ClientUser extends Structures.get('User') {
    * @example
    * // Set the client user's activity
    * client.user.setActivity('discord.js', { type: 'WATCHING' })
-   *   .then(presence => console.log(`Activity set to ${presence.game.name}`))
+   *   .then(presence => console.log(`Activity set to ${presence.activity.name}`))
    *   .catch(console.error);
    */
   setActivity(name, options = {}) {
