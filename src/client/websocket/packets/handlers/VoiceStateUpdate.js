@@ -26,8 +26,10 @@ class VoiceStateUpdateHandler extends AbstractHandler {
       }
 
       // Emit event
-      if (member) {
-        if (member.user.id === client.user.id && data.channel_id) client.emit('self.voiceStateUpdate', data);
+      if (member && member.user.id === client.user.id && data.channel_id) {
+        client.emit('self.voiceStateUpdate', data);
+      }
+      if (oldState || newState) {
         client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
       }
     }
