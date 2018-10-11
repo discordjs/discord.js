@@ -29,7 +29,7 @@ class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
     /**
-     * Whether this store is disabled.
+     * Whether this store is disabled. If true, data will still be set but its value will be null.
      * @type {boolean}
      */
     this.disabled = this.constructor.disabled;
