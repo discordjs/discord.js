@@ -206,6 +206,9 @@ class Client extends BaseClient {
     let endpoint = this.api.gateway;
     if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
     const res = await endpoint.get();
+    if (this.options.presence) {
+      this.options.ws.presence = await this.presences._parse(this.options.presence);
+    }
     if (res.session_start_limit && res.session_start_limit.remaining === 0) {
       const { session_start_limit: { reset_after } } = res;
       this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
