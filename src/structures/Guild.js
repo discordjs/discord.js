@@ -420,7 +420,7 @@ class Guild extends Base {
 
   /**
    * Creates an integration by attaching an integration object
-   * @param {IntegrationData} data The data for thes integration
+   * @param {IntegrationData} data The data for the integration
    * @param {string} reason Reason for creating the integration
    * @returns {Promise<Guild>}
    */

@@ -180,7 +180,7 @@ class VoiceWebSocket extends EventEmitter {
         this.connection.ssrcMap.set(+packet.d.audio_ssrc, packet.d.user_id);
         break;
       case VoiceOPCodes.CLIENT_DISCONNECT:
-        const streamInfo = this.connection.receiver.packets.streams.get(packet.d.user_id);
+        const streamInfo = this.connection.receiver && this.connection.receiver.packets.streams.get(packet.d.user_id);
         if (streamInfo) {
           this.connection.receiver.packets.streams.delete(packet.d.user_id);
           streamInfo.stream.push(null);
@@ -216,7 +216,7 @@ class VoiceWebSocket extends EventEmitter {
     }
     if (this.heartbeatInterval) {
       /**
-       * Emitted whenver the voice WebSocket encounters a non-fatal error.
+       * Emitted whenever the voice WebSocket encounters a non-fatal error.
        * @param {string} warn The warning
        * @event VoiceWebSocket#warn
        */

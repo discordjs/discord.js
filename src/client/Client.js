@@ -14,10 +14,10 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
-const ClientPresence = require('../structures/ClientPresence');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const { Events, browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -96,6 +96,7 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelStore(this);
 
+    const ClientPresence = Structures.get('ClientPresence');
     /**
      * The presence of the Client
      * @private
@@ -104,13 +105,13 @@ class Client extends BaseClient {
     this.presence = new ClientPresence(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
-      this.token = process.env.CLIENT_TOKEN;
+      this.token = process.env.DISCORD_TOKEN;
     } else {
       this.token = null;
     }
@@ -257,7 +258,7 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    * @example
    * client.fetchInvite('https://discord.gg/bRCvFy9')
-   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`)
+   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
   fetchInvite(invite) {
