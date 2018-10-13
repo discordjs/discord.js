@@ -50,7 +50,7 @@ class Shard extends EventEmitter {
       SHARDING_MANAGER: true,
       SHARD_ID: this.id,
       SHARD_COUNT: this.manager.totalShards,
-      CLIENT_TOKEN: this.manager.token,
+      DISCORD_TOKEN: this.manager.token,
     });
 
     /**
