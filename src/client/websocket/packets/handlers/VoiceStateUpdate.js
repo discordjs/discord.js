@@ -29,9 +29,8 @@ class VoiceStateUpdateHandler extends AbstractHandler {
       if (member && member.user.id === client.user.id && data.channel_id) {
         client.emit('self.voiceStateUpdate', data);
       }
-      if (oldState || newState) {
-        client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
-      }
+
+      client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
     }
   }
 }
@@ -40,7 +39,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
  * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
  * @event Client#voiceStateUpdate
  * @param {?VoiceState} oldState The voice state before the update
- * @param {?VoiceState} newState The voice state after the update
+ * @param {VoiceState} newState The voice state after the update
  */
 
 module.exports = VoiceStateUpdateHandler;
