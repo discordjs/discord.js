@@ -58,7 +58,11 @@ class Game {
     this.name = data.name;
 
     /**
-     * The type of the game status
+     * The type of the game status, its possible values:
+     * - 0: Playing
+     * - 1: Streaming
+     * - 2: Listening
+     * - 3: Watching
      * @type {number}
      */
     this.type = data.type;

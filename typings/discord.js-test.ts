@@ -22,7 +22,7 @@ client.login('dsfsd754.4fds4f68d4f6sd46f4s.7878easfdsgdfFDSIJIO');
 
 export class TestCollector extends Collector<Snowflake, Message> {
 	public filter: CollectorFilter;
-	public constructor(client: Client, filter: CollectorFilter, ) {
+	public constructor(client: Client, filter: CollectorFilter) {
 		super(client, filter);
 	}
 
@@ -64,6 +64,6 @@ class ReactionCollector extends Collector<Snowflake, MessageReaction> {
 	}
 
 	public cleanup(): void {
-		this.client.removeListener('messageReactionAdd', this.listener);
+		this.client.removeListener('messageReactionAdd', this.listener as any);
 	}
 }
