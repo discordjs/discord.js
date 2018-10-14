@@ -143,6 +143,7 @@ client.on('message', async message => {
       await message.channel.send(`**#${i}-Hook: ${type}**\n\`\`\`js\n${test.toString()}\`\`\``);
       await test(message, hook).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
     }
+    /* eslint-enable no-await-in-loop */
   }
 });
 
