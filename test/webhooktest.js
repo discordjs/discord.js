@@ -121,8 +121,8 @@ client.on('message', async message => {
   const match = message.content.match(/^do (.+)$/);
   const hooks = [
     { type: 'WebhookClient', hook: new Discord.WebhookClient(webhookChannel, webhookToken) },
-    { type: 'TextChannel#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
-    { type: 'Guild#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
+    { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
+    { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
   ];
   if (match && match[1] === 'it') {
     /* eslint-disable no-await-in-loop */
