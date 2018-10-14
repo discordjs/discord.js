@@ -28,6 +28,7 @@ class RESTManager {
         request: apiRequest,
         resolve,
         reject,
+        retries: 0,
       });
     });
   }
