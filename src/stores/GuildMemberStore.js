@@ -185,7 +185,7 @@ class GuildMemberStore extends DataStore {
 
   _fetchMany({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.size) {
+      if (this.guild.memberCount === this.size && !this.disabled) {
         resolve(query || limit ? new Collection() : this);
         return;
       }
