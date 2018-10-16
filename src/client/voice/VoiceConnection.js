@@ -447,7 +447,7 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
-      if (!speaking) {
+      if (!speaking.has('SPEAKING')) {
         this.receiver.packets._stoppedSpeaking(user_id);
       }
     }
