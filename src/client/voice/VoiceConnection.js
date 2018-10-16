@@ -452,7 +452,7 @@ class VoiceConnection extends EventEmitter {
       }
     }
 
-    if (guild && user && old.equals(speaking)) {
+    if (guild && user && !old.equals(speaking)) {
       const member = guild.member(user);
       if (member) {
         /**
