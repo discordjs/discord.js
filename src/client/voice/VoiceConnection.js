@@ -447,12 +447,12 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
-      if (!speaking.has('SPEAKING')) {
+      if (!speaking.has(Speaking.FLAGS.SPEAKING)) {
         this.receiver.packets._stoppedSpeaking(user_id);
       }
     }
 
-    if (guild && user && old !== speaking) {
+    if (guild && user && old.equals(speaking)) {
       const member = guild.member(user);
       if (member) {
         /**
