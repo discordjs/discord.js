@@ -128,7 +128,6 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'unknown';
 		public delete(reason?: string): Promise<Channel>;
-		public toString(): string;
 	}
 
 	export class Client extends BaseClient {
@@ -511,7 +510,8 @@ declare module 'discord.js' {
 	}
 
 	export class GuildChannel extends Channel {
-		constructor(guild: Guild, data?: object);
+    constructor(guild: Guild, data?: object);
+		public toString(): string;    
 		private memberPermissions(member: GuildMember): Readonly<Permissions>;
 		private rolePermissions(role: Role): Readonly<Permissions>;
 

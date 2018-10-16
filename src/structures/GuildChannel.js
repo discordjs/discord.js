@@ -538,6 +538,17 @@ class GuildChannel extends Channel {
   delete(reason) {
     return this.client.api.channels(this.id).delete({ reason }).then(() => this);
   }
+
+  /**
+   * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   * @returns {string}
+   * @example
+   * // Logs: Hello from <#123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
+   */
+  toString() {
+    return this.type === 'text' ? `<#${this.id}>` : this.name;
+  }
 }
 
 module.exports = GuildChannel;
