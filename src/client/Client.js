@@ -176,7 +176,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * The shard id or a list of shard ids seperate by ','
+   * The shard id or a list of shard ids seperated by ','
    * @type {string}
    * @readonly
    */

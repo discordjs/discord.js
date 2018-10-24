@@ -42,7 +42,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The current session id of the WebSocket
-     * @type {string}
+     * @type {?string}
      */
     this.sessionID = oldShard && oldShard.sessionID;
 
@@ -296,7 +296,6 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Identifies the client on a connection.
-   * @param {number} [after] How long to wait before identifying
    * @returns {void}
    */
   identify() {
@@ -349,6 +348,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Adds data to the queue to be sent.
    * @param {Object} data Packet to send
+   * @returns {void}
    */
   send(data) {
     this.ratelimit.queue.push(data);
@@ -358,6 +358,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Sends data, bypassing the queue.
    * @param {Object} data Packet to send
+   * @returns {void}
    */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
@@ -369,6 +370,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Processes the current WebSocket queue.
+   * @returns {void}
    */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;

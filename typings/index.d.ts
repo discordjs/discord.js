@@ -80,17 +80,19 @@ declare module 'discord.js' {
 
 	export class BaseClient extends EventEmitter {
 		constructor(options?: ClientOptions);
-		private _intervals: Set<NodeJS.Timer>;
 		private _timeouts: Set<NodeJS.Timer>;
+		private _intervals: Set<NodeJS.Timer>;
 		private readonly api: object;
 		private rest: object;
 
 		public options: ClientOptions;
 		public clearInterval(interval: NodeJS.Timer): void;
 		public clearTimeout(timeout: NodeJS.Timer): void;
+		public clearImmediate(timeout: NodeJS.Immediate): void;
 		public destroy(): void;
 		public setInterval(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
 		public setTimeout(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
+		public setImmediate(fn: Function, delay: number, ...args: any[]): NodeJS.Immediate;
 		public toJSON(...props: { [key: string]: boolean | string }[]): object;
 	}
 
@@ -133,30 +135,28 @@ declare module 'discord.js' {
 
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
-		private readonly _pingTimestamp: number;
 		private actions: object;
-		private manager: ClientManager;
 		private voice: object;
 		private ws: object;
 		private _eval(script: string): any;
-		private _pong(startTime: number): void;
 		private _validateOptions(options?: ClientOptions): void;
 
 		public broadcasts: VoiceBroadcast[];
 		public channels: ChannelStore;
 		public readonly emojis: GuildEmojiStore;
 		public guilds: GuildStore;
-		public readonly ping: number;
-		public pings: number[];
-		public readyAt: Date;
+		public presence: ClientPresence;
+		public readyAt?: Date;
 		public readonly readyTimestamp: number;
 		public shard: ShardClientUtil;
 		public readonly status: Status;
 		public token: string;
 		public readonly uptime: number;
-		public user: ClientUser;
+		public readonly shardIds: string;
+		public user?: ClientUser;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
+		public destroy(): Promise<boolean>;
 		public createVoiceBroadcast(): VoiceBroadcast;
 		public fetchApplication(): Promise<ClientApplication>;
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
@@ -252,12 +252,11 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
-	class ClientManager {
-		constructor(client: Client);
-		public client: Client;
-		public heartbeatInterval: number;
-		public readonly status: number;
-		public connectToWebSocket(token: string, resolve: Function, reject: Function): void;
+	export class ClientPresence extends Presence {
+		constructor(client: Client, data?: object);
+		public set(presence: PresenceData): Promise<ClientPresence>;
+
+		private _parse(data: object): object;
 	}
 
 	export interface ActivityOptions {
@@ -1282,6 +1281,63 @@ declare module 'discord.js' {
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
+	}
+
+	export class WebSocketManager {
+		constructor(client: Client);
+		public client: Client;
+		public gateway?: string;
+		public shards: WebSocketShard[];
+		public spawnQueue: Array<WebSocketShard|number|string>;
+		public spawning: boolean;
+		public packetQueue: Array<NodeJS.Immediate>;
+		public status: Status;
+		public sessionStartLimit?: object;
+		public readonly ping: number;
+		public debug(message: string): void;
+		public spawn(query?: WebSocketShard|WebSocketShard[]|number|string): void;
+		public connect(gateway?: string): void;
+		public handlePacket(packet?: object, shard?: WebSocketShard): boolean;
+		public checkReady(): void;
+		public triggerReady(): void;
+		public broadcast(packet: any): void;
+		public destroy(): void;
+
+		private _handleSessionLimit(shard: WebSocketShard): void;
+	}
+
+	export class WebSocketShard {
+		constructor(manager: WebSocketManager, id: number, oldShard?: WebSocketShard);
+		public manager: WebSocketManager;
+		public id: number;
+		public status: Status;
+		public sequence: number;
+		public sessionID?: string;
+		public pings: number[];
+		public lastPingTimestamp: number;
+		public trace: string[];
+		public ratelimit: object;
+		public ws?: WebSocket;
+		public inflate?: object;
+		public readonly ping: number;
+		public debug(message: string): void;
+		public heartbeat(time: number): void;
+		public ackHeartbeat(): void;
+		public connect(): void;
+		public onPacket(packet: object): void;
+		public onOpen(): void;
+		public onMessage(event: Event): void;
+		public onError(error: Error): void;
+		public onClose(event: CloseEvent): void;
+		public identify(): void;
+		public identifyNew(): void;
+		public identifyResume(): void;
+		public send(data: object): void;
+		public processQueue(): void;
+		public reconnect(event?: string): void;
+		public destroy(): void;
+
+		private _send(data: object): void;
 	}
 
 //#endregion

@@ -37,7 +37,7 @@ class WebSocketManager {
 
     /**
      * An array of queued shards to be spawned by this WebSocketManager.
-     * @type {WebSocketShard[]}
+     * @type {Array<WebSocketShard|number|string>}
      */
     this.spawnQueue = [];
 
@@ -99,6 +99,7 @@ class WebSocketManager {
   /**
    * Used to spawn WebSocketShards.
    * @param {?WebSocketShard|WebSocketShard[]|number|string} query The WebSocketShards to be spawned
+   * @returns {void}
    */
   spawn(query) {
     if (query !== undefined) {
@@ -235,7 +236,7 @@ class WebSocketManager {
     this.handlePacket();
   }
 
-  /*
+  /**
    * Broadcasts a message to every shard in this WebSocketManager.
    * @param {*} packet The packet to send
    */
