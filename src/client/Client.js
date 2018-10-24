@@ -209,7 +209,7 @@ class Client extends BaseClient {
     if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
     const res = await endpoint.get();
     if (this.options.presence) {
-      this.options.ws.presence = await this.presences._parse(this.options.presence);
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
     }
     if (res.session_start_limit && res.session_start_limit.remaining === 0) {
       const { session_start_limit: { reset_after } } = res;
@@ -252,7 +252,7 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {void}
+   * @returns {Promise<boolean>}
    */
   async destroy() {
     await super.destroy();
@@ -375,7 +375,6 @@ class Client extends BaseClient {
     return super.toJSON({
       readyAt: false,
       broadcasts: false,
-      pings: false,
       presences: false,
     });
   }

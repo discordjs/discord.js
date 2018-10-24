@@ -21,12 +21,15 @@ class ActionsManager {
     this.register(require('./GuildRoleUpdate'));
     this.register(require('./PresenceUpdate'));
     this.register(require('./UserUpdate'));
+    this.register(require('./VoiceStateUpdate'));
     this.register(require('./GuildEmojiCreate'));
     this.register(require('./GuildEmojiDelete'));
     this.register(require('./GuildEmojiUpdate'));
     this.register(require('./GuildEmojisUpdate'));
     this.register(require('./GuildRolesPositionUpdate'));
     this.register(require('./GuildChannelsPositionUpdate'));
+    this.register(require('./GuildIntegrationsUpdate'));
+    this.register(require('./WebhooksUpdate'));
   }
 
   register(Action) {

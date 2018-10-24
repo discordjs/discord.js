@@ -1,10 +1,9 @@
-const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
+const Action = require('./Action');
+const { Events } = require('../../util/Constants');
 
-class WebhooksUpdate extends AbstractHandler {
-  handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
+class WebhooksUpdate extends Action {
+  handle({ d: data }) {
+    const client = this.client;
     const channel = client.channels.get(data.channel_id);
     if (channel) client.emit(Events.WEBHOOKS_UPDATE, channel);
   }

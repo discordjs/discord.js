@@ -1,10 +1,9 @@
-const AbstractHandler = require('./AbstractHandler');
-const { Events } = require('../../../../util/Constants');
+const Action = require('./Action');
+const { Events } = require('../../util/Constants');
 
-class GuildIntegrationsHandler extends AbstractHandler {
-  handle(packet) {
-    const client = this.packetManager.client;
-    const data = packet.d;
+class GuildIntegrationsHandler extends Action {
+  handle({ d: data }) {
+    const client = this.client;
     const guild = client.guilds.get(data.guild_id);
     if (guild) client.emit(Events.GUILD_INTEGRATIONS_UPDATE, guild);
   }
