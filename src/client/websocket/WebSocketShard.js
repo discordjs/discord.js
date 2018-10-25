@@ -30,7 +30,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The current status of the shard
-     * @type {number}
+     * @type {Status}
      */
     this.status = Status.IDLE;
 
@@ -287,8 +287,12 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
+      /**
+       * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
+       * @param {CloseEvent} event The WebSocket close event
+       */
       this.manager.client.emit(Events.DISCONNECT, event, this.id);
-      this.debug(WSCodes[event.code] || `Got code ${event.code}, not reconnecting`);
+      this.debug(WSCodes[event.code]);
       return;
     }
     this.reconnect('invalidated');
