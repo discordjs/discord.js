@@ -112,13 +112,9 @@ class WebSocketManager {
       }
     }
 
-    if (this.spawning) return;
-    this.spawning = true;
+    if (this.spawning || !this.spawnQueue.length) return;
 
-    if (!this.spawnQueue.length) {
-      this.spawning = false;
-      return;
-    }
+    this.spawning = true;
     let item = this.spawnQueue.shift();
 
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
@@ -194,8 +190,8 @@ class WebSocketManager {
    * @returns {void}
    */
   checkReady() {
-    if (!(this.shards.filter(s => s).length === this.client.options.actualShardCount) ||
-      !this.shards.filter(s => s).every(s => s.status === Status.READY)) {
+    if (this.shards.filter(s => s).length !== this.client.options.actualShardCount ||
+      this.shards.some(s => s && s.status !== Status.READY)) {
       return false;
     }
 

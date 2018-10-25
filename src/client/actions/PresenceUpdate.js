@@ -1,6 +1,5 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
-const User = require('../../structures/User');
 
 class PresenceUpdateAction extends Action {
   handle(data) {
@@ -9,8 +8,7 @@ class PresenceUpdateAction extends Action {
     if (!cached) return;
 
     if (data.user && data.user.username) {
-      const other = new User(this.client, data.user);
-      if (!cached.equals(other)) this.client.actions.UserUpdate.handle(data);
+      if (!cached.equals(data.user)) this.client.actions.UserUpdate.handle(data);
     }
 
     const guild = this.client.guilds.get(data.guild_id);
