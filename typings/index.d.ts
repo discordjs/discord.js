@@ -1575,6 +1575,7 @@ declare module 'discord.js' {
 		messageSweepInterval?: number;
 		fetchAllMembers?: boolean;
 		disableEveryone?: boolean;
+		replyPrefixer?: ReplyPrefixer;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
 		retryLimit?: number,
@@ -1896,6 +1897,7 @@ declare module 'discord.js' {
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 		reply?: UserResolvable;
+		replyPrefixer?: ReplyPrefixer;
 	};
 
 	type MessageReactionResolvable = MessageReaction | Snowflake;
@@ -2005,6 +2007,8 @@ declare module 'discord.js' {
 		maxEmojis?: number;
 		maxUsers?: number;
 	};
+
+	type ReplyPrefixer = (user: UserResolvable) => string;
 
 	type ResolvedOverwriteOptions = {
 		allow: Permissions;

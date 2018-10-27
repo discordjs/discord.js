@@ -74,25 +74,25 @@ class APIMessage {
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
 
-    let mentionPart = '';
+    let replyPrefix = '';
     if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
       const id = this.target.client.users.resolveID(this.options.reply);
-      mentionPart = `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
-      if (isSplit) {
-        splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
-      }
+      replyPrefix = this.options.replyPrefixer ? this.options.replyPrefixer(this.options.reply) :
+        this.target.client.options.replyPrefixer ? this.target.client.options.replyPrefixer(this.options.reply) :
+          `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
+      if (isSplit) splitOptions.prepend = `${replyPrefix}${splitOptions.prepend || ''}`;
     }
 
-    if (content || mentionPart) {
+    if (content || replyPrefix) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.escapeMarkdown(content, true)}\n\`\`\``;
+        content = `${replyPrefix}\`\`\`${codeName}\n${Util.escapeMarkdown(content, true)}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
         }
-      } else if (mentionPart) {
-        content = `${mentionPart}${content}`;
+      } else if (replyPrefix) {
+        content = `${replyPrefix}${content}`;
       }
 
       const disableEveryone = typeof this.options.disableEveryone === 'undefined' ?

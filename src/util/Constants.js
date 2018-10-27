@@ -17,6 +17,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {ReplyPrefixer} [replyPrefixer] Function to override the default mention-based prefix for a message
+ * reply
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -41,6 +43,13 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
+  /**
+   * Function to override the default mention-based reply prefix behaviour
+   * @callback ReplyPrefixer
+   * @param {UserResolvable} user User being replied to (see {@link MessageOptions#reply})
+   * @returns {string} Prefix for the content of the reply message
+   */
+  replyPrefixer: null,
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   retryLimit: 1,

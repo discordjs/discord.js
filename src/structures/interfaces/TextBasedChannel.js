@@ -62,6 +62,8 @@ class TextBasedChannel {
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
    * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
+   * @property {ReplyPrefixer} [replyPrefixer] Function to override the default mention-based prefix for the reply
+   * option
    */
 
   /**
