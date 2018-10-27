@@ -335,6 +335,7 @@ class Shard extends EventEmitter {
 
     this.ready = false;
     this.process = null;
+    this.worker = null;
     this._evals.clear();
     this._fetches.clear();
 
