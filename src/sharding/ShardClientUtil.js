@@ -172,11 +172,12 @@ class ShardClientUtil {
   /**
    * Creates/gets the singleton of this class.
    * @param {Client} client The client to use
+   * @param {ShardingManagerMode} mode Mode the shard was spawned with
    * @returns {ShardClientUtil}
    */
-  static singleton(client) {
+  static singleton(client, mode) {
     if (!this._singleton) {
-      this._singleton = new this(client);
+      this._singleton = new this(client, mode);
     } else {
       client.emit(Events.WARN,
         'Multiple clients created in child process/worker; only the first will handle sharding helpers.');
