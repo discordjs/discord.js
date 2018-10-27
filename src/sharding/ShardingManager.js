@@ -18,7 +18,9 @@ const { Error, TypeError, RangeError } = require('../errors');
 class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
-   * "worker" to use workers
+   * "worker" to use workers. The "worker" mode relies on the experimental
+   * [Worker threads](https://nodejs.org/api/worker_threads.html) functionality that is present in Node v10.5.0 or
+   * newer. Node must be started with the `--experimental-worker` flag to expose it.
    * @typedef {Object} ShardingManagerMode
    */
 
