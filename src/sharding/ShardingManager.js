@@ -8,27 +8,37 @@ const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
- * It works by spawning a self-contained {@link ChildProcess} for each individual shard, each containing its own
- * instance of your bot's {@link Client}. They all have a line of communication with the master process, and there are
- * several useful methods that utilise it in order to simplify tasks that are normally difficult with sharding. It can
- * spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a path to your main bot
- * script to launch for each one.
+ * It works by spawning a self-contained {@link ChildProcess} or {@link Worker} for each individual shard, each
+ * containing its own instance of your bot's {@link Client}. They all have a line of communication with the master
+ * process, and there are several useful methods that utilise it in order to simplify tasks that are normally difficult
+ * with sharding. It can spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a
+ * path to your main bot script to launch for each one.
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
   /**
+   * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
+   * "worker" to use workers
+   * @typedef {Object} ShardingManagerMode
+   */
+
+  /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
    * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
+   * @param {ShardingManagerMode} [options.mode='process'] Which mode to use for shards
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
+   * (only available when using the `process` mode)
    * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
+   * (only available when using the `process` mode)
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
   constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
       totalShards: 'auto',
+      mode: 'process',
       respawn: true,
       shardArgs: [],
       token: process.env.DISCORD_TOKEN,
@@ -60,6 +70,15 @@ class ShardingManager extends EventEmitter {
     }
 
     /**
+     * Mode for shards to spawn with
+     * @type {ShardingManagerMode}
+     */
+    this.mode = options.mode;
+    if (this.mode !== 'process' && this.mode !== 'worker') {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'Sharding mode', '"process" or "worker"');
+    }
+
+    /**
      * Whether shards should automatically respawn upon exiting
      * @type {boolean}
      */
@@ -88,6 +107,10 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    process.env.SHARDING_MANAGER = true;
+    process.env.SHARDING_MANAGER_MODE = this.mode;
+    process.env.DISCORD_TOKEN = this.token;
   }
 
   /**

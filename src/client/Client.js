@@ -31,12 +31,28 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    // Try loading workerData if it's present
+    let workerData;
+    try {
+      workerData = require('worker_threads').workerData;
+    } catch (err) {
+      // Do nothing
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
+
+    // Figure out the shard details
+    if (!this.options.shardId) {
+      if (workerData && 'SHARD_ID' in workerData) {
+        this.options.shardId = workerData.SHARD_ID;
+      } else if (!browser && 'SHARD_ID' in process.env) {
+        this.options.shardId = Number(process.env.SHARD_ID);
+      }
+    }
+    if (!this.options.shardCount) {
+      if (workerData && 'SHARD_COUNT' in workerData) {
+        this.options.shardCount = workerData.SHARD_COUNT;
+      } else if (!browser && 'SHARD_COUNT' in process.env) {
+        this.options.shardCount = Number(process.env.SHARD_COUNT);
+      }
     }
 
     this._validateOptions();
