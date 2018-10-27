@@ -1623,9 +1623,9 @@ declare module 'discord.js' {
 	};
 
 	type ClientOptions = {
-		presence?: PresenceData;
-		shardId?: number;
+		shards?: number | number[];
 		shardCount?: number;
+		actualShardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
@@ -1633,7 +1633,9 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
-		retryLimit?: number,
+		restSweepInterval?: number;
+		retryLimit?: number;
+		presence?: PresenceData;
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
