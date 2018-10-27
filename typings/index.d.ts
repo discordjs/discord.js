@@ -10,7 +10,7 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
-	import * as WebSocket from 'ws'; 
+	import * as WebSocket from 'ws';
 
 	export const version: string;
 
