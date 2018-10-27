@@ -31,27 +31,29 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Try loading workerData if it's present
-    let workerData;
-    try {
-      workerData = require('worker_threads').workerData;
-    } catch (err) {
-      // Do nothing
-    }
-
     // Figure out the shard details
-    if (!this.options.shardId) {
-      if (workerData && 'SHARD_ID' in workerData) {
-        this.options.shardId = workerData.SHARD_ID;
-      } else if (!browser && 'SHARD_ID' in process.env) {
-        this.options.shardId = Number(process.env.SHARD_ID);
+    if (!browser && process.env.SHARDING_MANAGER) {
+      // Try loading workerData if it's present
+      let workerData;
+      try {
+        workerData = require('worker_threads').workerData;
+      } catch (err) {
+        // Do nothing
       }
-    }
-    if (!this.options.shardCount) {
-      if (workerData && 'SHARD_COUNT' in workerData) {
-        this.options.shardCount = workerData.SHARD_COUNT;
-      } else if (!browser && 'SHARD_COUNT' in process.env) {
-        this.options.shardCount = Number(process.env.SHARD_COUNT);
+
+      if (!this.options.shardId) {
+        if (workerData && 'SHARD_ID' in workerData) {
+          this.options.shardId = workerData.SHARD_ID;
+        } else if ('SHARD_ID' in process.env) {
+          this.options.shardId = Number(process.env.SHARD_ID);
+        }
+      }
+      if (!this.options.shardCount) {
+        if (workerData && 'SHARD_COUNT' in workerData) {
+          this.options.shardCount = workerData.SHARD_COUNT;
+        } else if ('SHARD_COUNT' in process.env) {
+          this.options.shardCount = Number(process.env.SHARD_COUNT);
+        }
       }
     }
 
@@ -90,7 +92,7 @@ class Client extends BaseClient {
      * @type {?ShardClientUtil}
      */
     this.shard = !browser && process.env.SHARDING_MANAGER ?
-      ShardClientUtil.singleton(this, workerData ? 'worker' : 'process') :
+      ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE) :
       null;
 
     /**
