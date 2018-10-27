@@ -8,11 +8,25 @@ const { Events } = require('../util/Constants');
 class ShardClientUtil {
   /**
    * @param {Client} client Client of the current shard
-   * @param {ShardingManagerMode} mode Mode the shard is spawned with
+   * @param {ShardingManagerMode} mode Mode the shard was spawned with
    */
   constructor(client, mode) {
+    /**
+     * Client for the shard
+     * @type {Client}
+     */
     this.client = client;
+
+    /**
+     * Mode the shard was spawned with
+     * @type {ShardingManagerMode}
+     */
     this.mode = mode;
+
+    /**
+     * Message port for the master process (only when {@link ShardClientUtil#mode} is `worker`)
+     * @type {?MessagePort}
+     */
     this.parentPort = null;
 
     if (mode === 'process') {

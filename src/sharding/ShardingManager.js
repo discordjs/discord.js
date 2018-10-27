@@ -41,6 +41,7 @@ class ShardingManager extends EventEmitter {
       mode: 'process',
       respawn: true,
       shardArgs: [],
+      execArgv: [],
       token: process.env.DISCORD_TOKEN,
     }, options);
 
@@ -85,13 +86,13 @@ class ShardingManager extends EventEmitter {
     this.respawn = options.respawn;
 
     /**
-     * An array of arguments to pass to shards
+     * An array of arguments to pass to shards (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
     this.shardArgs = options.shardArgs;
 
     /**
-     * An array of arguments to pass to the executable
+     * An array of arguments to pass to the executable (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
     this.execArgv = options.execArgv;
