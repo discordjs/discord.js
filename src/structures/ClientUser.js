@@ -84,6 +84,7 @@ class ClientUser extends Structures.get('User') {
    * @property {string} [activity.name] Name of the activity
    * @property {ActivityType|number} [activity.type] Type of the activity
    * @property {string} [activity.url] Stream url
+   * @property {?number|number[]} [shardId] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -112,6 +113,7 @@ class ClientUser extends Structures.get('User') {
   /**
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
+   * @param {?number|number[]} [shardId] Shard Id(s) to have the activity set on
    * @returns {Promise<Presence>}
    * @example
    * // Set the client user's status
@@ -119,8 +121,8 @@ class ClientUser extends Structures.get('User') {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  setStatus(status) {
-    return this.setPresence({ status });
+  setStatus(status, shardId) {
+    return this.setPresence({ status, shardId });
   }
 
   /**
@@ -129,6 +131,7 @@ class ClientUser extends Structures.get('User') {
    * @type {Object}
    * @property {string} [url] Twitch stream URL
    * @property {ActivityType|number} [type] Type of the activity
+   * @property {?number|number[]} [shardId] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -143,10 +146,10 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activity: null });
+    if (!name) return this.setPresence({ activity: null, shardId: options.shardId });
 
     const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activity });
+    return this.setPresence({ activity, shardId: activity.shardId });
   }
 
   /**

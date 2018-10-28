@@ -264,6 +264,7 @@ declare module 'discord.js' {
 		name?: string;
 		url?: string;
 		type?: ActivityType | number;
+		shardId?: number | number[];
 	}
 
 	export class ClientUser extends User {
@@ -275,7 +276,7 @@ declare module 'discord.js' {
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;
-		public setStatus(status: PresenceStatus): Promise<Presence>;
+		public setStatus(status: PresenceStatus, shardId?: number | number[]): Promise<Presence>;
 		public setUsername(username: string): Promise<ClientUser>;
 	}
 
@@ -2036,7 +2037,8 @@ declare module 'discord.js' {
 			name?: string;
 			type?: ActivityType | number;
 			url?: string;
-		}
+		};
+		shardId?: number | number[];
 	};
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
