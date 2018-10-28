@@ -10,6 +10,7 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
+	import * as WebSocket from 'ws';
 
 	export const version: string;
 
@@ -1623,9 +1624,9 @@ declare module 'discord.js' {
 	};
 
 	type ClientOptions = {
-		presence?: PresenceData;
-		shardId?: number;
+		shards?: number | number[];
 		shardCount?: number;
+		actualShardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
@@ -1633,7 +1634,9 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
-		retryLimit?: number,
+		restSweepInterval?: number;
+		retryLimit?: number;
+		presence?: PresenceData;
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;

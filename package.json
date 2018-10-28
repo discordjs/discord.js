@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@types/node": "^10.7.1",
+    "@types/ws": "^6.0.1",
     "discord.js-docgen": "discordjs/docgen",
     "eslint": "^5.4.0",
     "json-filter-loader": "^1.0.0",
