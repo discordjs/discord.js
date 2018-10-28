@@ -1285,7 +1285,7 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
-	export class WebSocketManager {
+	export class WebSocketManager extends EventEmitter {
 		constructor(client: Client);
 		public client: Client;
 		public gateway?: string;
@@ -1305,10 +1305,18 @@ declare module 'discord.js' {
 		public broadcast(packet: any): void;
 		public destroy(): void;
 
+		public on(event: 'shardDisconnect', listener: (event: any, shardId: number) => void): this;
+		public on(event: 'shardReady', listener: (shardId: number) => void): this;
+		public on(event: 'shardResume', listener: (shardId: number) => void): this;
+
+		public once(event: 'shardDisconnect', listener: (event: any, shardId: number) => void): this;
+		public once(event: 'shardReady', listener: (shardId: number) => void): this;
+		public once(event: 'shardResume', listener: (shardId: number) => void): this;
+
 		private _handleSessionLimit(shard: WebSocketShard): void;
 	}
 
-	export class WebSocketShard {
+	export class WebSocketShard extends EventEmitter {
 		constructor(manager: WebSocketManager, id: number, oldShard?: WebSocketShard);
 		public manager: WebSocketManager;
 		public id: number;
@@ -1338,6 +1346,10 @@ declare module 'discord.js' {
 		public processQueue(): void;
 		public reconnect(event?: string): void;
 		public destroy(): void;
+
+		public on(event: 'ready', listener: () => void): this;
+
+		public once(event: 'ready', listener: () => void): this;
 
 		private _send(data: object): void;
 	}

@@ -253,6 +253,11 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_DISCONNECT: 'shardDisconnect',
+  SHARD_READY: 'shardReady',
+  SHARD_RESUMED: 'shardResume',
+  INVALIDATED: 'invalidated',
+  RAW: 'raw',
 };
 
 /**

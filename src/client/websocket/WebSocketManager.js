@@ -1,3 +1,5 @@
+const EventEmitter = require('events');
+
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
@@ -15,8 +17,10 @@ const BeforeReadyWhitelist = [
 /**
  * WebSocket Manager of the client.
  */
-class WebSocketManager {
+class WebSocketManager extends EventEmitter {
   constructor(client) {
+    super();
+
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
@@ -223,12 +227,14 @@ class WebSocketManager {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
+    this.status = Status.READY;
+
     /**
      * Emitted when the client becomes ready to start working.
      * @event Client#ready
      */
-    this.status = Status.READY;
     this.client.emit(Events.READY);
+
     this.handlePacket();
   }
 
