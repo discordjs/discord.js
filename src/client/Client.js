@@ -230,17 +230,18 @@ class Client extends BaseClient {
         this.removeListener(Events.DISCONNECT, ondisconnect);
         resolve();
       };
-      const ondisconnect = async event => {
+      const ondisconnect = event => {
         clearTimeout(timeout);
         this.removeListener(Events.READY, onready);
-        await this.destroy();
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        this.destroy();
         if (WSCodes[event.code]) {
           reject(new Error(WSCodes[event.code]));
         }
       };
-      const timeout = setTimeout(async () => {
+      const timeout = setTimeout(() => {
         this.removeListener(Events.READY, onready);
-        await this.destroy();
+        this.destroy();
         reject(new Error('WS_CONNECTION_TIMEOUT'));
       }, this.options.shardCount * 25e3);
       if (timeout.unref !== undefined) timeout.unref();
@@ -252,10 +253,10 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {Promise<boolean>}
+   * @returns {boolean}
    */
-  async destroy() {
-    await super.destroy();
+  destroy() {
+    super.destroy();
     this.ws.destroy();
     this.token = null;
     return true;

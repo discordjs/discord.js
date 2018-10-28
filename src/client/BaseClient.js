@@ -61,8 +61,9 @@ class BaseClient extends EventEmitter {
    * Destroys all assets used by the base client.
    */
   destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
+    for (const t of this._timeouts) this.clearTimeout(t);
+    for (const i of this._intervals) this.clearInterval(i);
+    for (const i of this._immediates) this.clearImmediate(i);
     this._timeouts.clear();
     this._intervals.clear();
   }

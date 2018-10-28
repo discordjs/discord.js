@@ -7,7 +7,6 @@ class UserUpdateAction extends Action {
 
     const oldUser = client.users.get(data.user.id)._update(data.user);
     const newUser = client.users.get(data.user.id);
-    client.users.set(newUser.id, newUser);
 
     if (!oldUser.equals(newUser)) {
       client.emit(Events.USER_UPDATE, oldUser, newUser);

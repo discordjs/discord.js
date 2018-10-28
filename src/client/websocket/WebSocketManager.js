@@ -53,7 +53,7 @@ class WebSocketManager extends EventEmitter {
 
     /**
      * An array of queued events before this WebSocketManager became ready.
-     * @type {Immediate[]}
+     * @type {object[]}
      */
     this.packetQueue = [];
 
