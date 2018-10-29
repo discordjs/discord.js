@@ -14,7 +14,16 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, WSCodes, browser, DefaultOptions: { shardCount, totalShardCount } } = require('../util/Constants');
+const {
+  Events,
+  WSCodes,
+  browser,
+  DefaultOptions: {
+    shardCount,
+    totalShardCount,
+    shards,
+  },
+} = require('../util/Constants');
 const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -38,6 +47,8 @@ class Client extends BaseClient {
     if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
+
+    this.options.shards = this.options.shards || shards;
     this.options.shardCount = this.options.shardCount || this.options.shards.length || shardCount;
     this.options.totalShardCount = this.options.totalShardCount || totalShardCount;
 
