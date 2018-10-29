@@ -1,5 +1,3 @@
-const EventEmitter = require('events');
-
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
@@ -17,10 +15,8 @@ const BeforeReadyWhitelist = [
 /**
  * WebSocket Manager of the client.
  */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager {
   constructor(client) {
-    super();
-
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
@@ -129,7 +125,7 @@ class WebSocketManager extends EventEmitter {
         this.spawning = false;
         this.client.setTimeout(() => this._handleSessionLimit(shard), 5000);
       });
-      shard.once('invalidated', () => {
+      shard.once(Events.INVALIDATED, () => {
         this.spawning = false;
       });
     } else if (item instanceof WebSocketShard) {

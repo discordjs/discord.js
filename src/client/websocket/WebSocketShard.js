@@ -265,10 +265,10 @@ class WebSocketShard extends EventEmitter {
 
       /**
        * Emitted when a shard becomes ready
-       * @event WebSocketManager#shardReady
+       * @event Client#shardReady
        * @param {number} shardId The id of the shard
        */
-      this.manager.emit(Events.SHARD_READY, this.id);
+      this.manager.client.emit(Events.SHARD_READY, this.id);
     }
     this.onPacket(packet);
   }
@@ -302,16 +302,9 @@ class WebSocketShard extends EventEmitter {
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
        * @param {CloseEvent} event The WebSocket close event
-       */
-      this.manager.client.emit(Events.DISCONNECT, event);
-
-      /**
-       * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
-       * @event WebSocketManager#shardDisconnect
-       * @param {CloseEvent} event The WebSocket close event
        * @param {number} shardId The shard that disconnected
        */
-      this.manager.emit(Events.SHARD_DISCONNECT, event, this.id);
+      this.manager.client.emit(Events.DISCONNECT, event, this.id);
 
       this.debug(WSCodes[event.code]);
       return;
@@ -422,7 +415,14 @@ class WebSocketShard extends EventEmitter {
   reconnect(event) {
     this.heartbeat(-1);
     this.status = Status.RECONNECTING;
-    if (event === 'invalidated') this.emit(event);
+
+    /**
+     * Emitted whenever a shard tries to reconnect to the WebSocket.
+     * @event Client#reconnecting
+     */
+    this.manager.client.emit(Events.RECONNECTING, this.id);
+
+    if (event === Events.INVALIDATED) this.emit(event);
     this.manager.spawn(this.id);
   }
 
