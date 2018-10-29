@@ -1876,7 +1876,7 @@ declare module 'discord.js' {
 		description?: string;
 		url?: string;
 		timestamp?: Date | number;
-		color?: number | string;
+		color?: ColorResolvable;
 		fields?: { name: string; value: string; inline?: boolean; }[];
 		files?: (MessageAttachment | string | FileOptions)[];
 		author?: { name?: string; url?: string; icon_url?: string; iconURL?: string; };
