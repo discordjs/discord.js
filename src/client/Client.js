@@ -14,16 +14,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const {
-  Events,
-  WSCodes,
-  browser,
-  DefaultOptions: {
-    shardCount,
-    totalShardCount,
-    shards,
-  },
-} = require('../util/Constants');
+const { Events, WSCodes, browser } = require('../util/Constants');
 const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -40,20 +31,22 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment
-    if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
-      this.options.shards = Number(process.env.SHARD_ID);
+    // Obtain shard details from environment or if present worker threads
+    let data = process.env;
+    try {
+      // Test if worker threads module is present and sharding is used
+      data = require('worker_threads').workerData || data;
+    } catch (_) {
+      // Do nothing
     }
-    if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    if (!this.options.shards) {
+      if ('SHARDS' in data) {
+        this.options.shards = JSON.parse(data.SHARDS);
+      }
     }
-    if (Array.isArray(this.options.shards)) {
-      this.options.shardCount = this.options.shards.length;
+    if ('TOTAL_SHARD_COUNT' in data) {
+      this.options.totalShardCount = data.SHARD_COUNT;
     }
-
-    this.options.shards = this.options.shards || shards;
-    this.options.shardCount = this.options.shardCount || shardCount;
-    this.options.totalShardCount = this.options.totalShardCount || totalShardCount;
 
     this._validateOptions();
 
