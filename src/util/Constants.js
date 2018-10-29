@@ -7,7 +7,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @typedef {Object} ClientOptions
  * @property {number|number[]} [shards=0] ID of the shard to run, or an array of shard IDs
  * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
- * @property {number} [totalShardCount=1] The Total amount of shards used by all processes of this bot (e.g. Recommended Shardcount, Shardcount of the ShardingManager)
+ * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * (e.g. recommended shardcount, shardcount of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
