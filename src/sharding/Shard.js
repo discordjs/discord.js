@@ -51,8 +51,10 @@ class Shard extends EventEmitter {
      * @type {Object}
      */
     this.env = Object.assign({}, process.env, {
-      SHARD_ID: this.id,
-      SHARD_COUNT: this.manager.totalShards,
+      SHARDING_MANAGER: true,
+      SHARDS: this.id,
+      TOTAL_SHARD_COUNT: this.manager.totalShards,
+      DISCORD_TOKEN: this.manager.token,
     });
 
     /**

@@ -339,8 +339,8 @@ class WebSocketShard extends EventEmitter {
     // Clone the generic payload and assign the token
     const d = Object.assign({ token: this.manager.client.token }, this.manager.client.options.ws);
 
-    const { shardCount } = this.manager.client.options;
-    d.shard = [this.id, Number(shardCount)];
+    const { totalShardCount } = this.manager.client.options;
+    d.shard = [this.id, Number(totalShardCount)];
 
     // Send the payload
     this.debug('Identifying as a new session');

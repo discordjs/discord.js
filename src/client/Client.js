@@ -14,7 +14,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, WSCodes, browser } = require('../util/Constants');
+const { Events, WSCodes, browser, DefaultOptions } = require('../util/Constants');
 const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -31,33 +31,26 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Figure out the shard details
-    if (!browser && process.env.SHARDING_MANAGER) {
-      // Try loading workerData if it's present
-      let workerData;
-      try {
-        workerData = require('worker_threads').workerData;
-      } catch (err) {
-        // Do nothing
-      }
-
-      if (!this.options.shards) {
-        if (workerData && 'SHARD_ID' in workerData) {
-          this.options.shards = workerData.SHARD_ID;
-        } else if ('SHARD_ID' in process.env) {
-          this.options.shards = Number(process.env.SHARD_ID);
-        }
-      }
-      if (!this.options.shardCount || this.options.shardCount === 1) {
-        if (workerData && 'SHARD_COUNT' in workerData) {
-          this.options.shardCount = workerData.SHARD_COUNT;
-        } else if ('SHARD_COUNT' in process.env) {
-          this.options.shardCount = Number(process.env.SHARD_COUNT);
-        }
+    // Obtain shard details from environment or if present worker threads
+    let data = process.env;
+    try {
+      // Test if worker threads module is present and used
+      data = require('worker_threads').workerData || data;
+    } catch (_) {
+      // Do nothing
+    }
+    if (!this.options.shards) {
+      if ('SHARDS' in data) {
+        this.options.shards = JSON.parse(data.SHARDS);
       }
     }
-    this.options.shardCount = this.options.shardCount || 1;
-    this.options.actualShardCount = this.options.actualShardCount || 1;
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount && 'TOTAL_SHARD_COUNT' in data) {
+      this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+    } else if (Array.isArray(this.options.shards)) {
+      this.options.totalShardCount = this.options.shards.length;
+    } else {
+      this.options.totalShardCount = this.options.shardCount;
+    }
 
     this._validateOptions();
 
@@ -240,7 +233,7 @@ class Client extends BaseClient {
     if (this.options.shardCount === 'auto') {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
-      this.options.actualShardCount = res.shards;
+      this.options.totalShardCount = res.shards;
     }
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     this.ws.connect(gateway);
@@ -444,9 +437,6 @@ class Client extends BaseClient {
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
-    }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
