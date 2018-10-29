@@ -31,12 +31,30 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment
-    if (!browser && !this.options.shards && 'SHARD_ID' in process.env) {
-      this.options.shards = Number(process.env.SHARD_ID);
-    }
-    if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    // Figure out the shard details
+    if (!browser && process.env.SHARDING_MANAGER) {
+      // Try loading workerData if it's present
+      let workerData;
+      try {
+        workerData = require('worker_threads').workerData;
+      } catch (err) {
+        // Do nothing
+      }
+
+      if (!this.options.shards) {
+        if (workerData && 'SHARD_ID' in workerData) {
+          this.options.shards = workerData.SHARD_ID;
+        } else if ('SHARD_ID' in process.env) {
+          this.options.shards = Number(process.env.SHARD_ID);
+        }
+      }
+      if (!this.options.shardCount || this.options.shardCount === 1) {
+        if (workerData && 'SHARD_COUNT' in workerData) {
+          this.options.shardCount = workerData.SHARD_COUNT;
+        } else if ('SHARD_COUNT' in process.env) {
+          this.options.shardCount = Number(process.env.SHARD_COUNT);
+        }
+      }
     }
     this.options.shardCount = this.options.shardCount || 1;
     this.options.actualShardCount = this.options.actualShardCount || 1;
@@ -67,7 +85,9 @@ class Client extends BaseClient {
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.env.SHARDING_MANAGER ?
+      ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE) :
+      null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs

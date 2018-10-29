@@ -287,13 +287,9 @@ class APIMessage {
 
     if (!options) {
       options = {};
-    }
-
-    if (options instanceof MessageEmbed) {
+    } else if (options instanceof MessageEmbed) {
       return isWebhook ? { content, embeds: [options], ...extra } : { content, embed: options, ...extra };
-    }
-
-    if (options instanceof MessageAttachment) {
+    } else if (options instanceof MessageAttachment) {
       return { content, files: [options], ...extra };
     }
 
