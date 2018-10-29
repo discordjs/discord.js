@@ -190,7 +190,7 @@ class WebSocketManager {
    * @returns {void}
    */
   checkReady() {
-    if (this.shards.filter(s => s).length !== this.client.options.actualShardCount ||
+    if (this.shards.filter(s => s).length !== this.client.options.shardCount ||
       this.shards.some(s => s && s.status !== Status.READY)) {
       return false;
     }
