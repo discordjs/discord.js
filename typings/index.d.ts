@@ -1635,7 +1635,7 @@ declare module 'discord.js' {
 	type ClientOptions = {
 		shards?: number | number[];
 		shardCount?: number;
-		actualShardCount?: number;
+		totalShardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;

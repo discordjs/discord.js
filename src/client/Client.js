@@ -14,7 +14,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, WSCodes, browser } = require('../util/Constants');
+const { Events, WSCodes, browser, DefaultOptions: { shardCount, totalShardCount } } = require('../util/Constants');
 const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -38,8 +38,8 @@ class Client extends BaseClient {
     if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
-    this.options.shardCount = this.options.shardCount || 1;
-    this.options.actualShardCount = this.options.actualShardCount || 1;
+    this.options.shardCount = this.options.shardCount || this.options.shards.length || shardCount;
+    this.options.totalShardCount = this.options.totalShardCount || totalShardCount;
 
     this._validateOptions();
 
@@ -220,7 +220,7 @@ class Client extends BaseClient {
     if (this.options.shardCount === 'auto') {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
-      this.options.actualShardCount = res.shards;
+      this.options.totalShardCount = res.shards;
     }
     this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     this.ws.connect(gateway);
@@ -424,9 +424,6 @@ class Client extends BaseClient {
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
-    }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
