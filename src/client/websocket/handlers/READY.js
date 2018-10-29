@@ -8,7 +8,7 @@ module.exports = (client, { d: data }, shard) => {
   client.users.set(clientUser.id, clientUser);
 
   for (const guild of data.guilds) {
-    guild.shardID = shard.id;
+    guild.shardId = shard.id;
     client.guilds.add(guild);
   }
 
