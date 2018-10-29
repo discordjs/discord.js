@@ -153,7 +153,6 @@ declare module 'discord.js' {
 		public readonly status: Status;
 		public token: string;
 		public readonly uptime: number;
-		public readonly shardIds: string;
 		public user: ClientUser | null;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;

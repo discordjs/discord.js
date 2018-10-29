@@ -189,15 +189,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * The shard id or a list of shard ids seperated by ','
-   * @type {string}
-   * @readonly
-   */
-  get shardIds() {
-    return Array.isArray(this.options.shards) ? this.options.shards.join(',') : this.options.shards;
-  }
-
-  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
