@@ -14,7 +14,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, WSCodes, browser } = require('../util/Constants');
+const { Events, WSCodes, browser, DefaultOptions } = require('../util/Constants');
 const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
@@ -44,8 +44,12 @@ class Client extends BaseClient {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
-    if ('TOTAL_SHARD_COUNT' in data) {
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount && 'TOTAL_SHARD_COUNT' in data) {
       this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+    } else if (Array.isArray(this.options.shards)) {
+      this.options.totalShardCount = this.options.shards.length;
+    } else {
+      this.options.totalShardCount = this.options.shardCount;
     }
 
     this._validateOptions();
