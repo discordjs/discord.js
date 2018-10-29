@@ -1,3 +1,5 @@
+import { PathLike } from 'fs';
+
 // Type definitions for discord.js 12.0.0
 // Project: https://github.com/hydrabolt/discord.js
 // Definitions by:
@@ -344,6 +346,63 @@ declare module 'discord.js' {
 		public once(event: 'dispose', listener: (...args: any[]) => void): this;
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 	}
+
+	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
+
+	export type Constants = {
+		Package: {
+			name: string,
+			version: string,
+			description: string,
+			author: string,
+			license: string,
+			main: PathLike,
+			types: PathLike,
+			homepage: URL,
+			keywords: string[],
+			bugs: { url: URL },
+			repository: { type: 'i', url: URL },
+			browser: { [key: string]: boolean }
+			scripts: { [key: string]: string },
+			engines: { [ley: string]: string },
+			dependencies: { [key: string]: string },
+			peerDependencies: { [key: string]: string },
+			devDependencies: { [key: string]: string },
+			[key: string]: any
+		}
+		browser: boolean
+		DefaultOptions: ClientOptions
+		UserAgent: null | string
+		Endpoints: {
+			botGateway: string
+			invite: (root: string, code: string) => string
+			CDN: (root: string) => {
+				Asset: (name: string) => URL
+				DefaultAvatar: (id: string | number) => URL
+				Emoji: (emojiID: string, format: 'png' | 'gif') => URL
+				Avatar: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+				Icon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+				AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+				AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+				GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+				Splash: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => URL
+			}
+		}
+		WSCodes: { [key: number]: string }
+		Events: { [key: string]: string }
+		WSEvents: { [key: string]: string }
+		Colors: { [key: string]: number }
+		Status: { [key: string]: number }
+		OPCodes: { [key: string]: number }
+		APIErrors: { [key: string]: number }
+		VoiceStatus: { [key: string]: number }
+		VoiceOPCodes: { [key: string]: number }
+		ChannelTypes: { [key: string]: number }
+		ClientApplicationAssetTypes: { [key: string]: number }
+		MessageTypes: string[]
+		ActivityTypes: string[]
+		DefaultMessageNotifications: string[]
+	};
 
 	export class DataResolver {
 		public static resolveBase64(data: Base64Resolvable): string;
