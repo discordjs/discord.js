@@ -45,7 +45,7 @@ class Client extends BaseClient {
       }
     }
     if ('TOTAL_SHARD_COUNT' in data) {
-      this.options.totalShardCount = Number(data.SHARD_COUNT);
+      this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
     }
 
     this._validateOptions();
