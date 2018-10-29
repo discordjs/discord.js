@@ -34,7 +34,7 @@ class Client extends BaseClient {
     // Obtain shard details from environment or if present worker threads
     let data = process.env;
     try {
-      // Test if worker threads module is present and sharding is used
+      // Test if worker threads module is present and used
       data = require('worker_threads').workerData || data;
     } catch (_) {
       // Do nothing
