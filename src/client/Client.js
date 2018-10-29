@@ -47,9 +47,12 @@ class Client extends BaseClient {
     if (!browser && (!this.options.shardCount || this.options.shardCount === 1) && 'SHARD_COUNT' in process.env) {
       this.options.shardCount = Number(process.env.SHARD_COUNT);
     }
+    if (Array.isArray(this.options.shards)) {
+      this.options.shardCount = this.options.shards.length;
+    }
 
     this.options.shards = this.options.shards || shards;
-    this.options.shardCount = this.options.shardCount || this.options.shards.length || shardCount;
+    this.options.shardCount = this.options.shardCount || shardCount;
     this.options.totalShardCount = this.options.totalShardCount || totalShardCount;
 
     this._validateOptions();
