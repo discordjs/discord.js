@@ -41,6 +41,12 @@ class WebSocketShard extends EventEmitter {
     this.sequence = oldShard ? oldShard.sequence : -1;
 
     /**
+     * The sequence on WebSocket close
+     * @type {number}
+     */
+    this.closeSequence = 0;
+
+    /**
      * The current session id of the WebSocket
      * @type {?string}
      */
@@ -296,6 +302,7 @@ class WebSocketShard extends EventEmitter {
    * @param {CloseEvent} event Close event that was received
    */
   onClose(event) {
+    this.closeSequence = this.sequence;
     this.emit('close', event);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       /**
