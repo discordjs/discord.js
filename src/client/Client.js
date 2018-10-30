@@ -39,17 +39,19 @@ class Client extends BaseClient {
     } catch (_) {
       // Do nothing
     }
-    if (!this.options.shards) {
+    if (this.options.shards === DefaultOptions.shards) {
       if ('SHARDS' in data) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
-    if (this.options.totalShardCount === DefaultOptions.totalShardCount && 'TOTAL_SHARD_COUNT' in data) {
-      this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
-    } else if (Array.isArray(this.options.shards)) {
-      this.options.totalShardCount = this.options.shards.length;
-    } else {
-      this.options.totalShardCount = this.options.shardCount;
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
+      if ('TOTAL_SHARD_COUNT' in data) {
+        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+      } else if (Array.isArray(this.options.shards)) {
+        this.options.totalShardCount = this.options.shards.length;
+      } else {
+        this.options.totalShardCount = this.options.shardCount;
+      }
     }
 
     this._validateOptions();
