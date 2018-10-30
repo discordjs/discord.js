@@ -1,7 +1,7 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
-class GuildIntegrationsHandler extends Action {
+class GuildIntegrationsUpdate extends Action {
   handle({ d: data }) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);
@@ -9,7 +9,7 @@ class GuildIntegrationsHandler extends Action {
   }
 }
 
-module.exports = GuildIntegrationsHandler;
+module.exports = GuildIntegrationsUpdate;
 
 /**
  * Emitted whenever a guild integration is updated
