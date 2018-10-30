@@ -1,3 +1,3 @@
-module.exports = (client, data) => {
-  client.actions.VoiceStateUpdate.handle(data);
+module.exports = (client, packet) => {
+  client.actions.VoiceStateUpdate.handle(packet.d);
 };
