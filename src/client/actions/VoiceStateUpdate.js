@@ -3,7 +3,7 @@ const { Events } = require('../../util/Constants');
 const VoiceState = require('../../structures/VoiceState');
 
 class VoiceStateUpdate extends Action {
-  handle({ d: data }) {
+  handle(data) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);
     if (guild) {
