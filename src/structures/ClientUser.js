@@ -39,7 +39,9 @@ class ClientUser extends Structures.get('User') {
     return this.client.api.users('@me').patch({ data })
       .then(newData => {
         this.client.token = newData.token;
-        return this.client.actions.UserUpdate.handle(newData).updated;
+        const { updated } = this.client.actions.UserUpdate.handle(newData);
+        if (updated) return updated;
+        return this;
       });
   }
 
