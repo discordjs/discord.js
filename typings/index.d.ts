@@ -10,7 +10,6 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
-	import * as WebSocket from 'ws';
 
 	export const version: string;
 
@@ -1327,7 +1326,7 @@ declare module 'discord.js' {
 		public lastPingTimestamp: number;
 		public trace: string[];
 		public ratelimit: object;
-		public ws?: WebSocket;
+		public ws?: object;
 		public inflate?: object;
 		public readonly ping: number;
 		public debug(message: string): void;
@@ -1336,9 +1335,9 @@ declare module 'discord.js' {
 		public connect(): void;
 		public onPacket(packet: object): void;
 		public onOpen(): void;
-		public onMessage(event: Event): void;
-		public onError(error: Error): void;
-		public onClose(event: CloseEvent): void;
+		public onMessage(event: { data: object; type: string; target: object }): void;
+		public onError(error: { error: any, message: string, type: string, target: object }): void;
+		public onClose(event: { wasClean: boolean; code: number; reason: string; target: object }): void;
 		public identify(): void;
 		public identifyNew(): void;
 		public identifyResume(): void;
