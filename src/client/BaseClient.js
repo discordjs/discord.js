@@ -66,6 +66,7 @@ class BaseClient extends EventEmitter {
     for (const i of this._immediates) this.clearImmediate(i);
     this._timeouts.clear();
     this._intervals.clear();
+    this._immediates.clear();
   }
 
   /**

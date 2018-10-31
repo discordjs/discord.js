@@ -156,7 +156,7 @@ declare module 'discord.js' {
 		public user: ClientUser | null;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
-		public destroy(): boolean;
+		public destroy(): void;
 		public createVoiceBroadcast(): VoiceBroadcast;
 		public fetchApplication(): Promise<ClientApplication>;
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
@@ -1308,7 +1308,7 @@ declare module 'discord.js' {
 		public spawn(query?: WebSocketShard|WebSocketShard[]|number|string): void;
 		public connect(gateway?: string): void;
 		public handlePacket(packet?: object, shard?: WebSocketShard): boolean;
-		public checkReady(): void;
+		public checkReady(): boolean;
 		public triggerReady(): void;
 		public broadcast(packet: any): void;
 		public destroy(): void;

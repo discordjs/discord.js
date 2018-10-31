@@ -239,7 +239,6 @@ class Client extends BaseClient {
       const ondisconnect = event => {
         clearTimeout(timeout);
         this.removeListener(Events.READY, onready);
-        this.removeListener(Events.DISCONNECT, ondisconnect);
         this.destroy();
         if (WSCodes[event.code]) {
           reject(new Error(WSCodes[event.code]));
@@ -259,13 +258,12 @@ class Client extends BaseClient {
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {boolean}
+   * @returns {void}
    */
   destroy() {
     super.destroy();
     this.ws.destroy();
     this.token = null;
-    return true;
   }
 
   /**

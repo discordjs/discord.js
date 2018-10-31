@@ -187,7 +187,7 @@ class WebSocketManager {
 
   /**
    * Checks whether the client is ready to be marked as ready.
-   * @returns {void}
+   * @returns {boolean}
    */
   checkReady() {
     if (this.shards.filter(s => s).length !== this.client.options.shardCount ||
