@@ -182,15 +182,15 @@ class ShardingManager extends EventEmitter {
       this.totalShards = amount;
     }
 
-    if (this.shardList.some(shardId => shardId >= amount)) {
+    if (this.shardList.some(shardID => shardID >= amount)) {
       throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',
-        'bigger than the highest shardId in the shardList option.');
+        'bigger than the highest shardID in the shardList option.');
     }
 
     // Spawn the shards
-    for (let shardId of this.shardList) {
+    for (const shardID of this.shardList) {
       const promises = [];
-      const shard = this.createShard(shardId);
+      const shard = this.createShard(shardID);
       promises.push(shard.spawn(waitForReady));
       if (delay > 0 && this.shards.size !== this.shardList.length - 1) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop

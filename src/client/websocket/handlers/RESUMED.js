@@ -6,7 +6,7 @@ module.exports = (client, packet, shard) => {
    * Emitted when the client gateway resumes.
    * @event Client#resume
    * @param {number} replayed The number of events that were replayed
-   * @param {number} shardId The ID of the shard that resumed
+   * @param {number} shardID The ID of the shard that resumed
    */
   client.emit(Events.RESUMED, replayed, shard.id);
 };

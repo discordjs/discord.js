@@ -272,7 +272,7 @@ class WebSocketShard extends EventEmitter {
       /**
        * Emitted when a shard becomes ready
        * @event Client#shardReady
-       * @param {number} shardId The id of the shard
+       * @param {number} shardID The id of the shard
        */
       this.manager.client.emit(Events.SHARD_READY, this.id);
     }
@@ -309,7 +309,7 @@ class WebSocketShard extends EventEmitter {
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
        * @event Client#disconnect
        * @param {CloseEvent} event The WebSocket close event
-       * @param {number} shardId The shard that disconnected
+       * @param {number} shardID The shard that disconnected
        */
       this.manager.client.emit(Events.DISCONNECT, event, this.id);
 

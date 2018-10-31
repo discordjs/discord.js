@@ -166,7 +166,7 @@ class WebSocketManager {
   handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
       if (!BeforeReadyWhitelist.includes(packet.t)) {
-        this.packetQueue.push({ packet, shardId: shard.id });
+        this.packetQueue.push({ packet, shardID: shard.id });
         return false;
       }
     }
@@ -174,7 +174,7 @@ class WebSocketManager {
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
       this.client.setImmediate(() => {
-        this.handlePacket(item.packet, this.shards[item.shardId]);
+        this.handlePacket(item.packet, this.shards[item.shardID]);
       });
     }
 

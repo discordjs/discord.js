@@ -171,7 +171,7 @@ declare module 'discord.js' {
 		public on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		public on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
 		public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
-		public on(event: 'disconnect', listener: (event: any, shardId: number) => void): this;
+		public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public on(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public on(event: 'error', listener: (error: Error) => void): this;
@@ -190,11 +190,11 @@ declare module 'discord.js' {
 		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
-		public on(event: 'reconnecting', listener: (shardId: number) => void): this;
-		public on(event: 'resumed', listener: (replayed: number, shardId: number) => void): this;
+		public on(event: 'reconnecting', listener: (shardID: number) => void): this;
+		public on(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public on(event: 'shardReady', listener: (shardId: number) => void): this;
+		public on(event: 'shardReady', listener: (shardID: number) => void): this;
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
@@ -205,7 +205,7 @@ declare module 'discord.js' {
 		public once(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		public once(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
 		public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
-		public once(event: 'disconnect', listener: (event: any, shardId: number) => void): this;
+		public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public once(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
@@ -224,11 +224,11 @@ declare module 'discord.js' {
 		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
-		public once(event: 'reconnecting', listener: (shardId: number) => void): this;
-		public once(event: 'resumed', listener: (replayed: number, shardId: number) => void): this;
+		public once(event: 'reconnecting', listener: (shardID: number) => void): this;
+		public once(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public once(event: 'shardReady', listener: (shardId: number) => void): this;
+		public once(event: 'shardReady', listener: (shardID: number) => void): this;
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
@@ -279,7 +279,7 @@ declare module 'discord.js' {
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;
-		public setStatus(status: PresenceStatus, shardId?: number | number[]): Promise<Presence>;
+		public setStatus(status: PresenceStatus, shardID?: number | number[]): Promise<Presence>;
 		public setUsername(username: string): Promise<ClientUser>;
 	}
 
@@ -2050,7 +2050,7 @@ declare module 'discord.js' {
 			type?: ActivityType | number;
 			url?: string;
 		};
-		shardId?: number | number[];
+		shardID?: number | number[];
 	};
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
