@@ -22,7 +22,7 @@ class WebSocketManager {
      * @type {Client}
      * @readonly
      */
-    this.client = Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The gateway this WebSocketManager uses.
