@@ -68,7 +68,7 @@ class WebSocketManager {
      * @type {?Object}
      * @prop {number} total Total number of identifies available
      * @prop {number} remaining Number of identifies remaining
-     * @prop {number} reset_after Number of millisconds after which the limit resets
+     * @prop {number} reset_after Number of milliseconds after which the limit resets
      */
     this.sessionStartLimit = null;
   }
