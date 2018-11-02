@@ -31,7 +31,7 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment or if present worker threads
+    // Obtain shard details from environment or if present, worker threads
     let data = process.env;
     try {
       // Test if worker threads module is present and used

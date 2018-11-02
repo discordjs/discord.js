@@ -68,13 +68,13 @@ class WebSocketManager {
      * @type {?Object}
      * @prop {number} total Total number of identifies available
      * @prop {number} remaining Number of identifies remaining
-     * @prop {number} reset_after Number of milliesconds after which the limit resets
+     * @prop {number} reset_after Number of millisconds after which the limit resets
      */
     this.sessionStartLimit = null;
   }
 
   /**
-   * The average ping of all WebSocket shards
+   * The average ping of all WebSocketShards
    * @type {number}
    * @readonly
    */
@@ -94,7 +94,7 @@ class WebSocketManager {
   }
 
   /**
-   * Handles the session identify rate limit for a shard
+   * Handles the session identify rate limit for a shard.
    * @param {WebSocketShard} shard Shard to handle
    * @private
    */
