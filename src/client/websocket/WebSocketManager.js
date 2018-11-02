@@ -20,12 +20,13 @@ class WebSocketManager {
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
+    this.client = Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The gateway this WebSocketManager uses.
-     * @type {string}
+     * @type {?string}
      */
     this.gateway = undefined;
 
@@ -38,18 +39,21 @@ class WebSocketManager {
     /**
      * An array of queued shards to be spawned by this WebSocketManager.
      * @type {Array<WebSocketShard|number|string>}
+     * @private
      */
     this.spawnQueue = [];
 
     /**
      * Whether or not this WebSocketManager is currently spawning shards.
      * @type {boolean}
+     * @private
      */
     this.spawning = false;
 
     /**
      * An array of queued events before this WebSocketManager became ready.
      * @type {object[]}
+     * @private
      */
     this.packetQueue = [];
 
@@ -61,7 +65,10 @@ class WebSocketManager {
 
     /**
      * The current session limit of the client.
-     * @type {?object}
+     * @type {?Object}
+     * @prop {number} total Total number of identifies available
+     * @prop {number} remaining Number of identifies remaining
+     * @prop {number} reset_after Number of milliesconds after which the limit resets
      */
     this.sessionStartLimit = null;
   }
@@ -80,11 +87,17 @@ class WebSocketManager {
    * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
+   * @private
    */
   debug(message) {
     this.client.emit(Events.DEBUG, `[connection] ${message}`);
   }
 
+  /**
+   * Handles the session identify rate limit for a shard
+   * @param {WebSocketShard} shard Shard to handle
+   * @private
+   */
   async _handleSessionLimit(shard) {
     this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
     const { remaining, reset_after } = this.sessionStartLimit;
@@ -100,6 +113,7 @@ class WebSocketManager {
    * Used to spawn WebSocketShards.
    * @param {?WebSocketShard|WebSocketShard[]|number|string} query The WebSocketShards to be spawned
    * @returns {void}
+   * @private
    */
   spawn(query) {
     if (query !== undefined) {
@@ -137,6 +151,7 @@ class WebSocketManager {
    * Creates a connection to a gateway.
    * @param {string} [gateway=this.gateway] The gateway to connect to
    * @returns {void}
+   * @private
    */
   connect(gateway = this.gateway) {
     this.gateway = gateway;
@@ -162,6 +177,7 @@ class WebSocketManager {
    * @param {Object} packet The packet to be handled
    * @param {WebSocketShard} shard The shard that will handle this packet
    * @returns {boolean}
+   * @private
    */
   handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
@@ -188,6 +204,7 @@ class WebSocketManager {
   /**
    * Checks whether the client is ready to be marked as ready.
    * @returns {boolean}
+   * @private
    */
   checkReady() {
     if (this.shards.filter(s => s).length !== this.client.options.shardCount ||
@@ -217,6 +234,7 @@ class WebSocketManager {
   /**
    * Causes the client to be marked as ready and emits the ready event.
    * @returns {void}
+   * @private
    */
   triggerReady() {
     if (this.status === Status.READY) {
@@ -248,6 +266,7 @@ class WebSocketManager {
   /**
    * Destroys all shards.
    * @returns {void}
+   * @private
    */
   destroy() {
     this.gateway = undefined;

@@ -82,6 +82,7 @@ declare module 'discord.js' {
 		constructor(options?: ClientOptions);
 		private _timeouts: Set<NodeJS.Timer>;
 		private _intervals: Set<NodeJS.Timer>;
+		private _immediates: Set<NodeJS.Immediate>;
 		private readonly api: object;
 		private rest: object;
 
@@ -137,7 +138,6 @@ declare module 'discord.js' {
 		constructor(options?: ClientOptions);
 		private actions: object;
 		private voice: object;
-		private ws: object;
 		private _eval(script: string): any;
 		private _validateOptions(options?: ClientOptions): void;
 
@@ -145,18 +145,17 @@ declare module 'discord.js' {
 		public channels: ChannelStore;
 		public readonly emojis: GuildEmojiStore;
 		public guilds: GuildStore;
-		public presence: ClientPresence;
 		public readyAt: Date | null;
 		public readonly readyTimestamp: number;
 		public shard: ShardClientUtil;
-		public readonly status: Status;
 		public token: string;
 		public readonly uptime: number;
 		public user: ClientUser | null;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
-		public destroy(): void;
+		public ws: WebSocketManager;
 		public createVoiceBroadcast(): VoiceBroadcast;
+		public destroy(): void;
 		public fetchApplication(): Promise<ClientApplication>;
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
@@ -255,18 +254,11 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
-	export class ClientPresence extends Presence {
-		constructor(client: Client, data?: object);
-		public set(presence: PresenceData): Promise<ClientPresence>;
-
-		private _parse(data: object): object;
-	}
-
 	export interface ActivityOptions {
 		name?: string;
 		url?: string;
 		type?: ActivityType | number;
-		shardId?: number | number[];
+		shardID?: number | number[];
 	}
 
 	export class ClientUser extends User {
@@ -1294,63 +1286,27 @@ declare module 'discord.js' {
 
 	export class WebSocketManager {
 		constructor(client: Client);
-		public client: Client;
-		public gateway?: string;
-		public shards: WebSocketShard[];
-		public spawnQueue: Array<WebSocketShard|number|string>;
-		public spawning: boolean;
-		public packetQueue: Array<NodeJS.Immediate>;
-		public status: Status;
-		public sessionStartLimit?: object;
+		public readonly client: Client;
+		public gateway: string | undefined;
 		public readonly ping: number;
-		public debug(message: string): void;
-		public spawn(query?: WebSocketShard|WebSocketShard[]|number|string): void;
-		public connect(gateway?: string): void;
-		public handlePacket(packet?: object, shard?: WebSocketShard): boolean;
-		public checkReady(): boolean;
-		public triggerReady(): void;
+		public shards: WebSocketShard[];
+		public sessionStartLimit: { total: number; remaining: number; reset_after: number; };
+		public status: Status;
 		public broadcast(packet: any): void;
-		public destroy(): void;
-
-		private _handleSessionLimit(shard: WebSocketShard): void;
 	}
 
 	export class WebSocketShard extends EventEmitter {
 		constructor(manager: WebSocketManager, id: number, oldShard?: WebSocketShard);
-		public manager: WebSocketManager;
 		public id: number;
-		public status: Status;
-		public sequence: number;
-		public sessionID?: string;
-		public pings: number[];
-		public lastPingTimestamp: number;
-		public trace: string[];
-		public ratelimit: object;
-		public ws?: object;
-		public inflate?: object;
 		public readonly ping: number;
-		public debug(message: string): void;
-		public heartbeat(time: number): void;
-		public ackHeartbeat(): void;
-		public connect(): void;
-		public onPacket(packet: object): void;
-		public onOpen(): void;
-		public onMessage(event: { data: object; type: string; target: object }): void;
-		public onError(error: { error: any, message: string, type: string, target: object }): void;
-		public onClose(event: { wasClean: boolean; code: number; reason: string; target: object }): void;
-		public identify(): void;
-		public identifyNew(): void;
-		public identifyResume(): void;
+		public pings: number[];
+		public status: Status;
+		public manager: WebSocketManager;
 		public send(data: object): void;
-		public processQueue(): void;
-		public reconnect(event?: string): void;
-		public destroy(): void;
 
 		public on(event: 'ready', listener: () => void): this;
 
 		public once(event: 'ready', listener: () => void): this;
-
-		private _send(data: object): void;
 	}
 
 //#endregion

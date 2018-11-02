@@ -37,18 +37,21 @@ class WebSocketShard extends EventEmitter {
     /**
      * The current sequence of the WebSocket
      * @type {number}
+     * @private
      */
     this.sequence = oldShard ? oldShard.sequence : -1;
 
     /**
      * The sequence on WebSocket close
      * @type {number}
+     * @private
      */
     this.closeSequence = 0;
 
     /**
      * The current session id of the WebSocket
      * @type {?string}
+     * @private
      */
     this.sessionID = oldShard && oldShard.sessionID;
 
@@ -61,18 +64,21 @@ class WebSocketShard extends EventEmitter {
     /**
      * The last time a ping was sent (a timestamp)
      * @type {number}
+     * @private
      */
     this.lastPingTimestamp = -1;
 
     /**
      * List of servers the shard is connected to
      * @type {string[]}
+     * @private
      */
     this.trace = [];
 
     /**
      * Contains the rate limit queue and metadata
      * @type {Object}
+     * @private
      */
     this.ratelimit = {
       queue: [],
@@ -85,6 +91,7 @@ class WebSocketShard extends EventEmitter {
     /**
      * The WebSocket connection for the current shard
      * @type {?WebSocket}
+     * @private
      */
     this.ws = null;
 
@@ -96,6 +103,7 @@ class WebSocketShard extends EventEmitter {
     /**
      * The compression to use
      * @type {?Inflate}
+     * @private
      */
     this.inflate = null;
 
@@ -115,6 +123,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Emits a debug event.
    * @param {string} message Debug message
+   * @private
    */
   debug(message) {
     this.manager.debug(`[shard ${this.id}] ${message}`);
@@ -124,6 +133,7 @@ class WebSocketShard extends EventEmitter {
    * Sends a heartbeat or sets an interval for sending heartbeats.
    * @param {number} [time] If -1, clears the interval, any other number sets an interval
    * If no value is given, a heartbeat will be sent instantly
+   * @private
    */
   heartbeat(time) {
     if (!isNaN(time)) {
@@ -148,6 +158,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Acknowledges a heartbeat.
+   * @private
    */
   ackHeartbeat() {
     const latency = Date.now() - this.lastPingTimestamp;
@@ -158,6 +169,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Connects the shard to a gateway.
+   * @private
    */
   connect() {
     this.inflate = new zlib.Inflate({
@@ -182,6 +194,7 @@ class WebSocketShard extends EventEmitter {
    * Called whenever a packet is received
    * @param {Object} packet Packet received
    * @returns {boolean}
+   * @private
    */
   onPacket(packet) {
     if (!packet) {
@@ -221,7 +234,7 @@ class WebSocketShard extends EventEmitter {
         if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated');
-        return this.reconnect('invalidated');
+        return this.reconnect(Events.INVALIDATED);
       case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
       case OPCodes.HEARTBEAT:
@@ -234,6 +247,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Called whenever a connection is opened to the gateway.
    * @param {Event} event Received open event
+   * @private
    */
   onOpen() {
     this.debug('Connection open');
@@ -242,6 +256,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Called whenever a message is received.
    * @param {Event} event Event received
+   * @private
    */
   onMessage({ data }) {
     if (data instanceof ArrayBuffer) data = new Uint8Array(data);
@@ -282,6 +297,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Called whenever an error occurs with the WebSocket.
    * @param {Error} error The error that occurred
+   * @private
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
@@ -300,6 +316,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Called whenever a connection to the gateway is closed.
    * @param {CloseEvent} event Close event that was received
+   * @private
    */
   onClose(event) {
     this.closeSequence = this.sequence;
@@ -316,12 +333,13 @@ class WebSocketShard extends EventEmitter {
       this.debug(WSCodes[event.code]);
       return;
     }
-    this.reconnect('invalidated');
+    this.reconnect(Events.INVALIDATED);
   }
 
   /**
    * Identifies the client on a connection.
    * @returns {void}
+   * @private
    */
   identify() {
     return this.sessionID ? this.identifyResume() : this.identifyNew();
@@ -330,6 +348,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Identifies as a new connection on the gateway.
    * @returns {void}
+   * @private
    */
   identifyNew() {
     if (!this.manager.client.token) {
@@ -350,6 +369,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Resumes a session on the gateway.
    * @returns {void}
+   * @private
    */
   identifyResume() {
     if (!this.sessionID) {
@@ -384,6 +404,7 @@ class WebSocketShard extends EventEmitter {
    * Sends data, bypassing the queue.
    * @param {Object} data Packet to send
    * @returns {void}
+   * @private
    */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
@@ -396,6 +417,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Processes the current WebSocket queue.
    * @returns {void}
+   * @private
    */
   processQueue() {
     if (this.ratelimit.remaining === 0) return;
@@ -418,6 +440,7 @@ class WebSocketShard extends EventEmitter {
    * Triggers a shard reconnect.
    * @param {?string} [event] The event for the shard to emit
    * @returns {void}
+   * @private
    */
   reconnect(event) {
     this.heartbeat(-1);
@@ -436,6 +459,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Destroys the current shard and terminates its connection.
    * @returns {void}
+   * @private
    */
   destroy() {
     this.heartbeat(-1);
