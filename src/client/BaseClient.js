@@ -130,7 +130,7 @@ class BaseClient extends EventEmitter {
 
   /**
    * Clears an immediate.
-   * @param {Immedate} immediate Immediate to cancel
+   * @param {Immediate} immediate Immediate to cancel
    */
   clearImmediate(immediate) {
     clearImmediate(immediate);
