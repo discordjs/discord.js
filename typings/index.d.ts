@@ -80,17 +80,20 @@ declare module 'discord.js' {
 
 	export class BaseClient extends EventEmitter {
 		constructor(options?: ClientOptions);
-		private _intervals: Set<NodeJS.Timer>;
 		private _timeouts: Set<NodeJS.Timer>;
+		private _intervals: Set<NodeJS.Timer>;
+		private _immediates: Set<NodeJS.Immediate>;
 		private readonly api: object;
 		private rest: object;
 
 		public options: ClientOptions;
 		public clearInterval(interval: NodeJS.Timer): void;
 		public clearTimeout(timeout: NodeJS.Timer): void;
+		public clearImmediate(timeout: NodeJS.Immediate): void;
 		public destroy(): void;
 		public setInterval(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
 		public setTimeout(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
+		public setImmediate(fn: Function, delay: number, ...args: any[]): NodeJS.Immediate;
 		public toJSON(...props: { [key: string]: boolean | string }[]): object;
 	}
 
@@ -133,31 +136,26 @@ declare module 'discord.js' {
 
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
-		private readonly _pingTimestamp: number;
 		private actions: object;
-		private manager: ClientManager;
 		private voice: object;
-		private ws: object;
 		private _eval(script: string): any;
-		private _pong(startTime: number): void;
 		private _validateOptions(options?: ClientOptions): void;
 
 		public broadcasts: VoiceBroadcast[];
 		public channels: ChannelStore;
 		public readonly emojis: GuildEmojiStore;
 		public guilds: GuildStore;
-		public readonly ping: number;
-		public pings: number[];
-		public readyAt: Date;
+		public readyAt: Date | null;
 		public readonly readyTimestamp: number;
 		public shard: ShardClientUtil;
-		public readonly status: Status;
 		public token: string;
 		public readonly uptime: number;
-		public user: ClientUser;
+		public user: ClientUser | null;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
+		public ws: WebSocketManager;
 		public createVoiceBroadcast(): VoiceBroadcast;
+		public destroy(): void;
 		public fetchApplication(): Promise<ClientApplication>;
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
@@ -171,7 +169,7 @@ declare module 'discord.js' {
 		public on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		public on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
 		public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
-		public on(event: 'disconnect', listener: (event: any) => void): this;
+		public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public on(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public on(event: 'error', listener: (error: Error) => void): this;
@@ -189,10 +187,12 @@ declare module 'discord.js' {
 		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
 		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
-		public on(event: 'ready' | 'reconnecting', listener: () => void): this;
-		public on(event: 'resumed', listener: (replayed: number) => void): this;
+		public on(event: 'ready', listener: () => void): this;
+		public on(event: 'reconnecting', listener: (shardID: number) => void): this;
+		public on(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
+		public on(event: 'shardReady', listener: (shardID: number) => void): this;
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
@@ -203,7 +203,7 @@ declare module 'discord.js' {
 		public once(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		public once(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
 		public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
-		public once(event: 'disconnect', listener: (event: any) => void): this;
+		public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public once(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
@@ -221,10 +221,12 @@ declare module 'discord.js' {
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
 		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
-		public once(event: 'ready' | 'reconnecting', listener: () => void): this;
-		public once(event: 'resumed', listener: (replayed: number) => void): this;
+		public once(event: 'ready', listener: () => void): this;
+		public once(event: 'reconnecting', listener: (shardID: number) => void): this;
+		public once(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
+		public once(event: 'shardReady', listener: (shardID: number) => void): this;
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
@@ -252,18 +254,11 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
-	class ClientManager {
-		constructor(client: Client);
-		public client: Client;
-		public heartbeatInterval: number;
-		public readonly status: number;
-		public connectToWebSocket(token: string, resolve: Function, reject: Function): void;
-	}
-
 	export interface ActivityOptions {
 		name?: string;
 		url?: string;
 		type?: ActivityType | number;
+		shardID?: number | number[];
 	}
 
 	export class ClientUser extends User {
@@ -275,7 +270,7 @@ declare module 'discord.js' {
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;
-		public setStatus(status: PresenceStatus): Promise<Presence>;
+		public setStatus(status: PresenceStatus, shardID?: number | number[]): Promise<Presence>;
 		public setUsername(username: string): Promise<ClientUser>;
 	}
 
@@ -1289,6 +1284,31 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
+	export class WebSocketManager {
+		constructor(client: Client);
+		public readonly client: Client;
+		public gateway: string | undefined;
+		public readonly ping: number;
+		public shards: WebSocketShard[];
+		public sessionStartLimit: { total: number; remaining: number; reset_after: number; };
+		public status: Status;
+		public broadcast(packet: any): void;
+	}
+
+	export class WebSocketShard extends EventEmitter {
+		constructor(manager: WebSocketManager, id: number, oldShard?: WebSocketShard);
+		public id: number;
+		public readonly ping: number;
+		public pings: number[];
+		public status: Status;
+		public manager: WebSocketManager;
+		public send(data: object): void;
+
+		public on(event: 'ready', listener: () => void): this;
+
+		public once(event: 'ready', listener: () => void): this;
+	}
+
 //#endregion
 
 //#region Stores
@@ -1572,9 +1592,9 @@ declare module 'discord.js' {
 	};
 
 	type ClientOptions = {
-		presence?: PresenceData;
-		shardId?: number;
+		shards?: number | number[];
 		shardCount?: number;
+		totalShardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
@@ -1582,7 +1602,9 @@ declare module 'discord.js' {
 		disableEveryone?: boolean;
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
-		retryLimit?: number,
+		restSweepInterval?: number;
+		retryLimit?: number;
+		presence?: PresenceData;
 		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
@@ -1982,7 +2004,8 @@ declare module 'discord.js' {
 			name?: string;
 			type?: ActivityType | number;
 			url?: string;
-		}
+		};
+		shardID?: number | number[];
 	};
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;

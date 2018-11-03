@@ -5,19 +5,14 @@ class UserUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
-    if (client.user) {
-      if (client.user.equals(data)) {
-        return {
-          old: client.user,
-          updated: client.user,
-        };
-      }
+    const newUser = client.users.get(data.user.id);
+    const oldUser = newUser._update(data.user);
 
-      const oldUser = client.user._update(data);
-      client.emit(Events.USER_UPDATE, oldUser, client.user);
+    if (!oldUser.equals(newUser)) {
+      client.emit(Events.USER_UPDATE, oldUser, newUser);
       return {
         old: oldUser,
-        updated: client.user,
+        updated: newUser,
       };
     }
 

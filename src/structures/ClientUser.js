@@ -15,13 +15,13 @@ class ClientUser extends Structures.get('User') {
      */
     this.verified = data.verified;
 
-    this._typing = new Map();
-
     /**
      * If the bot's {@link ClientApplication#owner Owner} has MFA enabled on their account
      * @type {?boolean}
      */
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
+
+    this._typing = new Map();
 
     if (data.token) this.client.token = data.token;
   }
@@ -39,7 +39,9 @@ class ClientUser extends Structures.get('User') {
     return this.client.api.users('@me').patch({ data })
       .then(newData => {
         this.client.token = newData.token;
-        return this.client.actions.UserUpdate.handle(newData).updated;
+        const { updated } = this.client.actions.UserUpdate.handle(newData);
+        if (updated) return updated;
+        return this;
       });
   }
 
@@ -84,6 +86,7 @@ class ClientUser extends Structures.get('User') {
    * @property {string} [activity.name] Name of the activity
    * @property {ActivityType|number} [activity.type] Type of the activity
    * @property {string} [activity.url] Stream url
+   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -112,6 +115,7 @@ class ClientUser extends Structures.get('User') {
   /**
    * Sets the status of the client user.
    * @param {PresenceStatus} status Status to change to
+   * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
    * @returns {Promise<Presence>}
    * @example
    * // Set the client user's status
@@ -119,8 +123,8 @@ class ClientUser extends Structures.get('User') {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  setStatus(status) {
-    return this.setPresence({ status });
+  setStatus(status, shardID) {
+    return this.setPresence({ status, shardID });
   }
 
   /**
@@ -129,6 +133,7 @@ class ClientUser extends Structures.get('User') {
    * @type {Object}
    * @property {string} [url] Twitch stream URL
    * @property {ActivityType|number} [type] Type of the activity
+   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
 
   /**
@@ -143,10 +148,10 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activity: null });
+    if (!name) return this.setPresence({ activity: null, shardID: options.shardID });
 
     const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activity });
+    return this.setPresence({ activity, shardID: activity.shardID });
   }
 
   /**

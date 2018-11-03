@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
@@ -15,7 +14,8 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, browser } = require('../util/Constants');
+const { Events, WSCodes, browser, DefaultOptions } = require('../util/Constants');
+const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -31,45 +31,34 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Figure out the shard details
-    if (!browser && process.env.SHARDING_MANAGER) {
-      // Try loading workerData if it's present
-      let workerData;
-      try {
-        workerData = require('worker_threads').workerData;
-      } catch (err) {
-        // Do nothing
+    // Obtain shard details from environment or if present, worker threads
+    let data = process.env;
+    try {
+      // Test if worker threads module is present and used
+      data = require('worker_threads').workerData || data;
+    } catch (_) {
+      // Do nothing
+    }
+    if (this.options.shards === DefaultOptions.shards) {
+      if ('SHARDS' in data) {
+        this.options.shards = JSON.parse(data.SHARDS);
       }
-
-      if (!this.options.shardId) {
-        if (workerData && 'SHARD_ID' in workerData) {
-          this.options.shardId = workerData.SHARD_ID;
-        } else if ('SHARD_ID' in process.env) {
-          this.options.shardId = Number(process.env.SHARD_ID);
-        }
-      }
-      if (!this.options.shardCount) {
-        if (workerData && 'SHARD_COUNT' in workerData) {
-          this.options.shardCount = workerData.SHARD_COUNT;
-        } else if ('SHARD_COUNT' in process.env) {
-          this.options.shardCount = Number(process.env.SHARD_COUNT);
-        }
+    }
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
+      if ('TOTAL_SHARD_COUNT' in data) {
+        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+      } else if (Array.isArray(this.options.shards)) {
+        this.options.totalShardCount = this.options.shards.length;
+      } else {
+        this.options.totalShardCount = this.options.shardCount;
       }
     }
 
     this._validateOptions();
 
     /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
-
-    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
-     * @private
      */
     this.ws = new WebSocketManager(this);
 
@@ -155,52 +144,9 @@ class Client extends BaseClient {
      */
     this.broadcasts = [];
 
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Timestamp of the latest ping's start time
-   * @type {number}
-   * @readonly
-   * @private
-   */
-  get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?Status}
-   * @readonly
-   */
-  get status() {
-    return this.ws.connection ? this.ws.connection.status : null;
-  }
-
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -236,6 +182,15 @@ class Client extends BaseClient {
   }
 
   /**
+   * How long it has been since the client last entered the `READY` state in milliseconds
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
@@ -252,15 +207,54 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token = this.token) {
-    return new Promise((resolve, reject) => {
-      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-      token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
-    }).catch(e => {
-      this.destroy();
-      return Promise.reject(e);
+  async login(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Authenticating using token ${token}`);
+    let endpoint = this.api.gateway;
+    if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
+    const res = await endpoint.get();
+    if (this.options.presence) {
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
+    }
+    if (res.session_start_limit && res.session_start_limit.remaining === 0) {
+      const { session_start_limit: { reset_after } } = res;
+      this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      await delayFor(reset_after);
+    }
+    const gateway = `${res.url}/`;
+    if (this.options.shardCount === 'auto') {
+      this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
+      this.options.shardCount = res.shards;
+      this.options.totalShardCount = res.shards;
+    }
+    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
+    this.ws.connect(gateway);
+    await new Promise((resolve, reject) => {
+      const onready = () => {
+        clearTimeout(timeout);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        resolve();
+      };
+      const ondisconnect = event => {
+        clearTimeout(timeout);
+        this.removeListener(Events.READY, onready);
+        this.destroy();
+        if (WSCodes[event.code]) {
+          reject(new Error(WSCodes[event.code]));
+        }
+      };
+      const timeout = setTimeout(() => {
+        this.removeListener(Events.READY, onready);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        this.destroy();
+        reject(new Error('WS_CONNECTION_TIMEOUT'));
+      }, this.options.shardCount * 25e3);
+      if (timeout.unref !== undefined) timeout.unref();
+      this.once(Events.READY, onready);
+      this.once(Events.DISCONNECT, ondisconnect);
     });
+    return token;
   }
 
   /**
@@ -269,7 +263,8 @@ class Client extends BaseClient {
    */
   destroy() {
     super.destroy();
-    return this.manager.destroy();
+    this.ws.destroy();
+    this.token = null;
   }
 
   /**
@@ -386,20 +381,8 @@ class Client extends BaseClient {
     return super.toJSON({
       readyAt: false,
       broadcasts: false,
-      pings: false,
       presences: false,
     });
-  }
-
-  /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
   }
 
   /**
@@ -419,17 +402,13 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
@@ -450,9 +429,6 @@ class Client extends BaseClient {
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
-    }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
     }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
