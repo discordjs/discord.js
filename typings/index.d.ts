@@ -921,7 +921,7 @@ declare module 'discord.js' {
 		public manager: ShardingManager;
 		public process: ChildProcess;
 		public ready: boolean;
-		public worker: Worker;
+		public worker: any;
 		public eval(script: string): Promise<any>;
 		public eval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValue(prop: string): Promise<any>;
@@ -954,7 +954,7 @@ declare module 'discord.js' {
 		public readonly count: number;
 		public readonly id: number;
 		public mode: ShardingManagerMode;
-		public parentPort: MessagePort;
+		public parentPort: any;
 		public broadcastEval(script: string): Promise<any[]>;
 		public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValues(prop: string): Promise<any[]>;
