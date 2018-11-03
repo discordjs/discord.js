@@ -18,8 +18,8 @@
 </div>
 
 ## About
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
-[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows easier interaction with the
+[Discord API](https://discordapp.com/developers/docs/intro).
 
 - Object-oriented
 - Predictable abstractions
@@ -28,16 +28,16 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 **Node.js 8.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies, as they're all optional.
+Ignore any warnings about unmet peer dependencies as they are all optional.
 
 Without voice support: `npm install discord.js`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+With voice support using ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
+With voice support using ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
 
 ### Audio engines
-The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
+The preferred audio engine is node-opus as it performs significantly better than opusscript. If both are available, discord.js will automatically choose node-opus.
 Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+For production bots, using node-opus should be considered a necessity, especially if they are going to be running on multiple servers.
 
 ### Optional packages
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`)
@@ -80,10 +80,10 @@ client.login('token');
 * [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC))
 
 ## Contributing
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
+Before creating an issue, please ensure that it has not already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you would like to submit a Pull Request.
 
 ## Help
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+If you do not understand something in the documentation, are experiencing problems, or just need a gentle
+nudge in the right direction, please do not hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
