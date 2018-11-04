@@ -117,6 +117,15 @@ class RequestHandler {
       this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
       this.retryAfter = retryAfter ? Number(retryAfter) : -1;
 
+      this.manager.client.emit('ratelimit-response', {
+        route: request.route,
+        limit: this.limit,
+        remaining: this.remaining,
+        reset: this.reset,
+        timeout: this.reset - Date.now(),
+        retryAfter: this.retryAfter,
+      });
+
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (item.request.route.includes('reactions')) {
         this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
