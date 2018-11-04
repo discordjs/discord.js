@@ -1289,6 +1289,7 @@ class Guild {
   }
 
   _removeMember(guildMember) {
+    if (guildMember.voiceChannel) guildMember.voiceChannel.members.delete(guildMember.id);
     this.members.delete(guildMember.id);
   }
 
