@@ -9,12 +9,12 @@ class UserUpdateAction extends Action {
     const oldUser = newUser._update(data.user);
 
     if (!oldUser.equals(newUser)) {
-      /**
-         * Emitted whenever a user's details (e.g. username) are changed.
-         * @event Client#userUpdate
-         * @param {User} oldUser The user before the update
-         * @param {User} newUser The user after the update
-         */
+     /**
+      * Emitted whenever a user's details (e.g. username) are changed.
+      * @event Client#userUpdate
+      * @param {User} oldUser The user before the update
+      * @param {User} newUser The user after the update
+      */
       client.emit(Events.USER_UPDATE, oldUser, newUser);
       return {
         old: oldUser,
