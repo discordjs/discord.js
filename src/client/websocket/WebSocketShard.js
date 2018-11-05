@@ -202,8 +202,6 @@ class WebSocketShard extends EventEmitter {
       return false;
     }
 
-    this.manager.client.emit(Events.RAW, packet, this.id);
-
     switch (packet.t) {
       case WSEvents.READY:
         this.sessionID = packet.d.session_id;
@@ -272,7 +270,7 @@ class WebSocketShard extends EventEmitter {
     let packet;
     try {
       packet = WebSocket.unpack(this.inflate.result);
-      this.manager.client.emit(Events.RAW, packet);
+      this.manager.client.emit(Events.RAW, packet, this.id);
     } catch (err) {
       this.manager.client.emit(Events.ERROR, err);
       return;
