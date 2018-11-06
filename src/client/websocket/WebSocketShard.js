@@ -303,6 +303,12 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.emit(Events.INVALIDATED);
+
+    /**
+     * Emitted whenever the client's WebSocket encounters a connection error.
+     * @event Client#error
+     * @param {Error} error The encountered error
+     */
     this.manager.client.emit(Events.ERROR, error);
   }
 
