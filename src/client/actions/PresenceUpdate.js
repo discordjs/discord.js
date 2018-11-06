@@ -8,7 +8,7 @@ class PresenceUpdateAction extends Action {
     if (!cached) return;
 
     if (data.user && data.user.username) {
-      if (!cached.equals(data.user)) this.client.actions.UserUpdate.handle(data);
+      if (!cached.equals(data.user)) this.client.actions.UserUpdate.handle(data.user);
     }
 
     const guild = this.client.guilds.get(data.guild_id);
