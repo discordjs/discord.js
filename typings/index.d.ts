@@ -434,6 +434,8 @@ declare module 'discord.js' {
 		public presences: PresenceStore;
 		public region: string;
 		public roles: RoleStore;
+		public shard: WebSocketShard;
+		public shardID: number;
 		public splash: string;
 		public readonly systemChannel: TextChannel;
 		public systemChannelID: Snowflake;
