@@ -401,7 +401,7 @@ class GuildChannel extends Channel {
   clone(name = this.name, withPermissions = true, withTopic = true, reason) {
     return this.guild.createChannel(name, {
       type: this.type,
-      overwritePermissions: withPermissions ? this.overwritePermissions : undefined,
+      permissionOverwrites: withPermissions ? this.permissionOverwrites : undefined,
       topic: withTopic ? this.topic : undefined,
       reason,
     });
