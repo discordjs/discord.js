@@ -60,6 +60,9 @@ class Util {
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
+      if (chunk.length > maxLength) {
+        throw new RangeError('SPLIT_CHUNK_TOO_LARGE');
+      }
       if (msg && (msg + char + chunk + append).length > maxLength) {
         messages.push(msg + append);
         msg = prepend;
