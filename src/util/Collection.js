@@ -1,15 +1,20 @@
-const _Collection = require('collection');
+const BaseCollection = require('collection');
 const Util = require('./Util');
 
 /**
  * A Map with additional utility methods. This is used throughout discord.js rather than Arrays for anything that has
  * an ID, for significantly improved performance and ease-of-use.
- * @extends {Collection}
+ * @extends {BaseCollection}
  */
-class Collection extends _Collection {
+class Collection extends BaseCollection {
   toJSON() {
     return this.map(e => typeof e.toJSON === 'function' ? e.toJSON() : Util.flatten(e));
   }
 }
 
 module.exports = Collection;
+
+/**
+ * @external BaseCollection
+ * @see {@link https://github.com/discordjs/collection}
+ */
