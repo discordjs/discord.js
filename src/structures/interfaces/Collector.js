@@ -14,6 +14,7 @@ const EventEmitter = require('events');
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
+ * @property {number} [idle] How long to stop the collector after inactivity
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
  */
 
@@ -64,10 +65,18 @@ class Collector extends EventEmitter {
      */
     this._timeout = null;
 
+    /**
+     * Timeout for cleanup due to inactivity
+     * @type {?Timeout}
+     * @private
+     */
+    this._idletimeout = null;
+
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
 
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
+    if (options.idle) this._idletimeout = this.client.setTimeout(() => this.stop('idle'), options.idle);
   }
 
   /**
@@ -133,6 +142,10 @@ class Collector extends EventEmitter {
       const onCollect = item => {
         cleanup();
         resolve(item);
+        if (this._idletimeout) {
+          this.client.clearTimeout(this._idletimeout);
+          this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
+        }
       };
 
       const onEnd = () => {
@@ -154,6 +167,7 @@ class Collector extends EventEmitter {
     if (this.ended) return;
 
     if (this._timeout) this.client.clearTimeout(this._timeout);
+    if (this._idletimeout) this.client.clearTimeout(this._idletimeout);
     this.ended = true;
 
     /**
