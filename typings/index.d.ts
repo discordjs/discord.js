@@ -313,6 +313,7 @@ declare module 'discord.js' {
 	export abstract class Collector<K, V> extends EventEmitter {
 		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
 		private _timeout: NodeJS.Timer;
+		private _idletimeout: NodeJS.Timer;
 
 		public readonly client: Client;
 		public collected: Collection<K, V>;
@@ -1615,6 +1616,7 @@ declare module 'discord.js' {
 	type CollectorFilter = (...args: any[]) => boolean;
 	type CollectorOptions = {
 		time?: number;
+		idle?: number;
 		dispose?: boolean;
 	};
 
