@@ -142,10 +142,6 @@ class Collector extends EventEmitter {
       const onCollect = item => {
         cleanup();
         resolve(item);
-        if (this._idletimeout) {
-          this.client.clearTimeout(this._idletimeout);
-          this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
-        }
       };
 
       const onEnd = () => {
