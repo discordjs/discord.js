@@ -168,7 +168,10 @@ class Collector extends EventEmitter {
     if (this.ended) return;
 
     if (this._timeout) this.client.clearTimeout(this._timeout);
-    if (this._idletimeout) this.client.clearTimeout(this._idletimeout);
+    if (this._idletimeout) {
+      this.client.clearTimeout(this._idletimeout);
+      this._idletimeout = null;
+    }
     this.ended = true;
 
     /**
