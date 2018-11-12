@@ -57,10 +57,6 @@ class ReactionCollector extends Collector {
     this.on('collect', (reaction, user) => {
       this.total++;
       this.users.set(user.id, user);
-      if (this._idletimeout) {
-        this.client.clearTimeout(this._idletimeout);
-        this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
-      }
     });
 
     this.on('remove', (reaction, user) => {
