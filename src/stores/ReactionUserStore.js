@@ -18,7 +18,7 @@ class ReactionUserStore extends DataStore {
    * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
    * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
    * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
-   * @returns {Promise<ReactionUserStore<Snowflake, User>>}
+   * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ limit = 100, after, before } = {}) {
     const message = this.reaction.message;

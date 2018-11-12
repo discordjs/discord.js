@@ -1,3 +1,4 @@
+require('setimmediate');
 const EventEmitter = require('events');
 const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
@@ -24,6 +25,13 @@ class BaseClient extends EventEmitter {
      * @private
      */
     this._intervals = new Set();
+
+    /**
+     * Intervals set by {@link BaseClient#setImmediate} that are still active
+     * @type {Set<Immediate>}
+     * @private
+     */
+    this._immediates = new Set();
 
     /**
      * The options the client was instantiated with
@@ -53,10 +61,12 @@ class BaseClient extends EventEmitter {
    * Destroys all assets used by the base client.
    */
   destroy() {
-    for (const t of this._timeouts) clearTimeout(t);
-    for (const i of this._intervals) clearInterval(i);
+    for (const t of this._timeouts) this.clearTimeout(t);
+    for (const i of this._intervals) this.clearInterval(i);
+    for (const i of this._immediates) this.clearImmediate(i);
     this._timeouts.clear();
     this._intervals.clear();
+    this._immediates.clear();
   }
 
   /**
@@ -104,6 +114,27 @@ class BaseClient extends EventEmitter {
   clearInterval(interval) {
     clearInterval(interval);
     this._intervals.delete(interval);
+  }
+
+  /**
+   * Sets an immediate that will be automatically cancelled if the client is destroyed.
+   * @param {Function} fn Function to execute
+   * @param {...*} args Arguments for the function
+   * @returns {Immediate}
+   */
+  setImmediate(fn, ...args) {
+    const immediate = setImmediate(fn, ...args);
+    this._immediates.add(immediate);
+    return immediate;
+  }
+
+  /**
+   * Clears an immediate.
+   * @param {Immediate} immediate Immediate to cancel
+   */
+  clearImmediate(immediate) {
+    clearImmediate(immediate);
+    this._immediates.delete(immediate);
   }
 
   toJSON(...props) {

@@ -6,6 +6,7 @@ const Messages = {
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
 
+  WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
   WS_CONNECTION_TIMEOUT: 'The connection to the gateway timed out.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
@@ -29,7 +30,6 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  EMBED_FIELD_COUNT: 'MessageEmbeds may not exceed 25 fields.',
   EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
   EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
 

@@ -169,7 +169,7 @@ class VoiceConnection extends EventEmitter {
       self_deaf: false,
     }, options);
 
-    this.client.ws.send({
+    this.channel.guild.shard.send({
       op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
@@ -447,12 +447,12 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === VoiceStatus.CONNECTED) {
       this.emit('speaking', user, speaking);
-      if (!speaking) {
+      if (!speaking.has(Speaking.FLAGS.SPEAKING)) {
         this.receiver.packets._stoppedSpeaking(user_id);
       }
     }
 
-    if (guild && user && old !== speaking) {
+    if (guild && user && !speaking.equals(old)) {
       const member = guild.member(user);
       if (member) {
         /**

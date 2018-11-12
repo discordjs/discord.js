@@ -189,7 +189,7 @@ class GuildMemberStore extends DataStore {
         resolve(query || limit ? new Collection() : this);
         return;
       }
-      this.guild.client.ws.send({
+      this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,

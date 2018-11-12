@@ -51,11 +51,15 @@ class MessageEmbed {
     this.timestamp = data.timestamp ? new Date(data.timestamp).getTime() : null;
 
     /**
-     * The fields of this embed
-     * @type {Object[]}
+     * @typedef {Object} EmbedField
      * @property {string} name The name of this field
      * @property {string} value The value of this field
      * @property {boolean} inline If this field will be displayed inline
+     */
+
+    /**
+     * The fields of this embed
+     * @type {EmbedField[]}
      */
     this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
 
@@ -170,13 +174,8 @@ class MessageEmbed {
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {MessageEmbed}
    */
-  addField(name, value, inline = false) {
-    if (this.fields.length >= 25) throw new RangeError('EMBED_FIELD_COUNT');
-    name = Util.resolveString(name);
-    if (!String(name)) throw new RangeError('EMBED_FIELD_NAME');
-    value = Util.resolveString(value);
-    if (!String(value)) throw new RangeError('EMBED_FIELD_VALUE');
-    this.fields.push({ name, value, inline });
+  addField(name, value, inline) {
+    this.fields.push(this.constructor.checkField(name, value, inline));
     return this;
   }
 
@@ -185,8 +184,26 @@ class MessageEmbed {
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {MessageEmbed}
    */
-  addBlankField(inline = false) {
+  addBlankField(inline) {
     return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
+   * Removes, replaces, and inserts fields in the embed (max 25).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of fields to remove
+   * @param {StringResolvable} [name] The name of the field
+   * @param {StringResolvable} [value] The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {MessageEmbed}
+   */
+  spliceField(index, deleteCount, name, value, inline) {
+    if (name && value) {
+      this.fields.splice(index, deleteCount, this.constructor.checkField(name, value, inline));
+    } else {
+      this.fields.splice(index, deleteCount);
+    }
+    return this;
   }
 
   /**
@@ -267,11 +284,12 @@ class MessageEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=current date] The timestamp
+   * @param {Date|number} [timestamp=Date.now()] The timestamp or date
    * @returns {MessageEmbed}
    */
-  setTimestamp(timestamp = new Date()) {
-    this.timestamp = timestamp.getTime();
+  setTimestamp(timestamp = Date.now()) {
+    if (timestamp instanceof Date) timestamp = timestamp.getTime();
+    this.timestamp = timestamp;
     return this;
   }
 
@@ -326,6 +344,21 @@ class MessageEmbed {
         icon_url: this.footer.iconURL,
       } : null,
     };
+  }
+
+  /**
+   * Checks for valid field input and resolves strings
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {EmbedField}
+   */
+  static checkField(name, value, inline = false) {
+    name = Util.resolveString(name);
+    if (!name) throw new RangeError('EMBED_FIELD_NAME');
+    value = Util.resolveString(value);
+    if (!value) throw new RangeError('EMBED_FIELD_VALUE');
+    return { name, value, inline };
   }
 }
 

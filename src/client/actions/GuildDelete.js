@@ -19,6 +19,12 @@ class GuildDeleteAction extends Action {
       if (guild.available && data.unavailable) {
         // Guild is unavailable
         guild.available = false;
+
+        /**
+         * Emitted whenever a guild becomes unavailable, likely due to a server outage.
+         * @event Client#guildUnavailable
+         * @param {Guild} guild The guild that has become unavailable
+         */
         client.emit(Events.GUILD_UNAVAILABLE, guild);
 
         // Stops the GuildDelete packet thinking a guild was actually deleted,
@@ -34,7 +40,14 @@ class GuildDeleteAction extends Action {
       // Delete guild
       client.guilds.remove(guild.id);
       guild.deleted = true;
+
+      /**
+       * Emitted whenever a guild kicks the client or the guild is deleted/left.
+       * @event Client#guildDelete
+       * @param {Guild} guild The guild that was deleted
+       */
       client.emit(Events.GUILD_DELETE, guild);
+
       this.deleted.set(guild.id, guild);
       this.scheduleForDeletion(guild.id);
     } else {
@@ -48,11 +61,5 @@ class GuildDeleteAction extends Action {
     this.client.setTimeout(() => this.deleted.delete(id), this.client.options.restWsBridgeTimeout);
   }
 }
-
-/**
- * Emitted whenever a guild becomes unavailable, likely due to a server outage.
- * @event Client#guildUnavailable
- * @param {Guild} guild The guild that has become unavailable
- */
 
 module.exports = GuildDeleteAction;

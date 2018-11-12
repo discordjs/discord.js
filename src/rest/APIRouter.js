@@ -11,13 +11,6 @@ function buildRoute(manager) {
     get(target, name) {
       if (reflectors.includes(name)) return () => route.join('/');
       if (methods.includes(name)) {
-        // Preserve async stack
-        let stackTrace = null;
-        if (Error.captureStackTrace) {
-          stackTrace = {};
-          Error.captureStackTrace(stackTrace, this.get);
-        }
-
         return options => manager.request(name, route.join('/'), Object.assign({
           versioned: manager.versioned,
           route: route.map((r, i) => {
@@ -25,14 +18,7 @@ function buildRoute(manager) {
             if (route[i - 1] === 'reactions') return ':reaction';
             return r;
           }).join('/'),
-        }, options)).catch(error => {
-          if (stackTrace && (error instanceof Error)) {
-            stackTrace.name = error.name;
-            stackTrace.message = error.message;
-            error.stack = stackTrace.stack;
-          }
-          throw error;
-        });
+        }, options));
       }
       route.push(name);
       return new Proxy(noop, handler);

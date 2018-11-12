@@ -1,7 +1,6 @@
 const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
 const Permissions = require('../util/Permissions');
 const { Error } = require('../errors');
-const Snowflake = require('../util/Snowflake');
 const Emoji = require('./Emoji');
 
 /**
@@ -63,24 +62,6 @@ class GuildEmoji extends Emoji {
    */
   get roles() {
     return new GuildEmojiRoleStore(this);
-  }
-
-  /**
-   * The timestamp the emoji was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
-  }
-
-  /**
-   * The time the emoji was created at
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
   }
 
   /**

@@ -8,10 +8,18 @@ class ClientPresence extends Presence {
     super(client, Object.assign(data, { status: 'online', user: { id: null } }));
   }
 
-  async setClientPresence(presence) {
+  async set(presence) {
     const packet = await this._parse(presence);
     this.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    if (typeof presence.shardID === 'undefined') {
+      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
+    } else if (Array.isArray(presence.shardID)) {
+      for (const shardID of presence.shardID) {
+        this.client.ws.shards[shardID].send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      }
+    } else {
+      this.client.ws.shards[presence.shardID].send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    }
     return this;
   }
 

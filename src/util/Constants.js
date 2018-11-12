@@ -5,8 +5,10 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number} [shardId=0] ID of the shard to run
- * @property {number} [shardCount=0] Total number of shards
+ * @property {number|number[]} [shards=0] ID of the shard to run, or an array of shard IDs
+ * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
+ * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
@@ -33,9 +35,9 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  shardId: 0,
-  shardCount: 0,
-  internalSharding: false,
+  shards: 0,
+  shardCount: 1,
+  totalShardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -86,10 +88,10 @@ exports.UserAgent = browser ? null :
   `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
-  1000: 'Connection gracefully closed',
-  4004: 'Tried to identify with an invalid token',
-  4010: 'Sharding data provided was invalid',
-  4011: 'Shard would be on too many guilds if connected',
+  1000: 'WS_CLOSE_REQUESTED',
+  4004: 'TOKEN_INVALID',
+  4010: 'SHARDING_INVALID',
+  4011: 'SHARDING_REQUIRED',
 };
 
 const AllowedImageFormats = [
@@ -253,6 +255,9 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_READY: 'shardReady',
+  INVALIDATED: 'invalidated',
+  RAW: 'raw',
 };
 
 /**

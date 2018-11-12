@@ -1,4 +1,6 @@
+const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
+
 
 /**
  * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
@@ -50,6 +52,26 @@ class Emoji extends Base {
   get url() {
     if (!this.id) return null;
     return this.client.rest.cdn.Emoji(this.id, this.animated ? 'gif' : 'png');
+  }
+
+  /**
+   * The timestamp the emoji was created at, or null if unicode
+   * @type {?number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    if (!this.id) return null;
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the emoji was created at, or null if unicode
+   * @type {?Date}
+   * @readonly
+   */
+  get createdAt() {
+    if (!this.id) return null;
+    return new Date(this.createdTimestamp);
   }
 
   /**
