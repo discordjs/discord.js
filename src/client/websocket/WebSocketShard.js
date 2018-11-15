@@ -107,6 +107,20 @@ class WebSocketShard extends EventEmitter {
      */
     this.inflate = null;
 
+    /**
+     * Whether the WebSocketShard is about to terminate
+     * @type {boolean}
+     * @private
+     */
+    this.expectingClose = false;
+
+    /**
+     * Whether the WebSocketShard is about to terminate silently
+     * @type {boolean}
+     * @private
+     */
+    this.silentClose = false;
+
     this.connect();
   }
 
@@ -232,6 +246,7 @@ class WebSocketShard extends EventEmitter {
         if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated');
+        this.destroy(true);
         return this.reconnect(Events.INVALIDATED);
       case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
@@ -336,8 +351,11 @@ class WebSocketShard extends EventEmitter {
 
       this.debug(WSCodes[event.code]);
       return;
+    } else if (event.code === 1000 ? this.silentClose : WSCodes[event.code]) {
+      this.debug(WSCodes[event.code]);
+      return;
     }
-    this.reconnect(Events.INVALIDATED);
+    this.reconnect();
   }
 
   /**
@@ -462,12 +480,14 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Destroys the current shard and terminates its connection.
+   * @param {boolean} [silent=false] Whether or not the connection should silently terminate
    * @returns {void}
    * @private
    */
-  destroy() {
+  destroy(silent = false) {
     this.heartbeat(-1);
-    this.expectingClose = true;
+    if (!silent) this.expectingClose = true;
+    else this.silentClose = true;
     if (this.ws) this.ws.close(1000);
     this.ws = null;
     this.status = Status.DISCONNECTED;
