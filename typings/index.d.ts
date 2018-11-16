@@ -1291,7 +1291,7 @@ declare module 'discord.js' {
 		public readonly client: Client;
 		public gateway: string | undefined;
 		public readonly ping: number;
-		public shards: Collection<number, WebSocketShard>;
+		public shards: WebSocketShard[];
 		public sessionStartLimit: { total: number; remaining: number; reset_after: number; };
 		public status: Status;
 		public broadcast(packet: any): void;

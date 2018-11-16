@@ -1,4 +1,3 @@
-const Collection = require('../../util/Collection');
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
@@ -33,9 +32,9 @@ class WebSocketManager {
 
     /**
      * An array of shards spawned by this WebSocketManager.
-     * @type {Collection<number, WebSocketShard>}
+     * @type {WebSocketShard[]}
      */
-    this.shards = new Collection();
+    this.shards = [];
 
     /**
      * An array of queued shards to be spawned by this WebSocketManager.
@@ -134,8 +133,8 @@ class WebSocketManager {
 
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
     if (typeof item === 'number') {
-      const shard = new WebSocketShard(this, item, this.shards.get(item));
-      this.shards.set(item, shard);
+      const shard = new WebSocketShard(this, item, this.shards[item]);
+      this.shards[item] = shard;
       shard.once(Events.READY, () => {
         this.spawning = false;
         this.client.setTimeout(() => this._handleSessionLimit(shard), 5000);
@@ -162,8 +161,8 @@ class WebSocketManager {
       this.spawn(this.client.options.shards);
     } else if (Array.isArray(this.client.options.shards)) {
       this.debug(`Spawning ${this.client.options.shards.length} shards`);
-      for (const shard of this.client.options.shards) {
-        this.spawn(shard);
+      for (let i = 0; i < this.client.options.shards.length; i++) {
+        this.spawn(this.client.options.shards[i]);
       }
     } else {
       this.debug(`Spawning ${this.client.options.shardCount} shards`);
@@ -191,11 +190,11 @@ class WebSocketManager {
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
       this.client.setImmediate(() => {
-        this.handlePacket(item.packet, this.shards.get(item.shardID));
+        this.handlePacket(item.packet, this.shards[item.shardID]);
       });
     }
 
-    if (packet && !this.client.options.disabledEvents.includes(packet.t) && PacketHandlers[packet.t]) {
+    if (packet && PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
 
@@ -208,7 +207,7 @@ class WebSocketManager {
    * @private
    */
   checkReady() {
-    if (this.shards.size !== this.client.options.shardCount ||
+    if (this.shards.filter(s => s).length !== this.client.options.shardCount ||
       this.shards.some(s => s && s.status !== Status.READY)) {
       return false;
     }
@@ -258,7 +257,8 @@ class WebSocketManager {
    * @param {*} packet The packet to send
    */
   broadcast(packet) {
-    for (const shard of this.shards.values()) {
+    for (const shard of this.shards) {
+      if (!shard) continue;
       shard.send(packet);
     }
   }
@@ -273,7 +273,8 @@ class WebSocketManager {
     // Lock calls to spawn
     this.spawning = true;
 
-    for (const shard of this.shards.values()) {
+    for (const shard of this.shards) {
+      if (!shard) continue;
       shard.destroy();
     }
   }
