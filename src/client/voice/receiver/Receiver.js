@@ -21,7 +21,6 @@ class VoiceReceiver extends EventEmitter {
      * @param {Error|string} error The error or message to debug
      */
     this.packets.on('error', err => this.emit('debug', err));
-    this.connection.sockets.udp.socket.on('message', buffer => this.packets.push(buffer));
   }
 
   /**

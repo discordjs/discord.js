@@ -113,7 +113,7 @@ class VoiceConnection extends EventEmitter {
      * The voice receiver of this connection
      * @type {VoiceReceiver}
      */
-    this.receiver = null;
+    this.receiver = new VoiceReceiver(this);
 
     this.authenticate();
   }
@@ -418,7 +418,6 @@ class VoiceConnection extends EventEmitter {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
     clearTimeout(this.connectTimeout);
-    this.receiver = new VoiceReceiver(this);
     /**
      * Emitted once the connection is ready, when a promise to join a voice channel resolves,
      * the connection will already be ready.

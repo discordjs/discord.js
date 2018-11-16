@@ -108,6 +108,8 @@ class VoiceConnectionUDPClient extends EventEmitter {
           },
         },
       });
+
+      socket.on('message', buffer => this.voiceConnection.receiver.packets.push(buffer));
     });
 
     const blankMessage = Buffer.alloc(70);
