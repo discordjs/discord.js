@@ -232,6 +232,7 @@ class WebSocketShard extends EventEmitter {
 
     switch (packet.op) {
       case OPCodes.HELLO:
+        this.identify();
         return this.heartbeat(packet.d.heartbeat_interval);
       case OPCodes.RECONNECT:
         return this.reconnect();
@@ -256,7 +257,6 @@ class WebSocketShard extends EventEmitter {
    */
   onOpen() {
     this.debug('Connection open');
-    this.identify();
   }
 
   /**
