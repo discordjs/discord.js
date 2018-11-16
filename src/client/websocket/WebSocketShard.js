@@ -470,7 +470,7 @@ class WebSocketShard extends EventEmitter {
     this.manager.client.emit(Events.RECONNECTING, this.id);
 
     if (event === Events.INVALIDATED) this.emit(event);
-    this.debug(reconnectIn ? `reconnecting in ${reconnectIn}ms` : 'reconnecting now');
+    this.debug(reconnectIn ? `Reconnecting in ${reconnectIn}ms` : 'Reconnecting now');
     if (reconnectIn) await Util.delayFor(reconnectIn);
     this.manager.spawn(this.id);
   }
