@@ -177,11 +177,9 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Connects the shard to a gateway.
-   * @param {?number} [wait=0] Time to wait before connecting
    * @private
    */
-  async connect(wait = 0) {
-    if (wait) await Util.delayFor(wait);
+  connect() {
     this.inflate = new zlib.Inflate({
       chunkSize: 65535,
       flush: zlib.Z_SYNC_FLUSH,
@@ -458,11 +456,11 @@ class WebSocketShard extends EventEmitter {
   /**
    * Triggers a shard reconnect.
    * @param {?string} [event] The event for the shard to emit
-   * @param {?number} [resumable] If the session can be resumed
+   * @param {?number} [reconnectIn] Time to wait before reconnecting
    * @returns {Promise<void>}
    * @private
    */
-  async reconnect(event, resumable) {
+  async reconnect(event, reconnectIn) {
     this.heartbeat(-1);
     this.status = Status.RECONNECTING;
 
@@ -473,8 +471,8 @@ class WebSocketShard extends EventEmitter {
     this.manager.client.emit(Events.RECONNECTING, this.id);
 
     if (event === Events.INVALIDATED) this.emit(event);
-    this.debug(resumable ? `reconnecting in ${resumable}ms` : 'reconnecting');
-    if (resumable) await Util.delayFor(resumable);
+    this.debug(reconnectIn ? `reconnecting in ${reconnectIn}ms` : 'reconnecting now');
+    if (reconnectIn) await Util.delayFor(reconnectIn);
     this.manager.spawn(this.id);
   }
 
