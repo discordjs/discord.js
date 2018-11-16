@@ -237,10 +237,18 @@ class WebSocketShard extends EventEmitter {
       case OPCodes.RECONNECT:
         return this.reconnect();
       case OPCodes.INVALID_SESSION:
-        if (!packet.d) this.sessionID = null;
         this.sequence = -1;
         this.debug('Session invalidated');
-        return this.identify(!packet.d ? 2500 : 0);
+        // If the session isn't resumable
+        if (!packet.d) {
+          // If we had a session ID before
+          if (this.sessionID) {
+            this.sessionID = null;
+            return this.identify(2500);
+          }
+          return this.identify(5000);
+        }
+        return this.identify();
       case OPCodes.HEARTBEAT_ACK:
         return this.ackHeartbeat();
       case OPCodes.HEARTBEAT:
