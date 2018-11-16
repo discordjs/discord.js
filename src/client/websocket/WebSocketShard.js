@@ -344,7 +344,6 @@ class WebSocketShard extends EventEmitter {
        */
       this.manager.client.emit(Events.DISCONNECT, event, this.id);
       this.debug(WSCodes[event.code]);
-      this.destroy();
       return;
     }
     this.expectingClose = false;
