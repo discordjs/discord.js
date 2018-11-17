@@ -73,7 +73,7 @@ const Messages = {
 
   TYPING_COUNT: 'Count must be at least 1',
 
-  SPLIT_CHUNK_TOO_LARGE: 'Chunk exceeds max length and contains no split characters.',
+  SPLIT_MAX_LEN: 'Chunk exceeds max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
 
