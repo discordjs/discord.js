@@ -361,7 +361,7 @@ declare module 'discord.js' {
 			homepage: URL,
 			keywords: string[],
 			bugs: { url: URL },
-			repository: { type: 'i', url: URL },
+			repository: { type: string, url: URL },
 			browser: { [key: string]: boolean }
 			scripts: { [key: string]: string },
 			engines: { [ley: string]: string },
