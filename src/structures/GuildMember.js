@@ -248,7 +248,7 @@ class GuildMember extends Base {
    */
   edit(data, reason) {
     if (data.channel) {
-      data.channel = this.client.channels.resolve(data.channel);
+      data.channel = this.guild.channels.resolve(data.channel);
       if (!data.channel) throw new Error('GUILD_CHANNEL_RESOLVE');
       data.channel_id = data.channel.id;
       data.channel = null;
