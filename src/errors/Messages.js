@@ -84,6 +84,7 @@ const Messages = {
   MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
 
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
+	GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_RESTRICTED: (state = false) => `Guild is ${state ? 'already' : 'not'} restricted.`,
