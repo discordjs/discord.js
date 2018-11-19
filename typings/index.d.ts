@@ -1790,14 +1790,14 @@ declare module 'discord.js' {
 	} & GuildCreateChannelPartial;
 	
 	type GuildCreateVoiceChannelOptions = {
-		type?: 'voice';
+		type: 'voice';
 		parent?: ChannelResolvable;
 		bitrate?: number;
 		userLimit?: number;
 	} & GuildCreateChannelPartial;
 
 	type GuildCreateCategoryChannelOptions = {
-		type?: 'category';
+		type: 'category';
 	} & GuildCreateChannelPartial;
 
 	type GuildEmojiCreateOptions = {
