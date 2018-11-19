@@ -1780,7 +1780,7 @@ declare module 'discord.js' {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		reason?: string;
 	};
-	
+
 	type GuildCreateTextChannelOptions = {
 		type?: 'text';
 		nsfw?: boolean;
@@ -1788,7 +1788,7 @@ declare module 'discord.js' {
 		parent?: ChannelResolvable;
 		rateLimitPerUser?: number;
 	} & GuildCreateChannelPartial;
-	
+
 	type GuildCreateVoiceChannelOptions = {
 		type: 'voice';
 		parent?: ChannelResolvable;
