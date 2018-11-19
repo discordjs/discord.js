@@ -81,7 +81,7 @@ class WebSocketManager {
    */
   get ping() {
     const sum = this.shards.reduce((a, b) => a + b.ping, 0);
-    return sum / this.shards.length;
+    return sum / this.shards.size;
   }
 
   /**
