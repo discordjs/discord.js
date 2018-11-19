@@ -342,7 +342,6 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.closeSequence = this.sequence;
     this.emit('close', event);
-    this.heartbeat(-1);
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
@@ -352,6 +351,7 @@ class WebSocketShard extends EventEmitter {
        */
       this.manager.client.emit(Events.DISCONNECT, event, this.id);
       this.debug(WSCodes[event.code]);
+      this.heartbeat(-1);
       return;
     }
     this.expectingClose = false;
