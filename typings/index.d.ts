@@ -1346,7 +1346,9 @@ declare module 'discord.js' {
 
 	export class GuildChannelStore extends DataStore<Snowflake, GuildChannel, typeof GuildChannel, GuildChannelResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
-		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel>;
+		public create(name: string, options?: GuildCreateTextChannelOptions): Promise<TextChannel>;
+		public create(name: string, options?: GuildCreateVoiceChannelOptions): Promise<VoiceChannel>;
+		public create(name: string, options?: GuildCreateCategoryChannelOptions): Promise<CategoryChannel>;
 	}
 
 	// Hacky workaround because changing the signature of an overriden method errors
@@ -1774,16 +1776,29 @@ declare module 'discord.js' {
 
 	type GuildChannelResolvable = Snowflake | GuildChannel;
 
-	type GuildCreateChannelOptions = {
-		type?: 'text' | 'voice' | 'category'
+	type GuildCreateChannelPartial = {
+		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+		reason?: string;
+	};
+	
+	type GuildCreateTextChannelOptions = {
+		type?: 'text';
 		nsfw?: boolean;
+		topic?: string;
+		parent?: ChannelResolvable;
+		rateLimitPerUser?: number;
+	} & GuildCreateChannelPartial;
+	
+	type GuildCreateVoiceChannelOptions = {
+		type?: 'voice';
+		parent?: ChannelResolvable;
 		bitrate?: number;
 		userLimit?: number;
-		parent?: ChannelResolvable;
-		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
-		rateLimitPerUser?: number;
-		reason?: string
-	};
+	} & GuildCreateChannelPartial;
+
+	type GuildCreateCategoryChannelOptions = {
+		type?: 'category';
+	} & GuildCreateChannelPartial;
 
 	type GuildEmojiCreateOptions = {
 		roles?: Collection<Snowflake, Role> | RoleResolvable[];
