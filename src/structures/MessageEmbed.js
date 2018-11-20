@@ -235,7 +235,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setColor(color) {
-    this.color = Util.resolveColor(color);
+    this.color = Util.resolveColor(color).toUpperCase();
     return this;
   }
 
