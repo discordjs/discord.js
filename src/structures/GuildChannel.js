@@ -464,7 +464,6 @@ class GuildChannel extends Channel {
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  /* eslint-enable max-len */
   clone(options = {}) {
     Util.mergeDefault({
       name: this.name,
@@ -480,6 +479,7 @@ class GuildChannel extends Channel {
     }, options);
     return this.guild.channels.create(options.name, options);
   }
+  /* eslint-enable max-len */
 
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
