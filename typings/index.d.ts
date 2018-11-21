@@ -12,7 +12,7 @@ declare module 'discord.js' {
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
 	import { PathLike } from 'fs';
-	
+
 	export const version: string;
 
 //#region Classes
