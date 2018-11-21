@@ -1,3 +1,4 @@
+const Collection = require('../../util/Collection');
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
@@ -32,9 +33,9 @@ class WebSocketManager {
 
     /**
      * An array of shards spawned by this WebSocketManager.
-     * @type {WebSocketShard[]}
+     * @type {Collection<number, WebSocketShard>}
      */
-    this.shards = [];
+    this.shards = new Collection();
 
     /**
      * An array of queued shards to be spawned by this WebSocketManager.
@@ -80,7 +81,7 @@ class WebSocketManager {
    */
   get ping() {
     const sum = this.shards.reduce((a, b) => a + b.ping, 0);
-    return sum / this.shards.length;
+    return sum / this.shards.size;
   }
 
   /**
@@ -133,8 +134,8 @@ class WebSocketManager {
 
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
     if (typeof item === 'number') {
-      const shard = new WebSocketShard(this, item, this.shards[item]);
-      this.shards[item] = shard;
+      const shard = new WebSocketShard(this, item, this.shards.get(item));
+      this.shards.set(item, shard);
       shard.once(Events.READY, () => {
         this.spawning = false;
         this.client.setTimeout(() => this._handleSessionLimit(shard), 5000);
@@ -161,8 +162,8 @@ class WebSocketManager {
       this.spawn(this.client.options.shards);
     } else if (Array.isArray(this.client.options.shards)) {
       this.debug(`Spawning ${this.client.options.shards.length} shards`);
-      for (let i = 0; i < this.client.options.shards.length; i++) {
-        this.spawn(this.client.options.shards[i]);
+      for (const shard of this.client.options.shards) {
+        this.spawn(shard);
       }
     } else {
       this.debug(`Spawning ${this.client.options.shardCount} shards`);
@@ -190,11 +191,11 @@ class WebSocketManager {
     if (this.packetQueue.length) {
       const item = this.packetQueue.shift();
       this.client.setImmediate(() => {
-        this.handlePacket(item.packet, this.shards[item.shardID]);
+        this.handlePacket(item.packet, this.shards.get(item.shardID));
       });
     }
 
-    if (packet && PacketHandlers[packet.t]) {
+    if (packet && !this.client.options.disabledEvents.includes(packet.t) && PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
 
@@ -207,7 +208,7 @@ class WebSocketManager {
    * @private
    */
   checkReady() {
-    if (this.shards.filter(s => s).length !== this.client.options.shardCount ||
+    if (this.shards.size !== this.client.options.shardCount ||
       this.shards.some(s => s && s.status !== Status.READY)) {
       return false;
     }
@@ -257,8 +258,7 @@ class WebSocketManager {
    * @param {*} packet The packet to send
    */
   broadcast(packet) {
-    for (const shard of this.shards) {
-      if (!shard) continue;
+    for (const shard of this.shards.values()) {
       shard.send(packet);
     }
   }
@@ -273,8 +273,7 @@ class WebSocketManager {
     // Lock calls to spawn
     this.spawning = true;
 
-    for (const shard of this.shards) {
-      if (!shard) continue;
+    for (const shard of this.shards.values()) {
       shard.destroy();
     }
   }

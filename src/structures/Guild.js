@@ -88,7 +88,7 @@ class Guild extends Base {
    * @readonly
    */
   get shard() {
-    return this.client.ws.shards[this.shardID];
+    return this.client.ws.shards.get(this.shardID);
   }
 
   /* eslint-disable complexity */
