@@ -73,15 +73,13 @@ const Messages = {
 
   TYPING_COUNT: 'Count must be at least 1',
 
-  SPLIT_MAX_LEN: 'Chunk exceeds max length and contains no split characters.',
+  SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
   SEARCH_CHANNEL_TYPE: 'Target must be a TextChannel, DMChannel, GroupDMChannel, or Guild.',
-
-  MESSAGE_SPLIT_MISSING: 'Message exceeds the max length and contains no split characters.',
 
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
