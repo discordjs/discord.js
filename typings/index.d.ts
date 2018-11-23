@@ -1782,6 +1782,7 @@ declare module 'discord.js' {
 		parent?: ChannelResolvable;
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		rateLimitPerUser?: number;
+		position?: number;
 		reason?: string
 	};
 
