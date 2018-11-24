@@ -1,88 +1,280 @@
-const EventEmitter = require('events');
-const { Events, Status } = require('../../util/Constants');
-const WebSocketConnection = require('./WebSocketConnection');
+const Collection = require('../../util/Collection');
+const WebSocketShard = require('./WebSocketShard');
+const { Events, Status, WSEvents } = require('../../util/Constants');
+const PacketHandlers = require('./handlers');
+
+const BeforeReadyWhitelist = [
+  WSEvents.READY,
+  WSEvents.RESUMED,
+  WSEvents.GUILD_CREATE,
+  WSEvents.GUILD_DELETE,
+  WSEvents.GUILD_MEMBERS_CHUNK,
+  WSEvents.GUILD_MEMBER_ADD,
+  WSEvents.GUILD_MEMBER_REMOVE,
+];
 
 /**
  * WebSocket Manager of the client.
- * @private
  */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager {
   constructor(client) {
-    super();
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
+     * @readonly
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The WebSocket connection of this manager
-     * @type {?WebSocketConnection}
+     * The gateway this WebSocketManager uses.
+     * @type {?string}
      */
-    this.connection = null;
+    this.gateway = undefined;
+
+    /**
+     * An array of shards spawned by this WebSocketManager.
+     * @type {Collection<number, WebSocketShard>}
+     */
+    this.shards = new Collection();
+
+    /**
+     * An array of queued shards to be spawned by this WebSocketManager.
+     * @type {Array<WebSocketShard|number|string>}
+     * @private
+     */
+    this.spawnQueue = [];
+
+    /**
+     * Whether or not this WebSocketManager is currently spawning shards.
+     * @type {boolean}
+     * @private
+     */
+    this.spawning = false;
+
+    /**
+     * An array of queued events before this WebSocketManager became ready.
+     * @type {object[]}
+     * @private
+     */
+    this.packetQueue = [];
+
+    /**
+     * The current status of this WebSocketManager.
+     * @type {number}
+     */
+    this.status = Status.IDLE;
+
+    /**
+     * The current session limit of the client.
+     * @type {?Object}
+     * @prop {number} total Total number of identifies available
+     * @prop {number} remaining Number of identifies remaining
+     * @prop {number} reset_after Number of milliseconds after which the limit resets
+     */
+    this.sessionStartLimit = null;
   }
 
   /**
-   * Sends a heartbeat on the available connection.
-   * @returns {void}
+   * The average ping of all WebSocketShards
+   * @type {number}
+   * @readonly
    */
-  heartbeat() {
-    if (!this.connection) return this.debug('No connection to heartbeat');
-    return this.connection.heartbeat();
+  get ping() {
+    const sum = this.shards.reduce((a, b) => a + b.ping, 0);
+    return sum / this.shards.size;
   }
 
   /**
    * Emits a debug event.
    * @param {string} message Debug message
    * @returns {void}
+   * @private
    */
   debug(message) {
-    return this.client.emit(Events.DEBUG, `[ws] ${message}`);
+    this.client.emit(Events.DEBUG, `[connection] ${message}`);
   }
 
   /**
-   * Destroy the client.
-   * @returns {void} Whether or not destruction was successful
+   * Handles the session identify rate limit for a shard.
+   * @param {WebSocketShard} shard Shard to handle
+   * @private
    */
-  destroy() {
-    if (!this.connection) {
-      this.debug('Attempted to destroy WebSocket but no connection exists!');
+  async _handleSessionLimit(shard) {
+    this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
+    const { remaining, reset_after } = this.sessionStartLimit;
+    if (remaining !== 0) {
+      this.spawn();
+    } else {
+      shard.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      setTimeout(() => this.spawn(), this.sessionStartLimit.reset_after);
+    }
+  }
+
+  /**
+   * Used to spawn WebSocketShards.
+   * @param {?WebSocketShard|WebSocketShard[]|number|string} query The WebSocketShards to be spawned
+   * @returns {void}
+   * @private
+   */
+  spawn(query) {
+    if (query !== undefined) {
+      if (Array.isArray(query)) {
+        for (const item of query) {
+          if (!this.spawnQueue.includes(item)) this.spawnQueue.push(item);
+        }
+      } else if (!this.spawnQueue.includes(query)) {
+        this.spawnQueue.push(query);
+      }
+    }
+
+    if (this.spawning || !this.spawnQueue.length) return;
+
+    this.spawning = true;
+    let item = this.spawnQueue.shift();
+
+    if (typeof item === 'string' && !isNaN(item)) item = Number(item);
+    if (typeof item === 'number') {
+      const shard = new WebSocketShard(this, item, this.shards.get(item));
+      this.shards.set(item, shard);
+      shard.once(Events.READY, () => {
+        this.spawning = false;
+        this.client.setTimeout(() => this._handleSessionLimit(shard), 5000);
+      });
+      shard.once(Events.INVALIDATED, () => {
+        this.spawning = false;
+      });
+    } else if (item instanceof WebSocketShard) {
+      item.reconnect();
+    }
+  }
+
+  /**
+   * Creates a connection to a gateway.
+   * @param {string} [gateway=this.gateway] The gateway to connect to
+   * @returns {void}
+   * @private
+   */
+  connect(gateway = this.gateway) {
+    this.gateway = gateway;
+
+    if (typeof this.client.options.shards === 'number') {
+      this.debug('Spawning 1 shard');
+      this.spawn(this.client.options.shards);
+    } else if (Array.isArray(this.client.options.shards)) {
+      this.debug(`Spawning ${this.client.options.shards.length} shards`);
+      for (const shard of this.client.options.shards) {
+        this.spawn(shard);
+      }
+    } else {
+      this.debug(`Spawning ${this.client.options.shardCount} shards`);
+      for (let i = 0; i < this.client.options.shardCount; i++) {
+        this.spawn(i);
+      }
+    }
+  }
+
+  /**
+   * Processes a packet and queues it if this WebSocketManager is not ready.
+   * @param {Object} packet The packet to be handled
+   * @param {WebSocketShard} shard The shard that will handle this packet
+   * @returns {boolean}
+   * @private
+   */
+  handlePacket(packet, shard) {
+    if (packet && this.status !== Status.READY) {
+      if (!BeforeReadyWhitelist.includes(packet.t)) {
+        this.packetQueue.push({ packet, shardID: shard.id });
+        return false;
+      }
+    }
+
+    if (this.packetQueue.length) {
+      const item = this.packetQueue.shift();
+      this.client.setImmediate(() => {
+        this.handlePacket(item.packet, this.shards.get(item.shardID));
+      });
+    }
+
+    if (packet && !this.client.options.disabledEvents.includes(packet.t) && PacketHandlers[packet.t]) {
+      PacketHandlers[packet.t](this.client, packet, shard);
+    }
+
+    return false;
+  }
+
+  /**
+   * Checks whether the client is ready to be marked as ready.
+   * @returns {boolean}
+   * @private
+   */
+  checkReady() {
+    if (this.shards.size !== this.client.options.shardCount ||
+      this.shards.some(s => s && s.status !== Status.READY)) {
       return false;
     }
-    return this.connection.destroy();
+
+    let unavailableGuilds = 0;
+    for (const guild of this.client.guilds.values()) {
+      if (!guild.available) unavailableGuilds++;
+    }
+    if (unavailableGuilds === 0) {
+      this.status = Status.NEARLY;
+      if (!this.client.options.fetchAllMembers) return this.triggerReady();
+      // Fetch all members before marking self as ready
+      const promises = this.client.guilds.map(g => g.members.fetch());
+      Promise.all(promises)
+        .then(() => this.triggerReady())
+        .catch(e => {
+          this.debug(`Failed to fetch all members before ready! ${e}`);
+          this.triggerReady();
+        });
+    }
+    return true;
   }
 
   /**
-   * Send a packet on the available WebSocket.
-   * @param {Object} packet Packet to send
+   * Causes the client to be marked as ready and emits the ready event.
    * @returns {void}
+   * @private
    */
-  send(packet) {
-    if (!this.connection) {
-      this.debug('No connection to websocket');
+  triggerReady() {
+    if (this.status === Status.READY) {
+      this.debug('Tried to mark self as ready, but already ready');
       return;
     }
-    this.connection.send(packet);
+    this.status = Status.READY;
+
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
+    this.client.emit(Events.READY);
+
+    this.handlePacket();
   }
 
   /**
-   * Connects the client to a gateway.
-   * @param {string} gateway The gateway to connect to
-   * @returns {boolean}
+   * Broadcasts a message to every shard in this WebSocketManager.
+   * @param {*} packet The packet to send
    */
-  connect(gateway) {
-    if (!this.connection) {
-      this.connection = new WebSocketConnection(this, gateway);
-      return true;
+  broadcast(packet) {
+    for (const shard of this.shards.values()) {
+      shard.send(packet);
     }
-    switch (this.connection.status) {
-      case Status.IDLE:
-      case Status.DISCONNECTED:
-        this.connection.connect(gateway, 5500);
-        return true;
-      default:
-        this.debug(`Couldn't connect to ${gateway} as the websocket is at state ${this.connection.status}`);
-        return false;
+  }
+
+  /**
+   * Destroys all shards.
+   * @returns {void}
+   * @private
+   */
+  destroy() {
+    this.gateway = undefined;
+    // Lock calls to spawn
+    this.spawning = true;
+
+    for (const shard of this.shards.values()) {
+      shard.destroy();
     }
   }
 }

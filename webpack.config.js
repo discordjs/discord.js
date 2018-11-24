@@ -1,23 +1,9 @@
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const version = require('./package.json').version;
 
-const plugins = [
-  new webpack.optimize.ModuleConcatenationPlugin(),
-];
-
 const prod = process.env.NODE_ENV === 'production';
-
-if (prod) {
-  plugins.push(new UglifyJSPlugin({
-    uglifyOptions: {
-      mangle: { keep_classnames: true },
-      compress: { keep_classnames: true },
-      output: { comments: false },
-    },
-  }));
-}
 
 // eslint-disable-next-line max-len
 const filename = `discord${process.env.VERSIONED ? `.${version}` : ''}${prod ? '.min' : ''}.js`;
@@ -53,10 +39,24 @@ module.exports = {
     child_process: 'empty',
     dgram: 'empty',
     __dirname: true,
-    process: false,
+    process: true,
     path: 'empty',
     Buffer: false,
     zlib: 'empty',
   },
-  plugins,
+  optimization: {
+    minimizer: [
+      new TerserJSPlugin({
+        terserOptions: {
+          mangle: { keep_classnames: true },
+          compress: { keep_classnames: true },
+          output: { comments: false },
+        },
+        parallel: true,
+      }),
+    ],
+  },
+  plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
+  ],
 };

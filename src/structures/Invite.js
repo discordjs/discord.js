@@ -3,7 +3,7 @@ const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `guild` and `channel`. Other properties can be missing.</warn>
+ * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
  * @extends {Base}
  */
 class Invite extends Base {
@@ -15,9 +15,9 @@ class Invite extends Base {
   _patch(data) {
     /**
      * The guild the invite is for
-     * @type {Guild}
+     * @type {?Guild}
      */
-    this.guild = this.client.guilds.add(data.guild, false);
+    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
 
     /**
      * The code for this invite
@@ -27,98 +27,85 @@ class Invite extends Base {
 
     /**
      * The approximate number of online members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.presenceCount = data.approximate_presence_count;
+    this.presenceCount = 'approximate_presence_count' in data ? data.approximate_presence_count : null;
 
     /**
      * The approximate total number of members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.memberCount = data.approximate_member_count;
-
-    /**
-     * The number of text channels the guild this invite goes to has
-     * @type {number}
-     */
-    this.textChannelCount = data.guild.text_channel_count;
-
-    /**
-     * The number of voice channels the guild this invite goes to has
-     * @type {number}
-     */
-    this.voiceChannelCount = data.guild.voice_channel_count;
+    this.memberCount = 'approximate_member_count' in data ? data.approximate_member_count : null;
 
     /**
      * Whether or not this invite is temporary
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.temporary = data.temporary;
+    this.temporary = 'temporary' in data ? data.temporary : null;
 
     /**
-     * The maximum age of the invite, in seconds
+     * The maximum age of the invite, in seconds, 0 if never expires
      * @type {?number}
      */
-    this.maxAge = data.max_age;
+    this.maxAge = 'max_age' in data ? data.max_age : null;
 
     /**
      * How many times this invite has been used
-     * @type {number}
+     * @type {?number}
      */
-    this.uses = data.uses;
+    this.uses = 'uses' in data ? data.uses : null;
 
     /**
      * The maximum uses of this invite
-     * @type {number}
+     * @type {?number}
      */
-    this.maxUses = data.max_uses;
+    this.maxUses = 'max_uses' in data ? data.max_uses : null;
 
-    if (data.inviter) {
-      /**
-       * The user who created this invite
-       * @type {?User}
-       */
-      this.inviter = this.client.users.add(data.inviter);
-    }
+    /**
+     * The user who created this invite
+     * @type {?User}
+     */
+    this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
 
     /**
      * The channel the invite is for
-     * @type {GuildChannel}
+     * @type {Channel}
      */
     this.channel = this.client.channels.add(data.channel, this.guild, false);
 
     /**
      * The timestamp the invite was created at
-     * @type {number}
+     * @type {?number}
      */
-    this.createdTimestamp = new Date(data.created_at).getTime();
+    this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
   }
 
   /**
    * The time the invite was created at
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get createdAt() {
-    return new Date(this.createdTimestamp);
+    return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
   }
 
   /**
    * The timestamp the invite will expire at
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get expiresTimestamp() {
-    return this.createdTimestamp + (this.maxAge * 1000);
+    return this.createdTimestamp && this.maxAge ? this.createdTimestamp + (this.maxAge * 1000) : null;
   }
 
   /**
    * The time the invite will expire at
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get expiresAt() {
-    return new Date(this.expiresTimestamp);
+    const { expiresTimestamp } = this;
+    return expiresTimestamp ? new Date(expiresTimestamp) : null;
   }
 
   /**
@@ -156,8 +143,6 @@ class Invite extends Base {
       expiresTimestamp: true,
       presenceCount: false,
       memberCount: false,
-      textChannelCount: false,
-      voiceChannelCount: false,
       uses: false,
       channel: 'channelID',
       inviter: 'inviterID',

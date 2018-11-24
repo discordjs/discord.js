@@ -1,6 +1,5 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
@@ -14,10 +13,11 @@ const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
-const ClientPresenceStore = require('../stores/ClientPresenceStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, browser } = require('../util/Constants');
+const { Events, WSCodes, browser, DefaultOptions } = require('../util/Constants');
+const { delayFor } = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
 
 /**
@@ -31,27 +31,38 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    // Obtain shard details from environment or if present, worker threads
+    let data = process.env;
+    try {
+      // Test if worker threads module is present and used
+      data = require('worker_threads').workerData || data;
+    } catch (_) {
+      // Do nothing
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
+    if (this.options.shards === DefaultOptions.shards) {
+      if ('SHARDS' in data) {
+        this.options.shards = JSON.parse(data.SHARDS);
+      }
+    }
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
+      if ('TOTAL_SHARD_COUNT' in data) {
+        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+      } else if (Array.isArray(this.options.shards)) {
+        this.options.totalShardCount = this.options.shards.length;
+      } else {
+        this.options.totalShardCount = this.options.shardCount;
+      }
+    }
+    if (!this.options.shards && this.options.shardCount) {
+      this.options.shards = [];
+      for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
     }
 
     this._validateOptions();
 
     /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
-
-    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
-     * @private
      */
     this.ws = new WebSocketManager(this);
 
@@ -73,7 +84,9 @@ class Client extends BaseClient {
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.env.SHARDING_MANAGER ?
+      ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE) :
+      null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -96,21 +109,22 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelStore(this);
 
+    const ClientPresence = Structures.get('ClientPresence');
     /**
-     * Presences that have been received for the client user's friends, mapped by user IDs
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {ClientPresenceStore<Snowflake, Presence>}
+     * The presence of the Client
+     * @private
+     * @type {ClientPresence}
      */
-    this.presences = new ClientPresenceStore(this);
+    this.presence = new ClientPresence(this);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!browser && !this.token && 'CLIENT_TOKEN' in process.env) {
+    if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in user/bot
+       * Authorization token for the logged in bot
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
-      this.token = process.env.CLIENT_TOKEN;
+      this.token = process.env.DISCORD_TOKEN;
     } else {
       this.token = null;
     }
@@ -134,66 +148,9 @@ class Client extends BaseClient {
      */
     this.broadcasts = [];
 
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
-    /**
-     * Timeouts set by {@link Client#setTimeout} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._timeouts = new Set();
-
-    /**
-     * Intervals set by {@link Client#setInterval} that are still active
-     * @type {Set<Timeout>}
-     * @private
-     */
-    this._intervals = new Set();
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Timestamp of the latest ping's start time
-   * @type {number}
-   * @readonly
-   * @private
-   */
-  get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?Status}
-   * @readonly
-   */
-  get status() {
-    return this.ws.connection ? this.ws.connection.status : null;
-  }
-
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
   }
 
   /**
@@ -229,6 +186,15 @@ class Client extends BaseClient {
   }
 
   /**
+   * How long it has been since the client last entered the `READY` state in milliseconds
+   * @type {?number}
+   * @readonly
+   */
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
+  }
+
+  /**
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
@@ -240,47 +206,73 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
-   * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
-   * Bot accounts also have access to many features that user accounts cannot utilise. User accounts that are found to
-   * be abusing/overusing the API will be banned, locking you out of Discord entirely.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
    */
-  login(token = this.token) {
-    return new Promise((resolve, reject) => {
-      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-      token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
-    }).catch(e => {
-      this.destroy();
-      return Promise.reject(e);
+  async login(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Authenticating using token ${token}`);
+    let endpoint = this.api.gateway;
+    if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
+    const res = await endpoint.get();
+    if (this.options.presence) {
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
+    }
+    if (res.session_start_limit && res.session_start_limit.remaining === 0) {
+      const { session_start_limit: { reset_after } } = res;
+      this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      await delayFor(reset_after);
+    }
+    const gateway = `${res.url}/`;
+    if (this.options.shardCount === 'auto') {
+      this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
+      this.options.shardCount = res.shards;
+      this.options.totalShardCount = res.shards;
+      if (!this.options.shards || !this.options.shards.length) {
+        this.options.shards = [];
+        for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
+      }
+    }
+    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
+    this.ws.connect(gateway);
+    await new Promise((resolve, reject) => {
+      const onready = () => {
+        clearTimeout(timeout);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        resolve();
+      };
+      const ondisconnect = event => {
+        clearTimeout(timeout);
+        this.removeListener(Events.READY, onready);
+        this.destroy();
+        if (WSCodes[event.code]) {
+          reject(new Error(WSCodes[event.code]));
+        }
+      };
+      const timeout = setTimeout(() => {
+        this.removeListener(Events.READY, onready);
+        this.removeListener(Events.DISCONNECT, ondisconnect);
+        this.destroy();
+        reject(new Error('WS_CONNECTION_TIMEOUT'));
+      }, this.options.shardCount * 25e3);
+      if (timeout.unref !== undefined) timeout.unref();
+      this.once(Events.READY, onready);
+      this.once(Events.DISCONNECT, ondisconnect);
     });
+    return token;
   }
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {Promise}
+   * @returns {void}
    */
   destroy() {
     super.destroy();
-    return this.manager.destroy();
-  }
-
-  /**
-   * Requests a sync of guild data with Discord.
-   * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
-   * <warn>This is only available when using a user account.</warn>
-   * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
-   */
-  syncGuilds(guilds = this.guilds) {
-    if (this.user.bot) return;
-    this.ws.send({
-      op: 12,
-      d: guilds instanceof Collection ? guilds.keyArray() : guilds.map(g => g.id),
-    });
+    this.ws.destroy();
+    this.token = null;
   }
 
   /**
@@ -289,7 +281,7 @@ class Client extends BaseClient {
    * @returns {Promise<Invite>}
    * @example
    * client.fetchInvite('https://discord.gg/bRCvFy9')
-   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`)
+   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
   fetchInvite(invite) {
@@ -369,22 +361,16 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of the bot from Discord.
-   * @param {Snowflake} [id='@me'] ID of application to fetch
+   * Obtains the OAuth Application of this bot from Discord.
    * @returns {Promise<ClientApplication>}
-   * @example
-   * client.fetchApplication('id')
-   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
-   *   .catch(console.error);
    */
-  fetchApplication(id = '@me') {
-    return this.api.oauth2.applications(id).get()
+  fetchApplication() {
+    return this.api.oauth2.applications('@me').get()
       .then(app => new ClientApplication(this, app));
   }
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * <warn>This is only available when using a bot account.</warn>
    * @param {PermissionResolvable} [permissions] Permissions to request
    * @returns {Promise<string>}
    * @example
@@ -393,7 +379,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   generateInvite(permissions) {
-    permissions = typeof permissions === 'undefined' ? 0 : Permissions.resolve(permissions);
+    permissions = Permissions.resolve(permissions);
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
@@ -403,20 +389,8 @@ class Client extends BaseClient {
     return super.toJSON({
       readyAt: false,
       broadcasts: false,
-      pings: false,
       presences: false,
     });
-  }
-
-  /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
   }
 
   /**
@@ -436,17 +410,13 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
@@ -468,11 +438,11 @@ class Client extends BaseClient {
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
-    }
     if (!(options.disabledEvents instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
+    }
+    if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
   }
 }

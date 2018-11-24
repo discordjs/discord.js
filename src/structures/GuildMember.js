@@ -3,6 +3,7 @@ const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const GuildMemberRoleStore = require('../stores/GuildMemberRoleStore');
 const Base = require('./Base');
+const VoiceState = require('./VoiceState');
 const { Presence } = require('./Presence');
 const { Error } = require('../errors');
 
@@ -58,13 +59,6 @@ class GuildMember extends Base {
 
   _patch(data) {
     /**
-     * Whether this member is speaking and the client is in the same channel
-     * @type {boolean}
-     * @name GuildMember#speaking
-     */
-    if (typeof this.speaking === 'undefined') this.speaking = false;
-
-    /**
      * The nickname of this member, if they have one
      * @type {?string}
      * @name GuildMember#nickname
@@ -102,51 +96,14 @@ class GuildMember extends Base {
     return (channel && channel.messages.get(this.lastMessageID)) || null;
   }
 
-  get voiceState() {
-    return this._frozenVoiceState || this.guild.voiceStates.get(this.id) || {};
+  /**
+   * The voice state of this member
+   * @type {VoiceState}
+   * @readonly
+   */
+  get voice() {
+    return this.guild.voiceStates.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
-
-  /**
-   * Whether this member is deafened server-wide
-   * @type {boolean}
-   * @readonly
-   */
-  get serverDeaf() { return this.voiceState.deaf; }
-
-  /**
-   * Whether this member is muted server-wide
-   * @type {boolean}
-   * @readonly
-   */
-  get serverMute() { return this.voiceState.mute; }
-
-  /**
-   * Whether this member is self-muted
-   * @type {boolean}
-   * @readonly
-   */
-  get selfMute() { return this.voiceState.self_mute; }
-
-  /**
-   * Whether this member is self-deafened
-   * @type {boolean}
-   * @readonly
-   */
-  get selfDeaf() { return this.voiceState.self_deaf; }
-
-  /**
-   * The voice session ID of this member (if any)
-   * @type {?Snowflake}
-   * @readonly
-   */
-  get voiceSessionID() { return this.voiceState.session_id; }
-
-  /**
-   * The voice channel ID of this member, (if any)
-   * @type {?Snowflake}
-   * @readonly
-   */
-  get voiceChannelID() { return this.voiceState.channel_id; }
 
   /**
    * The time this member joined the guild
@@ -163,7 +120,12 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.frozenPresence || this.guild.presences.get(this.id) || new Presence(this.client);
+    return this.guild.presences.get(this.id) || new Presence(this.client, {
+      user: {
+        id: this.id,
+      },
+      guild: this.guild,
+    });
   }
 
   /**
@@ -187,33 +149,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether this member is muted in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get mute() {
-    return this.selfMute || this.serverMute;
-  }
-
-  /**
-   * Whether this member is deafened in any way
-   * @type {boolean}
-   * @readonly
-   */
-  get deaf() {
-    return this.selfDeaf || this.serverDeaf;
-  }
-
-  /**
-   * The voice channel this member is in, if any
-   * @type {?VoiceChannel}
-   * @readonly
-   */
-  get voiceChannel() {
-    return this.guild.channels.get(this.voiceChannelID) || null;
-  }
-
-  /**
    * The ID of this member
    * @type {Snowflake}
    * @readonly
@@ -233,7 +168,7 @@ class GuildMember extends Base {
 
   /**
    * The overall set of permissions for this member, taking only roles into account
-   * @type {Permissions}
+   * @type {Readonly<Permissions>}
    * @readonly
    */
   get permissions() {
@@ -274,7 +209,7 @@ class GuildMember extends Base {
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context
-   * @returns {?Permissions}
+   * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
@@ -293,16 +228,6 @@ class GuildMember extends Base {
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
     return this.roles.some(r => r.permissions.has(permission, checkAdmin));
-  }
-
-  /**
-   * Checks whether the roles of this member allows them to perform specific actions, and lists any missing permissions.
-   * @param {PermissionResolvable} permissions The permissions to check for
-   * @param {boolean} [explicit=false] Whether to require the member to explicitly have the exact permissions
-   * @returns {PermissionResolvable[]}
-   */
-  missingPermissions(permissions, explicit = false) {
-    return this.permissions.missing(permissions, explicit);
   }
 
   /**
@@ -339,11 +264,6 @@ class GuildMember extends Base {
       const clone = this._clone();
       data.user = this.user;
       clone._patch(data);
-      clone._frozenVoiceState = {};
-      Object.assign(clone._frozenVoiceState, this.voiceState);
-      if (typeof data.mute !== 'undefined') clone._frozenVoiceState.mute = data.mute;
-      if (typeof data.deaf !== 'undefined') clone._frozenVoiceState.mute = data.deaf;
-      if (typeof data.channel_id !== 'undefined') clone._frozenVoiceState.channel_id = data.channel_id;
       return clone;
     });
   }

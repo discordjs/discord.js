@@ -1,4 +1,4 @@
-const handlers = require('./handlers');
+const RequestHandler = require('./RequestHandler');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
 const { Error } = require('../errors');
@@ -9,9 +9,9 @@ class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
     this.client = client;
     this.handlers = new Collection();
-    this.globallyRateLimited = false;
     this.tokenPrefix = tokenPrefix;
     this.versioned = true;
+    this.globalTimeout = null;
     if (client.options.restSweepInterval > 0) {
       client.setInterval(() => {
         this.handlers.sweep(handler => handler._inactive);
@@ -25,7 +25,7 @@ class RESTManager {
 
   getAuth() {
     const token = this.client.token || this.client.accessToken;
-    const prefixed = !!this.client.application || (this.client.user && this.client.user.bot);
+    const prefixed = !!this.client.application || this.client.user;
     if (token && prefixed) return `${this.tokenPrefix} ${token}`;
     else if (token) return token;
     throw new Error('TOKEN_MISSING');
@@ -41,16 +41,9 @@ class RESTManager {
         request: apiRequest,
         resolve,
         reject,
-      });
+        retries: 0,
+      }).catch(reject);
     });
-  }
-
-  getRequestHandler() {
-    const method = this.client.options.apiRequestMethod;
-    if (typeof method === 'function') return method;
-    const handler = handlers[method];
-    if (!handler) throw new Error('RATELIMIT_INVALID_METHOD');
-    return handler;
   }
 
   request(method, url, options = {}) {
@@ -58,7 +51,7 @@ class RESTManager {
     let handler = this.handlers.get(apiRequest.route);
 
     if (!handler) {
-      handler = new handlers.RequestHandler(this, this.getRequestHandler());
+      handler = new RequestHandler(this);
       this.handlers.set(apiRequest.route, handler);
     }
 

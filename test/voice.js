@@ -29,15 +29,19 @@ var count = 0;
 
 process.on('unhandledRejection', console.log);
 
+client.on('presenceUpdate', (a, b) => {
+  if (b.userID !== '66564597481480192') return;
+  console.log(a ? a.status : null, b.status, b.user.username);
+});
+
 client.on('message', m => {
   if (!m.guild) return;
   if (m.author.id !== '66564597481480192') return;
   if (m.content.startsWith('/join')) {
-    const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voiceChannel;
+    const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voice.channel;
     if (channel && channel.type === 'voice') {
       channel.join().then(conn => {
-        const receiver = conn.createReceiver();
-        receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));
+        conn.receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
         m.reply('ok!');

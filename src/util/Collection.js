@@ -220,7 +220,7 @@ class Collection extends Map {
    */
   filter(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-    const results = new Collection();
+    const results = new this.constructor[Symbol.species]();
     for (const [key, val] of this) {
       if (fn(val, key, this)) results.set(key, val);
     }
@@ -237,7 +237,7 @@ class Collection extends Map {
    */
   partition(fn, thisArg) {
     if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
-    const results = [new Collection(), new Collection()];
+    const results = [new this.constructor[Symbol.species](), new this.constructor[Symbol.species]()];
     for (const [key, val] of this) {
       if (fn(val, key, this)) {
         results[0].set(key, val);
@@ -333,12 +333,29 @@ class Collection extends Map {
    * @returns {Collection}
    * @example
    * collection
-   *  .tap(user => console.log(user.username))
+   *  .each(user => console.log(user.username))
    *  .filter(user => user.bot)
-   *  .tap(user => console.log(user.username));
+   *  .each(user => console.log(user.username));
+   */
+  each(fn, thisArg) {
+    this.forEach(fn, thisArg);
+    return this;
+  }
+
+  /**
+   * Runs a function on the collection and returns the collection.
+   * @param {Function} fn Function to execute
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {Collection}
+   * @example
+   * collection
+   *  .tap(coll => console.log(`${coll.size} users, including bots`))
+   *  .filter(user => user.bot)
+   *  .tap(coll => console.log(`${coll.size} users, excluding bots`))
    */
   tap(fn, thisArg) {
-    this.forEach(fn, thisArg);
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
+    fn(this);
     return this;
   }
 
@@ -348,7 +365,7 @@ class Collection extends Map {
    * @example const newColl = someColl.clone();
    */
   clone() {
-    return new this.constructor(this);
+    return new this.constructor[Symbol.species](this);
   }
 
   /**
@@ -363,18 +380,6 @@ class Collection extends Map {
       for (const [key, val] of coll) newColl.set(key, val);
     }
     return newColl;
-  }
-
-  /**
-   * Calls the `delete()` method on all items that have it.
-   * @returns {Promise[]}
-   */
-  deleteAll() {
-    const returns = [];
-    for (const item of this.values()) {
-      if (item.delete) returns.push(item.delete());
-    }
-    return returns;
   }
 
   /**
@@ -404,7 +409,8 @@ class Collection extends Map {
    * @example collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
    */
   sort(compareFunction = (x, y) => +(x > y) || +(x === y) - 1) {
-    return new Collection([...this.entries()].sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
+    return new this.constructor[Symbol.species]([...this.entries()]
+      .sort((a, b) => compareFunction(a[1], b[1], a[0], b[0])));
   }
 
   toJSON() {

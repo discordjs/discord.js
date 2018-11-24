@@ -46,6 +46,10 @@ class DataStore extends Collection {
     if (typeof idOrInstance === 'string') return idOrInstance;
     return null;
   }
+
+  static get [Symbol.species]() {
+    return Collection;
+  }
 }
 
 module.exports = DataStore;
