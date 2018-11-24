@@ -13,4 +13,10 @@ class ChannelCreateAction extends Action {
   }
 }
 
+/**
+ * Emitted whenever a channel is created.
+ * @event Client#channelCreate
+ * @param {GroupDMChannel|GuildChannel} channel The channel that was created
+ */
+
 module.exports = ChannelCreateAction;
