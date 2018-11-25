@@ -514,7 +514,17 @@ class GuildChannel extends Channel {
   get deletable() {
     return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
   }
-
+  
+  /**
+   * Whether the channel is readable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  
+  get readable() {
+    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.VIEW_CHANNEL, false);
+  }
+  
   /**
    * Whether the channel is manageable by the client user
    * @type {boolean}
