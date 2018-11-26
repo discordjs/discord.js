@@ -336,8 +336,8 @@ class RESTMethods {
     data.nsfw = typeof _data.nsfw === 'undefined' ? channel.nsfw : _data.nsfw;
     data.position = _data.position || channel.position;
     data.bitrate = _data.bitrate || (channel.bitrate ? channel.bitrate * 1000 : undefined);
-    data.user_limit = typeof _data.userLimit !== 'undefined' ? _data.userLimit : channel.userLimit;
-    data.parent_id = _data.parent instanceof Channel ? _data.parent.id : _data.parent;
+    data.user_limit = typeof _data.user_limit !== 'undefined' ? _data.user_limit : channel.user_limit;
+    data.parent_id = _data.parent_id || channel.parent_id;
     data.permission_overwrites = _data.permissionOverwrites ?
       resolvePermissions.call(this, _data.permissionOverwrites, channel.guild) : undefined;
     data.rate_limit_per_user = typeof _data.rateLimitPerUser !== 'undefined' ?
