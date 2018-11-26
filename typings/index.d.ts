@@ -1003,7 +1003,7 @@ declare module 'discord.js' {
 	}
 
 	export class RichEmbed {
-		constructor(data?: RichEmbedOptions);
+		constructor(data?: RichEmbedOptions | MessageEmbed);
 		private _apiTransform(): object;
 
 		public author?: { name: string; url?: string; icon_url?: string; };
