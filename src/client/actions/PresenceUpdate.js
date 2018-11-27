@@ -28,6 +28,12 @@ class PresenceUpdateAction extends Action {
       const old = member._clone();
       if (member.presence) old.frozenPresence = member.presence._clone();
       guild.presences.add(data);
+      /**
+       * Emitted whenever a guild member's presence changes, or they change one of their details.
+       * @event Client#presenceUpdate
+       * @param {GuildMember} oldMember The member before the presence update
+       * @param {GuildMember} newMember The member after the presence update
+       */
       this.client.emit(Events.PRESENCE_UPDATE, old, member);
     } else {
       guild.presences.add(data);

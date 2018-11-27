@@ -14,17 +14,16 @@ class ChannelDeleteAction extends Action {
     if (channel) {
       client.channels.remove(channel.id);
       channel.deleted = true;
+      /**
+       * Emitted whenever a channel is deleted.
+       * @event Client#channelDelete
+       * @param {DMChannel|GroupDMChannel|GuildChannel} channel The channel that was deleted
+       */
       client.emit(Events.CHANNEL_DELETE, channel);
     }
 
     return { channel };
   }
 }
-
-/**
- * Emitted whenever a channel is deleted.
- * @event Client#channelDelete
- * @param {GroupDMChannel|GuildChannel} channel The channel that was deleted
- */
 
 module.exports = ChannelDeleteAction;

@@ -27,16 +27,16 @@ class VoiceStateUpdate extends Action {
         client.emit('self.voiceStateUpdate', data);
       }
 
+      /**
+       * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
+       * @event Client#voiceStateUpdate
+       * @param {?VoiceState} oldState The voice state before the update
+       * @param {VoiceState} newState The voice state after the update
+       */
       client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);
     }
   }
 }
 
-/**
- * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
- * @event Client#voiceStateUpdate
- * @param {?VoiceState} oldState The voice state before the update
- * @param {VoiceState} newState The voice state after the update
- */
 
 module.exports = VoiceStateUpdate;

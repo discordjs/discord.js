@@ -12,6 +12,12 @@ class GuildRoleUpdateAction extends Action {
       const role = guild.roles.get(data.role.id);
       if (role) {
         old = role._update(data.role);
+        /**
+         * Emitted whenever a guild role is updated.
+         * @event Client#roleUpdate
+         * @param {Role} oldRole The role before the update
+         * @param {Role} newRole The role after the update
+         */
         client.emit(Events.GUILD_ROLE_UPDATE, old, role);
       }
 
@@ -28,11 +34,5 @@ class GuildRoleUpdateAction extends Action {
   }
 }
 
-/**
- * Emitted whenever a guild role is updated.
- * @event Client#roleUpdate
- * @param {Role} oldRole The role before the update
- * @param {Role} newRole The role after the update
- */
 
 module.exports = GuildRoleUpdateAction;

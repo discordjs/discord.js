@@ -23,6 +23,11 @@ class MessageCreateAction extends Action {
         member.lastMessageChannelID = channel.id;
       }
 
+      /**
+       * Emitted whenever a message is created.
+       * @event Client#message
+       * @param {Message} message The created message
+       */
       client.emit(Events.MESSAGE_CREATE, message);
       return { message };
     }
@@ -31,10 +36,5 @@ class MessageCreateAction extends Action {
   }
 }
 
-/**
- * Emitted whenever a message is created.
- * @event Client#message
- * @param {Message} message The created message
- */
 
 module.exports = MessageCreateAction;

@@ -13,6 +13,11 @@ class GuildMemberRemoveAction extends Action {
         guild.voiceStates.delete(member.id);
         member.deleted = true;
         guild.members.remove(member.id);
+        /**
+         * Emitted whenever a member leaves a guild, or is kicked.
+         * @event Client#guildMemberRemove
+         * @param {GuildMember} member The member that has left/been kicked from the guild
+         */
         if (shard.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }
     }
@@ -20,10 +25,5 @@ class GuildMemberRemoveAction extends Action {
   }
 }
 
-/**
- * Emitted whenever a member leaves a guild, or is kicked.
- * @event Client#guildMemberRemove
- * @param {GuildMember} member The member that has left/been kicked from the guild
- */
 
 module.exports = GuildMemberRemoveAction;

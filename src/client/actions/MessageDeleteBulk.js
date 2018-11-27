@@ -19,6 +19,11 @@ class MessageDeleteBulkAction extends Action {
         }
       }
 
+      /**
+       * Emitted whenever messages are deleted in bulk.
+       * @event Client#messageDeleteBulk
+       * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
+       */
       if (messages.size > 0) client.emit(Events.MESSAGE_BULK_DELETE, messages);
       return { messages };
     }
@@ -26,10 +31,5 @@ class MessageDeleteBulkAction extends Action {
   }
 }
 
-/**
- * Emitted whenever messages are deleted in bulk.
- * @event Client#messageDeleteBulk
- * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
- */
 
 module.exports = MessageDeleteBulkAction;

@@ -29,11 +29,4 @@ class MessageReactionAdd extends Action {
   }
 }
 
-/**
- * Emitted whenever a reaction is added to a cached message.
- * @event Client#messageReactionAdd
- * @param {MessageReaction} messageReaction The reaction object
- * @param {User} user The user that applied the guild or reaction emoji
- */
-
 module.exports = MessageReactionAdd;
