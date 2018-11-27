@@ -248,7 +248,11 @@ class GuildMember extends Base {
    */
   edit(data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.channels.resolve(data.channel).id;
+      data.channel = this.guild.channels.resolve(data.channel);
+      if (!data.channel || data.channel.type !== 'voice') {
+        throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
+      }
+      data.channel_id = data.channel.id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
