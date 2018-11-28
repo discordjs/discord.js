@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
  */

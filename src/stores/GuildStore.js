@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const DataResolver = require('../util/DataResolver');
 const { Events } = require('../util/Constants');

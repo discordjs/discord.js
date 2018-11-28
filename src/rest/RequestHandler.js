@@ -1,3 +1,5 @@
+'use strict';
+
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const Util = require('../util/Util');

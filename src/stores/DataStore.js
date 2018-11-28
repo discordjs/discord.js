@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../util/Collection');
 let Structures;
 

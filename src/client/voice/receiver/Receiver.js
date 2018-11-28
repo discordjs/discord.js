@@ -1,3 +1,5 @@
+'use strict';
+
 const EventEmitter = require('events');
 const prism = require('prism-media');
 const PacketHandler = require('./PacketHandler');

@@ -1,3 +1,5 @@
+'use strict';
+
 const StreamDispatcher = require('./StreamDispatcher');
 
 /**

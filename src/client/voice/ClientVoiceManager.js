@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../../util/Collection');
 const { VoiceStatus } = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');

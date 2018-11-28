@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../../util/Collection');
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');

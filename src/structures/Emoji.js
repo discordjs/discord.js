@@ -1,3 +1,5 @@
+'use strict';
+
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 

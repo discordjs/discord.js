@@ -1,3 +1,5 @@
+'use strict';
+
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');

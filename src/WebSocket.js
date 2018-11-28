@@ -1,3 +1,5 @@
+'use strict';
+
 const { browser } = require('./util/Constants');
 const querystring = require('querystring');
 try {

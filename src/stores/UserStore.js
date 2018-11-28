@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const User = require('../structures/User');
 const GuildMember = require('../structures/GuildMember');

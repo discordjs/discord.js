@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 const { Events, OPCodes } = require('../util/Constants');

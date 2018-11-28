@@ -1,3 +1,5 @@
+'use strict';
+
 const Snowflake = require('../util/Snowflake');
 const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const Base = require('./Base');

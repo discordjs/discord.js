@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');

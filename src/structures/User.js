@@ -1,3 +1,5 @@
+'use strict';
+
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Presence } = require('./Presence');
 const Snowflake = require('../util/Snowflake');

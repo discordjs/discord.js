@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('./Util');
 
 /**

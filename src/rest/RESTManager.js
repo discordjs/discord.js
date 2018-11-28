@@ -1,3 +1,5 @@
+'use strict';
+
 const RequestHandler = require('./RequestHandler');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');

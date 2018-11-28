@@ -11,6 +11,7 @@
     { "files": ["*.browser.js"], "env": { "browser": true } }
   ],
   "rules": {
+    "strict": ["error", "global"],
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",
     "no-extra-parens": ["warn", "all", {

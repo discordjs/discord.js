@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
 const Permissions = require('../util/Permissions');
 const { Error } = require('../errors');

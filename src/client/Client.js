@@ -1,3 +1,5 @@
+'use strict';
+
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
