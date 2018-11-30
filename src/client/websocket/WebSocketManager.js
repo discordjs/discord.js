@@ -245,6 +245,7 @@ class WebSocketManager {
    * @private
    */
   destroy() {
+    if (this.expectingClose) return;
     this.expectingClose = true;
     for (const shard of this.shards.values()) shard.destroy();
   }
