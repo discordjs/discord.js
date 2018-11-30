@@ -140,7 +140,7 @@ class WebSocketShard extends EventEmitter {
   sendHeartbeat() {
     if (!this.lastHeartbeatAcked) {
       this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
-      this.reconnect();
+      this.reconnect(1001);
       return;
     }
     this.debug('Sending a heartbeat');
@@ -470,9 +470,10 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Shortcut to destroy and connect.
+   * @param {number} [closeCode=1000] Optional close code for destroying the connection with
    * @private
    */
-  reconnect() {
+  reconnect(closeCode = 1000) {
     this.debug('Received reconnect request. Destroying and connecting to the gateway again');
 
     /**
@@ -484,7 +485,7 @@ class WebSocketShard extends EventEmitter {
 
     this.status = Status.RECONNECTING;
 
-    this.destroy();
+    this.destroy(closeCode);
     if (this.sessionID) {
       this.connect();
     } else {
@@ -494,11 +495,12 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Destroys this shard, and closes its connection.
+   * @param {number} [closeCode=1000] The WS Close code
    * @private
    */
-  destroy() {
+  destroy(closeCode = 1000) {
     this.setHeartbeatTimer(-1);
-    if (this.connection) this.connection.close(1000);
+    if (this.connection) this.connection.close(typeof closeCode === 'number' ? closeCode : 1000);
     this.connection = null;
     this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
