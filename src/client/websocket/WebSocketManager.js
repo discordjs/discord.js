@@ -29,7 +29,7 @@ class WebSocketManager {
 
     /**
      * The gateway this manager uses.
-     * @type {string}
+     * @type {?string}
      */
     this.gateway = undefined;
 
