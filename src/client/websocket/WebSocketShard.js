@@ -424,6 +424,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Adds data to the queue to be sent.
    * @param {Object} data Packet to send
+   * @private
    * @returns {void}
    */
   send(data) {
