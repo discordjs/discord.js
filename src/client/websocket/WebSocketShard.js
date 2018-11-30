@@ -3,6 +3,7 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, OPCodes, WSEvents, WSCodes } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 let zlib;
 try {
@@ -255,7 +256,7 @@ class WebSocketShard extends EventEmitter {
    * @param {Object} packet Packet received
    * @private
    */
-  onPacket(packet) {
+  async onPacket(packet) {
     if (!packet) {
       this.debug('Received null packet');
       return;
@@ -300,13 +301,15 @@ class WebSocketShard extends EventEmitter {
           // If we had a session ID before
           if (this.sessionID) {
             this.sessionID = null;
-            this.identify(2500);
+            await Util.delayFor(2500);
+            this.reconnect();
             return;
           }
-          this.identify(5000);
+          await Util.delayFor(5000);
+          this.reconnect();
           return;
         }
-        this.identify();
+        this.reconnect();
         break;
       case OPCodes.HEARTBEAT_ACK:
         this.ackHeartbeat();
