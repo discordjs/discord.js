@@ -21,53 +21,53 @@ const BeforeReadyWhitelist = [
 class WebSocketManager {
   constructor(client) {
     /**
-     * The client that instantiated this WebSocketManager.
+     * The client that instantiated this WebSocketManager
      * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The gateway this manager uses.
+     * The gateway this manager uses
      * @type {?string}
      */
     this.gateway = undefined;
 
     /**
-     * A collection of all shards this manager handles.
+     * A collection of all shards this manager handles
      * @type {Collection<number, WebSocketShard>}
      */
     this.shards = new Collection();
 
     /**
-     * An array of shards to be spawned.
+     * An array of shards to be spawned
      * @type {Array<number>}
      * @private
      */
     this.spawnQueue = [];
 
     /**
-     * An array of queued events before this WebSocketManager became ready.
+     * An array of queued events before this WebSocketManager became ready
      * @type {object[]}
      * @private
      */
     this.packetQueue = [];
 
     /**
-     * The current status of this WebSocketManager.
+     * The current status of this WebSocketManager
      * @type {number}
      */
     this.status = Status.IDLE;
 
     /**
-     * If this manager is expected to close.
+     * If this manager is expected to close
      * @type {boolean}
      * @private
      */
     this.expectingClose = false;
 
     /**
-     * The current session limit of the client.
+     * The current session limit of the client
      * @type {?Object}
      * @private
      * @prop {number} total Total number of identifies available
@@ -78,7 +78,7 @@ class WebSocketManager {
   }
 
   /**
-   * The average ping of all WebSocketShards
+   * The average ping of all WebSocketShards.
    * @type {number}
    * @readonly
    */

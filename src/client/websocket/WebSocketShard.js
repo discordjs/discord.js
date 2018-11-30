@@ -21,39 +21,39 @@ class WebSocketShard extends EventEmitter {
     super();
 
     /**
-     * The WebSocket Manager of this connection.
+     * The WebSocket Manager of this connection
      * @type {WebSocketManager}
      */
     this.manager = manager;
 
     /**
-     * The id of the this shard.
+     * The id of the this shard
      * @type {number}
      */
     this.id = id;
 
     /**
-     * The current status of the shard.
+     * The current status of the shard
      * @type {Status}
      */
     this.status = Status.IDLE;
 
     /**
-     * The current sequence of the shard.
+     * The current sequence of the shard
      * @type {number}
      * @private
      */
     this.sequence = -1;
 
     /**
-     * The current session ID of the shard.
+     * The current session ID of the shard
      * @type {string}
      * @private
      */
     this.sessionID = undefined;
 
     /**
-     * The previous 3 heartbeat pings of the shard (most recent first).
+     * The previous 3 heartbeat pings of the shard (most recent first)
      * @type {number[]}
      */
     this.pings = [];
@@ -66,7 +66,7 @@ class WebSocketShard extends EventEmitter {
     this.lastPingTimestamp = -1;
 
     /**
-     * If we received a heartbeat ack back. Used to identify zombie connections.
+     * If we received a heartbeat ack back. Used to identify zombie connections
      * @type {boolean}
      * @private
      */
