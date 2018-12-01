@@ -420,6 +420,22 @@ class WebSocketShard extends EventEmitter {
       this.debug(WSCodes[event.code]);
       return;
     }
+    // Emitted when you reset the token and have an already existent session
+    if (event.code === 4003) {
+      this.debug('Session was invalidated (token reset)');
+      if (this.manager.client.listenerCount(Events.INVALIDATED)) {
+        /**
+         * Emitted when the client's session became invalidated.
+         * @event Client#invalidated
+         */
+        this.manager.client.emit(Events.INVALIDATED);
+        // Destroy just the shards. This means you have to handle the cleanup yourself
+        this.manager.destroy();
+      } else {
+        this.manager.client.destroy();
+      }
+      return;
+    }
 
     this.reconnect();
   }

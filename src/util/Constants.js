@@ -258,6 +258,7 @@ exports.Events = {
   WARN: 'warn',
   DEBUG: 'debug',
   SHARD_READY: 'shardReady',
+  INVALIDATED: 'invalidated',
   RAW: 'raw',
   // TODO: Vlad don't forget to remove this, use it for debugging then revert it to debug unless told otherwise
   WSDEBUG: 'wsDebug',
