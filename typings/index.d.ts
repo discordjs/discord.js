@@ -1457,9 +1457,9 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true }): Promise<Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
-		send(options?: WebhookMessageOptions & { split: true }): Promise<Message[]>;
+		send(options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 		send(options?: WebhookMessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
