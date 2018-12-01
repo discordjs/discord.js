@@ -1433,8 +1433,10 @@ declare module 'discord.js' {
 		readonly lastMessage: Message;
 		lastPinTimestamp: number;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+		send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 	};
 
 	type TextBasedChannelFields = {
@@ -1455,8 +1457,10 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true }): Promise<Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(options?: WebhookMessageOptions & { split: true }): Promise<Message[]>;
+		send(options?: WebhookMessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
 		sendSlackMessage(body: object): Promise<Message|object>;
 	};
 
