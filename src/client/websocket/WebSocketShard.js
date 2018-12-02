@@ -523,6 +523,7 @@ class WebSocketShard extends EventEmitter {
     this.connection = null;
     this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
+    this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
