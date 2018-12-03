@@ -1,6 +1,7 @@
 'use strict';
 
 const Collection = require('../../util/Collection');
+const Util = require('../../util/Util');
 const WebSocketShard = require('./WebSocketShard');
 const { Events, Status, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
@@ -97,26 +98,33 @@ class WebSocketManager {
   }
 
   /**
-   * Handles the session identify rate limit for a shard.
-   * @param {WebSocketShard} [shard=undefined] Optional shard to handle new identifies for
+   * Checks if a new identify payload can be sent.
    * @private
+   * @returns {Promise<boolean|number>}
    */
-  async handleSessionLimit(shard = undefined) {
+  async _checkSessionLimit() {
     this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
     const { remaining, reset_after } = this.sessionStartLimit;
-    if (remaining !== 0) {
-      if (shard) shard.connect();
-      else this.create();
-    } else {
-      this.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
-      setTimeout(() => shard ? shard.connect() : this.create(), reset_after);
+    if (remaining !== 0) return true;
+    return reset_after;
+  }
+
+  /**
+   * Handles the session identify rate limit for a shard.
+   * @private
+   */
+  async _handleSessionLimit() {
+    const canSpawn = await this._checkSessionLimit();
+    if (typeof canSpawn === 'number') {
+      this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
+      await Util.delayFor(canSpawn);
     }
+    this.create();
   }
 
   /**
    * Creates a connection to a gateway.
    * @param {string} [gateway=this.gateway] The gateway to connect to
-   * @returns {void}
    * @private
    */
   connect(gateway = this.gateway) {
@@ -148,7 +156,39 @@ class WebSocketManager {
 
     const shard = new WebSocketShard(this, item);
     this.shards.set(item, shard);
-    shard.once(Events.READY, () => this.client.setTimeout(this.handleSessionLimit.bind(this), 5000));
+    shard.once(Events.READY, () => {
+      if (this.spawnQueue.length) this.client.setTimeout(this._handleSessionLimit.bind(this), 5000);
+    });
+  }
+
+  /**
+   * Handles the reconnect of a shard
+   * @param {WebSocketShard} shard The shard to reconnect
+   * @private
+   */
+  async reconnect(shard) {
+    try {
+      const canSpawn = await this._checkSessionLimit();
+      if (typeof canSpawn === 'number') {
+        this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
+        await Util.delayFor(canSpawn);
+      }
+      const newShard = new WebSocketShard(this, shard.id);
+      this.shards.set(shard.id, newShard);
+    } catch (error) {
+      // If we get an error here, that means the token was invalidated
+      if (this.client.listenerCount(Events.INVALIDATED)) {
+        /**
+         * Emitted when the client's session became invalidated.
+         * @event Client#invalidated
+         */
+        this.client.emit(Events.INVALIDATED);
+        // Destroy just the shards. This means you have to handle the cleanup yourself
+        this.destroy();
+      } else {
+        this.client.destroy();
+      }
+    }
   }
 
   /**
