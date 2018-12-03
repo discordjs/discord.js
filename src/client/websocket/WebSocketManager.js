@@ -173,8 +173,7 @@ class WebSocketManager {
         this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
         await Util.delayFor(canSpawn);
       }
-      const newShard = new WebSocketShard(this, shard.id);
-      this.shards.set(shard.id, newShard);
+      shard.connect();
     } catch (error) {
       // If we get an error here, that means the token was invalidated
       if (this.client.listenerCount(Events.INVALIDATED)) {
