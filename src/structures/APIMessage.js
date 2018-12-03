@@ -1,3 +1,5 @@
+'use strict';
+
 const DataResolver = require('../util/DataResolver');
 const MessageEmbed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');

@@ -1,3 +1,5 @@
+'use strict';
+
 const Structures = require('../util/Structures');
 const DataResolver = require('../util/DataResolver');
 

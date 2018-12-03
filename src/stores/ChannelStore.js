@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');

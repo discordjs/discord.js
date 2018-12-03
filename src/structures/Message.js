@@ -1,3 +1,5 @@
+'use strict';
+
 const Mentions = require('./MessageMentions');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');

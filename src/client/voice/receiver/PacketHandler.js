@@ -1,3 +1,5 @@
+'use strict';
+
 const secretbox = require('../util/Secretbox');
 const EventEmitter = require('events');
 

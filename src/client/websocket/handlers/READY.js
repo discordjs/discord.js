@@ -1,3 +1,5 @@
+'use strict';
+
 let ClientUser;
 
 module.exports = (client, { d: data }, shard) => {

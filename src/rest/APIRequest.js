@@ -1,3 +1,5 @@
+'use strict';
+
 const querystring = require('querystring');
 const FormData = require('form-data');
 const https = require('https');

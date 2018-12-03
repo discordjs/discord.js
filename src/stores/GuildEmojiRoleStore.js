@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const { TypeError } = require('../errors');

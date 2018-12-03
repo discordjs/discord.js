@@ -1,3 +1,5 @@
+'use strict';
+
 const { register } = require('./DJSError');
 
 const Messages = {

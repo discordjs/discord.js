@@ -1,3 +1,5 @@
+'use strict';
+
 const { Presence } = require('./Presence');
 const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');

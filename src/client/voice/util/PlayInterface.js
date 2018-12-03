@@ -1,3 +1,5 @@
+'use strict';
+
 const { Readable } = require('stream');
 const prism = require('prism-media');
 const { Error } = require('../../../errors');

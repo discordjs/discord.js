@@ -1,3 +1,5 @@
+'use strict';
+
 const VolumeInterface = require('../util/VolumeInterface');
 const { Writable } = require('stream');
 

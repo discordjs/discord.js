@@ -1,3 +1,5 @@
+'use strict';
+
 const DataResolver = require('../util/DataResolver');
 const Channel = require('./Channel');
 const APIMessage = require('./APIMessage');

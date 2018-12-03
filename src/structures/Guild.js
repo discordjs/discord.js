@@ -1,3 +1,5 @@
+'use strict';
+
 const Invite = require('./Invite');
 const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');

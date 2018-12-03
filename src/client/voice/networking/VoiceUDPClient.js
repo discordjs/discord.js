@@ -1,3 +1,5 @@
+'use strict';
+
 const udp = require('dgram');
 const { VoiceOPCodes } = require('../../../util/Constants');
 const EventEmitter = require('events');

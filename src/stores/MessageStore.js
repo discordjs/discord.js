@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
 const Message = require('../structures/Message');

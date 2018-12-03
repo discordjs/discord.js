@@ -1,3 +1,5 @@
+'use strict';
+
 const EventEmitter = require('events');
 const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
 const DispatcherSet = require('./util/DispatcherSet');

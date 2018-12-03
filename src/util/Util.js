@@ -1,3 +1,5 @@
+'use strict';
+
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
