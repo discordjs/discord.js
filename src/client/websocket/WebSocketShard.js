@@ -46,6 +46,13 @@ class WebSocketShard extends EventEmitter {
     this.sequence = -1;
 
     /**
+     * The sequence of the shard after close
+     * @type {number}
+     * @private
+     */
+    this.closeSequence = 0;
+
+    /**
      * The current session ID of the shard
      * @type {string}
      * @private
@@ -408,6 +415,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onClose(event) {
+    this.closeSequence = this.sequence;
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
       Reason: ${event.reason}`);
@@ -488,9 +496,8 @@ class WebSocketShard extends EventEmitter {
      */
     this.manager.client.emit(Events.RECONNECTING, this.id);
 
-    this.status = Status.RECONNECTING;
-
     this.destroy(closeCode);
+    this.status = Status.RECONNECTING;
     if (this.sessionID) {
       this.connect();
     } else {
