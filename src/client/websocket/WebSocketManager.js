@@ -162,7 +162,7 @@ class WebSocketManager {
   }
 
   /**
-   * Handles the reconnect of a shard
+   * Handles the reconnect of a shard.
    * @param {WebSocketShard} shard The shard to reconnect
    * @private
    */
