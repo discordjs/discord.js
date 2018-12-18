@@ -243,20 +243,6 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.emit(Events.ERROR, err);
       return;
     }
-    if (packet.t === WSEvents.READY) {
-      /**
-       * Emitted when a shard becomes ready.
-       * @event WebSocketShard#ready
-       */
-      this.emit(Events.READY);
-
-      /**
-       * Emitted when a shard becomes ready.
-       * @event Client#shardReady
-       * @param {number} shardID The ID of the shard
-       */
-      this.manager.client.emit(Events.SHARD_READY, this.id);
-    }
     this.onPacket(packet);
   }
 
@@ -267,12 +253,24 @@ class WebSocketShard extends EventEmitter {
    */
   async onPacket(packet) {
     if (!packet) {
-      this.debug('Received null packet');
+      this.debug('Received null or broken packet');
       return;
     }
 
     switch (packet.t) {
       case WSEvents.READY:
+        /**
+         * Emitted when a shard becomes ready.
+         * @event WebSocketShard#ready
+         */
+        this.emit(Events.READY);
+        /**
+         * Emitted when a shard becomes ready.
+         * @event Client#shardReady
+         * @param {number} shardID The ID of the shard
+         */
+        this.manager.client.emit(Events.SHARD_READY, this.id);
+
         this.sessionID = packet.d.session_id;
         this.trace = packet.d._trace;
         this.status = Status.READY;
