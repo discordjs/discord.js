@@ -117,25 +117,24 @@ class WebSocketManager {
   }
 
   /**
-   * Handles the session identify rate limit for a shard.
-   * @param {WebSocketShard} shard Shard to handle
+   * Handles the session identify rate limit for the next shard.
    * @private
    */
-  async _handleSessionLimit(shard) {
+  async _handleSessionLimit() {
     this.sessionStartLimit = await this.client.api.gateway.bot.get().then(r => r.session_start_limit);
     const { remaining, reset_after } = this.sessionStartLimit;
     if (remaining === 0) {
-      shard.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
+      this.debug(`Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
       await Util.delayFor(this.sessionStartLimit.reset_after);
     }
     this.spawning = false;
     this.reconnecting = false;
-    clearTimeout(this.reconnectTimeout);
     this.spawn();
     this.reconnect();
   }
 
-  onShardReady() {
+  _onShardReady() {
+    clearTimeout(this.reconnectTimeout);
     return setTimeout(() => this._handleSessionLimit(), 5000);
   }
 
@@ -154,8 +153,8 @@ class WebSocketManager {
     const item = this.spawnQueue.shift();
     const shard = new WebSocketShard(this, item);
     this.shards.set(shard.id, shard);
-    shard.on(Events.READY, this.onShardReady.bind(this));
-    shard.on(Events.RESUMED, this.onShardReady.bind(this));
+    shard.on(Events.READY, this._onShardReady.bind(this));
+    shard.on(Events.RESUMED, this._onShardReady.bind(this));
   }
 
   /**
@@ -290,23 +289,41 @@ class WebSocketManager {
     }
   }
 
+  _delayTimeout(item, delay) {
+    this.reconnectTimeout = setTimeout(() => {
+      // Called if a shard never received a READY or RESUMED
+      this.reconnecting = false;
+      if (item.status === Status.CONNECTING || item.status === Status.NEARLY) {
+        this._delayTimeout(item, delay);
+        return;
+      }
+      this.reconnect(item);
+    }, delay);
+  }
+
   /**
    * Adds a shard to the reconnect queue.
    * @param {?WebSocketShard} shard The shard to reconnect
    * @returns {void}
    */
   reconnect(shard) {
-    if (shard && !this.reconnectQueue.some(s => s.id === shard.id)) {
-      this.reconnectQueue.push(shard);
+    if (shard) {
+      if (!this.reconnectQueue.some(s => s.id === shard.id)) {
+        this.reconnectQueue.push(shard);
+      }
     }
     if (!this.reconnectQueue.length || this.reconnecting) return;
-    this.reconnectTimeout = setTimeout(() => {
-      // Called if a shard never received a READY or RESUMED
-      this.reconnecting = false;
-      this.reconnect(item);
-    }, 15000);
     this.reconnecting = true;
     const item = this.reconnectQueue.shift();
+
+    if (this.shards.some(s => s.id === item.id && s.status === Status.READY)) {
+      // In case there are other shards that need to be processed
+      this.reconnect();
+      return;
+    }
+
+    this._delayTimeout(item, 15000);
+
     item.connect();
   }
 }

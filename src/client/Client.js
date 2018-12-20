@@ -216,17 +216,22 @@ class Client extends BaseClient {
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.emit(Events.DEBUG, `Authenticating using token ${token}`);
     let endpoint = this.api.gateway;
+
     if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
     const res = await endpoint.get();
+
     if (this.options.presence) {
       this.options.ws.presence = await this.presence._parse(this.options.presence);
     }
+
     if (res.session_start_limit && res.session_start_limit.remaining === 0) {
       const { session_start_limit: { reset_after } } = res;
       this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
       await delayFor(reset_after);
     }
+
     const gateway = `${res.url}/`;
+    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
     if (this.options.shardCount === 'auto') {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
@@ -236,7 +241,7 @@ class Client extends BaseClient {
         for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
       }
     }
-    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
+
     this.ws.connect(gateway);
     await new Promise((resolve, reject) => {
       const onready = () => {
@@ -259,6 +264,7 @@ class Client extends BaseClient {
         reject(new Error('WS_CONNECTION_TIMEOUT'));
       }, this.options.shardCount * 25e3);
       if (timeout.unref !== undefined) timeout.unref();
+
       this.once(Events.READY, onready);
       this.once(Events.DISCONNECT, ondisconnect);
     });

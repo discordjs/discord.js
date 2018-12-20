@@ -177,17 +177,14 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Connects the shard to a gateway.
-   * @param {?boolean} [skip] Whether or not to re-initialize zlib
    * @private
    */
-  connect(skip) {
-    if (!skip) {
-      this.inflate = new zlib.Inflate({
-        chunkSize: 65535,
-        flush: zlib.Z_SYNC_FLUSH,
-        to: WebSocket.encoding === 'json' ? 'string' : '',
-      });
-    }
+  connect() {
+    this.inflate = new zlib.Inflate({
+      chunkSize: 65535,
+      flush: zlib.Z_SYNC_FLUSH,
+      to: WebSocket.encoding === 'json' ? 'string' : '',
+    });
     const gateway = this.manager.gateway;
     this.debug(`Connecting to ${gateway}`);
     this.ws = null;
@@ -231,7 +228,6 @@ class WebSocketShard extends EventEmitter {
         break;
       }
     }
-
     if (packet.s > this.sequence) this.sequence = packet.s;
 
     switch (packet.op) {
@@ -341,7 +337,9 @@ class WebSocketShard extends EventEmitter {
    */
   onClose(event) {
     this.closeSequence = this.sequence;
+    this.status = Status.DISCONNECTED;
     this.emit(Events.CLOSED);
+    this.heartbeat(-1);
     // Check if the error indicates not being able to recover, and give up reconnecting if so
     if (event.code === 1000 ? this.expectingClose : WSCodes[event.code]) {
       /**
@@ -350,7 +348,6 @@ class WebSocketShard extends EventEmitter {
        * @param {CloseEvent} event The WebSocket close event
        * @param {number} shardID The shard that disconnected
        */
-      this.heartbeat(-1);
       this.manager.client.emit(Events.DISCONNECTED, event, this.id);
       this.debug(WSCodes[event.code]);
     }
@@ -462,15 +459,15 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Triggers a shard reconnect.
-   * @param {?string} [event] The event for the shard to emit
    * @param {?number} [reconnectIn] Time to wait before reconnecting
    * @returns {Promise<void>}
    * @private
    */
-  async reconnect(event, reconnectIn) {
+  async reconnect(reconnectIn) {
     this.heartbeat(-1);
+    this.status = Status.RECONNECTING;
     if (reconnectIn) await Util.delayFor(reconnectIn);
-    Promise.resolve(this.connect(true));
+    this.connect();
   }
 
   /**
