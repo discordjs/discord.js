@@ -95,7 +95,9 @@ class Presence {
       presence &&
       this.status === presence.status &&
       this.activity ? this.activity.equals(presence.activity) : !presence.activity &&
-        this.clientStatus === presence.clientStatus
+        this.clientStatus.web === presence.clientStatus.web &&
+        this.clientStatus.mobile === presence.clientStatus.mobile &&
+        this.clientStatus.desktop === presence.clientStatus.desktop
     );
   }
 
