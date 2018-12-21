@@ -820,6 +820,7 @@ declare module 'discord.js' {
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
 		public status: 'online' | 'offline' | 'idle' | 'dnd';
+		public clientStatus: { web?: string, mobile?: string, desktop?: string};
 		public readonly user: User;
 		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
