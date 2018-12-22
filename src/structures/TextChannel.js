@@ -11,6 +11,10 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     this.type = 'text';
+    /**
+     * A collection containing the messages sent to this channel
+     * @type {Collection<Snowflake, Message>}
+     */
     this.messages = new Collection();
     this._typing = new Map();
   }
@@ -121,6 +125,7 @@ class TextChannel extends GuildChannel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
+  get lastMessage() {}
   get lastPinAt() {}
   send() { }
   sendMessage() { }
