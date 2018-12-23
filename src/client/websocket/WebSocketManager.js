@@ -294,7 +294,7 @@ class WebSocketManager {
       // Called if a shard never received a READY or RESUMED
       this.reconnecting = false;
       if (item.status === Status.CONNECTING || item.status === Status.NEARLY) {
-        this._delayTimeout(item, delay);
+        item.ws.close(1000);
         return;
       }
       this.reconnect(item);
@@ -317,8 +317,6 @@ class WebSocketManager {
     const item = this.reconnectQueue.shift();
 
     if (this.shards.some(s => s.id === item.id && s.status === Status.READY)) {
-      // In case there are other shards that need to be processed
-      this.reconnect();
       return;
     }
 
