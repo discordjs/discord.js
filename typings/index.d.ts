@@ -1178,7 +1178,7 @@ declare module 'discord.js' {
 
 	export class SnowflakeUtil {
 		public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
-		public static generate(): Snowflake;
+		public static generate(timestamp?: number | Date): Snowflake;
 	}
 
 	export class StreamDispatcher extends VolumeInterface {
