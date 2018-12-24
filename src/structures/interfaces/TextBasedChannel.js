@@ -396,6 +396,15 @@ class TextBasedChannel {
   }
 
   /**
+   * The Message object of the last message in the channel, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    return this.messages.get(this.lastMessageID) || null;
+  }
+
+  /**
    * The date when the last pinned message was pinned, if there was one
    * @type {?Date}
    * @readonly
@@ -599,6 +608,7 @@ exports.applyToClass = (structure, full = false, ignore = []) => {
       'fetchMessages',
       'fetchMessage',
       'search',
+      'lastMessage',
       'lastPinAt',
       'bulkDelete',
       'startTyping',
