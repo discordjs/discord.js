@@ -819,8 +819,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data?: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
-		public status: 'online' | 'offline' | 'idle' | 'dnd';
-		public clientStatus: { web?: string, mobile?: string, desktop?: string};
+		public status: PresenceStatus;
+		public clientStatus: ClientPresenceStatusData;
 		public readonly user: User;
 		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
@@ -2002,7 +2002,15 @@ declare module 'discord.js' {
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-	type PresenceStatus = 'online' | 'idle' | 'invisible' | 'dnd';
+	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
+
+	type ClientPresenceStatusData = {
+		web?: ClientPresenceStatus,
+		mobile?: ClientPresenceStatus,
+		desktop?: ClientPresenceStatus
+	};
+
+	type PresenceStatus = ClientPresenceStatus | 'offline';
 
 	type RateLimitData = {
 		timeout: number;
