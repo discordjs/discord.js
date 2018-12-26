@@ -73,9 +73,10 @@ class MessageReaction {
     this.users.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;
-    if (this.count <= 0 && this.users.size === 0) {
-      this.message.reactions.remove(this.emoji.id || this.emoji.name);
-    }
+    // Removing this call because the users count/size is unknown and will result in false removal
+    // if (this.count <= 0 && this.users.size === 0) {
+    //   this.message.reactions.remove(this.emoji.id || this.emoji.name);
+    // }
   }
 }
 
