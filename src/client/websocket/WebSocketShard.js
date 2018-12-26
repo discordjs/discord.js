@@ -454,7 +454,10 @@ class WebSocketShard extends EventEmitter {
       this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
       return;
     }
-    this.connection.send(WebSocket.pack(data));
+
+    this.connection.send(WebSocket.pack(data), err => {
+      if (err) this.manager.client.emit(Events.ERROR, err);
+    });
   }
 
   /**

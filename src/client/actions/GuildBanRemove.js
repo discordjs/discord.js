@@ -14,7 +14,7 @@ class GuildBanRemove extends Action {
      * @param {Guild} guild The guild that the unban occurred in
      * @param {User} user The user that was unbanned
      */
-    if (guild && user) client.emit(Events.GUILD_BAN_REMOVEGUILD_BAN_REMOVE, guild, user);
+    if (guild && user) client.emit(Events.GUILD_BAN_REMOVE, guild, user);
   }
 }
 
