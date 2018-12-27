@@ -297,7 +297,7 @@ class WebSocketShard extends EventEmitter {
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
         break;
       case OPCodes.RECONNECT:
-        this.reconnect();
+        this.connection.close(1000);
         break;
       case OPCodes.INVALID_SESSION:
         this.debug(`Session was invalidated. ${packet.d ? 'Trying to resume' : 'Identifying as a new session'}.`);
