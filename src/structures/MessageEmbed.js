@@ -178,7 +178,7 @@ class MessageEmbed {
     return (
       (this.title ? this.title.length : 0) +
       (this.description ? this.description.length : 0) +
-      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) => 
+      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) =>
         prev + curr.name.length + curr.value.length, 0) : 0) +
       (this.footer ? this.footer.text.length : 0));
   }
