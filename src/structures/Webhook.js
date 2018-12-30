@@ -28,6 +28,7 @@ class Webhook {
 
     /**
      * The token for the webhook
+     * @name Webhook#token
      * @type {string}
      */
     Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
