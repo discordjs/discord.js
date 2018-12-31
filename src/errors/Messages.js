@@ -42,6 +42,7 @@ const Messages = {
   VOICE_INVALID_HEARTBEAT: 'Tried to set voice heartbeat but no valid interval was specified.',
   VOICE_USER_MISSING: 'Couldn\'t resolve the user to create stream.',
   VOICE_STREAM_EXISTS: 'There is already an existing stream for that user.',
+  VOICE_VIEW_CHANNEL: 'You do not have permission to view this voice channel.',
   VOICE_JOIN_CHANNEL: (full = false) =>
     `You do not have permission to join this voice channel${full ? '; it is full.' : '.'}`,
   VOICE_CONNECTION_TIMEOUT: 'Connection not established within 15 seconds.',
