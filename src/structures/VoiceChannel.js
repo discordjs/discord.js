@@ -132,6 +132,7 @@ class VoiceChannel extends GuildChannel {
    */
   join() {
     if (browser) return Promise.reject(new Error('VOICE_NO_BROWSER'));
+    if (!this.joinable) return Promise.reject(new Error('VOICE_NOT_JOINABLE'));
     return this.client.voice.joinChannel(this);
   }
 
