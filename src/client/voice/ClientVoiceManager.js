@@ -50,6 +50,10 @@ class ClientVoiceManager {
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
+      if (!channel.viewable) {
+        throw new Error('VOICE_VIEW_CHANNEL');
+      }
+
       if (!channel.joinable) {
         throw new Error('VOICE_JOIN_CHANNEL', channel.full);
       }
