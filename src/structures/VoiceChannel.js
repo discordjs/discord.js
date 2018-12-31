@@ -92,6 +92,17 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Checks if the client has permission to view the voice channel
+   * @type {boolean}
+   * @readonly
+   */
+  get viewable() {
+    if (browser) return false;
+    if (this.permissionsFor(this.client.user).has('VIEW_CHANNEL', false)) return false;
+    return true;
+  }
+
+  /**
    * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @param {string} [reason] Reason for changing the channel's bitrate
