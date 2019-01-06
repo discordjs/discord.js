@@ -1561,8 +1561,8 @@ declare module 'discord.js' {
 		typingCount: number;
 		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<string, Message>>;
 		bulkDelete(messages: Collection<string, Message> | Message[] | Snowflake[] | number, filterOld?: boolean): Promise<Collection<string, Message>>;
-		createCollector(filter: CollectorFilter, options?: CollectorOptions): MessageCollector;
-		createMessageCollector(filter: CollectorFilter, options?: CollectorOptions): MessageCollector;
+		createCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
+		createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
 		fetchMessage(messageID: string): Promise<Message>;
 		fetchMessages(options?: ChannelLogsQueryOptions): Promise<Collection<string, Message>>;
 		fetchPinnedMessages(): Promise<Collection<string, Message>>;
