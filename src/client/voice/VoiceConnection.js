@@ -52,6 +52,12 @@ class VoiceConnection extends EventEmitter {
     this.status = VoiceStatus.AUTHENTICATING;
 
     /**
+    * Get the current gateway the guild is linked to
+    * @type {?string}
+     */
+    this.gateway = null;
+    
+    /**
      * Our current speaking state
      * @type {Readonly<Speaking>}
      */
