@@ -29,7 +29,10 @@ class ClientVoiceManager {
 
   onVoiceServer({ guild_id, token, endpoint }) {
     const connection = this.connections.get(guild_id);
-    if (connection) connection.setTokenAndEndpoint(token, endpoint);
+    if (connection) {
+      connection.gateway = endpoint;
+      connection.setTokenAndEndpoint(token, endpoint);
+    }
   }
 
   onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
