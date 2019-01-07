@@ -52,7 +52,7 @@ class VoiceConnection extends EventEmitter {
     this.status = VoiceStatus.AUTHENTICATING;
 
     /**
-    * Get the current gateway the guild is linked to
+    * Get the current gateway this voice connection is linked to
     * @type {?string}
      */
     this.gateway = null;
