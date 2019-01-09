@@ -432,6 +432,8 @@ class WebSocketShard extends EventEmitter {
 
     this.debug('Reconnecting to the gateway...');
 
+    this.destroy();
+
     this.status = Status.RECONNECTING;
 
     /**
@@ -440,8 +442,6 @@ class WebSocketShard extends EventEmitter {
      * @param {number} shardID The shard ID that is reconnecting
      */
     this.manager.client.emit(Events.RECONNECTING, this.id);
-
-    this.destroy();
 
     if (this.sessionID) {
       this.connect();
