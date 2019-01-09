@@ -117,6 +117,13 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     this.inflate = null;
+    
+    /**
+     * If this shard is currently reconnecting
+     * @type {boolean}
+     * @private
+     */
+    this.reconnecting = false;
 
     if (this.manager.gateway) this.connect();
   }
@@ -148,7 +155,7 @@ class WebSocketShard extends EventEmitter {
   sendHeartbeat() {
     if (!this.lastHeartbeatAcked) {
       this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
-      this.reconnect(4000);
+      this.connection.close(4000);
       return;
     }
     this.debug('Sending a heartbeat');
@@ -277,6 +284,7 @@ class WebSocketShard extends EventEmitter {
         this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
+        this.reconnecting = false;
         break;
       case WSEvents.RESUMED: {
         this.trace = packet.d._trace;
@@ -285,6 +293,7 @@ class WebSocketShard extends EventEmitter {
         this.debug(`RESUMED ${this.trace.join(' -> ')} | replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
+        this.reconnecting = false;
         break;
       }
     }
@@ -389,7 +398,7 @@ class WebSocketShard extends EventEmitter {
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
-      this.reconnect();
+      this.reconnect(4000);
       return;
     }
 
@@ -488,7 +497,10 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   reconnect(closeCode = 1000) {
+    if (this.reconnecting) return;
     this.debug('Received reconnect request. Destroying and connecting to the gateway again');
+
+    this.reconnecting = true;
 
     /**
      * Emitted whenever a shard tries to reconnect to the WebSocket.
