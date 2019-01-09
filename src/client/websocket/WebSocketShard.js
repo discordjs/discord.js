@@ -117,13 +117,6 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     this.inflate = null;
-    
-    /**
-     * If this shard is currently reconnecting
-     * @type {boolean}
-     * @private
-     */
-    this.reconnecting = false;
 
     if (this.manager.gateway) this.connect();
   }
@@ -306,7 +299,7 @@ class WebSocketShard extends EventEmitter {
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
         break;
       case OPCodes.RECONNECT:
-        this.connection.close(1000);
+        this.connection.close(4000);
         break;
       case OPCodes.INVALID_SESSION:
         this.debug(`Session was invalidated. ${packet.d ? 'Trying to resume' : 'Identifying as a new session'}.`);
@@ -318,14 +311,14 @@ class WebSocketShard extends EventEmitter {
           if (this.sessionID) {
             this.sessionID = null;
             await Util.delayFor(2500);
-            this.reconnect();
+            this.identify();
             return;
           }
           await Util.delayFor(5000);
-          this.reconnect();
+          this.identify();
           return;
         }
-        this.reconnect();
+        this.identifyResume();
         break;
       case OPCodes.HEARTBEAT_ACK:
         this.ackHeartbeat();
@@ -398,7 +391,7 @@ class WebSocketShard extends EventEmitter {
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
-      this.reconnect(4000);
+      this.connection.close(4000);
       return;
     }
 
@@ -426,6 +419,7 @@ class WebSocketShard extends EventEmitter {
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
       Reason: ${event.reason}`);
+
     if (event.code === 1000 ? this.manager.expectingClose : WSCodes[event.code]) {
       /**
        * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
@@ -438,7 +432,24 @@ class WebSocketShard extends EventEmitter {
       return;
     }
 
-    this.reconnect();
+    this.debug('Reconnecting to the gateway...');
+
+    this.status = Status.RECONNECTING;
+
+    /**
+     * Emitted whenever a shard tries to reconnect to the WebSocket.
+     * @event Client#reconnecting
+     * @param {number} shardID The shard ID that is reconnecting
+     */
+    this.manager.client.emit(Events.RECONNECTING, this.id);
+
+    this.destroy();
+
+    if (this.sessionID) {
+      this.connect();
+    } else {
+      this.manager.reconnect(this);
+    }
   }
 
   /**
@@ -492,40 +503,13 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Shortcut to destroy and connect.
-   * @param {number} [closeCode=1000] Optional close code for destroying the connection with
-   * @private
-   */
-  reconnect(closeCode = 1000) {
-    if (this.reconnecting) return;
-    this.debug('Received reconnect request. Destroying and connecting to the gateway again');
-
-    this.reconnecting = true;
-
-    /**
-     * Emitted whenever a shard tries to reconnect to the WebSocket.
-     * @event Client#reconnecting
-     * @param {number} shardID The shard ID that is reconnecting
-     */
-    this.manager.client.emit(Events.RECONNECTING, this.id);
-
-    this.destroy(closeCode);
-    this.status = Status.RECONNECTING;
-    if (this.sessionID) {
-      this.connect();
-    } else {
-      this.manager.reconnect(this);
-    }
-  }
-
-  /**
    * Destroys this shard, and closes its connection.
    * @param {number} [closeCode=1000] The WS Close code
    * @private
    */
-  destroy(closeCode = 1000) {
+  destroy() {
     this.setHeartbeatTimer(-1);
-    if (this.connection) this.connection.close(typeof closeCode === 'number' ? closeCode : 1000);
+    if (this.connection) this.connection.close(1000);
     this.connection = null;
     this.status = Status.DISCONNECTED;
     this.ratelimit.remaining = this.ratelimit.total;
@@ -534,6 +518,7 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
+    this.inflate.push('', zlib.Z_SYNC_FLUSH);
   }
 }
 

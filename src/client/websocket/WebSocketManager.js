@@ -94,7 +94,7 @@ class WebSocketManager {
    * @private
    */
   debug(message) {
-    this.client.emit(Events.WSDEBUG, message);
+    this.client.emit(Events.DEBUG, message);
   }
 
   /**
