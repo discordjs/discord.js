@@ -502,7 +502,6 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Destroys this shard, and closes its connection.
-   * @param {number} [closeCode=1000] The WS Close code
    * @private
    */
   destroy() {
