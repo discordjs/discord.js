@@ -12,6 +12,16 @@ const { ActivityTypes } = require('../util/Constants');
  */
 
 /**
+ * The status of this presence:
+ *
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`offline`** - user is offline or invisible
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} PresenceStatus
+ */
+
+/**
  * Represents a user's presence.
  */
 class Presence {
@@ -50,13 +60,8 @@ class Presence {
 
   patch(data) {
     /**
-     * The status of this presence:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline or invisible
-     * * **`idle`** - user is AFK
-     * * **`dnd`** - user is in Do Not Disturb
-     * @type {string}
+     * The status of this presence
+     * @type {PresenceStatus}
      */
     this.status = data.status || this.status || 'offline';
 
