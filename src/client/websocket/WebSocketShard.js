@@ -277,7 +277,6 @@ class WebSocketShard extends EventEmitter {
         this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
-        this.reconnecting = false;
         break;
       case WSEvents.RESUMED: {
         this.trace = packet.d._trace;
@@ -286,7 +285,6 @@ class WebSocketShard extends EventEmitter {
         this.debug(`RESUMED ${this.trace.join(' -> ')} | replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
-        this.reconnecting = false;
         break;
       }
     }
