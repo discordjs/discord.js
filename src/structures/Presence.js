@@ -18,14 +18,14 @@ class Presence {
   constructor(client, data = {}) {
     Object.defineProperty(this, 'client', { value: client });
     /**
-     * The userID of this presence
+     * The user ID of this presence
      * @type {string}
      */
     this.userID = data.user.id;
 
     /**
      * The guild of this presence
-     * @type {Guild}
+     * @type {?Guild}
      */
     this.guild = data.guild;
 
