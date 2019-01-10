@@ -577,7 +577,7 @@ class Guild {
    * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
-   * @param {string|number} [options.type] Only show entries involving this action type
+   * @param {AuditLogAction} [options.type] Only show entries involving this action type
    * @returns {Promise<GuildAuditLogs>}
    * @example
    * // Output audit log entries
