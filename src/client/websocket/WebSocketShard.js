@@ -309,11 +309,11 @@ class WebSocketShard extends EventEmitter {
           if (this.sessionID) {
             this.sessionID = null;
             await Util.delayFor(2500);
-            this.identify();
+            this.connection.close(1000);
             return;
           }
           await Util.delayFor(5000);
-          this.identify();
+          this.connection.close(1000);
           return;
         }
         this.identifyResume();
@@ -331,12 +331,10 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Identifies the client on a connection.
-   * @param {?number} [wait=0] Amount of time to wait before identifying
    * @returns {void}
    * @private
    */
-  identify(wait = 0) {
-    if (wait) return this.manager.client.setTimeout(this.identify.bind(this), wait);
+  identify() {
     return this.sessionID ? this.identifyResume() : this.identifyNew();
   }
 
