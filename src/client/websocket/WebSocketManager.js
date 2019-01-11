@@ -176,10 +176,9 @@ class WebSocketManager {
 
   /**
    * Shared handler for shards turning ready
-   * @param {WebSocketShard} shard The shard to cleanup the handler for
    * @private
    */
-  _shardReady(shard) {
+  _shardReady() {
     if (this.shardQueue.length) {
       this.client.setTimeout(this._handleSessionLimit.bind(this), 5000);
     } else {
