@@ -175,7 +175,7 @@ class WebSocketManager {
   }
 
   /**
-   * Shared handler for shards turning ready
+   * Shared handler for shards turning ready or resuming.
    * @private
    */
   _shardReady() {
