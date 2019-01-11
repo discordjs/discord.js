@@ -279,6 +279,7 @@ class WebSocketShard extends EventEmitter {
         this.sendHeartbeat();
         break;
       case WSEvents.RESUMED: {
+        this.emit(Events.RESUMED);
         this.trace = packet.d._trace;
         this.status = Status.READY;
         const replayed = packet.s - this.sequence;
@@ -300,7 +301,7 @@ class WebSocketShard extends EventEmitter {
         this.connection.close(4000);
         break;
       case OPCodes.INVALID_SESSION:
-        this.debug(`Session was invalidated. ${packet.d ? 'Trying to resume' : 'Identifying as a new session'}.`);
+        this.debug(`Session was invalidated. Resumable: ${packet.d}.`);
         // If the session isn't resumable
         if (!packet.d) {
           // Reset the sequence, since it isn't valid anymore
@@ -309,11 +310,11 @@ class WebSocketShard extends EventEmitter {
           if (this.sessionID) {
             this.sessionID = null;
             await Util.delayFor(2500);
-            this.connection.close(1000);
+            this.identify();
             return;
           }
           await Util.delayFor(5000);
-          this.connection.close(1000);
+          this.identify();
           return;
         }
         this.identifyResume();
@@ -428,7 +429,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
 
-    this.debug('Reconnecting to the gateway...');
+    this.debug('Queueing a reconnect to the gateway...');
 
     this.destroy();
 
@@ -441,11 +442,7 @@ class WebSocketShard extends EventEmitter {
      */
     this.manager.client.emit(Events.RECONNECTING, this.id);
 
-    if (this.sessionID) {
-      this.connect();
-    } else {
-      this.manager.reconnect(this);
-    }
+    this.manager.reconnect(this);
   }
 
   /**

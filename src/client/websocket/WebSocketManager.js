@@ -41,11 +41,11 @@ class WebSocketManager {
     this.shards = new Collection();
 
     /**
-     * An array of shards to be spawned
-     * @type {Array<number>}
+     * An array of shards to be spawned or reconnected
+     * @type {Array<number|WebSocketShard>}
      * @private
      */
-    this.spawnQueue = [];
+    this.shardQueue = [];
 
     /**
      * An array of queued events before this WebSocketManager became ready
@@ -76,6 +76,13 @@ class WebSocketManager {
      * @prop {number} reset_after Number of milliseconds after which the limit resets
      */
     this.sessionStartLimit = null;
+
+    /**
+     * If the manager is currently reconnecting a shard
+     * @type {boolean}
+     * @private
+     */
+    this.isReconnectingShards = false;
   }
 
   /**
@@ -132,13 +139,13 @@ class WebSocketManager {
 
     if (typeof this.client.options.shards === 'number') {
       this.debug(`Spawning shard with ID ${this.client.options.shards}`);
-      this.spawnQueue.push(this.client.options.shards);
+      this.shardQueue.push(this.client.options.shards);
     } else if (Array.isArray(this.client.options.shards)) {
       this.debug(`Spawning ${this.client.options.shards.length} shards`);
-      this.spawnQueue.push(...this.client.options.shards);
+      this.shardQueue.push(...this.client.options.shards);
     } else {
       this.debug(`Spawning ${this.client.options.shardCount} shards`);
-      this.spawnQueue.push(...Array.from({ length: this.client.options.shardCount }, (_, index) => index));
+      this.shardQueue.push(...Array.from({ length: this.client.options.shardCount }, (_, index) => index));
     }
     this.create();
   }
@@ -149,16 +156,35 @@ class WebSocketManager {
    */
   create() {
     // Nothing to create
-    if (!this.spawnQueue.length) return;
+    if (!this.shardQueue.length) return;
 
-    let item = this.spawnQueue.shift();
+    let item = this.shardQueue.shift();
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
+
+    if (item instanceof WebSocketShard) {
+      item.once(Events.READY, this._shardReady.bind(this, item));
+      item.once(Events.RESUMED, this._shardReady.bind(this, item));
+      item.connect();
+      return;
+    }
 
     const shard = new WebSocketShard(this, item);
     this.shards.set(item, shard);
-    shard.once(Events.READY, () => {
-      if (this.spawnQueue.length) this.client.setTimeout(this._handleSessionLimit.bind(this), 5000);
-    });
+    shard.once(Events.READY, this._shardReady.bind(this, shard));
+    shard.once(Events.RESUMED, this._shardReady.bind(this, shard));
+  }
+
+  /**
+   * Shared handler for shards turning ready
+   * @param {WebSocketShard} shard The shard to cleanup the handler for
+   * @private
+   */
+  _shardReady(shard) {
+    if (this.shardQueue.length) {
+      this.client.setTimeout(this._handleSessionLimit.bind(this), 5000);
+    } else {
+      this.isReconnectingShards = false;
+    }
   }
 
   /**
@@ -168,12 +194,15 @@ class WebSocketManager {
    */
   async reconnect(shard) {
     try {
+      this.shardQueue.push(shard);
       const canSpawn = await this._checkSessionLimit();
       if (typeof canSpawn === 'number') {
         this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
         await Util.delayFor(canSpawn);
       }
-      shard.connect();
+      if (this.isReconnectingShards) return;
+      this.isReconnectingShards = true;
+      this.create();
     } catch (error) {
       // If we get an error here, that means the token was invalidated
       if (this.client.listenerCount(Events.INVALIDATED)) {
@@ -286,6 +315,8 @@ class WebSocketManager {
   destroy() {
     if (this.expectingClose) return;
     this.expectingClose = true;
+    this.isReconnectingShards = false;
+    this.shardQueue.length = 0;
     for (const shard of this.shards.values()) shard.destroy();
   }
 }
