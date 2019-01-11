@@ -207,7 +207,9 @@ class WebSocketManager {
       // If we get an error here, that means the token was invalidated
       if (this.client.listenerCount(Events.INVALIDATED)) {
         /**
-         * Emitted when the client's session became invalidated.
+         * Emitted when the client's session becomes invalidated.
+         * You are expected to handle closing the process gracefully and preventing a boot loop
+         * if you are listening to this event.
          * @event Client#invalidated
          */
         this.client.emit(Events.INVALIDATED);
