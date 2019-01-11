@@ -429,9 +429,9 @@ class WebSocketShard extends EventEmitter {
       return;
     }
 
-    this.debug('Queueing a reconnect to the gateway...');
-
     this.destroy();
+
+    this.debug('Queueing a reconnect to the gateway...');
 
     this.status = Status.RECONNECTING;
 
