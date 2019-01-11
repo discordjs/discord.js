@@ -78,7 +78,7 @@ class WebSocketManager {
     this.sessionStartLimit = null;
 
     /**
-     * If the manager is currently reconnecting a shard
+     * If the manager is currently reconnecting shards
      * @type {boolean}
      * @private
      */
