@@ -75,11 +75,11 @@ class Presence {
     /**
      * The devices this presence is on
      * @type {?object}
-     * @property {string} web
-     * @property {string} mobile
-     * @property {string} desktop
+     * @property {PresenceStatus} web
+     * @property {PresenceStatus} mobile
+     * @property {PresenceStatus} desktop
      */
-    this.clientStatus = data.client_status ? data.client_status : null;
+    this.clientStatus = data.client_status || null;
 
     return this;
   }
