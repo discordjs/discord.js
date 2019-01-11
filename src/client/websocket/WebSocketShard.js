@@ -513,7 +513,6 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
-    this.inflate.push('', zlib.Z_SYNC_FLUSH);
   }
 }
 
