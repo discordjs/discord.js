@@ -29,7 +29,7 @@ class Presence {
     Object.defineProperty(this, 'client', { value: client });
     /**
      * The user ID of this presence
-     * @type {string}
+     * @type {Snowflake}
      */
     this.userID = data.user.id;
 
