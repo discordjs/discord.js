@@ -162,16 +162,16 @@ class WebSocketManager {
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
 
     if (item instanceof WebSocketShard) {
-      item.once(Events.READY, this._shardReady.bind(this, item));
-      item.once(Events.RESUMED, this._shardReady.bind(this, item));
+      item.once(Events.READY, this._shardReady.bind(this));
+      item.once(Events.RESUMED, this._shardReady.bind(this));
       item.connect();
       return;
     }
 
     const shard = new WebSocketShard(this, item);
     this.shards.set(item, shard);
-    shard.once(Events.READY, this._shardReady.bind(this, shard));
-    shard.once(Events.RESUMED, this._shardReady.bind(this, shard));
+    shard.once(Events.READY, this._shardReady.bind(this));
+    shard.once(Events.RESUMED, this._shardReady.bind(this));
   }
 
   /**
