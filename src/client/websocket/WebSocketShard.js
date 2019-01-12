@@ -49,7 +49,7 @@ class WebSocketShard extends EventEmitter {
      * @type {number}
      * @private
      */
-    this.closeSequence = 0;
+    this.closeSequence = oldShard ? oldShard.closeSequence : 0;
 
     /**
      * The current session id of the WebSocket
@@ -223,7 +223,7 @@ class WebSocketShard extends EventEmitter {
       case WSEvents.RESUMED: {
         this.trace = packet.d._trace;
         this.status = Status.READY;
-        const replayed = packet.s - this.sequence;
+        const replayed = packet.s - this.closeSequence;
         this.debug(`RESUMED ${this.trace.join(' -> ')} | replayed ${replayed} events.`);
         this.heartbeat();
         break;
