@@ -56,7 +56,7 @@ class VoiceConnection extends EventEmitter {
     * @type {?string}
      */
     this.gateway = null;
-    
+
     /**
      * Our current speaking state
      * @type {Readonly<Speaking>}
