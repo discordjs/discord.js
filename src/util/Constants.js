@@ -7,7 +7,7 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]} [shards=0] ID of the shard to run, or an array of shard IDs
+ * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
  * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
  * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
@@ -37,7 +37,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  shards: 0,
   shardCount: 1,
   totalShardCount: 1,
   messageCacheMaxSize: 200,
