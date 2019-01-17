@@ -395,8 +395,9 @@ class Client extends EventEmitter {
    * <warn>Bots can only fetch their own profile.</warn>
    * @param {Snowflake} [id='@me'] ID of application to fetch
    * @returns {Promise<OAuth2Application>}
+   * @example
    * client.fetchApplication()
-   *   .then(application => console.log(`Obtained application with name: ${application.name}`)
+   *   .then(application => console.log(`Obtained application with name: ${application.name}`))
    *   .catch(console.error);
    */
   fetchApplication(id = '@me') {
