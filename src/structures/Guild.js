@@ -225,14 +225,15 @@ class Guild {
       for (const voiceState of data.voice_states) {
         this._rawVoiceStates.set(voiceState.user_id, voiceState);
         const member = this.members.get(voiceState.user_id);
-        if (member) {
+        const voiceChannel = this.channels.get(voiceState.channel_id);
+        if (member && voiceChannel) {
           member.serverMute = voiceState.mute;
           member.serverDeaf = voiceState.deaf;
           member.selfMute = voiceState.self_mute;
           member.selfDeaf = voiceState.self_deaf;
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+          voiceChannel.members.set(member.user.id, member);
         }
       }
     }
