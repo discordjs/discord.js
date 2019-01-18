@@ -117,13 +117,13 @@ class WebSocketManager {
   }
 
   /**
-   * Handles the session identify rate limit for a shard.
+   * Handles the session identify rate limit for creating a shard.
    * @private
    */
   async _handleSessionLimit() {
     const canSpawn = await this._checkSessionLimit();
     if (typeof canSpawn === 'number') {
-      this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
+      this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn}ms`);
       await Util.delayFor(canSpawn);
     }
     this.create();
@@ -151,7 +151,7 @@ class WebSocketManager {
   }
 
   /**
-   * Creates a shard.
+   * Creates or reconnects a shard.
    * @private
    */
   create() {
@@ -171,7 +171,6 @@ class WebSocketManager {
     const shard = new WebSocketShard(this, item);
     this.shards.set(item, shard);
     shard.once(Events.READY, this._shardReady.bind(this));
-    shard.once(Events.RESUMED, this._shardReady.bind(this));
   }
 
   /**
@@ -192,16 +191,11 @@ class WebSocketManager {
    * @private
    */
   async reconnect(shard) {
+    this.shardQueue.push(shard);
+    if (this.isReconnectingShards) return;
+    this.isReconnectingShards = true;
     try {
-      this.shardQueue.push(shard);
-      const canSpawn = await this._checkSessionLimit();
-      if (typeof canSpawn === 'number') {
-        this.debug(`Exceeded identify threshold, setting a timeout for ${canSpawn} ms`);
-        await Util.delayFor(canSpawn);
-      }
-      if (this.isReconnectingShards) return;
-      this.isReconnectingShards = true;
-      this.create();
+      await this._handleSessionLimit();
     } catch (error) {
       // If we get an error here, that means the token was invalidated
       if (this.client.listenerCount(Events.INVALIDATED)) {
