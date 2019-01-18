@@ -197,7 +197,7 @@ class WebSocketManager {
     try {
       await this._handleSessionLimit();
     } catch (error) {
-      // If we get an error here, that means the token was invalidated
+      // If we get an error at this point, it means we cannot reconnect anymore
       if (this.client.listenerCount(Events.INVALIDATED)) {
         /**
          * Emitted when the client's session becomes invalidated.

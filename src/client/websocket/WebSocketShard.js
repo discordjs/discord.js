@@ -310,11 +310,11 @@ class WebSocketShard extends EventEmitter {
           if (this.sessionID) {
             this.sessionID = null;
             await Util.delayFor(2500);
-            this.identify();
+            this.connection.close(1000);
             return;
           }
           await Util.delayFor(5000);
-          this.identify();
+          this.connection.close(1000);
           return;
         }
         this.identifyResume();
