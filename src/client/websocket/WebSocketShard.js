@@ -3,7 +3,6 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, OPCodes, WSEvents, WSCodes } = require('../../util/Constants');
-const Util = require('../../util/Util');
 
 let zlib;
 try {
@@ -251,7 +250,7 @@ class WebSocketShard extends EventEmitter {
    * @param {Object} packet Packet received
    * @private
    */
-  async onPacket(packet) {
+  onPacket(packet) {
     if (!packet) {
       this.debug('Received null or broken packet');
       return;
