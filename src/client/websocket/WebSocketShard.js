@@ -281,8 +281,8 @@ class WebSocketShard extends EventEmitter {
         this.emit(Events.RESUMED);
         this.trace = packet.d._trace;
         this.status = Status.READY;
-        const replayed = packet.s - this.sequence;
-        this.debug(`RESUMED ${this.trace.join(' -> ')} | replayed ${replayed} events.`);
+        const replayed = packet.s - this.closeSequence;
+        this.debug(`RESUMED ${this.trace.join(' -> ')} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
         break;
@@ -367,12 +367,12 @@ class WebSocketShard extends EventEmitter {
       return this.identifyNew();
     }
 
-    this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.sequence}`);
+    this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.closeSequence}`);
 
     const d = {
       token: this.manager.client.token,
       session_id: this.sessionID,
-      seq: this.sequence,
+      seq: this.closeSequence,
     };
 
     return this.send({ op: OPCodes.RESUME, d });
@@ -511,6 +511,7 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
+    this.sequence = -1;
   }
 }
 
