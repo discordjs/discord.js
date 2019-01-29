@@ -14,20 +14,29 @@ const libs = {
 };
 
 exports.methods = {};
-
-for (const libName of Object.keys(libs)) {
+(function initSecretBox() {
+  let lib;
   try {
-    const lib = require(libName);
-    if (libName === 'libsodium-wrappers' && lib.ready) {
-      lib.ready.then(() => {
-        exports.methods = libs[libName](lib);
-      }).catch(() => {
-        const tweetnacl = require('tweetnacl');
-        exports.methods = libs.tweetnacl(tweetnacl);
-      }).catch(() => undefined);
-    } else {
-      exports.methods = libs[libName](lib);
-    }
-    break;
+    lib = require('sodium');
+    exports.methods = libs.sodium(lib);
+    return;
   } catch (err) {} // eslint-disable-line no-empty
-}
+
+  try {
+    lib = require('libsodium-wrappers');
+    if (lib.ready) {
+      lib.ready.then(() => {
+        exports.methods = libs['libsodium-wrappers'](lib);
+      }).catch(() => {
+        lib = require('tweetnacl');
+        exports.methods = libs.tweetnacl(lib);
+      });
+    }
+    return;
+  } catch (err) {} // eslint-disable-line no-empty
+
+  try {
+    lib = require('tweetnacl');
+    exports.methods = libs.tweetnacl(lib);
+  } catch (err) {} // eslint-disable-line no-empty
+}());
