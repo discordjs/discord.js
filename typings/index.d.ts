@@ -270,7 +270,7 @@ declare module 'discord.js' {
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;
-		public setStatus(status: PresenceStatus, shardID?: number | number[]): Promise<Presence>;
+		public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<Presence>;
 		public setUsername(username: string): Promise<ClientUser>;
 	}
 
@@ -820,7 +820,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data?: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
-		public status: 'online' | 'offline' | 'idle' | 'dnd';
+		public status: PresenceStatus;
+		public clientStatus: ClientPresenceStatusData;
 		public readonly user: User;
 		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
@@ -1994,7 +1995,7 @@ declare module 'discord.js' {
 	};
 
 	type PresenceData = {
-		status?: PresenceStatus;
+		status?: PresenceStatusData;
 		afk?: boolean;
 		activity?: {
 			name?: string;
@@ -2006,7 +2007,17 @@ declare module 'discord.js' {
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-	type PresenceStatus = 'online' | 'idle' | 'invisible' | 'dnd';
+	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
+
+	type ClientPresenceStatusData = {
+		web?: ClientPresenceStatus,
+		mobile?: ClientPresenceStatus,
+		desktop?: ClientPresenceStatus
+	};
+
+	type PresenceStatus = ClientPresenceStatus | 'offline';
+
+	type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
 	type RateLimitData = {
 		timeout: number;
