@@ -729,6 +729,7 @@ declare module 'discord.js' {
 		public footer: { text?: string; iconURL?: string; proxyIconURL?: string };
 		public readonly hexColor: string;
 		public image: { url: string; proxyURL?: string; height?: number; width?: number; };
+		public readonly length: number;
 		public provider: { name: string; url: string; };
 		public thumbnail: { url: string; proxyURL?: string; height?: number; width?: number; };
 		public timestamp: number;
