@@ -20,6 +20,8 @@ class Structures {
 
   /**
    * Extends a structure.
+   * <warn> Make sure to extend all structures before instantiating your client.
+   * Extending after doing so may not work as expected. </warn>
    * @param {string} structure Name of the structure class to extend
    * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
    * extended class/prototype
