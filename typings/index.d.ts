@@ -523,7 +523,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean;
 		public readonly position: number;
 		public rawPosition: number;
-		public clone(options?: GuildCreateChannelOptions): Promise<GuildChannel>;
+		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
 		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public edit(data: ChannelData, reason?: string): Promise<GuildChannel>;
@@ -1777,7 +1777,6 @@ declare module 'discord.js' {
 	type GuildChannelResolvable = Snowflake | GuildChannel;
 
 	type GuildCreateChannelOptions = {
-		name?: string;
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		topic?: string;
 		type?: 'text' | 'voice' | 'category';
@@ -1788,6 +1787,10 @@ declare module 'discord.js' {
 		rateLimitPerUser?: number;
 		position?: number;
 		reason?: string;
+	};
+
+	type GuildChannelCloneOptions = GuildCreateChannelOptions & {
+		name?: string;
 	};
 
 	type GuildEmojiCreateOptions = {
