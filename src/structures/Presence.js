@@ -12,13 +12,33 @@ const { ActivityTypes } = require('../util/Constants');
  */
 
 /**
+ * The status of this presence:
+ *
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`offline`** - user is offline or invisible
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} PresenceStatus
+ */
+
+/**
  * Represents a user's presence.
  */
 class Presence {
   constructor(client, data = {}) {
     Object.defineProperty(this, 'client', { value: client });
+    /**
+     * The user ID of this presence
+     * @type {Snowflake}
+     */
     this.userID = data.user.id;
+
+    /**
+     * The guild of this presence
+     * @type {?Guild}
+     */
     this.guild = data.guild;
+
     this.patch(data);
   }
 
@@ -40,22 +60,26 @@ class Presence {
 
   patch(data) {
     /**
-     * The status of the presence:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline or invisible
-     * * **`idle`** - user is AFK
-     * * **`dnd`** - user is in Do Not Disturb
-     * @type {string}
+     * The status of this presence
+     * @type {PresenceStatus}
      */
     this.status = data.status || this.status || 'offline';
 
     const activity = data.game || data.activity;
     /**
-     * The activity of the presence
+     * The activity of this presence
      * @type {?Activity}
      */
     this.activity = activity ? new Activity(this, activity) : null;
+
+    /**
+     * The devices this presence is on
+     * @type {?object}
+     * @property {PresenceStatus} web
+     * @property {PresenceStatus} mobile
+     * @property {PresenceStatus} desktop
+     */
+    this.clientStatus = data.client_status || null;
 
     return this;
   }
@@ -75,7 +99,10 @@ class Presence {
     return this === presence || (
       presence &&
       this.status === presence.status &&
-      this.activity ? this.activity.equals(presence.activity) : !presence.activity
+      this.activity ? this.activity.equals(presence.activity) : !presence.activity &&
+        this.clientStatus.web === presence.clientStatus.web &&
+        this.clientStatus.mobile === presence.clientStatus.mobile &&
+        this.clientStatus.desktop === presence.clientStatus.desktop
     );
   }
 

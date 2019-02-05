@@ -49,7 +49,7 @@ class WebSocketShard extends EventEmitter {
      * @type {number}
      * @private
      */
-    this.closeSequence = 0;
+    this.closeSequence = oldShard ? oldShard.closeSequence : 0;
 
     /**
      * The current session ID of the shard

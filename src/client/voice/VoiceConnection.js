@@ -10,6 +10,15 @@ const EventEmitter = require('events');
 const { Error } = require('../../errors');
 const PlayInterface = require('./util/PlayInterface');
 const Speaking = require('../../util/Speaking');
+const Silence = require('./util/Silence');
+
+// Workaround for Discord now requiring silence to be sent before being able to receive audio
+class SingleSilence extends Silence {
+  _read() {
+    super._read();
+    this.push(null);
+  }
+}
 
 const SUPPORTED_MODES = [
   'xsalsa20_poly1305_lite',
@@ -419,13 +428,16 @@ class VoiceConnection extends EventEmitter {
   onSessionDescription(data) {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
-    clearTimeout(this.connectTimeout);
-    /**
-     * Emitted once the connection is ready, when a promise to join a voice channel resolves,
-     * the connection will already be ready.
-     * @event VoiceConnection#ready
-     */
-    this.emit('ready');
+    const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
+    dispatcher.on('finish', () => {
+      clearTimeout(this.connectTimeout);
+      /**
+       * Emitted once the connection is ready, when a promise to join a voice channel resolves,
+       * the connection will already be ready.
+       * @event VoiceConnection#ready
+       */
+      this.emit('ready');
+    });
   }
 
   /**

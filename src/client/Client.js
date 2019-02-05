@@ -55,7 +55,7 @@ class Client extends BaseClient {
         this.options.totalShardCount = this.options.shardCount;
       }
     }
-    if (!this.options.shards && this.options.shardCount) {
+    if (typeof this.options.shards === 'undefined' && this.options.shardCount) {
       this.options.shards = [];
       for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
     }
@@ -233,7 +233,7 @@ class Client extends BaseClient {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
       this.options.totalShardCount = res.shards;
-      if (!this.options.shards || !this.options.shards.length) {
+      if (typeof this.options.shards === 'undefined' || !this.options.shards.length) {
         this.options.shards = [];
         for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
       }

@@ -19,6 +19,7 @@ module.exports = {
   DataResolver: require('./util/DataResolver'),
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
+  HTTPError: require('./rest/HTTPError'),
   Permissions: require('./util/Permissions'),
   Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),

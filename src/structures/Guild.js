@@ -725,7 +725,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild region
    * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .then(updated => console.log(`Updated guild region to ${updated.region}`))
    *  .catch(console.error);
    */
   setRegion(region, reason) {

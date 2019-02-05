@@ -270,7 +270,7 @@ declare module 'discord.js' {
 		public setAFK(afk: boolean): Promise<Presence>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
 		public setPresence(data: PresenceData): Promise<Presence>;
-		public setStatus(status: PresenceStatus, shardID?: number | number[]): Promise<Presence>;
+		public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<Presence>;
 		public setUsername(username: string): Promise<ClientUser>;
 	}
 
@@ -523,7 +523,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean;
 		public readonly position: number;
 		public rawPosition: number;
-		public clone(options?: GuildCreateChannelOptions): Promise<GuildChannel>;
+		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
 		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public edit(data: ChannelData, reason?: string): Promise<GuildChannel>;
@@ -729,6 +729,7 @@ declare module 'discord.js' {
 		public footer: { text?: string; iconURL?: string; proxyIconURL?: string };
 		public readonly hexColor: string;
 		public image: { url: string; proxyURL?: string; height?: number; width?: number; };
+		public readonly length: number;
 		public provider: { name: string; url: string; };
 		public thumbnail: { url: string; proxyURL?: string; height?: number; width?: number; };
 		public timestamp: number;
@@ -819,7 +820,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data?: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
-		public status: 'online' | 'offline' | 'idle' | 'dnd';
+		public status: PresenceStatus;
+		public clientStatus: ClientPresenceStatusData;
 		public readonly user: User;
 		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
@@ -1772,15 +1774,20 @@ declare module 'discord.js' {
 	type GuildChannelResolvable = Snowflake | GuildChannel;
 
 	type GuildCreateChannelOptions = {
-		type?: 'text' | 'voice' | 'category'
+		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+		topic?: string;
+		type?: 'text' | 'voice' | 'category';
 		nsfw?: boolean;
+		parent?: ChannelResolvable;
 		bitrate?: number;
 		userLimit?: number;
-		parent?: ChannelResolvable;
-		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		rateLimitPerUser?: number;
 		position?: number;
-		reason?: string
+		reason?: string;
+	};
+
+	type GuildChannelCloneOptions = GuildCreateChannelOptions & {
+		name?: string;
 	};
 
 	type GuildEmojiCreateOptions = {
@@ -1843,7 +1850,10 @@ declare module 'discord.js' {
 		| 'jpg'
 		| 'gif';
 
-	type ImageSize = 128
+	type ImageSize = 16
+		| 32
+		| 64
+		| 128
 		| 256
 		| 512
 		| 1024
@@ -1987,7 +1997,7 @@ declare module 'discord.js' {
 	};
 
 	type PresenceData = {
-		status?: PresenceStatus;
+		status?: PresenceStatusData;
 		afk?: boolean;
 		activity?: {
 			name?: string;
@@ -1999,7 +2009,17 @@ declare module 'discord.js' {
 
 	type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-	type PresenceStatus = 'online' | 'idle' | 'invisible' | 'dnd';
+	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
+
+	type ClientPresenceStatusData = {
+		web?: ClientPresenceStatus,
+		mobile?: ClientPresenceStatus,
+		desktop?: ClientPresenceStatus
+	};
+
+	type PresenceStatus = ClientPresenceStatus | 'offline';
+
+	type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
 	type RateLimitData = {
 		timeout: number;
