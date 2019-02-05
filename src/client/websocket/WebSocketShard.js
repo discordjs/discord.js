@@ -3,6 +3,7 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, OPCodes, WSEvents, WSCodes } = require('../../util/Constants');
+const Util = require('../../util/Util');
 
 let zlib;
 try {
@@ -49,7 +50,7 @@ class WebSocketShard extends EventEmitter {
      * @type {number}
      * @private
      */
-    this.closeSequence = oldShard ? oldShard.closeSequence : 0;
+    this.closeSequence = 0;
 
     /**
      * The current session ID of the shard
@@ -293,11 +294,11 @@ class WebSocketShard extends EventEmitter {
 
     switch (packet.op) {
       case OPCodes.HELLO:
-        this.identify();
         this.setHeartbeatTimer(packet.d.heartbeat_interval);
+        this.identify();
         break;
       case OPCodes.RECONNECT:
-        this.connection.close(4000);
+        this.connection.close(1001);
         break;
       case OPCodes.INVALID_SESSION:
         this.debug(`Session was invalidated. Resumable: ${packet.d}.`);
@@ -346,10 +347,11 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     // Clone the generic payload and assign the token
-    const d = { ...this.manager.client.options.ws, token: this.manager.client.token };
-
-    const { totalShardCount } = this.manager.client.options;
-    d.shard = [this.id, Number(totalShardCount)];
+    const d = {
+      ...this.manager.client.options.ws,
+      token: this.manager.client.token,
+      shard: [this.id, Number(this.manager.client.options.totalShardCount)],
+    };
 
     // Send the payload
     this.debug('Identifying as a new session');
@@ -428,8 +430,6 @@ class WebSocketShard extends EventEmitter {
 
     this.destroy();
 
-    this.debug(`${this.sessionID ? 'Immediately reconnecting' : 'Queueing a reconnect'} to the gateway...`);
-
     this.status = Status.RECONNECTING;
 
     /**
@@ -439,8 +439,10 @@ class WebSocketShard extends EventEmitter {
      */
     this.manager.client.emit(Events.RECONNECTING, this.id);
 
+    this.debug(`${this.sessionID ? `Reconnecting in 3500ms` : 'Queueing a reconnect'} to the gateway...`);
+
     if (this.sessionID) {
-      this.connect();
+      Util.delayFor(3500).then(() => this.connect());
     } else {
       this.manager.reconnect(this);
     }
@@ -465,7 +467,7 @@ class WebSocketShard extends EventEmitter {
    */
   _send(data) {
     if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available!`);
       return;
     }
 

@@ -162,8 +162,14 @@ class WebSocketManager {
     if (typeof item === 'string' && !isNaN(item)) item = Number(item);
 
     if (item instanceof WebSocketShard) {
-      item.once(Events.READY, this._shardReady.bind(this));
-      item.once(Events.RESUMED, this._shardReady.bind(this));
+      const timeout = setTimeout(() => {
+        this.debug(`[Shard ${item.id}] Failed to connect in 15s... Destroying and trying again`);
+        item.destroy();
+        if (!this.shardQueue.includes(item)) this.shardQueue.push(item);
+        this.reconnect(true);
+      }, 15000);
+      item.once(Events.READY, this._shardReady.bind(this, timeout));
+      item.once(Events.RESUMED, this._shardReady.bind(this, timeout));
       item.connect();
       return;
     }
@@ -175,9 +181,11 @@ class WebSocketManager {
 
   /**
    * Shared handler for shards turning ready or resuming.
+   * @param {Timeout} [timeout=null] Optional timeout to clear if shard didn't turn ready in time
    * @private
    */
-  _shardReady() {
+  _shardReady(timeout = null) {
+    if (timeout) clearTimeout(timeout);
     if (this.shardQueue.length) {
       this.client.setTimeout(this._handleSessionLimit.bind(this), 5000);
     } else {
@@ -187,12 +195,18 @@ class WebSocketManager {
 
   /**
    * Handles the reconnect of a shard.
-   * @param {WebSocketShard} shard The shard to reconnect
+   * @param {WebSocketShard|boolean} shard The shard to reconnect, or a boolean to indicate an immediate reconnect
    * @private
    */
   async reconnect(shard) {
-    this.shardQueue.push(shard);
-    if (this.isReconnectingShards) return;
+    // If the item is a shard, add it to the queue
+    if (shard instanceof WebSocketShard) this.shardQueue.push(shard);
+    if (typeof shard === 'boolean') {
+      // If a boolean is passed, force a reconnect right now
+    } else if (this.isReconnectingShards) {
+      // If we're already reconnecting shards, and no boolean was provided, return
+      return;
+    }
     this.isReconnectingShards = true;
     try {
       await this._handleSessionLimit();
