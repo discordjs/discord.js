@@ -236,6 +236,21 @@ class RichEmbed {
   }
 
   /**
+   * The accumulated length for the embed title, description, fields, author and footer text
+   * @type {number}
+   * @readonly
+   */
+  get length() {
+    return (
+      (this.title ? this.title.length : 0) +
+      (this.description ? this.description.length : 0) +
+      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) =>
+        prev + curr.name.length + curr.value.length, 0) : 0) +
+      (this.footer ? this.footer.text.length : 0) +
+      (this.author ? this.author.name.length : 0));
+  }
+
+  /**
    * Transforms the embed object to be processed.
    * @returns {Object} The raw data of this embed
    * @private
