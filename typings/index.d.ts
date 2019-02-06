@@ -1028,7 +1028,7 @@ declare module 'discord.js' {
 		public setFooter(text: StringResolvable, icon?: string): this;
 		public setImage(url: string): this;
 		public setThumbnail(url: string): this;
-		public setTimestamp(timestamp?: Date): this;
+		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
 	}
