@@ -968,7 +968,8 @@ declare module 'discord.js' {
 		constructor(data: object, client: Client);
 		public readonly client: Client;
 		public game: Game;
-		public status: 'online' | 'offline' | 'idle' | 'dnd';
+		public status: PresenceStatusData;
+		public clientStatus: ClientPresenceStatusData;
 		public equals(presence: Presence): boolean;
 	}
 
@@ -2032,7 +2033,16 @@ declare module 'discord.js' {
 		} | null;
 	};
 
-	type PresenceStatus = 'online' | 'idle' | 'invisible' | 'dnd';
+	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
+
+	type PresenceStatus = ClientPresenceStatus | 'invisible' ;
+	type PresenceStatusData = ClientPresenceStatus | 'offline';
+
+	type ClientPresenceStatusData = {
+		web?: ClientPresenceStatus;
+		mobile?: ClientPresenceStatus;
+		desktop?: ClientPresenceStatus;
+	};
 
 	type RateLimitInfo = {
 		requestLimit: number;

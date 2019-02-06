@@ -1,6 +1,16 @@
 const { ActivityFlags, Endpoints } = require('../util/Constants');
 
 /**
+ * The status of this presence:
+ *
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`offline`** - user is offline or invisible
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} PresenceStatus
+ */
+
+/**
  * Represents a user's presence.
  */
 class Presence {
@@ -8,13 +18,8 @@ class Presence {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The status of the presence:
-     *
-     * * **`online`** - user is online
-     * * **`offline`** - user is offline or invisible
-     * * **`idle`** - user is AFK
-     * * **`dnd`** - user is in Do not Disturb
-     * @type {string}
+     * The status of this presence:
+     * @type {PresenceStatus}
      */
     this.status = data.status || 'offline';
 
@@ -23,11 +28,21 @@ class Presence {
      * @type {?Game}
      */
     this.game = data.game ? new Game(data.game, this) : null;
+
+    /**
+     * The devices this presence is on
+     * @type {?object}
+     * @property {PresenceStatus} web
+     * @property {PresenceStatus} mobile
+     * @property {PresenceStatus} desktop
+     */
+    this.clientStatus = data.client_status || null;
   }
 
   update(data) {
     this.status = data.status || this.status;
     this.game = data.game ? new Game(data.game, this) : null;
+    this.clientStatus = data.client_status || null;
   }
 
   /**
@@ -39,7 +54,10 @@ class Presence {
     return this === presence || (
       presence &&
       this.status === presence.status &&
-      this.game ? this.game.equals(presence.game) : !presence.game
+      (this.game ? this.game.equals(presence.game) : !presence.game) &&
+      this.clientStatus.web === presence.clientStatus.web &&
+      this.clientStatus.mobile === presence.clientStatus.mobile &&
+      this.clientStatus.desktop === presence.clientStatus.desktop
     );
   }
 }
