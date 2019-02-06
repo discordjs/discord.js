@@ -1295,6 +1295,8 @@ declare module 'discord.js' {
 		public readonly ping: number;
 		public shards: Collection<number, WebSocketShard>;
 		public status: Status;
+
+		public broadcast(packet: object): undefined;
 	}
 
 	export class WebSocketShard extends EventEmitter {
@@ -1305,8 +1307,9 @@ declare module 'discord.js' {
 		public status: Status;
 		public manager: WebSocketManager;
 
-		public on(event: 'ready', listener: () => void): this;
+		public send(packet: object): undefined;
 
+		public on(event: 'ready', listener: () => void): this;
 		public once(event: 'ready', listener: () => void): this;
 	}
 
