@@ -496,7 +496,11 @@ class RESTMethods {
 
   updateGuildMember(member, data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.resolver.resolveChannel(data.channel).id;
+      const channel = this.client.resolver.resolveChannel(data.channel);
+      if (!channel || channel.guild.id !== member.guild.id || channel.type !== 'voice') {
+        return Promise.reject(new Error('Could not resolve channel to a guild voice channel.'));
+      }
+      data.channel_id = channel.id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
