@@ -951,7 +951,7 @@ declare module 'discord.js' {
 
 		public client: Client;
 		public readonly count: number;
-		public readonly id: number;
+		public readonly id: number | number[];
 		public mode: ShardingManagerMode;
 		public parentPort: any;
 		public broadcastEval(script: string): Promise<any[]>;
