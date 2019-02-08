@@ -9,14 +9,15 @@ const Constants = require('../../util/Constants');
 */
 
 class MessageReactionRemove extends Action {
-  handle(data) {
+  async handle(data) {
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
     // Verify channel
     const channel = this.client.channels.get(data.channel_id);
     if (!channel || channel.type === 'voice') return false;
     // Verify message
-    const message = channel.messages.get(data.message_id);
+    var message = channel.messages.get(data.message_id);
+    if (!message) message = await channel.fetchMessage(data.message_id);
     if (!message) return false;
     if (!data.emoji) return false;
     // Verify reaction

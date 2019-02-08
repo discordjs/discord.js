@@ -2,11 +2,12 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class MessageReactionRemoveAll extends Action {
-  handle(data) {
+  async handle(data) {
     const channel = this.client.channels.get(data.channel_id);
     if (!channel || channel.type === 'voice') return false;
 
-    const message = channel.messages.get(data.message_id);
+    var message = channel.messages.get(data.message_id);
+    if (!message) message = await channel.fetchMessage(data.message_id);
     if (!message) return false;
 
     message._clearReactions();

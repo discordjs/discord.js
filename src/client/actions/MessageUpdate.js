@@ -2,12 +2,13 @@ const Action = require('./Action');
 const Constants = require('../../util/Constants');
 
 class MessageUpdateAction extends Action {
-  handle(data) {
+  async handle(data) {
     const client = this.client;
 
     const channel = client.channels.get(data.channel_id);
     if (channel) {
-      const message = channel.messages.get(data.id);
+      var message = channel.messages.get(data.id);
+      if (!message) message = await channel.fetchMessage(data.id);
       if (message) {
         message.patch(data);
         client.emit(Constants.Events.MESSAGE_UPDATE, message._edits[0], message);
