@@ -86,7 +86,7 @@ class Channel extends Base {
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
-    if (data.type === ChannelTypes.DM) {
+    if (data.type === ChannelTypes.DM || (data.type !== ChannelTypes.GROUP && !data.guild_id)) {
       const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
     } else {
