@@ -6,13 +6,10 @@ const { Events } = require('../../util/Constants');
 class MessageDeleteAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = client.options.partials ?
-      client.channels.add({ ...data, id: data.channel_id }) :
-      client.channels.get(data.channel_id);
+    const channel = this.getChannel(data);
     let message;
-
     if (channel) {
-      message = client.options.partials ? channel.messages.add(data) : channel.messages.get(data.id);
+      message = this.getMessage(data, channel);
       if (message) {
         channel.messages.delete(message.id);
         message.deleted = true;

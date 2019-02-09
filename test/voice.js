@@ -34,11 +34,8 @@ client.on('presenceUpdate', (a, b) => {
   console.log(a ? a.status : null, b.status, b.user.username);
 });
 
-client.on('messageDelete', async m => {
-  console.log(m.channel);
-  console.log('\n\n\n\n');
-  await m.channel.fetch();
-  console.log(m.channel);
+client.on('messageReactionAdd', async (r, u) => {
+  console.log(r);
 });
 
 client.on('message', m => {

@@ -20,6 +20,20 @@ class GenericAction {
   handle(data) {
     return data;
   }
+
+  getChannel(data) {
+    const id = data.channel_id || data.id;
+    return data.channel || (this.client.options.partials ?
+      this.client.channels.add({ ...data, id }) :
+      this.client.channels.get(id));
+  }
+
+  getMessage(data, channel) {
+    const id = data.message_id || data.id;
+    return data.message || (this.client.options.partials ?
+      channel.messages.add({ ...data, id }) :
+      channel.messages.get(id));
+  }
 }
 
 module.exports = GenericAction;
