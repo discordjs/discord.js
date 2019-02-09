@@ -491,6 +491,14 @@ class Message extends Base {
   }
 
   /**
+   * Fetch this message.
+   * @returns {Promise<Message>}
+   */
+  fetch() {
+    return this.channel.messages.fetch(this.id);
+  }
+
+  /**
    * Fetches the webhook used to create this message.
    * @returns {Promise<?Webhook>}
    */
