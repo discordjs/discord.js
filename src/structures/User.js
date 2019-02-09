@@ -53,6 +53,8 @@ class User extends Base {
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
+    if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
+
     /**
      * The locale of the user's client (ISO 639-1)
      * @type {?string}
@@ -71,6 +73,14 @@ class User extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+  }
+
+  /**
+   * Whether this User is a partial
+   * @type {boolean}
+   */
+  get partial() {
+    return Boolean(this.username);
   }
 
   /**
@@ -226,6 +236,14 @@ class User extends Base {
       this.avatar === user.avatar;
 
     return equal;
+  }
+
+  /**
+   * Fetches this user.
+   * @returns {Promise<User>}
+   */
+  fetch() {
+    return this.client.users.fetch(this.id, true, true);
   }
 
   /**

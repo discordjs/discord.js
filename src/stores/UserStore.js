@@ -49,13 +49,15 @@ class UserStore extends DataStore {
    * Obtains a user from Discord, or the user cache if it's already available.
    * @param {Snowflake} id ID of the user
    * @param {boolean} [cache=true] Whether to cache the new user object if it isn't already
+   * @param {boolean} [overwrite=false] Whether to overwrite any existing user instances
    * @returns {Promise<User>}
    */
-  fetch(id, cache = true) {
+  async fetch(id, cache = true, overwrite = false) {
     const existing = this.get(id);
-    if (existing) return Promise.resolve(existing);
-
-    return this.client.api.users(id).get().then(data => this.add(data, cache));
+    if (existing && !overwrite) return existing;
+    const data = await this.client.api.users(id).get();
+    if (existing) existing._patch(data);
+    return this.add(data, cache);
   }
 }
 

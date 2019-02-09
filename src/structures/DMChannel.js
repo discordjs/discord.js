@@ -47,7 +47,7 @@ class DMChannel extends Channel {
   }
 
   /**
-   * Whether this DMChannel is a partial or not
+   * Whether this DMChannel is a partial
    * @type {boolean}
    */
   get partial() {
