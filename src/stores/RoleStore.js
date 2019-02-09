@@ -24,6 +24,16 @@ class RoleStore extends DataStore {
    * @param {Snowflake} [id] ID or IDs of the role(s)
    * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
    * @returns {Promise<Role|Role[]>}
+   * @example
+   * // Fetch all roles from the guild
+   * message.guild.roles.fetch()
+   *   .then(roles => console.log(`There are ${roles.size} roles.`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch a single role
+   * message.guild.roles.fetch('222078108977594368')
+   *   .then(role => console.log(`The role color is: ${role.color}`))
+   *   .catch(console.error);
    */
   async fetch(id, cache = true) {
     if (id) {

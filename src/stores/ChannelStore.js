@@ -79,6 +79,11 @@ class ChannelStore extends DataStore {
    * @param {Snowflake} id ID of the channel
    * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
    * @returns {Promise<Channel>}
+   * @example
+   * // Fetch a channel by its id
+   * client.channels.fetch('222109930545610754')
+   *   .then(channel => console.log(channel.name))
+   *   .catch(console.error);
    */
   fetch(id, cache = true) {
     const existing = this.get(id);
