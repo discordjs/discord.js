@@ -5,7 +5,7 @@ const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
-const lruable = ['group', 'dm'];
+const lruable = ['dm'];
 
 /**
  * Stores channels.

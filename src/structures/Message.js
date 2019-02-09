@@ -24,7 +24,7 @@ class Message extends Base {
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|GroupDMChannel}
+     * @type {TextChannel|DMChannel}
      */
     this.channel = channel;
 
@@ -33,6 +33,12 @@ class Message extends Base {
      * @type {boolean}
      */
     this.deleted = false;
+
+    /**
+     * Whether this message only has partial details
+     * @type {boolean}
+     */
+    this.partial = false;
 
     if (data) this._patch(data);
   }

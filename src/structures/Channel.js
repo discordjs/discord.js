@@ -16,7 +16,6 @@ class Channel extends Base {
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
-     * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
@@ -90,9 +89,6 @@ class Channel extends Base {
     if (data.type === ChannelTypes.DM) {
       const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
-    } else if (data.type === ChannelTypes.GROUP) {
-      const GroupDMChannel = Structures.get('GroupDMChannel');
-      channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {
