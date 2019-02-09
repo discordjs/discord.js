@@ -34,12 +34,6 @@ class Message extends Base {
      */
     this.deleted = false;
 
-    /**
-     * Whether this message only has partial details
-     * @type {boolean}
-     */
-    this.partial = false;
-
     if (data) this._patch(data);
   }
 
@@ -62,11 +56,13 @@ class Message extends Base {
      */
     this.content = data.content;
 
-    /**
-     * The author of the message
-     * @type {User}
-     */
-    this.author = this.client.users.add(data.author, !data.webhook_id);
+    if (data.author) {
+      /**
+       * The author of the message
+       * @type {User}
+       */
+      this.author = this.client.users.add(data.author, !data.webhook_id);
+    }
 
     /**
      * Whether or not this message is pinned
@@ -96,17 +92,19 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(e));
+    this.embeds = (data.embeds || []).map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new MessageAttachment(
-        attachment.url, attachment.filename, attachment
-      ));
+    if (data.attachments) {
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     }
 
     /**
@@ -177,6 +175,14 @@ class Message extends Base {
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
+  }
+
+  /**
+   * Whether or not this message is a partial
+   * @type {boolean}
+   */
+  get partial() {
+    return this.channel.partial || !this.content || !this.author;
   }
 
   /**

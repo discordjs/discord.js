@@ -34,6 +34,11 @@ client.on('presenceUpdate', (a, b) => {
   console.log(a ? a.status : null, b.status, b.user.username);
 });
 
+client.on('messageDelete', m => {
+  console.log(m);
+  console.log(m.partial);
+});
+
 client.on('message', m => {
   if (!m.guild) return;
   if (m.author.id !== '66564597481480192') return;
