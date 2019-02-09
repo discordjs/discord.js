@@ -1667,6 +1667,7 @@ declare module 'discord.js' {
 	type CollectorOptions = { time?: number };
 
 	type ColorResolvable = ('DEFAULT'
+		| 'WHITE'
 		| 'AQUA'
 		| 'GREEN'
 		| 'BLUE'
