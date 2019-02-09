@@ -12,6 +12,8 @@ const { Events } = require('../../util/Constants');
 
 class MessageReactionRemove extends Action {
   handle(data) {
+    if (!data.emoji) return false;
+
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
 
@@ -22,7 +24,6 @@ class MessageReactionRemove extends Action {
     // Verify message
     const message = this.getMessage(data, channel);
     if (!message) return false;
-    if (!data.emoji) return false;
 
     // Verify reaction
     const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);

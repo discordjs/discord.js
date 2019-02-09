@@ -11,6 +11,8 @@ const Action = require('./Action');
 
 class MessageReactionAdd extends Action {
   handle(data) {
+    if (!data.emoji) return false;
+
     const user = data.user || this.client.users.get(data.user_id);
     if (!user) return false;
 
@@ -21,7 +23,6 @@ class MessageReactionAdd extends Action {
     // Verify message
     const message = this.getMessage(data, channel);
     if (!message) return false;
-    if (!data.emoji) return false;
 
     // Verify reaction
     const reaction = message.reactions.add({
