@@ -248,7 +248,7 @@ class GuildMember extends Base {
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     if (data.channel) {
       data.channel = this.guild.channels.resolve(data.channel);
       if (!data.channel || data.channel.type !== 'voice') {
@@ -266,12 +266,12 @@ class GuildMember extends Base {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(() => {
-      const clone = this._clone();
-      data.user = this.user;
-      clone._patch(data);
-      return clone;
-    });
+    await endpoint.patch({ data, reason });
+
+    const clone = this._clone();
+    data.user = this.user;
+    clone._patch(data);
+    return clone;
   }
 
   /**
