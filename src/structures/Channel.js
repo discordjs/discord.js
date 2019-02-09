@@ -83,6 +83,14 @@ class Channel extends Base {
     return this.client.api.channels(this.id).delete().then(() => this);
   }
 
+  /**
+   * Fetches this channel.
+   * @returns {Promise<Channel>}
+   */
+  fetch() {
+    return this.client.channels.fetch(this.id, true, true);
+  }
+
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
