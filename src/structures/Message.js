@@ -56,13 +56,11 @@ class Message extends Base {
      */
     this.content = data.content;
 
-    if (data.author) {
-      /**
-       * The author of the message
-       * @type {User}
-       */
-      this.author = this.client.users.add(data.author, !data.webhook_id);
-    }
+    /**
+     * The author of the message
+     * @type {User}
+     */
+    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
     /**
      * Whether or not this message is pinned

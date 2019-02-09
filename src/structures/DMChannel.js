@@ -12,7 +12,7 @@ const MessageStore = require('../stores/MessageStore');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
-    // Override the channel type so partials don't have an unknown type
+    // Override the channel type so partials have a known type
     this.type = 'dm';
     /**
      * A collection containing the messages sent to this channel
