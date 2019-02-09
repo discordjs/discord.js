@@ -20,6 +20,23 @@ class RoleStore extends DataStore {
   }
 
   /**
+   * Obtains one or more roles from Discord, or the role cache if they're already available.
+   * @param {Snowflake} [id] ID or IDs of the role(s)
+   * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
+   * @returns {Promise<Role|Role[]>}
+   */
+  async fetch(id, cache = true) {
+    if (id) {
+      const existing = this.get(id);
+      if (existing) return existing;
+    }
+
+    const roles = await this.client.api.guilds(this.guild.id).roles.get();
+    for (const role of roles) this.add(role, cache);
+    return id ? this.get(id) || null : this;
+  }
+
+  /**
    * Data that can be resolved to a Role object. This can be:
    * * A Role
    * * A Snowflake

@@ -1320,6 +1320,7 @@ declare module 'discord.js' {
 	export class ChannelStore extends DataStore<Snowflake, Channel, typeof Channel, ChannelResolvable> {
 		constructor(client: Client, iterable: Iterable<any>, options?: { lru: boolean });
 		constructor(client: Client, options?: { lru: boolean });
+		public fetch(id: Snowflake, cache?: boolean): Promise<Channel>;
 	}
 
 	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
@@ -1410,6 +1411,8 @@ declare module 'discord.js' {
 		public readonly highest: Role;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;
+		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
+		public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
 	}
 
 	export class UserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
