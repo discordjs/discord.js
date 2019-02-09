@@ -41,6 +41,7 @@ class RoleStore extends DataStore {
       if (existing) return existing;
     }
 
+    // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
     const roles = await this.client.api.guilds(this.guild.id).roles.get();
     for (const role of roles) this.add(role, cache);
     return id ? this.get(id) || null : this;
