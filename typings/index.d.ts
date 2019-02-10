@@ -434,7 +434,7 @@ declare module 'discord.js' {
 		public presences: PresenceStore;
 		public region: string;
 		public roles: RoleStore;
-		public shard: WebSocketShard;
+		public readonly shard: WebSocketShard;
 		public shardID: number;
 		public splash: string;
 		public readonly systemChannel: TextChannel;
@@ -1295,22 +1295,22 @@ declare module 'discord.js' {
 		public gateway: string | undefined;
 		public readonly ping: number;
 		public shards: Collection<number, WebSocketShard>;
-		public sessionStartLimit: { total: number; remaining: number; reset_after: number; };
 		public status: Status;
-		public broadcast(packet: any): void;
+
+		public broadcast(packet: object): void;
 	}
 
 	export class WebSocketShard extends EventEmitter {
-		constructor(manager: WebSocketManager, id: number, oldShard?: WebSocketShard);
+		constructor(manager: WebSocketManager, id: number);
 		public id: number;
 		public readonly ping: number;
 		public pings: number[];
 		public status: Status;
 		public manager: WebSocketManager;
-		public send(data: object): void;
+
+		public send(packet: object): void;
 
 		public on(event: 'ready', listener: () => void): this;
-
 		public once(event: 'ready', listener: () => void): this;
 	}
 
