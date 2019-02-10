@@ -86,7 +86,7 @@ class WebSocketManager {
   }
 
   /**
-   * The average ping of all WebSocketShards.
+   * The average ping of all WebSocketShards
    * @type {number}
    * @readonly
    */
@@ -318,7 +318,7 @@ class WebSocketManager {
   }
 
   /**
-   * Destroys all shards
+   * Destroys all shards.
    * @private
    */
   destroy() {

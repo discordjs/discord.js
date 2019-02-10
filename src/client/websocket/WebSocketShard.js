@@ -14,7 +14,7 @@ try {
 }
 
 /**
- * Represents a shard Websocket connection.
+ * Represents a Shard's WebSocket connection
  */
 class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
@@ -27,7 +27,7 @@ class WebSocketShard extends EventEmitter {
     this.manager = manager;
 
     /**
-     * The id of the this shard
+     * The ID of the this shard
      * @type {number}
      */
     this.id = id;
@@ -499,7 +499,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Destroys this shard, and closes its connection.
+   * Destroys this shard and closes its connection.
    * @private
    */
   destroy() {
