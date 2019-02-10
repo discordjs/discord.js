@@ -34,8 +34,13 @@ client.on('presenceUpdate', (a, b) => {
   console.log(a ? a.status : null, b.status, b.user.username);
 });
 
-client.on('messageReactionAdd', async (r, u) => {
-  console.log(r);
+client.on('messageDelete', async (m) => {
+  if (m.channel.id != '80426989059575808') return;
+  console.log(m.channel.recipient);
+  console.log(m.channel.partial);
+  await m.channel.fetch();
+  console.log('\n\n\n\n');
+  console.log(m.channel);
 });
 
 client.on('message', m => {

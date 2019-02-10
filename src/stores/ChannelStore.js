@@ -54,6 +54,7 @@ class ChannelStore extends DataStore {
 
   add(data, guild, cache = true) {
     const existing = this.get(data.id);
+    if (existing && existing.partial && cache) existing._patch(data);
     if (existing) return existing;
 
     const channel = Channel.create(this.client, data, guild);
@@ -78,7 +79,6 @@ class ChannelStore extends DataStore {
    * Obtains a channel from Discord, or the channel cache if it's already available.
    * @param {Snowflake} id ID of the channel
    * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
-   * @param {boolean} [overwrite=false] Whether to overwrite any existing instance of a channel
    * @returns {Promise<Channel>}
    * @example
    * // Fetch a channel by its id
@@ -86,12 +86,11 @@ class ChannelStore extends DataStore {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true, overwrite = false) {
+  async fetch(id, cache = true) {
     const existing = this.get(id);
-    if (existing && !overwrite) return existing;
+    if (existing && !cache) return existing;
 
     const data = await this.client.api.channels(id).get();
-    if (existing) existing._patch(data);
     return this.add(data, null, cache);
   }
 

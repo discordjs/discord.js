@@ -80,7 +80,7 @@ class User extends Base {
    * @type {boolean}
    */
   get partial() {
-    return Boolean(this.username);
+    return !this.username;
   }
 
   /**
@@ -243,7 +243,7 @@ class User extends Base {
    * @returns {Promise<User>}
    */
   fetch() {
-    return this.client.users.fetch(this.id, true, true);
+    return this.client.users.fetch(this.id, true);
   }
 
   /**

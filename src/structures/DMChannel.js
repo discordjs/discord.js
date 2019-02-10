@@ -51,7 +51,7 @@ class DMChannel extends Channel {
    * @type {boolean}
    */
   get partial() {
-    return Boolean(this.recipient);
+    return !this.recipient;
   }
 
   /**

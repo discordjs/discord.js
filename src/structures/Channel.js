@@ -88,7 +88,7 @@ class Channel extends Base {
    * @returns {Promise<Channel>}
    */
   fetch() {
-    return this.client.channels.fetch(this.id, true, true);
+    return this.client.channels.fetch(this.id, true);
   }
 
   static create(client, data, guild) {
