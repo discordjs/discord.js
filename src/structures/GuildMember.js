@@ -363,8 +363,12 @@ class GuildMember extends Base {
     return this.guild.members.ban(this, options);
   }
 
+  /**
+   * Fetches this GuildMember.
+   * @returns {Promise<GuildMember>}
+   */
   fetch() {
-    return this.guild.members.fetch(this.id);
+    return this.guild.members.fetch(this.id, true);
   }
 
   /**
