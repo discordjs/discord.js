@@ -83,7 +83,7 @@ class MessageStore extends DataStore {
 
   async _fetchId(messageID, cache) {
     const existing = this.get(messageID);
-    if (existing && !cache) return existing;
+    if (existing && !existing.partial) return existing;
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
     return this.add(data, cache);
   }

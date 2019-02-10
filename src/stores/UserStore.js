@@ -53,7 +53,7 @@ class UserStore extends DataStore {
    */
   async fetch(id, cache = true) {
     const existing = this.get(id);
-    if (existing && !cache) return existing;
+    if (existing && !existing.partial) return existing;
     const data = await this.client.api.users(id).get();
     return this.add(data, cache);
   }
