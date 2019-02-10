@@ -44,7 +44,7 @@
     "ws": "^6.1.3"
   },
   "peerDependencies": {
-    "@discordjs/uws": "^10.149.0",
+    "@discordjs/uws": "^11.149.1",
     "bufferutil": "^4.0.1",
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.4",
