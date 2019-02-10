@@ -72,6 +72,8 @@ class ClientVoiceManager {
         reject(reason);
       });
 
+      connection.on('debug', msg => this.client.emit('debug', `[VOICE (${channel.guild.id})]: ${msg}`));
+
       connection.once('authenticated', () => {
         connection.once('ready', () => {
           resolve(connection);

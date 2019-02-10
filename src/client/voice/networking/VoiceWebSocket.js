@@ -39,6 +39,7 @@ class VoiceWebSocket extends EventEmitter {
   }
 
   shutdown() {
+    this.emit('debug', `[WS] shutdown requested`);
     this.dead = true;
     this.reset();
   }
@@ -47,6 +48,7 @@ class VoiceWebSocket extends EventEmitter {
    * Resets the current WebSocket.
    */
   reset() {
+    this.emit('debug', `[WS] reset requested`);
     if (this.ws) {
       if (this.ws.readyState !== WebSocket.CLOSED) this.ws.close();
       this.ws = null;
@@ -58,6 +60,7 @@ class VoiceWebSocket extends EventEmitter {
    * Starts connecting to the Voice WebSocket Server.
    */
   connect() {
+    this.emit('debug', `[WS] connect requested`);
     if (this.dead) return;
     if (this.ws) this.reset();
     if (this.attempts >= 5) {
@@ -66,6 +69,7 @@ class VoiceWebSocket extends EventEmitter {
     }
 
     this.attempts++;
+    this.emit('debug', `[WS] connecting with ${this.attempts} attempts`);
 
     /**
      * The actual WebSocket used to connect to the Voice WebSocket Server.
@@ -84,6 +88,7 @@ class VoiceWebSocket extends EventEmitter {
    * @returns {Promise<string>}
    */
   send(data) {
+    this.emit('debug', `[WS] >> ${data}`);
     return new Promise((resolve, reject) => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('WS_NOT_OPEN', data);
       this.ws.send(data, null, error => {
@@ -110,6 +115,7 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the WebSocket opens.
    */
   onOpen() {
+    this.emit('debug', `[WS] opened at gateway ${this.connection.authentication.endpoint}`);
     this.sendPacket({
       op: OPCodes.DISPATCH,
       d: {
@@ -140,6 +146,7 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the connection to the WebSocket server is lost.
    */
   onClose() {
+    this.emit('debug', `[WS] closed`);
     if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }
 
@@ -156,6 +163,7 @@ class VoiceWebSocket extends EventEmitter {
    * @param {Object} packet The received packet
    */
   onPacket(packet) {
+    this.emit('debug', `[WS] << ${JSON.stringify(packet)}`);
     switch (packet.op) {
       case VoiceOPCodes.HELLO:
         this.setHeartbeat(packet.d.heartbeat_interval);
