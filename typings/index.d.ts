@@ -523,6 +523,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean;
 		public readonly position: number;
 		public rawPosition: number;
+		public readonly viewable: boolean;
 		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
 		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;

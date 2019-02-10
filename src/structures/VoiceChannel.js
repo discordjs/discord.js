@@ -71,14 +71,15 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the client has permission join the voice channel
+   * Whether the channel is joinable by the client user
    * @type {boolean}
    * @readonly
    */
   get joinable() {
     if (browser) return false;
-    if (!this.permissionsFor(this.client.user).has('CONNECT', false)) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS', false)) return false;
+    if (!this.viewable) return false;
+    if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)) return false;
     return true;
   }
 
