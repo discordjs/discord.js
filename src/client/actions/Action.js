@@ -1,5 +1,7 @@
 'use strict';
 
+const { PartialTypes } = require('../../util/Constants');
+
 /*
 
 ABOUT ACTIONS
@@ -23,14 +25,14 @@ class GenericAction {
 
   getChannel(data) {
     const id = data.channel_id || data.id;
-    return data.channel || (this.client.options.partials ?
+    return data.channel || (this.client.options.partials.includes(PartialTypes.CHANNEL) ?
       this.client.channels.add({ ...data, id }) :
       this.client.channels.get(id));
   }
 
   getMessage(data, channel) {
     const id = data.message_id || data.id;
-    return data.message || (this.client.options.partials ?
+    return data.message || (this.client.options.partials.includes(PartialTypes.MESSAGE) ?
       channel.messages.add({ ...data, id }) :
       channel.messages.get(id));
   }

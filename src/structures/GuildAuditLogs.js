@@ -4,6 +4,7 @@ const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
+const PartialTypes = require('../util/Constants');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
@@ -264,7 +265,7 @@ class GuildAuditLogsEntry {
      * The user that executed this entry
      * @type {User}
      */
-    this.executor = guild.client.options.partials ?
+    this.executor = guild.client.options.partials.includes(PartialTypes.USER) ?
       guild.client.users.add({ id: data.user_id }) :
       guild.client.users.get(data.user_id);
 
@@ -332,7 +333,7 @@ class GuildAuditLogsEntry {
       }, {});
       this.target.id = data.target_id;
     } else if (targetType === Targets.USER) {
-      this.target = guild.client.options.partials ?
+      this.target = guild.client.options.partials.includes(PartialTypes.USER) ?
         guild.client.users.add({ id: data.target_id }) :
         guild.client.users.get(data.target_id);
     } else if (targetType === Targets.GUILD) {

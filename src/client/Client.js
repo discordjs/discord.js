@@ -434,8 +434,8 @@ class Client extends BaseClient {
     if (typeof options.disableEveryone !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
     }
-    if (typeof options.partials !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'a boolean');
+    if (!(options.partials instanceof Array)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');

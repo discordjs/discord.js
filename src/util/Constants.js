@@ -21,8 +21,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
- * @property {boolean} [partials=false] Whether to enable partials, where events can still be emitted even when all
- * the data for a structure cannot be immediately retrieved
+ * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
+ * they're missing all the data for a particular structure
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -46,7 +46,7 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
-  partials: false,
+  partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   retryLimit: 1,
@@ -263,6 +263,21 @@ exports.Events = {
   INVALIDATED: 'invalidated',
   RAW: 'raw',
 };
+
+/**
+ * The type of Structure allowed to be a partial:
+ * * USER
+ * * CHANNEL (only affects DMChannels)
+ * * GUILD_MEMBER
+ * * MESSAGE
+ * @typedef {string} PartialType
+ */
+exports.PartialTypes = keyMirror([
+  'USER',
+  'CHANNEL',
+  'GUILD_MEMBER',
+  'MESSAGE',
+]);
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
