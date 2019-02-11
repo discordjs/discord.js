@@ -396,6 +396,8 @@ class VoiceConnection extends EventEmitter {
 
     const { ws, udp } = this.sockets;
 
+    ws.on('debug', msg => this.emit('debug', msg));
+    udp.on('debug', msg => this.emit('debug', msg));
     ws.on('error', err => this.emit('error', err));
     udp.on('error', err => this.emit('error', err));
     ws.on('ready', this.onReady.bind(this));
@@ -431,6 +433,7 @@ class VoiceConnection extends EventEmitter {
     const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
     dispatcher.on('finish', () => {
       clearTimeout(this.connectTimeout);
+      this.emit('debug', `Ready with authentication details: ${JSON.stringify(this.authentication)}`);
       /**
        * Emitted once the connection is ready, when a promise to join a voice channel resolves,
        * the connection will already be ready.
