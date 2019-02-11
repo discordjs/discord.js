@@ -199,6 +199,7 @@ class VoiceConnection extends EventEmitter {
       // Signifies awaiting endpoint stage
       return;
     }
+    this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);
 
     if (!token) {
       this.authenticateFailed('VOICE_TOKEN_ABSENT');
@@ -206,6 +207,7 @@ class VoiceConnection extends EventEmitter {
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
+    this.emit('debug', `Endpoint resolved as ${endpoint}`);
 
     if (!endpoint) {
       this.authenticateFailed('VOICE_INVALID_ENDPOINT');
@@ -252,7 +254,7 @@ class VoiceConnection extends EventEmitter {
    */
   checkAuthenticated() {
     const { token, endpoint, sessionID } = this.authentication;
-
+    this.emit('debug', `Authenticated with sessionID ${sessionID}`);
     if (token && endpoint && sessionID) {
       this.status = VoiceStatus.CONNECTING;
       /**
@@ -271,6 +273,7 @@ class VoiceConnection extends EventEmitter {
    */
   authenticateFailed(reason) {
     clearTimeout(this.connectTimeout);
+    this.emit('debug', `Authenticate failed - ${reason}`);
     if (this.status === VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -320,6 +323,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.endpoint = endpoint;
     this.speaking = new Speaking().freeze();
     this.status = VoiceStatus.RECONNECTING;
+    this.emit('debug', `Reconnecting to ${endpoint}`);
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
      * @event VoiceConnection#reconnecting
@@ -333,6 +337,7 @@ class VoiceConnection extends EventEmitter {
    */
   disconnect() {
     this.emit('closing');
+    this.emit('debug', 'disconnect() triggered');
     clearTimeout(this.connectTimeout);
     const conn = this.voiceManager.connections.get(this.channel.guild.id);
     if (conn === this) this.voiceManager.connections.delete(this.channel.guild.id);
@@ -366,6 +371,8 @@ class VoiceConnection extends EventEmitter {
     this.speaking = new Speaking().freeze();
     const { ws, udp } = this.sockets;
 
+    this.emit('debug', 'Connection clean up');
+
     if (ws) {
       ws.removeAllListeners('error');
       ws.removeAllListeners('ready');
@@ -384,6 +391,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   connect() {
+    this.emit('debug', `Connect triggered`);
     if (this.status !== VoiceStatus.RECONNECTING) {
       if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
       if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');

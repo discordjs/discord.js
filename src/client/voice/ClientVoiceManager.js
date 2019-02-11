@@ -64,7 +64,8 @@ class ClientVoiceManager {
         return;
       } else {
         connection = new VoiceConnection(this, channel);
-        connection.on('debug', msg => this.client.emit('debug', `[VOICE (${channel.guild.id})]: ${msg}`));
+        connection.on('debug', msg =>
+          this.client.emit('debug', `[VOICE (${channel.guild.id}:${connection.status})]: ${msg}`));
         connection.authenticate();
         this.connections.set(channel.guild.id, connection);
       }
