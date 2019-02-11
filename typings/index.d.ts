@@ -661,7 +661,6 @@ declare module 'discord.js' {
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
 		public readonly guild: Guild;
-		public hit: boolean;
 		public id: Snowflake;
 		public readonly member: GuildMember;
 		public mentions: MessageMentions;
