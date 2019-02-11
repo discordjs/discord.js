@@ -77,6 +77,7 @@
     "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
+    "worker_threads": false,
     "zlib-sync": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
