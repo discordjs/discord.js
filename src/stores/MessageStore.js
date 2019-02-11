@@ -36,6 +36,36 @@ class MessageStore extends DataStore {
    */
 
   /**
+   * Delete a message by ID, independent of the cache.
+   * @param {Snowflake} [messageID] The ID of the message to delete.
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
+   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
+   * @returns {Promise<void>}
+   * @example
+   * channel.messages.remove('99539446449315840')
+   *   .then(() => console.log('Deleted one message'))
+   *   .catch(console.error);
+   */
+  remove(messageID, { timeout = 0, reason } = {}) {
+    if (timeout <= 0) {
+      return this.client.api.channels(this.channel.id).messages(messageID)
+        .delete({ reason })
+        .then(() =>
+          this.client.actions.MessageDelete.handle({
+            id: messageID,
+            channel_id: this.channel.id,
+          }).message);
+    } else {
+      return new Promise(resolve => {
+        this.client.setTimeout(() => {
+          resolve(this.remove(messageID, { reason }));
+        }, timeout);
+      });
+    }
+  }
+
+  /**
    * Gets a message, or messages, from this channel.
    * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
    * Those need to be fetched separately in such a case.</info>
