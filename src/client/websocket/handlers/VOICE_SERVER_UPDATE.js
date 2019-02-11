@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = (client, packet) => {
-  client.emit('self.voiceServer', packet.d);
+  client.emit('debug', `[VOICE] received voice server: ${JSON.stringify(packet)}`);
+  client.voice.onVoiceServer(packet.d);
 };

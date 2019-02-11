@@ -22,18 +22,17 @@ class ClientVoiceManager {
      * @type {Collection<Snowflake, VoiceConnection>}
      */
     this.connections = new Collection();
-
-    this.client.on('self.voiceServer', this.onVoiceServer.bind(this));
-    this.client.on('self.voiceStateUpdate', this.onVoiceStateUpdate.bind(this));
   }
 
   onVoiceServer({ guild_id, token, endpoint }) {
+    this.client.emit('debug', `[VOICE] voiceServer guild: ${guild_id} token: ${token} endpoint: ${endpoint}`);
     const connection = this.connections.get(guild_id);
     if (connection) connection.setTokenAndEndpoint(token, endpoint);
   }
 
   onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
     const connection = this.connections.get(guild_id);
+    this.client.emit('debug', `[VOICE] connection? ${!!connection}, ${guild_id} ${session_id} ${channel_id}`);
     if (!connection) return;
     if (!channel_id && connection.status !== VoiceStatus.DISCONNECTED) {
       connection._disconnect();
@@ -64,6 +63,9 @@ class ClientVoiceManager {
         return;
       } else {
         connection = new VoiceConnection(this, channel);
+        connection.on('debug', msg =>
+          this.client.emit('debug', `[VOICE (${channel.guild.id}:${connection.status})]: ${msg}`));
+        connection.authenticate();
         this.connections.set(channel.guild.id, connection);
       }
 
@@ -71,8 +73,6 @@ class ClientVoiceManager {
         this.connections.delete(channel.guild.id);
         reject(reason);
       });
-
-      connection.on('debug', msg => this.client.emit('debug', `[VOICE (${channel.guild.id})]: ${msg}`));
 
       connection.once('authenticated', () => {
         connection.once('ready', () => {

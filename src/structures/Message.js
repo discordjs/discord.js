@@ -156,12 +156,6 @@ class Message extends Base {
     } : null;
 
     /**
-     * Whether this message is a hit in a search
-     * @type {?boolean}
-     */
-    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
-
-    /**
      * The previous versions of the message, sorted with the most recent first
      * @type {Message[]}
      * @private

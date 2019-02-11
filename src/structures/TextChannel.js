@@ -127,7 +127,6 @@ class TextChannel extends GuildChannel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  search() {}
   startTyping() {}
   stopTyping() {}
   get typing() {}
