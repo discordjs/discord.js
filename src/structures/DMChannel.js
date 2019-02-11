@@ -59,7 +59,6 @@ class DMChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  search() {}
   startTyping() {}
   stopTyping() {}
   get typing() {}
