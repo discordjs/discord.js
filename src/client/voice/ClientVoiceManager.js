@@ -22,9 +22,6 @@ class ClientVoiceManager {
      * @type {Collection<Snowflake, VoiceConnection>}
      */
     this.connections = new Collection();
-
-    this.client.on('self.voiceServer', this.onVoiceServer.bind(this));
-    this.client.on('self.voiceStateUpdate', this.onVoiceStateUpdate.bind(this));
   }
 
   onVoiceServer({ guild_id, token, endpoint }) {
