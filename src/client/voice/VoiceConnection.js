@@ -413,6 +413,8 @@ class VoiceConnection extends EventEmitter {
     ws.on('ready', this.onReady.bind(this));
     ws.on('sessionDescription', this.onSessionDescription.bind(this));
     ws.on('speaking', this.onSpeaking.bind(this));
+
+    this.sockets.ws.connect();
   }
 
   /**
