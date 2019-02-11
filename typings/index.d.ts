@@ -1387,7 +1387,7 @@ declare module 'discord.js' {
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
 		constructor(channel: TextChannel | DMChannel | GroupDMChannel, iterable?: Iterable<any>);
-		public remove(messageID: string, options?: { timeout?: number, reason?: string }): Promise<void>;
+		public remove(messageID: Snowflake, options?: { timeout?: number, reason?: string }): Promise<void>;
 		public fetch(message: Snowflake): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(): Promise<Collection<Snowflake, Message>>;
