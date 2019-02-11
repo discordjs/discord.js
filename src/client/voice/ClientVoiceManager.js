@@ -64,6 +64,8 @@ class ClientVoiceManager {
         return;
       } else {
         connection = new VoiceConnection(this, channel);
+        connection.on('debug', msg => this.client.emit('debug', `[VOICE (${channel.guild.id})]: ${msg}`));
+        connection.authenticate();
         this.connections.set(channel.guild.id, connection);
       }
 
@@ -71,8 +73,6 @@ class ClientVoiceManager {
         this.connections.delete(channel.guild.id);
         reject(reason);
       });
-
-      connection.on('debug', msg => this.client.emit('debug', `[VOICE (${channel.guild.id})]: ${msg}`));
 
       connection.once('authenticated', () => {
         connection.once('ready', () => {

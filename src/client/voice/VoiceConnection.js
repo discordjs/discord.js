@@ -125,8 +125,6 @@ class VoiceConnection extends EventEmitter {
      * @type {VoiceReceiver}
      */
     this.receiver = new VoiceReceiver(this);
-
-    this.authenticate();
   }
 
   /**
@@ -179,6 +177,9 @@ class VoiceConnection extends EventEmitter {
       self_mute: false,
       self_deaf: false,
     }, options);
+
+    const queueLength = this.channel.guild.shard.ratelimit.queue.length;
+    this.emit('debug', `Sending voice state update (queue length is ${queueLength}): ${JSON.stringify(options)}`);
 
     this.channel.guild.shard.send({
       op: OPCodes.VOICE_STATE_UPDATE,
