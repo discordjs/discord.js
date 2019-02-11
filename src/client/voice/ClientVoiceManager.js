@@ -28,12 +28,14 @@ class ClientVoiceManager {
   }
 
   onVoiceServer({ guild_id, token, endpoint }) {
+    this.client.emit('debug', `[VOICE] voiceServer guild: ${guild_id} token: ${token} endpoint: ${endpoint}`);
     const connection = this.connections.get(guild_id);
     if (connection) connection.setTokenAndEndpoint(token, endpoint);
   }
 
   onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
     const connection = this.connections.get(guild_id);
+    this.client.emit('debug', `[VOICE] connection? ${!!connection}, ${guild_id} ${session_id} ${channel_id}`);
     if (!connection) return;
     if (!channel_id && connection.status !== VoiceStatus.DISCONNECTED) {
       connection._disconnect();

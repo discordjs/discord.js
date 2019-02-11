@@ -195,11 +195,11 @@ class VoiceConnection extends EventEmitter {
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
+    this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);
     if (!endpoint) {
       // Signifies awaiting endpoint stage
       return;
     }
-    this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);
 
     if (!token) {
       this.authenticateFailed('VOICE_TOKEN_ABSENT');
@@ -229,6 +229,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   setSessionID(sessionID) {
+    this.emit('debug', `Setting sessionID ${sessionID} (stored as "${this.authentication.sessionID}")`);
     if (!sessionID) {
       this.authenticateFailed('VOICE_SESSION_ABSENT');
       return;
