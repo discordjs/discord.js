@@ -22,7 +22,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure
+ * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
+ * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -270,6 +271,8 @@ exports.Events = {
  * * CHANNEL (only affects DMChannels)
  * * GUILD_MEMBER
  * * MESSAGE
+ * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
+ * sidebar for more information.</warn>
  * @typedef {string} PartialType
  */
 exports.PartialTypes = keyMirror([
