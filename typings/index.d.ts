@@ -1015,6 +1015,7 @@ declare module 'discord.js' {
 		public files?: Array<Attachment | string | FileOptions>;
 		public footer?: { text?: string; icon_url?: string; };
 		public image?: { url: string; proxy_url?: string; height?: number; width?: number; };
+		public readonly length: number;
 		public thumbnail?: { url: string; height?: number; width?: number; };
 		public timestamp?: Date;
 		public title?: string;
