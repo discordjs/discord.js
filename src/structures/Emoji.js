@@ -162,6 +162,11 @@ class Emoji {
    */
   fetchAuthor() {
     if (this.managed) return Promise.reject(new Error('Emoji is managed and has no Author.'));
+    if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+      return Promise.reject(
+        new Error(`Client must have Manage Emoji permission in guild ${this.guild} to see emoji authors.`)
+      );
+    }
     return this.client.rest.makeRequest('get', Constants.Endpoints.Guild(this.guild).Emoji(this.id), true)
       .then(emoji => this.client.dataManager.newUser(emoji.user));
   }
