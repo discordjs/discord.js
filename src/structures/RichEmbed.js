@@ -140,10 +140,11 @@ class RichEmbed {
 
   /**
    * Sets the timestamp of this embed.
-   * @param {Date} [timestamp=new Date()] The timestamp
+   * @param {Date|number} [timestamp=Date.now()] The timestamp or date
    * @returns {RichEmbed} This embed
    */
-  setTimestamp(timestamp = new Date()) {
+  setTimestamp(timestamp = Date.now()) {
+    if (timestamp instanceof Date) timestamp = timestamp.getTime();
     this.timestamp = timestamp;
     return this;
   }
