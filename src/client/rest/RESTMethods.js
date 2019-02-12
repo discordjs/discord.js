@@ -261,7 +261,18 @@ class RESTMethods {
   }
 
   createChannel(guild, name, options) {
-    const { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, rateLimitPerUser, reason } = options;
+    const {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      reason,
+    } = options;
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name,
       topic,
@@ -271,6 +282,7 @@ class RESTMethods {
       user_limit: userLimit,
       parent_id: parent instanceof Channel ? parent.id : parent,
       permission_overwrites: resolvePermissions.call(this, permissionOverwrites, guild),
+      position,
       rate_limit_per_user: rateLimitPerUser,
     },
     undefined,
