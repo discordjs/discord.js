@@ -174,7 +174,7 @@ class Message extends Base {
    * @type {boolean}
    */
   get partial() {
-    return this.channel.partial || !this.content || !this.author;
+    return !this.content || !this.author;
   }
 
   /**

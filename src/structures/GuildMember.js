@@ -84,7 +84,7 @@ class GuildMember extends Base {
    * @type {boolean}
    */
   get partial() {
-    return !this.user || this.user.partial || !this.joinedTimestamp;
+    return !this.joinedTimestamp;
   }
 
   /**
