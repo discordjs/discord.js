@@ -395,7 +395,7 @@ class Util {
       .replace(/@(everyone|here)/g, '@\u200b$1')
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (message.channel.type === 'dm' || message.channel.type === 'group') {
+        if (message.channel.type === 'dm') {
           const user = message.client.users.get(id);
           return user ? `@${user.username}` : input;
         }
@@ -413,7 +413,7 @@ class Util {
         return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
+        if (message.channel.type === 'dm') return input;
         const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });

@@ -5,7 +5,7 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -341,7 +341,9 @@ class Guild extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) || null;
+    return this.members.get(this.ownerID) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.ownerID } }, true) :
+      null);
   }
 
   /**
