@@ -80,7 +80,7 @@ class User extends Base {
    * @type {boolean}
    */
   get partial() {
-    return !this.username;
+    return typeof this.username !== 'string';
   }
 
   /**

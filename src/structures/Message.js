@@ -174,7 +174,7 @@ class Message extends Base {
    * @type {boolean}
    */
   get partial() {
-    return !this.content || !this.author;
+    return typeof this.content !== 'string' || !this.author;
   }
 
   /**
