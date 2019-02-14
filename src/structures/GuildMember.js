@@ -27,6 +27,7 @@ class GuildMember extends Base {
     /**
      * The user that this guild member instance represents
      * @type {User}
+     * @name GuildMember#user
      */
     if (data.user) this.user = client.users.add(data.user, true);
 
