@@ -52,7 +52,7 @@
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
-    "@types/node": "^10.12.24",
+    "@types/node": "^11.9.4",
     "discord.js-docgen": "discordjs/docgen",
     "eslint": "^5.13.0",
     "json-filter-loader": "^1.0.0",
