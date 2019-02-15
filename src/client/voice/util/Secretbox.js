@@ -2,8 +2,8 @@
 
 const libs = {
   'libsodium': sodium => ({
-    open: sodium.api.crypto_secretbox_open_easy,
-    close: sodium.api.crypto_secretbox_easy,
+    open: sodium.crypto_secretbox_open_easy,
+    close: sodium.crypto_secretbox_easy,
     random: n => sodium.randombytes_buf(n),
   }),
   'libsodium-wrappers': sodium => ({
