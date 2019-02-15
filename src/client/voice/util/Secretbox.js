@@ -1,7 +1,7 @@
 'use strict';
 
 const libs = {
-  sodium: sodium => ({
+  'libsodium': sodium => ({
     open: sodium.api.crypto_secretbox_open_easy,
     close: sodium.api.crypto_secretbox_easy,
     random: n => sodium.randombytes_buf(n),
