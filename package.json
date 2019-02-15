@@ -48,7 +48,7 @@
     "bufferutil": "^4.0.1",
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.4",
-    "sodium": "^3.0.2",
+    "libsodium": "^0.7.4",
     "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
