@@ -133,6 +133,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
+		public send(messageText: string): Promise<Message>;
 	}
 
 	export class Client extends BaseClient {
