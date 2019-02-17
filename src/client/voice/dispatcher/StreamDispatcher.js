@@ -117,7 +117,7 @@ class StreamDispatcher extends Writable {
     if (this.player.dispatcher === this) this.player.dispatcher = null;
     const { streams } = this;
     if (streams.broadcast) streams.broadcast.dispatchers.delete(this);
-    if (streams.opus) streams.opus.unpipe(this);
+    if (streams.opus) streams.opus.destroy();
     if (streams.ffmpeg) streams.ffmpeg.destroy();
     super._destroy(err, cb);
   }
