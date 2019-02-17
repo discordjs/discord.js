@@ -1,3 +1,5 @@
+'use strict';
+
 const DataResolver = require('../util/DataResolver');
 const MessageEmbed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');
@@ -328,7 +330,7 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|GroupDMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
  */
 
 /**

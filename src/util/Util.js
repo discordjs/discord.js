@@ -1,3 +1,5 @@
+'use strict';
+
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
@@ -56,7 +58,7 @@ class Util {
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return text;
     const splitText = text.split(char);
-    if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
+    if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
@@ -393,7 +395,7 @@ class Util {
       .replace(/@(everyone|here)/g, '@\u200b$1')
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (message.channel.type === 'dm' || message.channel.type === 'group') {
+        if (message.channel.type === 'dm') {
           const user = message.client.users.get(id);
           return user ? `@${user.username}` : input;
         }
@@ -411,7 +413,7 @@ class Util {
         return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
+        if (message.channel.type === 'dm') return input;
         const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });

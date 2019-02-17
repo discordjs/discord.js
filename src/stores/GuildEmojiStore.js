@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../util/Collection');
 const DataStore = require('./DataStore');
 const GuildEmoji = require('../structures/GuildEmoji');

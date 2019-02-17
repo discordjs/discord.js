@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('./util/Util');
 
 module.exports = {
@@ -17,6 +19,7 @@ module.exports = {
   DataResolver: require('./util/DataResolver'),
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
+  HTTPError: require('./rest/HTTPError'),
   Permissions: require('./util/Permissions'),
   Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
@@ -62,7 +65,6 @@ module.exports = {
   Collector: require('./structures/interfaces/Collector'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
-  GroupDMChannel: require('./structures/GroupDMChannel'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),

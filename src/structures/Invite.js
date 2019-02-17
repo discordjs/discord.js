@@ -1,3 +1,5 @@
+'use strict';
+
 const { Endpoints } = require('../util/Constants');
 const Base = require('./Base');
 

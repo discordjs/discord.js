@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const { TypeError } = require('../errors');
@@ -65,8 +67,8 @@ class GuildMemberRoleStore extends Collection {
     if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
@@ -74,8 +76,8 @@ class GuildMemberRoleStore extends Collection {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
@@ -96,8 +98,8 @@ class GuildMemberRoleStore extends Collection {
     if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = this.filter(role => !roleOrRoles.includes(role));
@@ -105,8 +107,8 @@ class GuildMemberRoleStore extends Collection {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });

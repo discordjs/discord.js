@@ -1,9 +1,11 @@
+'use strict';
+
 const Invite = require('./Invite');
 const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -88,7 +90,7 @@ class Guild extends Base {
    * @readonly
    */
   get shard() {
-    return this.client.ws.shards[this.shardID];
+    return this.client.ws.shards.get(this.shardID);
   }
 
   /* eslint-disable complexity */
@@ -339,7 +341,9 @@ class Guild extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) || null;
+    return this.members.get(this.ownerID) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.ownerID } }, true) :
+      null);
   }
 
   /**
@@ -723,7 +727,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild region
    * guild.setRegion('london')
-   *  .then(updated => console.log(`Updated guild region to ${guild.region}`))
+   *  .then(updated => console.log(`Updated guild region to ${updated.region}`))
    *  .catch(console.error);
    */
   setRegion(region, reason) {

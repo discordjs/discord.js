@@ -1,3 +1,5 @@
+'use strict';
+
 const Structures = require('../util/Structures');
 const DataResolver = require('../util/DataResolver');
 
@@ -78,7 +80,7 @@ class ClientUser extends Structures.get('User') {
   /**
    * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
-   * @property {PresenceStatus} [status] Status of the user
+   * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [activity] Activity the user is playing
    * @property {Object|string} [activity.application] An application object or application id
@@ -109,12 +111,12 @@ class ClientUser extends Structures.get('User') {
    * * `idle`
    * * `invisible`
    * * `dnd` (do not disturb)
-   * @typedef {string} PresenceStatus
+   * @typedef {string} PresenceStatusData
    */
 
   /**
    * Sets the status of the client user.
-   * @param {PresenceStatus} status Status to change to
+   * @param {PresenceStatusData} status Status to change to
    * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
    * @returns {Promise<Presence>}
    * @example
@@ -161,42 +163,6 @@ class ClientUser extends Structures.get('User') {
    */
   setAFK(afk) {
     return this.setPresence({ afk });
-  }
-
-  /**
-   * An object containing either a user or access token, and an optional nickname.
-   * @typedef {Object} GroupDMRecipientOptions
-   * @property {UserResolvable} [user] User to add to the Group DM
-   * @property {string} [accessToken] Access token to use to add a user to the Group DM
-   * (only available if a bot is creating the DM)
-   * @property {string} [nick] Permanent nickname (only available if a bot is creating the DM)
-   * @property {string} [id] If no user resolvable is provided and you want to assign nicknames
-   * you must provide user ids instead
-   */
-
-  /**
-   * Creates a Group DM.
-   * @param {GroupDMRecipientOptions[]} recipients The recipients
-   * @returns {Promise<GroupDMChannel>}
-   * @example
-   * // Create a Group DM with a token provided from OAuth
-   * client.user.createGroupDM([{
-   *   user: '66564597481480192',
-   *   accessToken: token
-   * }])
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  createGroupDM(recipients) {
-    const data = this.bot ? {
-      access_tokens: recipients.map(u => u.accessToken),
-      nicks: recipients.reduce((o, r) => {
-        if (r.nick) o[r.user ? r.user.id : r.id] = r.nick;
-        return o;
-      }, {}),
-    } : { recipients: recipients.map(u => this.client.users.resolveID(u.user || u.id)) };
-    return this.client.api.users('@me').channels.post({ data })
-      .then(res => this.client.channels.add(res));
   }
 }
 

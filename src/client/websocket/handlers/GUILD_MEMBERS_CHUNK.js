@@ -1,3 +1,5 @@
+'use strict';
+
 const { Events } = require('../../../util/Constants');
 const Collection = require('../../../util/Collection');
 

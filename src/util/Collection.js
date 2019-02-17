@@ -1,3 +1,5 @@
+'use strict';
+
 const BaseCollection = require('collection');
 const Util = require('./Util');
 

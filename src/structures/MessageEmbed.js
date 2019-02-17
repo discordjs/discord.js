@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -165,6 +167,20 @@ class MessageEmbed {
    */
   get hexColor() {
     return this.color ? `#${this.color.toString(16).padStart(6, '0')}` : null;
+  }
+
+  /**
+   * The accumulated length for the embed title, description, fields and footer text
+   * @type {number}
+   * @readonly
+   */
+  get length() {
+    return (
+      (this.title ? this.title.length : 0) +
+      (this.description ? this.description.length : 0) +
+      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) =>
+        prev + curr.name.length + curr.value.length, 0) : 0) +
+      (this.footer ? this.footer.text.length : 0));
   }
 
   /**

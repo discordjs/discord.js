@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('../util/Util');
 const { Events } = require('../util/Constants');
 
@@ -44,8 +46,8 @@ class ShardClientUtil {
   }
 
   /**
-   * ID of this shard
-   * @type {number}
+   * Shard ID or array of shard IDs of this client
+   * @type {number|number[]}
    * @readonly
    */
   get id() {
@@ -58,7 +60,7 @@ class ShardClientUtil {
    * @readonly
    */
   get count() {
-    return this.client.options.shardCount;
+    return this.client.options.totalShardCount;
   }
 
   /**

@@ -28,11 +28,11 @@ You won't receive any basic help here.
 - Priority this issue should have – please be realistic and elaborate if possible:
 
 <!--
-If either of these applies to you, please check the respective checkbox: [ ] becomes [x].
+If this applies to you, please check the respective checkbox: [ ] becomes [x].
 You don't have to modify the text to suit your particular situation – if you want to
 elaborate, please do so in the description.
 While it's not a requirement to test your issue on the master branch, it would make fixing
 the problem a lot easier for us, so please do so if possible.
 -->
-- [ ] I found this issue while running code on a __user account__
+
 - [ ] I have also tested the issue on latest master, commit hash:

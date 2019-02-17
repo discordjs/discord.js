@@ -1,3 +1,5 @@
+'use strict';
+
 const { Presence } = require('./Presence');
 const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
@@ -15,10 +17,10 @@ class ClientPresence extends Presence {
       this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
     } else if (Array.isArray(presence.shardID)) {
       for (const shardID of presence.shardID) {
-        this.client.ws.shards[shardID].send({ op: OPCodes.STATUS_UPDATE, d: packet });
+        this.client.ws.shards.get(shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
       }
     } else {
-      this.client.ws.shards[presence.shardID].send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      this.client.ws.shards.get(presence.shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
     }
     return this;
   }

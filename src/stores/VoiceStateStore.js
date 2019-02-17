@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const VoiceState = require('../structures/VoiceState');
 

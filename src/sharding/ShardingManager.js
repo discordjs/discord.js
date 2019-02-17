@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events');
@@ -27,7 +29,7 @@ class ShardingManager extends EventEmitter {
   /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
-   * @param {string|number[]} [options.totalShards='auto'] Number of total shards of all shard managers or "auto"
+   * @param {string|number} [options.totalShards='auto'] Number of total shards of all shard managers or "auto"
    * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
    * @param {ShardingManagerMode} [options.mode='process'] Which mode to use for shards
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting

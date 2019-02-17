@@ -1,3 +1,5 @@
+'use strict';
+
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
@@ -53,7 +55,7 @@ class Client extends BaseClient {
         this.options.totalShardCount = this.options.shardCount;
       }
     }
-    if (!this.options.shards && this.options.shardCount) {
+    if (typeof this.options.shards === 'undefined' && this.options.shardCount) {
       this.options.shards = [];
       for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
     }
@@ -231,7 +233,7 @@ class Client extends BaseClient {
       this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
       this.options.shardCount = res.shards;
       this.options.totalShardCount = res.shards;
-      if (!this.options.shards || !this.options.shards.length) {
+      if (typeof this.options.shards === 'undefined' || !this.options.shards.length) {
         this.options.shards = [];
         for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
       }
@@ -431,6 +433,9 @@ class Client extends BaseClient {
     }
     if (typeof options.disableEveryone !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
+    }
+    if (!(options.partials instanceof Array)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
