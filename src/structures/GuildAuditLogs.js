@@ -4,6 +4,7 @@ const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
+const PartialTypes = require('../util/Constants');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
@@ -234,7 +235,7 @@ class GuildAuditLogs {
  * Audit logs entry.
  */
 class GuildAuditLogsEntry {
-  constructor(logs, guild, data) {
+  constructor(logs, guild, data) { // eslint-disable-line complexity
     const targetType = GuildAuditLogs.targetType(data.action_type);
     /**
      * The target type of this entry
@@ -264,7 +265,9 @@ class GuildAuditLogsEntry {
      * The user that executed this entry
      * @type {User}
      */
-    this.executor = guild.client.users.get(data.user_id);
+    this.executor = guild.client.options.partials.includes(PartialTypes.USER) ?
+      guild.client.users.add({ id: data.user_id }) :
+      guild.client.users.get(data.user_id);
 
     /**
      * An entry in the audit log representing a specific change.
@@ -329,8 +332,12 @@ class GuildAuditLogsEntry {
         return o;
       }, {});
       this.target.id = data.target_id;
-    } else if ([Targets.USER, Targets.GUILD].includes(targetType)) {
-      this.target = guild.client[`${targetType.toLowerCase()}s`].get(data.target_id);
+    } else if (targetType === Targets.USER) {
+      this.target = guild.client.options.partials.includes(PartialTypes.USER) ?
+        guild.client.users.add({ id: data.target_id }) :
+        guild.client.users.get(data.target_id);
+    } else if (targetType === Targets.GUILD) {
+      this.target = guild.client.guilds.get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target = logs.webhooks.get(data.target_id) ||
         new Webhook(guild.client,

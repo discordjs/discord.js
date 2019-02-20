@@ -5,7 +5,7 @@ const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
-const lruable = ['group', 'dm'];
+const lruable = ['dm'];
 
 /**
  * Stores channels.
@@ -54,6 +54,7 @@ class ChannelStore extends DataStore {
 
   add(data, guild, cache = true) {
     const existing = this.get(data.id);
+    if (existing && existing.partial && cache) existing._patch(data);
     if (existing) return existing;
 
     const channel = Channel.create(this.client, data, guild);
@@ -85,11 +86,12 @@ class ChannelStore extends DataStore {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  fetch(id, cache = true) {
+  async fetch(id, cache = true) {
     const existing = this.get(id);
-    if (existing) return Promise.resolve(existing);
+    if (existing && !existing.partial) return existing;
 
-    return this.client.api.channels(id).get().then(data => this.add(data, null, cache));
+    const data = await this.client.api.channels(id).get();
+    return this.add(data, null, cache);
   }
 
   /**

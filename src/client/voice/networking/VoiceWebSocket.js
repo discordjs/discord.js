@@ -25,7 +25,6 @@ class VoiceWebSocket extends EventEmitter {
      */
     this.attempts = 0;
 
-    this.connect();
     this.dead = false;
     this.connection.on('closing', this.shutdown.bind(this));
   }
@@ -69,13 +68,13 @@ class VoiceWebSocket extends EventEmitter {
     }
 
     this.attempts++;
-    this.emit('debug', `[WS] connecting with ${this.attempts} attempts`);
 
     /**
      * The actual WebSocket used to connect to the Voice WebSocket Server.
      * @type {WebSocket}
      */
     this.ws = WebSocket.create(`wss://${this.connection.authentication.endpoint}/`, { v: 4 });
+    this.emit('debug', `[WS] connecting, ${this.attempts} attempts, ${this.ws.url}`);
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -155,6 +154,7 @@ class VoiceWebSocket extends EventEmitter {
    * @param {Error} error The error that occurred
    */
   onError(error) {
+    this.emit('debug', `[WS] Error: ${error}`);
     this.emit('error', error);
   }
 

@@ -67,6 +67,7 @@ class StreamDispatcher extends Writable {
     this.count = 0;
 
     this.on('finish', () => {
+      this._cleanup();
       // Still emitting end for backwards compatibility, probably remove it in the future!
       this.emit('end');
       this._setSpeaking(0);
@@ -114,12 +115,16 @@ class StreamDispatcher extends Writable {
   }
 
   _destroy(err, cb) {
+    this._cleanup();
+    super._destroy(err, cb);
+  }
+
+  _cleanup() {
     if (this.player.dispatcher === this) this.player.dispatcher = null;
     const { streams } = this;
     if (streams.broadcast) streams.broadcast.dispatchers.delete(this);
-    if (streams.opus) streams.opus.unpipe(this);
+    if (streams.opus) streams.opus.destroy();
     if (streams.ffmpeg) streams.ffmpeg.destroy();
-    super._destroy(err, cb);
   }
 
   /**

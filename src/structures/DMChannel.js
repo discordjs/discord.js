@@ -12,6 +12,8 @@ const MessageStore = require('../stores/MessageStore');
 class DMChannel extends Channel {
   constructor(client, data) {
     super(client, data);
+    // Override the channel type so partials have a known type
+    this.type = 'dm';
     /**
      * A collection containing the messages sent to this channel
      * @type {MessageStore<Snowflake, Message>}
@@ -23,11 +25,13 @@ class DMChannel extends Channel {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The recipient on the other end of the DM
-     * @type {User}
-     */
-    this.recipient = this.client.users.add(data.recipients[0]);
+    if (data.recipients) {
+      /**
+       * The recipient on the other end of the DM
+       * @type {User}
+       */
+      this.recipient = this.client.users.add(data.recipients[0]);
+    }
 
     /**
      * The ID of the last message in the channel, if one was sent
@@ -40,6 +44,14 @@ class DMChannel extends Channel {
      * @type {?number}
      */
     this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
+  }
+
+  /**
+   * Whether this DMChannel is a partial
+   * @type {boolean}
+   */
+  get partial() {
+    return !this.recipient;
   }
 
   /**
@@ -59,7 +71,6 @@ class DMChannel extends Channel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  search() {}
   startTyping() {}
   stopTyping() {}
   get typing() {}

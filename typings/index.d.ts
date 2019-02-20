@@ -121,8 +121,9 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'unknown';
+		public type: 'dm' | 'text' | 'voice' | 'category' | 'unknown';
 		public delete(reason?: string): Promise<Channel>;
+		public fetch(): Promise<Channel>;
 		public toString(): string;
 	}
 
@@ -256,7 +257,6 @@ declare module 'discord.js' {
 	export class ClientUser extends User {
 		public mfaEnabled: boolean;
 		public verified: boolean;
-		public createGroupDM(recipients: GroupDMRecipientOptions[]): Promise<GroupDMChannel>;
 		public setActivity(options?: ActivityOptions): Promise<Presence>;
 		public setActivity(name: string, options?: ActivityOptions): Promise<Presence>;
 		public setAFK(afk: boolean): Promise<Presence>;
@@ -352,6 +352,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data?: object);
 		public messages: MessageStore;
 		public recipient: User;
+		public readonly partial: boolean;
 	}
 
 	export class Emoji extends Base {
@@ -366,26 +367,6 @@ declare module 'discord.js' {
 		public readonly url: string;
 		public toJSON(): object;
 		public toString(): string;
-	}
-
-	export class GroupDMChannel extends TextBasedChannel(Channel) {
-		constructor(client: Client, data?: object);
-		public applicationID: Snowflake;
-		public icon: string;
-		public managed: boolean;
-		public messages: MessageStore;
-		public name: string;
-		public nicks: Collection<Snowflake, string>;
-		public readonly owner: User;
-		public ownerID: Snowflake;
-		public recipients: Collection<Snowflake, User>;
-		public addUser(options: { user: UserResolvable, accessToken?: string, nick?: string }): Promise<GroupDMChannel>;
-		public edit(data: { icon?: string, name?: string }): Promise<GroupDMChannel>;
-		public equals(channel: GroupDMChannel): boolean;
-		public iconURL(options?: AvatarOptions): string;
-		public removeUser(user: UserResolvable): Promise<GroupDMChannel>;
-		public setIcon(icon: Base64Resolvable | BufferResolvable): Promise<GroupDMChannel>;
-		public setName(name: string): Promise<GroupDMChannel>;
 	}
 
 	export class Guild extends Base {
@@ -562,12 +543,14 @@ declare module 'discord.js' {
 		public readonly kickable: boolean;
 		public readonly manageable: boolean;
 		public nickname: string;
+		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
 		public readonly presence: Presence;
 		public roles: GuildMemberRoleStore;
 		public user: User;
 		public readonly voice: VoiceState;
 		public ban(options?: BanOptions): Promise<GuildMember>;
+		public fetch(): Promise<GuildMember>;
 		public createDM(): Promise<DMChannel>;
 		public deleteDM(): Promise<DMChannel>;
 		public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
@@ -611,7 +594,7 @@ declare module 'discord.js' {
 
 	export class Invite extends Base {
 		constructor(client: Client, data: object);
-		public channel: GuildChannel | GroupDMChannel;
+		public channel: GuildChannel;
 		public code: string;
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
@@ -632,7 +615,7 @@ declare module 'discord.js' {
 	}
 
 	export class Message extends Base {
-		constructor(client: Client, data: object, channel: TextChannel | DMChannel | GroupDMChannel);
+		constructor(client: Client, data: object, channel: TextChannel | DMChannel);
 		private _edits: Message[];
 		private patch(data: object): void;
 
@@ -640,7 +623,7 @@ declare module 'discord.js' {
 		public application: ClientApplication;
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: User;
-		public channel: TextChannel | DMChannel | GroupDMChannel;
+		public channel: TextChannel | DMChannel;
 		public readonly cleanContent: string;
 		public content: string;
 		public readonly createdAt: Date;
@@ -653,11 +636,11 @@ declare module 'discord.js' {
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
 		public readonly guild: Guild;
-		public hit: boolean;
 		public id: Snowflake;
 		public readonly member: GuildMember;
 		public mentions: MessageMentions;
 		public nonce: string;
+		public readonly partial: boolean;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
 		public reactions: ReactionStore;
@@ -673,6 +656,7 @@ declare module 'discord.js' {
 		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
+		public fetch(): Promise<Message>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
 		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
@@ -699,7 +683,7 @@ declare module 'discord.js' {
 	}
 
 	export class MessageCollector extends Collector<Snowflake, Message> {
-		constructor(channel: TextChannel | DMChannel | GroupDMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+		constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
 		public channel: Channel;
 		public options: MessageCollectorOptions;
 		public received: number;
@@ -1071,6 +1055,7 @@ declare module 'discord.js' {
 		public readonly dmChannel: DMChannel;
 		public id: Snowflake;
 		public locale: string;
+		public readonly partial: boolean;
 		public readonly presence: Presence;
 		public readonly tag: string;
 		public username: string;
@@ -1079,6 +1064,7 @@ declare module 'discord.js' {
 		public deleteDM(): Promise<DMChannel>;
 		public displayAvatarURL(options?: AvatarOptions): string;
 		public equals(user: User): boolean;
+		public fetch(): Promise<User>;
 		public toString(): string;
 		public typingDurationIn(channel: ChannelResolvable): number;
 		public typingIn(channel: ChannelResolvable): boolean;
@@ -1378,7 +1364,7 @@ declare module 'discord.js' {
 	}
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
-		constructor(channel: TextChannel | DMChannel | GroupDMChannel, iterable?: Iterable<any>);
+		constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
 		public fetch(message: Snowflake): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(): Promise<Collection<Snowflake, Message>>;
@@ -1609,6 +1595,7 @@ declare module 'discord.js' {
 		messageSweepInterval?: number;
 		fetchAllMembers?: boolean;
 		disableEveryone?: boolean;
+		partials?: PartialTypes[];
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
 		restSweepInterval?: number;
@@ -1683,7 +1670,6 @@ declare module 'discord.js' {
 	interface Extendable {
 		GuildEmoji: typeof GuildEmoji;
 		DMChannel: typeof DMChannel;
-		GroupDMChannel: typeof GroupDMChannel;
 		TextChannel: typeof TextChannel;
 		VoiceChannel: typeof VoiceChannel;
 		CategoryChannel: typeof CategoryChannel;
@@ -1716,13 +1702,6 @@ declare module 'discord.js' {
 	interface GroupActivity {
 		partyID: string;
 		type: number;
-	}
-
-	interface GroupDMRecipientOptions {
-		user?: UserResolvable | Snowflake;
-		accessToken?: string;
-		nick?: string;
-		id?: Snowflake;
 	}
 
 	type GuildAuditLogsAction = keyof GuildAuditLogsActions;
@@ -1941,7 +1920,7 @@ declare module 'discord.js' {
 
 	type MessageResolvable = Message | Snowflake;
 
-	type MessageTarget = TextChannel | DMChannel | GroupDMChannel | User | GuildMember | Webhook | WebhookClient;
+	type MessageTarget = TextChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
 
 	type MessageType = 'DEFAULT'
 		| 'RECIPIENT_ADD'
@@ -2029,6 +2008,11 @@ declare module 'discord.js' {
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
 	}
+
+	type PartialTypes = 'USER'
+		| 'CHANNEL'
+		| 'GUILD_MEMBER'
+		| 'MESSAGE';
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 

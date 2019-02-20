@@ -12,15 +12,19 @@ const { Events } = require('../../util/Constants');
 
 class MessageReactionRemove extends Action {
   handle(data) {
+    if (!data.emoji) return false;
+
     const user = this.client.users.get(data.user_id);
     if (!user) return false;
+
     // Verify channel
-    const channel = this.client.channels.get(data.channel_id);
+    const channel = this.getChannel(data);
     if (!channel || channel.type === 'voice') return false;
+
     // Verify message
-    const message = channel.messages.get(data.message_id);
+    const message = this.getMessage(data, channel);
     if (!message) return false;
-    if (!data.emoji) return false;
+
     // Verify reaction
     const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
     const reaction = message.reactions.get(emojiID);

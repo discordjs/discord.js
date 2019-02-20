@@ -6,7 +6,7 @@ const ytdl = require('ytdl-core');
 const prism = require('prism-media');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetchAllMembers: false, apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, partials: true, apiRequestMethod: 'sequential' });
 
 const auth = require('./auth.js');
 
@@ -32,6 +32,15 @@ process.on('unhandledRejection', console.log);
 client.on('presenceUpdate', (a, b) => {
   if (b.userID !== '66564597481480192') return;
   console.log(a ? a.status : null, b.status, b.user.username);
+});
+
+client.on('messageDelete', async (m) => {
+  if (m.channel.id != '80426989059575808') return;
+  console.log(m.channel.recipient);
+  console.log(m.channel.partial);
+  await m.channel.fetch();
+  console.log('\n\n\n\n');
+  console.log(m.channel);
 });
 
 client.on('message', m => {

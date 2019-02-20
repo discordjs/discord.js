@@ -27,8 +27,9 @@ class GuildMember extends Base {
     /**
      * The user that this guild member instance represents
      * @type {User}
+     * @name GuildMember#user
      */
-    this.user = {};
+    if (data.user) this.user = client.users.add(data.user, true);
 
     /**
      * The timestamp the member joined the guild at
@@ -77,6 +78,14 @@ class GuildMember extends Base {
     const clone = super._clone();
     clone._roles = this._roles.slice();
     return clone;
+  }
+
+  /**
+   * Whether this GuildMember is a partial
+   * @type {boolean}
+   */
+  get partial() {
+    return !this.joinedTimestamp;
   }
 
   /**
@@ -353,6 +362,14 @@ class GuildMember extends Base {
    */
   ban(options) {
     return this.guild.members.ban(this, options);
+  }
+
+  /**
+   * Fetches this GuildMember.
+   * @returns {Promise<GuildMember>}
+   */
+  fetch() {
+    return this.guild.members.fetch(this.id, true);
   }
 
   /**
