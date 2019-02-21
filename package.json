@@ -38,7 +38,7 @@
     "form-data": "^2.3.3",
     "node-fetch": "^2.3.0",
     "pako": "^1.0.8",
-    "prism-media": "amishshah/prism-media",
+    "prism-media": "^1.0.0",
     "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.1",
     "ws": "^6.1.3"
