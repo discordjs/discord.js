@@ -296,12 +296,13 @@ class Util {
 
   /**
    * Sorts by Discord's position and ID.
-   * @param  {Collection} collection Collection of objects to sort
+   * @param {Collection} collection Collection of objects to sort
+   * @param {Function} [positionSort] Function that determines the position order to sort as
    * @returns {Collection}
    */
-  static discordSort(collection) {
+  static discordSort(collection, positionSort = (a, b) => a.rawPosition - b.rawPosition) {
     return collection.sort((a, b) =>
-      a.rawPosition - b.rawPosition ||
+      positionSort(a, b) ||
       parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
       parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
     );
