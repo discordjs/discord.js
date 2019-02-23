@@ -16,6 +16,7 @@ class MessageEmbed {
      * The type of this embed, either:
      * * `image` - an image embed
      * * `video` - a video embed
+     * * `gifv` - a gifv embed
      * * `link` - a link embed
      * * `rich` - a rich embed
      * @type {string}
