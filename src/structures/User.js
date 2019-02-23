@@ -204,22 +204,24 @@ class User extends Base {
    * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
-  createDM() {
-    if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
+  async createDM() {
+    const { dmChannel } = this;
+    if (dmChannel) return dmChannel;
+    const data = await this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
-    } })
-      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    } });
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
-    return this.client.api.channels(this.dmChannel.id).delete()
-      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
+  async deleteDM() {
+    const { dmChannel } = this;
+    if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
+    const data = await this.client.api.channels(dmChannel.id).delete();
+    return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
   /**
