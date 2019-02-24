@@ -100,11 +100,17 @@ class MessageEmbed {
      * The video of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL of this video
+     * @property {string} proxyURL ProxyURL for this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
      * @readonly
      */
-    this.video = data.video;
+    this.video = data.video ? {
+      url: data.video.url,
+      proxyURL: data.video.proxy_url,
+      height: data.video.height,
+      width: data.video.width,
+    } : null;
 
     /**
      * The author of this embed (if there is one)

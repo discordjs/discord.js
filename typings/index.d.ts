@@ -713,7 +713,7 @@ declare module 'discord.js' {
 		public title: string;
 		public type: string;
 		public url: string;
-		public readonly video: { url?: string; height?: number; width?: number };
+		public readonly video: { url?: string; proxyURL?: string; height?: number; width?: number };
 		public addBlankField(inline?: boolean): this;
 		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
