@@ -48,6 +48,29 @@
     "sodium": "^2.0.3",
     "@discordjs/uws": "^10.149.0"
   },
+  "peerDependenciesMeta": {
+    "bufferutil": {
+      "optional": true
+    },
+    "erlpack": {
+      "optional": true
+    },
+    "node-opus": {
+      "optional": true
+    },
+    "opusscript": {
+      "optional": true
+    },
+    "sodium": {
+      "optional": true
+    },
+    "libsodium-wrappers": {
+      "optional": true
+    },
+    "uws": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/node": "^9.4.6",
     "discord.js-docgen": "discordjs/docgen",
