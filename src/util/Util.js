@@ -53,7 +53,7 @@ class Util {
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
    * @param {string} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
-    * @returns {string[]}
+   * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     if (text.length <= maxLength) return [text];
