@@ -232,7 +232,9 @@ class Guild {
           member.selfDeaf = voiceState.self_deaf;
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
-          this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+          if (this.channels.has(voiceState.channel_id)) {
+            this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
+          };
         }
       }
     }
