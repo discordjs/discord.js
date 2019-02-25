@@ -1032,16 +1032,19 @@ class Guild {
    * @returns {Promise<CategoryChannel|TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
-   * guild.createChannel('new-general', 'text')
+   * guild.createChannel('new-general', { type: 'text' })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Create a new category channel with permission overwrites
-   * guild.createChannel('new-category', 'category', [{
-   *   id: guild.id,
-   *   deny: ['MANAGE_MESSAGES'],
-   *   allow: ['SEND_MESSAGES']
-   * }])
+   * guild.createChannel('new-category', {
+   *   type: 'category',
+   *   permissionsOverwrites: [{
+   *     id: guild.id,
+   *     deny: ['MANAGE_MESSAGES'],
+   *     allow: ['SEND_MESSAGES']
+   *   }]
+   * })
    *   .then(console.log)
    *   .catch(console.error);
    */
