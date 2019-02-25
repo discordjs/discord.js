@@ -233,7 +233,7 @@ class Guild {
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
           if (this.channels.has(voiceState.channel_id)) {
-            this.channels.get(voiceState.channel_id).members.set(member.user.id, member)
+            this.channels.get(voiceState.channel_id).members.set(member.user.id, member);
           }
         }
       }
