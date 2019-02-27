@@ -89,7 +89,7 @@ connection.play(ytdl(
   { filter: 'audioonly' }));
 
 // Files on the internet
-connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
+connection.playStream('http://www.sample-videos.com/audio/mp3/wave.mp3');
 
 // Local files
 connection.play('/home/discord/audio.mp3');
