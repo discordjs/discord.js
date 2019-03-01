@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.mewna.catnip.shard.ratelimit.MemoryRatelimiterTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.493 s - in com.mewna.catnip.shard.ratelimit.MemoryRatelimiterTest

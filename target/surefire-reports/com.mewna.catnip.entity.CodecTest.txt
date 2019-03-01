@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+Test set: com.mewna.catnip.entity.CodecTest
+-------------------------------------------------------------------------------
+Tests run: 48, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 1.548 s <<< FAILURE! - in com.mewna.catnip.entity.CodecTest
+applicationInfo  Time elapsed: 0.026 s  <<< ERROR!
+java.lang.IllegalArgumentException: 
+Unrecognized field "name" (class com.mewna.catnip.entity.impl.ApplicationInfoBuilder), not marked as ignorable (0 known properties: ])
+ at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: com.mewna.catnip.entity.impl.ApplicationInfoBuilder["name"])
+	at com.mewna.catnip.entity.CodecTest.test(CodecTest.java:95)
+	at com.mewna.catnip.entity.CodecTest.applicationInfo(CodecTest.java:128)
+Caused by: com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: 
+Unrecognized field "name" (class com.mewna.catnip.entity.impl.ApplicationInfoBuilder), not marked as ignorable (0 known properties: ])
+ at [Source: UNKNOWN; line: -1, column: -1] (through reference chain: com.mewna.catnip.entity.impl.ApplicationInfoBuilder["name"])
+	at com.mewna.catnip.entity.CodecTest.test(CodecTest.java:95)
+	at com.mewna.catnip.entity.CodecTest.applicationInfo(CodecTest.java:128)
+

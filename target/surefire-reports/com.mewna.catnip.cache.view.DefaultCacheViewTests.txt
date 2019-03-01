@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.mewna.catnip.cache.view.DefaultCacheViewTests
+-------------------------------------------------------------------------------
+Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 s - in com.mewna.catnip.cache.view.DefaultCacheViewTests

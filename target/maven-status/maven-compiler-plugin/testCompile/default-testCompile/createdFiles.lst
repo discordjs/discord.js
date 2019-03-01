@@ -1,0 +1,7 @@
+com/mewna/catnip/shard/ratelimit/MemoryRatelimiterTest.class
+com/mewna/catnip/cache/view/DefaultCacheViewTests.class
+com/mewna/catnip/UniverseTest.class
+com/mewna/catnip/cache/view/DefaultNamedCacheViewTests.class
+com/mewna/catnip/permission/BitwiseTest.class
+com/mewna/catnip/entity/CodecTest.class
+com/mewna/catnip/cache/view/CompositeCacheViewTests.class

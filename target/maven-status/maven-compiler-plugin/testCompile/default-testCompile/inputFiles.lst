@@ -1,0 +1,7 @@
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/UniverseTest.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/shard/ratelimit/MemoryRatelimiterTest.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/cache/view/DefaultCacheViewTests.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/cache/view/CompositeCacheViewTests.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/permission/BitwiseTest.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/cache/view/DefaultNamedCacheViewTests.java
+/home/napster/10/catnip/src/test/java/com/mewna/catnip/entity/CodecTest.java
