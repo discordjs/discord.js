@@ -172,7 +172,7 @@ class Role extends Base {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
+    if (typeof data.permissions !== 'undefined') data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
     if (typeof data.position !== 'undefined') {
       await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
