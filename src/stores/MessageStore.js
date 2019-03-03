@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
 const Message = require('../structures/Message');
@@ -38,6 +40,7 @@ class MessageStore extends DataStore {
    * <info>The returned Collection does not contain reaction users of the messages if they were not cached.
    * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
+   * @param {boolean} [cache=true] Whether to cache the message(s)
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get message
@@ -55,8 +58,8 @@ class MessageStore extends DataStore {
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
-  fetch(message) {
-    return typeof message === 'string' ? this._fetchId(message) : this._fetchMany(message);
+  fetch(message, cache = true) {
+    return typeof message === 'string' ? this._fetchId(message, cache) : this._fetchMany(message, cache);
   }
 
   /**
@@ -88,15 +91,17 @@ class MessageStore extends DataStore {
     if (message) await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
   }
 
-  async _fetchId(messageID) {
+  async _fetchId(messageID, cache) {
+    const existing = this.get(messageID);
+    if (existing && !existing.partial) return existing;
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
-    return this.add(data);
+    return this.add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany(options = {}, cache) {
     const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
     const messages = new Collection();
-    for (const message of data) messages.set(message.id, this.add(message));
+    for (const message of data) messages.set(message.id, this.add(message, cache));
     return messages;
   }
 

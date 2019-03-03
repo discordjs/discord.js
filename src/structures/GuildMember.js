@@ -1,3 +1,5 @@
+'use strict';
+
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
@@ -25,8 +27,9 @@ class GuildMember extends Base {
     /**
      * The user that this guild member instance represents
      * @type {User}
+     * @name GuildMember#user
      */
-    this.user = {};
+    if (data.user) this.user = client.users.add(data.user, true);
 
     /**
      * The timestamp the member joined the guild at
@@ -75,6 +78,14 @@ class GuildMember extends Base {
     const clone = super._clone();
     clone._roles = this._roles.slice();
     return clone;
+  }
+
+  /**
+   * Whether this GuildMember is a partial
+   * @type {boolean}
+   */
+  get partial() {
+    return !this.joinedTimestamp;
   }
 
   /**
@@ -246,9 +257,13 @@ class GuildMember extends Base {
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  edit(data, reason) {
+  async edit(data, reason) {
     if (data.channel) {
-      data.channel_id = this.client.channels.resolve(data.channel).id;
+      data.channel = this.guild.channels.resolve(data.channel);
+      if (!data.channel || data.channel.type !== 'voice') {
+        throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
+      }
+      data.channel_id = data.channel.id;
       data.channel = null;
     }
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
@@ -260,12 +275,12 @@ class GuildMember extends Base {
     } else {
       endpoint = endpoint.members(this.id);
     }
-    return endpoint.patch({ data, reason }).then(() => {
-      const clone = this._clone();
-      data.user = this.user;
-      clone._patch(data);
-      return clone;
-    });
+    await endpoint.patch({ data, reason });
+
+    const clone = this._clone();
+    data.user = this.user;
+    clone._patch(data);
+    return clone;
   }
 
   /**
@@ -347,6 +362,14 @@ class GuildMember extends Base {
    */
   ban(options) {
     return this.guild.members.ban(this, options);
+  }
+
+  /**
+   * Fetches this GuildMember.
+   * @returns {Promise<GuildMember>}
+   */
+  fetch() {
+    return this.guild.members.fetch(this.id, true);
   }
 
   /**

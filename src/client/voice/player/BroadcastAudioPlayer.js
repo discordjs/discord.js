@@ -1,3 +1,5 @@
+'use strict';
+
 const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 const BasePlayer = require('./BasePlayer');
 

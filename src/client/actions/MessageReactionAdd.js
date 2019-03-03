@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 
 /*
@@ -9,15 +11,19 @@ const Action = require('./Action');
 
 class MessageReactionAdd extends Action {
   handle(data) {
+    if (!data.emoji) return false;
+
     const user = data.user || this.client.users.get(data.user_id);
     if (!user) return false;
+
     // Verify channel
-    const channel = data.channel || this.client.channels.get(data.channel_id);
+    const channel = this.getChannel(data);
     if (!channel || channel.type === 'voice') return false;
+
     // Verify message
-    const message = data.message || channel.messages.get(data.message_id);
+    const message = this.getMessage(data, channel);
     if (!message) return false;
-    if (!data.emoji) return false;
+
     // Verify reaction
     const reaction = message.reactions.add({
       emoji: data.emoji,
@@ -28,12 +34,5 @@ class MessageReactionAdd extends Action {
     return { message, reaction, user };
   }
 }
-
-/**
- * Emitted whenever a reaction is added to a cached message.
- * @event Client#messageReactionAdd
- * @param {MessageReaction} messageReaction The reaction object
- * @param {User} user The user that applied the guild or reaction emoji
- */
 
 module.exports = MessageReactionAdd;

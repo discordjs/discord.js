@@ -1,3 +1,5 @@
+'use strict';
+
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
@@ -14,7 +16,6 @@ class Channel extends Base {
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
-     * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
@@ -82,15 +83,20 @@ class Channel extends Base {
     return this.client.api.channels(this.id).delete().then(() => this);
   }
 
+  /**
+   * Fetches this channel.
+   * @returns {Promise<Channel>}
+   */
+  fetch() {
+    return this.client.channels.fetch(this.id, true);
+  }
+
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
-    if (data.type === ChannelTypes.DM) {
+    if (data.type === ChannelTypes.DM || (data.type !== ChannelTypes.GROUP && !data.guild_id && !guild)) {
       const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
-    } else if (data.type === ChannelTypes.GROUP) {
-      const GroupDMChannel = Structures.get('GroupDMChannel');
-      channel = new GroupDMChannel(client, data);
     } else {
       guild = guild || client.guilds.get(data.guild_id);
       if (guild) {

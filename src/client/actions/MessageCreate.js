@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
@@ -10,7 +12,9 @@ class MessageCreateAction extends Action {
       if (existing) return { message: existing };
       const message = channel.messages.add(data);
       const user = message.author;
-      const member = channel.guild ? channel.guild.member(user) : null;
+      let member = null;
+      if (message.member && channel.guild) member = channel.guild.members.add(message.member);
+      else if (channel.guild) member = channel.guild.member(user);
       channel.lastMessageID = data.id;
       if (user) {
         user.lastMessageID = data.id;
@@ -21,6 +25,11 @@ class MessageCreateAction extends Action {
         member.lastMessageChannelID = channel.id;
       }
 
+      /**
+       * Emitted whenever a message is created.
+       * @event Client#message
+       * @param {Message} message The created message
+       */
       client.emit(Events.MESSAGE_CREATE, message);
       return { message };
     }
@@ -29,10 +38,5 @@ class MessageCreateAction extends Action {
   }
 }
 
-/**
- * Emitted whenever a message is created.
- * @event Client#message
- * @param {Message} message The created message
- */
 
 module.exports = MessageCreateAction;

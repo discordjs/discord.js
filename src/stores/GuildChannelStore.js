@@ -1,3 +1,5 @@
+'use strict';
+
 const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
@@ -33,6 +35,7 @@ class GuildChannelStore extends DataStore {
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
    * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites]
    * Permission overwrites of the new channel
+   * @param {number} [options.position] Position of the new channel
    * @param {number} [options.rateLimitPerUser] The ratelimit per user for the channel
    * @param {string} [options.reason] Reason for creating the channel
    * @returns {Promise<GuildChannel>}
@@ -54,7 +57,18 @@ class GuildChannelStore extends DataStore {
    * })
    */
   async create(name, options = {}) {
-    let { type, topic, nsfw, bitrate, userLimit, parent, permissionOverwrites, rateLimitPerUser, reason } = options;
+    let {
+      type,
+      topic,
+      nsfw,
+      bitrate,
+      userLimit,
+      parent,
+      permissionOverwrites,
+      position,
+      rateLimitPerUser,
+      reason,
+    } = options;
     if (parent) parent = this.client.channels.resolveID(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
@@ -69,6 +83,7 @@ class GuildChannelStore extends DataStore {
         bitrate,
         user_limit: userLimit,
         parent_id: parent,
+        position,
         permission_overwrites: permissionOverwrites,
         rate_limit_per_user: rateLimitPerUser,
       },

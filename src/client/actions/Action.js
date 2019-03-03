@@ -1,3 +1,7 @@
+'use strict';
+
+const { PartialTypes } = require('../../util/Constants');
+
 /*
 
 ABOUT ACTIONS
@@ -17,6 +21,27 @@ class GenericAction {
 
   handle(data) {
     return data;
+  }
+
+  getChannel(data) {
+    const id = data.channel_id || data.id;
+    return data.channel || (this.client.options.partials.includes(PartialTypes.CHANNEL) ?
+      this.client.channels.add({
+        id,
+        guild_id: data.guild_id,
+      }) :
+      this.client.channels.get(id));
+  }
+
+  getMessage(data, channel) {
+    const id = data.message_id || data.id;
+    return data.message || (this.client.options.partials.includes(PartialTypes.MESSAGE) ?
+      channel.messages.add({
+        id,
+        channel_id: channel.id,
+        guild_id: data.guild_id || (channel.guild ? channel.guild.id : null),
+      }) :
+      channel.messages.get(id));
   }
 }
 

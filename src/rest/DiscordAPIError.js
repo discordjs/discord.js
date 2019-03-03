@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Represents an error from the Discord API.
  * @extends Error

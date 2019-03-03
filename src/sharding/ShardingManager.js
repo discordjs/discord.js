@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const fs = require('fs');
 const EventEmitter = require('events');
@@ -8,29 +10,43 @@ const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
- * It works by spawning a self-contained {@link ChildProcess} for each individual shard, each containing its own
- * instance of your bot's {@link Client}. They all have a line of communication with the master process, and there are
- * several useful methods that utilise it in order to simplify tasks that are normally difficult with sharding. It can
- * spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a path to your main bot
- * script to launch for each one.
+ * It works by spawning a self-contained {@link ChildProcess} or {@link Worker} for each individual shard, each
+ * containing its own instance of your bot's {@link Client}. They all have a line of communication with the master
+ * process, and there are several useful methods that utilise it in order to simplify tasks that are normally difficult
+ * with sharding. It can spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a
+ * path to your main bot script to launch for each one.
  * @extends {EventEmitter}
  */
 class ShardingManager extends EventEmitter {
   /**
+   * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
+   * "worker" to use workers. The "worker" mode relies on the experimental
+   * [Worker threads](https://nodejs.org/api/worker_threads.html) functionality that is present in Node v10.5.0 or
+   * newer. Node must be started with the `--experimental-worker` flag to expose it.
+   * @typedef {Object} ShardingManagerMode
+   */
+
+  /**
    * @param {string} file Path to your shard script file
    * @param {Object} [options] Options for the sharding manager
-   * @param {number|string} [options.totalShards='auto'] Number of shards to spawn, or "auto"
+   * @param {string|number} [options.totalShards='auto'] Number of total shards of all shard managers or "auto"
+   * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
+   * @param {ShardingManagerMode} [options.mode='process'] Which mode to use for shards
    * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
    * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
+   * (only available when using the `process` mode)
    * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
+   * (only available when using the `process` mode)
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
    */
   constructor(file, options = {}) {
     super();
     options = Util.mergeDefault({
       totalShards: 'auto',
+      mode: 'process',
       respawn: true,
       shardArgs: [],
+      execArgv: [],
       token: process.env.DISCORD_TOKEN,
     }, options);
 
@@ -45,18 +61,44 @@ class ShardingManager extends EventEmitter {
     if (!stats.isFile()) throw new Error('CLIENT_INVALID_OPTION', 'File', 'a file');
 
     /**
-     * Amount of shards that this manager is going to spawn
-     * @type {number|string}
+     * List of shards this sharding manager spawns
+     * @type {string|number[]}
      */
-    this.totalShards = options.totalShards;
+    this.shardList = options.shardList || 'auto';
+    if (this.shardList !== 'auto') {
+      if (!Array.isArray(this.shardList)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array.');
+      }
+      this.shardList = [...new Set(this.shardList)];
+      if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
+      if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
+        !Number.isInteger(shardID) || shardID < 0)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of postive integers.');
+      }
+    }
+
+    /**
+     * Amount of shards that all sharding managers spawn in total
+     * @type {number}
+     */
+    this.totalShards = options.totalShards || 'auto';
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (this.totalShards < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
-      if (this.totalShards !== Math.floor(this.totalShards)) {
+      if (!Number.isInteger(this.totalShards)) {
         throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
+    }
+
+    /**
+     * Mode for shards to spawn with
+     * @type {ShardingManagerMode}
+     */
+    this.mode = options.mode;
+    if (this.mode !== 'process' && this.mode !== 'worker') {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'Sharding mode', '"process" or "worker"');
     }
 
     /**
@@ -66,13 +108,13 @@ class ShardingManager extends EventEmitter {
     this.respawn = options.respawn;
 
     /**
-     * An array of arguments to pass to shards
+     * An array of arguments to pass to shards (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
     this.shardArgs = options.shardArgs;
 
     /**
-     * An array of arguments to pass to the executable
+     * An array of arguments to pass to the executable (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
     this.execArgv = options.execArgv;
@@ -88,6 +130,10 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    process.env.SHARDING_MANAGER = true;
+    process.env.SHARDING_MANAGER_MODE = this.mode;
+    process.env.DISCORD_TOKEN = this.token;
   }
 
   /**
@@ -124,21 +170,31 @@ class ShardingManager extends EventEmitter {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'a number.');
       }
       if (amount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'at least 1.');
-      if (amount !== Math.floor(amount)) {
+      if (!Number.isInteger(amount)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'Amount of shards', 'an integer.');
       }
     }
 
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= amount) throw new Error('SHARDING_ALREADY_SPAWNED', this.shards.size);
-    this.totalShards = amount;
+    if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
+      this.shardList = [...Array(amount).keys()];
+    }
+    if (this.totalShards === 'auto' || this.totalShards !== amount) {
+      this.totalShards = amount;
+    }
+
+    if (this.shardList.some(shardID => shardID >= amount)) {
+      throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',
+        'bigger than the highest shardID in the shardList option.');
+    }
 
     // Spawn the shards
-    for (let s = 1; s <= amount; s++) {
+    for (const shardID of this.shardList) {
       const promises = [];
-      const shard = this.createShard();
+      const shard = this.createShard(shardID);
       promises.push(shard.spawn(waitForReady));
-      if (delay > 0 && s !== amount) promises.push(Util.delayFor(delay));
+      if (delay > 0 && this.shards.size !== this.shardList.length - 1) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 

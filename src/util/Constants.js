@@ -1,3 +1,5 @@
+'use strict';
+
 const Package = exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
 const browser = exports.browser = typeof window !== 'undefined';
@@ -5,8 +7,10 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number} [shardId=0] ID of the shard to run
- * @property {number} [shardCount=0] Total number of shards
+ * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
+ * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
+ * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
  * indefinitely)
@@ -17,6 +21,9 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
+ * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
+ * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -33,14 +40,14 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  shardId: 0,
-  shardCount: 0,
-  internalSharding: false,
+  shardCount: 1,
+  totalShardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
+  partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   retryLimit: 1,
@@ -86,10 +93,10 @@ exports.UserAgent = browser ? null :
   `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
-  1000: 'Connection gracefully closed',
-  4004: 'Tried to identify with an invalid token',
-  4010: 'Sharding data provided was invalid',
-  4011: 'Shard would be on too many guilds if connected',
+  1000: 'WS_CLOSE_REQUESTED',
+  4004: 'TOKEN_INVALID',
+  4010: 'SHARDING_INVALID',
+  4011: 'SHARDING_REQUIRED',
 };
 
 const AllowedImageFormats = [
@@ -253,7 +260,27 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_READY: 'shardReady',
+  INVALIDATED: 'invalidated',
+  RAW: 'raw',
 };
+
+/**
+ * The type of Structure allowed to be a partial:
+ * * USER
+ * * CHANNEL (only affects DMChannels)
+ * * GUILD_MEMBER
+ * * MESSAGE
+ * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
+ * sidebar for more information.</warn>
+ * @typedef {string} PartialType
+ */
+exports.PartialTypes = keyMirror([
+  'USER',
+  'CHANNEL',
+  'GUILD_MEMBER',
+  'MESSAGE',
+]);
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
@@ -453,6 +480,7 @@ exports.Colors = {
  * * NOTE_TOO_LONG
  * * INVALID_BULK_DELETE_QUANTITY
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * * INVALID_OR_TAKEN_INVITE_CODE
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
  * * BULK_DELETE_MESSAGE_TOO_OLD
  * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
@@ -500,6 +528,7 @@ exports.APIErrors = {
   NOTE_TOO_LONG: 50015,
   INVALID_BULK_DELETE_QUANTITY: 50016,
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
+  INVALID_OR_TAKEN_INVITE_CODE: 50020,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,

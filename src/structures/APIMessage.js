@@ -1,3 +1,5 @@
+'use strict';
+
 const DataResolver = require('../util/DataResolver');
 const MessageEmbed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');
@@ -287,13 +289,9 @@ class APIMessage {
 
     if (!options) {
       options = {};
-    }
-
-    if (options instanceof MessageEmbed) {
+    } else if (options instanceof MessageEmbed) {
       return isWebhook ? { content, embeds: [options], ...extra } : { content, embed: options, ...extra };
-    }
-
-    if (options instanceof MessageAttachment) {
+    } else if (options instanceof MessageAttachment) {
       return { content, files: [options], ...extra };
     }
 
@@ -332,7 +330,7 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|GroupDMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
  */
 
 /**

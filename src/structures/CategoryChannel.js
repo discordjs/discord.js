@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 
 /**

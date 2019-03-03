@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildEmoji = require('./GuildEmoji');
 const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');

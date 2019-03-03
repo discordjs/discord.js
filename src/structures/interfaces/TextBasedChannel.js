@@ -1,3 +1,5 @@
+'use strict';
+
 const MessageCollector = require('../MessageCollector');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');

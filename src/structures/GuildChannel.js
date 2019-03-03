@@ -1,3 +1,5 @@
+'use strict';
+
 const Channel = require('./Channel');
 const Role = require('./Role');
 const Invite = require('./Invite');
@@ -447,37 +449,39 @@ class GuildChannel extends Channel {
     return invites;
   }
 
+  /* eslint-disable max-len */
   /**
    * Clones this channel.
    * @param {Object} [options] The options
-   * @param {string} [options.name=this.name] Optional name for the new channel, otherwise it has the name
-   * of this channel
-   * @param {boolean} [options.withPermissions=true] Whether to clone the channel with this channel's
-   * permission overwrites
-   * @param {boolean} [options.withTopic=true] Whether to clone the channel with this channel's topic
+   * @param {string} [options.name=this.name] Name of the new channel
+   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites=this.permissionOverwrites]
+   * Permission overwrites of the new channel
+   * @param {string} [options.type=this.type] Type of the new channel
+   * @param {string} [options.topic=this.topic] Topic of the new channel (only text)
    * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
    * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {ChannelResolvable} [options.parent=this.parent] The parent of the new channel
+   * @param {number} [options.rateLimitPerUser=ThisType.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    if (typeof options.withPermissions === 'undefined') options.withPermissions = true;
-    if (typeof options.withTopic === 'undefined') options.withTopic = true;
     Util.mergeDefault({
       name: this.name,
-      permissionOverwrites: options.withPermissions ? this.permissionOverwrites : [],
-      topic: options.withTopic ? this.topic : undefined,
+      permissionOverwrites: this.permissionOverwrites,
+      topic: this.topic,
+      type: this.type,
       nsfw: this.nsfw,
       parent: this.parent,
       bitrate: this.bitrate,
       userLimit: this.userLimit,
+      rateLimitPerUser: this.rateLimitPerUser,
       reason: null,
     }, options);
-    options.type = this.type;
     return this.guild.channels.create(options.name, options);
   }
+  /* eslint-enable max-len */
 
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites and ID as another channel.
@@ -520,9 +524,20 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
+    if (!this.viewable) return false;
+    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
+  }
+
+  /**
+   * Whether the channel is viewable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get viewable() {
+    if (this.client.user.id === this.guild.ownerID) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
-    return permissions.has([Permissions.FLAGS.MANAGE_CHANNELS, Permissions.FLAGS.VIEW_CHANNEL], false);
+    return permissions.has(Permissions.FLAGS.VIEW_CHANNEL, false);
   }
 
   /**

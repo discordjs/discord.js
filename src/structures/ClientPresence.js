@@ -1,3 +1,5 @@
+'use strict';
+
 const { Presence } = require('./Presence');
 const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
@@ -11,7 +13,15 @@ class ClientPresence extends Presence {
   async set(presence) {
     const packet = await this._parse(presence);
     this.patch(packet);
-    this.client.ws.send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    if (typeof presence.shardID === 'undefined') {
+      this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
+    } else if (Array.isArray(presence.shardID)) {
+      for (const shardID of presence.shardID) {
+        this.client.ws.shards.get(shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+      }
+    } else {
+      this.client.ws.shards.get(presence.shardID).send({ op: OPCodes.STATUS_UPDATE, d: packet });
+    }
     return this;
   }
 
