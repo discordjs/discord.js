@@ -1,5 +1,3 @@
-'use strict';
-
 const Package = exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
 const browser = exports.browser = typeof window !== 'undefined';
@@ -249,6 +247,7 @@ exports.Events = {
   USER_NOTE_UPDATE: 'userNoteUpdate',
   USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
+  VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
@@ -316,6 +315,7 @@ exports.PartialTypes = keyMirror([
  * * PRESENCE_UPDATE
  * * VOICE_STATE_UPDATE
  * * TYPING_START
+ * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
@@ -352,6 +352,7 @@ exports.WSEvents = keyMirror([
   'PRESENCE_UPDATE',
   'VOICE_STATE_UPDATE',
   'TYPING_START',
+  'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
 ]);
