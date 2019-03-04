@@ -386,6 +386,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
+		public defaultRole: Role;
 		public deleted: boolean;
 		public embedEnabled: boolean;
 		public emojis: GuildEmojiStore;
