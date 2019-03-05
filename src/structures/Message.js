@@ -365,7 +365,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content=''] The new content for the message
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
