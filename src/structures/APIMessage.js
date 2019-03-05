@@ -65,13 +65,18 @@ class APIMessage {
 
   /**
    * Makes the content of this message.
-   * @returns {string|string[]}
+   * @returns {?(string|string[])}
    */
   makeContent() { // eslint-disable-line complexity
     const GuildMember = require('./GuildMember');
 
-    // eslint-disable-next-line eqeqeq
-    let content = Util.resolveString(this.options.content == null ? '' : this.options.content);
+    let content;
+    if (this.options.content === null) {
+      content = '';
+    } else if (typeof this.options.content !== 'undefined') {
+      content = Util.resolveString(this.options.content);
+    }
+
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
@@ -88,24 +93,24 @@ class APIMessage {
     if (content || mentionPart) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.escapeMarkdown(content, true)}\n\`\`\``;
+        content = `${mentionPart}\`\`\`${codeName}\n${Util.escapeMarkdown(content || '', true)}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
         }
       } else if (mentionPart) {
-        content = `${mentionPart}${content}`;
+        content = `${mentionPart}${content || ''}`;
       }
 
       const disableEveryone = typeof this.options.disableEveryone === 'undefined' ?
         this.target.client.options.disableEveryone :
         this.options.disableEveryone;
       if (disableEveryone) {
-        content = content.replace(/@(everyone|here)/g, '@\u200b$1');
+        content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1');
       }
 
       if (isSplit) {
-        content = Util.splitMessage(content, splitOptions);
+        content = Util.splitMessage(content || '', splitOptions);
       }
     }
 
@@ -275,7 +280,7 @@ class APIMessage {
   /**
    * Transforms the user-level arguments into a final options object. Passing a transformed options object alone into
    * this method will keep it the same, allowing for the reuse of the final options object.
-   * @param {StringResolvable} [content=''] Content to send
+   * @param {StringResolvable} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
    * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
@@ -284,7 +289,7 @@ class APIMessage {
   static transformOptions(content, options, extra = {}, isWebhook = false) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
       options = content;
-      content = '';
+      content = undefined;
     }
 
     if (!options) {
@@ -311,7 +316,7 @@ class APIMessage {
   /**
    * Creates an `APIMessage` from user-level arguments.
    * @param {MessageTarget} target Target to send to
-   * @param {StringResolvable} [content=''] Content to send
+   * @param {StringResolvable} [content] Content to send
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
    * @returns {MessageOptions|WebhookMessageOptions}
