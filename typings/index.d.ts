@@ -56,7 +56,7 @@ declare module 'discord.js' {
 			isWebhook?: boolean
 		): MessageOptions | WebhookMessageOptions;
 
-		public makeContent(): string | string[];
+		public makeContent(): string | string[] | void;
 		public resolve(): Promise<this>;
 		public resolveData(): this;
 		public resolveFiles(): Promise<this>;
