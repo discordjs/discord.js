@@ -32,8 +32,8 @@ declare module 'discord.js' {
 		public static resolve(bit?: BitFieldResolvable<ActivityFlagsString>): number;
 	}
 
-	export class APIMessage {
-		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+	export class APIMessage<T extends boolean | SplitOptions = false> {
+		constructor(target: MessageTarget, options: MessageOptions<T> | WebhookMessageOptions<T>);
 		public data?: object;
 		public readonly isUser: boolean;
 		public readonly isWebhook: boolean;
@@ -56,7 +56,7 @@ declare module 'discord.js' {
 			isWebhook?: boolean
 		): MessageOptions | WebhookMessageOptions;
 
-		public makeContent(): string | string[];
+		public makeContent(): T extends true | SplitOptions ? string[] : string;
 		public resolve(): Promise<this>;
 		public resolveData(): this;
 		public resolveFiles(): Promise<this>;
@@ -660,8 +660,8 @@ declare module 'discord.js' {
 		public fetch(): Promise<Message>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		public reply<T extends boolean | SplitOptions = false>(content?: StringResolvable, options?: MessageOptions<T> | MessageAdditions): Promise<T extends true | SplitOptions ? Message[] : Message>;
+		public reply<T extends boolean | SplitOptions = false>(options?: MessageOptions<T> | MessageAdditions | APIMessage): Promise<T extends true | SplitOptions ? Message[] : Message>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
@@ -1418,8 +1418,8 @@ declare module 'discord.js' {
 		readonly lastMessage: Message;
 		lastPinTimestamp: number;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send<T extends boolean | SplitOptions = false>(options?: MessageOptions<T> | MessageAdditions | APIMessage): Promise<T extends true | SplitOptions ? Message[] : Message>;
+		send<T extends boolean | SplitOptions = false>(content?: StringResolvable, options?: MessageOptions<T> | MessageAdditions): Promise<T extends true | SplitOptions ? Message[] : Message>;
 	}
 
 	interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -1440,8 +1440,8 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send<T extends boolean | SplitOptions = false>(options?: WebhookMessageOptions<T> | MessageAdditions | APIMessage): Promise<T extends true | SplitOptions ? Message[] : Message>;
+		send<T extends boolean | SplitOptions = false>(content?: StringResolvable, options?: WebhookMessageOptions<T> | MessageAdditions): Promise<T extends true | SplitOptions ? Message[] : Message>;
 		sendSlackMessage(body: object): Promise<Message | object>;
 	}
 
@@ -1905,15 +1905,19 @@ declare module 'discord.js' {
 		footer?: { text?: string; icon_url?: string; iconURL?: string; };
 	}
 
-	interface MessageOptions {
+	interface PartialMessageOptions<T extends boolean | SplitOptions> {
 		tts?: boolean;
 		nonce?: string;
 		content?: string;
-		embed?: MessageEmbed | MessageEmbedOptions;
 		disableEveryone?: boolean;
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
-		split?: boolean | SplitOptions;
+		split?: T;
+		reply?: UserResolvable;
+	}
+
+	interface MessageOptions<T extends boolean | SplitOptions = false> extends PartialMessageOptions<T> {
+		embed?: MessageEmbed | MessageEmbedOptions;
 		reply?: UserResolvable;
 	}
 
@@ -2098,16 +2102,10 @@ declare module 'discord.js' {
 		reason?: string;
 	}
 
-	interface WebhookMessageOptions {
+	interface WebhookMessageOptions<T extends boolean | SplitOptions = false> extends PartialMessageOptions<T> {
 		username?: string;
 		avatarURL?: string;
-		tts?: boolean;
-		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
-		disableEveryone?: boolean;
-		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-		code?: string | boolean;
-		split?: boolean | SplitOptions;
 	}
 
 	interface WebSocketOptions {
