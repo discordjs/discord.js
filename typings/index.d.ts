@@ -1290,7 +1290,7 @@ declare module 'discord.js' {
 		private lastPingTimestamp: number;
 		private lastHeartbeatAcked: boolean;
 		private trace: string[];
-		private ratelimit: { queue: Object, total: number, reamining: number, time: number, timer: NodeJS.Timer | null }
+		private ratelimit: { queue: Object, total: number, reamining: number, time: number, timer: NodeJS.Timer | null };
 		private connection: WebSocket | null;
 		private inflate: Inflate | null;
 		private sendHeartbeat(): void;
