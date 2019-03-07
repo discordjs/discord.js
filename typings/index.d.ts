@@ -12,7 +12,7 @@ declare module 'discord.js' {
 
 	export const version: string;
 
-	//#region Classes
+//#region Classes
 
 	class Attachment {
 		constructor(file: BufferResolvable | Stream, name?: string);
@@ -1531,9 +1531,9 @@ declare module 'discord.js' {
 		public setTimeout(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
 	}
 
-	//#endregion
+//#endregion
 
-	//#region Mixins
+//#region Mixins
 
 	// Model the TextBasedChannel mixin system, allowing application of these fields
 	// to the classes that use these methods without having to manually add them
@@ -1573,9 +1573,9 @@ declare module 'discord.js' {
 		stopTyping(force?: boolean): void;
 	} & PartialTextBasedChannelFields;
 
-	//#endregion
+//#endregion
 
-	//#region Typedefs
+//#region Typedefs
 
 	type ActivityType = 'PLAYING'
 		| 'STREAMING'
@@ -2166,5 +2166,5 @@ declare module 'discord.js' {
 		| 'RELATIONSHIP_ADD'
 		| 'RELATIONSHIP_REMOVE';
 
-	//#endregion
+//#endregion
 }
