@@ -701,7 +701,7 @@ declare module 'discord.js' {
 		public color: number;
 		public readonly createdAt: Date | null;
 		public description: string;
-		public fields: EmbedField[] | [];
+		public fields: EmbedField[];
 		public files: (MessageAttachment | string | FileOptions)[];
 		public footer: { text?: string; iconURL?: string; proxyIconURL?: string } | null;
 		public readonly hexColor: string | null;
@@ -1282,7 +1282,6 @@ declare module 'discord.js' {
 
 		public broadcast(packet: object): void;
 	}
-
 	export class WebSocketShard extends EventEmitter {
 		constructor(manager: WebSocketManager, id: number);
 		private sequence: number;
@@ -1293,28 +1292,28 @@ declare module 'discord.js' {
 		private ratelimit: { queue: Object, total: number, reamining: number, time: number, timer: NodeJS.Timer | null };
 		private connection: WebSocket | null;
 		private inflate: Inflate | null;
-		private sendHeartbeat(): void;
-		private setHeartbeatTimer(time: number): void;
-		private ackHeartbeat(): void;
-		private connect(): void;
-		private onOpen(): void;
-		private onMessage(event: Event): void;
-		private onPacket(packet: Object): void;
-		private identify(): void;
-		private identifyNew(): void;
-		private identifyResume(): void;
-		private onError(error: Error): void;
-		private onClose(event: CloseEvent): void;
-		private send(data: Object): void;
 		private _send(data: Object): void;
-		private processQueue(): void;
-		private destroy(): void;
 
 		public id: number;
 		public readonly ping: number;
 		public pings: number[];
 		public status: Status;
 		public manager: WebSocketManager;
+		public sendHeartbeat(): void;
+		public setHeartbeatTimer(time: number): void;
+		public ackHeartbeat(): void;
+		public connect(): void;
+		public onOpen(): void;
+		public onMessage(event: Event): void;
+		public onPacket(packet: Object): void;
+		public identify(): void;
+		public identifyNew(): void;
+		public identifyResume(): void;
+		public onError(error: Error): void;
+		public onClose(event: CloseEvent): void;
+		public send(data: Object): void;
+		public processQueue(): void;
+		public destroy(): void;
 
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'resumed', listener: () => void): this;
