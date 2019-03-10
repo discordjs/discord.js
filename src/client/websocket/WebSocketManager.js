@@ -153,8 +153,10 @@ class WebSocketManager {
     }
 
     if (this.client.options.shards instanceof Array) {
-      this.debug(`Spawning shards ${this.client.options.shards.join(', ')}`);
-      this.shardQueue = this.client.options.shards.map(id => new WebSocketShard(this, id));
+      const shards = [...new Set(this.client.options.shards.filter(item => !isNaN(item) && item >= 0))];
+      this.totalShards = shards.length;
+      this.debug(`Spawning shards ${shards.join(', ')}`);
+      this.shardQueue = shards.map(id => new WebSocketShard(this, id));
     } else {
       this.debug(`Spawning ${this.totalShards} shards`);
       this.shardQueue = Array.from({ length: recommendedShards }, (_, id) => new WebSocketShard(this, id));
