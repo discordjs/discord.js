@@ -153,7 +153,9 @@ class WebSocketManager {
     }
 
     if (this.client.options.shards instanceof Array) {
-      const shards = [...new Set(this.client.options.shards.filter(item => !isNaN(item) && item >= 0))];
+      const shards = [...new Set(
+        this.client.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+      )];
       this.totalShards = shards.length;
       this.debug(`Spawning shards ${shards.join(', ')}`);
       this.shardQueue = shards.map(id => new WebSocketShard(this, id));
