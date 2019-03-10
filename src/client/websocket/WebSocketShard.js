@@ -164,13 +164,11 @@ class WebSocketShard extends EventEmitter {
   connect() {
     const { gateway, client } = this.manager;
 
-    if (!this.inflate) {
-      this.inflate = new zlib.Inflate({
-        chunkSize: 65535,
-        flush: zlib.Z_SYNC_FLUSH,
-        to: WebSocket.encoding === 'json' ? 'string' : '',
-      });
-    }
+    this.inflate = new zlib.Inflate({
+      chunkSize: 65535,
+      flush: zlib.Z_SYNC_FLUSH,
+      to: WebSocket.encoding === 'json' ? 'string' : '',
+    });
 
     return new Promise((resolve, reject) => {
       const onReady = () => {
@@ -370,9 +368,6 @@ class WebSocketShard extends EventEmitter {
       default:
         this.manager.handlePacket(packet, this);
     }
-
-    console.log(packet);
-    console.log(this.ratelimit.queue);
   }
 
   /**
