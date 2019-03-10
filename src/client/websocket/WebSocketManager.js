@@ -57,7 +57,7 @@ class WebSocketManager {
      * @private
      * @name WebSocketManager#shardQueue
      */
-    Object.defineProperty(this, 'shardQueue', { value: [] });
+    Object.defineProperty(this, 'shardQueue', { value: [], writable: true });
 
     /**
      * An array of queued events before this WebSocketManager became ready

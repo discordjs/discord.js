@@ -105,7 +105,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?WebSocket}
      * @private
      */
-    Object.defineProperty(this, 'connection', { value: null });
+    Object.defineProperty(this, 'connection', { value: null, writable: true });
 
     /**
      * @external Inflate
@@ -117,21 +117,21 @@ class WebSocketShard extends EventEmitter {
      * @type {?Inflate}
      * @private
      */
-    Object.defineProperty(this, 'inflate', { value: null });
+    Object.defineProperty(this, 'inflate', { value: null, writable: true });
 
     /**
      * The HELLO timeout
      * @type {?NodeJS.Timer}
      * @private
      */
-    Object.defineProperty(this, 'helloTimeout', { value: null });
+    Object.defineProperty(this, 'helloTimeout', { value: null, writable: true });
 
     /**
      * If the manager attached its event handlers on this shard
      * @type {boolean}
      * @private
      */
-    Object.defineProperty(this, 'eventsAttached', { value: false });
+    Object.defineProperty(this, 'eventsAttached', { value: false, writable: true });
   }
 
   /**
