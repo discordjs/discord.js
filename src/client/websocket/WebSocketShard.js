@@ -90,50 +90,48 @@ class WebSocketShard extends EventEmitter {
      * @type {Object}
      * @private
      */
-    this.ratelimit = {
-      queue: [],
-      total: 120,
-      remaining: 120,
-      time: 60e3,
-      timer: null,
-    };
+    Object.defineProperty(this, 'ratelimit', {
+      value: {
+        queue: [],
+        total: 120,
+        remaining: 120,
+        time: 60e3,
+        timer: null,
+      },
+    });
 
-    // TODO: Hidden
     /**
      * The WebSocket connection for the current shard
      * @type {?WebSocket}
      * @private
      */
-    this.connection = null;
+    Object.defineProperty(this, 'connection', { value: null });
 
     /**
      * @external Inflate
      * @see {@link https://www.npmjs.com/package/zlib-sync}
      */
 
-    // TODO: Hidden
     /**
      * The compression to use
      * @type {?Inflate}
      * @private
      */
-    this.inflate = null;
+    Object.defineProperty(this, 'inflate', { value: null });
 
-    // TODO: Hidden
     /**
      * The HELLO timeout
      * @type {?NodeJS.Timer}
      * @private
      */
-    this.helloTimeout = undefined;
+    Object.defineProperty(this, 'helloTimeout', { value: null });
 
-    // TODO: Hidden
     /**
      * If the manager attached its event handlers on this shard
      * @type {boolean}
      * @private
      */
-    this.eventsAttached = false;
+    Object.defineProperty(this, 'eventsAttached', { value: false });
   }
 
   /**
@@ -158,11 +156,15 @@ class WebSocketShard extends EventEmitter {
   /**
    * Connects this shard to the gateway.
    * @private
-   * @returns {Promise<boolean>} A promise that will resolve if the shard turns ready successfully,
+   * @returns {Promise<void>} A promise that will resolve if the shard turns ready successfully,
    * or reject if we couldn't connect
    */
   connect() {
     const { gateway, client } = this.manager;
+
+    if (this.status === Status.READY && this.connection && this.connection.readyState === WebSocket.OPEN) {
+      return Promise.resolve();
+    }
 
     this.inflate = new zlib.Inflate({
       chunkSize: 65535,
@@ -379,6 +381,7 @@ class WebSocketShard extends EventEmitter {
     if (time === -1 && this.helloTimeout) {
       this.debug('Clearing the HELLO timeout.');
       clearTimeout(this.helloTimeout);
+      this.helloTimeout = null;
     } else {
       this.debug('Setting a HELLO timeout for 20s.');
       this.helloTimeout = setTimeout(() => {

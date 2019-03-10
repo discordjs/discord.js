@@ -1,6 +1,5 @@
 'use strict';
 
-const EventEmitter = require('events');
 const { Error } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
@@ -23,18 +22,15 @@ const UNRECOVERABLE_CLOSE_CODES = [4004, 4010, 4011];
 /**
  * The WebSocket manager for this client.
  */
-class WebSocketManager extends EventEmitter {
+class WebSocketManager {
   constructor(client) {
-    super();
-
-    // TODO: Make hidden
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
      * @readonly
      * @name WebSocketManager#client
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * The gateway this manager uses
@@ -55,21 +51,21 @@ class WebSocketManager extends EventEmitter {
      */
     this.shards = new Collection();
 
-    // TODO: Make hidden
     /**
      * An array of shards to be connected or that need to reconnect
      * @type {Array<WebSocketShard>}
      * @private
+     * @name WebSocketManager#shardQueue
      */
-    this.shardQueue = [];
+    Object.defineProperty(this, 'shardQueue', { value: [] });
 
-    // TODO: Make hidden
     /**
      * An array of queued events before this WebSocketManager became ready
      * @type {object[]}
      * @private
+     * @name WebSocketManager#packetQueue
      */
-    this.packetQueue = [];
+    Object.defineProperty(this, 'packetQueue', { value: [] });
 
     /**
      * The current status of this WebSocketManager
@@ -99,7 +95,7 @@ class WebSocketManager extends EventEmitter {
      * @prop {number} remaining Number of identifies remaining
      * @prop {number} reset_after Number of milliseconds after which the limit resets
      */
-    this.sessionStartLimit = null;
+    this.sessionStartLimit = undefined;
   }
 
   /**
@@ -116,6 +112,7 @@ class WebSocketManager extends EventEmitter {
    * Emits a debug message.
    * @param {string} message The debug message
    * @param {?WebSocketShard} [shard] The shard that emitted this message, if any
+   * @private
    */
   debug(message, shard) {
     this.client.emit(Events.DEBUG, `[WS => ${shard ? `Shard ${shard.id}` : 'Manager'}] ${message}`);
