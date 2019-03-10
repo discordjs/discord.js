@@ -333,6 +333,26 @@ class WebSocketManager extends EventEmitter {
 
     return true;
   }
+
+  /**
+   * Causes the client to be marked as ready and emits the ready event.
+   * @private
+   */
+  triggerReady() {
+    if (this.status === Status.READY) {
+      this.debug('Tried to mark self as ready, but already ready');
+      return;
+    }
+    this.status = Status.READY;
+
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#ready
+     */
+    this.client.emit(Events.READY);
+
+    this.handlePacket();
+  }
 }
 
 module.exports = WebSocketManager;
