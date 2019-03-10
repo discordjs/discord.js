@@ -232,7 +232,7 @@ class WebSocketManager {
       if (error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
         throw new Error(WSCodes[error.code]);
       } else {
-        this.debug(`Shard ${shard.id} received an invalid session, will requeue...`);
+        this.debug('Failed to connect to the gateway, requeueing...', shard);
         this.shardQueue.push(shard);
       }
     }
