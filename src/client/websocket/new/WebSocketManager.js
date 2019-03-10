@@ -313,10 +313,7 @@ class WebSocketManager extends EventEmitter {
       return false;
     }
 
-    let unavailableGuilds = 0;
-    for (const guild of this.client.guilds.values()) {
-      if (!guild.available) unavailableGuilds++;
-    }
+    const unavailableGuilds = this.client.guilds.reduce((acc, guild) => guild.available ? acc : acc + 1, 0);
 
     // TODO: Rethink implementation for this
     if (unavailableGuilds === 0) {
