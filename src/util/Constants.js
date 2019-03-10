@@ -258,11 +258,18 @@ exports.Events = {
   WARN: 'warn',
   DEBUG: 'debug',
   SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_ERROR: 'shardError',
   SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
   SHARD_RESUMED: 'shardResumed',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
+};
+
+exports.ShardEvents = {
+  READY: 'ready',
+  RESUMED: 'resumed',
+  CLOSE: 'close',
 };
 
 /**

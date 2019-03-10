@@ -2,8 +2,7 @@
 
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
-const { Status, Events, OPCodes, WSEvents, WSCodes } = require('../../util/Constants');
-const Util = require('../../util/Util');
+const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
 let zlib;
 try {
@@ -21,13 +20,13 @@ class WebSocketShard extends EventEmitter {
     super();
 
     /**
-     * The WebSocket Manager of this connection
+     * The WebSocketManager of this shard
      * @type {WebSocketManager}
      */
     this.manager = manager;
 
     /**
-     * The ID of the this shard
+     * The ID of this shard
      * @type {number}
      */
     this.id = id;
@@ -99,6 +98,7 @@ class WebSocketShard extends EventEmitter {
       timer: null,
     };
 
+    // TODO: Hidden
     /**
      * The WebSocket connection for the current shard
      * @type {?WebSocket}
@@ -111,6 +111,7 @@ class WebSocketShard extends EventEmitter {
      * @see {@link https://www.npmjs.com/package/zlib-sync}
      */
 
+    // TODO: Hidden
     /**
      * The compression to use
      * @type {?Inflate}
@@ -118,7 +119,21 @@ class WebSocketShard extends EventEmitter {
      */
     this.inflate = null;
 
-    if (this.manager.gateway) this.connect();
+    // TODO: Hidden
+    /**
+     * The HELLO timeout
+     * @type {?NodeJS.Timer}
+     * @private
+     */
+    this.helloTimeout = undefined;
+
+    // TODO: Hidden
+    /**
+     * If the manager attached its event handlers on this shard
+     * @type {boolean}
+     * @private
+     */
+    this.eventsAttached = false;
   }
 
   /**
@@ -133,82 +148,67 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Emits a debug event.
-   * @param {string} message Debug message
+   * @param {string} message The debug message
    * @private
    */
   debug(message) {
-    this.manager.debug(`[Shard ${this.id}] ${message}`);
-  }
-
-  /**
-   * Sends a heartbeat to the WebSocket.
-   * If this shard didn't receive a heartbeat last time, it will destroy it and reconnect
-   * @private
-   */
-  sendHeartbeat() {
-    if (!this.lastHeartbeatAcked) {
-      this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
-      this.connection.close(4000);
-      return;
-    }
-    this.debug('Sending a heartbeat');
-    this.lastHeartbeatAcked = false;
-    this.lastPingTimestamp = Date.now();
-    this.send({ op: OPCodes.HEARTBEAT, d: this.sequence });
-  }
-
-  /**
-   * Sets the heartbeat timer for this shard.
-   * @param {number} time If -1, clears the interval, any other number sets an interval
-   * @private
-   */
-  setHeartbeatTimer(time) {
-    if (time === -1) {
-      if (this.heartbeatInterval) {
-        this.debug('Clearing heartbeat interval');
-        this.manager.client.clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = null;
-      }
-      return;
-    }
-    this.debug(`Setting a heartbeat interval for ${time}ms`);
-    this.heartbeatInterval = this.manager.client.setInterval(() => this.sendHeartbeat(), time);
-  }
-
-  /**
-   * Acknowledges a heartbeat.
-   * @private
-   */
-  ackHeartbeat() {
-    this.lastHeartbeatAcked = true;
-    const latency = Date.now() - this.lastPingTimestamp;
-    this.debug(`Heartbeat acknowledged, latency of ${latency}ms`);
-    this.pings.unshift(latency);
-    if (this.pings.length > 3) this.pings.length = 3;
+    this.manager.debug(message, this);
   }
 
   /**
    * Connects this shard to the gateway.
    * @private
+   * @returns {Promise<boolean>} A promise that will resolve if the shard turns ready successfully,
+   * or reject if we couldn't connect
    */
   connect() {
-    const { expectingClose, gateway } = this.manager;
-    if (expectingClose) return;
-    this.inflate = new zlib.Inflate({
-      chunkSize: 65535,
-      flush: zlib.Z_SYNC_FLUSH,
-      to: WebSocket.encoding === 'json' ? 'string' : '',
+    const { gateway, client } = this.manager;
+
+    if (!this.inflate) {
+      this.inflate = new zlib.Inflate({
+        chunkSize: 65535,
+        flush: zlib.Z_SYNC_FLUSH,
+        to: WebSocket.encoding === 'json' ? 'string' : '',
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const onReady = () => {
+        this.off(ShardEvents.CLOSE, onClose);
+        this.off(ShardEvents.RESUMED, onResumed);
+        resolve();
+      };
+
+      const onResumed = () => {
+        this.off(ShardEvents.CLOSE, onClose);
+        this.off(ShardEvents.READY, onReady);
+        resolve();
+      };
+
+      const onClose = event => {
+        this.off(ShardEvents.READY, onReady);
+        this.off(ShardEvents.RESUMED, onResumed);
+        reject(event);
+      };
+
+      this.once(ShardEvents.READY, onReady);
+      this.once(ShardEvents.RESUMED, onResumed);
+      this.once(ShardEvents.CLOSE, onClose);
+
+      this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
+
+      this.status = this.status === Status.DISCONNECTED ? Status.RECONNECTING : Status.CONNECTING;
+      this.setHelloTimeout();
+
+      const ws = this.connection = WebSocket.create(gateway, {
+        v: client.options.ws.version,
+        compress: 'zlib-stream',
+      });
+      ws.onopen = this.onOpen.bind(this);
+      ws.onmessage = this.onMessage.bind(this);
+      ws.onerror = this.onError.bind(this);
+      ws.onclose = this.onClose.bind(this);
     });
-    this.debug(`Connecting to ${gateway}`);
-    const ws = this.connection = WebSocket.create(gateway, {
-      v: this.manager.client.options.ws.version,
-      compress: 'zlib-stream',
-    });
-    ws.onopen = this.onOpen.bind(this);
-    ws.onmessage = this.onMessage.bind(this);
-    ws.onerror = this.onError.bind(this);
-    ws.onclose = this.onClose.bind(this);
-    this.status = Status.CONNECTING;
   }
 
   /**
@@ -216,7 +216,8 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onOpen() {
-    this.debug('Connected to the gateway');
+    this.debug('Opened a connection to the gateway successfully.');
+    this.status = Status.NEARLY;
   }
 
   /**
@@ -235,149 +236,13 @@ class WebSocketShard extends EventEmitter {
 
     this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
     if (!flush) return;
-    let packet;
     try {
-      packet = WebSocket.unpack(this.inflate.result);
+      const packet = WebSocket.unpack(this.inflate.result);
       this.manager.client.emit(Events.RAW, packet, this.id);
+      this.onPacket(packet);
     } catch (err) {
-      this.manager.client.emit(Events.ERROR, err);
-      return;
+      this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
     }
-    this.onPacket(packet);
-  }
-
-  /**
-   * Called whenever a packet is received.
-   * @param {Object} packet Packet received
-   * @private
-   */
-  onPacket(packet) {
-    if (!packet) {
-      this.debug('Received null or broken packet');
-      return;
-    }
-
-    switch (packet.t) {
-      case WSEvents.READY:
-        /**
-         * Emitted when a shard becomes ready.
-         * @event WebSocketShard#ready
-         */
-        this.emit(Events.READY);
-        /**
-         * Emitted when a shard becomes ready.
-         * @event Client#shardReady
-         * @param {number} shardID The ID of the shard
-         */
-        this.manager.client.emit(Events.SHARD_READY, this.id);
-
-        this.sessionID = packet.d.session_id;
-        this.trace = packet.d._trace;
-        this.status = Status.READY;
-        this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}`);
-        this.lastHeartbeatAcked = true;
-        this.sendHeartbeat();
-        break;
-      case WSEvents.RESUMED: {
-        this.emit(Events.RESUMED);
-        this.trace = packet.d._trace;
-        this.status = Status.READY;
-        const replayed = packet.s - this.closeSequence;
-        this.debug(`RESUMED ${this.trace.join(' -> ')} | Replayed ${replayed} events.`);
-        this.lastHeartbeatAcked = true;
-        this.sendHeartbeat();
-        break;
-      }
-    }
-
-    if (packet.s > this.sequence) this.sequence = packet.s;
-
-    switch (packet.op) {
-      case OPCodes.HELLO:
-        this.setHeartbeatTimer(packet.d.heartbeat_interval);
-        this.identify();
-        break;
-      case OPCodes.RECONNECT:
-        this.connection.close(1001);
-        break;
-      case OPCodes.INVALID_SESSION:
-        this.debug(`Session was invalidated. Resumable: ${packet.d}.`);
-        // If the session isn't resumable
-        if (!packet.d) {
-          // Reset the sequence, since it isn't valid anymore
-          this.sequence = -1;
-          // If we had a session ID before
-          if (this.sessionID) {
-            this.sessionID = null;
-            this.connection.close(1000);
-            return;
-          }
-          this.connection.close(1000);
-          return;
-        }
-        this.identifyResume();
-        break;
-      case OPCodes.HEARTBEAT_ACK:
-        this.ackHeartbeat();
-        break;
-      case OPCodes.HEARTBEAT:
-        this.sendHeartbeat();
-        break;
-      default:
-        this.manager.handlePacket(packet, this);
-    }
-  }
-
-  /**
-   * Identifies the client on a connection.
-   * @returns {void}
-   * @private
-   */
-  identify() {
-    return this.sessionID ? this.identifyResume() : this.identifyNew();
-  }
-
-  /**
-   * Identifies as a new connection on the gateway.
-   * @private
-   */
-  identifyNew() {
-    if (!this.manager.client.token) {
-      this.debug('No token available to identify a new session with');
-      return;
-    }
-    // Clone the generic payload and assign the token
-    const d = {
-      ...this.manager.client.options.ws,
-      token: this.manager.client.token,
-      shard: [this.id, Number(this.manager.client.options.totalShardCount)],
-    };
-
-    // Send the payload
-    this.debug('Identifying as a new session');
-    this.send({ op: OPCodes.IDENTIFY, d });
-  }
-
-  /**
-   * Resumes a session on the gateway.
-   * @returns {void}
-   * @private
-   */
-  identifyResume() {
-    if (!this.sessionID) {
-      this.debug('Warning: wanted to resume but session ID not available; identifying as a new session instead');
-      return this.identifyNew();
-    }
-
-    this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.closeSequence}`);
-
-    const d = {
-      token: this.manager.client.token,
-      session_id: this.sessionID,
-      seq: this.closeSequence,
-    };
-
-    return this.send({ op: OPCodes.RESUME, d });
   }
 
   /**
@@ -387,17 +252,18 @@ class WebSocketShard extends EventEmitter {
    */
   onError(error) {
     if (error && error.message === 'uWs client connection error') {
+      this.debug('Received a uWs error. Closing the connection and reconnecting...');
       this.connection.close(4000);
       return;
     }
 
     /**
-     * Emitted whenever the client's WebSocket encounters a connection error.
-     * @event Client#error
+     * Emitted whenever a shard's WebSocket encounters a connection error.
+     * @event Client#shardError
      * @param {Error} error The encountered error
      * @param {number} shardID The shard that encountered this error
      */
-    this.manager.client.emit(Events.ERROR, error, this.id);
+    this.manager.client.emit(Events.SHARD_ERROR, error, this.id);
   }
 
   /**
@@ -412,50 +278,228 @@ class WebSocketShard extends EventEmitter {
    */
   onClose(event) {
     this.closeSequence = this.sequence;
+    this.sequence = -1;
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
-      Reason: ${event.reason}`);
+      Reason: ${event.reason || 'No reason received'}`);
 
-    if (event.code === 1000 ? this.manager.expectingClose : WSCodes[event.code]) {
-      /**
-       * Emitted when the client's WebSocket disconnects and will no longer attempt to reconnect.
-       * @event Client#disconnect
-       * @param {CloseEvent} event The WebSocket close event
-       * @param {number} shardID The shard that disconnected
-       */
-      this.manager.client.emit(Events.DISCONNECT, event, this.id);
-      this.debug(WSCodes[event.code]);
+    this.status = Status.DISCONNECTED;
+
+    /**
+     * Emitted when a shard's WebSocket closes.
+     * @private
+     * @event WebSocketShard#close
+     * @param {CloseEvent} event The received event
+     */
+    this.emit(ShardEvents.CLOSE, event);
+  }
+
+  /**
+   * Called whenver a packet is received.
+   * @param {Object} packet The packet
+   * @private
+   */
+  onPacket(packet) {
+    if (!packet) {
+      this.debug(`Received broken packet: ${packet}.`);
       return;
     }
 
-    this.destroy();
+    switch (packet.t) {
+      case WSEvents.READY:
+        /**
+         * Emitted when the shard becomes ready
+         * @event WebSocketShard#ready
+         */
+        this.emit(ShardEvents.READY);
 
-    this.status = Status.RECONNECTING;
+        this.sessionID = packet.d.session_id;
+        this.trace = packet.d._trace;
+        this.status = Status.READY;
+        this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}.`);
+        this.lastHeartbeatAcked = true;
+        this.sendHeartbeat();
+        break;
+      case WSEvents.RESUMED: {
+        /**
+         * Emitted when the shard resumes successfully
+         * @event WebSocketShard#resumed
+         */
+        this.emit(ShardEvents.RESUMED);
 
-    /**
-     * Emitted whenever a shard tries to reconnect to the WebSocket.
-     * @event Client#reconnecting
-     * @param {number} shardID The shard ID that is reconnecting
-     */
-    this.manager.client.emit(Events.RECONNECTING, this.id);
+        this.trace = packet.d._trace;
+        this.status = Status.READY;
+        const replayed = packet.s - this.closeSequence;
+        this.debug(`RESUMED ${this.trace.join(' -> ')} | Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.lastHeartbeatAcked = true;
+        this.sendHeartbeat();
+      }
+    }
 
-    this.debug(`${this.sessionID ? `Reconnecting in 3500ms` : 'Queueing a reconnect'} to the gateway...`);
+    if (packet.s > this.sequence) this.sequence = packet.s;
 
-    if (this.sessionID) {
-      Util.delayFor(3500).then(() => this.connect());
+    switch (packet.op) {
+      case OPCodes.HELLO:
+        this.setHelloTimeout(-1);
+        this.setHeartbeatTimer(packet.d.heartbeat_interval);
+        this.identify();
+        break;
+      case OPCodes.RECONNECT:
+        this.connection.close(1001);
+        break;
+      case OPCodes.INVALID_SESSION:
+        this.debug(`Session invalidated. Resumable: ${packet.d}.`);
+        // If we can resume the session, do so immediately
+        if (packet.d) {
+          this.identifyResume();
+          return;
+        }
+        // Reset the sequence
+        this.sequence = -1;
+        // Reset the session ID as it's invalid
+        this.sessionID = null;
+        // Finally, close the connection
+        this.connection.close(1000);
+        break;
+      case OPCodes.HEARTBEAT_ACK:
+        this.ackHeartbeat();
+        break;
+      case OPCodes.HEARTBEAT:
+        this.sendHeartbeat();
+        break;
+      default:
+        this.manager.handlePacket(packet, this);
+    }
+
+    console.log(packet);
+    console.log(this.ratelimit.queue);
+  }
+
+  /**
+   * Sets the HELLO packet timeout.
+   * @param {number} [time=20000] The delay to wait for the packet. If set to -1, will clear the timeout
+   * @private
+   */
+  setHelloTimeout(time = 20000) {
+    if (time === -1 && this.helloTimeout) {
+      this.debug('Clearing the HELLO timeout.');
+      clearTimeout(this.helloTimeout);
     } else {
-      this.manager.reconnect(this);
+      this.debug('Setting a HELLO timeout for 20s.');
+      this.helloTimeout = setTimeout(() => {
+        this.debug('Did not receive HELLO in time. Destroying and connecting again.');
+        this.destroy(4009);
+      }, time);
     }
   }
 
   /**
-   * Adds data to the queue to be sent.
-   * @param {Object} data Packet to send
+   * Sets the heartbeat timer for this shard.
+   * @param {number} time If -1, clears the interval, any other number sets an interval
+   * @private
+   */
+  setHeartbeatTimer(time) {
+    if (time === -1) {
+      if (this.heartbeatInterval) {
+        this.debug('Clearing the heartbeat interval.');
+        this.manager.client.clearInterval(this.heartbeatInterval);
+        this.heartbeatInterval = null;
+      }
+      return;
+    }
+    this.debug(`Setting a heartbeat interval for ${time}ms.`);
+    this.heartbeatInterval = this.manager.client.setInterval(() => this.sendHeartbeat(), time);
+  }
+
+  /**
+   * Sends a heartbeat to the WebSocket.
+   * If this shard didn't receive a heartbeat last time, it will destroy it and reconnect
+   * @private
+   */
+  sendHeartbeat() {
+    if (!this.lastHeartbeatAcked) {
+      this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
+      this.connection.close(4009);
+      return;
+    }
+    this.debug('Sending a heartbeat.');
+    this.lastHeartbeatAcked = false;
+    this.lastPingTimestamp = Date.now();
+    this.send({ op: OPCodes.HEARTBEAT, d: this.sequence }, true);
+  }
+
+  /**
+   * Acknowledges a heartbeat.
+   * @private
+   */
+  ackHeartbeat() {
+    this.lastHeartbeatAcked = true;
+    const latency = Date.now() - this.lastPingTimestamp;
+    this.debug(`Heartbeat acknowledged, latency of ${latency}ms.`);
+    this.pings.unshift(latency);
+    if (this.pings.length > 3) this.pings.length = 3;
+  }
+
+  /**
+   * Identifies the client on the connection.
    * @private
    * @returns {void}
    */
-  send(data) {
-    this.ratelimit.queue.push(data);
+  identify() {
+    return this.sessionID ? this.identifyResume() : this.identifyNew();
+  }
+
+  /**
+   * Identifies as a new connection on the gateway.
+   * @private
+   */
+  identifyNew() {
+    const { client } = this.manager;
+    if (!client.token) {
+      this.debug('No token available to identify a new session.');
+      return;
+    }
+
+    // Close the identify payload and assign the token and shard info
+    const d = {
+      ...client.options.ws,
+      token: client.token,
+      shard: [this.id, Number(client.options.totalShardCount)],
+    };
+
+    this.debug(`Identifying as a new session. Shard ${this.id}/${client.options.totalShardCount}`);
+    this.send({ op: OPCodes.IDENTIFY, d }, true);
+  }
+
+  /**
+   * Resumes a session on the gateway.
+   * @private
+   */
+  identifyResume() {
+    if (!this.sessionID) {
+      this.debug('Warning: attempted to resume but no session ID was present; identifying as a new session.');
+      this.identifyNew();
+      return;
+    }
+
+    this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.closeSequence}`);
+
+    const d = {
+      token: this.manager.client.token,
+      session_id: this.sessionID,
+      seq: this.closeSequence,
+    };
+
+    this.send({ op: OPCodes.RESUME, d }, true);
+  }
+
+  /**
+   * Adds a packet to the queue to be sent.
+   * @param {Object} data The full packet to send
+   * @param {?boolean} [important=false] If this packet should be added first in queue
+   */
+  send(data, important = false) {
+    this.ratelimit.queue[important ? 'unshift' : 'push'](data);
     this.processQueue();
   }
 
@@ -472,7 +516,7 @@ class WebSocketShard extends EventEmitter {
     }
 
     this.connection.send(WebSocket.pack(data), err => {
-      if (err) this.manager.client.emit(Events.ERROR, err);
+      if (err) this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
     });
   }
 
@@ -499,21 +543,27 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Destroys this shard and closes its connection.
+   * Destroys this shard and closes its WebSocket connection.
+   * @param {?number} [closeCode=1000] The close code to use
    * @private
    */
-  destroy() {
+  destroy(closeCode = 1000) {
     this.setHeartbeatTimer(-1);
-    if (this.connection) this.connection.close(1000);
+    this.setHelloTimeout(-1);
+    // Close the WebSocket connection, if any
+    if (this.connection) this.connection.close(closeCode);
     this.connection = null;
+    // Set the shard status
     this.status = Status.DISCONNECTED;
+    // Reset the sequence
+    this.sequence = -1;
+    // Reset the ratelimit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
-    this.sequence = -1;
   }
 }
 
