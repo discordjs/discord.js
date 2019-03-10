@@ -212,8 +212,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
-  READY: 'ready',
-  RESUMED: 'resumed',
+  CLIENT_READY: 'ready',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -255,12 +254,13 @@ exports.Events = {
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
-  DISCONNECT: 'disconnect',
-  RECONNECTING: 'reconnecting',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
+  SHARD_RESUMED: 'shardResumed',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
 };

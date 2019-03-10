@@ -3,7 +3,7 @@
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const WebSocketManager = require('./websocket/WebSocketManager');
+const WebSocketManager = require('./websocket/new/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
 const Collection = require('../util/Collection');
 const VoiceRegion = require('../structures/VoiceRegion');
@@ -41,24 +41,28 @@ class Client extends BaseClient {
     } catch (_) {
       // Do nothing
     }
+
     if (this.options.shards === DefaultOptions.shards) {
       if ('SHARDS' in data) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
+
     if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
       if ('TOTAL_SHARD_COUNT' in data) {
         this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
-      } else if (Array.isArray(this.options.shards)) {
+      } else if (this.options.shards instanceof Array) {
         this.options.totalShardCount = this.options.shards.length;
       } else {
         this.options.totalShardCount = this.options.shardCount;
       }
     }
+
     if (typeof this.options.shards === 'undefined' && this.options.shardCount) {
-      this.options.shards = [];
-      for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
+      this.options.shards = Array.from({ length: this.options.shardCound }, (_, i) => i);
     }
+
+    if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
 
     this._validateOptions();
 
@@ -267,6 +271,26 @@ class Client extends BaseClient {
     return token;
   }
 
+  async newLogin(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Provided token: ${token}`);
+
+    if (this.options.presence) {
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
+    }
+
+    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
+
+    try {
+      await this.ws.connect();
+      return this.token;
+    } catch (error) {
+      this.destroy();
+      throw error;
+    }
+  }
+
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
    * @returns {void}
@@ -415,7 +439,7 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+    if (options.shards && typeof options.shards !== 'number' && !(options.shards instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
     if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
