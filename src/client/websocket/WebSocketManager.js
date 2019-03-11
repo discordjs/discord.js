@@ -373,7 +373,7 @@ class WebSocketManager {
       Promise.all(promises)
         .then(() => this.triggerReady())
         .catch(e => {
-          this.debug(`Failed to fetch all members before ready! ${e}`);
+          this.debug(`Failed to fetch all members before ready! ${e}\n${e.stack}`);
           this.triggerReady();
         });
     } else {
