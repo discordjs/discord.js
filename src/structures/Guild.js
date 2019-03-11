@@ -566,7 +566,6 @@ class Guild extends Base {
    * Fetches audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
-   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
    * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
@@ -579,12 +578,10 @@ class Guild extends Base {
    */
   fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
-    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
     return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
       before: options.before,
-      after: options.after,
       limit: options.limit,
       user_id: this.client.users.resolveID(options.user),
       action_type: options.type,
