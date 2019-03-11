@@ -1744,7 +1744,6 @@ declare module 'discord.js' {
 
 	interface GuildAuditLogsFetchOptions {
 		before?: Snowflake | GuildAuditLogsEntry;
-		after?: Snowflake | GuildAuditLogsEntry;
 		limit?: number;
 		user?: UserResolvable;
 		type?: string | number;
