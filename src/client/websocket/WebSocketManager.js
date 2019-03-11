@@ -43,7 +43,7 @@ class WebSocketManager {
      * @private
      * @type {number|string}
      */
-    this.totalShards = this.client.options.shards ? this.client.options.shards.length : this.client.options.shardCount;
+    this.totalShards = this.client.options.shardCount;
 
     /**
      * A collection of all shards this manager handles
@@ -157,7 +157,7 @@ class WebSocketManager {
         this.client.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
       )];
       this.totalShards = shards.length;
-      this.debug(`Spawning shards ${shards.join(', ')}`);
+      this.debug(`Spawning shards: ${shards.join(', ')}`);
       this.shardQueue = shards.map(id => new WebSocketShard(this, id));
     } else {
       this.debug(`Spawning ${this.totalShards} shards`);
