@@ -1275,16 +1275,17 @@ declare module 'discord.js' {
 
 	export class WebSocketManager {
 		constructor(client: Client);
-		public readonly client: Client;
-		public gateway?: string;
 		private totalShards: number | string;
-		public shards: Collection<number, WebSocketShard>;
 		private shardQueue: WebSocketShard[];
 		private packetQueue: object[];
-		public status: Status;
 		private destroyed: boolean;
 		private reconnecting: boolean;
 		private sessionStartLimit?: { total: number; remaining: number; reset_after: number; };
+
+		public readonly client: Client;
+		public gateway?: string;
+		public shards: Collection<number, WebSocketShard>;
+		public status: Status;
 		public readonly ping: number;
 
 		private debug(message: string, shard?: WebSocketShard): void;
@@ -1301,13 +1302,9 @@ declare module 'discord.js' {
 
 	export class WebSocketShard extends EventEmitter {
 		constructor(manager: WebSocketManager, id: number);
-		public manager: WebSocketManager;
-		public id: number;
-		public status: Status;
 		private sequence: number;
 		private closeSequence: number;
 		private sessionID?: string;
-		public pings: [number, number, number];
 		private lastPingTimestamp: number;
 		private lastHeartbeatAcked: boolean;
 		private trace: string[];
@@ -1315,6 +1312,11 @@ declare module 'discord.js' {
 		private connection: WebSocket;
 		private helloTimeout: NodeJS.Timeout | null;
 		private eventsAttached: boolean;
+
+		public manager: WebSocketManager;
+		public id: number;
+		public status: Status;
+		public pings: [number, number, number];
 		public readonly ping: number;
 
 		private debug(message: string): void;
@@ -1331,11 +1333,11 @@ declare module 'discord.js' {
 		private identify(): void;
 		private identifyNew(): void;
 		private identifyResume(): void;
-		public send(data: object): void;
 		private _send(data: object): void;
 		private processQueue(): void;
 		private destroy(closeCode: number): void;
 
+		public send(data: object): void;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'resumed', listener: () => void): this;
 		public on(event: 'close', listener: (event: CloseEvent) => void): this;
