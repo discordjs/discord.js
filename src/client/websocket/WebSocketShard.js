@@ -295,8 +295,8 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Called whenver a packet is received.
-   * @param {Object} packet The packet
+   * Called whenever a packet is received.
+   * @param {Object} packet The received packet
    * @private
    */
   onPacket(packet) {
