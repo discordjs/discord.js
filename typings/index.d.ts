@@ -2,6 +2,7 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
+	import * as WebSocket from 'ws';
 
 	export const version: string;
 
@@ -1323,7 +1324,7 @@ declare module 'discord.js' {
 		private connect(): Promise<void>;
 		private onOpen(): void;
 		private onMessage(event: MessageEvent): void;
-		private onError(error: Error): void;
+		private onError(error: ErrorEvent): void;
 		private onClose(event: CloseEvent): void;
 		private onPacket(packet: object): void;
 		private setHelloTimeout(time: number): void;
@@ -2204,6 +2205,10 @@ declare module 'discord.js' {
 		| 'TYPING_START'
 		| 'VOICE_SERVER_UPDATE'
 		| 'WEBHOOKS_UPDATE';
+
+	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
+	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
+	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
 
 //#endregion
 }

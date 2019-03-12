@@ -171,6 +171,7 @@ class WebSocketManager {
 
   /**
    * Handles the creation of a shard.
+   * @returns {Promise<boolean>}
    * @private
    */
   async createShards() {

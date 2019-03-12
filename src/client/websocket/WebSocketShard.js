@@ -20,13 +20,13 @@ class WebSocketShard extends EventEmitter {
     super();
 
     /**
-     * The WebSocketManager of this shard
+     * The WebSocketManager of the shard
      * @type {WebSocketManager}
      */
     this.manager = manager;
 
     /**
-     * The ID of this shard
+     * The ID of the shard
      * @type {number}
      */
     this.id = id;
@@ -127,7 +127,7 @@ class WebSocketShard extends EventEmitter {
     Object.defineProperty(this, 'helloTimeout', { value: null, writable: true });
 
     /**
-     * If the manager attached its event handlers on this shard
+     * If the manager attached its event handlers on the shard
      * @type {boolean}
      * @private
      */
@@ -154,7 +154,7 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Connects this shard to the gateway.
+   * Connects the shard to the gateway.
    * @private
    * @returns {Promise<void>} A promise that will resolve if the shard turns ready successfully,
    * or reject if we couldn't connect
@@ -236,21 +236,23 @@ class WebSocketShard extends EventEmitter {
 
     this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
     if (!flush) return;
+    let packet;
     try {
-      const packet = WebSocket.unpack(this.inflate.result);
+      packet = WebSocket.unpack(this.inflate.result);
       this.manager.client.emit(Events.RAW, packet, this.id);
-      this.onPacket(packet);
     } catch (err) {
       this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
+      return;
     }
+    this.onPacket(packet);
   }
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error The error that occurred
+   * @param {ErrorEvent} error The error that occurred
    * @private
    */
-  onError(error) {
+  onError({ error }) {
     if (error && error.message === 'uWs client connection error') {
       this.debug('Received a uWs error. Closing the connection and reconnecting...');
       this.connection.close(4000);
@@ -272,6 +274,11 @@ class WebSocketShard extends EventEmitter {
    */
 
   /**
+   * @external ErrorEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent}
+   */
+
+  /**
    * Called whenever a connection to the gateway is closed.
    * @param {CloseEvent} event Close event that was received
    * @private
@@ -281,6 +288,7 @@ class WebSocketShard extends EventEmitter {
     this.sequence = -1;
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
+      Clean: ${event.wasClean}
       Reason: ${event.reason || 'No reason received'}`);
 
     this.status = Status.DISCONNECTED;
@@ -458,7 +466,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
 
-    // Close the identify payload and assign the token and shard info
+    // Clone the identify payload and assign the token and shard info
     const d = {
       ...client.options.ws,
       token: client.token,
