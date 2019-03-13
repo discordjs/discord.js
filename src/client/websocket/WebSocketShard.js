@@ -170,18 +170,21 @@ class WebSocketShard extends EventEmitter {
       const onReady = () => {
         this.off(ShardEvents.CLOSE, onClose);
         this.off(ShardEvents.RESUMED, onResumed);
+        this.off(ShardEvents.INVALID_SESSION, onInvalid);
         resolve();
       };
 
       const onResumed = () => {
         this.off(ShardEvents.CLOSE, onClose);
         this.off(ShardEvents.READY, onReady);
+        this.off(ShardEvents.INVALID_SESSION, onInvalid);
         resolve();
       };
 
       const onClose = event => {
         this.off(ShardEvents.READY, onReady);
         this.off(ShardEvents.RESUMED, onResumed);
+        this.off(ShardEvents.INVALID_SESSION, onInvalid);
         reject(event);
       };
 
