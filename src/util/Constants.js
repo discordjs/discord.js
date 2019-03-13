@@ -267,9 +267,10 @@ exports.Events = {
 };
 
 exports.ShardEvents = {
+  CLOSE: 'close',
+  INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',
-  CLOSE: 'close',
 };
 
 /**

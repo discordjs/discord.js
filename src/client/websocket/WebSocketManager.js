@@ -53,11 +53,11 @@ class WebSocketManager {
 
     /**
      * An array of shards to be connected or that need to reconnect
-     * @type {Array<WebSocketShard>}
+     * @type {Set<WebSocketShard>}
      * @private
      * @name WebSocketManager#shardQueue
      */
-    Object.defineProperty(this, 'shardQueue', { value: [], writable: true });
+    Object.defineProperty(this, 'shardQueue', { value: new Set(), writable: true });
 
     /**
      * An array of queued events before this WebSocketManager became ready
@@ -153,15 +153,13 @@ class WebSocketManager {
     }
 
     if (this.client.options.shards instanceof Array) {
-      const shards = [...new Set(
-        this.client.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
-      )];
+      const { shards } = this.client.options;
       this.totalShards = shards.length;
       this.debug(`Spawning shards: ${shards.join(', ')}`);
-      this.shardQueue = shards.map(id => new WebSocketShard(this, id));
+      this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
     } else {
       this.debug(`Spawning ${this.totalShards} shards`);
-      this.shardQueue = Array.from({ length: recommendedShards }, (_, id) => new WebSocketShard(this, id));
+      this.shardQueue = new Set(Array.from({ length: recommendedShards }, (_, id) => new WebSocketShard(this, id)));
     }
 
     await this._handleSessionLimit(remaining, reset_after);
@@ -176,9 +174,14 @@ class WebSocketManager {
    */
   async createShards() {
     // If we don't have any shards to handle, return
-    if (!this.shardQueue.length) return false;
+    if (!this.shardQueue.size) return false;
 
-    const shard = this.shardQueue.shift();
+    // Prevent reconnect from running
+    this.reconnecting = true;
+
+    const [shard] = this.shardQueue;
+
+    this.shardQueue.delete(shard);
 
     if (!shard.eventsAttached) {
       shard.on(ShardEvents.READY, () => {
@@ -189,7 +192,7 @@ class WebSocketManager {
          */
         this.client.emit(Events.SHARD_READY, shard.id);
 
-        if (!this.shardQueue.length) this.reconnecting = false;
+        if (!this.shardQueue.size) this.reconnecting = false;
       });
 
       shard.on(ShardEvents.RESUMED, () => {
@@ -217,13 +220,20 @@ class WebSocketManager {
         shard.destroy();
 
         /**
-         * Emitted when a shard is attempting to reconnect.
+         * Emitted when a shard is attempting to reconnect or re-identify.
          * @event Client#shardReconnecting
          * @param {number} id The shard ID that is attempting to reconnect
          */
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
-        this.shardQueue.push(shard);
+        this.shardQueue.add(shard);
+        this.reconnect();
+      });
+
+      shard.on(ShardEvents.INVALID_SESSION, () => {
+        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+
+        this.shardQueue.add(shard);
         this.reconnect();
       });
       shard.eventsAttached = true;
@@ -234,19 +244,22 @@ class WebSocketManager {
     try {
       await shard.connect();
     } catch (error) {
-      if (error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
+      if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
         throw new Error(WSCodes[error.code]);
       } else {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
-        this.shardQueue.push(shard);
+        this.shardQueue.add(shard);
       }
     }
     // If we have more shards, add a 5s delay
-    if (this.shardQueue.length) {
+    if (this.shardQueue.size) {
+      this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
       await Util.delayFor(5000);
       await this._handleSessionLimit();
       return this.createShards();
     }
+
+    this.reconnecting = false;
 
     return true;
   }
@@ -298,7 +311,7 @@ class WebSocketManager {
   destroy() {
     if (this.destroyed) return;
     this.destroyed = true;
-    this.shardQueue.length = 0;
+    this.shardQueue.clear();
     for (const shard of this.shards.values()) shard.destroy();
   }
 
@@ -378,7 +391,7 @@ class WebSocketManager {
           this.triggerReady();
         });
     } else {
-      this.debug(`There are currently ${unavailableGuilds} guilds. Waiting for their respective GUILD_CREATE packets`);
+      this.debug(`There are currently ${unavailableGuilds} unavailable guilds. Waiting for their respective GUILD_CREATE packets`);
     }
 
     return true;

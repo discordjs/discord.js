@@ -63,6 +63,12 @@ class Client extends BaseClient {
 
     if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
 
+    if (typeof this.options.shards !== 'undefined') {
+      this.options.shards = [...new Set(
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+      )];
+    }
+
     this._validateOptions();
 
     /**
@@ -384,9 +390,10 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (options.shards && typeof options.shards !== 'number' && !(options.shards instanceof Array)) {
+    if (options.shards && !(options.shards instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
+    if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
     if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');

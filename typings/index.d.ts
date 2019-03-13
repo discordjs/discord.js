@@ -1277,7 +1277,7 @@ declare module 'discord.js' {
 	export class WebSocketManager {
 		constructor(client: Client);
 		private totalShards: number | string;
-		private shardQueue: WebSocketShard[];
+		private shardQueue: Set<WebSocketShard>;
 		private packetQueue: object[];
 		private destroyed: boolean;
 		private reconnecting: boolean;

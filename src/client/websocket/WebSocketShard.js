@@ -166,12 +166,6 @@ class WebSocketShard extends EventEmitter {
       return Promise.resolve();
     }
 
-    this.inflate = new zlib.Inflate({
-      chunkSize: 65535,
-      flush: zlib.Z_SYNC_FLUSH,
-      to: WebSocket.encoding === 'json' ? 'string' : '',
-    });
-
     return new Promise((resolve, reject) => {
       const onReady = () => {
         this.off(ShardEvents.CLOSE, onClose);
@@ -191,9 +185,29 @@ class WebSocketShard extends EventEmitter {
         reject(event);
       };
 
+      const onInvalid = () => {
+        this.off(ShardEvents.READY, onReady);
+        this.off(ShardEvents.RESUMED, onResumed);
+        this.off(ShardEvents.CLOSE, onClose);
+        // eslint-disable-next-line prefer-promise-reject-errors
+        reject();
+      };
+
       this.once(ShardEvents.READY, onReady);
       this.once(ShardEvents.RESUMED, onResumed);
       this.once(ShardEvents.CLOSE, onClose);
+      this.once(ShardEvents.INVALID_SESSION, onInvalid);
+
+      if (this.connection && this.connection.readyState === WebSocket.OPEN) {
+        this.identifyNew();
+        return;
+      }
+
+      this.inflate = new zlib.Inflate({
+        chunkSize: 65535,
+        flush: zlib.Z_SYNC_FLUSH,
+        to: WebSocket.encoding === 'json' ? 'string' : '',
+      });
 
       this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
 
@@ -366,8 +380,10 @@ class WebSocketShard extends EventEmitter {
         this.sequence = -1;
         // Reset the session ID as it's invalid
         this.sessionID = null;
-        // Finally, close the connection
-        this.connection.close(1000);
+        // Set the status to reconnecting
+        this.status = Status.RECONNECTING;
+        // Finally, emit the INVALID_SESSION event
+        this.emit(ShardEvents.INVALID_SESSION);
         break;
       case OPCodes.HEARTBEAT_ACK:
         this.ackHeartbeat();
@@ -390,7 +406,7 @@ class WebSocketShard extends EventEmitter {
       this.debug('Clearing the HELLO timeout.');
       clearTimeout(this.helloTimeout);
       this.helloTimeout = null;
-    } else {
+    } else if (time !== -1) {
       this.debug('Setting a HELLO timeout for 20s.');
       this.helloTimeout = setTimeout(() => {
         this.debug('Did not receive HELLO in time. Destroying and connecting again.');
