@@ -391,7 +391,7 @@ class WebSocketManager {
           this.triggerReady();
         });
     } else {
-      this.debug(`There are currently ${unavailableGuilds} unavailable guilds. Waiting for their respective GUILD_CREATE packets`);
+      this.debug(`There are ${unavailableGuilds} unavailable guilds. Waiting for their GUILD_CREATE packets`);
     }
 
     return true;
