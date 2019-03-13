@@ -123,6 +123,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public type: 'dm' | 'text' | 'voice' | 'category' | 'unknown';
 		public delete(reason?: string): Promise<Channel>;
+		public send(content: string, options?: MessageOptions): Promise<Message>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
 	}
