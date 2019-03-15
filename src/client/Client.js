@@ -57,7 +57,7 @@ class Client extends BaseClient {
       }
     }
 
-    if (typeof this.options.shards === 'undefined' && this.options.shardCount) {
+    if (typeof this.options.shards === 'undefined' && typeof this.options.shardCount === 'number') {
       this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
     }
 
