@@ -4,7 +4,7 @@ const { register } = require('./DJSError');
 
 const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
-  CLIENT_INVALID_PROVIDED_SHARDS: 'None of the shards you provided were valid.',
+  CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
