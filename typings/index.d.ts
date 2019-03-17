@@ -1309,8 +1309,8 @@ declare module 'discord.js' {
 		private lastPingTimestamp: number;
 		private lastHeartbeatAcked: boolean;
 		private trace: string[];
-		private ratelimit: { queue: object[]; total: number; remaining: number[]; time: number[]; timer: NodeJS.Timeout | null; };
-		private connection: WebSocket;
+		private ratelimit: { queue: object[]; total: number; remaining: number; time: 60e3; timer: NodeJS.Timeout | null; };
+		private connection: WebSocket | null;
 		private helloTimeout: NodeJS.Timeout | null;
 		private eventsAttached: boolean;
 
@@ -1327,7 +1327,7 @@ declare module 'discord.js' {
 		private onError(error: ErrorEvent): void;
 		private onClose(event: CloseEvent): void;
 		private onPacket(packet: object): void;
-		private setHelloTimeout(time: number): void;
+		private setHelloTimeout(time?: number): void;
 		private setHeartbeatTimer(time: number): void;
 		private sendHeartbeat(): void;
 		private ackHeartbeat(): void;
@@ -1342,11 +1342,13 @@ declare module 'discord.js' {
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'resumed', listener: () => void): this;
 		public on(event: 'close', listener: (event: CloseEvent) => void): this;
+		public on(event: 'invalidSession', listener: () => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'resumed', listener: () => void): this;
 		public once(event: 'close', listener: (event: CloseEvent) => void): this;
+		public once(event: 'invalidSession', listener: () => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
