@@ -401,21 +401,23 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Sets the HELLO packet timeout.
-   * @param {number} [time=20000] The delay to wait for the packet. If set to -1, will clear the timeout
+   * @param {number} [time] If set to -1, it will clear the hello timeout timeout
    * @private
    */
-  setHelloTimeout(time = 20000) {
-    if (time === -1 && this.helloTimeout) {
-      this.debug('Clearing the HELLO timeout.');
-      clearTimeout(this.helloTimeout);
-      this.helloTimeout = null;
-    } else if (time !== -1) {
-      this.debug('Setting a HELLO timeout for 20s.');
-      this.helloTimeout = setTimeout(() => {
-        this.debug('Did not receive HELLO in time. Destroying and connecting again.');
-        this.destroy(4009);
-      }, time);
+  setHelloTimeout(time) {
+    if (time === -1) {
+      if (this.helloTimeout) {
+        this.debug('Clearing the HELLO timeout.');
+        clearTimeout(this.helloTimeout);
+        this.helloTimeout = null;
+      }
+      return;
     }
+    this.debug('Setting a HELLO timeout for 20s.');
+    this.helloTimeout = setTimeout(() => {
+      this.debug('Did not receive HELLO in time. Destroying and connecting again.');
+      this.destroy(4009);
+    }, 20000);
   }
 
   /**
@@ -444,7 +446,7 @@ class WebSocketShard extends EventEmitter {
   sendHeartbeat() {
     if (!this.lastHeartbeatAcked) {
       this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
-      this.connection.close(4009);
+      this.destroy(4009);
       return;
     }
     this.debug('Sending a heartbeat.');
@@ -519,7 +521,10 @@ class WebSocketShard extends EventEmitter {
   }
 
   /**
-   * Adds a packet to the queue to be sent.
+   * Adds a packet to the queue to be sent to the gateway.
+   * <warn>If you use this method, make sure you understand that you need to provide
+   * a full [Payload](https://discordapp.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
+   * Do not use this method if you don't know what you're doing.</warn>
    * @param {Object} data The full packet to send
    * @param {?boolean} [important=false] If this packet should be added first in queue
    */
