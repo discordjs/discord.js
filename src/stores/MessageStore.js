@@ -74,7 +74,7 @@ class MessageStore extends DataStore {
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    */
-  fetchPinned(cache) {
+  fetchPinned(cache = true) {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {
       const messages = new Collection();
       for (const message of data) messages.set(message.id, this.add(message, cache));
