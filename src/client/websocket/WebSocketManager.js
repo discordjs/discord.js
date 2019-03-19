@@ -176,9 +176,6 @@ class WebSocketManager {
     // If we don't have any shards to handle, return
     if (!this.shardQueue.size) return false;
 
-    // Prevent reconnect from running
-    this.reconnecting = true;
-
     const [shard] = this.shardQueue;
 
     this.shardQueue.delete(shard);
@@ -258,8 +255,6 @@ class WebSocketManager {
       await this._handleSessionLimit();
       return this.createShards();
     }
-
-    this.reconnecting = false;
 
     return true;
   }
