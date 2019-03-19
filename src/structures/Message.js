@@ -172,6 +172,7 @@ class Message extends Base {
   /**
    * Whether or not this message is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return typeof this.content !== 'string' || !this.author;

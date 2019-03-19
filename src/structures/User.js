@@ -78,6 +78,7 @@ class User extends Base {
   /**
    * Whether this User is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return typeof this.username !== 'string';

@@ -20,6 +20,7 @@ class GuildEmojiRoleStore extends Collection {
    * The filtered collection of roles of the guild emoji
    * @type {Collection<Snowflake, Role>}
    * @private
+   * @readonly
    */
   get _filtered() {
     return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));

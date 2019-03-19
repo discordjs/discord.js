@@ -32,6 +32,7 @@ class VoiceWebSocket extends EventEmitter {
   /**
    * The client of this voice WebSocket
    * @type {Client}
+   * @readonly
    */
   get client() {
     return this.connection.voiceManager.client;

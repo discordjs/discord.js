@@ -30,8 +30,8 @@ class ClientUser extends Structures.get('User') {
 
   /**
    * ClientUser's presence
-   * @readonly
    * @type {Presence}
+   * @readonly
    */
   get presence() {
     return this.client.presence;

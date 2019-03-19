@@ -34,6 +34,7 @@ class VoiceBroadcast extends EventEmitter {
   /**
    * The current master dispatcher, if any. This dispatcher controls all that is played by subscribed dispatchers.
    * @type {?BroadcastDispatcher}
+   * @readonly
    */
   get dispatcher() {
     return this.player.dispatcher;
