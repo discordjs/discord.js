@@ -1366,9 +1366,9 @@ declare module 'discord.js' {
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
 		constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
-		public fetch(message: Snowflake): Promise<Message>;
-		public fetch(options?: ChannelLogsQueryOptions): Promise<Collection<Snowflake, Message>>;
-		public fetchPinned(): Promise<Collection<Snowflake, Message>>;
+		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
+		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
+		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
 	}
 
 	export class PresenceStore extends DataStore<Snowflake, Presence, typeof Presence, PresenceResolvable> {

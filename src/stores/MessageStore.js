@@ -66,6 +66,7 @@ class MessageStore extends DataStore {
    * Fetches the pinned messages of this channel and returns a collection of them.
    * <info>The returned Collection does not contain any reaction data of the messages.
    * Those need to be fetched separately.</info>
+   * @param {boolean} [cache=true] Whether to cache the message(s)
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get pinned messages
@@ -73,10 +74,10 @@ class MessageStore extends DataStore {
    *   .then(messages => console.log(`Received ${messages.size} messages`))
    *   .catch(console.error);
    */
-  fetchPinned() {
+  fetchPinned(cache = true) {
     return this.client.api.channels[this.channel.id].pins.get().then(data => {
       const messages = new Collection();
-      for (const message of data) messages.set(message.id, this.add(message));
+      for (const message of data) messages.set(message.id, this.add(message, cache));
       return messages;
     });
   }
