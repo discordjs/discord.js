@@ -264,7 +264,7 @@ class WebSocketManager {
    * @private
    */
   async reconnect() {
-    if (this.reconnecting) return;
+    if (this.reconnecting || this.status !== Status.READY) return;
     this.reconnecting = true;
     try {
       await this._handleSessionLimit();
