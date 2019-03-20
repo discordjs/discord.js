@@ -1,6 +1,6 @@
 'use strict';
 
-const { Error } = require('../../errors');
+const { Error: DJSError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 const WebSocketShard = require('./WebSocketShard');
@@ -123,7 +123,7 @@ class WebSocketManager {
    * @private
    */
   async connect() {
-    const invalidToken = new Error(WSCodes[4004]);
+    const invalidToken = new DJSError(WSCodes[4004]);
     const {
       url: gatewayURL,
       shards: recommendedShards,
@@ -214,7 +214,10 @@ class WebSocketManager {
           return;
         }
 
-        shard.destroy();
+        if (event.code >= 1000 && event.code <= 2000) {
+          // Any event code in this range cannot be resumed.
+          shard.sessionID = undefined;
+        }
 
         /**
          * Emitted when a shard is attempting to reconnect or re-identify.
@@ -222,6 +225,14 @@ class WebSocketManager {
          * @param {number} id The shard ID that is attempting to reconnect
          */
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+
+        if (shard.sessionID) {
+          this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
+          shard.connect().catch(() => null);
+          return;
+        }
+
+        shard.destroy();
 
         this.shardQueue.add(shard);
         this.reconnect();
@@ -242,7 +253,7 @@ class WebSocketManager {
       await shard.connect();
     } catch (error) {
       if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
-        throw new Error(WSCodes[error.code]);
+        throw new DJSError(WSCodes[error.code]);
       } else {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
         this.shardQueue.add(shard);
@@ -313,6 +324,7 @@ class WebSocketManager {
    */
   destroy() {
     if (this.destroyed) return;
+    this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
     for (const shard of this.shards.values()) shard.destroy();
