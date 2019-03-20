@@ -1268,7 +1268,7 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
-	export class WebSocketManager {
+	export class WebSocketManager extends EventEmitter {
 		constructor(client: Client);
 		public readonly client: Client;
 		public gateway: string | undefined;
@@ -1277,6 +1277,76 @@ declare module 'discord.js' {
 		public status: Status;
 
 		public broadcast(packet: object): void;
+
+		public on(event: 'READY', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'RESUMED', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_CREATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_DELETE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_MEMBER_ADD', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_MEMBER_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_MEMBER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_MEMBERS_CHUNK', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_INTEGRATIONS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_ROLE_CREATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_ROLE_DELETE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_ROLE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_BAN_ADD', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_BAN_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'GUILD_EMOJIS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'CHANNEL_CREATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'CHANNEL_DELETE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'CHANNEL_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'CHANNEL_PINS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_CREATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_DELETE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_DELETE_BULK', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_REACTION_ADD', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_REACTION_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'MESSAGE_REACTION_REMOVE_ALL', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'USER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'PRESENCE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'VOICE_STATE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'TYPING_START', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'VOICE_STATE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'VOICE_SERVER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public on(event: 'WEBHOOKS_UPDATE', listener: (data: any, shardID: number) => void): this;
+
+		public once(event: 'READY', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'RESUMED', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_CREATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_DELETE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_MEMBER_ADD', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_MEMBER_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_MEMBER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_MEMBERS_CHUNK', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_INTEGRATIONS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_ROLE_CREATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_ROLE_DELETE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_ROLE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_BAN_ADD', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_BAN_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'GUILD_EMOJIS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'CHANNEL_CREATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'CHANNEL_DELETE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'CHANNEL_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'CHANNEL_PINS_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_CREATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_DELETE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_DELETE_BULK', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_REACTION_ADD', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_REACTION_REMOVE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'MESSAGE_REACTION_REMOVE_ALL', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'USER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'PRESENCE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'VOICE_STATE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'TYPING_START', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'VOICE_STATE_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'VOICE_SERVER_UPDATE', listener: (data: any, shardID: number) => void): this;
+		public once(event: 'WEBHOOKS_UPDATE', listener: (data: any, shardID: number) => void): this;
 	}
 
 	export class WebSocketShard extends EventEmitter {

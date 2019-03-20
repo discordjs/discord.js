@@ -1,5 +1,6 @@
 'use strict';
 
+const EventEmitter = require('events');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 const WebSocketShard = require('./WebSocketShard');
@@ -18,9 +19,12 @@ const BeforeReadyWhitelist = [
 
 /**
  * The WebSocket manager for this client.
+ * @extends EventEmitter
  */
-class WebSocketManager {
+class WebSocketManager extends EventEmitter {
   constructor(client) {
+    super();
+
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}
@@ -331,3 +335,195 @@ class WebSocketManager {
 }
 
 module.exports = WebSocketManager;
+
+/**
+ * @event WebSocketManager#READY
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#RESUMED
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_CREATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_DELETE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_MEMBER_ADD
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_MEMBER_REMOVE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_MEMBER_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_MEMBERS_CHUNK
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_INTEGRATIONS_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_ROLE_CREATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_ROLE_DELETE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_ROLE_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_BAN_ADD
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_BAN_REMOVE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#GUILD_EMOJIS_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#CHANNEL_CREATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#CHANNEL_DELETE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#CHANNEL_PINS_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_CREATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_DELETE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_DELETE_BULK
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_REACTION_ADD
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_REACTION_REMOVE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#MESSAGE_REACTION_REMOVE_ALL
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#USER_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#PRESENCE_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#VOICE_STATE_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#TYPING_START
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#VOICE_SERVER_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
+
+/**
+ * @event WebSocketManager#WEBHOOKS_UPDATE
+ * @param {*} data The raw packet data
+ * @param {number} shardID The id of the shard that this packet came from
+ */
