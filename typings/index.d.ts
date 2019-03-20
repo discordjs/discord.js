@@ -1279,9 +1279,7 @@ declare module 'discord.js' {
 		public broadcast(packet: object): void;
 
 		public on(event: WSEventType, listener: (data: any, shardID: number) => void): this;
-
 		public once(event: WSEventType, listener: (data: any, shardID: number) => void): this;
-
 	}
 
 	export class WebSocketShard extends EventEmitter {
