@@ -283,7 +283,7 @@ class WebSocketManager {
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
-      if (error.code !== 401) {
+      if (!error.message.startsWith('401')) {
         this.debug(`Possible network error occured. Retrying in 5s...`);
         await Util.delayFor(5000);
         this.reconnecting = false;
