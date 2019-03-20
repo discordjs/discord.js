@@ -11,6 +11,11 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class Role extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the role
+   * @param {Guild} guild The guild the role is part of
+   */
   constructor(client, data, guild) {
     super(client);
 
