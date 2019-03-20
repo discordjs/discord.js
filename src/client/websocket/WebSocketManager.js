@@ -262,15 +262,22 @@ class WebSocketManager {
   /**
    * Handles reconnects for this manager.
    * @private
+   * @returns {Promise<boolean>}
    */
   async reconnect() {
-    if (this.reconnecting || this.status !== Status.READY) return;
+    if (this.reconnecting || this.status !== Status.READY) return false;
     this.reconnecting = true;
     try {
       await this._handleSessionLimit();
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
+      if (error.code !== 401) {
+        this.debug(`Possible network error occured. Retrying in 5s...`);
+        await Util.delayFor(5000);
+        this.reconnecting = false;
+        return this.reconnect();
+      }
       // If we get an error at this point, it means we cannot reconnect anymore
       if (this.client.listenerCount(Events.INVALIDATED)) {
         /**
@@ -288,6 +295,7 @@ class WebSocketManager {
     } finally {
       this.reconnecting = false;
     }
+    return true;
   }
 
   /**
