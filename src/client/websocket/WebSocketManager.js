@@ -159,7 +159,7 @@ class WebSocketManager {
       this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
     } else {
       this.debug(`Spawning ${this.totalShards} shards`);
-      this.shardQueue = new Set(Array.from({ length: recommendedShards }, (_, id) => new WebSocketShard(this, id)));
+      this.shardQueue = new Set(Array.from({ length: this.totalShards }, (_, id) => new WebSocketShard(this, id)));
     }
 
     await this._handleSessionLimit(remaining, reset_after);
