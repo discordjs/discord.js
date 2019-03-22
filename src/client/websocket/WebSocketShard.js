@@ -408,13 +408,13 @@ class WebSocketShard extends EventEmitter {
     if (time === -1) {
       if (this.helloTimeout) {
         this.debug('Clearing the HELLO timeout.');
-        clearTimeout(this.helloTimeout);
+        this.manager.client.clearTimeout(this.helloTimeout);
         this.helloTimeout = null;
       }
       return;
     }
     this.debug('Setting a HELLO timeout for 20s.');
-    this.helloTimeout = setTimeout(() => {
+    this.helloTimeout = this.manager.client.setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
       this.destroy(4009);
     }, 20000);
