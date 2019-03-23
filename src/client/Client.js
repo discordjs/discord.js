@@ -144,12 +144,6 @@ class Client extends BaseClient {
      */
     this.readyAt = null;
 
-    /**
-     * Active voice broadcasts that have been created
-     * @type {VoiceBroadcast[]}
-     */
-    this.broadcasts = [];
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
@@ -194,16 +188,6 @@ class Client extends BaseClient {
    */
   get uptime() {
     return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Creates a voice broadcast.
-   * @returns {VoiceBroadcast}
-   */
-  createVoiceBroadcast() {
-    const broadcast = new VoiceBroadcast(this);
-    this.broadcasts.push(broadcast);
-    return broadcast;
   }
 
   /**
@@ -390,7 +374,6 @@ class Client extends BaseClient {
   toJSON() {
     return super.toJSON({
       readyAt: false,
-      broadcasts: false,
       presences: false,
     });
   }

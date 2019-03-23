@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
-const DispatcherSet = require('./util/DispatcherSet');
+const { Events } = require('../../util/Constants');
 const PlayInterface = require('./util/PlayInterface');
 
 /**
@@ -29,9 +29,9 @@ class VoiceBroadcast extends EventEmitter {
     this.client = client;
     /**
      * The dispatchers playing this broadcast
-     * @type {Set<StreamDispatcher>}
+     * @type {StreamDispatcher[]}
      */
-    this.dispatchers = new DispatcherSet(this);
+    this.dispatchers = [];
     this.player = new BroadcastAudioPlayer(this);
   }
 
@@ -60,6 +60,35 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {BroadcastDispatcher}
    */
   play() { return null; }
+
+  add(dispatcher) {
+    const index = this.dispatchers.indexOf(dispatcher);
+    if (index === -1) {
+      /**
+       * Emitted whenever a stream dispatcher subscribes to the broadcast.
+       * @event VoiceBroadcast#subscribe
+       * @param {StreamDispatcher} dispatcher The subscribed dispatcher
+       */
+      this.broadcast.emit(Events.VOICE_BROADCAST_SUBSCRIBE, dispatcher);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  delete(dispatcher) {
+    const index = this.dispatchers.indexOf(dispatcher);
+    if (index !== -1) {
+      /**
+       * Emitted whenever a stream dispatcher unsubscribes to the broadcast.
+       * @event VoiceBroadcast#unsubscribe
+       * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
+       */
+      this.broadcast.emit(Events.VOICE_BROADCAST_UNSUBSCRIBE, dispatcher);
+      return true;
+    }
+    return false;
+  }
 }
 
 PlayInterface.applyToClass(VoiceBroadcast);
