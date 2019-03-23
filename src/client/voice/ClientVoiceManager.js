@@ -35,7 +35,7 @@ class ClientVoiceManager {
    * Creates a voice broadcast.
    * @returns {VoiceBroadcast}
    */
-  createVoiceBroadcast() {
+  createBroadcast() {
     const broadcast = new VoiceBroadcast(this);
     this.broadcasts.push(broadcast);
     return broadcast;
