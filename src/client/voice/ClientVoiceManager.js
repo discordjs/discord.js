@@ -8,7 +8,6 @@ const { Error } = require('../../errors');
 
 /**
  * Manages voice connections for the client
- * @private
  */
 class ClientVoiceManager {
   constructor(client) {

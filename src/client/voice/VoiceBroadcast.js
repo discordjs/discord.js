@@ -61,6 +61,16 @@ class VoiceBroadcast extends EventEmitter {
    */
   play() { return null; }
 
+
+  /**
+   * Ends the broadcast, unsubscribing all subscribed channels and deleting the broadcast
+   */
+  end() {
+    for (const dispatcher of this.dispatchers) this.delete(dispatcher);
+    const index = this.client.voice.broadcasts.indexOf(this);
+    if (index !== -1) this.client.voice.broadcasts.splice(index, 1);
+  }
+
   add(dispatcher) {
     const index = this.dispatchers.indexOf(dispatcher);
     if (index === -1) {
@@ -79,6 +89,8 @@ class VoiceBroadcast extends EventEmitter {
   delete(dispatcher) {
     const index = this.dispatchers.indexOf(dispatcher);
     if (index !== -1) {
+      this.dispatchers.splice(index, 1);
+      dispatcher.destroy();
       /**
        * Emitted whenever a stream dispatcher unsubscribes to the broadcast.
        * @event VoiceBroadcast#unsubscribe
