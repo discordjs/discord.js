@@ -27,6 +27,10 @@ class VoiceBroadcast extends EventEmitter {
      * @type {Client}
      */
     this.client = client;
+    /**
+     * The dispatchers playing this broadcast
+     * @type {Set<StreamDispatcher>}
+     */
     this.dispatchers = new DispatcherSet(this);
     this.player = new BroadcastAudioPlayer(this);
   }
