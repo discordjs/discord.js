@@ -22,24 +22,6 @@ declare module 'discord.js' {
 		Role: Role
 		User: User
 	};
-	export type ExtendStructures<N extends Partial<StructureGroup>> = {
-		Client: N['Client'] extends Client ? N['Client'] : Client<ExtendStructures<N>>
-		GuildEmoji: N['GuildEmoji'] extends GuildEmoji ? N['GuildEmoji'] : GuildEmoji<ExtendStructures<N>>
-		DMChannel: N['DMChannel'] extends DMChannel ? N['DMChannel'] : DMChannel<ExtendStructures<N>>
-		TextChannel: N['TextChannel'] extends TextChannel ? N['TextChannel'] : TextChannel<ExtendStructures<N>>
-		VoiceChannel: N['VoiceChannel'] extends VoiceChannel ? N['VoiceChannel'] : VoiceChannel<ExtendStructures<N>>
-		CategoryChannel: N['CategoryChannel'] extends CategoryChannel ? N['CategoryChannel'] : CategoryChannel<ExtendStructures<N>>
-		GuildChannel: N['GuildChannel'] extends GuildChannel ? N['GuildChannel'] : GuildChannel<ExtendStructures<N>>
-		GuildMember: N['GuildMember'] extends GuildMember ? N['GuildMember'] : GuildMember<ExtendStructures<N>>
-		Guild: N['Guild'] extends Guild ? N['Guild'] : Guild<ExtendStructures<N>>
-		Message: N['Message'] extends Message ? N['Message'] : Message<ExtendStructures<N>>
-		MessageReaction: N['MessageReaction'] extends MessageReaction ? N['MessageReaction'] : MessageReaction<ExtendStructures<N>>
-		Presence: N['Presence'] extends Presence ? N['Presence'] : Presence<ExtendStructures<N>>
-		ClientPresence: N['ClientPresence'] extends ClientPresence ? N['ClientPresence'] : ClientPresence
-		VoiceState: N['VoiceState'] extends VoiceState ? N['VoiceState'] : VoiceState<ExtendStructures<N>>
-		Role: N['Role'] extends Role ? N['Role'] : Role<ExtendStructures<N>>
-		User: N['User'] extends User ? N['User'] : User<ExtendStructures<N>>
-	};
 
 //#region Classes
 	export class ClientPresence extends Presence {
@@ -654,7 +636,7 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 	// Needs to be split into Private/Guild message
-	export class Message<S extends StructureGroup = StructureGroup, T extends TextableChannel<S> = TextableChannel<S>> extends Base<S> {
+	export class Message<S extends StructureGroup = StructureGroup> extends Base<S> {
 		constructor(client: S['Client'], data: object, channel: T);
 		private _edits: this[];
 		private patch(data: object): void;
@@ -663,7 +645,7 @@ declare module 'discord.js' {
 		public application: ClientApplication<S>;
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: S['User'];
-		public channel: T;
+		public channel: S["TextChannel"] | S["DMChannel"];
 		public readonly cleanContent: string;
 		public content: string;
 		public readonly createdAt: Date;
