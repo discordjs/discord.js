@@ -125,8 +125,8 @@ declare module 'discord.js' {
 		public fetch(): Promise<this>;
 		public toString(): string;
 	}
-	export type TextableChannel<C extends Client = Client> = | TextChannel<Guild<C>> | DMChannel<C>
-	
+	export type TextableChannel<C extends Client = Client> = | TextChannel<Guild<C>> | DMChannel<C>;
+
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
 		private actions: object;
@@ -480,7 +480,7 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export class GuildChannel<G extends Guild = Guild> extends PartialChannel<G["client"]> {
+	export class GuildChannel<G extends Guild = Guild> extends PartialChannel<G['client']> {
 		constructor(guild: G, data?: object);
 		private memberPermissions(member: GuildMember<G>): Readonly<Permissions>;
 		private rolePermissions(role: Role<G>): Readonly<Permissions>;
@@ -513,8 +513,8 @@ declare module 'discord.js' {
 		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<this>;
 	}
 
-	export class GuildEmoji<G extends Guild = Guild<Client>> extends Emoji<G["client"]> {
-		constructor(client: G["client"], data: object, guild: G);
+	export class GuildEmoji<G extends Guild = Guild<Client>> extends Emoji<G['client']> {
+		constructor(client: G['client'], data: object, guild: G);
 		private _roles: string[];
 
 		public deleted: boolean;
@@ -525,11 +525,11 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<this>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<this>;
 		public equals(other: this | object): boolean;
-		public fetchAuthor(): Promise<User<G["client"]>>;
+		public fetchAuthor(): Promise<User<G['client']>>;
 		public setName(name: string, reason?: string): Promise<this>;
 	}
 
-	export class GuildMember<G extends Guild = Guild> extends Base<G["client"]> {
+	export class GuildMember<G extends Guild = Guild> extends Base<G['client']> {
 		constructor(client: Client, data: object, guild: G);
 		public readonly bannable: boolean;
 		public deleted: boolean;
@@ -545,14 +545,14 @@ declare module 'discord.js' {
 		public nickname: string;
 		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
-		public readonly presence: Presence<G["client"]>;
+		public readonly presence: Presence<G['client']>;
 		public roles: GuildMemberRoleStore<this>;
-		public user: User<G["client"]>;
+		public user: User<G['client']>;
 		public readonly voice: VoiceState<G>;
 		public ban(options?: BanOptions): Promise<this>;
 		public fetch(): Promise<this>;
-		public createDM(): Promise<DMChannel<G["client"]>>;
-		public deleteDM(): Promise<DMChannel<G["client"]>>;
+		public createDM(): Promise<DMChannel<G['client']>>;
+		public deleteDM(): Promise<DMChannel<G['client']>>;
 		public edit(data: GuildMemberEditData, reason?: string): Promise<this>;
 		public hasPermission(permission: PermissionResolvable, options?: { checkAdmin?: boolean; checkOwner?: boolean }): boolean;
 		public kick(reason?: string): Promise<this>;
@@ -566,8 +566,8 @@ declare module 'discord.js' {
 	}
 	interface GuildMember<G extends Guild = Guild> extends PartialTextBasedChannelFields<TextChannel<G>> {}
 
-	export class Integration<G extends Guild = Guild<Client>> extends Base<G["client"]> {
-		constructor(client: G["client"], data: object, guild: G);
+	export class Integration<G extends Guild = Guild<Client>> extends Base<G['client']> {
+		constructor(client: G['client'], data: object, guild: G);
 		public account: IntegrationAccount;
 		public enabled: boolean;
 		public expireBehavior: number;
@@ -579,12 +579,12 @@ declare module 'discord.js' {
 		public syncedAt: number;
 		public syncing: boolean;
 		public type: number;
-		public user: User<G["client"]>;
+		public user: User<G['client']>;
 		public delete(reason?: string): Promise<this>;
 		public edit(data: IntegrationEditData, reason?: string): Promise<this>;
 		public sync(): Promise<this>;
 	}
-	
+
 	export class HTTPError extends Error {
 		constructor(message: string, name: string, code: number, method: string, path: string);
 		public code: number;
@@ -593,8 +593,8 @@ declare module 'discord.js' {
 		public path: string;
 	}
 
-	export class Invite<G extends Guild = Guild<Client>> extends Base<G["client"]> {
-		constructor(client: G["client"], data: object);
+	export class Invite<G extends Guild = Guild<Client>> extends Base<G['client']> {
+		constructor(client: G['client'], data: object);
 		public channel: GuildChannel<G>;
 		public code: string;
 		public readonly createdAt: Date;
@@ -602,7 +602,7 @@ declare module 'discord.js' {
 		public readonly expiresAt: Date;
 		public readonly expiresTimestamp: number;
 		public guild: G;
-		public inviter: User<G["client"]>;
+		public inviter: User<G['client']>;
 		public maxAge: number;
 		public maxUses: number;
 		public memberCount: number;
@@ -615,15 +615,15 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 	// Needs to be split into Private/Guild message
-	export class Message<T extends TextableChannel = TextableChannel> extends Base<T["client"]> {
-		constructor(client: T["client"], data: object, channel: T);
+	export class Message<T extends TextableChannel = TextableChannel> extends Base<T['client']> {
+		constructor(client: T['client'], data: object, channel: T);
 		private _edits: this[];
 		private patch(data: object): void;
 
 		public activity: GroupActivity;
-		public application: ClientApplication<T["client"]>;
+		public application: ClientApplication<T['client']>;
 		public attachments: Collection<Snowflake, MessageAttachment>;
-		public author: User<T["client"]>;
+		public author: User<T['client']>;
 		public channel: T;
 		public readonly cleanContent: string;
 		public content: string;
@@ -656,7 +656,7 @@ declare module 'discord.js' {
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<this>;
 		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<this>;
 		public equals(message: this, rawData: object): boolean;
-		public fetchWebhook(): Promise<Webhook<T["client"]>>;
+		public fetchWebhook(): Promise<Webhook<T['client']>>;
 		public fetch(): Promise<this>;
 		public pin(): Promise<this>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction<this>>;
@@ -734,24 +734,24 @@ declare module 'discord.js' {
 	}
 
 	// Another class that suffer from lack of proper separation of guilds
-	export class MessageMentions<M extends Message = Message, G extends M["guild"] = M["guild"]> {
-		constructor(message: M, users: object[] | Collection<Snowflake, User<M["client"]>>, roles: G extends Guild<Client> ? Snowflake[] | Collection<Snowflake, Role<G>> : never[], everyone: boolean);
+	export class MessageMentions<M extends Message = Message, G extends M['guild'] = M['guild']> {
+		constructor(message: M, users: object[] | Collection<Snowflake, User<M['client']>>, roles: G extends Guild<Client> ? Snowflake[] | Collection<Snowflake, Role<G>> : never[], everyone: boolean);
 		private _channels: G extends Guild<Client> ? Collection<Snowflake, GuildChannel<G>> : undefined;
 		private readonly _content: M;
 		private _members: G extends Guild<Client> ? Collection<Snowflake, GuildMember<G>> : unknown;
-		
+
 		public readonly channels: G extends Guild<Client> ? Collection<Snowflake, TextChannel<G>> : undefined;
 		public readonly client: Client;
 		public everyone: boolean;
 		public readonly guild: G;
-		public has(data: User<M["client"]> | (G extends Guild<Client> ? Role<G> | GuildMember<G> | GuildChannel<G> : never), options?: {
+		public has(data: User<M['client']> | (G extends Guild<Client> ? Role<G> | GuildMember<G> | GuildChannel<G> : never), options?: {
 			ignoreDirect?: boolean;
 			ignoreRoles?: boolean;
 			ignoreEveryone?: boolean;
 		}): boolean;
 		public readonly members: G extends Guild<Client> ? Collection<Snowflake, GuildMember<G>> : undefined;
 		public roles: G extends Guild<Client> ? Collection<Snowflake, Role<G>> : undefined;
-		public users: Collection<Snowflake, User<M["client"]>>;
+		public users: Collection<Snowflake, User<M['client']>>;
 		public toJSON(): object;
 
 		public static CHANNELS_PATTERN: RegExp;
@@ -761,11 +761,11 @@ declare module 'discord.js' {
 	}
 
 	export class MessageReaction<M extends Message = Message> {
-		constructor(client: M["client"], data: object, message: M);
-		private _emoji: (M["guild"] extends Guild<Client> ? GuildEmoji<M["guild"]> : never) | ReactionEmoji<this>;
+		constructor(client: M['client'], data: object, message: M);
+		private _emoji: (M['guild'] extends Guild<Client> ? GuildEmoji<M['guild']> : never) | ReactionEmoji<this>;
 
 		public count: number;
-		public readonly emoji: (M["guild"] extends Guild<Client> ? GuildEmoji<M["guild"]> : never) | ReactionEmoji<this>;
+		public readonly emoji: (M['guild'] extends Guild<Client> ? GuildEmoji<M['guild']> : never) | ReactionEmoji<this>;
 		public me: boolean;
 		public message: M;
 		public users: ReactionUserStore<this>;
@@ -811,29 +811,29 @@ declare module 'discord.js' {
 		public message: M;
 		public options: ReactionCollectorOptions;
 		public total: number;
-		public users: Collection<Snowflake, User<M["client"]>>;
+		public users: Collection<Snowflake, User<M['client']>>;
 
 		public static key(reaction: MessageReaction): Snowflake | string;
 
 		public collect(reaction: MessageReaction<M>): Snowflake | string;
-		public dispose(reaction: MessageReaction<M>, user: User<M["client"]>): Snowflake | string;
+		public dispose(reaction: MessageReaction<M>, user: User<M['client']>): Snowflake | string;
 		public empty(): void;
 		public endReason(): string;
 
-		public on(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
-		public on(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
+		public on(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
+		public on(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
 		public on(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction<M>>, reason: string) => void): this;
-		public on(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
+		public on(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
 		public on(event: string, listener: Function): this;
 
-		public once(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
-		public once(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
+		public once(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
+		public once(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
 		public once(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction<M>>, reason: string) => void): this;
-		public once(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M["client"]>) => void): this;
+		public once(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
-	export class ReactionEmoji<R extends MessageReaction = MessageReaction> extends Emoji<R["message"]["client"]> {
+	export class ReactionEmoji<R extends MessageReaction = MessageReaction> extends Emoji<R['message']['client']> {
 		constructor(reaction: R, emoji: object);
 		public reaction: R;
 		public toJSON(): object;
@@ -849,8 +849,8 @@ declare module 'discord.js' {
 		public smallImageURL(options: AvatarOptions): string;
 	}
 
-	export class Role<G extends Guild = Guild> extends Base<G["client"]> {
-		constructor(client: G["client"], data: object, guild: G);
+	export class Role<G extends Guild = Guild> extends Base<G['client']> {
+		constructor(client: G['client'], data: object, guild: G);
 		public color: number;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
@@ -1040,12 +1040,12 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
 		public topic: string;
-		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook<G["client"]>>;
+		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook<G['client']>>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
-		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<G["client"]>>>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<G['client']>>>;
 	}
-	interface TextChannel<G extends Guild = Guild> extends TextBasedChannelFields<TextableChannel<G["client"]>> {}
+	interface TextChannel<G extends Guild = Guild> extends TextBasedChannelFields<TextableChannel<G['client']>> {}
 
 	export class User<C extends Client = Client> extends Base<C> {
 		constructor(client: C, data: object);
@@ -1170,7 +1170,7 @@ declare module 'discord.js' {
 		public status: VoiceStatus;
 		public voiceManager: object;
 		public disconnect(): void;
-		public play<B extends VoiceBroadcast<V["client"]> = VoiceBroadcast<V["client"]>>(input: B | Readable | string, options?: StreamOptions): StreamDispatcher<B>;
+		public play<B extends VoiceBroadcast<V['client']> = VoiceBroadcast<V['client']>>(input: B | Readable | string, options?: StreamOptions): StreamDispatcher<B>;
 
 		public on(event: 'authenticated', listener: () => void): this;
 		public on(event: 'closing', listener: () => void): this;
@@ -1181,7 +1181,7 @@ declare module 'discord.js' {
 		public on(event: 'newSession', listener: () => void): this;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'reconnecting', listener: () => void): this;
-		public on(event: 'speaking', listener: (user: User<V["client"]>, speaking: Readonly<Speaking>) => void): this;
+		public on(event: 'speaking', listener: (user: User<V['client']>, speaking: Readonly<Speaking>) => void): this;
 		public on(event: 'warn', listener: (warning: string | Error) => void): this;
 		public on(event: string, listener: Function): this;
 
@@ -1194,7 +1194,7 @@ declare module 'discord.js' {
 		public once(event: 'newSession', listener: () => void): this;
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'reconnecting', listener: () => void): this;
-		public once(event: 'speaking', listener: (user: User<V["client"]>, speaking: Readonly<Speaking>) => void): this;
+		public once(event: 'speaking', listener: (user: User<V['client']>, speaking: Readonly<Speaking>) => void): this;
 		public once(event: 'warn', listener: (warning: string | Error) => void): this;
 		public once(event: string, listener: Function): this;
 	}
@@ -1221,7 +1221,7 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export class VoiceState<G extends Guild = Guild> extends Base<G["client"]> {
+	export class VoiceState<G extends Guild = Guild> extends Base<G['client']> {
 		constructor(guild: G, data: object);
 		public readonly channel?: VoiceChannel<G>;
 		public channelID?: Snowflake;
@@ -1339,25 +1339,25 @@ declare module 'discord.js' {
 		public set(key: any): any;
 	}
 
-	export class GuildMemberRoleStore<M extends GuildMember = GuildMember> extends OverridableDataStore<Snowflake, Role<M["guild"]>, typeof Role, RoleResolvable> {
+	export class GuildMemberRoleStore<M extends GuildMember = GuildMember> extends OverridableDataStore<Snowflake, Role<M['guild']>, typeof Role, RoleResolvable> {
 		constructor(member: M);
-		public readonly hoist: Role<M["guild"]>;
-		public readonly color: Role<M["guild"]>;
-		public readonly highest: Role<M["guild"]>;
+		public readonly hoist: Role<M['guild']>;
+		public readonly color: Role<M['guild']>;
+		public readonly highest: Role<M['guild']>;
 
-		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M["guild"]>>, reason?: string): Promise<this>;
-		public set(roles: RoleResolvable[] | Collection<Snowflake, Role<M["guild"]>>, reason?: string): Promise<this>;
-		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M["guild"]>>, reason?: string): Promise<this>;
+		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
+		public set(roles: RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
+		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
 	}
 
 	export class GuildMemberStore<G extends Guild = Guild> extends DataStore<Snowflake, GuildMember<G>, typeof GuildMember, GuildMemberResolvable> {
 		constructor(guild: G, iterable?: Iterable<any>);
-		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember<G> | User<G["client"]> | Snowflake>;
+		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember<G> | User<G['client']> | Snowflake>;
 		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember<G>>;
 		public fetch(): Promise<this>;
 		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember<G>>>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
-		public unban(user: UserResolvable, reason?: string): Promise<User<G["client"]>>;
+		public unban(user: UserResolvable, reason?: string): Promise<User<G['client']>>;
 	}
 
 	export class GuildStore<C extends Client = Client> extends DataStore<Snowflake, Guild<C>, typeof Guild, GuildResolvable> {
@@ -1381,9 +1381,9 @@ declare module 'discord.js' {
 		public removeAll(): Promise<M>;
 	}
 
-	export class ReactionUserStore<R extends MessageReaction = MessageReaction> extends DataStore<Snowflake, User<R["message"]["client"]>, typeof User, UserResolvable> {
-		constructor(client: R["message"]["client"], iterable: Iterable<any> | undefined, reaction: R);
-		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, User<R["message"]["client"]>>>;
+	export class ReactionUserStore<R extends MessageReaction = MessageReaction> extends DataStore<Snowflake, User<R['message']['client']>, typeof User, UserResolvable> {
+		constructor(client: R['message']['client'], iterable: Iterable<any> | undefined, reaction: R);
+		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, User<R['message']['client']>>>;
 		public remove(user?: UserResolvable): Promise<R>;
 	}
 
