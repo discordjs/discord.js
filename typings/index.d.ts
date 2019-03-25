@@ -125,7 +125,8 @@ declare module 'discord.js' {
 		public fetch(): Promise<this>;
 		public toString(): string;
 	}
-	export type TextableChannel<C extends Client = Client> = DMChannel<C> | TextChannel<Guild<C>>
+	export type TextableChannel<C extends Client = Client> = | TextChannel<Guild<C>> | DMChannel<C>
+	
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
 		private actions: object;
@@ -346,13 +347,13 @@ declare module 'discord.js' {
 		public path: string;
 	}
 
-	export class DMChannel<C extends Client = Client> extends TextBasedChannel(PartialChannel) {
+	export class DMChannel<C extends Client = Client> extends PartialChannel<C> {
 		constructor(client: C, data?: object);
 		public messages: MessageStore<this>;
 		public recipient: User<C>;
 		public readonly partial: boolean;
 	}
-
+	interface DMChannel<C extends Client = Client> extends TextBasedChannelFields<TextableChannel<C>> {}
 	export class Emoji<C extends Client = Client> extends Base<C> {
 		constructor(client: C, emoji: object);
 		public animated: boolean;
@@ -528,7 +529,7 @@ declare module 'discord.js' {
 		public setName(name: string, reason?: string): Promise<this>;
 	}
 
-	export class GuildMember<G extends Guild = Guild<Client>> extends PartialTextBasedChannel(Base) {
+	export class GuildMember<G extends Guild = Guild> extends Base<G["client"]> {
 		constructor(client: Client, data: object, guild: G);
 		public readonly bannable: boolean;
 		public deleted: boolean;
@@ -563,6 +564,7 @@ declare module 'discord.js' {
 		public toJSON(): object;
 		public toString(): string;
 	}
+	interface GuildMember<G extends Guild = Guild> extends PartialTextBasedChannelFields<TextChannel<G>> {}
 
 	export class Integration<G extends Guild = Guild<Client>> extends Base<G["client"]> {
 		constructor(client: G["client"], data: object, guild: G);
@@ -1031,7 +1033,7 @@ declare module 'discord.js' {
 		static extend<T extends Function>(structure: string, extender: (baseClass: typeof Function) => T): T;
 	}
 
-	export class TextChannel<G extends Guild = Guild> extends TextBasedChannel(GuildChannel) {
+	export class TextChannel<G extends Guild = Guild> extends GuildChannel<G> {
 		constructor(guild: G, data?: object);
 		public readonly members: Collection<Snowflake, GuildMember<G>>;
 		public messages: MessageStore<this>;
@@ -1043,8 +1045,9 @@ declare module 'discord.js' {
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<G["client"]>>>;
 	}
+	interface TextChannel<G extends Guild = Guild> extends TextBasedChannelFields<TextableChannel<G["client"]>> {}
 
-	export class User<C extends Client = Client> extends PartialTextBasedChannel(Base) {
+	export class User<C extends Client = Client> extends Base<C> {
 		constructor(client: C, data: object);
 		public avatar: string;
 		public bot: boolean;
@@ -1070,7 +1073,7 @@ declare module 'discord.js' {
 		public typingIn(channel: ChannelResolvable): boolean;
 		public typingSinceIn(channel: ChannelResolvable): Date;
 	}
-
+	interface User<C extends Client = Client> extends PartialTextBasedChannelFields<TextableChannel<C>> {}
 	export class Util {
 		public static basename(path: string, ext?: string): string;
 		public static binaryToID(num: string): Snowflake;
@@ -1407,8 +1410,6 @@ declare module 'discord.js' {
 	// to each of those classes
 
 	type Constructable<T> = new (...args: any[]) => T;
-	const PartialTextBasedChannel: <T>(Base?: Constructable<T>) => Constructable<T & PartialTextBasedChannelFields>;
-	const TextBasedChannel: <T>(Base?: Constructable<T>) => Constructable<T & TextBasedChannelFields>;
 
 	// Would ideally be generic in a better class
 	interface PartialTextBasedChannelFields<T extends TextableChannel = TextableChannel> {
