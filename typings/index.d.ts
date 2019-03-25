@@ -4,9 +4,28 @@ declare module 'discord.js' {
 	import { ChildProcess } from 'child_process';
 
 	export const version: string;
-
+	export type StructureGroup = {
+		Client: Client
+		GuildEmoji: GuildEmoji
+		DMChannel: DMChannel
+		TextChannel: TextChannel
+		VoiceChannel: VoiceChannel
+		CategoryChannel: CategoryChannel
+		GuildChannel: GuildChannel
+		GuildMember: GuildMember
+		Guild: Guild
+		Message: Message
+		MessageReaction: MessageReaction
+		Presence: Presence
+		ClientPresence: ClientPresence
+		VoiceState: VoiceState
+		Role: Role
+		User: User
+	}
 //#region Classes
-
+	export class ClientPresence extends Presence {
+		public set(presence: ClientPresenceStatus): this
+	}
 	export class Activity {
 		constructor(presence: Presence, data?: object);
 		public applicationID: Snowflake;
@@ -32,14 +51,14 @@ declare module 'discord.js' {
 		public static resolve(bit?: BitFieldResolvable<ActivityFlagsString>): number;
 	}
 
-	export class APIMessage {
-		constructor(target: MessageTarget, options: MessageOptions | WebhookMessageOptions);
+	export class APIMessage<S extends StructureGroup = StructureGroup> {
+		constructor(target: MessageTarget<S>, options: MessageOptions<S> | WebhookMessageOptions);
 		public data?: object;
 		public readonly isUser: boolean;
 		public readonly isWebhook: boolean;
 		public files?: object[];
-		public options: MessageOptions | WebhookMessageOptions;
-		public target: MessageTarget;
+		public options: MessageOptions<S> | WebhookMessageOptions;
+		public target: MessageTarget<S>;
 
 		public static create(
 			target: MessageTarget,
@@ -60,12 +79,12 @@ declare module 'discord.js' {
 		public resolve(): Promise<this>;
 		public resolveData(): this;
 		public resolveFiles(): Promise<this>;
-		public split(): APIMessage[];
+		public split(): APIMessage<S>[];
 	}
 
-	export class Base<C extends Client = Client> {
-		constructor(client: C);
-		public readonly client: C;
+	export class Base<S extends StructureGroup = StructureGroup> {
+		constructor(client: S["Client"]);
+		public readonly client: S["Client"];
 		public toJSON(...props: { [key: string]: boolean | string }[]): object;
 		public valueOf(): string;
 	}
@@ -89,8 +108,7 @@ declare module 'discord.js' {
 		public toJSON(...props: { [key: string]: boolean | string }[]): object;
 	}
 
-	class BroadcastDispatcher<C extends Client = Client> extends StreamDispatcher<VoiceBroadcast<C>> {
-	}
+	class BroadcastDispatcher<S extends StructureGroup = StructureGroup> extends StreamDispatcher<VoiceBroadcast<S>> {}
 
 	export class BitField<S extends string> {
 		constructor(bits?: BitFieldResolvable<S>);
@@ -110,12 +128,12 @@ declare module 'discord.js' {
 		public static resolve(bit?: BitFieldResolvable<any>): number;
 	}
 
-	export class CategoryChannel<G extends Guild = Guild> extends GuildChannel<G> {
-		public readonly children: Collection<Snowflake, GuildChannel<G>>;
+	export class CategoryChannel<S extends StructureGroup = StructureGroup> extends GuildChannel<S> {
+		public readonly children: Collection<Snowflake, S["GuildChannel"]>;
 	}
 
-	export class PartialChannel<C extends Client = Client> extends Base<C> {
-		constructor(client: C, data?: object);
+	export class PartialChannel<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data?: object);
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
@@ -125,109 +143,110 @@ declare module 'discord.js' {
 		public fetch(): Promise<this>;
 		public toString(): string;
 	}
-	export type TextableChannel<C extends Client = Client> = | TextChannel<Guild<C>> | DMChannel<C>;
-
-	export class Client extends BaseClient {
+	export type TextableChannel<S extends StructureGroup = StructureGroup> = S["TextChannel"] | S["DMChannel"];
+	type Replace<T, K extends keyof T, V> = { [P in keyof T]: P extends K ? V : T[P]; };
+	type ThisGroup<S extends StructureGroup, T extends Client> = Replace<S, "Client", T>
+	export class Client<s extends StructureGroup = StructureGroup> extends BaseClient {
 		constructor(options?: ClientOptions);
 		private actions: object;
 		private voice: object;
 		private _eval(script: string): any;
 		private _validateOptions(options?: ClientOptions): void;
 
-		public broadcasts: VoiceBroadcast<this>[];
-		public channels: ChannelStore<this>;
-		public readonly emojis: GuildEmojiStore<Guild<this>>;
-		public guilds: GuildStore<this>;
+		public broadcasts: VoiceBroadcast<ThisGroup<s, this>>[];
+		public channels: ChannelStore<ThisGroup<s, this>>;
+		public readonly emojis: GuildEmojiStore<ThisGroup<s, this>>;
+		public guilds: GuildStore<ThisGroup<s, this>>;
 		public readyAt: Date | null;
 		public readonly readyTimestamp: number;
-		public shard: ShardClientUtil;
+		public shard: ShardClientUtil<ThisGroup<s, this>>;
 		public token: string;
 		public readonly uptime: number;
-		public user: ClientUser<this> | null;
-		public users: UserStore<this>;
-		public readonly voiceConnections: Collection<Snowflake, VoiceConnection<VoiceChannel<Guild<this>>>>;
-		public ws: WebSocketManager;
-		public createVoiceBroadcast(): VoiceBroadcast<this>;
+		public user: ClientUser<ThisGroup<s, this>> | null;
+		public users: UserStore<ThisGroup<s, this>>;
+		public readonly voiceConnections: Collection<Snowflake, VoiceConnection<ThisGroup<s, this>>>;
+		public ws: WebSocketManager<ThisGroup<s, this>>;
+		public createVoiceBroadcast(): VoiceBroadcast<ThisGroup<s, this>>;
 		public destroy(): void;
-		public fetchApplication(): Promise<ClientApplication<this>>;
-		public fetchInvite(invite: InviteResolvable): Promise<Invite<Guild<this>>>;
+		public fetchApplication(): Promise<ClientApplication<ThisGroup<s, this>>>;
+		public fetchInvite(invite: InviteResolvable): Promise<Invite<ThisGroup<s, this>>>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
-		public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook<this>>;
+		public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook<ThisGroup<s, this>>>;
 		public generateInvite(permissions?: PermissionResolvable): Promise<string>;
 		public login(token?: string): Promise<string>;
 		public sweepMessages(lifetime?: number): number;
 		public toJSON(): object;
 
-		public on(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannel<this>) => void): this;
-		public on(event: 'channelPinsUpdate', listener: (channel: PartialChannel<this>, time: Date) => void): this;
-		public on(event: 'channelUpdate', listener: (oldChannel: PartialChannel<this>, newChannel: PartialChannel<this>) => void): this;
+		public on(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannel<ThisGroup<s, this>>) => void): this;
+		public on(event: 'channelPinsUpdate', listener: (channel: PartialChannel<ThisGroup<s, this>>, time: Date) => void): this;
+		public on(event: 'channelUpdate', listener: (oldChannel: PartialChannel<ThisGroup<s, this>>, newChannel: PartialChannel<ThisGroup<s, this>>) => void): this;
 		public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
 		public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
-		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji<Guild<this>>) => void): this;
-		public on(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji<Guild<this>>, newEmoji: GuildEmoji<Guild<this>>) => void): this;
+		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: ThisGroup<s, this>["GuildEmoji"]) => void): this;
+		public on(event: 'emojiUpdate', listener: (oldEmoji: ThisGroup<s, this>["GuildEmoji"], newEmoji: ThisGroup<s, this>["GuildEmoji"]) => void): this;
 		public on(event: 'error', listener: (error: Error) => void): this;
-		public on(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild<this>, user: User<this>) => void): this;
-		public on(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: Guild<this>) => void): this;
-		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember<Guild<this>>) => void): this;
-		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember<Guild<this>>>, guild: Guild<this>) => void): this;
-		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember<Guild<this>>, speaking: Readonly<Speaking>) => void): this;
-		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember<Guild<this>>, newMember: GuildMember<Guild<this>>) => void): this;
-		public on(event: 'guildUpdate', listener: (oldGuild: Guild<this>, newGuild: Guild<this>) => void): this;
-		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild<this>) => void): this;
-		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message<TextableChannel<this>>) => void): this;
-		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message<TextableChannel<this>>>) => void): this;
-		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction<Message<TextableChannel<this>>>, user: User<this>) => void): this;
-		public on(event: 'messageUpdate', listener: (oldMessage: Message<TextableChannel<this>>, newMessage: Message<TextableChannel<this>>) => void): this;
-		public on(event: 'presenceUpdate', listener: (oldPresence: Presence<this> | undefined, newPresence: Presence<this>) => void): this;
+		public on(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: ThisGroup<s, this>["Guild"], user: ThisGroup<s, this>["User"]) => void): this;
+		public on(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: ThisGroup<s, this>["GuildMember"]) => void): this;
+		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, ThisGroup<s, this>["GuildMember"]>, guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public on(event: 'guildMemberSpeaking', listener: (member: ThisGroup<s, this>["GuildMember"], speaking: Readonly<Speaking>) => void): this;
+		public on(event: 'guildMemberUpdate', listener: (oldMember: ThisGroup<s, this>["GuildMember"], newMember: ThisGroup<s, this>["GuildMember"]) => void): this;
+		public on(event: 'guildUpdate', listener: (oldGuild: ThisGroup<s, this>["Guild"], newGuild: ThisGroup<s, this>["Guild"]) => void): this;
+		public on(event: 'guildIntegrationsUpdate', listener: (guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: ThisGroup<s, this>["Message"]) => void): this;
+		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, ThisGroup<s, this>["Message"]>) => void): this;
+		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: ThisGroup<s, this>["MessageReaction"], user: ThisGroup<s, this>["User"]) => void): this;
+		public on(event: 'messageUpdate', listener: (oldMessage: ThisGroup<s, this>["Message"], newMessage: ThisGroup<s, this>["Message"]) => void): this;
+		public on(event: 'presenceUpdate', listener: (oldPresence: ThisGroup<s, this>["Presence"] | undefined, newPresence: ThisGroup<s, this>["Presence"]) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'reconnecting', listener: (shardID: number) => void): this;
 		public on(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
-		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role<Guild<this>>) => void): this;
-		public on(event: 'roleUpdate', listener: (oldRole: Role<Guild<this>>, newRole: Role<Guild<this>>) => void): this;
+		public on(event: 'roleCreate' | 'roleDelete', listener: (role: ThisGroup<s, this>["Role"]) => void): this;
+		public on(event: 'roleUpdate', listener: (oldRole: ThisGroup<s, this>["Role"], newRole: ThisGroup<s, this>["Role"]) => void): this;
 		public on(event: 'shardReady', listener: (shardID: number) => void): this;
-		public on(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannel<this>, user: User<this>) => void): this;
-		public on(event: 'userUpdate', listener: (oldUser: User<this>, newUser: User<this>) => void): this;
-		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState<Guild<this>> | undefined, newState: VoiceState<Guild<this>>) => void): this;
-		public on(event: 'webhookUpdate', listener: (channel: TextChannel<Guild<this>>) => void): this;
+		public on(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannel<ThisGroup<s, this>>, user: ThisGroup<s, this>["User"]) => void): this;
+		public on(event: 'userUpdate', listener: (oldUser: ThisGroup<s, this>["User"], newUser: ThisGroup<s, this>["User"]) => void): this;
+		public on(event: 'voiceStateUpdate', listener: (oldState: ThisGroup<s, this>["VoiceState"] | undefined, newState: ThisGroup<s, this>["VoiceState"]) => void): this;
+		public on(event: 'webhookUpdate', listener: (channel: ThisGroup<s, this>["TextChannel"]) => void): this;
 		public on(event: string, listener: Function): this;
 
-		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannel<this>) => void): this;
-		public once(event: 'channelPinsUpdate', listener: (channel: PartialChannel<this>, time: Date) => void): this;
-		public once(event: 'channelUpdate', listener: (oldChannel: PartialChannel<this>, newChannel: PartialChannel<this>) => void): this;
+		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannel<ThisGroup<s, this>>) => void): this;
+		public once(event: 'channelPinsUpdate', listener: (channel: PartialChannel<ThisGroup<s, this>>, time: Date) => void): this;
+		public once(event: 'channelUpdate', listener: (oldChannel: PartialChannel<ThisGroup<s, this>>, newChannel: PartialChannel<ThisGroup<s, this>>) => void): this;
 		public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
 		public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
-		public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji<Guild<this>>) => void): this;
-		public once(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji<Guild<this>>, newEmoji: GuildEmoji<Guild<this>>) => void): this;
+		public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: ThisGroup<s, this>["GuildEmoji"]) => void): this;
+		public once(event: 'emojiUpdate', listener: (oldEmoji: ThisGroup<s, this>["GuildEmoji"], newEmoji: ThisGroup<s, this>["GuildEmoji"]) => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
-		public once(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild<this>, user: User<this>) => void): this;
-		public once(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: Guild<this>) => void): this;
-		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember<Guild<this>>) => void): this;
-		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember<Guild<this>>>, guild: Guild<this>) => void): this;
-		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember<Guild<this>>, speaking: Readonly<Speaking>) => void): this;
-		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember<Guild<this>>, newMember: GuildMember<Guild<this>>) => void): this;
-		public once(event: 'guildUpdate', listener: (oldGuild: Guild<this>, newGuild: Guild<this>) => void): this;
-		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild<this>) => void): this;
-		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message<DMChannel<this> | TextChannel<Guild<this>>>) => void): this;
-		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message<DMChannel<this> | TextChannel<Guild<this>>>>) => void): this;
-		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction<Message<DMChannel<this> | TextChannel<Guild<this>>>>, user: User<this>) => void): this;
-		public once(event: 'messageUpdate', listener: (oldMessage: Message<DMChannel<this> | TextChannel<Guild<this>>>, newMessage: Message<DMChannel<this> | TextChannel<Guild<this>>>) => void): this;
-		public once(event: 'presenceUpdate', listener: (oldPresence: Presence<this> | undefined, newPresence: Presence<this>) => void): this;
+		public once(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: ThisGroup<s, this>["Guild"], user: ThisGroup<s, this>["User"]) => void): this;
+		public once(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: ThisGroup<s, this>["GuildMember"]) => void): this;
+		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, ThisGroup<s, this>["GuildMember"]>, guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public once(event: 'guildMemberSpeaking', listener: (member: ThisGroup<s, this>["GuildMember"], speaking: Readonly<Speaking>) => void): this;
+		public once(event: 'guildMemberUpdate', listener: (oldMember: ThisGroup<s, this>["GuildMember"], newMember: ThisGroup<s, this>["GuildMember"]) => void): this;
+		public once(event: 'guildUpdate', listener: (oldGuild: ThisGroup<s, this>["Guild"], newGuild: ThisGroup<s, this>["Guild"]) => void): this;
+		public once(event: 'guildIntegrationsUpdate', listener: (guild: ThisGroup<s, this>["Guild"]) => void): this;
+		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: ThisGroup<s, this>["Message"]) => void): this;
+		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, ThisGroup<s, this>["Message"]>) => void): this;
+		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: ThisGroup<s, this>["MessageReaction"], user: ThisGroup<s, this>["User"]) => void): this;
+		public once(event: 'messageUpdate', listener: (oldMessage: ThisGroup<s, this>["Message"], newMessage: ThisGroup<s, this>["Message"]) => void): this;
+		public once(event: 'presenceUpdate', listener: (oldPresence: ThisGroup<s, this>["Presence"] | undefined, newPresence: ThisGroup<s, this>["Presence"]) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'reconnecting', listener: (shardID: number) => void): this;
 		public once(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
-		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role<Guild<this>>) => void): this;
-		public once(event: 'roleUpdate', listener: (oldRole: Role<Guild<this>>, newRole: Role<Guild<this>>) => void): this;
+		public once(event: 'roleCreate' | 'roleDelete', listener: (role: ThisGroup<s, this>["Role"]) => void): this;
+		public once(event: 'roleUpdate', listener: (oldRole: ThisGroup<s, this>["Role"], newRole: ThisGroup<s, this>["Role"]) => void): this;
 		public once(event: 'shardReady', listener: (shardID: number) => void): this;
-		public once(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannel<this>, user: User<this>) => void): this;
-		public once(event: 'userUpdate', listener: (oldUser: User<this>, newUser: User<this>) => void): this;
-		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState<Guild<this>> | undefined, newState: VoiceState<Guild<this>>) => void): this;
-		public once(event: 'webhookUpdate', listener: (channel: TextChannel<Guild<this>>) => void): this;
+		public once(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannel<ThisGroup<s, this>>, user: ThisGroup<s, this>["User"]) => void): this;
+		public once(event: 'userUpdate', listener: (oldUser: ThisGroup<s, this>["User"], newUser: ThisGroup<s, this>["User"]) => void): this;
+		public once(event: 'voiceStateUpdate', listener: (oldState: ThisGroup<s, this>["VoiceState"] | undefined, newState: ThisGroup<s, this>["VoiceState"]) => void): this;
+		public once(event: 'webhookUpdate', listener: (channel: ThisGroup<s, this>["TextChannel"]) => void): this;
 		public once(event: string, listener: Function): this;
 	}
-	export class ClientApplication<C extends Client = Client> extends Base<C> {
-		constructor(client: C, data: object);
+	export class ClientApplication<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data: object);
 		public botPublic?: boolean;
 		public botRequireCodeGrant?: boolean;
 		public cover?: string;
@@ -237,7 +256,7 @@ declare module 'discord.js' {
 		public icon: string;
 		public id: Snowflake;
 		public name: string;
-		public owner?: User<C>;
+		public owner?: S["User"];
 		public rpcOrigins: string[];
 		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
@@ -253,15 +272,15 @@ declare module 'discord.js' {
 		shardID?: number | number[];
 	}
 
-	export class ClientUser<C extends Client> extends User<C> {
+	export class ClientUser<S extends StructureGroup = StructureGroup> extends User<S> {
 		public mfaEnabled: boolean;
 		public verified: boolean;
-		public setActivity(options?: ActivityOptions): Promise<Presence<C>>;
-		public setActivity(name: string, options?: ActivityOptions): Promise<Presence<C>>;
-		public setAFK(afk: boolean): Promise<Presence<C>>;
+		public setActivity(options?: ActivityOptions): Promise<S["Presence"]>;
+		public setActivity(name: string, options?: ActivityOptions): Promise<S["Presence"]>;
+		public setAFK(afk: boolean): Promise<S["Presence"]>;
 		public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
-		public setPresence(data: PresenceData): Promise<Presence<C>>;
-		public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<Presence<C>>;
+		public setPresence(data: PresenceData): Promise<S["Presence"]>;
+		public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<S["Presence"]>;
 		public setUsername(username: string): Promise<this>;
 	}
 
@@ -301,11 +320,11 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export abstract class Collector<K, V> extends EventEmitter {
-		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
+	export abstract class Collector<K, V, S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(client: S["Client"], filter: CollectorFilter, options?: CollectorOptions);
 		private _timeout: NodeJS.Timer;
 
-		public readonly client: Client;
+		public readonly client: S["Client"];
 		public collected: Collection<K, V>;
 		public ended: boolean;
 		public filter: CollectorFilter;
@@ -347,15 +366,16 @@ declare module 'discord.js' {
 		public path: string;
 	}
 
-	export class DMChannel<C extends Client = Client> extends PartialChannel<C> {
-		constructor(client: C, data?: object);
-		public messages: MessageStore<this>;
-		public recipient: User<C>;
+	export class DMChannel<S extends StructureGroup = StructureGroup> extends PartialChannel<S> {
+		constructor(client: S["Client"], data?: object);
+		public messages: MessageStore<S>;
+		public recipient: S["User"];
 		public readonly partial: boolean;
 	}
-	interface DMChannel<C extends Client = Client> extends TextBasedChannelFields<TextableChannel<C>> {}
-	export class Emoji<C extends Client = Client> extends Base<C> {
-		constructor(client: C, emoji: object);
+	interface DMChannel<S extends StructureGroup = StructureGroup> extends TextBasedChannelFields<S> {}
+
+	export class Emoji<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], emoji: object);
 		public animated: boolean;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
@@ -368,27 +388,27 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
-	export class Guild<C extends Client = Client> extends Base<C> {
-		constructor(client: C, data: object);
-		private _sortedRoles(): Collection<Snowflake, Role<this>>;
-		private _sortedChannels(channel: PartialChannel<C>): Collection<Snowflake, GuildChannel<this>>;
+	export class Guild<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data: object);
+		private _sortedRoles(): Collection<Snowflake, S["Role"]>;
+		private _sortedChannels(channel: PartialChannel<S>): Collection<Snowflake, S["GuildChannel"]>;
 		private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
 		protected setup(data: any): void;
 
-		public readonly afkChannel: VoiceChannel<this>;
+		public readonly afkChannel: S["VoiceChannel"];
 		public afkChannelID: Snowflake;
 		public afkTimeout: number;
 		public applicationID: Snowflake;
 		public available: boolean;
-		public channels: GuildChannelStore<this>;
+		public channels: GuildChannelStore<S>;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
-		public readonly defaultRole: Role<this>;
+		public readonly defaultRole: S["Role"];
 		public deleted: boolean;
 		public embedEnabled: boolean;
-		public emojis: GuildEmojiStore<this>;
+		public emojis: GuildEmojiStore<S>;
 		public explicitContentFilter: number;
 		public features: GuildFeatures[];
 		public icon: string;
@@ -396,147 +416,147 @@ declare module 'discord.js' {
 		public readonly joinedAt: Date;
 		public joinedTimestamp: number;
 		public large: boolean;
-		public readonly me: GuildMember<this>;
+		public readonly me: S["GuildMember"];
 		public memberCount: number;
-		public members: GuildMemberStore<this>;
+		public members: GuildMemberStore<S>;
 		public mfaLevel: number;
 		public name: string;
 		public readonly nameAcronym: string;
-		public readonly owner: GuildMember<this>;
+		public readonly owner: S["GuildMember"];
 		public ownerID: Snowflake;
-		public presences: PresenceStore<C>;
+		public presences: PresenceStore<S>;
 		public region: string;
-		public roles: RoleStore<this>;
-		public readonly shard: WebSocketShard;
+		public roles: RoleStore<S>;
+		public readonly shard: WebSocketShard<S>;
 		public shardID: number;
 		public splash: string;
-		public readonly systemChannel: TextChannel<this>;
+		public readonly systemChannel: S["TextChannel"];
 		public systemChannelID: Snowflake;
 		public verificationLevel: number;
 		public readonly verified: boolean;
-		public readonly voiceConnection: VoiceConnection<VoiceChannel<this>>;
-		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember<this>>;
+		public readonly voiceConnection: VoiceConnection<S>;
+		public addMember(user: UserResolvable<S>, options: AddGuildMemberOptions<S>): Promise<S["GuildMember"]>;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<this>;
 		public delete(): Promise<this>;
-		public edit(data: GuildEditData, reason?: string): Promise<this>;
+		public edit(data: GuildEditData<S>, reason?: string): Promise<this>;
 		public equals(guild: this): boolean;
-		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs<C>>;
-		public fetchBans(): Promise<Collection<Snowflake, { user: User<C>, reason: string }>>;
-		public fetchIntegrations(): Promise<Collection<string, Integration<this>>>;
-		public fetchInvites(): Promise<Collection<string, Invite<this>>>;
+		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions<S>): Promise<GuildAuditLogs<S>>;
+		public fetchBans(): Promise<Collection<Snowflake, { user: S["User"], reason: string }>>;
+		public fetchIntegrations(): Promise<Collection<string, Integration<S>>>;
+		public fetchInvites(): Promise<Collection<string, Invite<S>>>;
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
-		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<C>>>;
-		public fetchEmbed(): Promise<GuildEmbedData>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<S>>>;
+		public fetchEmbed(): Promise<GuildEmbedData<S>>;
 		public iconURL(options?: AvatarOptions): string;
 		public leave(): Promise<this>;
-		public member(user: UserResolvable): GuildMember<this>;
-		public setAFKChannel(afkChannel: ChannelResolvable, reason?: string): Promise<this>;
+		public member(user: UserResolvable<S>): S["GuildMember"];
+		public setAFKChannel(afkChannel: ChannelResolvable<S>, reason?: string): Promise<this>;
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<this>;
-		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<this>;
+		public setChannelPositions(channelPositions: ChannelPosition<S>[]): Promise<this>;
 		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications | number, reason?: string): Promise<this>;
 		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<this>;
 		public setIcon(icon: Base64Resolvable, reason?: string): Promise<this>;
 		public setName(name: string, reason?: string): Promise<this>;
-		public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<this>;
+		public setOwner(owner: GuildMemberResolvable<S>, reason?: string): Promise<this>;
 		public setRegion(region: string, reason?: string): Promise<this>;
 		public setSplash(splash: Base64Resolvable, reason?: string): Promise<this>;
-		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<this>;
+		public setSystemChannel(systemChannel: ChannelResolvable<S>, reason?: string): Promise<this>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<this>;
-		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<this>;
+		public setEmbed(embed: GuildEmbedData<S>, reason?: string): Promise<this>;
 		public splashURL(options?: AvatarOptions): string;
 		public toJSON(): object;
 		public toString(): string;
 	}
 
-	export class GuildAuditLogs<C extends Client = Client> {
-		constructor(guild: Guild<C>, data: object);
-		private webhooks: Collection<Snowflake, Webhook<C>>;
+	export class GuildAuditLogs<S extends StructureGroup = StructureGroup> {
+		constructor(guild: S["Guild"], data: object);
+		private webhooks: Collection<Snowflake, Webhook<S>>;
 
-		public entries: Collection<Snowflake, GuildAuditLogsEntry<C>>;
+		public entries: Collection<Snowflake, GuildAuditLogsEntry<S>>;
 
 		public static Actions: GuildAuditLogsActions;
 		public static Targets: GuildAuditLogsTargets;
 		public static Entry: typeof GuildAuditLogsEntry;
 		public static actionType(action: number): GuildAuditLogsActionType;
-		public static build<C extends Client>(...args: GuildAuditLogs<C> extends new(...args: infer U) => any ? U : never): Promise<GuildAuditLogs<C>>;
+		public static build<S extends StructureGroup>(...args: GuildAuditLogs<S> extends new(...args: infer U) => any ? U : never): Promise<GuildAuditLogs<S>>;
 		public static targetType(target: number): GuildAuditLogsTarget;
 		public toJSON(): object;
 	}
 
-	class GuildAuditLogsEntry<C extends Client, G extends Guild = Guild<C>> {
-		constructor(logs: GuildAuditLogs<C>, guild: G, data: object);
+	class GuildAuditLogsEntry<S extends StructureGroup = StructureGroup> {
+		constructor(logs: GuildAuditLogs<S>, guild: S["Guild"], data: object);
 		public action: GuildAuditLogsAction;
 		public actionType: GuildAuditLogsActionType;
 		public changes: AuditLogChange[];
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
-		public executor: User<C>;
-		public extra: object | Role<G> | GuildMember<Guild<C>>;
+		public executor: S["User"];
+		public extra: object | S["Role" | "GuildMember"];
 		public id: Snowflake;
 		public reason: string;
-		public target: G | User<C> | Role<G> | GuildEmoji<Guild<C>> | Invite<G> | Webhook<C>;
+		public target: S["Guild" | "User" | "Role" | "GuildEmoji"] | Invite<S> | Webhook<S>;
 		public targetType: GuildAuditLogsTarget;
 		public toJSON(): object;
 	}
 
-	export class GuildChannel<G extends Guild = Guild> extends PartialChannel<G['client']> {
-		constructor(guild: G, data?: object);
-		private memberPermissions(member: GuildMember<G>): Readonly<Permissions>;
-		private rolePermissions(role: Role<G>): Readonly<Permissions>;
+	export class GuildChannel<S extends StructureGroup = StructureGroup> extends PartialChannel<S> {
+		constructor(guild: S["Guild"], data?: object);
+		private memberPermissions(member: S["GuildMember"]): Readonly<Permissions>;
+		private rolePermissions(role: S["Role"]): Readonly<Permissions>;
 
 		public readonly calculatedPosition: number;
 		public readonly deletable: boolean;
-		public guild: G;
+		public guild: S["Guild"];
 		public readonly manageable: boolean;
 		public name: string;
-		public readonly parent: CategoryChannel<G>;
+		public readonly parent: S["CategoryChannel"];
 		public parentID: Snowflake;
-		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites<this>>;
+		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites<S>>;
 		public readonly permissionsLocked: boolean;
 		public readonly position: number;
 		public rawPosition: number;
 		public readonly viewable: boolean;
-		public clone(options?: GuildChannelCloneOptions): Promise<this>;
-		public createInvite(options?: InviteOptions): Promise<Invite<G>>;
-		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<this>;
-		public edit(data: ChannelData, reason?: string): Promise<this>;
+		public clone(options?: GuildChannelCloneOptions<S>): Promise<this>;
+		public createInvite(options?: InviteOptions): Promise<Invite<S>>;
+		public createOverwrite(userOrRole: RoleResolvable<S> | UserResolvable<S>, options: PermissionOverwriteOption, reason?: string): Promise<this>;
+		public edit(data: ChannelData<S>, reason?: string): Promise<this>;
 		public equals(channel: this): boolean;
-		public fetchInvites(): Promise<Collection<string, Invite<G>>>;
+		public fetchInvites(): Promise<Collection<string, Invite<S>>>;
 		public lockPermissions(): Promise<this>;
-		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<this>;
-		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
+		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable<S>[] | Collection<Snowflake, OverwriteResolvable<S>>, reason?: string }): Promise<this>;
+		public permissionsFor(memberOrRole: GuildMemberResolvable<S> | RoleResolvable<S>): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<this>;
 		public setParent(channel: this | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<this>;
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<this>;
 		public setTopic(topic: string, reason?: string): Promise<this>;
-		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<this>;
+		public updateOverwrite(userOrRole: RoleResolvable<S> | UserResolvable<S>, options: PermissionOverwriteOption, reason?: string): Promise<this>;
 	}
 
-	export class GuildEmoji<G extends Guild = Guild<Client>> extends Emoji<G['client']> {
-		constructor(client: G['client'], data: object, guild: G);
+	export class GuildEmoji<S extends StructureGroup = StructureGroup> extends Emoji<S> {
+		constructor(client: S['Client'], data: object, guild: S["Guild"]);
 		private _roles: string[];
 
 		public deleted: boolean;
-		public guild: G;
+		public guild: S["Guild"];
 		public managed: boolean;
 		public requiresColons: boolean;
-		public roles: GuildEmojiRoleStore<G>;
+		public roles: GuildEmojiRoleStore<S>;
 		public delete(reason?: string): Promise<this>;
-		public edit(data: GuildEmojiEditData, reason?: string): Promise<this>;
+		public edit(data: GuildEmojiEditData<S>, reason?: string): Promise<this>;
 		public equals(other: this | object): boolean;
-		public fetchAuthor(): Promise<User<G['client']>>;
+		public fetchAuthor(): Promise<S["User"]>;
 		public setName(name: string, reason?: string): Promise<this>;
 	}
 
-	export class GuildMember<G extends Guild = Guild> extends Base<G['client']> {
-		constructor(client: Client, data: object, guild: G);
+	export class GuildMember<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data: object, guild: S["Guild"]);
 		public readonly bannable: boolean;
 		public deleted: boolean;
 		public readonly displayColor: number;
 		public readonly displayHexColor: string;
 		public readonly displayName: string;
-		public guild: G;
+		public guild: S["Guild"];
 		public readonly id: Snowflake;
 		public readonly joinedAt: Date;
 		public joinedTimestamp: number;
@@ -545,41 +565,41 @@ declare module 'discord.js' {
 		public nickname: string;
 		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
-		public readonly presence: Presence<G['client']>;
-		public roles: GuildMemberRoleStore<this>;
-		public user: User<G['client']>;
-		public readonly voice: VoiceState<G>;
+		public readonly presence: S["Presence"];
+		public roles: GuildMemberRoleStore<S>;
+		public user: S["User"];
+		public readonly voice: S["VoiceState"];
 		public ban(options?: BanOptions): Promise<this>;
 		public fetch(): Promise<this>;
-		public createDM(): Promise<DMChannel<G['client']>>;
-		public deleteDM(): Promise<DMChannel<G['client']>>;
-		public edit(data: GuildMemberEditData, reason?: string): Promise<this>;
+		public createDM(): Promise<S["DMChannel"]>;
+		public deleteDM(): Promise<S["DMChannel"]>;
+		public edit(data: GuildMemberEditData<S>, reason?: string): Promise<this>;
 		public hasPermission(permission: PermissionResolvable, options?: { checkAdmin?: boolean; checkOwner?: boolean }): boolean;
 		public kick(reason?: string): Promise<this>;
-		public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
+		public permissionsIn(channel: ChannelResolvable<S>): Readonly<Permissions>;
 		public setDeaf(deaf: boolean, reason?: string): Promise<this>;
 		public setMute(mute: boolean, reason?: string): Promise<this>;
 		public setNickname(nickname: string, reason?: string): Promise<this>;
-		public setVoiceChannel(voiceChannel: ChannelResolvable): Promise<this>;
+		public setVoiceChannel(voiceChannel: ChannelResolvable<S>): Promise<this>;
 		public toJSON(): object;
 		public toString(): string;
 	}
-	interface GuildMember<G extends Guild = Guild> extends PartialTextBasedChannelFields<TextChannel<G>> {}
+	interface GuildMember<S extends StructureGroup = StructureGroup> extends PartialTextBasedChannelFields<S> {}
 
-	export class Integration<G extends Guild = Guild<Client>> extends Base<G['client']> {
-		constructor(client: G['client'], data: object, guild: G);
+	export class Integration<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S['Client'], data: object, guild: S["Guild"]);
 		public account: IntegrationAccount;
 		public enabled: boolean;
 		public expireBehavior: number;
 		public expireGracePeriod: number;
-		public guild: G;
+		public guild: S["Guild"];
 		public id: Snowflake;
 		public name: string;
-		public role: Role<G>;
+		public role: S["Role"];
 		public syncedAt: number;
 		public syncing: boolean;
 		public type: number;
-		public user: User<G['client']>;
+		public user: S["User"];
 		public delete(reason?: string): Promise<this>;
 		public edit(data: IntegrationEditData, reason?: string): Promise<this>;
 		public sync(): Promise<this>;
@@ -593,16 +613,16 @@ declare module 'discord.js' {
 		public path: string;
 	}
 
-	export class Invite<G extends Guild = Guild<Client>> extends Base<G['client']> {
-		constructor(client: G['client'], data: object);
-		public channel: GuildChannel<G>;
+	export class Invite<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data: object);
+		public channel: S["GuildChannel"];
 		public code: string;
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
 		public readonly expiresAt: Date;
 		public readonly expiresTimestamp: number;
-		public guild: G;
-		public inviter: User<G['client']>;
+		public guild: S["Guild"];
+		public inviter: S["User"];
 		public maxAge: number;
 		public maxUses: number;
 		public memberCount: number;
@@ -615,15 +635,15 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 	// Needs to be split into Private/Guild message
-	export class Message<T extends TextableChannel = TextableChannel> extends Base<T['client']> {
-		constructor(client: T['client'], data: object, channel: T);
+	export class Message<S extends StructureGroup = StructureGroup, T extends TextableChannel<S> = TextableChannel<S>> extends Base<S> {
+		constructor(client: S['Client'], data: object, channel: T);
 		private _edits: this[];
 		private patch(data: object): void;
 
 		public activity: GroupActivity;
-		public application: ClientApplication<T['client']>;
+		public application: ClientApplication<S>;
 		public attachments: Collection<Snowflake, MessageAttachment>;
-		public author: User<T['client']>;
+		public author: S["User"];
 		public channel: T;
 		public readonly cleanContent: string;
 		public content: string;
@@ -636,32 +656,32 @@ declare module 'discord.js' {
 		public editedTimestamp: number;
 		public readonly edits: this[];
 		public embeds: MessageEmbed[];
-		public readonly guild?: Guild;
+		public readonly guild?: S["Guild"];
 		public id: Snowflake;
-		public readonly member?: GuildMember;
-		public mentions: MessageMentions<this>;
+		public readonly member?: S["GuildMember"];
+		public mentions: MessageMentions<S>;
 		public nonce: string;
 		public readonly partial: boolean;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
-		public reactions: ReactionStore<this>;
+		public reactions: ReactionStore<S>;
 		public system: boolean;
 		public tts: boolean;
 		public type: MessageType;
 		public readonly url: string;
 		public webhookID: Snowflake;
-		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction<this>>>;
-		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector<this>;
+		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, S["MessageReaction"]>>;
+		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector<S>;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<this>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<this>;
-		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<this>;
+		public edit(options: MessageEditOptions | MessageEmbed | APIMessage<S>): Promise<this>;
 		public equals(message: this, rawData: object): boolean;
-		public fetchWebhook(): Promise<Webhook<T['client']>>;
+		public fetchWebhook(): Promise<Webhook<S>>;
 		public fetch(): Promise<this>;
 		public pin(): Promise<this>;
-		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction<this>>;
-		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<this | this[]>;
-		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<this | this[]>;
+		public react(emoji: EmojiIdentifierResolvable<S>): Promise<S["MessageReaction"]>;
+		public reply(content?: StringResolvable, options?: MessageOptions<S> | MessageAdditions): Promise<this | this[]>;
+		public reply(options?: MessageOptions<S> | MessageAdditions | APIMessage<S>): Promise<this | this[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<this>;
@@ -683,14 +703,14 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export class MessageCollector<T extends TextableChannel = TextableChannel> extends Collector<Snowflake, Message<T>> {
+	export class MessageCollector<S extends StructureGroup = StructureGroup, T extends S["TextChannel"] | S["DMChannel"] = S["TextChannel"] | S["DMChannel"]> extends Collector<Snowflake, S["Message"], S> {
 		constructor(channel: T, filter: CollectorFilter, options?: MessageCollectorOptions);
 		public channel: T;
 		public options: MessageCollectorOptions;
 		public received: number;
 
-		public collect(message: Message<T>): Snowflake;
-		public dispose(message: Message<T>): Snowflake;
+		public collect(message: S["Message"]): Snowflake;
+		public dispose(message: S["Message"]): Snowflake;
 		public endReason(): string;
 	}
 
@@ -734,24 +754,24 @@ declare module 'discord.js' {
 	}
 
 	// Another class that suffer from lack of proper separation of guilds
-	export class MessageMentions<M extends Message = Message, G extends M['guild'] = M['guild']> {
-		constructor(message: M, users: object[] | Collection<Snowflake, User<M['client']>>, roles: G extends Guild<Client> ? Snowflake[] | Collection<Snowflake, Role<G>> : never[], everyone: boolean);
-		private _channels: G extends Guild<Client> ? Collection<Snowflake, GuildChannel<G>> : undefined;
+	export class MessageMentions<S extends StructureGroup = StructureGroup, M extends S["Message"] = S["Message"], G extends M['guild'] = M['guild']> {
+		constructor(message: M, users: object[] | Collection<Snowflake, S["User"]>, roles: Snowflake[] | Collection<Snowflake, S["Role"]>, everyone: boolean);
+		private _channels: Collection<Snowflake, S["GuildChannel"]>;
 		private readonly _content: M;
-		private _members: G extends Guild<Client> ? Collection<Snowflake, GuildMember<G>> : unknown;
+		private _members: Collection<Snowflake, S["GuildMember"]>
 
-		public readonly channels: G extends Guild<Client> ? Collection<Snowflake, TextChannel<G>> : undefined;
-		public readonly client: Client;
+		public readonly channels: Collection<Snowflake, S["TextChannel"]>;
+		public readonly client: S["Client"];
 		public everyone: boolean;
 		public readonly guild: G;
-		public has(data: User<M['client']> | (G extends Guild<Client> ? Role<G> | GuildMember<G> | GuildChannel<G> : never), options?: {
+		public has(data: S["User" | "Role" | "GuildMember" | "GuildChannel"], options?: {
 			ignoreDirect?: boolean;
 			ignoreRoles?: boolean;
 			ignoreEveryone?: boolean;
 		}): boolean;
-		public readonly members: G extends Guild<Client> ? Collection<Snowflake, GuildMember<G>> : undefined;
-		public roles: G extends Guild<Client> ? Collection<Snowflake, Role<G>> : undefined;
-		public users: Collection<Snowflake, User<M['client']>>;
+		public readonly members: Collection<Snowflake, S["GuildMember"]>;
+		public roles: Collection<Snowflake, S["Role"]>;
+		public users: Collection<Snowflake, S["User"]>;
 		public toJSON(): object;
 
 		public static CHANNELS_PATTERN: RegExp;
@@ -760,22 +780,22 @@ declare module 'discord.js' {
 		public static USERS_PATTERN: RegExp;
 	}
 
-	export class MessageReaction<M extends Message = Message> {
-		constructor(client: M['client'], data: object, message: M);
-		private _emoji: (M['guild'] extends Guild<Client> ? GuildEmoji<M['guild']> : never) | ReactionEmoji<this>;
+	export class MessageReaction<S extends StructureGroup = StructureGroup, M extends S["Message"] = S["Message"]> {
+		constructor(client: S['Client'], data: object, message: M);
+		private _emoji: S["GuildEmoji"] | ReactionEmoji<S>;
 
 		public count: number;
-		public readonly emoji: (M['guild'] extends Guild<Client> ? GuildEmoji<M['guild']> : never) | ReactionEmoji<this>;
+		public readonly emoji: S["GuildEmoji"] | ReactionEmoji<S>;
 		public me: boolean;
 		public message: M;
-		public users: ReactionUserStore<this>;
+		public users: ReactionUserStore<S>;
 		public toJSON(): object;
 	}
 
-	export class PermissionOverwrites<T extends GuildChannel = GuildChannel> {
-		constructor(guildChannel: T, data?: object);
+	export class PermissionOverwrites<S extends StructureGroup = StructureGroup> {
+		constructor(guildChannel: S["GuildChannel"], data?: object);
 		public allow: Readonly<Permissions>;
-		public readonly channel: T;
+		public readonly channel: S["GuildChannel"];
 		public deny: Readonly<Permissions>;
 		public id: Snowflake;
 		public type: OverwriteType;
@@ -783,7 +803,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<this>;
 		public toJSON(): object;
 		public static resolveOverwriteOptions(options: ResolvedOverwriteOptions, initialPermissions: { allow?: PermissionResolvable, deny?: PermissionResolvable }): ResolvedOverwriteOptions;
-		public static resolve(overwrite: OverwriteResolvable, guild: Guild<Client>): RawOverwriteData;
+		public static resolve<G extends StructureGroup["Guild"]>(overwrite: OverwriteResolvable, guild: G): RawOverwriteData;
 	}
 
 	export class Permissions extends BitField<PermissionString> {
@@ -795,47 +815,47 @@ declare module 'discord.js' {
 		public static resolve(permission?: PermissionResolvable): number;
 	}
 
-	export class Presence<C extends Client = Client> {
-		constructor(client: C, data?: object);
+	export class Presence<S extends StructureGroup = StructureGroup> {
+		constructor(client: S["Client"], data?: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
 		public status: PresenceStatus;
 		public clientStatus: ClientPresenceStatusData;
-		public readonly user: User<C>;
-		public readonly member?: GuildMember<Guild<C>>;
+		public readonly user: S["User"];
+		public readonly member?: S["GuildMember"];
 		public equals(presence: this): boolean;
 	}
 
-	export class ReactionCollector<M extends Message = Message> extends Collector<Snowflake, MessageReaction<M>> {
+	export class ReactionCollector<S extends StructureGroup = StructureGroup, M extends S["Message"] = S["Message"]> extends Collector<Snowflake, S["MessageReaction"], S> {
 		constructor(message: M, filter: CollectorFilter, options?: ReactionCollectorOptions);
 		public message: M;
 		public options: ReactionCollectorOptions;
 		public total: number;
-		public users: Collection<Snowflake, User<M['client']>>;
+		public users: Collection<Snowflake, S["User"]>;
 
 		public static key(reaction: MessageReaction): Snowflake | string;
 
-		public collect(reaction: MessageReaction<M>): Snowflake | string;
-		public dispose(reaction: MessageReaction<M>, user: User<M['client']>): Snowflake | string;
+		public collect(reaction: S["MessageReaction"]): Snowflake | string;
+		public dispose(reaction: S["MessageReaction"], user: S["User"]): Snowflake | string;
 		public empty(): void;
 		public endReason(): string;
 
-		public on(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
-		public on(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
-		public on(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction<M>>, reason: string) => void): this;
-		public on(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
+		public on(event: 'collect', listener: (reaction: S['MessageReaction'], user: S['User']) => void): this;
+		public on(event: 'dispose', listener: (reaction: S['MessageReaction'], user: S['User']) => void): this;
+		public on(event: 'end', listener: (collected: Collection<Snowflake, S['MessageReaction']>, reason: string) => void): this;
+		public on(event: 'remove', listener: (reaction: S['MessageReaction'], user: S["User"]) => void): this;
 		public on(event: string, listener: Function): this;
 
-		public once(event: 'collect', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
-		public once(event: 'dispose', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
-		public once(event: 'end', listener: (collected: Collection<Snowflake, MessageReaction<M>>, reason: string) => void): this;
-		public once(event: 'remove', listener: (reaction: MessageReaction<M>, user: User<M['client']>) => void): this;
+		public once(event: 'collect', listener: (reaction: S['MessageReaction'], user: S['User']) => void): this;
+		public once(event: 'dispose', listener: (reaction: S['MessageReaction'], user: S['User']) => void): this;
+		public once(event: 'end', listener: (collected: Collection<Snowflake, S['MessageReaction']>, reason: string) => void): this;
+		public once(event: 'remove', listener: (reaction: S["MessageReaction"], user: S['User']) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
-	export class ReactionEmoji<R extends MessageReaction = MessageReaction> extends Emoji<R['message']['client']> {
-		constructor(reaction: R, emoji: object);
-		public reaction: R;
+	export class ReactionEmoji<S extends StructureGroup = StructureGroup> extends Emoji<S> {
+		constructor(reaction: S["MessageReaction"], emoji: object);
+		public reaction: S["MessageReaction"];
 		public toJSON(): object;
 	}
 
@@ -849,19 +869,19 @@ declare module 'discord.js' {
 		public smallImageURL(options: AvatarOptions): string;
 	}
 
-	export class Role<G extends Guild = Guild> extends Base<G['client']> {
-		constructor(client: G['client'], data: object, guild: G);
+	export class Role<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S['Client'], data: object, guild: S["Guild"]);
 		public color: number;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public readonly editable: boolean;
-		public guild: G;
+		public guild: S["Guild"];
 		public readonly hexColor: string;
 		public hoist: boolean;
 		public id: Snowflake;
 		public managed: boolean;
-		public readonly members: Collection<Snowflake, GuildMember<G>>;
+		public readonly members: Collection<Snowflake, S["GuildMember"]>;
 		public mentionable: boolean;
 		public name: string;
 		public permissions: Readonly<Permissions>;
@@ -871,7 +891,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<this>;
 		public edit(data: RoleData, reason?: string): Promise<this>;
 		public equals(role: this): boolean;
-		public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
+		public permissionsIn(channel: ChannelResolvable<S>): Readonly<Permissions>;
 		public setColor(color: ColorResolvable, reason?: string): Promise<this>;
 		public setHoist(hoist: boolean, reason?: string): Promise<this>;
 		public setMentionable(mentionable: boolean, reason?: string): Promise<this>;
@@ -884,8 +904,8 @@ declare module 'discord.js' {
 		public static comparePositions(role1: Role, role2: Role): number;
 	}
 
-	export class Shard extends EventEmitter {
-		constructor(manager: ShardingManager, id: number);
+	export class Shard<S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(manager: ShardingManager<S>, id: number);
 		private _evals: Map<string, Promise<any>>;
 		private _exitListener: Function;
 		private _fetches: Map<string, Promise<any>>;
@@ -896,16 +916,16 @@ declare module 'discord.js' {
 		public execArgv: string[];
 		public env: object;
 		public id: number;
-		public manager: ShardingManager;
+		public manager: ShardingManager<S>;
 		public process: ChildProcess;
 		public ready: boolean;
 		public worker: any;
 		public eval(script: string): Promise<any>;
-		public eval<T>(fn: (client: Client) => T): Promise<T[]>;
+		public eval<T>(fn: (client: S["Client"]) => T): Promise<T[]>;
 		public fetchClientValue(prop: string): Promise<any>;
 		public kill(): void;
 		public respawn(delay?: number, waitForReady?: boolean): Promise<ChildProcess>;
-		public send(message: any): Promise<Shard>;
+		public send(message: any): Promise<Shard<S>>;
 		public spawn(waitForReady?: boolean): Promise<ChildProcess>;
 
 		public on(event: 'death', listener: (child: ChildProcess) => void): this;
@@ -923,26 +943,26 @@ declare module 'discord.js' {
 		public once(event: string, listener: Function): this;
 	}
 
-	export class ShardClientUtil {
-		constructor(client: Client, mode: ShardingManagerMode);
+	export class ShardClientUtil<S extends StructureGroup = StructureGroup> {
+		constructor(client: S["Client"], mode: ShardingManagerMode);
 		private _handleMessage(message: any): void;
 		private _respond(type: string, message: any): void;
 
-		public client: Client;
+		public client: S["Client"];
 		public readonly count: number;
 		public readonly id: number | number[];
 		public mode: ShardingManagerMode;
 		public parentPort: any;
 		public broadcastEval(script: string): Promise<any[]>;
-		public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
+		public broadcastEval<T>(fn: (client: S["Client"]) => T): Promise<T[]>;
 		public fetchClientValues(prop: string): Promise<any[]>;
 		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<void>;
 		public send(message: any): Promise<void>;
 
-		public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
+		public static singleton<S extends StructureGroup>(client: S["Client"], mode: ShardingManagerMode): ShardClientUtil<S>;
 	}
 
-	export class ShardingManager extends EventEmitter {
+	export class ShardingManager<S extends StructureGroup = StructureGroup> extends EventEmitter {
 		constructor(file: string, options?: {
 			totalShards?: number | 'auto';
 			mode?: ShardingManagerMode;
@@ -955,19 +975,19 @@ declare module 'discord.js' {
 		public file: string;
 		public respawn: boolean;
 		public shardArgs: string[];
-		public shards: Collection<number, Shard>;
+		public shards: Collection<number, Shard<S>>;
 		public token: string;
 		public totalShards: number | 'auto';
-		public broadcast(message: any): Promise<Shard[]>;
+		public broadcast(message: any): Promise<Shard<S>[]>;
 		public broadcastEval(script: string): Promise<any[]>;
-		public createShard(id: number): Shard;
+		public createShard(id: number): Shard<S>;
 		public fetchClientValues(prop: string): Promise<any[]>;
-		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
-		public spawn(amount?: number | 'auto', delay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
+		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<Collection<number, Shard<S>>>;
+		public spawn(amount?: number | 'auto', delay?: number, waitForReady?: boolean): Promise<Collection<number, Shard<S>>>;
 
-		public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
+		public on(event: 'shardCreate', listener: (shard: Shard<S>) => void): this;
 
-		public once(event: 'shardCreate', listener: (shard: Shard) => void): this;
+		public once(event: 'shardCreate', listener: (shard: Shard<S>) => void): this;
 	}
 
 	export class SnowflakeUtil {
@@ -1033,47 +1053,47 @@ declare module 'discord.js' {
 		static extend<T extends Function>(structure: string, extender: (baseClass: typeof Function) => T): T;
 	}
 
-	export class TextChannel<G extends Guild = Guild> extends GuildChannel<G> {
-		constructor(guild: G, data?: object);
-		public readonly members: Collection<Snowflake, GuildMember<G>>;
-		public messages: MessageStore<this>;
+	export class TextChannel<S extends StructureGroup = StructureGroup> extends GuildChannel<S> {
+		constructor(guild: S["Guild"], data?: object);
+		public readonly members: Collection<Snowflake, S["GuildMember"]>;
+		public messages: MessageStore<S>;
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
 		public topic: string;
-		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook<G['client']>>;
+		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook<S>>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<this>;
-		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<G['client']>>>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook<S>>>;
 	}
-	interface TextChannel<G extends Guild = Guild> extends TextBasedChannelFields<TextableChannel<G['client']>> {}
+	interface TextChannel<S extends StructureGroup = StructureGroup> extends TextBasedChannelFields<S> {}
 
-	export class User<C extends Client = Client> extends Base<C> {
-		constructor(client: C, data: object);
+	export class User<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(client: S["Client"], data: object);
 		public avatar: string;
 		public bot: boolean;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public discriminator: string;
 		public readonly defaultAvatarURL: string;
-		public readonly dmChannel: DMChannel<C>;
+		public readonly dmChannel: S["DMChannel"];
 		public id: Snowflake;
 		public locale: string;
 		public readonly partial: boolean;
-		public readonly presence: Presence<C>;
+		public readonly presence: S["Presence"];
 		public readonly tag: string;
 		public username: string;
 		public avatarURL(options?: AvatarOptions): string;
-		public createDM(): Promise<DMChannel<C>>;
-		public deleteDM(): Promise<DMChannel<C>>;
+		public createDM(): Promise<S["DMChannel"]>;
+		public deleteDM(): Promise<S["DMChannel"]>;
 		public displayAvatarURL(options?: AvatarOptions): string;
 		public equals(user: this): boolean;
 		public fetch(): Promise<this>;
 		public toString(): string;
-		public typingDurationIn(channel: ChannelResolvable): number;
-		public typingIn(channel: ChannelResolvable): boolean;
-		public typingSinceIn(channel: ChannelResolvable): Date;
+		public typingDurationIn(channel: ChannelResolvable<S>): number;
+		public typingIn(channel: ChannelResolvable<S>): boolean;
+		public typingSinceIn(channel: ChannelResolvable<S>): Date;
 	}
-	interface User<C extends Client = Client> extends PartialTextBasedChannelFields<TextableChannel<C>> {}
+	interface User<S extends StructureGroup = StructureGroup> extends PartialTextBasedChannelFields<S> {}
 	export class Util {
 		public static basename(path: string, ext?: string): string;
 		public static binaryToID(num: string): Snowflake;
@@ -1105,11 +1125,11 @@ declare module 'discord.js' {
 		public static str2ab(str: string): ArrayBuffer;
 	}
 
-	class VoiceBroadcast<C extends Client = Client> extends EventEmitter {
-		constructor(client: C);
-		public client: C;
-		public readonly dispatcher: BroadcastDispatcher<C>;
-		public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher<C>;
+	class VoiceBroadcast<S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(client: S["Client"]);
+		public client: S["Client"];
+		public readonly dispatcher: BroadcastDispatcher<S>;
+		public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher<S>;
 
 		public on(event: 'end', listener: () => void): this;
 		public on(event: 'error', listener: (error: Error) => void): this;
@@ -1126,23 +1146,23 @@ declare module 'discord.js' {
 		public once(event: string, listener: Function): this;
 	}
 
-	export class VoiceChannel<G extends Guild = Guild> extends GuildChannel<G> {
-		constructor(guild: G, data?: object);
+	export class VoiceChannel<S extends StructureGroup = StructureGroup> extends GuildChannel<S> {
+		constructor(guild: S["Guild"], data?: object);
 		public bitrate: number;
-		public readonly connection: VoiceConnection<this>;
+		public readonly connection: VoiceConnection<S>;
 		public readonly full: boolean;
 		public readonly joinable: boolean;
-		public readonly members: Collection<Snowflake, GuildMember<G>>;
+		public readonly members: Collection<Snowflake, S["GuildMember"]>;
 		public readonly speakable: boolean;
 		public userLimit: number;
-		public join(): Promise<VoiceConnection<this>>;
+		public join(): Promise<VoiceConnection<S>>;
 		public leave(): void;
 		public setBitrate(bitrate: number, reason?: string): Promise<this>;
 		public setUserLimit(userLimit: number, reason?: string): Promise<this>;
 	}
 
-	class VoiceConnection<V extends VoiceChannel = VoiceChannel> extends EventEmitter {
-		constructor(voiceManager: object, channel: V);
+	class VoiceConnection<S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(voiceManager: object, channel: S["VoiceChannel"]);
 		private authentication: object;
 		private sockets: object;
 		private ssrcMap: Map<number, boolean>;
@@ -1160,17 +1180,17 @@ declare module 'discord.js' {
 		private setSessionID(sessionID: string): void;
 		private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 		private setTokenAndEndpoint(token: string, endpoint: string): void;
-		private updateChannel(channel: V): void;
+		private updateChannel(channel: S["VoiceChannel"]): void;
 
-		public channel: V;
-		public readonly client: Client;
+		public channel: S["VoiceChannel"];
+		public readonly client: S["Client"];
 		public player: object;
-		public receiver: VoiceReceiver;
+		public receiver: VoiceReceiver<S>;
 		public speaking: Readonly<Speaking>;
 		public status: VoiceStatus;
 		public voiceManager: object;
 		public disconnect(): void;
-		public play<B extends VoiceBroadcast<V['client']> = VoiceBroadcast<V['client']>>(input: B | Readable | string, options?: StreamOptions): StreamDispatcher<B>;
+		public play<B extends VoiceBroadcast<S> = VoiceBroadcast<S>>(input: B | Readable | string, options?: StreamOptions): StreamDispatcher<B>;
 
 		public on(event: 'authenticated', listener: () => void): this;
 		public on(event: 'closing', listener: () => void): this;
@@ -1181,7 +1201,7 @@ declare module 'discord.js' {
 		public on(event: 'newSession', listener: () => void): this;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'reconnecting', listener: () => void): this;
-		public on(event: 'speaking', listener: (user: User<V['client']>, speaking: Readonly<Speaking>) => void): this;
+		public on(event: 'speaking', listener: (user: S["User"], speaking: Readonly<Speaking>) => void): this;
 		public on(event: 'warn', listener: (warning: string | Error) => void): this;
 		public on(event: string, listener: Function): this;
 
@@ -1194,14 +1214,14 @@ declare module 'discord.js' {
 		public once(event: 'newSession', listener: () => void): this;
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'reconnecting', listener: () => void): this;
-		public once(event: 'speaking', listener: (user: User<V['client']>, speaking: Readonly<Speaking>) => void): this;
+		public once(event: 'speaking', listener: (user: S["User"], speaking: Readonly<Speaking>) => void): this;
 		public once(event: 'warn', listener: (warning: string | Error) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
-	class VoiceReceiver extends EventEmitter {
-		constructor(connection: VoiceConnection);
-		public createStream(user: UserResolvable, options?: { mode?: 'opus' | 'pcm', end?: 'silence' | 'manual' }): Readable;
+	class VoiceReceiver<S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(connection: VoiceConnection<S>);
+		public createStream(user: UserResolvable<S>, options?: { mode?: 'opus' | 'pcm', end?: 'silence' | 'manual' }): Readable;
 
 		public on(event: 'debug', listener: (error: Error | string) => void): this;
 		public on(event: string, listener: Function): this;
@@ -1221,14 +1241,14 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export class VoiceState<G extends Guild = Guild> extends Base<G['client']> {
-		constructor(guild: G, data: object);
-		public readonly channel?: VoiceChannel<G>;
+	export class VoiceState<S extends StructureGroup = StructureGroup> extends Base<S> {
+		constructor(guild: S["Guild"], data: object);
+		public readonly channel?: S["VoiceChannel"];
 		public channelID?: Snowflake;
 		public readonly deaf?: boolean;
-		public guild: G;
+		public guild: S["Guild"];
 		public id: Snowflake;
-		public readonly member: GuildMember<G>;
+		public readonly member: S["GuildMember"];
 		public readonly mute?: boolean;
 		public selfDeaf?: boolean;
 		public selfMute?: boolean;
@@ -1237,8 +1257,8 @@ declare module 'discord.js' {
 		public sessionID?: string;
 		public readonly speaking?: boolean;
 
-		public setDeaf(mute: boolean, reason?: string): Promise<GuildMember<G>>;
-		public setMute(mute: boolean, reason?: string): Promise<GuildMember<G>>;
+		public setDeaf(mute: boolean, reason?: string): Promise<S["GuildMember"]>;
+		public setMute(mute: boolean, reason?: string): Promise<S["GuildMember"]>;
 	}
 
 	class VolumeInterface extends EventEmitter {
@@ -1256,37 +1276,38 @@ declare module 'discord.js' {
 		public once(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
 	}
 
-	export class Webhook<C extends Client = Client> extends WebhookMixin() {
-		constructor(client: C, data?: object);
+	export class Webhook<S extends StructureGroup = StructureGroup> {
+		constructor(client: S["Client"], data?: object);
 		public avatar: string;
 		public channelID: Snowflake;
 		public guildID: Snowflake;
 		public name: string;
-		public owner: User<C> | object;
+		public owner: S["User"] | object;
 	}
-
-	export class WebhookClient extends WebhookMixin(BaseClient) {
+	interface Webhook<S extends StructureGroup = StructureGroup> extends WebhookFields<S> {}
+	
+	export class WebhookClient {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
-
-	export class WebSocketManager<C extends Client = Client> {
-		constructor(client: C);
-		public readonly client: C;
+	interface WebhookClient<S extends StructureGroup = StructureGroup> extends WebhookFields<S> {}
+	export class WebSocketManager<S extends StructureGroup = StructureGroup> {
+		constructor(client: S["Client"]);
+		public readonly client: S["Client"];
 		public gateway: string | undefined;
 		public readonly ping: number;
-		public shards: Collection<number, WebSocketShard>;
+		public shards: Collection<number, WebSocketShard<S>>;
 		public status: Status;
 
 		public broadcast(packet: object): void;
 	}
 
-	export class WebSocketShard extends EventEmitter {
-		constructor(manager: WebSocketManager, id: number);
+	export class WebSocketShard<S extends StructureGroup = StructureGroup> extends EventEmitter {
+		constructor(manager: WebSocketManager<S>, id: number);
 		public id: number;
 		public readonly ping: number;
 		public pings: number[];
 		public status: Status;
-		public manager: WebSocketManager;
+		public manager: WebSocketManager<S>;
 
 		public send(packet: object): void;
 
@@ -1298,16 +1319,16 @@ declare module 'discord.js' {
 
 //#region Stores
 
-	export class ChannelStore<C extends Client = Client> extends DataStore<Snowflake, PartialChannel<C>, typeof PartialChannel, ChannelResolvable> {
-		constructor(client: C, iterable: Iterable<any>, options?: { lru: boolean });
-		constructor(client: C, options?: { lru: boolean });
-		public fetch(id: Snowflake, cache?: boolean): Promise<PartialChannel<C>>;
+	export class ChannelStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, PartialChannel<S>, Constructable<PartialChannel<S>>, ChannelResolvable<S>, S> {
+		constructor(client: S["Client"], iterable: Iterable<any>, options?: { lru: boolean });
+		constructor(client: S["Client"], options?: { lru: boolean });
+		public fetch(id: Snowflake, cache?: boolean): Promise<PartialChannel<S>>;
 	}
 
-	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
-		constructor(client: Client, iterable: Iterable<any>, holds: VConstructor);
+	export class DataStore<K, V, VConstructor = Constructable<V>, R = any, S extends StructureGroup = StructureGroup> extends Collection<K, V> {
+		constructor(client: S["Client"], iterable: Iterable<any>, holds: VConstructor);
 		public static readonly [Symbol.species]: typeof Collection;
-		public client: Client;
+		public client: S["Client"];
 		public holds: VConstructor;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
 		public remove(key: K): void;
@@ -1315,92 +1336,90 @@ declare module 'discord.js' {
 		public resolveID(resolvable: R): K;
 	}
 
-	export class GuildEmojiRoleStore<G extends Guild = Guild> extends OverridableDataStore<Snowflake, Role<G>, typeof Role, RoleResolvable> {
-		constructor(emoji: GuildEmoji<G>);
-		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<G>>): Promise<GuildEmoji<G>>;
-		public set(roles: RoleResolvable[] | Collection<Snowflake, Role<G>>): Promise<GuildEmoji<G>>;
-		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<G>>): Promise<GuildEmoji<G>>;
+	export class GuildEmojiRoleStore<S extends StructureGroup = StructureGroup> extends OverridableDataStore<Snowflake, S["Role"], Constructable<S["Role"]>, RoleResolvable<S>, S> {
+		constructor(emoji: S["GuildEmoji"]);
+		public add(roleOrRoles: RoleResolvable<S> | RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>): Promise<S["GuildEmoji"]>;
+		public set(roles: RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>): Promise<S["GuildEmoji"]>;
+		public remove(roleOrRoles: RoleResolvable<S> | RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>): Promise<S["GuildEmoji"]>;
 	}
 
-	export class GuildEmojiStore<G extends Guild = Guild> extends DataStore<Snowflake, GuildEmoji<G>, typeof GuildEmoji, EmojiResolvable> {
-		constructor(guild: G, iterable?: Iterable<any>);
-		public create(attachment: BufferResolvable | Base64Resolvable, name: string, options?: GuildEmojiCreateOptions): Promise<GuildEmoji<G>>;
-		public resolveIdentifier(emoji: EmojiIdentifierResolvable): string;
+	export class GuildEmojiStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["GuildEmoji"],Constructable<S["GuildEmoji"]>, EmojiResolvable<S>, S> {
+		constructor(guild: S["Guild"], iterable?: Iterable<any>);
+		public create(attachment: BufferResolvable | Base64Resolvable, name: string, options?: GuildEmojiCreateOptions<S>): Promise<S["GuildEmoji"]>;
+		public resolveIdentifier(emoji: EmojiIdentifierResolvable<S>): string;
 	}
 
-	export class GuildChannelStore<G extends Guild = Guild> extends DataStore<Snowflake, GuildChannel<G>, typeof GuildChannel, GuildChannelResolvable> {
-		constructor(guild: G, iterable?: Iterable<any>);
-		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel<G> | VoiceChannel<G>>;
+	export class GuildChannelStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["GuildChannel"], Constructable<S["GuildChannel"]>, GuildChannelResolvable<S>, S> {
+		constructor(guild: S["Guild"], iterable?: Iterable<any>);
+		public create(name: string, options?: GuildCreateChannelOptions<S>): Promise<S["TextChannel"] | S["VoiceChannel"]>;
 	}
 
 	// Hacky workaround because changing the signature of an overriden method errors
-	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any> extends DataStore<V, K, VConstructor, R> {
+	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any, S extends StructureGroup = StructureGroup> extends DataStore<V, K, VConstructor, R, S> {
 		public add(data: any, cache: any): any;
 		public set(key: any): any;
 	}
 
-	export class GuildMemberRoleStore<M extends GuildMember = GuildMember> extends OverridableDataStore<Snowflake, Role<M['guild']>, typeof Role, RoleResolvable> {
-		constructor(member: M);
-		public readonly hoist: Role<M['guild']>;
-		public readonly color: Role<M['guild']>;
-		public readonly highest: Role<M['guild']>;
+	export class GuildMemberRoleStore<S extends StructureGroup = StructureGroup> extends OverridableDataStore<Snowflake, S["Role"], Constructable<S["Role"]>, RoleResolvable<S>, S> {
+		constructor(member: S["GuildMember"]);
+		public readonly hoist: S["Role"];
+		public readonly color: S["Role"];
+		public readonly highest: S['Role'];
 
-		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
-		public set(roles: RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
-		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role<M['guild']>>, reason?: string): Promise<this>;
+		public add(roleOrRoles: RoleResolvable<S> | RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>, reason?: string): Promise<this>;
+		public set(roles: RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>, reason?: string): Promise<this>;
+		public remove(roleOrRoles: RoleResolvable<S> | RoleResolvable<S>[] | Collection<Snowflake, S["Role"]>, reason?: string): Promise<this>;
 	}
 
-	export class GuildMemberStore<G extends Guild = Guild> extends DataStore<Snowflake, GuildMember<G>, typeof GuildMember, GuildMemberResolvable> {
-		constructor(guild: G, iterable?: Iterable<any>);
-		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember<G> | User<G['client']> | Snowflake>;
-		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember<G>>;
+	export class GuildMemberStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["GuildMember"], Constructable<S["GuildMember"]>, GuildMemberResolvable<S>, S> {
+		constructor(guild: S["Guild"], iterable?: Iterable<any>);
+		public ban(user: UserResolvable<S>, options?: BanOptions): Promise<S["GuildMember"] | S["User"] | Snowflake>;
+		public fetch(options: UserResolvable<S> | FetchMemberOptions<S>): Promise<S["GuildMember"]>;
 		public fetch(): Promise<this>;
-		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember<G>>>;
+		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, S["GuildMember"]>>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
-		public unban(user: UserResolvable, reason?: string): Promise<User<G['client']>>;
+		public unban(user: UserResolvable<S>, reason?: string): Promise<S["User"]>;
 	}
 
-	export class GuildStore<C extends Client = Client> extends DataStore<Snowflake, Guild<C>, typeof Guild, GuildResolvable> {
-		constructor(client: C, iterable?: Iterable<any>);
-		public create(name: string, options?: { region?: string, icon?: BufferResolvable | Base64Resolvable }): Promise<Guild<C>>;
+	export class GuildStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["Guild"], Constructable<S["Guild"]>, GuildResolvable<S>, S> {
+		constructor(client: S["Client"], iterable?: Iterable<any>);
+		public create(name: string, options?: { region?: string, icon?: BufferResolvable | Base64Resolvable }): Promise<S["Guild"]>;
+	}
+	
+	export class MessageStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["Message"], Constructable<S["Message"]>, MessageResolvable<S>, S> {
+		constructor(channel: S["TextChannel"] | S["DMChannel"], iterable?: Iterable<any>);
+		public fetch(message: Snowflake, cache?: boolean): Promise<S["Message"]>;
+		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, S["Message"]>>;
+		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, S["Message"]>>;
 	}
 
-	export class MessageStore<T extends TextableChannel = TextableChannel> extends DataStore<Snowflake, Message<T>, typeof Message, MessageResolvable> {
-		constructor(channel: T, iterable?: Iterable<any>);
-		public fetch(message: Snowflake, cache?: boolean): Promise<Message<T>>;
-		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message<T>>>;
-		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<T>>>;
+	export class PresenceStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["Presence"], Constructable<S["Presence"]>, PresenceResolvable<S>, S> {
+		constructor(client: S["Client"], iterable?: Iterable<any>);
 	}
 
-	export class PresenceStore<C extends Client = Client> extends DataStore<Snowflake, Presence<C>, typeof Presence, PresenceResolvable> {
-		constructor(client: C, iterable?: Iterable<any>);
-	}
-
-	export class ReactionStore<M extends Message = Message> extends DataStore<Snowflake, MessageReaction<M>, typeof MessageReaction, MessageReactionResolvable> {
+	export class ReactionStore<S extends StructureGroup = StructureGroup, M extends S["Message"] = S["Message"]> extends DataStore<Snowflake, S["MessageReaction"], Constructable<S["MessageReaction"]>, MessageReactionResolvable<S>, S> {
 		constructor(message: M, iterable?: Iterable<any>);
 		public removeAll(): Promise<M>;
 	}
 
-	export class ReactionUserStore<R extends MessageReaction = MessageReaction> extends DataStore<Snowflake, User<R['message']['client']>, typeof User, UserResolvable> {
+	export class ReactionUserStore<S extends StructureGroup = StructureGroup, R extends S["MessageReaction"] = S["MessageReaction"]> extends DataStore<Snowflake, S["User"], Constructable<S["User"]>, UserResolvable<S>, S> {
 		constructor(client: R['message']['client'], iterable: Iterable<any> | undefined, reaction: R);
-		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, User<R['message']['client']>>>;
-		public remove(user?: UserResolvable): Promise<R>;
+		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, S["User"]>>;
+		public remove(user?: UserResolvable<S>): Promise<R>;
 	}
+	export class RoleStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["Role"], Constructable<S["Role"]>, RoleResolvable<S>, S> {
+		constructor(guild: S["Guild"], iterable?: Iterable<any>);
+		public readonly highest: S["Role"];
 
-	export class RoleStore<G extends Guild = Guild> extends DataStore<Snowflake, Role<G>, typeof Role, RoleResolvable> {
-		constructor(guild: G, iterable?: Iterable<any>);
-		public readonly highest: Role<G>;
-
-		public create(options?: { data?: RoleData, reason?: string }): Promise<Role<G>>;
+		public create(options?: { data?: RoleData, reason?: string }): Promise<S["Role"]>;
 		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
-		public fetch(id: Snowflake, cache?: boolean): Promise<Role<G> | null>;
+		public fetch(id: Snowflake, cache?: boolean): Promise<S["Role"] | null>;
 	}
 
-	export class UserStore<C extends Client = Client> extends DataStore<Snowflake, User<C>, typeof User, UserResolvable> {
-		constructor(client: C, iterable?: Iterable<any>);
-		public fetch(id: Snowflake, cache?: boolean): Promise<User<C>>;
+	export class UserStore<S extends StructureGroup = StructureGroup> extends DataStore<Snowflake, S["User"], Constructable<S["User"]>, UserResolvable<S>, S> {
+		constructor(client: S["Client"], iterable?: Iterable<any>);
+		public fetch(id: Snowflake, cache?: boolean): Promise<S["User"]>;
 	}
-
 //#endregion
 
 //#region Mixins
@@ -1412,38 +1431,36 @@ declare module 'discord.js' {
 	type Constructable<T> = new (...args: any[]) => T;
 
 	// Would ideally be generic in a better class
-	interface PartialTextBasedChannelFields<T extends TextableChannel = TextableChannel> {
+	interface PartialTextBasedChannelFields<S extends StructureGroup = StructureGroup> {
 		lastMessageID: Snowflake;
 		lastMessageChannelID: Snowflake;
-		readonly lastMessage: Message<T>;
+		readonly lastMessage: S["Message"];
 		lastPinTimestamp: number;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message<T> | Message<T>[]>;
-		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message<T> | Message<T>[]>;
+		send(content?: StringResolvable, options?: MessageOptions<S> | MessageAdditions): Promise<S["Message"] | S["Message"][]>;
+		send(options?: MessageOptions<S> | MessageAdditions | APIMessage<S>): Promise<S['Message'] | S['Message'][]>;
 	}
 
 	// Would ideally be generic in a better class
-	interface TextBasedChannelFields<T extends TextableChannel = TextableChannel> extends PartialTextBasedChannelFields<T> {
+	interface TextBasedChannelFields<S extends StructureGroup = StructureGroup> extends PartialTextBasedChannelFields<S> {
 		typing: boolean;
 		typingCount: number;
-		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message<T>>>;
-		bulkDelete(messages: Collection<Snowflake, Message<T>> | Message<T>[] | Snowflake[] | number, filterOld?: boolean): Promise<Collection<Snowflake, Message<T>>>;
-		createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector<T>;
+		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, S["Message"]>>;
+		bulkDelete(messages: Collection<Snowflake, S["Message"]> | S["Message"][] | Snowflake[] | number, filterOld?: boolean): Promise<Collection<Snowflake, S["Message"]>>;
+		createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector<S>;
 		startTyping(count?: number): Promise<void>;
 		stopTyping(force?: boolean): void;
 	}
 
-	const WebhookMixin: <T>(Base?: Constructable<T>) => Constructable<T & WebhookFields>;
-
-	interface WebhookFields {
-		readonly client: Client;
+	interface WebhookFields<S extends StructureGroup = StructureGroup> {
+		readonly client: S["Client"];
 		id: Snowflake;
 		token: string;
 		delete(reason?: string): Promise<void>;
-		edit(options: WebhookEditData): Promise<Webhook<Client>>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
-		sendSlackMessage(body: object): Promise<Message>;
+		edit(options: WebhookEditData<S>): Promise<Webhook<S>>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<S["Message"] | S["Message"][]>;
+		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage<S>): Promise<S["Message"] | S["Message"][]>;
+		sendSlackMessage(body: object): Promise<S["Message"]>;
 	}
 
 //#endregion
@@ -1509,10 +1526,10 @@ declare module 'discord.js' {
 		REACTION_BLOCKED: number;
 	}
 
-	interface AddGuildMemberOptions {
+	interface AddGuildMemberOptions<S extends StructureGroup = StructureGroup> {
 		accessToken: String;
 		nick?: string;
-		roles?: Collection<Snowflake, Role<Guild<Client>>> | RoleResolvable[];
+		roles?: Collection<Snowflake, S["Role"]> | RoleResolvable<S>[];
 		mute?: boolean;
 		deaf?: boolean;
 	}
@@ -1549,13 +1566,13 @@ declare module 'discord.js' {
 
 	type BufferResolvable = Buffer | string;
 
-	interface ChannelCreationOverwrites {
+	interface ChannelCreationOverwrites<S extends StructureGroup = StructureGroup> {
 		allow?: PermissionResolvable | number;
 		deny?: PermissionResolvable | number;
-		id: RoleResolvable | UserResolvable;
+		id: RoleResolvable<S> | UserResolvable<S>;
 	}
 
-	interface ChannelData {
+	interface ChannelData<S extends StructureGroup = StructureGroup> {
 		name?: string;
 		position?: number;
 		topic?: string;
@@ -1565,7 +1582,7 @@ declare module 'discord.js' {
 		parentID?: Snowflake;
 		rateLimitPerUser?: number;
 		lockPermissions?: boolean;
-		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+		permissionOverwrites?: OverwriteResolvable<S>[] | Collection<Snowflake, OverwriteResolvable<S>>;
 	}
 
 	interface ChannelLogsQueryOptions {
@@ -1575,12 +1592,12 @@ declare module 'discord.js' {
 		around?: Snowflake;
 	}
 
-	interface ChannelPosition {
-		channel: ChannelResolvable;
+	interface ChannelPosition<S extends StructureGroup = StructureGroup> {
+		channel: ChannelResolvable<S>;
 		position: number;
 	}
 
-	type ChannelResolvable = PartialChannel | Snowflake;
+	type ChannelResolvable<S extends StructureGroup = StructureGroup> = PartialChannel<S> | Snowflake;
 
 	interface ClientApplicationAsset {
 		name: string;
@@ -1654,9 +1671,9 @@ declare module 'discord.js' {
 
 	type DefaultMessageNotifications = 'ALL' | 'MENTIONS';
 
-	interface GuildEmojiEditData {
+	interface GuildEmojiEditData<S extends StructureGroup = StructureGroup> {
 		name?: string;
-		roles?: Collection<Snowflake, Role> | RoleResolvable[];
+		roles?: Collection<Snowflake, S["Role"]> | RoleResolvable<S>[];
 	}
 
 	interface EmbedField {
@@ -1665,9 +1682,9 @@ declare module 'discord.js' {
 		inline?: boolean;
 	}
 
-	type EmojiIdentifierResolvable = string | EmojiResolvable;
+	type EmojiIdentifierResolvable<S extends StructureGroup = StructureGroup> = string | EmojiResolvable<S>;
 
-	type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
+	type EmojiResolvable<S extends StructureGroup = StructureGroup> = Snowflake | S["GuildEmoji"] | ReactionEmoji<S>;
 
 	interface Extendable {
 		GuildEmoji: typeof GuildEmoji;
@@ -1686,8 +1703,8 @@ declare module 'discord.js' {
 		User: typeof User;
 	}
 
-	interface FetchMemberOptions {
-		user: UserResolvable;
+	interface FetchMemberOptions<S extends StructureGroup = StructureGroup> {
+		user: UserResolvable<S>;
 		cache?: boolean;
 	}
 
@@ -1743,10 +1760,10 @@ declare module 'discord.js' {
 		| 'UPDATE'
 		| 'ALL';
 
-	interface GuildAuditLogsFetchOptions {
-		before?: Snowflake | GuildAuditLogsEntry<Client>;
+	interface GuildAuditLogsFetchOptions<S extends StructureGroup = StructureGroup> {
+		before?: Snowflake | GuildAuditLogsEntry<S>;
 		limit?: number;
-		user?: UserResolvable;
+		user?: UserResolvable<S>;
 		type?: string | number;
 	}
 
@@ -1764,14 +1781,14 @@ declare module 'discord.js' {
 		MESSAGE?: string;
 	}
 
-	type GuildChannelResolvable = Snowflake | GuildChannel<Guild<Client>>;
+	type GuildChannelResolvable<S extends StructureGroup = StructureGroup> = Snowflake | S["GuildChannel"];
 
-	interface GuildCreateChannelOptions {
-		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+	interface GuildCreateChannelOptions<S extends StructureGroup = StructureGroup> {
+		permissionOverwrites?: OverwriteResolvable<S>[] | Collection<Snowflake, OverwriteResolvable<S>>;
 		topic?: string;
 		type?: 'text' | 'voice' | 'category';
 		nsfw?: boolean;
-		parent?: ChannelResolvable;
+		parent?: ChannelResolvable<S>;
 		bitrate?: number;
 		userLimit?: number;
 		rateLimitPerUser?: number;
@@ -1779,32 +1796,32 @@ declare module 'discord.js' {
 		reason?: string;
 	}
 
-	interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
+	interface GuildChannelCloneOptions<S extends StructureGroup = StructureGroup> extends GuildCreateChannelOptions<S> {
 		name?: string;
 	}
 
-	interface GuildEmojiCreateOptions {
-		roles?: Collection<Snowflake, Guild<Client>> | RoleResolvable[];
+	interface GuildEmojiCreateOptions<S extends StructureGroup = StructureGroup> {
+		roles?: Collection<Snowflake, S["Guild"]> | RoleResolvable<S>[];
 		reason?: string;
 	}
 
-	interface GuildEditData {
+	interface GuildEditData<S extends StructureGroup = StructureGroup> {
 		name?: string;
 		region?: string;
 		verificationLevel?: number;
 		explicitContentFilter?: number;
 		defaultMessageNotifications?: DefaultMessageNotifications | number;
-		afkChannel?: ChannelResolvable;
-		systemChannel?: ChannelResolvable;
+		afkChannel?: ChannelResolvable<S>;
+		systemChannel?: ChannelResolvable<S>;
 		afkTimeout?: number;
 		icon?: Base64Resolvable;
-		owner?: GuildMemberResolvable;
+		owner?: GuildMemberResolvable<S>;
 		splash?: Base64Resolvable;
 	}
 
-	interface GuildEmbedData {
+	interface GuildEmbedData<S extends StructureGroup = StructureGroup> {
 		enabled: boolean;
-		channel?: GuildChannelResolvable;
+		channel?: GuildChannelResolvable<S>;
 	}
 
 	type GuildFeatures = 'INVITE_SPLASH'
@@ -1813,17 +1830,17 @@ declare module 'discord.js' {
 		| 'VIP_REGIONS'
 		| 'VANITY_URL';
 
-	interface GuildMemberEditData {
+	interface GuildMemberEditData<S extends StructureGroup = StructureGroup> {
 		nick?: string;
-		roles?: Collection<Snowflake, Role<Guild<Client>>> | RoleResolvable[];
+		roles?: Collection<Snowflake, S["Role"]> | RoleResolvable<S>[];
 		mute?: boolean;
 		deaf?: boolean;
-		channel?: ChannelResolvable;
+		channel?: ChannelResolvable<S>;
 	}
 
-	type GuildMemberResolvable = GuildMember<Guild<Client>> | UserResolvable;
+	type GuildMemberResolvable<S extends StructureGroup = StructureGroup> = S["GuildMember"] | UserResolvable<S>;
 
-	type GuildResolvable = Guild<Client> | Snowflake;
+	type GuildResolvable<S extends StructureGroup = StructureGroup> = S["Guild"] | Snowflake;
 
 	interface GuildPruneMembersOptions {
 		days?: number;
@@ -1905,7 +1922,7 @@ declare module 'discord.js' {
 		footer?: { text?: string; icon_url?: string; iconURL?: string; };
 	}
 
-	interface MessageOptions {
+	interface MessageOptions<S extends StructureGroup = StructureGroup> {
 		tts?: boolean;
 		nonce?: string;
 		content?: string;
@@ -1914,14 +1931,14 @@ declare module 'discord.js' {
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
-		reply?: UserResolvable;
+		reply?: UserResolvable<S>;
 	}
 
-	type MessageReactionResolvable = MessageReaction | Snowflake;
+	type MessageReactionResolvable<S extends StructureGroup = StructureGroup> = S["MessageReaction"] | Snowflake;
 
-	type MessageResolvable = Message | Snowflake;
+	type MessageResolvable<S extends StructureGroup = StructureGroup> = S["Message"] | Snowflake;
 
-	type MessageTarget = TextChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
+	type MessageTarget<S extends StructureGroup = StructureGroup> = S["TextChannel" | "DMChannel" | "User" | "GuildMember"] | Webhook<S> | WebhookClient<S>;
 
 	type MessageType = 'DEFAULT'
 		| 'RECIPIENT_ADD'
@@ -1932,14 +1949,14 @@ declare module 'discord.js' {
 		| 'PINS_ADD'
 		| 'GUILD_MEMBER_JOIN';
 
-	interface OverwriteData {
+	interface OverwriteData<S extends StructureGroup = StructureGroup> {
 		allow?: PermissionResolvable;
 		deny?: PermissionResolvable;
-		id: GuildMemberResolvable | RoleResolvable;
+		id: GuildMemberResolvable<S> | RoleResolvable<S>;
 		type?: OverwriteType;
 	}
 
-	type OverwriteResolvable = PermissionOverwrites<GuildChannel<Guild<Client>>> | OverwriteData;
+	type OverwriteResolvable<S extends StructureGroup = StructureGroup> = PermissionOverwrites<S> | OverwriteData<S>;
 
 	type OverwriteType = 'member' | 'role';
 
@@ -1983,10 +2000,10 @@ declare module 'discord.js' {
 
 	type PermissionResolvable = BitFieldResolvable<PermissionString>;
 
-	interface PermissionOverwriteOptions {
+	interface PermissionOverwriteOptions<S extends StructureGroup = StructureGroup> {
 		allow: PermissionResolvable;
 		deny: PermissionResolvable;
-		id: UserResolvable | RoleResolvable;
+		id: UserResolvable<S> | RoleResolvable<S>;
 	}
 
 	interface PresenceData {
@@ -2000,7 +2017,7 @@ declare module 'discord.js' {
 		shardID?: number | number[];
 	}
 
-	type PresenceResolvable = Presence<Client> | UserResolvable | Snowflake;
+	type PresenceResolvable<S extends StructureGroup = StructureGroup> = S["Presence"] | UserResolvable<S> | Snowflake;
 
 	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
 
@@ -2055,7 +2072,7 @@ declare module 'discord.js' {
 		mentionable?: boolean;
 	}
 
-	type RoleResolvable = Role<Guild<Client>> | string;
+	type RoleResolvable<S extends StructureGroup = StructureGroup> = S["Role"] | string;
 
 	type ShardingManagerMode = 'process' | 'worker';
 
@@ -2087,14 +2104,14 @@ declare module 'discord.js' {
 
 	type StringResolvable = string | string[] | any;
 
-	type UserResolvable = User | Snowflake | Message | GuildMember;
+	type UserResolvable<S extends StructureGroup = StructureGroup> = S["User" | "Message" | "GuildMember"] | Snowflake;
 
 	type VoiceStatus = number;
 
-	interface WebhookEditData {
+	interface WebhookEditData<S extends StructureGroup = StructureGroup> {
 		name?: string;
 		avatar?: BufferResolvable;
-		channel?: ChannelResolvable;
+		channel?: ChannelResolvable<S>;
 		reason?: string;
 	}
 
