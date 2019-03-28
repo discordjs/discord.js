@@ -60,7 +60,7 @@ class ChannelStore extends DataStore {
     const channel = Channel.create(this.client, data, guild);
 
     if (!channel) {
-      this.client.emit(Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
+      this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
 
