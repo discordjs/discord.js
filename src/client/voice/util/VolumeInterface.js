@@ -15,6 +15,7 @@ class VolumeInterface extends EventEmitter {
   /**
    * Whether or not the volume of this stream is editable
    * @type {boolean}
+   * @readonly
    */
   get volumeEditable() {
     return true;
@@ -22,8 +23,8 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * The current volume of the stream
-   * @readonly
    * @type {number}
+   * @readonly
    */
   get volume() {
     return this._volume;
@@ -31,8 +32,8 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * The current volume of the stream in decibels
-   * @readonly
    * @type {number}
+   * @readonly
    */
   get volumeDecibels() {
     return Math.log10(this.volume) * 20;
@@ -40,8 +41,8 @@ class VolumeInterface extends EventEmitter {
 
   /**
    * The current volume of the stream from a logarithmic scale
-   * @readonly
    * @type {number}
+   * @readonly
    */
   get volumeLogarithmic() {
     return Math.pow(this.volume, 1 / 1.660964);

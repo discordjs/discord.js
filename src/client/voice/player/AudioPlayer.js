@@ -19,7 +19,7 @@ class AudioPlayer extends BasePlayer {
 
   playBroadcast(broadcast, options) {
     const dispatcher = this.createDispatcher(options, { broadcast });
-    broadcast.dispatchers.add(dispatcher);
+    broadcast.add(dispatcher);
     return dispatcher;
   }
 }

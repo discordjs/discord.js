@@ -56,7 +56,7 @@ declare module 'discord.js' {
 			isWebhook?: boolean
 		): MessageOptions | WebhookMessageOptions;
 
-		public makeContent(): string | string[];
+		public makeContent(): string | string[] | undefined;
 		public resolve(): Promise<this>;
 		public resolveData(): this;
 		public resolveFiles(): Promise<this>;
@@ -386,6 +386,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
+		public readonly defaultRole: Role;
 		public deleted: boolean;
 		public embedEnabled: boolean;
 		public emojis: GuildEmojiStore;
@@ -1365,9 +1366,9 @@ declare module 'discord.js' {
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
 		constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
-		public fetch(message: Snowflake): Promise<Message>;
-		public fetch(options?: ChannelLogsQueryOptions): Promise<Collection<Snowflake, Message>>;
-		public fetchPinned(): Promise<Collection<Snowflake, Message>>;
+		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
+		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
+		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public remove(message: MessageResolvable, reason?: string): Promise<void>;
 	}
 
@@ -1744,7 +1745,6 @@ declare module 'discord.js' {
 
 	interface GuildAuditLogsFetchOptions {
 		before?: Snowflake | GuildAuditLogsEntry;
-		after?: Snowflake | GuildAuditLogsEntry;
 		limit?: number;
 		user?: UserResolvable;
 		type?: string | number;
@@ -2146,6 +2146,7 @@ declare module 'discord.js' {
 		| 'PRESENCE_UPDATE'
 		| 'VOICE_STATE_UPDATE'
 		| 'TYPING_START'
+		| 'VOICE_STATE_UPDATE'
 		| 'VOICE_SERVER_UPDATE'
 		| 'WEBHOOKS_UPDATE';
 

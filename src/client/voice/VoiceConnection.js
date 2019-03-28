@@ -130,6 +130,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * The client that instantiated this connection
    * @type {Client}
+   * @readonly
    */
   get client() {
     return this.voiceManager.client;

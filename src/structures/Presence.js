@@ -45,6 +45,7 @@ class Presence {
   /**
    * The user of this presence
    * @type {?User}
+   * @readonly
    */
   get user() {
     return this.client.users.get(this.userID) || null;
@@ -53,6 +54,7 @@ class Presence {
   /**
    * The member of this presence
    * @type {?GuildMember}
+   * @readonly
    */
   get member() {
     return this.guild.members.get(this.userID) || null;
