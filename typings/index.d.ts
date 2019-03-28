@@ -1674,7 +1674,6 @@ declare module 'discord.js' {
 		TextChannel: typeof TextChannel;
 		VoiceChannel: typeof VoiceChannel;
 		CategoryChannel: typeof CategoryChannel;
-		GuildChannel: typeof GuildChannel;
 		GuildMember: typeof GuildMember;
 		Guild: typeof Guild;
 		Message: typeof Message;
