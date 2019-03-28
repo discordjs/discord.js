@@ -2037,7 +2037,7 @@ declare module 'discord.js' {
 
 	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
 
-	type PresenceStatus = ClientPresenceStatus | 'invisible' ;
+	type PresenceStatus = ClientPresenceStatus | 'invisible';
 	type PresenceStatusData = ClientPresenceStatus | 'offline';
 
 	type ClientPresenceStatusData = {
@@ -2047,7 +2047,7 @@ declare module 'discord.js' {
 	};
 
 	type RateLimitInfo = {
-		requestLimit: number;
+		limit: number;
 		timeDifference: number;
 		method: string;
 		path: string;
