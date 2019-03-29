@@ -20,7 +20,6 @@ class ChannelUpdateAction extends Action {
         newChannel._typing = new Map(channel._typing);
         channel = newChannel;
         this.client.channels.set(channel.id, channel);
-        channel.guild.channels.set(channel.id, channel);
       }
 
       return {
