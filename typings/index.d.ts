@@ -1063,8 +1063,7 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 		public topic: string;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
-		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
-		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 	}
 
