@@ -15,11 +15,7 @@ class StoreChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
-  }
-
-  fetchStoreListing() {
-    return Promise.reject(new Error('Are we implementing this?'));
+    this.nsfw = data.nsfw;
   }
 }
 
