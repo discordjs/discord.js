@@ -2,7 +2,6 @@
 
 const Action = require('./Action');
 const Channel = require('../../structures/Channel');
-const MessageStore = require('../../stores/MessageStore');
 const { ChannelTypes } = require('../../util/Constants');
 
 class ChannelUpdateAction extends Action {
