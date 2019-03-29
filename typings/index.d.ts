@@ -121,7 +121,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'text' | 'voice' | 'category' | 'unknown';
+		public type: 'dm' | 'text' | 'voice' | 'category' | 'news' | 'store' | 'unknown';
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -512,6 +512,11 @@ declare module 'discord.js' {
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setTopic(topic: string, reason?: string): Promise<GuildChannel>;
 		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
+	}
+
+	export class StoreChannel extends GuildChannel {
+		constructor(guild: Guild, data?: object);
+		public nsfw: boolean;
 	}
 
 	export class GuildEmoji extends Emoji {
@@ -1038,6 +1043,18 @@ declare module 'discord.js' {
 		public messages: MessageStore;
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
+		public topic: string;
+		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
+		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+	}
+
+	export class NewsChannel extends TextBasedChannel(GuildChannel) {
+		constructor(guild: Guild, data?: object);
+		public readonly members: Collection<Snowflake, GuildMember>;
+		public messages: MessageStore;
+		public nsfw: boolean;
 		public topic: string;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;

@@ -116,6 +116,16 @@ class Channel extends Base {
             channel = new CategoryChannel(guild, data);
             break;
           }
+          case ChannelTypes.NEWS: {
+            const NewsChannel = Structures.get('NewsChannel');
+            channel = new NewsChannel(guild, data);
+            break;
+          }
+          case ChannelTypes.STORE: {
+            const StoreChannel = Structures.get('StoreChannel');
+            channel = new StoreChannel(guild, data);
+            break;
+          }
           default: {
             const GuildChannel = Structures.get('GuildChannel');
             channel = new GuildChannel(guild, data);

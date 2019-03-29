@@ -135,7 +135,6 @@ class TextChannel extends GuildChannel {
   awaitMessages() {}
   bulkDelete() {}
   acknowledge() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
