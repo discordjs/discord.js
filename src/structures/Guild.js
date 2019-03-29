@@ -207,11 +207,41 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The value set for a guild's default message notifications
+     * The value set for the guild's default message notifications
      * @type {DefaultMessageNotifications|number}
      */
     this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
+
+    /**
+     * The maximum amount of members the guild can have
+     * @type {number}
+     */
+    this.maximumMembers = data.max_members;
+
+    /**
+     * The maximum amount of presences the guild can have
+     * @type {?number}
+     */
+    this.maximumPresences = data.max_presences;
+
+    /**
+     * The vanity URL code of the guild, if any
+     * @type {?string}
+     */
+    this.vanityURLCode = data.vanity_url_code;
+
+    /**
+     * The description of the guild, if any
+     * @type {?string}
+     */
+    this.description = data.description;
+
+    /**
+     * The hash of the guild banner
+     * @type {?string}
+     */
+    this.banner = data.banner;
 
     this.id = data.id;
     this.available = !data.unavailable;
@@ -268,6 +298,16 @@ class Guild extends Base {
         emojis: data.emojis,
       });
     }
+  }
+
+  /**
+   * The URL to this guild's banner.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  bannerURL({ format, size } = {}) {
+    if (!this.banner) return null;
+    return this.client.rest.cdn.Banner(this.id, this.banner, format, size);
   }
 
   /**
@@ -970,6 +1010,7 @@ class Guild extends Base {
     });
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
+    json.bannerURL = this.bannerURL();
     return json;
   }
 

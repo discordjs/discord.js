@@ -414,9 +414,15 @@ declare module 'discord.js' {
 		public readonly systemChannel: TextChannel;
 		public systemChannelID: Snowflake;
 		public verificationLevel: number;
+		public maximumMembers: number;
+		public maximumPresences: number;
+		public vanityURLCode: string;
+		public description: string;
+		public banner: string;
 		public readonly verified: boolean;
 		public readonly voiceConnection: VoiceConnection;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+		public bannerURL(options?: AvatarOptions): string;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
