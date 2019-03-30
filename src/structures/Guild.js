@@ -469,8 +469,29 @@ class Guild {
   }
 
   /**
+   * An object containing information about a guild member's ban.
+   * @typedef {Object} BanInfo
+   * @property {User} user User that was banned
+   * @property {?string} reason Reason the user was banned
+   */
+
+  /**
+   * Fetch a ban for a user.
+   * @returns {Promise<BanInfo>}
+   * @param {UserResolvable} user The user to fetch the ban for
+   * @example
+   * // Get ban
+   * guild.fetchBan(message.author)
+   *   .then(({ user, reason }) => console.log(`${user.tag} was banned for the reason: ${reason}.`))
+   *   .catch(console.error);
+   */
+  fetchBan(user) {
+    return this.client.rest.methods.getGuildBan(this, user);
+  }
+
+  /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, User>>}
+   * @returns {Promise<Collection<Snowflake, BanInfo>>}
    * @example
    * // Fetch bans in guild
    * guild.fetchBans()
@@ -478,12 +499,7 @@ class Guild {
    *   .catch(console.error);
    */
   fetchBans() {
-    return this.client.rest.methods.getGuildBans(this)
-      .then(bans => {
-        const users = new Collection();
-        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
-        return users;
-      });
+    return this.client.rest.methods.getGuildBans(this);
   }
 
   /**
