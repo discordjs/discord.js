@@ -1605,7 +1605,7 @@ declare module 'discord.js' {
 
 	type BanInfo = {
 		user: User;
-		reason?: string;
+		reason: string | null;
 	};
 
 	type BanOptions = {
