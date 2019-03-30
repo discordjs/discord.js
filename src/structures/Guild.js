@@ -491,15 +491,22 @@ class Guild {
 
   /**
    * Fetch a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, BanInfo>>}
+   * @returns {Promise<Collection<Snowflake, User|BanInfo>>}
+   * @param {boolean} [withReasons=false] Whether or not to include the ban reason(s)
    * @example
    * // Fetch bans in guild
    * guild.fetchBans()
    *   .then(bans => console.log(`This guild has ${bans.size} bans`))
    *   .catch(console.error);
    */
-  fetchBans() {
-    return this.client.rest.methods.getGuildBans(this);
+  fetchBans(withReasons = false) {
+    if (withReasons) return this.client.rest.methods.getGuildBans(this);
+    return this.client.rest.methods.getGuildBans(this)
+      .then(bans => {
+        const users = new Collection();
+        for (const ban of bans.values()) users.set(ban.user.id, ban.user);
+        return users;
+      });
   }
 
   /**

@@ -534,7 +534,7 @@ declare module 'discord.js' {
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBan(user: UserResolvable): Promise<BanInfo>;
-		public fetchBans(): Promise<Collection<Snowflake, BanInfo>>;
+		public fetchBans(withReasons?: boolean): Promise<Collection<Snowflake, User | BanInfo>>;
 		public fetchEmbed(): Promise<GuildEmbedData>;
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
