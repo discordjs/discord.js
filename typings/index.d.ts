@@ -347,12 +347,13 @@ declare module 'discord.js' {
 	}
 
 	export class DiscordAPIError extends Error {
-		constructor(path: string, error: object, method: string);
+		constructor(path: string, error: object, method: string, httpStatus: number);
 		private static flattenErrors(obj: object, key: string): string[];
 
 		public code: number;
 		public method: string;
 		public path: string;
+		public httpStatus: number;
 	}
 
 	export class DMChannel extends TextBasedChannel(Channel) {
