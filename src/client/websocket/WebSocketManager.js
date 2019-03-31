@@ -246,6 +246,16 @@ class WebSocketManager {
         this.shardQueue.add(shard);
         this.reconnect();
       });
+
+      shard.on(ShardEvents.DESTROYED, () => {
+        this.debug('Shard was destroyed but no WebSocket connection existed... Reconnecting...', shard);
+
+        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
+
+        this.shardQueue.add(shard);
+        this.reconnect();
+      });
+
       shard.eventsAttached = true;
     }
 

@@ -266,6 +266,7 @@ exports.Events = {
 
 exports.ShardEvents = {
   CLOSE: 'close',
+  DESTROYED: 'destroyed',
   INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',

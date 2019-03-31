@@ -581,7 +581,16 @@ class WebSocketShard extends EventEmitter {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
     // Close the WebSocket connection, if any
-    if (this.connection) this.connection.close(closeCode);
+    if (this.connection) {
+      this.connection.close(closeCode);
+    } else {
+      /**
+       * Emitted when a shard is destroyed, but no WebSocket connection was present.
+       * @private
+       * @event WebSocketShard#destroyed
+       */
+      this.emit(ShardEvents.DESTROYED);
+    }
     this.connection = null;
     // Set the shard status
     this.status = Status.DISCONNECTED;
