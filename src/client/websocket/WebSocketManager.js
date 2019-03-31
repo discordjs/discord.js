@@ -128,7 +128,9 @@ class WebSocketManager {
       url: gatewayURL,
       shards: recommendedShards,
       session_start_limit: sessionStartLimit,
-    } = await this.client.api.gateway.bot.get().catch(() => { throw invalidToken; });
+    } = await this.client.api.gateway.bot.get().catch(error => {
+      throw error.httpStatus === 401 ? invalidToken : error;
+    });
 
     this.sessionStartLimit = sessionStartLimit;
 
@@ -283,7 +285,7 @@ class WebSocketManager {
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
-      if (error.message && !error.message.startsWith('401')) {
+      if (error.httpStatus !== 401) {
         this.debug(`Possible network error occured. Retrying in 5s...`);
         await Util.delayFor(5000);
         this.reconnecting = false;
