@@ -245,8 +245,6 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
-  USER_NOTE_UPDATE: 'userNoteUpdate',
-  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
