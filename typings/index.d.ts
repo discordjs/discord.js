@@ -533,7 +533,10 @@ declare module 'discord.js' {
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
-		public fetchBans(): Promise<Collection<Snowflake, User>>;
+		public fetchBan(user: UserResolvable): Promise<BanInfo>;
+		public fetchBans(withReasons?: false): Promise<Collection<Snowflake, User>>;
+		public fetchBans(withReasons: true): Promise<Collection<Snowflake, BanInfo>>;
+		public fetchBans(withReasons: boolean): Promise<Collection<Snowflake, BanInfo | User>>;
 		public fetchEmbed(): Promise<GuildEmbedData>;
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
@@ -1599,6 +1602,11 @@ declare module 'discord.js' {
 	type AwaitMessagesOptions = MessageCollectorOptions & { errors?: string[] };
 
 	type AwaitReactionsOptions = ReactionCollectorOptions & { errors?: string[] };
+
+	type BanInfo = {
+		user: User;
+		reason: string | null;
+	};
 
 	type BanOptions = {
 		days?: number;

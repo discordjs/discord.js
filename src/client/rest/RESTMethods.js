@@ -631,6 +631,14 @@ class RESTMethods {
     });
   }
 
+  getGuildBan(guild, user) {
+    const id = this.client.resolver.resolveUserID(user);
+    return this.rest.makeRequest('get', `${Endpoints.Guild(guild).bans}/${id}`, true).then(ban => ({
+      reason: ban.reason,
+      user: this.client.dataManager.newUser(ban.user),
+    }));
+  }
+
   getGuildBans(guild) {
     return this.rest.makeRequest('get', Endpoints.Guild(guild).bans, true).then(bans =>
       bans.reduce((collection, ban) => {
