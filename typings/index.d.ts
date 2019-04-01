@@ -2,6 +2,7 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
+	import * as WebSocket from 'ws';
 
 	export const version: string;
 
@@ -181,15 +182,18 @@ declare module 'discord.js' {
 		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
-		public on(event: 'reconnecting', listener: (shardID: number) => void): this;
-		public on(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public on(event: 'shardReady', listener: (shardID: number) => void): this;
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
+		public on(event: 'invalidated', listener: () => void): this;
+		public on(event: 'shardDisconnected', listener: (event: CloseEvent, id: number) => void): this;
+		public on(event: 'shardError', listener: (error: Error, id: number) => void): this;
+		public on(event: 'shardReconnecting', listener: (id: number) => void): this;
+		public on(event: 'shardReady', listener: (id: number) => void): this;
+		public on(event: 'shardResumed', listener: (id: number) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
@@ -215,15 +219,18 @@ declare module 'discord.js' {
 		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
-		public once(event: 'reconnecting', listener: (shardID: number) => void): this;
-		public once(event: 'resumed', listener: (replayed: number, shardID: number) => void): this;
 		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public once(event: 'shardReady', listener: (shardID: number) => void): this;
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
+		public once(event: 'invalidated', listener: () => void): this;
+		public once(event: 'shardDisconnected', listener: (event: CloseEvent, id: number) => void): this;
+		public once(event: 'shardError', listener: (error: Error, id: number) => void): this;
+		public once(event: 'shardReconnecting', listener: (id: number) => void): this;
+		public once(event: 'shardReady', listener: (id: number) => void): this;
+		public once(event: 'shardResumed', listener: (id: number) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
@@ -340,12 +347,13 @@ declare module 'discord.js' {
 	}
 
 	export class DiscordAPIError extends Error {
-		constructor(path: string, error: object, method: string);
+		constructor(path: string, error: object, method: string, httpStatus: number);
 		private static flattenErrors(obj: object, key: string): string[];
 
 		public code: number;
 		public method: string;
 		public path: string;
+		public httpStatus: number;
 	}
 
 	export class DMChannel extends TextBasedChannel(Channel) {
@@ -1270,27 +1278,80 @@ declare module 'discord.js' {
 
 	export class WebSocketManager {
 		constructor(client: Client);
+		private totalShards: number | string;
+		private shardQueue: Set<WebSocketShard>;
+		private packetQueue: object[];
+		private destroyed: boolean;
+		private reconnecting: boolean;
+		private sessionStartLimit?: { total: number; remaining: number; reset_after: number; };
+
 		public readonly client: Client;
-		public gateway: string | undefined;
-		public readonly ping: number;
+		public gateway?: string;
 		public shards: Collection<number, WebSocketShard>;
 		public status: Status;
+		public readonly ping: number;
 
-		public broadcast(packet: object): void;
+		private debug(message: string, shard?: WebSocketShard): void;
+		private connect(): Promise<void>;
+		private createShards(): Promise<void>;
+		private reconnect(): Promise<void>;
+		private broadcast(packet: object): void;
+		private destroy(): void;
+		private _handleSessionLimit(remaining?: number, resetAfter?: number): Promise<void>;
+		private handlePacket(packet?: object, shard?: WebSocketShard): Promise<boolean>;
+		private checkReady(): boolean;
+		private triggerReady(): void;
 	}
 
 	export class WebSocketShard extends EventEmitter {
 		constructor(manager: WebSocketManager, id: number);
-		public id: number;
-		public readonly ping: number;
-		public pings: number[];
-		public status: Status;
+		private sequence: number;
+		private closeSequence: number;
+		private sessionID?: string;
+		private lastPingTimestamp: number;
+		private lastHeartbeatAcked: boolean;
+		private trace: string[];
+		private ratelimit: { queue: object[]; total: number; remaining: number; time: 60e3; timer: NodeJS.Timeout | null; };
+		private connection: WebSocket | null;
+		private helloTimeout: NodeJS.Timeout | null;
+		private eventsAttached: boolean;
+
 		public manager: WebSocketManager;
+		public id: number;
+		public status: Status;
+		public pings: [number, number, number];
+		public readonly ping: number;
 
-		public send(packet: object): void;
+		private debug(message: string): void;
+		private connect(): Promise<void>;
+		private onOpen(): void;
+		private onMessage(event: MessageEvent): void;
+		private onError(error: ErrorEvent): void;
+		private onClose(event: CloseEvent): void;
+		private onPacket(packet: object): void;
+		private setHelloTimeout(time?: number): void;
+		private setHeartbeatTimer(time: number): void;
+		private sendHeartbeat(): void;
+		private ackHeartbeat(): void;
+		private identify(): void;
+		private identifyNew(): void;
+		private identifyResume(): void;
+		private _send(data: object): void;
+		private processQueue(): void;
+		private destroy(closeCode: number): void;
 
+		public send(data: object): void;
 		public on(event: 'ready', listener: () => void): this;
+		public on(event: 'resumed', listener: () => void): this;
+		public on(event: 'close', listener: (event: CloseEvent) => void): this;
+		public on(event: 'invalidSession', listener: () => void): this;
+		public on(event: string, listener: Function): this;
+
 		public once(event: 'ready', listener: () => void): this;
+		public once(event: 'resumed', listener: () => void): this;
+		public once(event: 'close', listener: (event: CloseEvent) => void): this;
+		public once(event: 'invalidSession', listener: () => void): this;
+		public once(event: string, listener: Function): this;
 	}
 
 //#endregion
@@ -1589,7 +1650,7 @@ declare module 'discord.js' {
 
 	interface ClientOptions {
 		shards?: number | number[];
-		shardCount?: number;
+		shardCount?: number | 'auto';
 		totalShardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
@@ -2148,6 +2209,10 @@ declare module 'discord.js' {
 		| 'VOICE_STATE_UPDATE'
 		| 'VOICE_SERVER_UPDATE'
 		| 'WEBHOOKS_UPDATE';
+
+	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
+	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
+	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
 
 //#endregion
 }
