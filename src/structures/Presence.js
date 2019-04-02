@@ -27,7 +27,7 @@ const { ActivityTypes } = require('../util/Constants');
 class Presence {
   /**
    * @param {Client} client The instantiating client
-   * @param {Object} data The data for the presence
+   * @param {Object} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
     Object.defineProperty(this, 'client', { value: client });
