@@ -15,8 +15,7 @@ const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, WSCodes, browser, DefaultOptions } = require('../util/Constants');
-const { delayFor } = require('../util/Util');
+const { Events, browser, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -40,23 +39,33 @@ class Client extends BaseClient {
     } catch (_) {
       // Do nothing
     }
+
     if (this.options.shards === DefaultOptions.shards) {
       if ('SHARDS' in data) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
+
     if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
       if ('TOTAL_SHARD_COUNT' in data) {
         this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
-      } else if (Array.isArray(this.options.shards)) {
+      } else if (this.options.shards instanceof Array) {
         this.options.totalShardCount = this.options.shards.length;
       } else {
         this.options.totalShardCount = this.options.shardCount;
       }
     }
-    if (typeof this.options.shards === 'undefined' && this.options.shardCount) {
-      this.options.shards = [];
-      for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
+
+    if (typeof this.options.shards === 'undefined' && typeof this.options.shardCount === 'number') {
+      this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
+    }
+
+    if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
+
+    if (typeof this.options.shards !== 'undefined') {
+      this.options.shards = [...new Set(
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+      )];
     }
 
     this._validateOptions();
@@ -199,55 +208,21 @@ class Client extends BaseClient {
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.emit(Events.DEBUG, `Authenticating using token ${token}`);
-    let endpoint = this.api.gateway;
-    if (this.options.shardCount === 'auto') endpoint = endpoint.bot;
-    const res = await endpoint.get();
+    this.emit(Events.DEBUG, `Provided token: ${token}`);
+
     if (this.options.presence) {
       this.options.ws.presence = await this.presence._parse(this.options.presence);
     }
-    if (res.session_start_limit && res.session_start_limit.remaining === 0) {
-      const { session_start_limit: { reset_after } } = res;
-      this.emit(Events.DEBUG, `Exceeded identify threshold, setting a timeout for ${reset_after} ms`);
-      await delayFor(reset_after);
+
+    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
+
+    try {
+      await this.ws.connect();
+      return this.token;
+    } catch (error) {
+      this.destroy();
+      throw error;
     }
-    const gateway = `${res.url}/`;
-    if (this.options.shardCount === 'auto') {
-      this.emit(Events.DEBUG, `Using recommended shard count ${res.shards}`);
-      this.options.shardCount = res.shards;
-      this.options.totalShardCount = res.shards;
-      if (typeof this.options.shards === 'undefined' || !this.options.shards.length) {
-        this.options.shards = [];
-        for (let i = 0; i < this.options.shardCount; ++i) this.options.shards.push(i);
-      }
-    }
-    this.emit(Events.DEBUG, `Using gateway ${gateway}`);
-    this.ws.connect(gateway);
-    await new Promise((resolve, reject) => {
-      const onready = () => {
-        clearTimeout(timeout);
-        this.removeListener(Events.DISCONNECT, ondisconnect);
-        resolve();
-      };
-      const ondisconnect = event => {
-        clearTimeout(timeout);
-        this.removeListener(Events.READY, onready);
-        this.destroy();
-        if (WSCodes[event.code]) {
-          reject(new Error(WSCodes[event.code]));
-        }
-      };
-      const timeout = setTimeout(() => {
-        this.removeListener(Events.READY, onready);
-        this.removeListener(Events.DISCONNECT, ondisconnect);
-        this.destroy();
-        reject(new Error('WS_CONNECTION_TIMEOUT'));
-      }, this.options.shardCount * 25e3);
-      if (timeout.unref !== undefined) timeout.unref();
-      this.once(Events.READY, onready);
-      this.once(Events.DISCONNECT, ondisconnect);
-    });
-    return token;
   }
 
   /**
@@ -397,9 +372,10 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (options.shards && typeof options.shards !== 'number' && !Array.isArray(options.shards)) {
+    if (options.shards && !(options.shards instanceof Array)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
+    if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
     if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');

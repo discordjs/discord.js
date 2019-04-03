@@ -126,12 +126,8 @@ class Channel extends Base {
             channel = new StoreChannel(guild, data);
             break;
           }
-          default: {
-            const GuildChannel = Structures.get('GuildChannel');
-            channel = new GuildChannel(guild, data);
-          }
         }
-        guild.channels.set(channel.id, channel);
+        if (channel) guild.channels.set(channel.id, channel);
       }
     }
     return channel;

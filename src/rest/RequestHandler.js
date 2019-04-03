@@ -103,7 +103,7 @@ class RequestHandler {
       // NodeFetch error expected for all "operational" errors, such as 500 status code
       this.busy = false;
       return reject(
-        new HTTPError(error.message, error.constructor.name, error.status, request.method, request.route)
+        new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path)
       );
     }
 
@@ -167,7 +167,7 @@ class RequestHandler {
       try {
         const data = await parseResponse(res);
         if (res.status >= 400 && res.status < 500) {
-          return reject(new DiscordAPIError(request.path, data, request.method));
+          return reject(new DiscordAPIError(request.path, data, request.method, res.status));
         }
         return null;
       } catch (err) {

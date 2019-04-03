@@ -4,12 +4,12 @@ const { register } = require('./DJSError');
 
 const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
+  CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
 
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
-  WS_CONNECTION_TIMEOUT: 'The connection to the gateway timed out.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
