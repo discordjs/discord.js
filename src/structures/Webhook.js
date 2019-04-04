@@ -219,7 +219,7 @@ class Webhook {
    * @readonly
    */
   get url() {
-    return this.client.options.http.api + this.client.api.webhooks[this.id][this.token];
+    return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
   }
 
   static applyToClass(structure) {
