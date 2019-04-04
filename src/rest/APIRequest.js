@@ -21,7 +21,7 @@ class APIRequest {
       const query = Object.entries(options.query).filter(([, value]) => typeof value !== 'undefined');
       queryString = new URLSearchParams(query).toString();
     }
-    this.path = `${path}${queryString || `?${queryString}`}`;
+    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
   }
 
   make() {
