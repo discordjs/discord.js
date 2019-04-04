@@ -338,11 +338,15 @@ class Client extends BaseClient {
    *   .then(link => console.log(`Generated bot invite link: ${link}`))
    *   .catch(console.error);
    */
-  generateInvite(permissions) {
+  async generateInvite(permissions) {
     permissions = Permissions.resolve(permissions);
-    return this.fetchApplication().then(application =>
-      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
-    );
+    const application = await this.fetchApplication();
+    const query = new URLSearchParams({
+      client_id: application.id,
+      permissions: permissions,
+      scope: 'bot',
+    });
+    return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
   }
 
   toJSON() {
