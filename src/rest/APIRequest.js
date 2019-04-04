@@ -15,13 +15,13 @@ class APIRequest {
     this.route = options.route;
     this.options = options;
 
-    let queryString;
+    let queryString = '';
     if (options.query) {
       // Filter out undefined query options
       const query = Object.entries(options.query).filter(([, value]) => typeof value !== 'undefined');
       queryString = new URLSearchParams(query).toString();
     }
-    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
+    this.path = `${path}${queryString && `?${queryString}`}`;
   }
 
   make() {
