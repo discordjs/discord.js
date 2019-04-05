@@ -1270,6 +1270,7 @@ declare module 'discord.js' {
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object;
+		public readonly url: string;
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
