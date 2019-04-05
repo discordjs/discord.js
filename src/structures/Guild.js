@@ -1415,7 +1415,7 @@ class Guild {
     return collection.sort((a, b) =>
       a.position !== b.position ?
         a.position - b.position :
-        Long.fromString(a.id).sub(Long.fromString(b.id)).toNumber()
+        Long.fromString(b.id).sub(Long.fromString(a.id)).toNumber()
     );
   }
 }
