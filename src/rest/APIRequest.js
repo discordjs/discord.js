@@ -18,7 +18,7 @@ class APIRequest {
     let queryString = '';
     if (options.query) {
       // Filter out undefined query options
-      const query = Object.entries(options.query).filter(([, value]) => typeof value !== 'undefined');
+      const query = Object.entries(options.query).filter(([, value]) => value !== null && typeof value !== 'undefined');
       queryString = new URLSearchParams(query).toString();
     }
     this.path = `${path}${queryString && `?${queryString}`}`;
