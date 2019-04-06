@@ -234,7 +234,7 @@ declare module 'discord.js' {
 
 	export class ClientVoiceManager {
 		constructor(client: Client);
-		public client: Client;
+		public readonly client: Client;
 		public connections: Collection<Snowflake, VoiceConnection>;
 		public broadcasts: VoiceBroadcast[];
 
