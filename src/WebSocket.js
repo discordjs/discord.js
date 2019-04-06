@@ -29,8 +29,9 @@ exports.unpack = data => {
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');
   query.encoding = exports.encoding;
-  if (q) new URLSearchParams(q).forEach((v, k) => Object.assign(query, { [k]: v }));
-  const ws = new exports.WebSocket(`${g}?${new URLSearchParams(query)}`, ...args);
+  query = new URLSearchParams(query);
+  if (q) new URLSearchParams(q).forEach((v, k) => query.set(k, v));
+  const ws = new exports.WebSocket(`${g}?${query}`, ...args);
   if (browser) ws.binaryType = 'arraybuffer';
   return ws;
 };
