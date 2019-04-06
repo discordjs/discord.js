@@ -1,7 +1,6 @@
 'use strict';
 
 const { browser } = require('./util/Constants');
-const querystring = require('querystring');
 try {
   var erlpack = require('erlpack');
   if (!erlpack.pack) erlpack = null;
@@ -30,8 +29,8 @@ exports.unpack = data => {
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');
   query.encoding = exports.encoding;
-  if (q) query = Object.assign(querystring.parse(q), query);
-  const ws = new exports.WebSocket(`${g}?${querystring.stringify(query)}`, ...args);
+  if (q) new URLSearchParams(q).forEach((v, k) => Object.assign(query, { [k]: v }));
+  const ws = new exports.WebSocket(`${g}?${new URLSearchParams(query)}`, ...args);
   if (browser) ws.binaryType = 'arraybuffer';
   return ws;
 };
