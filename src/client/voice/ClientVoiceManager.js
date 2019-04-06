@@ -14,8 +14,10 @@ class ClientVoiceManager {
     /**
      * The client that instantiated this voice manager
      * @type {Client}
+     * @readonly
+     * @name ClientVoiceManager#client
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection mapping connection IDs to the Connection objects
