@@ -86,7 +86,6 @@ class Client extends BaseClient {
     /**
      * The voice manager of the client (`null` in browsers)
      * @type {?ClientVoiceManager}
-     * @private
      */
     this.voice = !browser ? new ClientVoiceManager(this) : null;
 
