@@ -145,7 +145,7 @@ declare module 'discord.js' {
 		public user: ClientUser | null;
 		public users: UserStore;
 		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
-		public voice: ClientVoiceManager;
+		public voice: ClientVoiceManager | null;
 		public ws: WebSocketManager;
 		public destroy(): void;
 		public fetchApplication(): Promise<ClientApplication>;
