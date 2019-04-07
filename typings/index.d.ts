@@ -144,7 +144,6 @@ declare module 'discord.js' {
 		public readonly uptime: number;
 		public user: ClientUser | null;
 		public users: UserStore;
-		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
 		public voice: ClientVoiceManager | null;
 		public ws: WebSocketManager;
 		public destroy(): void;

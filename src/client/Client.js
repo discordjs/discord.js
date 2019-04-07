@@ -157,16 +157,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * All active voice connections that have been established, mapped by guild ID
-   * @type {Collection<Snowflake, VoiceConnection>}
-   * @readonly
-   */
-  get voiceConnections() {
-    if (browser) return new Collection();
-    return this.voice.connections;
-  }
-
-  /**
    * All custom emojis that the client has access to, mapped by their IDs
    * @type {GuildEmojiStore<Snowflake, GuildEmoji>}
    * @readonly
