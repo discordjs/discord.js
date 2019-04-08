@@ -86,7 +86,6 @@ class Client extends BaseClient {
     /**
      * The voice manager of the client (`null` in browsers)
      * @type {?ClientVoiceManager}
-     * @private
      */
     this.voice = !browser ? new ClientVoiceManager(this) : null;
 
@@ -155,16 +154,6 @@ class Client extends BaseClient {
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * All active voice connections that have been established, mapped by guild ID
-   * @type {Collection<Snowflake, VoiceConnection>}
-   * @readonly
-   */
-  get voiceConnections() {
-    if (browser) return new Collection();
-    return this.voice.connections;
   }
 
   /**

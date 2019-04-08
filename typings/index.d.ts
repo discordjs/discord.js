@@ -131,11 +131,9 @@ declare module 'discord.js' {
 	export class Client extends BaseClient {
 		constructor(options?: ClientOptions);
 		private actions: object;
-		private voice: object;
 		private _eval(script: string): any;
 		private _validateOptions(options?: ClientOptions): void;
 
-		public broadcasts: VoiceBroadcast[];
 		public channels: ChannelStore;
 		public readonly emojis: GuildEmojiStore;
 		public guilds: GuildStore;
@@ -146,9 +144,8 @@ declare module 'discord.js' {
 		public readonly uptime: number;
 		public user: ClientUser | null;
 		public users: UserStore;
-		public readonly voiceConnections: Collection<Snowflake, VoiceConnection>;
+		public voice: ClientVoiceManager | null;
 		public ws: WebSocketManager;
-		public createVoiceBroadcast(): VoiceBroadcast;
 		public destroy(): void;
 		public fetchApplication(): Promise<ClientApplication>;
 		public fetchInvite(invite: InviteResolvable): Promise<Invite>;
@@ -232,6 +229,15 @@ declare module 'discord.js' {
 		public once(event: 'shardReady', listener: (id: number) => void): this;
 		public once(event: 'shardResumed', listener: (id: number) => void): this;
 		public once(event: string, listener: Function): this;
+	}
+
+	export class ClientVoiceManager {
+		constructor(client: Client);
+		public readonly client: Client;
+		public connections: Collection<Snowflake, VoiceConnection>;
+		public broadcasts: VoiceBroadcast[];
+
+		public createBroadcast(): VoiceBroadcast;
 	}
 
 	export class ClientApplication extends Base {
@@ -1114,6 +1120,7 @@ declare module 'discord.js' {
 	class VoiceBroadcast extends EventEmitter {
 		constructor(client: Client);
 		public client: Client;
+		public dispatchers: StreamDispatcher[];
 		public readonly dispatcher: BroadcastDispatcher;
 		public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher;
 
@@ -1148,10 +1155,11 @@ declare module 'discord.js' {
 	}
 
 	class VoiceConnection extends EventEmitter {
-		constructor(voiceManager: object, channel: VoiceChannel);
+		constructor(voiceManager: ClientVoiceManager, channel: VoiceChannel);
 		private authentication: object;
 		private sockets: object;
 		private ssrcMap: Map<number, boolean>;
+		private _speaking: Map<Snowflake, Readonly<Speaking>>;
 		private _disconnect(): void;
 		private authenticate(): void;
 		private authenticateFailed(reason: string): void;
@@ -1175,7 +1183,7 @@ declare module 'discord.js' {
 		public receiver: VoiceReceiver;
 		public speaking: Readonly<Speaking>;
 		public status: VoiceStatus;
-		public voiceManager: object;
+		public voiceManager: ClientVoiceManager;
 		public disconnect(): void;
 		public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
 
