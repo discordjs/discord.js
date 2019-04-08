@@ -10,7 +10,7 @@ const PlayInterface = require('./util/PlayInterface');
  *
  * Example usage:
  * ```js
- * const broadcast = client.createVoiceBroadcast();
+ * const broadcast = client.voice.createBroadcast();
  * broadcast.play('./music.mp3');
  * // Play "music.mp3" in all voice connections that the client is in
  * for (const connection of client.voiceConnections.values()) {
@@ -79,7 +79,7 @@ class VoiceBroadcast extends EventEmitter {
        * @event VoiceBroadcast#subscribe
        * @param {StreamDispatcher} dispatcher The subscribed dispatcher
        */
-      this.broadcast.emit(Events.VOICE_BROADCAST_SUBSCRIBE, dispatcher);
+      this.emit(Events.VOICE_BROADCAST_SUBSCRIBE, dispatcher);
       return true;
     } else {
       return false;
@@ -96,7 +96,7 @@ class VoiceBroadcast extends EventEmitter {
        * @event VoiceBroadcast#unsubscribe
        * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
        */
-      this.broadcast.emit(Events.VOICE_BROADCAST_UNSUBSCRIBE, dispatcher);
+      this.emit(Events.VOICE_BROADCAST_UNSUBSCRIBE, dispatcher);
       return true;
     }
     return false;
