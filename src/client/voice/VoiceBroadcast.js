@@ -74,6 +74,7 @@ class VoiceBroadcast extends EventEmitter {
   add(dispatcher) {
     const index = this.dispatchers.indexOf(dispatcher);
     if (index === -1) {
+      this.dispatchers.push(dispatcher);
       /**
        * Emitted whenever a stream dispatcher subscribes to the broadcast.
        * @event VoiceBroadcast#subscribe
