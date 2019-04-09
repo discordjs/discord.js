@@ -266,10 +266,10 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {ErrorEvent} error The error that occurred
+   * @param {Error} error The error that occurred
    * @private
    */
-  onError({ error }) {
+  onError(error) {
     if (error && error.message === 'uWs client connection error') {
       this.debug('Received a uWs error. Closing the connection and reconnecting...');
       this.connection.close(4000);
