@@ -67,8 +67,8 @@ class VoiceBroadcast extends EventEmitter {
    */
   end() {
     for (const dispatcher of this.dispatchers) this.delete(dispatcher);
-    const index = this.client.voice.broadcasts.indexOf(this);
-    if (index !== -1) this.client.voice.broadcasts.splice(index, 1);
+    const index = this.client.broadcasts.indexOf(this);
+    if (index !== -1) this.client.broadcasts.splice(index, 1);
   }
 
   add(dispatcher) {
