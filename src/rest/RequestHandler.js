@@ -163,7 +163,7 @@ class RequestHandler {
         return this.run();
       }
     } else {
-      // Handle possible malformed requessts
+      // Handle possible malformed requests
       try {
         const data = await parseResponse(res);
         if (res.status >= 400 && res.status < 500) {
