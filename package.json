@@ -35,6 +35,7 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
+    "@types/ws": "^6.0.1",
     "form-data": "^2.3.3",
     "node-fetch": "^2.3.0",
     "pako": "^1.0.8",
@@ -53,7 +54,6 @@
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
-    "@types/ws": "^6.0.1",
     "discord.js-docgen": "discordjs/docgen",
     "eslint": "^5.13.0",
     "json-filter-loader": "^1.0.0",
