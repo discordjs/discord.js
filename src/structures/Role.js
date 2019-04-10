@@ -298,7 +298,7 @@ class Role extends Base {
    * @param {number} position The position of the role
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reason for changing the position
+   * @param {string} [options.reason] Reason for changing the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role
