@@ -239,7 +239,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever a message is received.
-   * @param {Event} event Event received
+   * @param {MessageEvent} event Event received
    * @private
    */
   onMessage({ data }) {
@@ -266,10 +266,11 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {Error} error The error that occurred
+   * @param {ErrorEvent|Error} event The error that occurred
    * @private
    */
-  onError(error) {
+  onError(event) {
+    const error = event instanceof Error ? event : event.error;
     if (error && error.message === 'uWs client connection error') {
       this.debug('Received a uWs error. Closing the connection and reconnecting...');
       this.connection.close(4000);
@@ -293,6 +294,11 @@ class WebSocketShard extends EventEmitter {
   /**
    * @external ErrorEvent
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/ErrorEvent}
+   */
+
+  /**
+   * @external MessageEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent}
    */
 
   /**
