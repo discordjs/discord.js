@@ -391,7 +391,7 @@ class GuildChannel extends Channel {
    * @param {number} position The new position for the guild channel
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reason for changing the position
+   * @param {string} [options.reason] Reason for changing the position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position
