@@ -29,12 +29,14 @@ class GuildEmoji extends Emoji {
     /**
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
+     * @name GuildEmoji#requiresColons
      */
     if (typeof data.require_colons !== 'undefined') this.requiresColons = data.require_colons;
 
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
+     * @name GuildEmoji#managed
      */
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
 
