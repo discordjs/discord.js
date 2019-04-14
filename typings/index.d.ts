@@ -798,7 +798,7 @@ declare module 'discord.js' {
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
 		public status: PresenceStatus;
-		public clientStatus: ClientPresenceStatusData;
+		public clientStatus: ClientPresenceStatusData | null;
 		public readonly user: User;
 		public readonly member?: GuildMember;
 		public equals(presence: Presence): boolean;
@@ -2004,9 +2004,9 @@ declare module 'discord.js' {
 	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
 
 	interface ClientPresenceStatusData {
-		web?: ClientPresenceStatus;
-		mobile?: ClientPresenceStatus;
-		desktop?: ClientPresenceStatus;
+		web?: PresenceStatus;
+		mobile?: PresenceStatus;
+		desktop?: PresenceStatus;
 	}
 
 	type PartialTypes = 'USER'
