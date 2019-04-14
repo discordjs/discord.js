@@ -76,7 +76,7 @@ class Presence {
      * The devices this presence is on
      * @type {?object}
      * @property {?PresenceStatus} web The current presence in the web application
-     * @property {PresenceStatus} mobile This presence is on a mobile application
+     * @property {?PresenceStatus} mobile The current presence in the mobile application
      * @property {PresenceStatus} desktop This presence is on a desktop application
      */
     this.clientStatus = data.client_status || null;
