@@ -383,7 +383,7 @@ declare module 'discord.js' {
 		private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
 		private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
-		public readonly afkChannel: TextChannel;
+		public readonly afkChannel: VoiceChannel;
 		public afkChannelID: Snowflake;
 		public afkTimeout: number;
 		public applicationID: Snowflake;
