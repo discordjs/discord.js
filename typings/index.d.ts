@@ -383,9 +383,7 @@ declare module 'discord.js' {
 		private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
 		private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
-		protected setup(data: any): void;
-
-		public readonly afkChannel: VoiceChannel;
+		public readonly afkChannel: TextChannel;
 		public afkChannelID: Snowflake;
 		public afkTimeout: number;
 		public applicationID: Snowflake;
@@ -427,6 +425,11 @@ declare module 'discord.js' {
 		public vanityURLCode: string;
 		public description: string;
 		public banner: string;
+		public widgetEnabled: boolean;
+		public widgetChannelID: Snowflake;
+		public readonly widgetChannel: TextChannel;
+		public embedChannelID: Snowflake;
+		public readonly embedChannel: TextChannel;
 		public readonly verified: boolean;
 		public readonly voiceConnection: VoiceConnection;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
@@ -435,6 +438,7 @@ declare module 'discord.js' {
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
+		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;

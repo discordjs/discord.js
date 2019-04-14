@@ -183,6 +183,27 @@ class Guild extends Base {
     this.embedEnabled = data.embed_enabled;
 
     /**
+     * Whether widget images are enabled on this guild
+     * @type {?boolean}
+     * @name Guild#widgetEnabled
+     */
+    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+
+    /**
+     * The widget channel ID, if enabled
+     * @type {?string}
+     * @name Guild#widgetChannelID
+     */
+    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+
+    /**
+     * The embed channel ID, if enabled
+     * @type {?string}
+     * @name Guild#embedChannelID
+     */
+    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+
+    /**
      * The verification level of the guild
      * @type {number}
      */
@@ -215,15 +236,16 @@ class Guild extends Base {
 
     /**
      * The maximum amount of members the guild can have
-     * @type {number}
+     * @type {?number}
+     * @name Guild#maximumMembers
      */
-    this.maximumMembers = data.max_members;
+    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members;
 
     /**
      * The maximum amount of presences the guild can have
-     * @type {?number}
+     * @type {number}
      */
-    this.maximumPresences = data.max_presences;
+    this.maximumPresences = data.max_presences || 5000;
 
     /**
      * The vanity URL code of the guild, if any
@@ -405,6 +427,24 @@ class Guild extends Base {
   }
 
   /**
+   * Widget channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get widgetChannel() {
+    return this.client.channels.get(this.widgetChannelID) || null;
+  }
+
+  /**
+   * Embed channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get embedChannel() {
+    return this.client.channels.get(this.embedChannelID) || null;
+  }
+
+  /**
    * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
    * @type {?VoiceConnection}
    * @readonly
@@ -442,6 +482,17 @@ class Guild extends Base {
    */
   member(user) {
     return this.members.resolve(user);
+  }
+
+  /**
+   * Fetches this guild.
+   * @returns {Promise<Guild>}
+   */
+  fetch() {
+    return this.client.api.guilds(this.id).get().then(data => {
+      this._patch(data);
+      return this;
+    });
   }
 
   /**
