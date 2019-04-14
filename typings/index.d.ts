@@ -3,7 +3,6 @@ declare module 'discord.js' {
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
 	import * as WebSocket from 'ws';
-	import { Inflate } from 'zlib';
 
 	export const version: string;
 
