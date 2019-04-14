@@ -613,6 +613,7 @@ declare module 'discord.js' {
 		public code: string;
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
+		public readonly deletable: boolean;
 		public readonly expiresAt: Date;
 		public readonly expiresTimestamp: number;
 		public guild: Guild;
