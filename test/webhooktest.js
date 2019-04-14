@@ -1,3 +1,5 @@
+'use strict';
+
 const Discord = require('../src');
 
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
@@ -35,7 +37,6 @@ const tests = [
   (m, hook) => hook.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   (m, hook) => hook.send(fill('xyz '), { split: { char: ' ' } }),
 
-  (m, hook) => hook.send('x', { embed: { description: 'a' } }),
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
   (m, hook) => hook.send({ files: [{ attachment: linkA }] }),
   (m, hook) => hook.send({
@@ -57,9 +58,7 @@ const tests = [
   async (m, hook) => hook.send({ files: [{ attachment: await buffer(linkA) }] }),
   (m, hook) => hook.send([attach(linkA), attach(linkB)]),
 
-  (m, hook) => hook.send({ embed: { description: 'a' } }),
   (m, hook) => hook.send(embed().setDescription('a')),
-  (m, hook) => hook.send({ embed: embed().setDescription('a') }),
 
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
   (m, hook) => hook.send(embed().setDescription('a')),
