@@ -212,8 +212,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
-  READY: 'ready',
-  RESUMED: 'resumed',
+  CLIENT_READY: 'ready',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -246,23 +245,32 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
-  USER_NOTE_UPDATE: 'userNoteUpdate',
-  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
+  VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
-  DISCONNECT: 'disconnect',
-  RECONNECTING: 'reconnecting',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_ERROR: 'shardError',
+  SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
+  SHARD_RESUMED: 'shardResumed',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
+};
+
+exports.ShardEvents = {
+  CLOSE: 'close',
+  DESTROYED: 'destroyed',
+  INVALID_SESSION: 'invalidSession',
+  READY: 'ready',
+  RESUMED: 'resumed',
 };
 
 /**
@@ -311,11 +319,11 @@ exports.PartialTypes = keyMirror([
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
  * * USER_UPDATE
- * * USER_NOTE_UPDATE
  * * USER_SETTINGS_UPDATE
  * * PRESENCE_UPDATE
  * * VOICE_STATE_UPDATE
  * * TYPING_START
+ * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
@@ -352,6 +360,7 @@ exports.WSEvents = keyMirror([
   'PRESENCE_UPDATE',
   'VOICE_STATE_UPDATE',
   'TYPING_START',
+  'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
 ]);
@@ -413,6 +422,7 @@ exports.Colors = {
   AQUA: 0x1ABC9C,
   GREEN: 0x2ECC71,
   BLUE: 0x3498DB,
+  YELLOW: 0xFFFF00,
   PURPLE: 0x9B59B6,
   LUMINOUS_VIVID_PINK: 0xE91E63,
   GOLD: 0xF1C40F,

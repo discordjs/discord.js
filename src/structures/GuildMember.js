@@ -15,6 +15,11 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild member
+   * @param {Guild} guild The guild the member is part of
+   */
   constructor(client, data, guild) {
     super(client);
 
@@ -83,6 +88,7 @@ class GuildMember extends Base {
   /**
    * Whether this GuildMember is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return !this.joinedTimestamp;

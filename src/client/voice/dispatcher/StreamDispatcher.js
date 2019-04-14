@@ -122,7 +122,7 @@ class StreamDispatcher extends Writable {
   _cleanup() {
     if (this.player.dispatcher === this) this.player.dispatcher = null;
     const { streams } = this;
-    if (streams.broadcast) streams.broadcast.dispatchers.delete(this);
+    if (streams.broadcast) streams.broadcast.delete(this);
     if (streams.opus) streams.opus.destroy();
     if (streams.ffmpeg) streams.ffmpeg.destroy();
   }
@@ -146,12 +146,14 @@ class StreamDispatcher extends Writable {
   /**
    * Whether or not playback is paused
    * @type {boolean}
+   * @readonly
    */
   get paused() { return Boolean(this.pausedSince); }
 
   /**
    * Total time that this dispatcher has been paused
    * @type {number}
+   * @readonly
    */
   get pausedTime() {
     return this._silentPausedTime + this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0);
@@ -177,6 +179,7 @@ class StreamDispatcher extends Writable {
   /**
    * The time (in milliseconds) that the dispatcher has actually been playing audio for
    * @type {number}
+   * @readonly
    */
   get streamTime() {
     return this.count * FRAME_LENGTH;
@@ -185,6 +188,7 @@ class StreamDispatcher extends Writable {
   /**
    * The time (in milliseconds) that the dispatcher has been playing audio for, taking into account skips and pauses
    * @type {number}
+   * @readonly
    */
   get totalStreamTime() {
     return Date.now() - this.startTime;
@@ -322,6 +326,7 @@ class StreamDispatcher extends Writable {
   /**
    * Whether or not the Opus bitrate of this stream is editable
    * @type {boolean}
+   * @readonly
    */
   get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
 

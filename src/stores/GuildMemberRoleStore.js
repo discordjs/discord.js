@@ -20,6 +20,7 @@ class GuildMemberRoleStore extends Collection {
    * The filtered collection of roles of the member
    * @type {Collection<Snowflake, Role>}
    * @private
+   * @readonly
    */
   get _filtered() {
     const everyone = this.guild.defaultRole;

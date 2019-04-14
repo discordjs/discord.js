@@ -19,6 +19,11 @@ const APIMessage = require('./APIMessage');
  * @extends {Base}
  */
 class Message extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message
+   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   */
   constructor(client, data, channel) {
     super(client);
 
@@ -172,6 +177,7 @@ class Message extends Base {
   /**
    * Whether or not this message is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return typeof this.content !== 'string' || !this.author;
@@ -365,7 +371,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content=''] The new content for the message
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example

@@ -10,6 +10,11 @@ const Emoji = require('./Emoji');
  * @extends {Emoji}
  */
 class GuildEmoji extends Emoji {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild emoji
+   * @param {Guild} guild The guild the guild emoji is part of
+   */
   constructor(client, data, guild) {
     super(client, data);
 
@@ -29,12 +34,14 @@ class GuildEmoji extends Emoji {
     /**
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
+     * @name GuildEmoji#requiresColons
      */
     if (typeof data.require_colons !== 'undefined') this.requiresColons = data.require_colons;
 
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
+     * @name GuildEmoji#managed
      */
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
 

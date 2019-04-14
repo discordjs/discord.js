@@ -43,6 +43,19 @@ class GenericAction {
       }) :
       channel.messages.get(id));
   }
+
+  getReaction(data, message, user) {
+    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
+    const existing = message.reactions.get(emojiID);
+    if (!existing && this.client.options.partials.includes(PartialTypes.MESSAGE)) {
+      return message.reactions.add({
+        emoji: data.emoji,
+        count: 0,
+        me: user.id === this.client.user.id,
+      });
+    }
+    return existing;
+  }
 }
 
 module.exports = GenericAction;
