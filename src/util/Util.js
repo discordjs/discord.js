@@ -251,6 +251,7 @@ class Util {
    * - `AQUA`
    * - `GREEN`
    * - `BLUE`
+   * - `YELLOW`
    * - `PURPLE`
    * - `LUMINOUS_VIVID_PINK`
    * - `GOLD`

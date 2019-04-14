@@ -1685,9 +1685,11 @@ declare module 'discord.js' {
 	}
 
 	type ColorResolvable = 'DEFAULT'
+		| 'WHITE'
 		| 'AQUA'
 		| 'GREEN'
 		| 'BLUE'
+		| 'YELLOW'
 		| 'PURPLE'
 		| 'LUMINOUS_VIVID_PINK'
 		| 'GOLD'
