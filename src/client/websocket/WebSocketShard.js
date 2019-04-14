@@ -587,7 +587,7 @@ class WebSocketShard extends EventEmitter {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
     // Close the WebSocket connection, if any
-    if (this.connection) {
+    if (this.connection && this.connection.readyState !== WebSocket.CLOSED) {
       this.connection.close(closeCode);
     } else {
       /**
