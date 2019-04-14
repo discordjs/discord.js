@@ -23,4 +23,4 @@ Update to Node.js 8.0.0 or newer.
 
 Other questions can be found at the [official Discord.js guide](https://discordjs.guide/popular-topics/common-questions.html)
 If you have issues not listed here or on the guide, feel free to ask in the [official Discord.js server](https://discord.gg/bRCvFy9).
-Always make sure to read the documentation.
+Always make sure to read the [documentation](https://discord.js.org/#/docs/main/stable/general/welcome).
