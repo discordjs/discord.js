@@ -245,7 +245,7 @@ class Guild extends Base {
      * The maximum amount of presences the guild can have
      * @type {number}
      */
-    this.maximumPresences = data.max_presences || 5000;
+    this.maximumPresences = data.max_presences || this.maximumPresences || 5000;
 
     /**
      * The vanity URL code of the guild, if any
