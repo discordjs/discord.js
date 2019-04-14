@@ -223,8 +223,8 @@ class Collection extends Map {
    * @example
    * collection.findKey(val => val.username === 'Bob');
    */
-  /* eslint-enable max-len */
   findKey(propOrFn, value) {
+    /* eslint-enable max-len */
     if (typeof propOrFn === 'string') {
       if (typeof value === 'undefined') throw new Error('Value must be specified.');
       for (const [key, val] of this) {
