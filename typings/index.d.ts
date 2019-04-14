@@ -809,7 +809,7 @@ declare module 'discord.js' {
 	}
 
 	export class Presence {
-		constructor(client: Client, data?: object);
+		constructor(client: Client, data: object);
 		public activity: Activity;
 		public flags: Readonly<ActivityFlags>;
 		public status: PresenceStatus;
