@@ -98,8 +98,9 @@ class Invite extends Base {
    * @readonly
    */
   get deletable() {
+    const guild = this.guild || this.channel.guild;
     return this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) ||
-      this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD);
+      guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD);
   }
 
   /**
