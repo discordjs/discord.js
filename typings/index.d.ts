@@ -2075,9 +2075,9 @@ declare module 'discord.js' {
 	type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
 
 	interface ClientPresenceStatusData {
-		web?: PresenceStatus;
-		mobile?: PresenceStatus;
-		desktop?: PresenceStatus;
+		web?: ClientPresenceStatus;
+		mobile?: ClientPresenceStatus;
+		desktop?: ClientPresenceStatus;
 	}
 
 	type PartialTypes = 'USER'
