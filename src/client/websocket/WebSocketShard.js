@@ -526,7 +526,7 @@ class WebSocketShard extends EventEmitter {
    * a full [Payload](https://discordapp.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
    * Do not use this method if you don't know what you're doing.</warn>
    * @param {Object} data The full packet to send
-   * @param {?boolean} [important=false] If this packet should be added first in queue
+   * @param {boolean} [important=false] If this packet should be added first in queue
    */
   send(data, important = false) {
     this.ratelimit.queue[important ? 'unshift' : 'push'](data);
@@ -574,7 +574,7 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Destroys this shard and closes its WebSocket connection.
-   * @param {?number} [closeCode=1000] The close code to use
+   * @param {number} [closeCode=1000] The close code to use
    * @private
    */
   destroy(closeCode = 1000) {
