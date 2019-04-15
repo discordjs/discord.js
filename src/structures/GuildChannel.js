@@ -14,6 +14,10 @@ const { Error, TypeError } = require('../errors');
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
+  /**
+   * @param {Guild} guild The guild the guild channel is part of
+   * @param {Object} data The data for the guild channel
+   */
   constructor(guild, data) {
     super(guild.client, data);
 
