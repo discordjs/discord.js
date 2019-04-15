@@ -236,21 +236,19 @@ class Guild extends Base {
 
     /**
      * The maximum amount of members the guild can have
-     * <info>This parameter may be inaccurate. If you want to make sure it's up to date,
-     * call {@link Guild#fetch} beforehand</info>
-     * @type {number}
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
      * @name Guild#maximumMembers
      */
-    this.maximumMembers = data.max_members || this.maximumMembers || 250000;
+    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
 
     /**
      * The maximum amount of presences the guild can have
-     * <info>This parameter may be inaccurate. If you want to make sure it's up to date,
-     * call {@link Guild#fetch} beforehand</info>
-     * @type {number}
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
      * @name Guild#maximumPresences
      */
-    this.maximumPresences = data.max_presences || this.maximumPresences || 5000;
+    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 5000;
 
     /**
      * The vanity URL code of the guild, if any
