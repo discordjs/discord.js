@@ -40,7 +40,7 @@ class MessageEmbed {
 
     /**
      * The color of this embed
-     * @type {?ColorResolvable}
+     * @type {?number}
      */
     this.color = Util.resolveColor(data.color);
 
