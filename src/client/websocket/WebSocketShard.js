@@ -526,7 +526,7 @@ class WebSocketShard extends EventEmitter {
    * a full [Payload](https://discordapp.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
    * Do not use this method if you don't know what you're doing.</warn>
    * @param {Object} data The full packet to send
-   * @param {?boolean} [important=false] If this packet should be added first in queue
+   * @param {boolean} [important=false] If this packet should be added first in queue
    */
   send(data, important = false) {
     this.ratelimit.queue[important ? 'unshift' : 'push'](data);
