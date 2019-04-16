@@ -403,7 +403,6 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public readonly defaultRole: Role | null;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
-		public readonly defaultRole: Role;
 		public deleted: boolean;
 		public embedEnabled: boolean;
 		public emojis: GuildEmojiStore;
