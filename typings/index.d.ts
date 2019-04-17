@@ -604,6 +604,7 @@ declare module 'discord.js' {
 		public readonly calculatedPosition: number;
 		public readonly deletable: boolean;
 		public guild: Guild;
+		public readonly manageable: boolean;
 		public readonly messageNotifications: GuildChannelMessageNotifications;
 		public readonly muted: boolean;
 		public name: string;
