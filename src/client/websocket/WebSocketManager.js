@@ -216,7 +216,7 @@ class WebSocketManager {
           return;
         }
 
-        if (event.code >= 1000 && event.code <= 2000) {
+        if (event.code === 1000 || event.code === 4006) {
           // Any event code in this range cannot be resumed.
           shard.sessionID = undefined;
         }
