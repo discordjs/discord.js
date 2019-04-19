@@ -33,12 +33,12 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 8.0.0 or newer is required.**  
+**Node.js 10.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discord.js`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discord.js node-opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+Without voice support: `npm install discordjs/discord.js`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.js opusscript`
 
 ### Audio engines
 The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
@@ -74,8 +74,8 @@ client.login('token');
 
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-* [Documentation](https://discord.js.org/#/docs)
-* [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
+* [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
+* [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable, please visit [this guide](https://github.com/discordjs/guide/blob/v12-changes/guide/additional-info/changes-in-v12.md) for a WIP guide, meant for updating from v11 to v12 but also includes updated and removed items in the library.
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
 * [GitHub](https://github.com/discordjs/discord.js)
