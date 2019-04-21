@@ -46,11 +46,11 @@ class ShardClientUtil {
   }
 
   /**
-   * Shard ID or array of shard IDs of this client
-   * @type {number|number[]}
+   * Array of shard IDs of this client
+   * @type {number[]}
    * @readonly
    */
-  get id() {
+  get ids() {
     return this.client.options.shards;
   }
 
@@ -182,6 +182,11 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
+      /**
+       * Emitted when the client encounters an error.
+       * @event Client#error
+       * @param {Error} error The error encountered
+       */
       this.client.emit(Events.ERROR, err);
     });
   }

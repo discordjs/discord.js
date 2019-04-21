@@ -15,6 +15,11 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild member
+   * @param {Guild} guild The guild the member is part of
+   */
   constructor(client, data, guild) {
     super(client);
 
@@ -27,8 +32,9 @@ class GuildMember extends Base {
     /**
      * The user that this guild member instance represents
      * @type {User}
+     * @name GuildMember#user
      */
-    this.user = {};
+    if (data.user) this.user = client.users.add(data.user, true);
 
     /**
      * The timestamp the member joined the guild at
@@ -77,6 +83,15 @@ class GuildMember extends Base {
     const clone = super._clone();
     clone._roles = this._roles.slice();
     return clone;
+  }
+
+  /**
+   * Whether this GuildMember is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return !this.joinedTimestamp;
   }
 
   /**
@@ -353,6 +368,14 @@ class GuildMember extends Base {
    */
   ban(options) {
     return this.guild.members.ban(this, options);
+  }
+
+  /**
+   * Fetches this GuildMember.
+   * @returns {Promise<GuildMember>}
+   */
+  fetch() {
+    return this.guild.members.fetch(this.id, true);
   }
 
   /**

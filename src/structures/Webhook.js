@@ -213,6 +213,15 @@ class Webhook {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
 
+  /**
+   * The url of this webhook
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
+  }
+
   static applyToClass(structure) {
     for (const prop of [
       'send',

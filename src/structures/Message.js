@@ -19,12 +19,17 @@ const APIMessage = require('./APIMessage');
  * @extends {Base}
  */
 class Message extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message
+   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|GroupDMChannel}
+     * @type {TextChannel|DMChannel}
      */
     this.channel = channel;
 
@@ -60,7 +65,7 @@ class Message extends Base {
      * The author of the message
      * @type {User}
      */
-    this.author = this.client.users.add(data.author, !data.webhook_id);
+    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
     /**
      * Whether or not this message is pinned
@@ -90,17 +95,19 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(e));
+    this.embeds = (data.embeds || []).map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new MessageAttachment(
-        attachment.url, attachment.filename, attachment
-      ));
+    if (data.attachments) {
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(
+          attachment.url, attachment.filename, attachment
+        ));
+      }
     }
 
     /**
@@ -165,6 +172,15 @@ class Message extends Base {
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
+  }
+
+  /**
+   * Whether or not this message is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.content !== 'string' || !this.author;
   }
 
   /**
@@ -355,7 +371,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content=''] The new content for the message
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -470,6 +486,14 @@ class Message extends Base {
       content :
       APIMessage.transformOptions(content, options, { reply: this.member || this.author })
     );
+  }
+
+  /**
+   * Fetch this message.
+   * @returns {Promise<Message>}
+   */
+  fetch() {
+    return this.channel.messages.fetch(this.id, true);
   }
 
   /**

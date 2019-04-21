@@ -6,6 +6,10 @@ const Base = require('./Base');
  * Represents the voice state for a Guild Member.
  */
 class VoiceState extends Base {
+  /**
+   * @param {Guild} guild The guild the voice state is part of
+   * @param {Object} data The data for the voice state
+   */
   constructor(guild, data) {
     super(guild.client);
     /**
@@ -58,6 +62,7 @@ class VoiceState extends Base {
   /**
    * The member that this voice state belongs to
    * @type {?GuildMember}
+   * @readonly
    */
   get member() {
     return this.guild.members.get(this.id) || null;
@@ -66,6 +71,7 @@ class VoiceState extends Base {
   /**
    * The channel that the member is connected to
    * @type {?VoiceChannel}
+   * @readonly
    */
   get channel() {
     return this.guild.channels.get(this.channelID) || null;
@@ -74,6 +80,7 @@ class VoiceState extends Base {
   /**
    * Whether this member is either self-deafened or server-deafened
    * @type {?boolean}
+   * @readonly
    */
   get deaf() {
     return this.serverDeaf || this.selfDeaf;
@@ -82,6 +89,7 @@ class VoiceState extends Base {
   /**
    * Whether this member is either self-muted or server-muted
    * @type {?boolean}
+   * @readonly
    */
   get mute() {
     return this.serverMute || this.selfMute;
@@ -91,6 +99,7 @@ class VoiceState extends Base {
    * Whether this member is currently speaking. A boolean if the information is available (aka
    * the bot is connected to any voice channel in the guild), otherwise this is null
    * @type {?boolean}
+   * @readonly
    */
   get speaking() {
     return this.channel && this.channel.connection ?

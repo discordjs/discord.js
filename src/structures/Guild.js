@@ -5,7 +5,7 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -26,6 +26,10 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class Guild extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild
+   */
   constructor(client, data) {
     super(client);
 
@@ -341,7 +345,9 @@ class Guild extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) || null;
+    return this.members.get(this.ownerID) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.ownerID } }, true) :
+      null);
   }
 
   /**
@@ -564,7 +570,6 @@ class Guild extends Base {
    * Fetches audit logs for this guild.
    * @param {Object} [options={}] Options for fetching audit logs
    * @param {Snowflake|GuildAuditLogsEntry} [options.before] Limit to entries from before specified entry
-   * @param {Snowflake|GuildAuditLogsEntry} [options.after] Limit to entries from after specified entry
    * @param {number} [options.limit] Limit number of entries
    * @param {UserResolvable} [options.user] Only show entries involving this user
    * @param {AuditLogAction|number} [options.type] Only show entries involving this action type
@@ -577,12 +582,10 @@ class Guild extends Base {
    */
   fetchAuditLogs(options = {}) {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
-    if (options.after && options.after instanceof GuildAuditLogs.Entry) options.after = options.after.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
     return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
       before: options.before,
-      after: options.after,
       limit: options.limit,
       user_id: this.client.users.resolveID(options.user),
       action_type: options.type,

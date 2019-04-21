@@ -14,6 +14,10 @@ const { Error, TypeError } = require('../errors');
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
+  /**
+   * @param {Guild} guild The guild the guild channel is part of
+   * @param {Object} data The data for the guild channel
+   */
   constructor(guild, data) {
     super(guild.client, data);
 
@@ -391,7 +395,7 @@ class GuildChannel extends Channel {
    * @param {number} position The new position for the guild channel
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reason for changing the position
+   * @param {string} [options.reason] Reason for changing the position
    * @returns {Promise<GuildChannel>}
    * @example
    * // Set a new channel position

@@ -13,7 +13,6 @@ const { ActivityTypes } = require('../util/Constants');
 
 /**
  * The status of this presence:
- *
  * * **`online`** - user is online
  * * **`idle`** - user is AFK
  * * **`offline`** - user is offline or invisible
@@ -22,9 +21,21 @@ const { ActivityTypes } = require('../util/Constants');
  */
 
 /**
+ * The status of this presence:
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} ClientPresenceStatus
+ */
+
+/**
  * Represents a user's presence.
  */
 class Presence {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} [data={}] The data for the presence
+   */
   constructor(client, data = {}) {
     Object.defineProperty(this, 'client', { value: client });
     /**
@@ -45,6 +56,7 @@ class Presence {
   /**
    * The user of this presence
    * @type {?User}
+   * @readonly
    */
   get user() {
     return this.client.users.get(this.userID) || null;
@@ -53,6 +65,7 @@ class Presence {
   /**
    * The member of this presence
    * @type {?GuildMember}
+   * @readonly
    */
   get member() {
     return this.guild.members.get(this.userID) || null;
@@ -74,10 +87,10 @@ class Presence {
 
     /**
      * The devices this presence is on
-     * @type {?object}
-     * @property {PresenceStatus} web
-     * @property {PresenceStatus} mobile
-     * @property {PresenceStatus} desktop
+     * @type {?Object}
+     * @property {?ClientPresenceStatus} web The current presence in the web application
+     * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
+     * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
     this.clientStatus = data.client_status || null;
 

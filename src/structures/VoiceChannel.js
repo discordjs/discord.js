@@ -30,6 +30,7 @@ class VoiceChannel extends GuildChannel {
    * The members in this voice channel
    * @type {Collection<Snowflake, GuildMember>}
    * @name VoiceChannel#members
+   * @readonly
    */
   get members() {
     const coll = new Collection();

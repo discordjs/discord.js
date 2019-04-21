@@ -13,6 +13,10 @@ const MessageStore = require('../stores/MessageStore');
  * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
+  /**
+   * @param {Guild} guild The guild the text channel is part of
+   * @param {Object} data The data for the text channel
+   */
   constructor(guild, data) {
     super(guild, data);
     /**

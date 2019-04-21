@@ -88,11 +88,19 @@ class VoiceConnectionUDPClient extends EventEmitter {
     });
   }
 
-  createUDPSocket(address) {
+  async createUDPSocket(address) {
     this.discordAddress = address;
     const socket = this.socket = udp.createSocket('udp4');
+    socket.on('error', e => {
+      this.emit('debug', `[UDP] Error: ${e}`);
+      this.emit('error', e);
+    });
+    socket.on('close', () => {
+      this.emit('debug', '[UDP] socket closed');
+    });
     this.emit('debug', `[UDP] created socket`);
     socket.once('message', message => {
+      this.emit('debug', `[UDP] message: [${[...message]}] (${message})`);
       // Stop if the sockets have been deleted because the connection has been closed already
       if (!this.voiceConnection.sockets.ws) return;
 
@@ -125,7 +133,9 @@ class VoiceConnectionUDPClient extends EventEmitter {
 
     const blankMessage = Buffer.alloc(70);
     blankMessage.writeUIntBE(this.voiceConnection.authentication.ssrc, 0, 4);
-    this.send(blankMessage);
+    this.emit('debug', `Sending IP discovery packet: [${[...blankMessage]}]`);
+    await this.send(blankMessage);
+    this.emit('debug', `Successfully sent IP discovery packet`);
   }
 }
 

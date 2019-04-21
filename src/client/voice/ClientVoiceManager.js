@@ -3,25 +3,43 @@
 const Collection = require('../../util/Collection');
 const { VoiceStatus } = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
+const VoiceBroadcast = require('./VoiceBroadcast');
 const { Error } = require('../../errors');
 
 /**
- * Manages all the voice stuff for the client.
- * @private
+ * Manages voice connections for the client
  */
 class ClientVoiceManager {
   constructor(client) {
     /**
      * The client that instantiated this voice manager
      * @type {Client}
+     * @readonly
+     * @name ClientVoiceManager#client
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection mapping connection IDs to the Connection objects
      * @type {Collection<Snowflake, VoiceConnection>}
      */
     this.connections = new Collection();
+
+    /**
+     * Active voice broadcasts that have been created
+     * @type {VoiceBroadcast[]}
+     */
+    this.broadcasts = [];
+  }
+
+  /**
+   * Creates a voice broadcast.
+   * @returns {VoiceBroadcast}
+   */
+  createBroadcast() {
+    const broadcast = new VoiceBroadcast(this.client);
+    this.broadcasts.push(broadcast);
+    return broadcast;
   }
 
   onVoiceServer({ guild_id, token, endpoint }) {
@@ -46,6 +64,7 @@ class ClientVoiceManager {
    * Sets up a request to join a voice channel.
    * @param {VoiceChannel} channel The voice channel to join
    * @returns {Promise<VoiceConnection>}
+   * @private
    */
   joinChannel(channel) {
     return new Promise((resolve, reject) => {
