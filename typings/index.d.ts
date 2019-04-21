@@ -1335,7 +1335,7 @@ declare module 'discord.js' {
 		private connect(): Promise<void>;
 		private onOpen(): void;
 		private onMessage(event: MessageEvent): void;
-		private onError(error: ErrorEvent | Error): void;
+		private onError(error: ErrorEvent | object): void;
 		private onClose(event: CloseEvent): void;
 		private onPacket(packet: object): void;
 		private setHelloTimeout(time?: number): void;
