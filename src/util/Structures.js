@@ -55,8 +55,8 @@ class Structures {
       throw new TypeError(`The extender function must return the extended structure class/prototype ${received}.`);
     }
 
-    const prototype = Object.getPrototypeOf(extended);
-    if (prototype !== structures[structure]) {
+    if (!(extended.prototype instanceof structures[structure])) {
+      const prototype = Object.getPrototypeOf(extended);
       const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
         'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
