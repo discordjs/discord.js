@@ -4,12 +4,21 @@ const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
+let zstd;
+let decoder;
+
 let zlib;
+
 try {
-  zlib = require('zlib-sync');
-  if (!zlib.Inflate) zlib = require('pako');
-} catch (err) {
-  zlib = require('pako');
+  zstd = require('zucc');
+  decoder = new TextDecoder('utf8');
+} catch (e) {
+  try {
+    zlib = require('zlib-sync');
+    if (!zlib.Inflate) zlib = require('pako');
+  } catch (err) {
+    zlib = require('pako');
+  }
 }
 
 /**
@@ -206,11 +215,15 @@ class WebSocketShard extends EventEmitter {
         return;
       }
 
-      this.inflate = new zlib.Inflate({
-        chunkSize: 65535,
-        flush: zlib.Z_SYNC_FLUSH,
-        to: WebSocket.encoding === 'json' ? 'string' : '',
-      });
+      if (zstd) {
+        this.inflate = new zstd.DecompressStream();
+      } else {
+        this.inflate = new zlib.Inflate({
+          chunkSize: 65535,
+          flush: zlib.Z_SYNC_FLUSH,
+          to: WebSocket.encoding === 'json' ? 'string' : '',
+        });
+      }
 
       this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
 
@@ -219,7 +232,7 @@ class WebSocketShard extends EventEmitter {
 
       const ws = this.connection = WebSocket.create(gateway, {
         v: client.options.ws.version,
-        compress: 'zlib-stream',
+        compress: zstd ? 'zstd-stream' : 'zlib-stream',
       });
       ws.onopen = this.onOpen.bind(this);
       ws.onmessage = this.onMessage.bind(this);
@@ -243,19 +256,26 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onMessage({ data }) {
-    if (data instanceof ArrayBuffer) data = new Uint8Array(data);
-    const l = data.length;
-    const flush = l >= 4 &&
-      data[l - 4] === 0x00 &&
-      data[l - 3] === 0x00 &&
-      data[l - 2] === 0xFF &&
-      data[l - 1] === 0xFF;
+    let raw;
+    if (zstd) {
+      const ab = this.inflate.decompress(new Uint8Array(data).buffer);
+      raw = decoder.decode(ab);
+    } else {
+      if (data instanceof ArrayBuffer) data = new Uint8Array(data);
+      const l = data.length;
+      const flush = l >= 4 &&
+        data[l - 4] === 0x00 &&
+        data[l - 3] === 0x00 &&
+        data[l - 2] === 0xFF &&
+        data[l - 1] === 0xFF;
 
-    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
-    if (!flush) return;
+      this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+      if (!flush) return;
+      raw = this.inflate.result;
+    }
     let packet;
     try {
-      packet = WebSocket.unpack(this.inflate.result);
+      packet = WebSocket.unpack(raw);
       this.manager.client.emit(Events.RAW, packet, this.id);
     } catch (err) {
       this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
