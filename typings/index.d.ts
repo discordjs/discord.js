@@ -921,9 +921,9 @@ declare module 'discord.js' {
 		public eval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValue(prop: string): Promise<any>;
 		public kill(): void;
-		public respawn(delay?: number, waitForReady?: boolean): Promise<ChildProcess>;
+		public respawn(delay?: number, spawnTimeout?: number): Promise<ChildProcess>;
 		public send(message: any): Promise<Shard>;
-		public spawn(waitForReady?: boolean): Promise<ChildProcess>;
+		public spawn(spawnTimeout?: number): Promise<ChildProcess>;
 
 		public on(event: 'death', listener: (child: ChildProcess) => void): this;
 		public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => void): this;
@@ -953,7 +953,7 @@ declare module 'discord.js' {
 		public broadcastEval(script: string): Promise<any[]>;
 		public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValues(prop: string): Promise<any[]>;
-		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<void>;
+		public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<void>;
 		public send(message: any): Promise<void>;
 
 		public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
@@ -979,8 +979,8 @@ declare module 'discord.js' {
 		public broadcastEval(script: string): Promise<any[]>;
 		public createShard(id: number): Shard;
 		public fetchClientValues(prop: string): Promise<any[]>;
-		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
-		public spawn(amount?: number | 'auto', delay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
+		public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<Collection<number, Shard>>;
+		public spawn(amount?: number | 'auto', delay?: number, spawnTimeout?: number): Promise<Collection<number, Shard>>;
 
 		public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
