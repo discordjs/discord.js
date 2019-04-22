@@ -6,6 +6,10 @@ const Base = require('./Base');
  * Represents the voice state for a Guild Member.
  */
 class VoiceState extends Base {
+  /**
+   * @param {Guild} guild The guild the voice state is part of
+   * @param {Object} data The data for the voice state
+   */
   constructor(guild, data) {
     super(guild.client);
     /**

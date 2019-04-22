@@ -1,6 +1,5 @@
 'use strict';
 
-const querystring = require('querystring');
 const FormData = require('form-data');
 const https = require('https');
 const { browser, UserAgent } = require('../util/Constants');
@@ -16,8 +15,13 @@ class APIRequest {
     this.route = options.route;
     this.options = options;
 
-    const queryString = (querystring.stringify(options.query).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
-    this.path = `${path}${queryString ? `?${queryString}` : ''}`;
+    let queryString = '';
+    if (options.query) {
+      // Filter out undefined query options
+      const query = Object.entries(options.query).filter(([, value]) => value !== null && typeof value !== 'undefined');
+      queryString = new URLSearchParams(query).toString();
+    }
+    this.path = `${path}${queryString && `?${queryString}`}`;
   }
 
   make() {
