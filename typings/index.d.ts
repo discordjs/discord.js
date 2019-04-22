@@ -615,7 +615,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object);
 		public channel: GuildChannel;
 		public code: string;
-		public readonly createdAt: Date;
+		public readonly deletable: boolean;
+		public readonly createdAt: Date | null;
 		public createdTimestamp: number | null;
 		public readonly expiresAt: Date | null;
 		public readonly expiresTimestamp: number | null;
