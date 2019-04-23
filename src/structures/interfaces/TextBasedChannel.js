@@ -138,7 +138,7 @@ class TextBasedChannel {
       apiMessage = content.resolveData();
     } else {
       apiMessage = APIMessage.create(this, content, options).resolveData();
-      if (apiMessage.data.content instanceof Array) {
+      if (Array.isArray(apiMessage.data.content)) {
         return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
     }
@@ -296,7 +296,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async bulkDelete(messages, filterOld = false) {
-    if (messages instanceof Array || messages instanceof Collection) {
+    if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id =>
