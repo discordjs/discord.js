@@ -294,8 +294,8 @@ declare module 'discord.js' {
 		public equals(collection: Collection<any, any>): boolean;
 		public every(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public filter(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): Collection<K, V>;
-		public find(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): V;
-		public findKey(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): K;
+		public find(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): V | undefined;
+		public findKey(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): K | undefined;
 		public first(): V | undefined;
 		public first(count: number): V[];
 		public firstKey(): K | undefined;
