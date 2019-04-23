@@ -143,7 +143,7 @@ class GuildMemberRoleStore extends Collection {
 
   clone() {
     const clone = new this.constructor(this.member);
-    clone._patch(this.keyArray());
+    clone.member._roles = [...this.keyArray()];
     return clone;
   }
 
