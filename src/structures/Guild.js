@@ -393,7 +393,9 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    return this.members.get(this.client.user.id) || null;
+    return this.members.get(this.client.user.id) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.this.client.user.id } }, true) :
+      null);
   }
 
   /**
