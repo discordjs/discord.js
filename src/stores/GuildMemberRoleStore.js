@@ -84,7 +84,7 @@ class GuildMemberRoleStore extends Collection {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
-      clone.roles._patch([...this.keys(), roleOrRoles.id]);
+      clone._roles = [...this.keys(), roleOrRoles.id];
       return clone;
     }
   }
@@ -116,7 +116,7 @@ class GuildMemberRoleStore extends Collection {
 
       const clone = this.member._clone();
       const newRoles = this.filter(role => role.id !== roleOrRoles.id);
-      clone.roles._patch([...newRoles.keys()]);
+      clone._roles = [...newRoles.keys()];
       return clone;
     }
   }
@@ -141,13 +141,9 @@ class GuildMemberRoleStore extends Collection {
     return this.member.edit({ roles }, reason);
   }
 
-  _patch(roles) {
-    this.member._roles = roles;
-  }
-
   clone() {
     const clone = new this.constructor(this.member);
-    clone._patch(this.keyArray());
+    clone.member._roles = [...this.keyArray()];
     return clone;
   }
 
