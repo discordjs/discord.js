@@ -394,7 +394,7 @@ class Guild extends Base {
    */
   get me() {
     return this.members.get(this.client.user.id) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
-      this.members.add({ user: { id: this.this.client.user.id } }, true) :
+      this.members.add({ user: { id: this.client.user.id } }, true) :
       null);
   }
 
