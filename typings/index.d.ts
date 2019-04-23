@@ -1417,6 +1417,7 @@ declare module 'discord.js' {
 		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
 		public fetch(): Promise<GuildMemberStore>;
 		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
+		public prune(options: GuildPruneMembersOptions & { dry?: false, count: false }): Promise<null>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
 		public unban(user: UserResolvable, reason?: string): Promise<User>;
 	}
@@ -1886,6 +1887,7 @@ declare module 'discord.js' {
 	type GuildResolvable = Guild | Snowflake;
 
 	interface GuildPruneMembersOptions {
+		count?: boolean;
 		days?: number;
 		dry?: boolean;
 		reason?: string;
