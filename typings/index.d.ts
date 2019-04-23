@@ -1305,8 +1305,6 @@ declare module 'discord.js' {
 		public status: Status;
 		public readonly ping: number;
 
-		public broadcast(packet: object): void;
-
 		public on(event: WSEventType, listener: (data: any, shardID: number) => void): this;
 		public once(event: WSEventType, listener: (data: any, shardID: number) => void): this;
 		private debug(message: string, shard?: WebSocketShard): void;
