@@ -270,7 +270,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onError(event) {
-    const error = event && event.error ? event.error : error;
+    const error = event && event.error ? event.error : event;
     if (!error) return;
 
     if (error.message === 'uWs client connection error') {
