@@ -132,6 +132,7 @@ class BitField {
    * Resolves bitfields to their numeric form.
    * @param {BitFieldResolvable} [bit=0] - bit(s) to resolve
    * @returns {number}
+   * @static
    */
   static resolve(bit = 0) {
     if (typeof bit === 'number' && bit >= 0) return bit;

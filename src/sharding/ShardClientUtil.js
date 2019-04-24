@@ -196,6 +196,7 @@ class ShardClientUtil {
    * @param {Client} client The client to use
    * @param {ShardingManagerMode} mode Mode the shard was spawned with
    * @returns {ShardClientUtil}
+   * @static
    */
   static singleton(client, mode) {
     if (!this._singleton) {

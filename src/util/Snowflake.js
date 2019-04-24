@@ -31,6 +31,7 @@ class SnowflakeUtil {
    * <info>This hardcodes the worker ID as 1 and the process ID as 0.</info>
    * @param {number|Date} [timestamp=Date.now()] Timestamp or date of the snowflake to generate
    * @returns {Snowflake} The generated snowflake
+   * @static
    */
   static generate(timestamp = Date.now()) {
     if (timestamp instanceof Date) timestamp = timestamp.getTime();
@@ -60,6 +61,7 @@ class SnowflakeUtil {
    * Deconstructs a Discord snowflake.
    * @param {Snowflake} snowflake Snowflake to deconstruct
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
+   * @static
    */
   static deconstruct(snowflake) {
     const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');

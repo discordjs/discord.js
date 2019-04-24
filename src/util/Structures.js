@@ -12,6 +12,7 @@ class Structures {
    * Retrieves a structure class.
    * @param {string} structure Name of the structure to retrieve
    * @returns {Function}
+   * @static
    */
   static get(structure) {
     if (typeof structure === 'string') return structures[structure];
@@ -26,6 +27,7 @@ class Structures {
    * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
    * extended class/prototype
    * @returns {Function} Extended class/prototype returned from the extender
+   * @static
    * @example
    * const { Structures } = require('discord.js');
    *

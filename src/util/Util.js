@@ -20,6 +20,7 @@ class Util {
    * @param {Object} obj The object to flatten.
    * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
    * @returns {Object}
+   * @static
    */
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
@@ -54,6 +55,7 @@ class Util {
    * @param {StringResolvable} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string|string[]}
+   * @static
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     text = this.resolveString(text);
@@ -78,6 +80,7 @@ class Util {
    * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
    * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
    * @returns {string}
+   * @static
    */
   static escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
     if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
@@ -90,6 +93,7 @@ class Util {
    * @param {string} token Discord auth token
    * @param {number} [guildsPerShard=1000] Number of guilds per shard
    * @returns {Promise<number>} The recommended number of shards
+   * @static
    */
   static fetchRecommendedShards(token, guildsPerShard = 1000) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
@@ -109,6 +113,7 @@ class Util {
    * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
    * @param {string} text Emoji string to parse
    * @returns {Object} Object with `animated`, `name`, and `id` properties
+   * @static
    * @private
    */
   static parseEmoji(text) {
@@ -123,6 +128,7 @@ class Util {
    * Shallow-copies an object with its class/prototype intact.
    * @param {Object} obj Object to clone
    * @returns {Object}
+   * @static
    * @private
    */
   static cloneObject(obj) {
@@ -134,6 +140,7 @@ class Util {
    * @param {Object} def Default properties
    * @param {Object} given Object to assign defaults to
    * @returns {Object}
+   * @static
    * @private
    */
   static mergeDefault(def, given) {
@@ -153,6 +160,7 @@ class Util {
    * Converts an ArrayBuffer or string to a Buffer.
    * @param {ArrayBuffer|string} ab ArrayBuffer to convert
    * @returns {Buffer}
+   * @static
    * @private
    */
   static convertToBuffer(ab) {
@@ -164,6 +172,7 @@ class Util {
    * Converts a string to an ArrayBuffer.
    * @param {string} str String to convert
    * @returns {ArrayBuffer}
+   * @static
    * @private
    */
   static str2ab(str) {
@@ -180,6 +189,7 @@ class Util {
    * @param {string} obj.message Message for the error
    * @param {string} obj.stack Stack for the error
    * @returns {Error}
+   * @static
    * @private
    */
   static makeError(obj) {
@@ -193,6 +203,7 @@ class Util {
    * Makes a plain error info object from an Error.
    * @param {Error} err Error to get info from
    * @returns {Object}
+   * @static
    * @private
    */
   static makePlainError(err) {
@@ -210,6 +221,7 @@ class Util {
    * @param {number} newIndex Index or offset to move the element to
    * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
    * @returns {number}
+   * @static
    * @private
    */
   static moveElementInArray(array, element, newIndex, offset = false) {
@@ -234,6 +246,7 @@ class Util {
    * Resolves a StringResolvable to a string.
    * @param {StringResolvable} data The string resolvable to resolve
    * @returns {string}
+   * @static
    */
   static resolveString(data) {
     if (typeof data === 'string') return data;
@@ -280,6 +293,7 @@ class Util {
    * Resolves a ColorResolvable into a color number.
    * @param {ColorResolvable} color Color to resolve
    * @returns {number} A color
+   * @static
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
@@ -300,6 +314,7 @@ class Util {
    * Sorts by Discord's position and ID.
    * @param  {Collection} collection Collection of objects to sort
    * @returns {Collection}
+   * @static
    */
   static discordSort(collection) {
     return collection.sort((a, b) =>
@@ -318,6 +333,7 @@ class Util {
    * @param {APIRouter} route Route to call PATCH on
    * @param {string} [reason] Reason for the change
    * @returns {Promise<Object[]>} Updated item list, with `id` and `position` properties
+   * @static
    * @private
    */
   static setPosition(item, position, relative, sorted, route, reason) {
@@ -332,6 +348,7 @@ class Util {
    * @param {string} path Path to get the basename of
    * @param {string} [ext] File extension to remove
    * @returns {string} Basename of the path
+   * @static
    * @private
    */
   static basename(path, ext) {
@@ -343,6 +360,7 @@ class Util {
    * Transforms a snowflake from a decimal string to a bit string.
    * @param  {Snowflake} num Snowflake to be transformed
    * @returns {string}
+   * @static
    * @private
    */
   static idToBinary(num) {
@@ -364,6 +382,7 @@ class Util {
    * Transforms a snowflake from a bit string to a decimal string.
    * @param  {string} num Bit string to be transformed
    * @returns {Snowflake}
+   * @static
    * @private
    */
   static binaryToID(num) {
@@ -391,6 +410,7 @@ class Util {
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
    * @returns {string}
+   * @static
    */
   static cleanContent(str, message) {
     return str
@@ -425,6 +445,7 @@ class Util {
    * Creates a Promise that resolves after a specified duration.
    * @param {number} ms How long to wait before resolving (in milliseconds)
    * @returns {Promise<void>}
+   * @static
    * @private
    */
   static delayFor(ms) {
@@ -437,6 +458,7 @@ class Util {
    * Adds methods from collections and maps onto the provided store
    * @param {DataStore} store The store to mixin
    * @param {string[]} ignored The properties to ignore
+   * @static
    * @private
    */
   /* eslint-disable func-names */

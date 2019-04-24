@@ -381,6 +381,7 @@ class Role extends Base {
    * @param {Role} role2 Second role to compare
    * @returns {number} Negative number if the first role's position is lower (second role's is higher),
    * positive number if the first's is higher (second's is lower), 0 if equal
+   * @static
    */
   static comparePositions(role1, role2) {
     if (role1.position === role2.position) return role2.id - role1.id;

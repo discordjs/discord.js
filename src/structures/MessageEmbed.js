@@ -375,6 +375,7 @@ class MessageEmbed {
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
+   * @static
    */
   static checkField(name, value, inline = false) {
     name = Util.resolveString(name);

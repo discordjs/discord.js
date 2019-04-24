@@ -115,6 +115,7 @@ class PermissionOverwrites {
    * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
    * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions
    * @returns {ResolvedOverwriteOptions}
+   * @static
    */
   static resolveOverwriteOptions(options, { allow, deny } = {}) {
     allow = new Permissions(allow);
@@ -164,6 +165,7 @@ class PermissionOverwrites {
    * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
    * @param {Guild} guild The guild to resolve from
    * @returns {RawOverwriteData}
+   * @static
    */
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();

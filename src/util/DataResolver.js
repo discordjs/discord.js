@@ -27,6 +27,7 @@ class DataResolver {
    * Resolves InviteResolvable to an invite code.
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
+   * @static
    */
   static resolveInviteCode(data) {
     const inviteRegex = /discord(?:app\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
@@ -39,6 +40,7 @@ class DataResolver {
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
    * @returns {Promise<?string>}
+   * @static
    */
   static async resolveImage(image) {
     if (!image) return null;
@@ -60,6 +62,7 @@ class DataResolver {
    * Resolves a Base64Resolvable to a Base 64 image.
    * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
    * @returns {?string}
+   * @static
    */
   static resolveBase64(data) {
     if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
@@ -83,6 +86,7 @@ class DataResolver {
    * Resolves a BufferResolvable to a Buffer.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Buffer>}
+   * @static
    */
   static resolveFile(resource) {
     if (!browser && resource instanceof Buffer) return Promise.resolve(resource);

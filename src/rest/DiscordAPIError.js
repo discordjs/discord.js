@@ -41,6 +41,7 @@ class DiscordAPIError extends Error {
    * @param {Object} obj Discord errors object
    * @param {string} [key] Used internally to determine key names of nested fields
    * @returns {string[]}
+   * @static
    * @private
    */
   static flattenErrors(obj, key = '') {

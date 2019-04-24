@@ -226,6 +226,7 @@ class APIMessage {
    * Resolves a single file into an object sendable to the API.
    * @param {BufferResolvable|Stream|FileOptions|MessageAttachment} fileLike Something that could be resolved to a file
    * @returns {Object}
+   * @static
    */
   static async resolveFile(fileLike) {
     let attachment;
@@ -262,6 +263,7 @@ class APIMessage {
    * Partitions embeds and attachments.
    * @param {Array<MessageEmbed|MessageAttachment>} items Items to partition
    * @returns {Array<MessageEmbed[], MessageAttachment[]>}
+   * @static
    */
   static partitionMessageAdditions(items) {
     const embeds = [];
@@ -285,6 +287,7 @@ class APIMessage {
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] Extra options to add onto transformed options
    * @param {boolean} [isWebhook=false] Whether or not to use WebhookMessageOptions as the result
    * @returns {MessageOptions|WebhookMessageOptions}
+   * @static
    */
   static transformOptions(content, options, extra = {}, isWebhook = false) {
     if (!options && typeof content === 'object' && !(content instanceof Array)) {
@@ -320,6 +323,7 @@ class APIMessage {
    * @param {MessageOptions|WebhookMessageOptions|MessageAdditions} [options={}] Options to use
    * @param {MessageOptions|WebhookMessageOptions} [extra={}] - Extra options to add onto transformed options
    * @returns {MessageOptions|WebhookMessageOptions}
+   * @static
    */
   static create(target, content, options, extra = {}) {
     const Webhook = require('./Webhook');

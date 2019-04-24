@@ -137,6 +137,7 @@ class GuildAuditLogs {
   /**
    * Handles possible promises for entry targets.
    * @returns {Promise<GuildAuditLogs>}
+   * @static
    */
   static build(...args) {
     const logs = new GuildAuditLogs(...args);
@@ -160,6 +161,7 @@ class GuildAuditLogs {
    * Finds the target type from the entry action.
    * @param {AuditLogAction} target The action target
    * @returns {AuditLogTargetType}
+   * @static
    */
   static targetType(target) {
     if (target < 10) return Targets.GUILD;
@@ -186,6 +188,7 @@ class GuildAuditLogs {
    * Finds the action type from the entry action.
    * @param {AuditLogAction} action The action target
    * @returns {AuditLogActionType}
+   * @static
    */
   static actionType(action) {
     if ([

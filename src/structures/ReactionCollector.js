@@ -135,6 +135,7 @@ class ReactionCollector extends Collector {
    * Gets the collector key for a reaction.
    * @param {MessageReaction} reaction The message reaction to get the key for
    * @returns {Snowflake|string}
+   * @static
    */
   static key(reaction) {
     return reaction.emoji.id || reaction.emoji.name;
