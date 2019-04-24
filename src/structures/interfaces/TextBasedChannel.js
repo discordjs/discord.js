@@ -296,8 +296,8 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async bulkDelete(messages, filterOld = false) {
-    if (messages instanceof Array || messages instanceof Collection) {
-      let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
+    if (messages instanceof Array || Collection.isCollection(messages)) {
+      let messageIDs = Collection.isCollection(messages) ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id =>
           Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000

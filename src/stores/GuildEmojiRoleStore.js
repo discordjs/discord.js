@@ -32,7 +32,7 @@ class GuildEmojiRoleStore extends Collection {
    * @returns {Promise<GuildEmoji>}
    */
   add(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
+    if (Collection.isCollection(roleOrRoles)) return this.add(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles]);
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
@@ -51,7 +51,7 @@ class GuildEmojiRoleStore extends Collection {
    * @returns {Promise<GuildEmoji>}
    */
   remove(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
+    if (Collection.isCollection(roleOrRoles)) return this.remove(roleOrRoles.keyArray());
     if (!(roleOrRoles instanceof Array)) return this.remove([roleOrRoles]);
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 

@@ -38,7 +38,7 @@ class MessageMentions {
     this.everyone = Boolean(everyone);
 
     if (users) {
-      if (users instanceof Collection) {
+      if (Collection.isCollection(users)) {
         /**
          * Any users that were mentioned
          * @type {Collection<Snowflake, User>}
@@ -56,7 +56,7 @@ class MessageMentions {
     }
 
     if (roles) {
-      if (roles instanceof Collection) {
+      if (Collection.isCollection(roles)) {
         /**
          * Any roles that were mentioned
          * @type {Collection<Snowflake, Role>}

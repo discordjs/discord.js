@@ -65,7 +65,7 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async add(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (Collection.isCollection(roleOrRoles) || roleOrRoles instanceof Array) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
         throw new TypeError('INVALID_TYPE', 'roles',
@@ -96,7 +96,7 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async remove(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (Collection.isCollection(roleOrRoles) || roleOrRoles instanceof Array) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
         throw new TypeError('INVALID_TYPE', 'roles',

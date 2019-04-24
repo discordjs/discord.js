@@ -45,7 +45,7 @@ class GuildEmojiStore extends DataStore {
       const data = { image: attachment, name };
       if (roles) {
         data.roles = [];
-        for (let role of roles instanceof Collection ? roles.values() : roles) {
+        for (let role of Collection.isCollection(roles) ? roles.values() : roles) {
           role = this.guild.roles.resolve(role);
           if (!role) {
             return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
