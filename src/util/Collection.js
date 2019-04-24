@@ -28,6 +28,16 @@ class Collection extends Map {
     Object.defineProperty(this, '_keyArray', { value: null, writable: true, configurable: true });
   }
 
+  /**
+   * Determines whether the passed values is a {@link Collection}.
+   * @param {*} c The value to be checked.
+   * @returns {boolean} `true` if the value is a {@link Collection}; otherwise `false`.
+   * @static
+   */
+  static isCollection(c) {
+    return c instanceof this;
+  }
+
   set(key, val) {
     this._array = null;
     this._keyArray = null;
@@ -94,6 +104,21 @@ class Collection extends Map {
     const iter = this.keys();
     for (let i = 0; i < amount; i++) arr[i] = iter.next().value;
     return arr;
+  }
+
+  /**
+   * Searches for the index of a key that is found within the collection, or -1 if it's not present. This behaves like
+   * [Array.indexOf()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf),
+   * @param {*} key The key to locate in the collection
+   * @returns {number}
+   */
+  keyIndex(key) {
+    if (!this.has(key)) return -1;
+    const iter = this.keys();
+    for (let i = 0; i < this.size; i++) {
+      if (key === iter.next().value) return i;
+    }
+    return -1;
   }
 
   /**
@@ -178,6 +203,24 @@ class Collection extends Map {
   }
 
   /* eslint-disable max-len */
+  /**
+   * Searches for the index of a key on a single item where the given function returns a truthy value, or -1 if no elements passes the given function.
+   * This behaves like [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
+   * @param {Function} fn The function to test with (should return boolean)
+   * @param {*} [thisArg] Value to use as `this` when executing function
+   * @returns {number}
+   * @example collection.findIndex(user => user.username === 'Bob');
+   */
+  findIndex(fn, thisArg) {
+    if (typeof thisArg !== 'undefined') fn = fn.bind(thisArg);
+    let i = 0;
+    for (const [key, val] of this) {
+      if (fn(val, key, this)) return i;
+      ++i;
+    }
+    return -1;
+  }
+
   /**
    * Searches for the key of a single item where the given function returns a truthy value. This behaves like
    * [Array.findIndex()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex),
