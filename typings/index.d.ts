@@ -295,12 +295,14 @@ declare module 'discord.js' {
 		public every(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public filter(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): Collection<K, V>;
 		public find(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): V | undefined;
+		public findIndex(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): number;
 		public findKey(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): K | undefined;
 		public first(): V | undefined;
 		public first(count: number): V[];
 		public firstKey(): K | undefined;
 		public firstKey(count: number): K[];
 		public keyArray(): K[];
+		public keyIndex(key: any): number;
 		public last(): V | undefined;
 		public last(count: number): V[];
 		public lastKey(): K | undefined;
@@ -317,6 +319,8 @@ declare module 'discord.js' {
 		public sweep(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): number;
 		public tap(fn: (collection: Collection<K, V>) => void, thisArg?: any): Collection<K, V>;
 		public toJSON(): object;
+
+		public static isCollection(c: any): boolean;
 	}
 
 	export abstract class Collector<K, V> extends EventEmitter {
