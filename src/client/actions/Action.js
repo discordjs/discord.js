@@ -61,7 +61,7 @@ class GenericAction {
     const userID = data.user.id;
     const existing = guild.members.get(userID);
     if (!existing && this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)) {
-      return this.members.add({ user: { id: userID } });
+      return guild.members.add({ user: { id: userID } });
     }
     return existing;
   }
