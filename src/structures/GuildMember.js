@@ -15,6 +15,11 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class GuildMember extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild member
+   * @param {Guild} guild The guild the member is part of
+   */
   constructor(client, data, guild) {
     super(client);
 
@@ -71,7 +76,7 @@ class GuildMember extends Base {
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
-    if (data.roles) this.roles._patch(data.roles);
+    if (data.roles) this._roles = data.roles;
   }
 
   _clone() {

@@ -26,6 +26,10 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class Guild extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild
+   */
   constructor(client, data) {
     super(client);
 
@@ -262,7 +266,7 @@ class Guild extends Base {
        */
       this.emojis = new GuildEmojiStore(this);
       if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
-    } else {
+    } else if (data.emojis) {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
         emojis: data.emojis,

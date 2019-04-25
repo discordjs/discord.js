@@ -14,8 +14,10 @@ class ClientVoiceManager {
     /**
      * The client that instantiated this voice manager
      * @type {Client}
+     * @readonly
+     * @name ClientVoiceManager#client
      */
-    this.client = client;
+    Object.defineProperty(this, 'client', { value: client });
 
     /**
      * A collection mapping connection IDs to the Connection objects
@@ -35,7 +37,7 @@ class ClientVoiceManager {
    * @returns {VoiceBroadcast}
    */
   createBroadcast() {
-    const broadcast = new VoiceBroadcast(this);
+    const broadcast = new VoiceBroadcast(this.client);
     this.broadcasts.push(broadcast);
     return broadcast;
   }
