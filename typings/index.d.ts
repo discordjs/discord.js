@@ -1144,6 +1144,8 @@ declare module 'discord.js' {
 		private authentication: object;
 		private sockets: object;
 		private ssrcMap: Map<number, boolean>;
+		private selfDeaf: boolean;
+		private selfMute: boolean;
 		private _disconnect(): void;
 		private authenticate(): void;
 		private authenticateFailed(reason: string): void;

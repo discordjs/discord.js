@@ -125,6 +125,20 @@ class VoiceConnection extends EventEmitter {
      * @type {VoiceReceiver}
      */
     this.receiver = new VoiceReceiver(this);
+
+    /**
+     * The state of self_deaf for the connection
+     * @type {boolean}
+     * @private
+     */
+    this.selfDeaf = false;
+
+    /**
+     * The state of self_mute for the connection
+     * @type {boolean}
+     * @private
+     */
+    this.selfMute = false;
   }
 
   /**
@@ -168,18 +182,20 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * Deafens the bot on the client side.
-   * @param {boolean} [deaf=true] Whether to self deafen or not
+   * @param {boolean} [deaf] Whether to self deafen or not
    */
-  setDeaf(deaf = true) {
-    this.sendVoiceStateUpdate({ self_deaf: deaf });
+  setDeaf(deaf) {
+    this.selfDeaf = deaf;
+    this.sendVoiceStateUpdate();
   }
 
   /**
    * Mutes the bot on the client side.
-   * @param {boolean} [mute=true] Whether to self mute or not
+   * @param {boolean} [mute] Whether to self mute or not
    */
-  setMute(mute = true) {
-    this.sendVoiceStateUpdate({ self_mute: mute });
+  setMute(mute) {
+    this.selfMute = mute;
+    this.sendVoiceStateUpdate();
   }
 
   /**
@@ -191,8 +207,8 @@ class VoiceConnection extends EventEmitter {
     options = Util.mergeDefault({
       guild_id: this.channel.guild.id,
       channel_id: this.channel.id,
-      self_mute: false,
-      self_deaf: false,
+      self_mute: this.selfDeaf,
+      self_deaf: this.selfMute,
     }, options);
 
     const queueLength = this.channel.guild.shard.ratelimit.queue.length;
