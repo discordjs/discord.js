@@ -1193,8 +1193,8 @@ declare module 'discord.js' {
 		public voiceManager: ClientVoiceManager;
 		public disconnect(): void;
 		public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
-		public setDeaf(deaf?: boolean): void;
-		public setMute(mute?: boolean): void;
+		public setDeaf(deaf: boolean): void;
+		public setMute(mute: boolean): void;
 
 		public on(event: 'authenticated', listener: () => void): this;
 		public on(event: 'closing', listener: () => void): this;
