@@ -311,10 +311,14 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.closeSequence = this.sequence;
     this.sequence = -1;
+
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
       Clean: ${event.wasClean}
       Reason: ${event.reason || 'No reason received'}`);
+
+    this.setHeartbeatTimer(-1);
+    this.setHelloTimeout(-1);
 
     this.status = Status.DISCONNECTED;
 
