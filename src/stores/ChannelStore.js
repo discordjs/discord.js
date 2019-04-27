@@ -54,8 +54,11 @@ class ChannelStore extends DataStore {
 
   add(data, guild, cache = true) {
     const existing = this.get(data.id);
-    if (existing && existing.partial && cache) existing._patch(data);
-    if (existing) return existing;
+    if (existing && existing._patch && cache) existing._patch(data);
+    if (existing) {
+      guild.channels.add(existing);
+      return existing;
+    }
 
     const channel = Channel.create(this.client, data, guild);
 
