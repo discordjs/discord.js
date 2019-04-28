@@ -148,6 +148,37 @@ class Collector extends EventEmitter {
   }
 
   /**
+   * Allows this collector to be consumed with `for await...of`
+   * @type {AsyncIterator}
+   */
+  async * [Symbol.asyncIterator]() {
+    while (!this.ended) {
+      const { value, done } = await new Promise(resolve => {
+        const cleanup = () => {
+          this.removeListener('collect', onCollect);
+          this.removeListener('end', onEnd);
+        };
+
+        const onCollect = item => {
+          cleanup();
+          resolve({ value: item, done: false });
+        };
+
+        const onEnd = () => {
+          cleanup();
+          resolve({ done: true });
+        };
+
+        this.on('collect', onCollect);
+        this.on('end', onEnd);
+      });
+
+      if (done) return;
+      yield value;
+    }
+  }
+
+  /**
    * Stops this collector and emits the `end` event.
    * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end

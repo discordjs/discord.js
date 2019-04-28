@@ -319,7 +319,7 @@ declare module 'discord.js' {
 		public toJSON(): object;
 	}
 
-	export abstract class Collector<K, V> extends EventEmitter {
+	export abstract class Collector<K, V> extends EventEmitter implements AsyncIterable<V> {
 		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
 		private _timeout: NodeJS.Timer | null;
 
@@ -332,6 +332,7 @@ declare module 'discord.js' {
 		public checkEnd(): void;
 		public handleCollect(...args: any[]): void;
 		public handleDispose(...args: any[]): void;
+		public [Symbol.asyncIterator](): AsyncIterator<V>;
 		public stop(reason?: string): void;
 		public toJSON(): object;
 
