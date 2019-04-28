@@ -1,3 +1,5 @@
+import {GuildMember} from "discord.js";
+
 declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
@@ -820,6 +822,7 @@ declare module 'discord.js' {
 		public status: PresenceStatus;
 		public clientStatus: ClientPresenceStatusData | null;
 		public readonly user: User | null;
+		public readonly guild: Guild | null;
 		public readonly member: GuildMember | null;
 		public equals(presence: Presence): boolean;
 	}

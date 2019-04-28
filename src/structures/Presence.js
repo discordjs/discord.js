@@ -45,10 +45,10 @@ class Presence {
     this.userID = data.user.id;
 
     /**
-     * The guild of this presence
-     * @type {?Guild}
+     * The guild ID of this presence
+     * @type {?Snowflake}
      */
-    this.guild = data.guild;
+    this.guildID = data.guild ? data.guild.id : null;
 
     this.patch(data);
   }
@@ -60,6 +60,15 @@ class Presence {
    */
   get user() {
     return this.client.users.get(this.userID) || null;
+  }
+
+  /**
+   * The guild of this presence
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.get(this.guildID) || null;
   }
 
   /**
