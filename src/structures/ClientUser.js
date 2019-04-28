@@ -8,7 +8,6 @@ const DataResolver = require('../util/DataResolver');
  * @extends {User}
  */
 class ClientUser extends Structures.get('User') {
-
   constructor(client, data) {
     super(client, data);
     this._typing = new Map();
