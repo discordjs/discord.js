@@ -1,5 +1,6 @@
 'use strict';
 
+const EventEmitter = require('events');
 const { Error: DJSError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
@@ -21,9 +22,14 @@ const UNRECOVERABLE_CLOSE_CODES = [4004, 4010, 4011];
 
 /**
  * The WebSocket manager for this client.
+ * <info>This class forwards raw dispatch events,
+ * read more about it here {@link https://discordapp.com/developers/docs/topics/gateway}</info>
+ * @extends EventEmitter
  */
-class WebSocketManager {
+class WebSocketManager extends EventEmitter {
   constructor(client) {
+    super();
+
     /**
      * The client that instantiated this WebSocketManager
      * @type {Client}

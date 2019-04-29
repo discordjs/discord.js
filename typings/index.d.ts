@@ -1291,7 +1291,7 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
-	export class WebSocketManager {
+	export class WebSocketManager extends EventEmitter {
 		constructor(client: Client);
 		private totalShards: number | string;
 		private shardQueue: Set<WebSocketShard>;
@@ -1306,6 +1306,8 @@ declare module 'discord.js' {
 		public status: Status;
 		public readonly ping: number;
 
+		public on(event: WSEventType, listener: (data: any, shardID: number) => void): this;
+		public once(event: WSEventType, listener: (data: any, shardID: number) => void): this;
 		private debug(message: string, shard?: WebSocketShard): void;
 		private connect(): Promise<void>;
 		private createShards(): Promise<void>;
