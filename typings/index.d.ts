@@ -1148,6 +1148,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data?: object);
 		public bitrate: number;
 		public readonly connection: VoiceConnection;
+		public readonly editable: boolean;
 		public readonly full: boolean;
 		public readonly joinable: boolean;
 		public readonly members: Collection<Snowflake, GuildMember>;
@@ -1164,8 +1165,6 @@ declare module 'discord.js' {
 		private authentication: object;
 		private sockets: object;
 		private ssrcMap: Map<number, boolean>;
-		private selfDeaf: boolean;
-		private selfMute: boolean;
 		private _speaking: Map<Snowflake, Readonly<Speaking>>;
 		private _disconnect(): void;
 		private authenticate(): void;
@@ -1193,8 +1192,6 @@ declare module 'discord.js' {
 		public voiceManager: ClientVoiceManager;
 		public disconnect(): void;
 		public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
-		public setDeaf(deaf?: boolean): void;
-		public setMute(mute?: boolean): void;
 
 		public on(event: 'authenticated', listener: () => void): this;
 		public on(event: 'closing', listener: () => void): this;
@@ -1294,7 +1291,7 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
-	export class WebSocketManager {
+	export class WebSocketManager extends EventEmitter {
 		constructor(client: Client);
 		private totalShards: number | string;
 		private shardQueue: Set<WebSocketShard>;
@@ -1309,6 +1306,8 @@ declare module 'discord.js' {
 		public status: Status;
 		public readonly ping: number;
 
+		public on(event: WSEventType, listener: (data: any, shardID: number) => void): this;
+		public once(event: WSEventType, listener: (data: any, shardID: number) => void): this;
 		private debug(message: string, shard?: WebSocketShard): void;
 		private connect(): Promise<void>;
 		private createShards(): Promise<void>;
@@ -1449,6 +1448,7 @@ declare module 'discord.js' {
 		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
+		public remove(message: MessageResolvable, reason?: string): Promise<void>;
 	}
 
 	export class PresenceStore extends DataStore<Snowflake, Presence, typeof Presence, PresenceResolvable> {

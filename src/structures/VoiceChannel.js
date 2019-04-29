@@ -72,6 +72,15 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Whether the channel is editable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+  }
+
+  /**
    * Whether the channel is joinable by the client user
    * @type {boolean}
    * @readonly

@@ -181,21 +181,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Deafens the bot on the client side.
-   * @param {boolean} [deaf] Whether to self deafen or not
+   * The voice state of this connection
+   * @type {VoiceState}
    */
-  setDeaf(deaf) {
-    this.selfDeaf = deaf;
-    this.sendVoiceStateUpdate();
-  }
-
-  /**
-   * Mutes the bot on the client side.
-   * @param {boolean} [mute] Whether to self mute or not
-   */
-  setMute(mute) {
-    this.selfMute = mute;
-    this.sendVoiceStateUpdate();
+  get voice() {
+    return this.channel.guild.voiceStates.get(this.client.user.id);
   }
 
   /**

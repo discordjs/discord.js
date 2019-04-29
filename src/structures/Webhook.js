@@ -135,7 +135,7 @@ class Webhook {
       apiMessage = content.resolveData();
     } else {
       apiMessage = APIMessage.create(this, content, options).resolveData();
-      if (apiMessage.data.content instanceof Array) {
+      if (Array.isArray(apiMessage.data.content)) {
         return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
     }

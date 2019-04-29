@@ -82,6 +82,16 @@ class MessageStore extends DataStore {
     });
   }
 
+  /**
+   * Deletes a message, even if it's not cached.
+   * @param {MessageResolvable} message The message to delete
+   * @param {string} [reason] Reason for deleting this message, if it does not belong to the client user
+   */
+  async remove(message, reason) {
+    message = this.resolveID(message);
+    if (message) await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
+  }
+
   async _fetchId(messageID, cache) {
     const existing = this.get(messageID);
     if (existing && !existing.partial) return existing;
