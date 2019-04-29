@@ -152,16 +152,30 @@ class Collector extends EventEmitter {
    * @type {AsyncIterator}
    */
   async * [Symbol.asyncIterator]() {
+    const queue = [];
+    const onQueue = item => {
+      queue.push(item);
+    };
+
+    this.on('collect', onQueue);
+
     while (!this.ended) {
       const { value, done } = await new Promise(resolve => { // eslint-disable-line no-await-in-loop
+        if (queue.length > 0) {
+          resolve(queue.shift());
+          return;
+        }
+
         const cleanup = () => {
           this.removeListener('collect', onCollect);
           this.removeListener('end', onEnd);
         };
 
-        const onCollect = item => {
+        const onCollect = () => {
           cleanup();
-          resolve({ value: item, done: false });
+          // Event processed by onQueue before onCollect
+          // The queue will contain this item
+          resolve({ value: queue.shift(), done: false });
         };
 
         const onEnd = () => {
@@ -173,9 +187,11 @@ class Collector extends EventEmitter {
         this.on('end', onEnd);
       });
 
-      if (done) return;
+      if (done) break;
       yield value;
     }
+
+    this.removeListener('collect', onQueue);
   }
 
   /**
