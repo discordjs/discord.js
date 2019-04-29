@@ -13,7 +13,7 @@ class MessageDeleteBulkAction extends Action {
       const ids = data.ids;
       const messages = new Collection();
       for (const id of ids) {
-        const message = this.getMessage(data, channel);
+        const message = this.getMessage(data, channel, false);
         if (message) {
           message.deleted = true;
           messages.set(message.id, message);
