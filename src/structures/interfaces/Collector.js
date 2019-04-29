@@ -153,7 +153,7 @@ class Collector extends EventEmitter {
    */
   async * [Symbol.asyncIterator]() {
     while (!this.ended) {
-      const { value, done } = await new Promise(resolve => {
+      const { value, done } = await new Promise(resolve => { // eslint-disable-line no-await-in-loop
         const cleanup = () => {
           this.removeListener('collect', onCollect);
           this.removeListener('end', onEnd);
