@@ -119,7 +119,7 @@ class Util {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/[^`]?`([^`])/g, '\\`$1');
+    return text.replace(/(?<=[^`])`(?=[^`])/g, '\\`');
   }
 
   /**
@@ -129,7 +129,7 @@ class Util {
    */
   static escapeItalic(text) {
     let i = 0;
-    return text.replace(/[^*]?\*([^*]|\*\*)/g, (_, match) => {
+    return text.replace(/(?<=[^*])\*([^*]|\*\*)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
     });
@@ -141,7 +141,11 @@ class Util {
    * @returns {string}
    */
   static escapeBold(text) {
-    return text.replace(/[^\\]\*\*/g, '\\*\\*');
+    let i = 0;
+    return text.replace(/\*\*(\*)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
+      return '\\*\\*';
+    });
   }
 
   /**
