@@ -5,7 +5,7 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -366,16 +366,6 @@ class Guild extends Base {
    */
   get systemChannel() {
     return this.client.channels.get(this.systemChannelID) || null;
-  }
-
-  /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    if (browser) return null;
-    return this.client.voice.connections.get(this.id) || null;
   }
 
   /**

@@ -43,17 +43,6 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * The voice connection for this voice channel, if the client is connected
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.guild.voiceConnection;
-    if (connection && connection.channel.id === this.id) return connection;
-    return null;
-  }
-
-  /**
    * Checks if the voice channel is full
    * @type {boolean}
    * @readonly
