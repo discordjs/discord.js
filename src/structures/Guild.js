@@ -394,7 +394,7 @@ class Guild extends Base {
    * @readonly
    */
   get voice() {
-    return this.me ? this.me.voice : null;
+    return this.voiceStates.get(this.client.user.id);
   }
 
   /**
