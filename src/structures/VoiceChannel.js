@@ -77,7 +77,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get editable() {
-    return super.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**
