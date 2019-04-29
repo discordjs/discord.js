@@ -198,7 +198,7 @@ class APIMessage {
   split() {
     if (!this.data) this.resolveData();
 
-    if (!(this.data.content instanceof Array)) return [this];
+    if (!Array.isArray(this.data.content)) return [this];
 
     const apiMessages = [];
 
@@ -287,7 +287,7 @@ class APIMessage {
    * @returns {MessageOptions|WebhookMessageOptions}
    */
   static transformOptions(content, options, extra = {}, isWebhook = false) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+    if (!options && typeof content === 'object' && !Array.isArray(content)) {
       options = content;
       content = undefined;
     }
@@ -300,10 +300,10 @@ class APIMessage {
       return { content, files: [options], ...extra };
     }
 
-    if (options instanceof Array) {
+    if (Array.isArray(options)) {
       const [embeds, files] = this.partitionMessageAdditions(options);
       return isWebhook ? { content, embeds, files, ...extra } : { content, embed: embeds[0], files, ...extra };
-    } else if (content instanceof Array) {
+    } else if (Array.isArray(content)) {
       const [embeds, files] = this.partitionMessageAdditions(content);
       if (embeds.length || files.length) {
         return isWebhook ? { embeds, files, ...extra } : { embed: embeds[0], files, ...extra };

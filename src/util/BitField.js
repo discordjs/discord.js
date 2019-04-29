@@ -32,7 +32,7 @@ class BitField {
    * @returns {boolean}
    */
   has(bit) {
-    if (bit instanceof Array) return bit.every(p => this.has(p));
+    if (Array.isArray(bit)) return bit.every(p => this.has(p));
     bit = this.constructor.resolve(bit);
     return (this.bitfield & bit) === bit;
   }
@@ -44,7 +44,7 @@ class BitField {
    * @returns {string[]}
    */
   missing(bits, ...hasParams) {
-    if (!(bits instanceof Array)) bits = new this.constructor(bits).toArray(false);
+    if (!Array.isArray(bits)) bits = new this.constructor(bits).toArray(false);
     return bits.filter(p => !this.has(p, ...hasParams));
   }
 
@@ -136,7 +136,7 @@ class BitField {
   static resolve(bit = 0) {
     if (typeof bit === 'number' && bit >= 0) return bit;
     if (bit instanceof BitField) return bit.bitfield;
-    if (bit instanceof Array) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
+    if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof bit === 'string') return this.FLAGS[bit];
     throw new RangeError('BITFIELD_INVALID');
   }

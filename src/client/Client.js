@@ -49,7 +49,7 @@ class Client extends BaseClient {
     if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
       if ('TOTAL_SHARD_COUNT' in data) {
         this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
-      } else if (this.options.shards instanceof Array) {
+      } else if (Array.isArray(this.options.shards)) {
         this.options.totalShardCount = this.options.shards.length;
       } else {
         this.options.totalShardCount = this.options.shardCount;
@@ -365,7 +365,7 @@ class Client extends BaseClient {
     if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (options.shards && !(options.shards instanceof Array)) {
+    if (options.shards && !Array.isArray(options.shards)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
@@ -385,7 +385,7 @@ class Client extends BaseClient {
     if (typeof options.disableEveryone !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
     }
-    if (!(options.partials instanceof Array)) {
+    if (!Array.isArray(options.partials)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
@@ -394,7 +394,7 @@ class Client extends BaseClient {
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
-    if (!(options.disabledEvents instanceof Array)) {
+    if (!Array.isArray(options.disabledEvents)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
     }
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {

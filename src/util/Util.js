@@ -237,7 +237,7 @@ class Util {
    */
   static resolveString(data) {
     if (typeof data === 'string') return data;
-    if (data instanceof Array) return data.join('\n');
+    if (Array.isArray(data)) return data.join('\n');
     return String(data);
   }
 
@@ -286,7 +286,7 @@ class Util {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
       if (color === 'DEFAULT') return 0;
       color = Colors[color] || parseInt(color.replace('#', ''), 16);
-    } else if (color instanceof Array) {
+    } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 

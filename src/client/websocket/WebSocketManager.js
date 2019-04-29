@@ -160,8 +160,9 @@ class WebSocketManager extends EventEmitter {
       }
     }
 
-    if (this.client.options.shards instanceof Array) {
-      const { shards } = this.client.options;
+    const { shards } = this.client.options;
+
+    if (Array.isArray(shards)) {
       this.totalShards = shards.length;
       this.debug(`Spawning shards: ${shards.join(', ')}`);
       this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
