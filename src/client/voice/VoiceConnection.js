@@ -167,6 +167,14 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * The voice state of this connection
+   * @type {VoiceState}
+   */
+  get voice() {
+    return this.channel.guild.voiceStates.get(this.client.user.id);
+  }
+
+  /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
    * @private
