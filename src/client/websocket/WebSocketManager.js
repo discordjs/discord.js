@@ -424,7 +424,10 @@ class WebSocketManager {
       this.debug('Tried to mark self as ready, but already ready');
       return;
     }
+
     this.status = Status.READY;
+
+    this.client.readyAt = new Date();
 
     /**
      * Emitted when the client becomes ready to start working.
