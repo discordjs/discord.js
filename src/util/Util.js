@@ -75,14 +75,100 @@ class Util {
   /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
-   * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
-   * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
+   * @param {Object} [options={}] What types of markdown to escape
+   * @param {boolean} [options.codeBlock=true] Whether to escape codeblocks or not
+   * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
+   * @param {boolean} [options.bold=true] Whether to escape bolds or not
+   * @param {boolean} [options.italic=true] Whether to escape italics or not
+   * @param {boolean} [options.underline=true] Whether to escape underlines or not
+   * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
+   * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
    * @returns {string}
    */
-  static escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
-    if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
-    if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
-    return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+  static escapeMarkdown(text, {
+    codeBlock = true,
+    inlineCode = true,
+    bold = true,
+    italic = true,
+    underline = true,
+    strikethrough = true,
+    spoiler = true,
+  } = {}) {
+    if (inlineCode) text = Util.escapeInlineCode(text);
+    if (codeBlock) text = Util.escapeCodeBlock(text);
+    if (italic) text = Util.escapeItalic(text);
+    if (bold) text = Util.escapeBold(text);
+    if (underline) text = Util.escapeUnderline(text);
+    if (strikethrough) text = Util.escapeStrikethrough(text);
+    if (spoiler) text = Util.escapeSpoiler(text);
+    return text;
+  }
+
+  /**
+   * Escapes code block markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeCodeBlock(text) {
+    return text.replace(/```/g, '`\u200b``');
+  }
+
+  /**
+   * Escapes inline code markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeInlineCode(text) {
+    return text.replace(/[^`]?`([^`])/g, '\\`$1');
+  }
+
+  /**
+   * Escapes italic markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeItalic(text) {
+    let i = 0;
+    return text.replace(/[^*]?\*([^*]|\*\*)/g, (_, match) => {
+      if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
+      return `\\*${match}`;
+    });
+  }
+
+  /**
+   * Escapes bold markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeBold(text) {
+    return text.replace(/[^\\]\*\*/g, '\\*\\*');
+  }
+
+  /**
+   * Escapes underline markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeUnderline(text) {
+    return text.replace(/_/g, '\\_');
+  }
+
+  /**
+   * Escapes strikethrough markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeStrikethrough(text) {
+    return text.replace(/~/g, '\\~');
+  }
+
+  /**
+   * Escapes spoiler markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeSpoiler(text) {
+    return text.replace(/\|/g, '\\|');
   }
 
   /**
