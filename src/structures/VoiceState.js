@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const { browser } = require('../util/Constants');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -75,6 +76,16 @@ class VoiceState extends Base {
    */
   get channel() {
     return this.guild.channels.get(this.channelID) || null;
+  }
+
+  /**
+   * If this is a voice state of the client user, then this will refer to the active VoiceConnection for this guild
+   * @type {?VoiceConnection}
+   * @readonly
+   */
+  get connection() {
+    if (browser || this.id !== this.guild.me.id) return null;
+    return this.client.voice.connections.get(this.guild.id) || null;
   }
 
   /**

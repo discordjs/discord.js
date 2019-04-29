@@ -399,6 +399,15 @@ class Guild extends Base {
   }
 
   /**
+   * The voice state for the client user of this guild, if any
+   * @type {?VoiceState}
+   * @readonly
+   */
+  get voice() {
+    return this.me ? this.me.voice : null;
+  }
+
+  /**
    * Returns the GuildMember form of a User object, if the user is present in the guild.
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
    * @returns {?GuildMember}
