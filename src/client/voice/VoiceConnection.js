@@ -183,8 +183,8 @@ class VoiceConnection extends EventEmitter {
     options = Util.mergeDefault({
       guild_id: this.channel.guild.id,
       channel_id: this.channel.id,
-      self_mute: false,
-      self_deaf: false,
+      self_mute: Boolean(this.voice.selfMute),
+      self_deaf: Boolean(this.voice.selfDeaf),
     }, options);
 
     const queueLength = this.channel.guild.shard.ratelimit.queue.length;

@@ -1185,6 +1185,7 @@ declare module 'discord.js' {
 		public channel: VoiceChannel;
 		public readonly client: Client;
 		public readonly dispatcher: StreamDispatcher;
+		public readonly voice: VoiceState;
 		public player: object;
 		public receiver: VoiceReceiver;
 		public speaking: Readonly<Speaking>;
@@ -1258,8 +1259,10 @@ declare module 'discord.js' {
 		public sessionID?: string;
 		public readonly speaking: boolean | null;
 
-		public setDeaf(mute: boolean, reason?: string): Promise<GuildMember>;
 		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+		public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
+		public setSelfMute(mute: boolean): void;
+		public setSelfDeaf(deaf: boolean): void;
 	}
 
 	class VolumeInterface extends EventEmitter {

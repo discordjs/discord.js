@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { browser } = require('../util/Constants');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -136,6 +137,28 @@ class VoiceState extends Base {
    */
   setDeaf(deaf, reason) {
     return this.member ? this.member.edit({ deaf }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+  }
+
+  /**
+   * Self-mutes/unmutes the bot for this voice state.
+   * @param {boolean} mute Whether or not the bot should be self-muted
+   */
+  setSelfMute(mute) {
+    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'mute');
+    this.selfMute = mute;
+    if (this.connection) this.connection.sendVoiceStateUpdate();
+  }
+
+  /**
+   * Self-deafens/undeafens the bot for this voice state.
+   * @param {boolean} deaf Whether or not the bot should be self-deafened
+   */
+  setSelfDeaf(deaf) {
+    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
+    this.selfDeaf = deaf;
+    if (this.connection) this.connection.sendVoiceStateUpdate();
   }
 
   toJSON() {
