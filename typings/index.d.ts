@@ -1099,7 +1099,7 @@ declare module 'discord.js' {
 		public static convertToBuffer(ab: ArrayBuffer | string): Buffer;
 		public static delayFor(ms: number): Promise<void>;
 		public static discordSort<K, V extends { rawPosition: number; id: string; }>(collection: Collection<K, V>): Collection<K, V>;
-		public static escapeMarkdown(text: string, options?: { codeBlock?: boolean, inlineCode?: boolean, bold?: boolean, italic?: boolean, underline?: boolean, strikethrough?: boolean, spoiler?: boolean }): string;
+		public static escapeMarkdown(text: string, options?: { codeBlock?: boolean, inlineCode?: boolean, bold?: boolean, italic?: boolean, underline?: boolean, strikethrough?: boolean, spoiler?: boolean, inlineCodeContent?: boolean, codeBlockContent?: boolean }): string;
 		public static escapeCodeBlock(text: string): string;
 		public static escapeInlineCode(text: string): string;
 		public static escapeBold(text: string): string;

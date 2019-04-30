@@ -9,45 +9,87 @@ function test(name, input, expected) {
   assert.strictEqual(input, expected);
 }
 
-const testString = '||___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___||';
+const testString = '`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___||';
 
 test('escapeCodeblock',
   Util.escapeCodeBlock(testString),
-  '||___~~***\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`***~~___||'
+  '`_Behold!_`\n||___~~***\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`***~~___||'
 );
 
 test('escapeInlineCode',
   Util.escapeInlineCode(testString),
-  '||___~~***```js\n\\`use strict\\`;\nrequire(\'discord.js\');```***~~___||'
+  '\\`_Behold!_\\`\n||___~~***```js\n\\`use strict\\`;\nrequire(\'discord.js\');```***~~___||'
 );
 
 test('escapeBold',
   Util.escapeBold(testString),
-  '||___~~*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\**~~___||'
+  '`_Behold!_`\n||___~~*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\**~~___||'
 );
 
 test('escapeItalic',
   Util.escapeItalic(testString),
-  '||\\___~~\\***```js\n`use strict`;\nrequire(\'discord.js\');```**\\*~~__\\_||'
+  '`\\_Behold!\\_`\n||\\___~~\\***```js\n`use strict`;\nrequire(\'discord.js\');```**\\*~~__\\_||'
 );
 
 test('escapeUnderline',
   Util.escapeUnderline(testString),
-  '||_\\_\\_~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~\\_\\__||'
+  '`_Behold!_`\n||_\\_\\_~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~\\_\\__||'
 );
 
 test('escapeStrikethrough',
   Util.escapeStrikethrough(testString),
-  '||___\\~\\~***```js\n`use strict`;\nrequire(\'discord.js\');```***\\~\\~___||'
+  '`_Behold!_`\n||___\\~\\~***```js\n`use strict`;\nrequire(\'discord.js\');```***\\~\\~___||'
 );
 
 test('escapeSpoiler',
   Util.escapeSpoiler(testString),
-  '\\|\\|___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___\\|\\|'
+  '`_Behold!_`\n\\|\\|___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___\\|\\|'
 );
 
 test('escapeMarkdown',
   Util.escapeMarkdown(testString),
   // eslint-disable-next-line max-len
-  '\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+  '\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown no code block content',
+  Util.escapeMarkdown(testString, { codeBlockContent: false }),
+  // eslint-disable-next-line max-len
+  '\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown no inline code content',
+  Util.escapeMarkdown(testString, { inlineCodeContent: false }),
+  // eslint-disable-next-line max-len
+  '\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown neither inline code or code block content',
+  Util.escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false }),
+  // eslint-disable-next-line max-len
+  '\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown neither code blocks or code block content',
+  Util.escapeMarkdown(testString, { codeBlock: false, codeBlockContent: false }),
+  // eslint-disable-next-line max-len
+  '\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown neither inline code or inline code content',
+  Util.escapeMarkdown(testString, { inlineCode: false, inlineCodeContent: false }),
+  // eslint-disable-next-line max-len
+  '`_Behold!_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
+);
+
+test('escapeMarkdown edge odd number of fenses with no code block content',
+  Util.escapeMarkdown('**foo** ```**bar**``` **fizz** ``` **buzz**', { codeBlock: false, codeBlockContent: false }),
+  // eslint-disable-next-line max-len
+  '\\*\\*foo\\*\\* ```**bar**``` \\*\\*fizz\\*\\* ``` \\*\\*buzz\\*\\*'
+);
+
+test('escapeMarkdown edge odd number of backticks with no code block content',
+  Util.escapeMarkdown('**foo** `**bar**` **fizz** ` **buzz**', { inlineCode: false, inlineCodeContent: false }),
+  // eslint-disable-next-line max-len
+  '\\*\\*foo\\*\\* `**bar**` \\*\\*fizz\\*\\* ` \\*\\*buzz\\*\\*'
 );

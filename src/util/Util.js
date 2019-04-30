@@ -76,13 +76,15 @@ class Util {
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
    * @param {Object} [options={}] What types of markdown to escape
-   * @param {boolean} [options.codeBlock=true] Whether to escape codeblocks or not
+   * @param {boolean} [options.codeBlock=true] Whether to escape code blocks or not
    * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
    * @param {boolean} [options.bold=true] Whether to escape bolds or not
    * @param {boolean} [options.italic=true] Whether to escape italics or not
    * @param {boolean} [options.underline=true] Whether to escape underlines or not
    * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
    * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
+   * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
+   * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
    * @returns {string}
    */
   static escapeMarkdown(text, {
@@ -93,7 +95,36 @@ class Util {
     underline = true,
     strikethrough = true,
     spoiler = true,
+    codeBlockContent = true,
+    inlineCodeContent = true,
   } = {}) {
+    if (!codeBlockContent) {
+      return text.split('```').map((subString, index, array) => {
+        if ((index % 2) && index !== array.length - 1) return subString;
+        return Util.escapeMarkdown(subString, {
+          inlineCode,
+          bold,
+          italic,
+          underline,
+          strikethrough,
+          spoiler,
+          inlineCodeContent,
+        });
+      }).join(codeBlock ? '\\`\\`\\`' : '```');
+    }
+    if (!inlineCodeContent) {
+      return text.split(/(?<=^|[^`])`(?=[^`]|$)/g).map((subString, index, array) => {
+        if ((index % 2) && index !== array.length - 1) return subString;
+        return Util.escapeMarkdown(subString, {
+          codeBlock,
+          bold,
+          italic,
+          underline,
+          strikethrough,
+          spoiler,
+        });
+      }).join(inlineCode ? '\\`' : '`');
+    }
     if (inlineCode) text = Util.escapeInlineCode(text);
     if (codeBlock) text = Util.escapeCodeBlock(text);
     if (italic) text = Util.escapeItalic(text);
@@ -119,7 +150,7 @@ class Util {
    * @returns {string}
    */
   static escapeInlineCode(text) {
-    return text.replace(/(?<=[^`])`(?=[^`])/g, '\\`');
+    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
   }
 
   /**
@@ -129,10 +160,12 @@ class Util {
    */
   static escapeItalic(text) {
     let i = 0;
-    return text.replace(/(?<=[^*])\*([^*]|\*\*)/g, (_, match) => {
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
-    }).replace(/(?<=[^_])_([^_]|__)/g, (_, match) => {
+    });
+    i = 0;
+    return text.replace(/(?<=^|[^_])_([^_]|__)/g, (_, match) => {
       if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
       return `\\_${match}`;
     });
@@ -170,7 +203,7 @@ class Util {
    * @returns {string}
    */
   static escapeStrikethrough(text) {
-    return text.replace(/~/g, '\\~');
+    return text.replace(/~~/g, '\\~\\~');
   }
 
   /**
@@ -179,7 +212,7 @@ class Util {
    * @returns {string}
    */
   static escapeSpoiler(text) {
-    return text.replace(/\|/g, '\\|');
+    return text.replace(/\|\|/g, '\\|\\|');
   }
 
   /**
