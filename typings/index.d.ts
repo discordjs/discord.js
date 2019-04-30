@@ -1107,6 +1107,7 @@ declare module 'discord.js' {
 		public static escapeUnderline(text: string): string;
 		public static escapeStrikethrough(text: string): string;
 		public static escapeSpoiler(text: string): string;
+		public static cleanCodeBlockContent(text: string): string;
 		public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
 		public static flatten(obj: object, ...props: { [key: string]: boolean | string }[]): object;
 		public static idToBinary(num: Snowflake): string;

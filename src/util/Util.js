@@ -552,6 +552,15 @@ class Util {
   }
 
   /**
+   * The content to put in a codeblock with all codeblock fences replaced by the equivalent backticks.
+   * @param {string} text The string to be converted
+   * @returns {string}
+   */
+  static cleanCodeBlockContent(text) {
+    return text.replace('```', '`\u200b``');
+  }
+
+  /**
    * Creates a Promise that resolves after a specified duration.
    * @param {number} ms How long to wait before resolving (in milliseconds)
    * @returns {Promise<void>}
