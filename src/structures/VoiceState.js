@@ -138,6 +138,19 @@ class VoiceState extends Base {
     return this.member ? this.member.edit({ deaf }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
+  /**
+   * Moves the member to a different channel, or kick them from the one they're in.
+   * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to kick them from
+   * voice
+   * @param {string} [reason] Reason for moving member to another channel or kicking
+   * @returns {Promise<GuildMember>}
+   */
+  setChannel(channel, reason) {
+    return this.member ?
+      this.member.edit({ channel }, reason) :
+      Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+  }
+
   toJSON() {
     return super.toJSON({
       id: true,
