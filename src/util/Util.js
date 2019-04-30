@@ -110,7 +110,7 @@ class Util {
    * @returns {string}
    */
   static escapeCodeBlock(text) {
-    return text.replace(/```/g, '`\u200b``');
+    return text.replace(/```/g, '\\`\\`\\`');
   }
 
   /**
@@ -132,6 +132,9 @@ class Util {
     return text.replace(/(?<=[^*])\*([^*]|\*\*)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
+    }).replace(/(?<=[^_])_([^_]|__)/g, (_, match) => {
+      if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
+      return `\\_${match}`;
     });
   }
 
@@ -154,7 +157,11 @@ class Util {
    * @returns {string}
    */
   static escapeUnderline(text) {
-    return text.replace(/_/g, '\\_');
+    let i = 0;
+    return text.replace(/__(_)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
+      return '\\_\\_';
+    });
   }
 
   /**

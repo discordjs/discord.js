@@ -9,45 +9,45 @@ function test(name, input, expected) {
   assert.strictEqual(input, expected);
 }
 
-const testString = '||__~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~__||';
+const testString = '||___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___||';
 
 test('escapeCodeblock',
   Util.escapeCodeBlock(testString),
-  '||__~~***`\u200b``js\n`use strict`;\nrequire(\'discord.js\');`\u200b``***~~__||'
+  '||___~~***\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`***~~___||'
 );
 
 test('escapeInlineCode',
   Util.escapeInlineCode(testString),
-  '||__~~***```js\n\\`use strict\\`;\nrequire(\'discord.js\');```***~~__||'
+  '||___~~***```js\n\\`use strict\\`;\nrequire(\'discord.js\');```***~~___||'
 );
 
 test('escapeBold',
   Util.escapeBold(testString),
-  '||__~~*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\**~~__||'
+  '||___~~*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\**~~___||'
 );
 
 test('escapeItalic',
   Util.escapeItalic(testString),
-  '||__~~\\***```js\n`use strict`;\nrequire(\'discord.js\');```**\\*~~__||'
+  '||\\___~~\\***```js\n`use strict`;\nrequire(\'discord.js\');```**\\*~~__\\_||'
 );
 
 test('escapeUnderline',
   Util.escapeUnderline(testString),
-  '||\\_\\_~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~\\_\\_||'
+  '||_\\_\\_~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~\\_\\__||'
 );
 
 test('escapeStrikethrough',
   Util.escapeStrikethrough(testString),
-  '||__\\~\\~***```js\n`use strict`;\nrequire(\'discord.js\');```***\\~\\~__||'
+  '||___\\~\\~***```js\n`use strict`;\nrequire(\'discord.js\');```***\\~\\~___||'
 );
 
 test('escapeSpoiler',
   Util.escapeSpoiler(testString),
-  '\\|\\|__~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~__\\|\\|'
+  '\\|\\|___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___\\|\\|'
 );
 
 test('escapeMarkdown',
   Util.escapeMarkdown(testString),
   // eslint-disable-next-line max-len
-  '\\|\\|\\_\\_\\~\\~\\*\\*\\*`\u200b``js\n\\`use strict\\`;\nrequire(\'discord.js\');`\u200b``\\*\\*\\*\\~\\~\\_\\_\\|\\|'
+  '\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|'
 );
