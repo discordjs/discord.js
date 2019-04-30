@@ -146,8 +146,9 @@ class VoiceState extends Base {
   setSelfMute(mute) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
     if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'mute');
+    if (!this.connection) return;
     this.selfMute = mute;
-    if (this.connection) this.connection.sendVoiceStateUpdate();
+    this.connection.sendVoiceStateUpdate();
   }
 
   /**
@@ -157,8 +158,9 @@ class VoiceState extends Base {
   setSelfDeaf(deaf) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
     if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
+    if (!this.connection) return;
     this.selfDeaf = deaf;
-    if (this.connection) this.connection.sendVoiceStateUpdate();
+    this.connection.sendVoiceStateUpdate();
   }
 
   toJSON() {
