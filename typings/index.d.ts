@@ -576,10 +576,7 @@ declare module 'discord.js' {
 		public hasPermission(permission: PermissionResolvable, options?: { checkAdmin?: boolean; checkOwner?: boolean }): boolean;
 		public kick(reason?: string): Promise<GuildMember>;
 		public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
-		public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
-		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
 		public setNickname(nickname: string, reason?: string): Promise<GuildMember>;
-		public setVoiceChannel(voiceChannel: ChannelResolvable): Promise<GuildMember>;
 		public toJSON(): object;
 		public toString(): string;
 	}

@@ -293,35 +293,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * Mutes/unmutes this member.
-   * @param {boolean} mute Whether or not the member should be muted
-   * @param {string} [reason] Reason for muting or unmuting
-   * @returns {Promise<GuildMember>}
-   */
-  setMute(mute, reason) {
-    return this.edit({ mute }, reason);
-  }
-
-  /**
-   * Deafens/undeafens this member.
-   * @param {boolean} deaf Whether or not the member should be deafened
-   * @param {string} [reason] Reason for deafening or undeafening
-   * @returns {Promise<GuildMember>}
-   */
-  setDeaf(deaf, reason) {
-    return this.edit({ deaf }, reason);
-  }
-
-  /**
-   * Moves this member to the given channel.
-   * @param {ChannelResolvable} channel The channel to move the member to
-   * @returns {Promise<GuildMember>}
-   */
-  setVoiceChannel(channel) {
-    return this.edit({ channel });
-  }
-
-  /**
    * Sets the nickname for this member.
    * @param {string} nick The nickname for the guild member
    * @param {string} [reason] Reason for setting the nickname
