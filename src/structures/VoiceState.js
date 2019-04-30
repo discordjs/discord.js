@@ -142,25 +142,29 @@ class VoiceState extends Base {
   /**
    * Self-mutes/unmutes the bot for this voice state.
    * @param {boolean} mute Whether or not the bot should be self-muted
+   * @returns {Promise<boolean>}
    */
-  setSelfMute(mute) {
+  async setSelfMute(mute) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
     if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'mute');
-    if (!this.connection) return;
+    if (!this.connection) return false;
     this.selfMute = mute;
-    this.connection.sendVoiceStateUpdate();
+    await this.connection.sendVoiceStateUpdate();
+    return true;
   }
 
   /**
    * Self-deafens/undeafens the bot for this voice state.
    * @param {boolean} deaf Whether or not the bot should be self-deafened
+   * @returns {Promise<boolean>}
    */
-  setSelfDeaf(deaf) {
-    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
-    if (typeof mute !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
-    if (!this.connection) return;
+  async setSelfDeaf(deaf) {
+    if (this.id !== this.client.user.id) return new Error('VOICE_STATE_NOT_OWN');
+    if (typeof mute !== 'boolean') return new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
+    if (!this.connection) return false;
     this.selfDeaf = deaf;
-    this.connection.sendVoiceStateUpdate();
+    await this.connection.sendVoiceStateUpdate();
+    return true;
   }
 
   toJSON() {

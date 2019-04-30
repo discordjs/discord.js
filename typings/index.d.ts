@@ -1261,8 +1261,8 @@ declare module 'discord.js' {
 
 		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
 		public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
-		public setSelfMute(mute: boolean): void;
-		public setSelfDeaf(deaf: boolean): void;
+		public setSelfMute(mute: boolean): Promise<boolean>;
+		public setSelfDeaf(deaf: boolean): Promise<boolean>;
 	}
 
 	class VolumeInterface extends EventEmitter {
