@@ -6,63 +6,103 @@ const Util = require('../src/util/Util');
 const testString = '`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___||';
 
 describe('escapeCodeblock', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeCodeBlock(testString))
       .toBe('`_Behold!_`\n||___~~***\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`***~~___||');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeCodeBlock('```test```'))
+      .toBe('\\`\\`\\`test\\`\\`\\`');
   });
 });
 
 
 describe('escapeInlineCode', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeInlineCode(testString))
       .toBe('\\`_Behold!_\\`\n||___~~***```js\n\\`use strict\\`;\nrequire(\'discord.js\');```***~~___||');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeInlineCode('`test`'))
+      .toBe('\\`test\\`');
   });
 });
 
 
 describe('escapeBold', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeBold(testString))
       .toBe('`_Behold!_`\n||___~~*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\**~~___||');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeBold('**test**'))
+      .toBe('\\*\\*test\\*\\*');
   });
 });
 
 
 describe('escapeItalic', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeItalic(testString))
       .toBe('`\\_Behold!\\_`\n||\\___~~\\***```js\n`use strict`;\nrequire(\'discord.js\');```**\\*~~__\\_||');
+  });
+
+  test('basic (_)', () => {
+    expect(Util.escapeItalic('_test_'))
+      .toBe('\\_test\\_');
+  });
+
+  test('basic (*)', () => {
+    expect(Util.escapeItalic('*test*'))
+      .toBe('\\*test\\*');
   });
 });
 
 
 describe('escapeUnderline', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeUnderline(testString))
       .toBe('`_Behold!_`\n||_\\_\\_~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~\\_\\__||');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeUnderline('__test__'))
+      .toBe('\\_\\_test\\_\\_');
   });
 });
 
 
 describe('escapeStrikethrough', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeStrikethrough(testString))
       .toBe('`_Behold!_`\n||___\\~\\~***```js\n`use strict`;\nrequire(\'discord.js\');```***\\~\\~___||');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeStrikethrough('~~test~~'))
+      .toBe('\\~\\~test\\~\\~');
   });
 });
 
 
 describe('escapeSpoiler', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeSpoiler(testString))
       .toBe('`_Behold!_`\n\\|\\|___~~***```js\n`use strict`;\nrequire(\'discord.js\');```***~~___\\|\\|');
+  });
+
+  test('basic', () => {
+    expect(Util.escapeSpoiler('||test||'))
+      .toBe('\\|\\|test\\|\\|');
   });
 });
 
 
 describe('escapeMarkdown', () => {
-  test('basic', () => {
+  test('shared', () => {
     expect(Util.escapeMarkdown(testString))
       .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
   });

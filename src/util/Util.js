@@ -160,12 +160,12 @@ class Util {
    */
   static escapeItalic(text) {
     let i = 0;
-    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*)/g, (_, match) => {
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
       if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
       return `\\*${match}`;
     });
     i = 0;
-    return text.replace(/(?<=^|[^_])_([^_]|__)/g, (_, match) => {
+    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
       if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
       return `\\_${match}`;
     });
