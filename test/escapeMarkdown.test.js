@@ -67,40 +67,77 @@ describe('escapeMarkdown', () => {
       .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
   });
 
-  test('no code block content', () => {
-    expect(Util.escapeMarkdown(testString, { codeBlockContent: false }))
-      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+  test('no codeBlock', () => {
+    expect(Util.escapeMarkdown(testString, { codeBlock: false }))
+      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n\\`use strict\\`;\nrequire(\'discord.js\');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
   });
 
-  test('no inline code content', () => {
-    expect(Util.escapeMarkdown(testString, { inlineCodeContent: false }))
-      .toBe('\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+  test('no inlineCode', () => {
+    expect(Util.escapeMarkdown(testString, { inlineCode: false }))
+      .toBe('`\\_Behold!\\_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
   });
 
-  test('neither inline code or code block content', () => {
-    expect(Util.escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false }))
-    // eslint-disable-next-line max-len
-      .toBe('\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+  test('no bold', () => {
+    expect(Util.escapeMarkdown(testString, { bold: false }))
+      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\***\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`**\\*\\~\\~\\_\\_\\_\\|\\|');
   });
 
-  test('neither code blocks or code block content', () => {
-    expect(Util.escapeMarkdown(testString, { codeBlock: false, codeBlockContent: false }))
-      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+  test('no italic', () => {
+    expect(Util.escapeMarkdown(testString, { italic: false }))
+      .toBe('\\`_Behold!_\\`\n\\|\\|_\\_\\_\\~\\~*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\**\\~\\~\\_\\__\\|\\|');
   });
 
-  test('neither inline code or inline code content', () => {
-    expect(Util.escapeMarkdown(testString, { inlineCode: false, inlineCodeContent: false }))
-      .toBe('`_Behold!_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+  test('no underline', () => {
+    expect(Util.escapeMarkdown(testString, { underline: false }))
+      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\___\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~__\\_\\|\\|');
   });
 
-  test('edge odd number of fenses with no code block content', () => {
-    expect(Util.escapeMarkdown('**foo** ```**bar**``` **fizz** ``` **buzz**', { codeBlock: false, codeBlockContent: false }))
-      .toBe('\\*\\*foo\\*\\* ```**bar**``` \\*\\*fizz\\*\\* ``` \\*\\*buzz\\*\\*');
+  test('no strikethrough', () => {
+    expect(Util.escapeMarkdown(testString, { strikethrough: false }))
+      .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_~~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*~~\\_\\_\\_\\|\\|');
   });
 
-  test('edge odd number of backticks with no inline code content', () => {
-    expect(Util.escapeMarkdown('**foo** `**bar**` **fizz** ` **buzz**', { inlineCode: false, inlineCodeContent: false }))
-      .toBe('\\*\\*foo\\*\\* `**bar**` \\*\\*fizz\\*\\* ` \\*\\*buzz\\*\\*');
+  test('no spoiler', () => {
+    expect(Util.escapeMarkdown(testString, { spoiler: false }))
+      .toBe('\\`\\_Behold!\\_\\`\n||\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_||');
+  });
+
+  describe('code content', () => {
+    test('no code block content', () => {
+      expect(Util.escapeMarkdown(testString, { codeBlockContent: false }))
+        .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+    });
+
+    test('no inline code content', () => {
+      expect(Util.escapeMarkdown(testString, { inlineCodeContent: false }))
+        .toBe('\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+    });
+
+    test('neither inline code or code block content', () => {
+      expect(Util.escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false }))
+      // eslint-disable-next-line max-len
+        .toBe('\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+    });
+
+    test('neither code blocks or code block content', () => {
+      expect(Util.escapeMarkdown(testString, { codeBlock: false, codeBlockContent: false }))
+        .toBe('\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n`use strict`;\nrequire(\'discord.js\');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+    });
+
+    test('neither inline code or inline code content', () => {
+      expect(Util.escapeMarkdown(testString, { inlineCode: false, inlineCodeContent: false }))
+        .toBe('`_Behold!_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire(\'discord.js\');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|');
+    });
+
+    test('edge-case odd number of fenses with no code block content', () => {
+      expect(Util.escapeMarkdown('**foo** ```**bar**``` **fizz** ``` **buzz**', { codeBlock: false, codeBlockContent: false }))
+        .toBe('\\*\\*foo\\*\\* ```**bar**``` \\*\\*fizz\\*\\* ``` \\*\\*buzz\\*\\*');
+    });
+
+    test('edge-case odd number of backticks with no inline code content', () => {
+      expect(Util.escapeMarkdown('**foo** `**bar**` **fizz** ` **buzz**', { inlineCode: false, inlineCodeContent: false }))
+        .toBe('\\*\\*foo\\*\\* `**bar**` \\*\\*fizz\\*\\* ` \\*\\*buzz\\*\\*');
+    });
   });
 });
 
