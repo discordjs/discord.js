@@ -84,12 +84,10 @@ test('escapeMarkdown neither inline code or inline code content',
 
 test('escapeMarkdown edge odd number of fenses with no code block content',
   Util.escapeMarkdown('**foo** ```**bar**``` **fizz** ``` **buzz**', { codeBlock: false, codeBlockContent: false }),
-  // eslint-disable-next-line max-len
   '\\*\\*foo\\*\\* ```**bar**``` \\*\\*fizz\\*\\* ``` \\*\\*buzz\\*\\*'
 );
 
 test('escapeMarkdown edge odd number of backticks with no inline code content',
   Util.escapeMarkdown('**foo** `**bar**` **fizz** ` **buzz**', { inlineCode: false, inlineCodeContent: false }),
-  // eslint-disable-next-line max-len
   '\\*\\*foo\\*\\* `**bar**` \\*\\*fizz\\*\\* ` \\*\\*buzz\\*\\*'
 );
