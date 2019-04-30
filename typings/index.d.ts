@@ -169,13 +169,14 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
 		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
 		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
-		public on(event: 'guildMemberUpdate' | 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'resume', listener: (replayed: number, shardID: number) => void): this;
@@ -206,13 +207,14 @@ declare module 'discord.js' {
 		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
 		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
 		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
-		public once(event: 'guildMemberUpdate' | 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'resume', listener: (replayed: number, shardID: number) => void): this;
@@ -292,8 +294,8 @@ declare module 'discord.js' {
 		public equals(collection: Collection<any, any>): boolean;
 		public every(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public filter(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): Collection<K, V>;
-		public find(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): V;
-		public findKey(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): K;
+		public find(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): V | undefined;
+		public findKey(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): K | undefined;
 		public first(): V | undefined;
 		public first(count: number): V[];
 		public firstKey(): K | undefined;
@@ -628,7 +630,8 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object);
 		public channel: GuildChannel;
 		public code: string;
-		public readonly createdAt: Date;
+		public readonly deletable: boolean;
+		public readonly createdAt: Date | null;
 		public createdTimestamp: number | null;
 		public readonly expiresAt: Date | null;
 		public readonly expiresTimestamp: number | null;
@@ -934,9 +937,9 @@ declare module 'discord.js' {
 		public eval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValue(prop: string): Promise<any>;
 		public kill(): void;
-		public respawn(delay?: number, waitForReady?: boolean): Promise<ChildProcess>;
+		public respawn(delay?: number, spawnTimeout?: number): Promise<ChildProcess>;
 		public send(message: any): Promise<Shard>;
-		public spawn(waitForReady?: boolean): Promise<ChildProcess>;
+		public spawn(spawnTimeout?: number): Promise<ChildProcess>;
 
 		public on(event: 'death', listener: (child: ChildProcess) => void): this;
 		public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => void): this;
@@ -966,7 +969,7 @@ declare module 'discord.js' {
 		public broadcastEval(script: string): Promise<any[]>;
 		public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
 		public fetchClientValues(prop: string): Promise<any[]>;
-		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<void>;
+		public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<void>;
 		public send(message: any): Promise<void>;
 
 		public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
@@ -992,8 +995,8 @@ declare module 'discord.js' {
 		public broadcastEval(script: string): Promise<any[]>;
 		public createShard(id: number): Shard;
 		public fetchClientValues(prop: string): Promise<any[]>;
-		public respawnAll(shardDelay?: number, respawnDelay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
-		public spawn(amount?: number | 'auto', delay?: number, waitForReady?: boolean): Promise<Collection<number, Shard>>;
+		public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<Collection<number, Shard>>;
+		public spawn(amount?: number | 'auto', delay?: number, spawnTimeout?: number): Promise<Collection<number, Shard>>;
 
 		public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
@@ -1171,6 +1174,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data?: object);
 		public bitrate: number;
 		public readonly connection: VoiceConnection;
+		public readonly editable: boolean;
 		public readonly full: boolean;
 		public readonly joinable: boolean;
 		public readonly members: Collection<Snowflake, GuildMember>;
@@ -1313,7 +1317,7 @@ declare module 'discord.js' {
 		constructor(id: string, token: string, options?: ClientOptions);
 	}
 
-	export class WebSocketManager {
+	export class WebSocketManager extends EventEmitter {
 		constructor(client: Client);
 		private totalShards: number | string;
 		private shardQueue: Set<WebSocketShard>;
@@ -1328,6 +1332,8 @@ declare module 'discord.js' {
 		public status: Status;
 		public readonly ping: number;
 
+		public on(event: WSEventType, listener: (data: any, shardID: number) => void): this;
+		public once(event: WSEventType, listener: (data: any, shardID: number) => void): this;
 		private debug(message: string, shard?: WebSocketShard): void;
 		private connect(): Promise<void>;
 		private createShards(): Promise<void>;
@@ -1363,7 +1369,7 @@ declare module 'discord.js' {
 		private connect(): Promise<void>;
 		private onOpen(): void;
 		private onMessage(event: MessageEvent): void;
-		private onError(error: ErrorEvent): void;
+		private onError(error: ErrorEvent | object): void;
 		private onClose(event: CloseEvent): void;
 		private onPacket(packet: object): void;
 		private setHelloTimeout(time?: number): void;
@@ -1453,6 +1459,7 @@ declare module 'discord.js' {
 		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
 		public fetch(): Promise<GuildMemberStore>;
 		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
+		public prune(options: GuildPruneMembersOptions & { dry?: false, count: false }): Promise<null>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
 		public unban(user: UserResolvable, reason?: string): Promise<User>;
 	}
@@ -1467,6 +1474,7 @@ declare module 'discord.js' {
 		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
+		public remove(message: MessageResolvable, reason?: string): Promise<void>;
 	}
 
 	export class PresenceStore extends DataStore<Snowflake, Presence, typeof Presence, PresenceResolvable> {
@@ -1924,6 +1932,7 @@ declare module 'discord.js' {
 	type GuildResolvable = Guild | Snowflake;
 
 	interface GuildPruneMembersOptions {
+		count?: boolean;
 		days?: number;
 		dry?: boolean;
 		reason?: string;

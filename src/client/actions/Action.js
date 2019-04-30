@@ -56,6 +56,15 @@ class GenericAction {
     }
     return existing;
   }
+
+  getMember(data, guild) {
+    const userID = data.user.id;
+    const existing = guild.members.get(userID);
+    if (!existing && this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)) {
+      return guild.members.add({ user: { id: userID } });
+    }
+    return existing;
+  }
 }
 
 module.exports = GenericAction;

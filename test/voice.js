@@ -6,7 +6,7 @@ const ytdl = require('ytdl-core');
 const prism = require('prism-media');
 const fs = require('fs');
 
-const client = new Discord.Client({ fetchAllMembers: false, partials: true, apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, partials: [], apiRequestMethod: 'sequential' });
 
 const auth = require('./auth.js');
 

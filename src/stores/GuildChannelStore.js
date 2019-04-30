@@ -1,6 +1,5 @@
 'use strict';
 
-const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
 const GuildChannel = require('../structures/GuildChannel');
@@ -16,11 +15,11 @@ class GuildChannelStore extends DataStore {
     this.guild = guild;
   }
 
-  add(data) {
-    const existing = this.get(data.id);
+  add(channel) {
+    const existing = this.get(channel.id);
     if (existing) return existing;
-
-    return Channel.create(this.client, data, this.guild);
+    this.set(channel.id, channel);
+    return channel;
   }
 
   /**

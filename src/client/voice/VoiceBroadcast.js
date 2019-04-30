@@ -13,7 +13,7 @@ const PlayInterface = require('./util/PlayInterface');
  * const broadcast = client.voice.createBroadcast();
  * broadcast.play('./music.mp3');
  * // Play "music.mp3" in all voice connections that the client is in
- * for (const connection of client.voiceConnections.values()) {
+ * for (const connection of client.voice.connections.values()) {
  *   connection.play(broadcast);
  * }
  * ```

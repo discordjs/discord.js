@@ -5,7 +5,7 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -321,7 +321,7 @@ class Guild extends Base {
        */
       this.emojis = new GuildEmojiStore(this);
       if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
-    } else {
+    } else if (data.emojis) {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
         emojis: data.emojis,
@@ -452,16 +452,6 @@ class Guild extends Base {
   }
 
   /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get voiceConnection() {
-    if (browser) return null;
-    return this.client.voice.connections.get(this.id) || null;
-  }
-
-  /**
    * The `@everyone` role of the guild
    * @type {?Role}
    * @readonly
@@ -476,7 +466,18 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    return this.members.get(this.client.user.id) || null;
+    return this.members.get(this.client.user.id) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.client.user.id } }, true) :
+      null);
+  }
+
+  /**
+   * The voice state for the client user of this guild, if any
+   * @type {?VoiceState}
+   * @readonly
+   */
+  get voice() {
+    return this.voiceStates.get(this.client.user.id);
   }
 
   /**

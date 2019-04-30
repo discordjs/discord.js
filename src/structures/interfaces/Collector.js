@@ -15,7 +15,7 @@ const EventEmitter = require('events');
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
- * @property {number} [time] How long to run the collector for
+ * @property {number} [time] How long to run the collector for in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
  */
 
