@@ -84,7 +84,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get connection() {
-    if (browser || this.id !== this.guild.me.id) return null;
+    if (browser || this.id !== this.client.user.id) return null;
     return this.client.voice.connections.get(this.guild.id) || null;
   }
 
