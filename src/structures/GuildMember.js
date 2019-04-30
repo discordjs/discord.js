@@ -254,7 +254,8 @@ class GuildMember extends Base {
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   * @property {ChannelResolvable|null} [channel] Channel to move member to (if they are connected to voice), or `null`
+   * if you want to kick them from voice
    */
 
   /**
@@ -270,8 +271,10 @@ class GuildMember extends Base {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
       data.channel_id = data.channel.id;
-      data.channel = null;
+    } else if (data.channel === null) {
+      data.channel_id = null;
     }
+    data.channel = undefined;
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
     let endpoint = this.client.api.guilds(this.guild.id);
     if (this.user.id === this.client.user.id) {
