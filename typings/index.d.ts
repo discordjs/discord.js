@@ -1260,6 +1260,7 @@ declare module 'discord.js' {
 
 		public setDeaf(mute: boolean, reason?: string): Promise<GuildMember>;
 		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+		public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
 	}
 
 	class VolumeInterface extends EventEmitter {
@@ -1898,7 +1899,7 @@ declare module 'discord.js' {
 		roles?: Collection<Snowflake, Role> | RoleResolvable[];
 		mute?: boolean;
 		deaf?: boolean;
-		channel?: ChannelResolvable;
+		channel?: ChannelResolvable | null;
 	}
 
 	type GuildMemberResolvable = GuildMember | UserResolvable;
