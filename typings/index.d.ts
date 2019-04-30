@@ -1176,7 +1176,7 @@ declare module 'discord.js' {
 		private onSessionDescription(mode: string, secret: string): void;
 		private onSpeaking(data: object): void;
 		private reconnect(token: string, endpoint: string): void;
-		private sendVoiceStateUpdate(options: object): void;
+		private sendVoiceStateUpdate(options: object): Promise<Shard>;
 		private setSessionID(sessionID: string): void;
 		private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 		private setTokenAndEndpoint(token: string, endpoint: string): void;

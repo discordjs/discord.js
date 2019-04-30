@@ -177,6 +177,7 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
+   * @returns {Promise<Shard>}
    * @private
    */
   sendVoiceStateUpdate(options = {}) {
@@ -190,7 +191,7 @@ class VoiceConnection extends EventEmitter {
     const queueLength = this.channel.guild.shard.ratelimit.queue.length;
     this.emit('debug', `Sending voice state update (queue length is ${queueLength}): ${JSON.stringify(options)}`);
 
-    this.channel.guild.shard.send({
+    return this.channel.guild.shard.send({
       op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });
