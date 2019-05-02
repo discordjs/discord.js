@@ -160,7 +160,7 @@ class VoiceState extends Base {
    */
   async setSelfDeaf(deaf) {
     if (this.id !== this.client.user.id) return new Error('VOICE_STATE_NOT_OWN');
-    if (typeof mute !== 'boolean') return new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
+    if (typeof deaf !== 'boolean') return new TypeError('VOICE_STATE_INVALID_TYPE', 'deaf');
     if (!this.connection) return false;
     this.selfDeaf = deaf;
     await this.connection.sendVoiceStateUpdate();
