@@ -29,7 +29,7 @@ class MessageStore extends DataStore {
    * The parameters to pass in when requesting previous messages from a channel. `around`, `before` and
    * `after` are mutually exclusive. All the parameters are optional.
    * @typedef {Object} ChannelLogsQueryOptions
-   * @property {number} [limit=50] Number of messages to acquire
+   * @property {number} [limit=50] Number of messages to acquire (Maximum 100)
    * @property {Snowflake} [before] ID of a message to get the messages that were posted before it
    * @property {Snowflake} [after] ID of a message to get the messages that were posted after it
    * @property {Snowflake} [around] ID of a message to get the messages that were posted around it
