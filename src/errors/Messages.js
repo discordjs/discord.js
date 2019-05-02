@@ -51,7 +51,7 @@ const Messages = {
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
-  VOICE_STATE_NOT_OWN: ' You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
+  VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
 
   UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',

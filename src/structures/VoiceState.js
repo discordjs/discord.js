@@ -142,7 +142,7 @@ class VoiceState extends Base {
   /**
    * Self-mutes/unmutes the bot for this voice state.
    * @param {boolean} mute Whether or not the bot should be self-muted
-   * @returns {Promise<boolean>}
+   * @returns {Promise<boolean>} Returns false if there is no connection, true if voice state is updated
    */
   async setSelfMute(mute) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
@@ -156,7 +156,7 @@ class VoiceState extends Base {
   /**
    * Self-deafens/undeafens the bot for this voice state.
    * @param {boolean} deaf Whether or not the bot should be self-deafened
-   * @returns {Promise<boolean>}
+   * @returns {Promise<boolean>} Returns false if there is no connection, true if voice state is updated
    */
   async setSelfDeaf(deaf) {
     if (this.id !== this.client.user.id) return new Error('VOICE_STATE_NOT_OWN');
