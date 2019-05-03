@@ -1202,7 +1202,7 @@ declare module 'discord.js' {
 		private onSessionDescription(mode: string, secret: string): void;
 		private onSpeaking(data: object): void;
 		private reconnect(token: string, endpoint: string): void;
-		private sendVoiceStateUpdate(options: object): void;
+		private sendVoiceStateUpdate(options: object): Promise<Shard>;
 		private setSessionID(sessionID: string): void;
 		private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 		private setTokenAndEndpoint(token: string, endpoint: string): void;
@@ -1215,6 +1215,7 @@ declare module 'discord.js' {
 		public receiver: VoiceReceiver;
 		public speaking: Readonly<Speaking>;
 		public status: VoiceStatus;
+		public readonly voice: VoiceState;
 		public voiceManager: ClientVoiceManager;
 		public disconnect(): void;
 		public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
@@ -1284,8 +1285,10 @@ declare module 'discord.js' {
 		public sessionID?: string;
 		public readonly speaking: boolean | null;
 
-		public setDeaf(mute: boolean, reason?: string): Promise<GuildMember>;
+		public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
 		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
+		public setSelfDeaf(deaf: boolean): Promise<boolean>;
+		public setSelfMute(mute: boolean): Promise<boolean>;
 	}
 
 	class VolumeInterface extends EventEmitter {
