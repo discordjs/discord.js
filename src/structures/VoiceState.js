@@ -156,7 +156,7 @@ class VoiceState extends Base {
   /**
    * Self-deafens/undeafens the bot for this voice state.
    * @param {boolean} deaf Whether or not the bot should be self-deafened
-   * @returns {Promise<boolean>} Returns false if there is no connection, true if voice state is updated
+   * @returns {Promise<boolean>} true if the voice state was successfully updated, otherwise false
    */
   async setSelfDeaf(deaf) {
     if (this.id !== this.client.user.id) return new Error('VOICE_STATE_NOT_OWN');
