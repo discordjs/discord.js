@@ -142,7 +142,7 @@ class VoiceState extends Base {
   /**
    * Self-mutes/unmutes the bot for this voice state.
    * @param {boolean} mute Whether or not the bot should be self-muted
-   * @returns {Promise<boolean>} Returns false if there is no connection, true if voice state is updated
+   * @returns {Promise<boolean>} true if the voice state was successfully updated, otherwise false
    */
   async setSelfMute(mute) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
