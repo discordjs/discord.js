@@ -131,6 +131,8 @@ exports.Endpoints = {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
+      Banner: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
       Icon: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -409,6 +411,8 @@ exports.ChannelTypes = {
   VOICE: 2,
   GROUP: 3,
   CATEGORY: 4,
+  NEWS: 5,
+  STORE: 6,
 };
 
 exports.ClientApplicationAssetTypes = {

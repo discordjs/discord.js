@@ -122,7 +122,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'text' | 'voice' | 'category' | 'unknown';
+		public type: 'dm' | 'text' | 'voice' | 'category' | 'news' | 'store' | 'unknown';
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -393,9 +393,7 @@ declare module 'discord.js' {
 		private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
 		private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
-		protected setup(data: any): void;
-
-		public readonly afkChannel: VoiceChannel | null;
+		public readonly afkChannel: VoiceChannel;
 		public afkChannelID: Snowflake;
 		public afkTimeout: number;
 		public applicationID: Snowflake;
@@ -432,13 +430,25 @@ declare module 'discord.js' {
 		public readonly systemChannel: TextChannel | null;
 		public systemChannelID: Snowflake;
 		public verificationLevel: number;
+		public maximumMembers: number;
+		public maximumPresences: number;
+		public vanityURLCode: string;
+		public description: string;
+		public banner: string;
+		public widgetEnabled: boolean;
+		public widgetChannelID: Snowflake;
+		public readonly widgetChannel: TextChannel;
+		public embedChannelID: Snowflake;
+		public readonly embedChannel: TextChannel;
 		public readonly verified: boolean;
 		public readonly voiceConnection: VoiceConnection | null;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+		public bannerURL(options?: AvatarOptions): string;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
+		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;
@@ -530,6 +540,11 @@ declare module 'discord.js' {
 		public setPosition(position: number, options?: { relative?: boolean, reason?: string }): Promise<GuildChannel>;
 		public setTopic(topic: string, reason?: string): Promise<GuildChannel>;
 		public updateOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
+	}
+
+	export class StoreChannel extends GuildChannel {
+		constructor(guild: Guild, data?: object);
+		public nsfw: boolean;
 	}
 
 	export class GuildEmoji extends Emoji {
@@ -1061,6 +1076,17 @@ declare module 'discord.js' {
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+	}
+
+	export class NewsChannel extends TextBasedChannel(GuildChannel) {
+		constructor(guild: Guild, data?: object);
+		public readonly members: Collection<Snowflake, GuildMember>;
+		public messages: MessageStore;
+		public nsfw: boolean;
+		public topic: string;
+		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 	}
 

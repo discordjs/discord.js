@@ -187,6 +187,27 @@ class Guild extends Base {
     this.embedEnabled = data.embed_enabled;
 
     /**
+     * Whether widget images are enabled on this guild
+     * @type {?boolean}
+     * @name Guild#widgetEnabled
+     */
+    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+
+    /**
+     * The widget channel ID, if enabled
+     * @type {?string}
+     * @name Guild#widgetChannelID
+     */
+    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+
+    /**
+     * The embed channel ID, if enabled
+     * @type {?string}
+     * @name Guild#embedChannelID
+     */
+    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+
+    /**
      * The verification level of the guild
      * @type {number}
      */
@@ -211,11 +232,45 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The value set for a guild's default message notifications
+     * The value set for the guild's default message notifications
      * @type {DefaultMessageNotifications|number}
      */
     this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
+
+    /**
+     * The maximum amount of members the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumMembers
+     */
+    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
+
+    /**
+     * The maximum amount of presences the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumPresences
+     */
+    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 5000;
+
+    /**
+     * The vanity URL code of the guild, if any
+     * @type {?string}
+     */
+    this.vanityURLCode = data.vanity_url_code;
+
+    /**
+     * The description of the guild, if any
+     * @type {?string}
+     */
+    this.description = data.description;
+
+    /**
+     * The hash of the guild banner
+     * @type {?string}
+     */
+    this.banner = data.banner;
 
     this.id = data.id;
     this.available = !data.unavailable;
@@ -272,6 +327,16 @@ class Guild extends Base {
         emojis: data.emojis,
       });
     }
+  }
+
+  /**
+   * The URL to this guild's banner.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  bannerURL({ format, size } = {}) {
+    if (!this.banner) return null;
+    return this.client.rest.cdn.Banner(this.id, this.banner, format, size);
   }
 
   /**
@@ -369,6 +434,24 @@ class Guild extends Base {
   }
 
   /**
+   * Widget channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get widgetChannel() {
+    return this.client.channels.get(this.widgetChannelID) || null;
+  }
+
+  /**
+   * Embed channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get embedChannel() {
+    return this.client.channels.get(this.embedChannelID) || null;
+  }
+
+  /**
    * The `@everyone` role of the guild
    * @type {?Role}
    * @readonly
@@ -407,6 +490,17 @@ class Guild extends Base {
    */
   member(user) {
     return this.members.resolve(user);
+  }
+
+  /**
+   * Fetches this guild.
+   * @returns {Promise<Guild>}
+   */
+  fetch() {
+    return this.client.api.guilds(this.id).get().then(data => {
+      this._patch(data);
+      return this;
+    });
   }
 
   /**
@@ -975,6 +1069,7 @@ class Guild extends Base {
     });
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
+    json.bannerURL = this.bannerURL();
     return json;
   }
 
