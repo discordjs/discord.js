@@ -668,7 +668,7 @@ declare module 'discord.js' {
 		public ban(options?: BanOptions | number | string): Promise<GuildMember>;
 		public createDM(): Promise<DMChannel>;
 		public deleteDM(): Promise<DMChannel>;
-		public edit(data: object, reason?: string): Promise<GuildMember>;
+		public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
 		public hasPermission(permission: PermissionResolvable, explicit?: boolean, checkAdmin?: boolean, checkOwner?: boolean): boolean;
 		public hasPermissions(permission: PermissionResolvable, explicit?: boolean): boolean;
 		public kick(reason?: string): Promise<GuildMember>;
@@ -680,7 +680,7 @@ declare module 'discord.js' {
 		public setMute(mute: boolean, reason?: string): Promise<GuildMember>;
 		public setNickname(nickname: string, reason?: string): Promise<GuildMember>;
 		public setRoles(roles: Collection<Snowflake, Role> | Role[] | Snowflake[], reason?: string): Promise<GuildMember>;
-		public setVoiceChannel(voiceChannel: ChannelResolvable): Promise<GuildMember>;
+		public setVoiceChannel(voiceChannel: ChannelResolvable | null): Promise<GuildMember>;
 		public toString(): string;
 	}
 
@@ -1822,7 +1822,7 @@ declare module 'discord.js' {
 		roles?: Collection<Snowflake, Role> | Role[] | Snowflake[];
 		mute?: boolean;
 		deaf?: boolean;
-		channel?: ChannelResolvable;
+		channel?: ChannelResolvable | null;
 	};
 
 	type GuildMemberResolvable = GuildMember | User;

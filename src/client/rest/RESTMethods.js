@@ -513,8 +513,10 @@ class RESTMethods {
         return Promise.reject(new Error('Could not resolve channel to a guild voice channel.'));
       }
       data.channel_id = channel.id;
-      data.channel = null;
+    } else if (data.channel === null) {
+      data.channel_id = null;
     }
+    data.channel = undefined;
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
 
     let endpoint = Endpoints.Member(member);
