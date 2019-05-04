@@ -162,7 +162,7 @@ class Collector extends EventEmitter {
     while (!this.ended) {
       const { value, done } = await new Promise(resolve => { // eslint-disable-line no-await-in-loop
         if (queue.length > 0) {
-          resolve(queue.shift());
+          resolve({ value: queue.shift(), done: false });
           return;
         }
 
