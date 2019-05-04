@@ -212,7 +212,7 @@ class WebSocketConnection extends EventEmitter {
    */
   _send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available!`);
       return;
     }
     this.ws.send(this.pack(data));
@@ -225,7 +225,7 @@ class WebSocketConnection extends EventEmitter {
    */
   send(data) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet ${data} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available!`);
       return;
     }
     this.ratelimit.queue.push(data);
