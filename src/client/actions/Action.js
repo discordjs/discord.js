@@ -33,14 +33,14 @@ class GenericAction {
       this.client.channels.get(id));
   }
 
-  getMessage(data, channel) {
+  getMessage(data, channel, cache = true) {
     const id = data.message_id || data.id;
     return data.message || (this.client.options.partials.includes(PartialTypes.MESSAGE) ?
       channel.messages.add({
         id,
         channel_id: channel.id,
         guild_id: data.guild_id || (channel.guild ? channel.guild.id : null),
-      }) :
+      }, cache) :
       channel.messages.get(id));
   }
 
