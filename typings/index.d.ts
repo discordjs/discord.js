@@ -828,11 +828,12 @@ declare module 'discord.js' {
 	export class Presence {
 		constructor(client: Client, data?: object);
 		public activity: Activity | null;
-		public flags: Readonly<ActivityFlags>;
-		public status: PresenceStatus;
 		public clientStatus: ClientPresenceStatusData | null;
-		public readonly user: User | null;
+		public flags: Readonly<ActivityFlags>;
+		public guild: Guild | null;
 		public readonly member: GuildMember | null;
+		public status: PresenceStatus;
+		public readonly user: User | null;
 		public equals(presence: Presence): boolean;
 	}
 
