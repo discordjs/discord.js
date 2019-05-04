@@ -57,6 +57,8 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    this.voiceStates = new VoiceStateStore(this);
+
     /**
      * Whether the bot has been removed from the guild
      * @type {boolean}
@@ -307,8 +309,8 @@ class Guild extends Base {
       }
     }
 
-    if (!this.voiceStates) this.voiceStates = new VoiceStateStore(this);
     if (data.voice_states) {
+      this.voiceStates.clear();
       for (const voiceState of data.voice_states) {
         this.voiceStates.add(voiceState);
       }
