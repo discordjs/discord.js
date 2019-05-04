@@ -85,7 +85,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get connection() {
-    if (browser || this.id !== this.guild.me.id) return null;
+    if (browser || this.id !== this.client.user.id) return null;
     return this.client.voice.connections.get(this.guild.id) || null;
   }
 
@@ -137,6 +137,19 @@ class VoiceState extends Base {
    */
   setDeaf(deaf, reason) {
     return this.member ? this.member.edit({ deaf }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+  }
+
+  /**
+   * Moves the member to a different channel, or kick them from the one they're in.
+   * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to kick them from
+   * voice
+   * @param {string} [reason] Reason for moving member to another channel or kicking
+   * @returns {Promise<GuildMember>}
+   */
+  setChannel(channel, reason) {
+    return this.member ?
+      this.member.edit({ channel }, reason) :
+      Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**
