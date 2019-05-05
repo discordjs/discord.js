@@ -153,45 +153,30 @@ class Collector extends EventEmitter {
    */
   async * [Symbol.asyncIterator]() {
     const queue = [];
-    const onQueue = item => {
+    const onCollect = item => {
       queue.push(item);
     };
 
-    this.on('collect', onQueue);
+    this.on('collect', onCollect);
 
-    while (!this.ended) {
-      const { value, done } = await new Promise(resolve => { // eslint-disable-line no-await-in-loop
-        if (queue.length > 0) {
-          resolve({ value: queue.shift(), done: false });
-          return;
-        }
+    while (!this.ended || queue.length > 0) {
+      if (queue.length > 0) {
+        yield queue.shift();
+      } else {
+        await new Promise(resolve => { // eslint-disable-line no-await-in-loop
+          const tick = () => {
+            this.removeListener('collect', tick);
+            this.removeListener('end', tick);
+            resolve();
+          };
 
-        const cleanup = () => {
-          this.removeListener('collect', onCollect);
-          this.removeListener('end', onEnd);
-        };
-
-        const onCollect = () => {
-          cleanup();
-          // Event processed by onQueue before onCollect
-          // The queue will contain this item
-          resolve({ value: queue.shift(), done: false });
-        };
-
-        const onEnd = () => {
-          cleanup();
-          resolve({ done: true });
-        };
-
-        this.on('collect', onCollect);
-        this.on('end', onEnd);
-      });
-
-      if (done) break;
-      yield value;
+          this.on('collect', tick);
+          this.on('end', tick);
+        });
+      }
     }
 
-    this.removeListener('collect', onQueue);
+    this.removeListener('collect', onCollect);
   }
 
   /**
