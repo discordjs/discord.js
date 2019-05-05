@@ -242,12 +242,12 @@ const Endpoints = exports.Endpoints = {
 
 /**
  * The current status of the client. Here are the available statuses:
- * * READY
- * * CONNECTING
- * * RECONNECTING
- * * IDLE
- * * NEARLY
- * * DISCONNECTED
+ * * READY: 0
+ * * CONNECTING: 1
+ * * RECONNECTING: 2
+ * * IDLE: 3
+ * * NEARLY: 4
+ * * DISCONNECTED: 5
  * @typedef {number} Status
  */
 exports.Status = {

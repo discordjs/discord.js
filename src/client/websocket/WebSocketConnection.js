@@ -59,7 +59,7 @@ class WebSocketConnection extends EventEmitter {
 
     /**
      * The current status of the client
-     * @type {number}
+     * @type {Status}
      */
     this.status = Constants.Status.IDLE;
 

@@ -186,11 +186,11 @@ class Client extends EventEmitter {
 
   /**
    * Current status of the client's connection to Discord
-   * @type {?number}
+   * @type {Status}
    * @readonly
    */
   get status() {
-    return this.ws.connection.status;
+    return this.ws.connection ? this.ws.connection.status : Constants.Status.IDLE;
   }
 
   /**
