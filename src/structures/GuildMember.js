@@ -351,7 +351,8 @@ class GuildMember {
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {ChannelResolvable} [channel] Channel to move member to (if they are connected to voice)
+   * @property {ChannelResolvable|null} [channel] Channel to move member to (if they are connected to voice), or `null`
+   * if you want to kick them from voice
    */
 
   /**
@@ -404,7 +405,8 @@ class GuildMember {
 
   /**
    * Moves this member to the given channel.
-   * @param {ChannelResolvable} channel The channel to move the member to
+   * @param {ChannelResolvable|null} channel Channel to move the member to, or `null` if you want to kick them from
+   * voice
    * @returns {Promise<GuildMember>}
    * @example
    * // Moves a member to a voice channel
