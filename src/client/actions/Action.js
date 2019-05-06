@@ -23,7 +23,7 @@ class GenericAction {
     return data;
   }
 
-  getPayload(data, store, id, partialType, cache = true) {
+  getPayload(data, store, id, partialType, cache) {
     const existing = store.get(id);
     if (!existing && this.client.options.partials.includes(partialType)) {
       return store.add(data, cache);
@@ -33,7 +33,7 @@ class GenericAction {
 
   getChannel(data) {
     const id = data.channel_id || data.id;
-    return this.getPayload({
+    return data.channel || this.getPayload({
       id,
       guild_id: data.guild_id,
     }, this.client.channels, id, PartialTypes.CHANNEL);
@@ -41,7 +41,7 @@ class GenericAction {
 
   getMessage(data, channel, cache) {
     const id = data.message_id || data.id;
-    return this.getPayload({
+    return data.message || this.getPayload({
       id,
       channel_id: channel.id,
       guild_id: data.guild_id || (channel.guild ? channel.guild.id : null),
@@ -68,7 +68,7 @@ class GenericAction {
 
   getUser(data) {
     const id = data.user_id;
-    return this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
+    return data.user || this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
   }
 }
 
