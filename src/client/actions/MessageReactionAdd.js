@@ -14,7 +14,7 @@ class MessageReactionAdd extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const user = data.user || this.client.users.get(data.user_id);
+    const user = this.getUser(data);
     if (!user) return false;
 
     // Verify channel
