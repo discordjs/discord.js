@@ -371,6 +371,7 @@ declare module 'discord.js' {
 		public messages: MessageStore;
 		public recipient: User;
 		public readonly partial: boolean;
+		public fetch(): Promise<DMChannel>;
 	}
 
 	export class Emoji extends Base {
@@ -798,7 +799,9 @@ declare module 'discord.js' {
 		public readonly emoji: GuildEmoji | ReactionEmoji;
 		public me: boolean;
 		public message: Message;
+		public partial: boolean;
 		public users: ReactionUserStore;
+		public fetch(): Promise<MessageReaction>;
 		public toJSON(): object;
 	}
 
