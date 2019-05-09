@@ -81,8 +81,7 @@ class MessageReaction {
    * @returns {Promise<MessageReaction>}
    */
   fetch() {
-    const emojiID = this.emoji.id || decodeURIComponent(this.emoji.name);
-    return this.message.reactions._fetchReaction(emojiID, true);
+    return this.message.reactions._fetchReaction(this.emoji, true);
   }
 
   toJSON() {

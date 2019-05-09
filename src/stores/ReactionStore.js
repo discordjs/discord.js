@@ -51,14 +51,21 @@ class ReactionStore extends DataStore {
       .then(() => this.message);
   }
 
-  async _fetchReaction(emojiID, cache) {
+  _partial(reaction) {
+    const id = reaction.id || decodeURIComponent(reaction.name);
+    const existing = this.get(id);
+    return !existing || existing.partial;
+  }
+
+  async _fetchReaction(reactionEmoji, cache) {
+    const id = reactionEmoji.id || decodeURIComponent(reactionEmoji.name);
+    const existing = this.get(id);
+    if (!this._partial(reactionEmoji)) return existing;
     const data = await this.client.api.channels(this.message.channel.id).messages(this.message.id).get();
     for (const reaction of data.reactions) {
-      const id = reaction.id || decodeURIComponent(reaction.name);
-      const existing = this.get(id);
-      if (!existing || existing.partial) this.add(reaction, cache);
+      if (this._partial(reaction)) this.add(reaction, cache);
     }
-    return this.get(emojiID);
+    return existing;
   }
 }
 

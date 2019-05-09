@@ -2125,7 +2125,8 @@ declare module 'discord.js' {
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
 		| 'GUILD_MEMBER'
-		| 'MESSAGE';
+		| 'MESSAGE'
+		| 'REACTION';
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 

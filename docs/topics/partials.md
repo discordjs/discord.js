@@ -9,8 +9,8 @@ discard the event. With partials, you're able to receive the event, with a Messa
 Partials are opt-in, and you can enable them in the Client options by specifying [PartialTypes](../typedef/PartialType):
 
 ```js
-// Accept partial messages and DM channels when emitting events
-new Client({ partials: ['MESSAGE', 'CHANNEL'] });
+// Accept partial messages, DM channels and reactions when emitting events
+new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 ```
 
 ## Usage & warnings
@@ -45,6 +45,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
   if (reaction.message.partial) await reaction.message.fetch();
   // Now the message has been cached and is fully available:
   console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
+  // Fetches and caches the reaction itself, updating resources that were possibly defunt.
+  if (reaction.partial) await reaction.fetch();
+  // Now the reaction is fully available and the properties will be reflected accurately:
+  console.log(`This reaction contains ${reaction.count} reaction(s)!`);
 });
 ```
 

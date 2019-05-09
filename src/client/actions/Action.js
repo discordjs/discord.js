@@ -55,7 +55,7 @@ class GenericAction {
       emoji: data.emoji,
       count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
-    }, message.reactions, id, PartialTypes.MESSAGE);
+    }, message.reactions, id, PartialTypes.REACTION);
   }
 
   getMember(data, guild) {
