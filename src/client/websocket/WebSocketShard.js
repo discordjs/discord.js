@@ -3,7 +3,10 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+<<<<<<< HEAD
 const { TextDecoder } = require('util');
+=======
+>>>>>>> 794d8a59902501c9ac86d1a2197b6a134254d90a
 
 let zstd;
 let decoder;

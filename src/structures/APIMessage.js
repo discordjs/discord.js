@@ -90,10 +90,13 @@ class APIMessage {
       }
     }
 
+<<<<<<< HEAD
     if (this.options.spoiler === true) {
       content = `||${content}||`;
     }
 
+=======
+>>>>>>> 794d8a59902501c9ac86d1a2197b6a134254d90a
     if (content || mentionPart) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
