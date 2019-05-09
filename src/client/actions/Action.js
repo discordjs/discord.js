@@ -53,7 +53,7 @@ class GenericAction {
     const id = data.emoji.id || decodeURIComponent(data.emoji.name);
     return this.getPayload({
       emoji: data.emoji,
-      count: 0,
+      count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
     }, message.reactions, id, PartialTypes.MESSAGE);
   }

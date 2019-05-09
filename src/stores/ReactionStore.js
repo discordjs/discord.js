@@ -50,6 +50,16 @@ class ReactionStore extends DataStore {
     return this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions.delete()
       .then(() => this.message);
   }
+
+  async _fetchReaction(emojiID, cache) {
+    const data = await this.client.api.channels(this.message.channel.id).messages(this.message.id).get();
+    for (const reaction of data.reactions) {
+      const id = reaction.id || decodeURIComponent(reaction.name);
+      const existing = this.get(id);
+      if (!existing || existing.partial) this.add(reaction, cache);
+    }
+    return this.get(emojiID);
+  }
 }
 
 module.exports = ReactionStore;
