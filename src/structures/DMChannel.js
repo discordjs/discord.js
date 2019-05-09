@@ -56,7 +56,15 @@ class DMChannel extends Channel {
    * @readonly
    */
   get partial() {
-    return !this.recipient;
+    return this.lastMessageID === undefined;
+  }
+
+  /**
+   * Fetch this DMChannel.
+   * @returns {Promise<DMChannel>}
+   */
+  fetch() {
+    return this.recipient.createDM();
   }
 
   /**

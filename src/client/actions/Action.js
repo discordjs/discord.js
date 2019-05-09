@@ -36,6 +36,7 @@ class GenericAction {
     return data.channel || this.getPayload({
       id,
       guild_id: data.guild_id,
+      recipients: [data.author || { id: data.user_id }],
     }, this.client.channels, id, PartialTypes.CHANNEL);
   }
 
