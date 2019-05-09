@@ -1,0 +1,100 @@
+{
+  "name": "discord.js",
+  "version": "12.0.0-dev",
+  "description": "A powerful library for interacting with the Discord API",
+  "main": "./src/index",
+  "types": "./typings/index.d.ts",
+  "scripts": {
+    "test": "npm run lint && npm run docs:test && npm run lint:typings",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+    "docs:test": "docgen --source src --custom docs/index.yml",
+    "lint": "eslint src *.js",
+    "lint:fix": "eslint --fix src",
+    "lint:typings": "tslint typings/index.d.ts",
+    "build:browser": "webpack",
+    "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discordjs/discord.js.git"
+  },
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "client",
+    "node",
+    "discordapp"
+  ],
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/discordjs/discord.js/issues"
+  },
+  "homepage": "https://github.com/discordjs/discord.js#readme",
+  "runkitExampleFilename": "./docs/examples/ping.js",
+  "unpkg": "./webpack/discord.min.js",
+  "dependencies": {
+    "form-data": "^2.3.3",
+    "node-fetch": "^2.3.0",
+    "pako": "^1.0.8",
+    "prism-media": "^1.0.0",
+    "setimmediate": "^1.0.5",
+    "tweetnacl": "^1.0.1",
+    "ws": "^6.1.3"
+  },
+  "peerDependencies": {
+    "@discordjs/uws": "^11.149.1",
+    "bufferutil": "^4.0.1",
+    "erlpack": "discordapp/erlpack",
+    "libsodium-wrappers": "^0.7.4",
+    "sodium": "^3.0.2",
+    "zlib-sync": "^0.1.4",
+    "zucc": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.24",
+    "@types/ws": "^6.0.1",
+    "discord.js-docgen": "discordjs/docgen",
+    "eslint": "^5.13.0",
+    "json-filter-loader": "^1.0.0",
+    "terser-webpack-plugin": "^1.2.2",
+    "tslint": "^5.12.1",
+    "tslint-config-typings": "^0.3.1",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "browser": {
+    "https": false,
+    "ws": false,
+    "uws": false,
+    "@discordjs/uws": false,
+    "erlpack": false,
+    "prism-media": false,
+    "opusscript": false,
+    "node-opus": false,
+    "tweetnacl": false,
+    "sodium": false,
+    "worker_threads": false,
+    "zlib-sync": false,
+    "zucc": false,
+    "src/sharding/Shard.js": false,
+    "src/sharding/ShardClientUtil.js": false,
+    "src/sharding/ShardingManager.js": false,
+    "src/client/voice/ClientVoiceManager.js": false,
+    "src/client/voice/VoiceConnection.js": false,
+    "src/client/voice/networking/VoiceUDPClient.js": false,
+    "src/client/voice/networking/VoiceWebSocket.js": false,
+    "src/client/voice/dispatcher/StreamDispatcher.js": false,
+    "src/client/voice/player/AudioPlayer.js": false,
+    "src/client/voice/receiver/PacketHandler.js": false,
+    "src/client/voice/receiver/Receiver.js": false,
+    "src/client/voice/util/Secretbox.js": false,
+    "src/client/voice/util/VolumeInterface.js": false,
+    "src/client/voice/VoiceBroadcast.js": false
+  }
+}
