@@ -45,10 +45,10 @@ client.on('messageReactionAdd', async (reaction, user) => {
   if (reaction.message.partial) await reaction.message.fetch();
   // Now the message has been cached and is fully available:
   console.log(`${reaction.message.author}'s message "${reaction.message.content}" gained a reaction!`);
-  // Fetches and caches the reaction itself, updating resources that were possibly defunt.
+  // Fetches and caches the reaction itself, updating resources that were possibly defunct.
   if (reaction.partial) await reaction.fetch();
   // Now the reaction is fully available and the properties will be reflected accurately:
-  console.log(`This reaction contains ${reaction.count} reaction(s)!`);
+  console.log(`${reaction.count} user(s) have given the same reaction this message!`);
 });
 ```
 
