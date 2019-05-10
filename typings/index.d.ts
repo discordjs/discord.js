@@ -795,7 +795,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, message: Message);
 		private _emoji: GuildEmoji | ReactionEmoji;
 
-		public count: number;
+		public count: number | null;
 		public readonly emoji: GuildEmoji | ReactionEmoji;
 		public me: boolean;
 		public message: Message;
