@@ -1,5 +1,4 @@
 const Action = require('./Action');
-const Channel = require('../../structures/Channel');
 const TextChannel = require('../../structures/TextChannel');
 const VoiceChannel = require('../../structures/VoiceChannel');
 const CategoryChannel = require('../../structures/CategoryChannel');
