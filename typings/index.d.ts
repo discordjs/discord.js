@@ -51,7 +51,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public id: Snowflake;
-		public type: 'dm' | 'group' | 'text' | 'voice' | 'category';
+		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'news' | 'store';
 		public delete(): Promise<Channel>;
 	}
 
@@ -526,7 +526,7 @@ declare module 'discord.js' {
 		public allowDMs(allow: boolean): Promise<Guild>;
 		public ban(user: UserResolvable, options?: BanOptions | number | string): Promise<GuildMember | User | string>;
 		public createChannel(name: string, options?: ChannelData): Promise<CategoryChannel | TextChannel | VoiceChannel>;
-		public createChannel(name: string, type?: 'category' | 'text' | 'voice', permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
+		public createChannel(name: string, type?: 'category' | 'text' | 'voice' | 'news' | 'store', permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
 		public createEmoji(attachment: BufferResolvable | Base64Resolvable, name: string, roles?: Collection<Snowflake, Role> | Role[], reason?: string): Promise<Emoji>;
 		public createRole(data?: RoleData, reason?: string): Promise<Role>;
 		public delete(): Promise<Guild>;
@@ -892,6 +892,11 @@ declare module 'discord.js' {
 		public remove(user?: UserResolvable): Promise<MessageReaction>;
 	}
 
+	export class NewsChannel extends TextChannel {
+		constructor(guild: Guild, data: object);
+		public rateLimitPerUser: 0;
+	}
+
 	export class OAuth2Application {
 		constructor(client: Client, data: object);
 		public bot: object;
@@ -1186,6 +1191,11 @@ declare module 'discord.js' {
 	export class SnowflakeUtil {
 		public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
 		public static generate(timestamp?: number | Date): Snowflake;
+	}
+
+	export class StoreChannel extends GuildChannel {
+		constructor(guild: Guild, data: object);
+		public nsfw: boolean;
 	}
 
 	export class StreamDispatcher extends VolumeInterface {
@@ -1630,7 +1640,7 @@ declare module 'discord.js' {
 	};
 
 	type ChannelData = {
-		type?: 'category' | 'text' | 'voice';
+		type?: 'category' | 'text' | 'voice' | 'news' | 'store';
 		name?: string;
 		position?: number;
 		topic?: string;
