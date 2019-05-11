@@ -18,8 +18,8 @@
 </div>
 
 # Welcome!
-Welcome to the discord.js v11.4 documentation.
-The v11.4 release contains bugfixes from v11.3 and backports features such as Rich Presence.
+Welcome to the discord.js v11.5 documentation.
+The v11.5 release contains bugfixes from v11.4 and backports features from the in-development v12.
 
 v12 is still very much a work-in-progress, as we're aiming to make it the best it can possibly be before releasing.
 If you are fond of living life on the bleeding-edge, check out the master branch.
