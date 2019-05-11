@@ -2,12 +2,14 @@ const Constants = require('../util/Constants');
 const Util = require('../util/Util');
 const Guild = require('../structures/Guild');
 const User = require('../structures/User');
-const CategoryChannel = require('../structures/CategoryChannel');
-const DMChannel = require('../structures/DMChannel');
 const Emoji = require('../structures/Emoji');
+const GuildChannel = require('../structures/GuildChannel');
 const TextChannel = require('../structures/TextChannel');
 const VoiceChannel = require('../structures/VoiceChannel');
-const GuildChannel = require('../structures/GuildChannel');
+const CategoryChannel = require('../structures/CategoryChannel');
+const NewsChannel = require('../structures/NewsChannel');
+const StoreChannel = require('../structures/StoreChannel');
+const DMChannel = require('../structures/DMChannel');
 const GroupDMChannel = require('../structures/GroupDMChannel');
 
 class ClientDataManager {
@@ -58,16 +60,25 @@ class ClientDataManager {
       if (already) {
         channel = this.client.channels.get(data.id);
       } else if (guild) {
-        if (data.type === Constants.ChannelTypes.TEXT) {
-          channel = new TextChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.VOICE) {
-          channel = new VoiceChannel(guild, data);
-          guild.channels.set(channel.id, channel);
-        } else if (data.type === Constants.ChannelTypes.CATEGORY) {
-          channel = new CategoryChannel(guild, data);
-          guild.channels.set(channel.id, channel);
+        switch (data.type) {
+          case Constants.ChannelTypes.TEXT:
+            channel = new TextChannel(guild, data);
+            break;
+          case Constants.ChannelTypes.VOICE:
+            channel = new VoiceChannel(guild, data);
+            break;
+          case Constants.ChannelTypes.CATEGORY:
+            channel = new CategoryChannel(guild, data);
+            break;
+          case Constants.ChannelTypes.NEWS:
+            channel = new NewsChannel(guild, data);
+            break;
+          case Constants.ChannelTypes.STORE:
+            channel = new StoreChannel(guild, data);
+            break;
         }
+
+        guild.channels.set(channel.id, channel);
       }
     }
 
