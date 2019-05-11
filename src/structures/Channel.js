@@ -20,6 +20,8 @@ class Channel {
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
+     * * `news` - a guild news channel
+     * * `store` - a guild store channel
      * @type {string}
      */
     this.type = null;

@@ -282,6 +282,8 @@ exports.ChannelTypes = {
   VOICE: 2,
   GROUP_DM: 3,
   CATEGORY: 4,
+  NEWS: 5,
+  STORE: 6,
 };
 
 exports.OPCodes = {
