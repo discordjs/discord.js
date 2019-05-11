@@ -1047,7 +1047,7 @@ class Guild {
    * Creates a new channel in the guild.
    * @param {string} name The name of the new channel
    * @param {string|ChannelData} [typeOrOptions='text']
-   * The type of the new channel, either `text` or `voice` or `category`. **(deprecated, use options)**
+   * The type of the new channel, one of `text`, `voice`, `category`, `news`, or `store`. **(deprecated, use options)**
    * Alternatively options for the new channel, overriding the following parameters.
    * @param {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
    * Permission overwrites **(deprecated, use options)**
