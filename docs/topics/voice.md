@@ -1,44 +1,41 @@
-# Introduction to Voice
-Voice in discord.js can be used for many things, such as music bots, recording or relaying audio.
+### What is Voice?
 
-In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `VoiceConnection`, where you can start streaming and receiving audio.
+"Voice" refers to the ability of a bot to send and receive audio in voice channels. At the time of writing, Discord does not currently support bots receiving audio, however we support it as best as we can.
 
-To get started, make sure you have:
-* FFmpeg - `npm install ffmpeg-binaries`
-* an opus encoder, choose one from below:
-  * `npm install node-opus` (better performance)
-  * `npm install opusscript`
-* a good network connection
+### Pre-requisites
 
-The preferred opus engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+To start using voice, you'll need the following as a bare minimum:
 
-## Joining a voice channel
-The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
-as it allows us to obtain a `VoiceConnection` that we can start to stream audio with.
+* An Opus encoder, the following are supported:
+  * `node-opus` (needs to be built, best performance)
+  * `opusscript` (does not need to be built, faster install)
+
+We also recommend:
+
+* FFmpeg, for playing audio that isn't already Opus-encoded
+  * `ffmpeg` - Download FFmpeg directly and add it your environment
+  * `ffmpeg-static` - You can also download FFmpeg via npm for ease
+* Faster encryption packages
+  * `sodium` (best performance)
+  * `libsodium-wrappers`
+
+### Getting Started
+
+You can use voice by connecting to a `VoiceChannel` to obtain a `VoiceConnection`, where you can start streaming and receiving audio.
 
 ```js
-const Discord = require('discord.js');
-const client = new Discord.Client();
-
-client.login('token here');
-
-client.on('message', async message => {
-  // Voice only works in guilds, if the message does not come from a guild,
-  // we ignore it
-  if (!message.guild) return;
-
-  if (message.content === '/join') {
-    // Only try to join the sender's voice channel if they are in one themselves
-    if (message.member.voice.channel) {
-      const connection = await message.member.voice.channel.join();
-    } else {
-      message.reply('You need to join a voice channel first!');
-    }
-  }
-});
+async function play(voiceChannel) {
+  const voiceConnection = await voiceChannel.join();
+}
 ```
+
+Now we have our connection, we can start playing audio! If you have FFmpeg installed, you can play most types of media.
+
+---
+
+EVERYTHING BELOW IS OUTDATED!
+
+---
 
 ## Streaming to a Voice Channel
 In the previous example, we looked at how to join a voice channel in order to obtain a `VoiceConnection`. Now that we
