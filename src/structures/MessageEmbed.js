@@ -337,6 +337,49 @@ class MessageEmbed {
     return this;
   }
 
+  /**
+   * Resets an embed.
+   * @param {Object} [options] Which areas to reset on the embed
+   * @returns {MessageEmbed}
+   */
+  reset(options) {
+    if (!options) {
+      options = {
+        type: true,
+        title: true,
+        description: true,
+        url: true,
+        color: true,
+        timestamp: true,
+        fields: true,
+        thumbnail: true,
+        image: true,
+        video: true,
+        author: true,
+        provider: true,
+        footer: true,
+        files: true,
+      };
+    }
+
+    if (options.type) this.type = undefined;
+    if (options.title) this.title = undefined;
+    if (options.description) this.description = undefined;
+    if (options.url) this.url = undefined;
+    if (options.color) this.color = undefined;
+    if (options.timestamp) this.timestamp = undefined;
+    if (options.fields) this.fields = undefined;
+    if (options.thumbnail) this.thumbnail = undefined;
+    if (options.image) this.image = undefined;
+    if (options.video) this.video = undefined;
+    if (options.author) this.author = undefined;
+    if (options.provider) this.provider = undefined;
+    if (options.footer) this.footer = undefined;
+    if (options.files) this.files = undefined;
+
+    return this;
+  }
+
   toJSON() {
     return Util.flatten(this, { hexColor: true });
   }
