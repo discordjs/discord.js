@@ -332,7 +332,7 @@ declare module 'discord.js' {
 		public checkEnd(): void;
 		public handleCollect(...args: any[]): void;
 		public handleDispose(...args: any[]): void;
-		public [Symbol.asyncIterator](): AsyncIterator<V>;
+		public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
 		public stop(reason?: string): void;
 		public toJSON(): object;
 
