@@ -156,27 +156,30 @@ class Collector extends EventEmitter {
     const onCollect = item => {
       queue.push(item);
     };
+    const next = resolve => {
+      const onEvent = () => {
+        this.removeListener('collect', onEvent);
+        this.removeListener('end', onEvent);
+        resolve();
+      };
+
+      this.on('collect', onEvent);
+      this.on('end', onEvent);
+    };
 
     this.on('collect', onCollect);
 
-    while (!this.ended || queue.length > 0) {
-      if (queue.length > 0) {
-        yield queue.shift();
-      } else {
-        await new Promise(resolve => { // eslint-disable-line no-await-in-loop
-          const tick = () => {
-            this.removeListener('collect', tick);
-            this.removeListener('end', tick);
-            resolve();
-          };
-
-          this.on('collect', tick);
-          this.on('end', tick);
-        });
+    try {
+      while (!this.ended || queue.length > 0) {
+        if (queue.length > 0) {
+          yield queue.shift();
+        } else {
+          await new Promise(next); // eslint-disable-line no-await-in-loop
+        }
       }
+    } finally {
+      this.removeListener('collect', onCollect);
     }
-
-    this.removeListener('collect', onCollect);
   }
 
   /**
