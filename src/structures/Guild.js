@@ -1062,7 +1062,7 @@ class Guild {
    * // Create a new category channel with permission overwrites
    * guild.createChannel('new-category', {
    *   type: 'category',
-   *   permissionsOverwrites: [{
+   *   permissionOverwrites: [{
    *     id: guild.id,
    *     deny: ['MANAGE_MESSAGES'],
    *     allow: ['SEND_MESSAGES']
