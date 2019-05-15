@@ -286,7 +286,7 @@ class GuildChannel extends Channel {
    * @property {CategoryChannel|Snowflake} [parent] The parent or parent ID of the channel
    * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
    * Overwrites of the channel
-   * @property {number} [rateLimitPerUser] The rate limit per user of the channel
+   * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
    */
 
   /**
