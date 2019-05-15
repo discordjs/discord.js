@@ -50,7 +50,7 @@ class TextChannel extends GuildChannel {
     this.lastMessageID = data.last_message_id;
 
     /**
-     * The ratelimit per user for this channel
+     * The ratelimit per user for this channel in seconds
      * @type {number}
      */
     this.rateLimitPerUser = data.rate_limit_per_user || 0;
