@@ -22,7 +22,7 @@ exports.pack = erlpack ? erlpack.pack : JSON.stringify;
 
 exports.unpack = data => {
   if (!erlpack || data[0] === '{') return JSON.parse(data);
-  if (!(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
+  if (!Buffer.isBuffer(data)) data = Buffer.from(new Uint8Array(data));
   return erlpack.unpack(data);
 };
 

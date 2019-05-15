@@ -48,7 +48,7 @@ class Presence {
      * The guild of this presence
      * @type {?Guild}
      */
-    this.guild = data.guild;
+    this.guild = data.guild || null;
 
     this.patch(data);
   }

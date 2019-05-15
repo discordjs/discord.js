@@ -3,13 +3,23 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const { TextDecoder } = require('util');
+
+let zstd;
+let decoder;
 
 let zlib;
+
 try {
-  zlib = require('zlib-sync');
-  if (!zlib.Inflate) zlib = require('pako');
-} catch (err) {
-  zlib = require('pako');
+  zstd = require('zucc');
+  decoder = new TextDecoder('utf8');
+} catch (e) {
+  try {
+    zlib = require('zlib-sync');
+    if (!zlib.Inflate) zlib = require('pako');
+  } catch (err) {
+    zlib = require('pako');
+  }
 }
 
 /**
@@ -206,11 +216,15 @@ class WebSocketShard extends EventEmitter {
         return;
       }
 
-      this.inflate = new zlib.Inflate({
-        chunkSize: 65535,
-        flush: zlib.Z_SYNC_FLUSH,
-        to: WebSocket.encoding === 'json' ? 'string' : '',
-      });
+      if (zstd) {
+        this.inflate = new zstd.DecompressStream();
+      } else {
+        this.inflate = new zlib.Inflate({
+          chunkSize: 65535,
+          flush: zlib.Z_SYNC_FLUSH,
+          to: WebSocket.encoding === 'json' ? 'string' : '',
+        });
+      }
 
       this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
 
@@ -219,7 +233,7 @@ class WebSocketShard extends EventEmitter {
 
       const ws = this.connection = WebSocket.create(gateway, {
         v: client.options.ws.version,
-        compress: 'zlib-stream',
+        compress: zstd ? 'zstd-stream' : 'zlib-stream',
       });
       ws.onopen = this.onOpen.bind(this);
       ws.onmessage = this.onMessage.bind(this);
@@ -239,24 +253,32 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever a message is received.
-   * @param {Event} event Event received
+   * @param {MessageEvent} event Event received
    * @private
    */
   onMessage({ data }) {
-    if (data instanceof ArrayBuffer) data = new Uint8Array(data);
-    const l = data.length;
-    const flush = l >= 4 &&
-      data[l - 4] === 0x00 &&
-      data[l - 3] === 0x00 &&
-      data[l - 2] === 0xFF &&
-      data[l - 1] === 0xFF;
+    let raw;
+    if (zstd) {
+      const ab = this.inflate.decompress(new Uint8Array(data).buffer);
+      raw = decoder.decode(ab);
+    } else {
+      if (data instanceof ArrayBuffer) data = new Uint8Array(data);
+      const l = data.length;
+      const flush = l >= 4 &&
+        data[l - 4] === 0x00 &&
+        data[l - 3] === 0x00 &&
+        data[l - 2] === 0xFF &&
+        data[l - 1] === 0xFF;
 
-    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
-    if (!flush) return;
+      this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+      if (!flush) return;
+      raw = this.inflate.result;
+    }
     let packet;
     try {
-      packet = WebSocket.unpack(this.inflate.result);
+      packet = WebSocket.unpack(raw);
       this.manager.client.emit(Events.RAW, packet, this.id);
+      if (packet.op === OPCodes.DISPATCH) this.manager.emit(packet.t, packet.d, this.id);
     } catch (err) {
       this.manager.client.emit(Events.SHARD_ERROR, err, this.id);
       return;
@@ -266,11 +288,14 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {ErrorEvent} error The error that occurred
+   * @param {ErrorEvent|Object} event The error that occurred
    * @private
    */
-  onError({ error }) {
-    if (error && error.message === 'uWs client connection error') {
+  onError(event) {
+    const error = event && event.error ? event.error : event;
+    if (!error) return;
+
+    if (error.message === 'uWs client connection error') {
       this.debug('Received a uWs error. Closing the connection and reconnecting...');
       this.connection.close(4000);
       return;
@@ -296,6 +321,11 @@ class WebSocketShard extends EventEmitter {
    */
 
   /**
+   * @external MessageEvent
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent}
+   */
+
+  /**
    * Called whenever a connection to the gateway is closed.
    * @param {CloseEvent} event Close event that was received
    * @private
@@ -303,10 +333,14 @@ class WebSocketShard extends EventEmitter {
   onClose(event) {
     this.closeSequence = this.sequence;
     this.sequence = -1;
+
     this.debug(`WebSocket was closed.
       Event Code: ${event.code}
       Clean: ${event.wasClean}
       Reason: ${event.reason || 'No reason received'}`);
+
+    this.setHeartbeatTimer(-1);
+    this.setHelloTimeout(-1);
 
     this.status = Status.DISCONNECTED;
 
@@ -581,7 +615,7 @@ class WebSocketShard extends EventEmitter {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
     // Close the WebSocket connection, if any
-    if (this.connection) {
+    if (this.connection && this.connection.readyState !== WebSocket.CLOSED) {
       this.connection.close(closeCode);
     } else {
       /**

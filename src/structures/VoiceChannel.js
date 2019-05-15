@@ -43,17 +43,6 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * The voice connection for this voice channel, if the client is connected
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.guild.voiceConnection;
-    if (connection && connection.channel.id === this.id) return connection;
-    return null;
-  }
-
-  /**
    * Checks if the voice channel is full
    * @type {boolean}
    * @readonly
@@ -69,6 +58,15 @@ class VoiceChannel extends GuildChannel {
    */
   get deletable() {
     return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+  }
+
+  /**
+   * Whether the channel is editable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**

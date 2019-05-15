@@ -167,22 +167,31 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * The voice state of this connection
+   * @type {VoiceState}
+   */
+  get voice() {
+    return this.channel.guild.voice;
+  }
+
+  /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
+   * @returns {Promise<Shard>}
    * @private
    */
   sendVoiceStateUpdate(options = {}) {
     options = Util.mergeDefault({
       guild_id: this.channel.guild.id,
       channel_id: this.channel.id,
-      self_mute: false,
-      self_deaf: false,
+      self_mute: this.voice ? this.voice.selfMute : false,
+      self_deaf: this.voice ? this.voice.selfDeaf : false,
     }, options);
 
     const queueLength = this.channel.guild.shard.ratelimit.queue.length;
     this.emit('debug', `Sending voice state update (queue length is ${queueLength}): ${JSON.stringify(options)}`);
 
-    this.channel.guild.shard.send({
+    return this.channel.guild.shard.send({
       op: OPCodes.VOICE_STATE_UPDATE,
       d: options,
     });

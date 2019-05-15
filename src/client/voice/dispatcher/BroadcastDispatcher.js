@@ -15,7 +15,7 @@ class BroadcastDispatcher extends StreamDispatcher {
 
   _write(chunk, enc, done) {
     if (!this.startTime) this.startTime = Date.now();
-    for (const dispatcher of this.broadcast.dispatchers) {
+    for (const dispatcher of this.broadcast.subscribers) {
       dispatcher._write(chunk, enc);
     }
     this._step(done);

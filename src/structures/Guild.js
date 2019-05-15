@@ -5,7 +5,7 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes, browser } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -56,6 +56,8 @@ class Guild extends Base {
      * @type {PresenceStore<Snowflake, Presence>}
      */
     this.presences = new PresenceStore(this.client);
+
+    this.voiceStates = new VoiceStateStore(this);
 
     /**
      * Whether the bot has been removed from the guild
@@ -187,6 +189,27 @@ class Guild extends Base {
     this.embedEnabled = data.embed_enabled;
 
     /**
+     * Whether widget images are enabled on this guild
+     * @type {?boolean}
+     * @name Guild#widgetEnabled
+     */
+    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+
+    /**
+     * The widget channel ID, if enabled
+     * @type {?string}
+     * @name Guild#widgetChannelID
+     */
+    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+
+    /**
+     * The embed channel ID, if enabled
+     * @type {?string}
+     * @name Guild#embedChannelID
+     */
+    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+
+    /**
      * The verification level of the guild
      * @type {number}
      */
@@ -211,11 +234,45 @@ class Guild extends Base {
     this.joinedTimestamp = data.joined_at ? new Date(data.joined_at).getTime() : this.joinedTimestamp;
 
     /**
-     * The value set for a guild's default message notifications
+     * The value set for the guild's default message notifications
      * @type {DefaultMessageNotifications|number}
      */
     this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
+
+    /**
+     * The maximum amount of members the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumMembers
+     */
+    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
+
+    /**
+     * The maximum amount of presences the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumPresences
+     */
+    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 5000;
+
+    /**
+     * The vanity URL code of the guild, if any
+     * @type {?string}
+     */
+    this.vanityURLCode = data.vanity_url_code;
+
+    /**
+     * The description of the guild, if any
+     * @type {?string}
+     */
+    this.description = data.description;
+
+    /**
+     * The hash of the guild banner
+     * @type {?string}
+     */
+    this.banner = data.banner;
 
     this.id = data.id;
     this.available = !data.unavailable;
@@ -252,8 +309,8 @@ class Guild extends Base {
       }
     }
 
-    if (!this.voiceStates) this.voiceStates = new VoiceStateStore(this);
     if (data.voice_states) {
+      this.voiceStates.clear();
       for (const voiceState of data.voice_states) {
         this.voiceStates.add(voiceState);
       }
@@ -266,12 +323,22 @@ class Guild extends Base {
        */
       this.emojis = new GuildEmojiStore(this);
       if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
-    } else {
+    } else if (data.emojis) {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
         emojis: data.emojis,
       });
     }
+  }
+
+  /**
+   * The URL to this guild's banner.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  bannerURL({ format, size } = {}) {
+    if (!this.banner) return null;
+    return this.client.rest.cdn.Banner(this.id, this.banner, format, size);
   }
 
   /**
@@ -369,13 +436,21 @@ class Guild extends Base {
   }
 
   /**
-   * If the client is connected to any voice channel in this guild, this will be the relevant VoiceConnection
-   * @type {?VoiceConnection}
+   * Widget channel for this guild
+   * @type {?TextChannel}
    * @readonly
    */
-  get voiceConnection() {
-    if (browser) return null;
-    return this.client.voice.connections.get(this.id) || null;
+  get widgetChannel() {
+    return this.client.channels.get(this.widgetChannelID) || null;
+  }
+
+  /**
+   * Embed channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get embedChannel() {
+    return this.client.channels.get(this.embedChannelID) || null;
   }
 
   /**
@@ -393,7 +468,18 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    return this.members.get(this.client.user.id) || null;
+    return this.members.get(this.client.user.id) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+      this.members.add({ user: { id: this.client.user.id } }, true) :
+      null);
+  }
+
+  /**
+   * The voice state for the client user of this guild, if any
+   * @type {?VoiceState}
+   * @readonly
+   */
+  get voice() {
+    return this.voiceStates.get(this.client.user.id);
   }
 
   /**
@@ -406,6 +492,17 @@ class Guild extends Base {
    */
   member(user) {
     return this.members.resolve(user);
+  }
+
+  /**
+   * Fetches this guild.
+   * @returns {Promise<Guild>}
+   */
+  fetch() {
+    return this.client.api.guilds(this.id).get().then(data => {
+      this._patch(data);
+      return this;
+    });
   }
 
   /**
@@ -974,6 +1071,7 @@ class Guild extends Base {
     });
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
+    json.bannerURL = this.bannerURL();
     return json;
   }
 

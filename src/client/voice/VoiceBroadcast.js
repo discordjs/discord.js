@@ -13,7 +13,7 @@ const PlayInterface = require('./util/PlayInterface');
  * const broadcast = client.voice.createBroadcast();
  * broadcast.play('./music.mp3');
  * // Play "music.mp3" in all voice connections that the client is in
- * for (const connection of client.voiceConnections.values()) {
+ * for (const connection of client.voice.connections.values()) {
  *   connection.play(broadcast);
  * }
  * ```
@@ -28,10 +28,10 @@ class VoiceBroadcast extends EventEmitter {
      */
     this.client = client;
     /**
-     * The dispatchers playing this broadcast
+     * The subscribed StreamDispatchers of this broadcast
      * @type {StreamDispatcher[]}
      */
-    this.dispatchers = [];
+    this.subscribers = [];
     this.player = new BroadcastAudioPlayer(this);
   }
 
@@ -66,19 +66,19 @@ class VoiceBroadcast extends EventEmitter {
    * Ends the broadcast, unsubscribing all subscribed channels and deleting the broadcast
    */
   end() {
-    for (const dispatcher of this.dispatchers) this.delete(dispatcher);
+    for (const dispatcher of this.subscribers) this.delete(dispatcher);
     const index = this.client.voice.broadcasts.indexOf(this);
     if (index !== -1) this.client.voice.broadcasts.splice(index, 1);
   }
 
   add(dispatcher) {
-    const index = this.dispatchers.indexOf(dispatcher);
+    const index = this.subscribers.indexOf(dispatcher);
     if (index === -1) {
-      this.dispatchers.push(dispatcher);
+      this.subscribers.push(dispatcher);
       /**
        * Emitted whenever a stream dispatcher subscribes to the broadcast.
        * @event VoiceBroadcast#subscribe
-       * @param {StreamDispatcher} dispatcher The subscribed dispatcher
+       * @param {StreamDispatcher} subscriber The subscribed dispatcher
        */
       this.emit(Events.VOICE_BROADCAST_SUBSCRIBE, dispatcher);
       return true;
@@ -88,9 +88,9 @@ class VoiceBroadcast extends EventEmitter {
   }
 
   delete(dispatcher) {
-    const index = this.dispatchers.indexOf(dispatcher);
+    const index = this.subscribers.indexOf(dispatcher);
     if (index !== -1) {
-      this.dispatchers.splice(index, 1);
+      this.subscribers.splice(index, 1);
       dispatcher.destroy();
       /**
        * Emitted whenever a stream dispatcher unsubscribes to the broadcast.
