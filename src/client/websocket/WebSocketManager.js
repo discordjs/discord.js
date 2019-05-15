@@ -264,9 +264,12 @@ class WebSocketManager extends EventEmitter {
     } catch (error) {
       if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
         throw new DJSError(WSCodes[error.code]);
-      } else {
+        // Undefined if session is invalid, error event (or uws' event mimicking it) for regular closes
+      } else if (!error || error.code) {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
         this.shardQueue.add(shard);
+      } else {
+        throw error;
       }
     }
     // If we have more shards, add a 5s delay
