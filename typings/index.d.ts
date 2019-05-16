@@ -459,7 +459,7 @@ declare module 'discord.js' {
 		public fetchEmbed(): Promise<GuildEmbedData>;
 		public iconURL(options?: AvatarOptions): string;
 		public leave(): Promise<Guild>;
-		public member(user: UserResolvable): GuildMember;
+		public member(user: UserResolvable): GuildMember | null;
 		public setAFKChannel(afkChannel: ChannelResolvable, reason?: string): Promise<Guild>;
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
