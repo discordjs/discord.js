@@ -1041,6 +1041,8 @@ class Guild {
    * @property {PermissionResolvable} [denied] The permissions to deny
    * **(deprecated)**
    * @property {GuildMemberResolvable|RoleResolvable} memberOrRole Member or role this overwrite is for
+   * **(deprecated, use id)**
+   * @property {Snowflake} id ID of member or role this overwrite is for
    */
 
   /**
