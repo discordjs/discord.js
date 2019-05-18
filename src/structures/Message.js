@@ -357,8 +357,8 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return !this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false);
+    return this.type === 'DEFAULT' && (!this.guild ||
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false));
   }
 
   /**
