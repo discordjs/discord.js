@@ -14,7 +14,7 @@ class Structures {
    * @returns {Function}
    */
   static get(structure) {
-    if (typeof structure === 'string') return structures[structure];
+    if (typeof structure === 'string') return Structures.structures[structure];
     throw new TypeError(`"structure" argument must be a string (received ${typeof structure})`);
   }
 
@@ -22,7 +22,7 @@ class Structures {
    * Extends a structure.
    * <warn> Make sure to extend all structures before instantiating your client.
    * Extending after doing so may not work as expected. </warn>
-   * @param {string} structure Name of the structure class to extend
+   * @param {string} name Name of the structure class to extend
    * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
    * extended class/prototype
    * @returns {Function} Extended class/prototype returned from the extender
@@ -40,8 +40,9 @@ class Structures {
    *   return CoolGuild;
    * });
    */
-  static extend(structure, extender) {
-    if (!structures[structure]) throw new RangeError(`"${structure}" is not a valid extensible structure.`);
+  static extend(name, extender) {
+    const structure = Structures.structures[name];
+    if (!structure) throw new RangeError(`"${name}" is not a valid extensible structure.`);
     if (typeof extender !== 'function') {
       const received = `(received ${typeof extender})`;
       throw new TypeError(
@@ -49,27 +50,31 @@ class Structures {
       );
     }
 
-    const extended = extender(structures[structure]);
+    const extended = extender(structure);
     if (typeof extended !== 'function') {
       const received = `(received ${typeof extended})`;
       throw new TypeError(`The extender function must return the extended structure class/prototype ${received}.`);
     }
 
-    if (!(extended.prototype instanceof structures[structure])) {
+    if (!(extended.prototype instanceof structure)) {
       const prototype = Object.getPrototypeOf(extended);
       const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
         'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
-        ` (received function ${received}; expected extension of ${structures[structure].name}).`
+        ` (received function ${received}; expected extension of ${structure.name}).`
       );
     }
 
-    structures[structure] = extended;
+    Structures.structures[structure] = extended;
     return extended;
   }
 }
 
-const structures = {
+/**
+ * All the structures you can extend.
+ * @type {Object}
+ */
+Structures.structures = {
   GuildEmoji: require('../structures/GuildEmoji'),
   DMChannel: require('../structures/DMChannel'),
   TextChannel: require('../structures/TextChannel'),
