@@ -271,10 +271,11 @@ class GuildMember extends Base {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
       data.channel_id = data.channel.id;
+      data.channel = undefined;
     } else if (data.channel === null) {
       data.channel_id = null;
+      data.channel = undefined;
     }
-    data.channel = undefined;
     if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
     let endpoint = this.client.api.guilds(this.guild.id);
     if (this.user.id === this.client.user.id) {
