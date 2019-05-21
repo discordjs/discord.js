@@ -1057,9 +1057,7 @@ declare module 'discord.js' {
 		public static resolve(bit?: BitFieldResolvable<SpeakingString>): number;
 	}
 
-	export class Structures {
-		static get<K extends keyof Extendable>(structure: K): Extendable[K];
-		static get(structure: string): Function;
+	export class Structures<K extends keyof Extendable, V extends Extendable[K]> extends Map<K, V> {
 		static extend<K extends keyof Extendable, T extends Extendable[K]>(structure: K, extender: (baseClass: Extendable[K]) => T): T;
 		static extend<T extends Function>(structure: string, extender: (baseClass: typeof Function) => T): T;
 	}
