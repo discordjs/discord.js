@@ -1,7 +1,7 @@
 'use strict';
 
 const Collection = require('../util/Collection');
-const Structures = require('../util/Structures');
+let Structures;
 
 /**
  * Manages the creation, retrieval and deletion of a specific data model.
@@ -10,6 +10,7 @@ const Structures = require('../util/Structures');
 class DataStore extends Collection {
   constructor(client, iterable, holds) {
     super();
+    if (!Structures) Structures = require('../util/Structures');
     Object.defineProperty(this, 'client', { value: client });
     Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
     if (iterable) for (const item of iterable) this.add(item);
