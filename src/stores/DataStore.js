@@ -15,6 +15,7 @@ class DataStore extends Collection {
     Object.defineProperty(this, 'holds', { value: Structures.get(holds.name) || holds });
     if (iterable) for (const item of iterable) this.add(item);
   }
+
   add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.get(id || data.id);
     if (existing && existing._patch && cache) existing._patch(data);
