@@ -2,20 +2,12 @@
 
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
+ * @extends {Map}
  */
-class Structures {
-  constructor() {
-    throw new Error(`The ${this.constructor.name} class may not be instantiated.`);
-  }
-
-  /**
-   * Retrieves a structure class.
-   * @param {string} structure Name of the structure to retrieve
-   * @returns {Function}
-   */
-  static get(structure) {
-    if (typeof structure === 'string') return Structures.structures[structure];
-    throw new TypeError(`"structure" argument must be a string (received ${typeof structure})`);
+class Structures extends Map {
+  set(key, value) {
+    if (this.has(key)) throw new Error(`${key} already exists`);
+    return super.set(key, value);
   }
 
   /**
@@ -40,8 +32,8 @@ class Structures {
    *   return CoolGuild;
    * });
    */
-  static extend(name, extender) {
-    const structure = Structures.structures[name];
+  extend(name, extender) {
+    const structure = this.get(name);
     if (!structure) throw new RangeError(`"${name}" is not a valid extensible structure.`);
     if (typeof extender !== 'function') {
       const received = `(received ${typeof extender})`;
@@ -65,32 +57,26 @@ class Structures {
       );
     }
 
-    Structures.structures[structure] = extended;
+    super.set(name, extended);
     return extended;
   }
 }
 
-/**
- * All the structures you can extend.
- * @type {Object}
- */
-Structures.structures = {
-  GuildEmoji: require('../structures/GuildEmoji'),
-  DMChannel: require('../structures/DMChannel'),
-  TextChannel: require('../structures/TextChannel'),
-  VoiceChannel: require('../structures/VoiceChannel'),
-  CategoryChannel: require('../structures/CategoryChannel'),
-  NewsChannel: require('../structures/NewsChannel'),
-  StoreChannel: require('../structures/StoreChannel'),
-  GuildMember: require('../structures/GuildMember'),
-  Guild: require('../structures/Guild'),
-  Message: require('../structures/Message'),
-  MessageReaction: require('../structures/MessageReaction'),
-  Presence: require('../structures/Presence').Presence,
-  ClientPresence: require('../structures/ClientPresence'),
-  VoiceState: require('../structures/VoiceState'),
-  Role: require('../structures/Role'),
-  User: require('../structures/User'),
-};
-
-module.exports = Structures;
+module.exports = new Structures([
+  ['GuildEmoji', require('../structures/GuildEmoji')],
+  ['DMChannel', require('../structures/DMChannel')],
+  ['TextChannel', require('../structures/TextChannel')],
+  ['VoiceChannel', require('../structures/VoiceChannel')],
+  ['CategoryChannel', require('../structures/CategoryChannel')],
+  ['NewsChannel', require('../structures/NewsChannel')],
+  ['StoreChannel', require('../structures/StoreChannel')],
+  ['GuildMember', require('../structures/GuildMember')],
+  ['Guild', require('../structures/Guild')],
+  ['Message', require('../structures/Message')],
+  ['MessageReaction', require('../structures/MessageReaction')],
+  ['Presence', require('../structures/Presence').Presence],
+  ['ClientPresence', require('../structures/ClientPresence')],
+  ['VoiceState', require('../structures/VoiceState')],
+  ['Role', require('../structures/Role')],
+  ['User', require('../structures/User')],
+]);
