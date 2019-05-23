@@ -3,6 +3,7 @@
 const DataStore = require('./DataStore');
 const Collection = require('../util/Collection');
 const Message = require('../structures/Message');
+const APIMessage = require('../structures/APIMessage');
 
 /**
  * Stores messages for text-based channels.
@@ -90,6 +91,25 @@ class MessageStore extends DataStore {
   async remove(message, reason) {
     message = this.resolveID(message);
     if (message) await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
+  }
+
+  /**
+   * Edit a message, even if it's not cached.
+   * @param {Snowflake} messageID The ID of the message to edit
+   * @param {StringResolvable|APIMessage} content The content for the message
+   * @param {MessageOptions|MessageAdditions} options The options to provide
+   * @returns {Promise<Message>}
+   */
+  edit(messageID, content, options) {
+    if (this.has(messageID)) return this.get(messageID).edit(content, options);
+
+    const { data } = content instanceof APIMessage ?
+      content.resolveData() :
+      new APIMessage({ client: this.client }, APIMessage.transformOptions(content, options)).resolveData();
+
+    return this.client.api.channels[this.channel.id].messages[messageID]
+      .patch({ data })
+      .then(d => this.add(d));
   }
 
   async _fetchId(messageID, cache) {

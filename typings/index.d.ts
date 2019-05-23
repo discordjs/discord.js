@@ -1477,6 +1477,8 @@ declare module 'discord.js' {
 		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public remove(message: MessageResolvable, reason?: string): Promise<void>;
+		public edit(messageID: Snowflake, content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
+		public edit(messageID: Snowflake, options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
 	}
 
 	export class PresenceStore extends DataStore<Snowflake, Presence, typeof Presence, PresenceResolvable> {
