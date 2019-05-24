@@ -11,6 +11,7 @@ const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const GuildMemberStore = require('../stores/GuildMemberStore');
+const VoiceStateStore = require('../stores/VoiceStateStore');
 const RoleStore = require('../stores/RoleStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
@@ -57,6 +58,10 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    /**
+     * A collection of voice states in this guild
+     * @type {VoiceStateStore<Snowflake, VoiceState>}
+     */
     this.voiceStates = new VoiceStateStore(this);
 
     /**
