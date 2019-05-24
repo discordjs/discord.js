@@ -11,7 +11,6 @@ const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const GuildMemberStore = require('../stores/GuildMemberStore');
-const VoiceStateStore = require('../stores/VoiceStateStore');
 const RoleStore = require('../stores/RoleStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
 const GuildChannelStore = require('../stores/GuildChannelStore');
