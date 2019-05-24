@@ -439,6 +439,7 @@ declare module 'discord.js' {
 		public verificationLevel: number;
 		public readonly verified: boolean;
 		public readonly voice: VoiceState | null;
+		public readonly voiceStates: VoiceStateStore;
 		public readonly widgetChannel: TextChannel | null;
 		public widgetChannelID: Snowflake | null;
 		public widgetEnabled: boolean | null;
