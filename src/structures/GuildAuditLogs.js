@@ -349,19 +349,18 @@ class GuildAuditLogsEntry {
             guild_id: guild.id,
           }));
     } else if (targetType === Targets.INVITE) {
-      guild.members.fetch(guild.client.user.id).then(me => {
+      this.target = guild.members.fetch(guild.client.user.id).then(me => {
         if (me.permissions.has('MANAGE_GUILD')) {
           const change = this.changes.find(c => c.key === 'code');
-          this.target = guild.fetchInvites()
-            .then(invites => {
-              this.target = invites.find(i => i.code === (change.new || change.old));
-              return this.target;
-            });
+          return guild.fetchInvites().then(invites => {
+            this.target = invites.find(i => i.code === (change.new || change.old));
+          });
         } else {
           this.target = this.changes.reduce((o, c) => {
             o[c.key] = c.new || c.old;
             return o;
           }, {});
+          return this.target;
         }
       });
     } else if (targetType === Targets.MESSAGE) {
