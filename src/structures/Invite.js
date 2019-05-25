@@ -86,7 +86,7 @@ class Invite extends Base {
      * The target user type
      * @type {?TargetUser}
      */
-    this.targetUserType = data.target_user_type || null;
+    this.targetUserType = typeof data.target_user_type === 'number' ? data.target_user_type : null;
 
     /**
      * The channel the invite is for
