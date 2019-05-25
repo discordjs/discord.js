@@ -1271,6 +1271,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data: object);
 		public readonly channel: VoiceChannel | null;
 		public channelID?: Snowflake;
+		public readonly connection: VoiceConnection | null;
 		public readonly deaf?: boolean;
 		public guild: Guild;
 		public id: Snowflake;
