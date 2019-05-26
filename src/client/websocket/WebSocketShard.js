@@ -3,16 +3,12 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
-const { TextDecoder } = require('util');
 
 let zstd;
-let decoder;
-
 let zlib;
 
 try {
   zstd = require('zucc');
-  decoder = new TextDecoder('utf8');
 } catch (e) {
   try {
     zlib = require('zlib-sync');
@@ -259,8 +255,7 @@ class WebSocketShard extends EventEmitter {
   onMessage({ data }) {
     let raw;
     if (zstd) {
-      const ab = this.inflate.decompress(new Uint8Array(data).buffer);
-      raw = decoder.decode(ab);
+      raw = this.inflate.decompress(new Uint8Array(data).buffer);
     } else {
       if (data instanceof ArrayBuffer) data = new Uint8Array(data);
       const l = data.length;
