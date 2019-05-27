@@ -2183,7 +2183,7 @@ declare module 'discord.js' {
 	interface StreamOptions {
 		type?: StreamType;
 		seek?: number;
-		volume?: number;
+		volume?: number | boolean;
 		passes?: number;
 		plp?: number;
 		fec?: boolean;
