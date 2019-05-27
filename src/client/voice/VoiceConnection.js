@@ -433,7 +433,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   onReady(data) {
-    this.authentication = data;
+    Object.assign(this.authentication, data);
     for (let mode of data.modes) {
       if (SUPPORTED_MODES.includes(mode)) {
         this.authentication.mode = mode;
