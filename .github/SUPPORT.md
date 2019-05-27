@@ -1,4 +1,4 @@
-# Seeking for support?
+# Seeking support?
 
 We're sorry, we only use this issue tracker for bugs in the library itself and feature requests for it. We are not able to provide general support or answser questions on the issue tracker.
 
