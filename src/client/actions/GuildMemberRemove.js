@@ -11,8 +11,8 @@ class GuildMemberRemoveAction extends Action {
     if (guild) {
       member = this.getMember(data, guild);
       guild.memberCount--;
+      guild.voiceStates.delete(data.user.id);
       if (member) {
-        guild.voiceStates.delete(member.id);
         member.deleted = true;
         guild.members.remove(member.id);
         /**
