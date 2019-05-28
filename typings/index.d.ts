@@ -799,7 +799,7 @@ declare module 'discord.js' {
 		public readonly emoji: GuildEmoji | ReactionEmoji;
 		public me: boolean;
 		public message: Message;
-		public partial: boolean;
+		public readonly partial: boolean;
 		public users: ReactionUserStore;
 		public fetch(): Promise<MessageReaction>;
 		public toJSON(): object;
