@@ -26,8 +26,8 @@ exports.encoding = erlpack ? 'etf' : 'json';
 
 exports.pack = erlpack ? erlpack.pack : JSON.stringify;
 
-exports.unpack = data => {
-  if (exports.encoding === 'json') {
+exports.unpack = (data, type) => {
+  if (exports.encoding === 'json' || type === 'json') {
     if (typeof data !== 'string') {
       data = ab.decode(data);
     }
