@@ -116,6 +116,7 @@ class Client extends EventEmitter {
      * Presences that have been received for the client user's friends, mapped by user IDs
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, Presence>}
+     * @deprecated
      */
     this.presences = new Collection();
 
@@ -296,6 +297,7 @@ class Client extends EventEmitter {
    * <info>This can be done automatically every 30 seconds by enabling {@link ClientOptions#sync}.</info>
    * <warn>This is only available when using a user account.</warn>
    * @param {Guild[]|Collection<Snowflake, Guild>} [guilds=this.guilds] An array or collection of guilds to sync
+   * @deprecated
    */
   syncGuilds(guilds = this.guilds) {
     if (this.user.bot) return;

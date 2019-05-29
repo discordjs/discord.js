@@ -23,6 +23,7 @@ class ClientUser extends User {
      * The email of this account
      * <warn>This is only filled when using a user account.</warn>
      * @type {?string}
+     * @deprecated
      */
     this.email = data.email;
     this.localPresence = {};
@@ -32,6 +33,7 @@ class ClientUser extends User {
      * A Collection of friends for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
+     * @deprecated
      */
     this.friends = new Collection();
 
@@ -39,6 +41,7 @@ class ClientUser extends User {
      * A Collection of blocked users for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, User>}
+     * @deprecated
      */
     this.blocked = new Collection();
 
@@ -46,6 +49,7 @@ class ClientUser extends User {
      * A Collection of notes for the logged in user
      * <warn>This is only filled when using a user account.</warn>
      * @type {Collection<Snowflake, string>}
+     * @deprecated
      */
     this.notes = new Collection();
 
@@ -53,20 +57,21 @@ class ClientUser extends User {
      * If the user has Discord premium (nitro)
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
+     * @deprecated
      */
     this.premium = typeof data.premium === 'boolean' ? data.premium : null;
 
     /**
      * If the user has MFA enabled on their account
-     * <warn>This is only filled when using a user account.</warn>
-     * @type {?boolean}
+     * @type {boolean}
      */
-    this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
+    this.mfaEnabled = data.mfa_enabled;
 
     /**
      * If the user has ever used a mobile device on Discord
      * <warn>This is only filled when using a user account.</warn>
      * @type {?boolean}
+     * @deprecated
      */
     this.mobile = typeof data.mobile === 'boolean' ? data.mobile : null;
 
@@ -74,6 +79,7 @@ class ClientUser extends User {
      * Various settings for this user
      * <warn>This is only filled when using a user account.</warn>
      * @type {?ClientUserSettings}
+     * @deprecated
      */
     this.settings = data.user_settings ? new ClientUserSettings(this, data.user_settings) : null;
 
@@ -81,6 +87,7 @@ class ClientUser extends User {
      * All of the user's guild settings
      * <warn>This is only filled when using a user account</warn>
      * @type {Collection<Snowflake, ClientUserGuildSettings>}
+     * @deprecated
      */
     this.guildSettings = new Collection();
     if (data.user_guild_settings) {
@@ -117,6 +124,7 @@ class ClientUser extends User {
    * @param {string} email New email to change to
    * @param {string} password Current password
    * @returns {Promise<ClientUser>}
+   * @deprecated
    * @example
    * // Set email
    * client.user.setEmail('bob@gmail.com', 'some amazing password 123')
@@ -133,6 +141,7 @@ class ClientUser extends User {
    * @param {string} newPassword New password to change to
    * @param {string} oldPassword Current password
    * @returns {Promise<ClientUser>}
+   * @deprecated
    * @example
    * // Set password
    * client.user.setPassword('some new amazing password 456', 'some amazing password 123')
@@ -310,6 +319,7 @@ class ClientUser extends User {
    * @param {boolean} [options.everyone=true] Whether to include everyone/here mentions
    * @param {GuildResolvable} [options.guild] Limit the search to a specific guild
    * @returns {Promise<Message[]>}
+   * @deprecated
    * @example
    * // Fetch mentions
    * client.user.fetchMentions()
@@ -330,6 +340,7 @@ class ClientUser extends User {
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to send the friend request to
    * @returns {Promise<User>} The user the friend request was sent to
+   * @deprecated
    */
   addFriend(user) {
     user = this.client.resolver.resolveUser(user);
@@ -341,6 +352,7 @@ class ClientUser extends User {
    * <warn>This is only available when using a user account.</warn>
    * @param {UserResolvable} user The user to remove from your friends
    * @returns {Promise<User>} The user that was removed
+   * @deprecated
    */
   removeFriend(user) {
     user = this.client.resolver.resolveUser(user);
@@ -404,11 +416,15 @@ class ClientUser extends User {
    * <warn>This is only available when using a user account.</warn>
    * @param {Invite|string} invite Invite or code to accept
    * @returns {Promise<Guild>} Joined guild
+   * @deprecated
    */
   acceptInvite(invite) {
     return this.client.rest.methods.acceptInvite(invite);
   }
 }
+
+ClientUser.prototype.acceptInvite =
+  util.deprecate(ClientUser.prototype.acceptInvite, 'ClientUser#acceptInvite: userbot methods will be removed');
 
 ClientUser.prototype.setGame =
   util.deprecate(ClientUser.prototype.setGame, 'ClientUser#setGame: use ClientUser#setActivity instead');

@@ -509,6 +509,7 @@ class Message {
    * Marks the message as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Message>}
+   * @deprecated
    */
   acknowledge() {
     return this.client.rest.methods.ackMessage(this);

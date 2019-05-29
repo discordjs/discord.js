@@ -181,9 +181,7 @@ class TextBasedChannel {
   }
 
   /**
-   * Gets a single message from this channel, regardless of it being cached or not. Since the single message fetching
-   * endpoint is reserved for bot accounts, this abstracts the `fetchMessages` method to obtain the single message when
-   * using a user account.
+   * Gets a single message from this channel, regardless of it being cached or not.
    * @param {Snowflake} messageID ID of the message to get
    * @returns {Promise<Message>}
    * @example
@@ -309,6 +307,7 @@ class TextBasedChannel {
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<MessageSearchResult>}
+   * @deprecated
    * @example
    * channel.search({
    *   content: 'discord.js',
@@ -506,6 +505,7 @@ class TextBasedChannel {
    * Marks all messages in this channel as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<TextChannel|GroupDMChannel|DMChannel>}
+   * @deprecated
    */
   acknowledge() {
     if (!this.lastMessageID) return Promise.resolve(this);

@@ -361,6 +361,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @type {?number}
    * @readonly
+   * @deprecated
    */
   get position() {
     if (this.client.user.bot) return null;
@@ -373,6 +374,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    * @readonly
+   * @deprecated
    */
   get muted() {
     if (this.client.user.bot) return null;
@@ -388,6 +390,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @type {?MessageNotificationType}
    * @readonly
+   * @deprecated
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;
@@ -403,6 +406,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    * @readonly
+   * @deprecated
    */
   get mobilePush() {
     if (this.client.user.bot) return null;
@@ -418,6 +422,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    * @readonly
+   * @deprecated
    */
   get suppressEveryone() {
     if (this.client.user.bot) return null;
@@ -699,6 +704,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @param {MessageSearchOptions} [options={}] Options to pass to the search
    * @returns {Promise<MessageSearchResult>}
+   * @deprecated
    * @example
    * guild.search({
    *   content: 'discord.js',
@@ -926,6 +932,7 @@ class Guild {
    * @param {number} position Absolute or relative position
    * @param {boolean} [relative=false] Whether to position relatively or absolutely
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   setPosition(position, relative) {
     if (this.client.user.bot) {
@@ -938,6 +945,7 @@ class Guild {
    * Marks all messages in this guild as read.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   acknowledge() {
     return this.client.rest.methods.ackGuild(this);
@@ -948,6 +956,7 @@ class Guild {
    * <warn>This is only available when using a user account.</warn>
    * @param {boolean} allow Whether to allow direct messages
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   allowDMs(allow) {
     const settings = this.client.user.settings;
@@ -1026,6 +1035,7 @@ class Guild {
   /**
    * Syncs this guild (already done automatically every 30 seconds).
    * <warn>This is only available when using a user account.</warn>
+   * @deprecated
    */
   sync() {
     if (!this.client.user.bot) this.client.syncGuilds([this]);
@@ -1432,6 +1442,9 @@ Object.defineProperty(Guild.prototype, 'defaultChannel', {
     return this.channels.get(this.id);
   }, 'Guild#defaultChannel: This property is obsolete, will be removed in v12.0.0, and may not function as expected.'),
 });
+
+Guild.prototype.allowDMs =
+  util.deprecate(Guild.prototype.allowDMs, 'Guild#allowDMs: userbot methods will be removed');
 
 Guild.prototype.acknowledge =
   util.deprecate(Guild.prototype.acknowledge, 'Guild#acknowledge: userbot methods will be removed');
