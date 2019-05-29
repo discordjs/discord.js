@@ -492,6 +492,7 @@ class GuildChannel extends Channel {
    * <warn>This is only available when using a user account.</warn>
    * @type {?boolean}
    * @readonly
+   * @deprecated
    */
   get muted() {
     if (this.client.user.bot) return null;
@@ -507,6 +508,7 @@ class GuildChannel extends Channel {
    * <warn>This is only available when using a user account.</warn>
    * @type {?MessageNotificationType}
    * @readonly
+   * @deprecated
    */
   get messageNotifications() {
     if (this.client.user.bot) return null;

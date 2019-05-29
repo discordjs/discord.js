@@ -32,26 +32,26 @@ class PermissionOverwrites {
     /**
      * The permissions that are denied for the user or role as a bitfield.
      * @type {number}
-     * @deprecated
      */
     this.deny = data.deny;
 
     /**
      * The permissions that are allowed for the user or role as a bitfield.
      * @type {number}
-     * @deprecated
      */
     this.allow = data.allow;
 
     /**
      * The permissions that are denied for the user or role.
      * @type {Permissions}
+     * @deprecated
      */
     this.denied = new Permissions(data.deny).freeze();
 
     /**
      * The permissions that are allowed for the user or role.
      * @type {Permissions}
+     * @deprecated
      */
     this.allowed = new Permissions(data.allow).freeze();
   }

@@ -147,6 +147,7 @@ class User {
    * <warn>This is only available when using a user account.</warn>
    * @type {?string}
    * @readonly
+   * @deprecated
    */
   get note() {
     return this.client.user.notes.get(this.id) || null;
@@ -211,6 +212,7 @@ class User {
    * Sends a friend request to the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
+   * @deprecated
    */
   addFriend() {
     return this.client.rest.methods.addFriend(this);
@@ -220,6 +222,7 @@ class User {
    * Removes the user from your friends.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
+   * @deprecated
    */
   removeFriend() {
     return this.client.rest.methods.removeFriend(this);
@@ -229,6 +232,7 @@ class User {
    * Blocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
+   * @deprecated
    */
   block() {
     return this.client.rest.methods.blockUser(this);
@@ -238,6 +242,7 @@ class User {
    * Unblocks the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<User>}
+   * @deprecated
    */
   unblock() {
     return this.client.rest.methods.unblockUser(this);
@@ -247,6 +252,7 @@ class User {
    * Get the profile of the user.
    * <warn>This is only available when using a user account.</warn>
    * @returns {Promise<UserProfile>}
+   * @deprecated
    */
   fetchProfile() {
     return this.client.rest.methods.fetchUserProfile(this);
@@ -257,6 +263,7 @@ class User {
    * <warn>This is only available when using a user account.</warn>
    * @param {string} note The note to set for the user
    * @returns {Promise<User>}
+   * @deprecated
    */
   setNote(note) {
     return this.client.rest.methods.setNote(this, note);
