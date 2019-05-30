@@ -375,7 +375,7 @@ class WebSocketShard extends EventEmitter {
 
         this.status = Status.READY;
         const replayed = packet.s - this.closeSequence;
-        this.debug(`RESUMED Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.debug(`RESUMED | Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
       }
