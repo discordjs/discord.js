@@ -1356,7 +1356,6 @@ declare module 'discord.js' {
 		private sessionID?: string;
 		private lastPingTimestamp: number;
 		private lastHeartbeatAcked: boolean;
-		private trace: string[];
 		private ratelimit: { queue: object[]; total: number; remaining: number; time: 60e3; timer: NodeJS.Timeout | null; };
 		private connection: WebSocket | null;
 		private helloTimeout: NodeJS.Timeout | null;

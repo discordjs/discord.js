@@ -85,13 +85,6 @@ class WebSocketShard extends EventEmitter {
     this.lastHeartbeatAcked = true;
 
     /**
-     * List of servers the shard is connected to
-     * @type {string[]}
-     * @private
-     */
-    this.trace = [];
-
-    /**
      * Contains the rate limit queue and metadata
      * @type {Object}
      * @private
@@ -368,9 +361,8 @@ class WebSocketShard extends EventEmitter {
         this.emit(ShardEvents.READY);
 
         this.sessionID = packet.d.session_id;
-        this.trace = packet.d._trace;
         this.status = Status.READY;
-        this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}.`);
+        this.debug(`READY Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
         break;
@@ -381,10 +373,9 @@ class WebSocketShard extends EventEmitter {
          */
         this.emit(ShardEvents.RESUMED);
 
-        this.trace = packet.d._trace;
         this.status = Status.READY;
         const replayed = packet.s - this.closeSequence;
-        this.debug(`RESUMED ${this.trace.join(' -> ')} | Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.debug(`RESUMED Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
       }
