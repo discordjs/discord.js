@@ -362,7 +362,7 @@ class WebSocketShard extends EventEmitter {
 
         this.sessionID = packet.d.session_id;
         this.status = Status.READY;
-        this.debug(`READY Session ${this.sessionID}.`);
+        this.debug(`READY | Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
         break;
