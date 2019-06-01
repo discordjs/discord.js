@@ -31,7 +31,7 @@ class Presence {
 
     /**
      * The devices this presence is on
-      * @type {?Object}
+     * @type {?Object}
      * @property {PresenceStatus} web The current presence in the web application
      * @property {PresenceStatus} mobile The current presence in the mobile application
      * @property {PresenceStatus} desktop The current presence in the desktop application
