@@ -2,12 +2,19 @@ const { ActivityFlags, Endpoints } = require('../util/Constants');
 
 /**
  * The status of this presence:
- *
  * * **`online`** - user is online
  * * **`idle`** - user is AFK
  * * **`offline`** - user is offline or invisible
  * * **`dnd`** - user is in Do Not Disturb
  * @typedef {string} PresenceStatus
+ */
+
+/**
+ * The status of this presence:
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} ClientPresenceStatus
  */
 
 /**
@@ -31,10 +38,10 @@ class Presence {
 
     /**
      * The devices this presence is on
-     * @type {?object}
-     * @property {PresenceStatus} web
-     * @property {PresenceStatus} mobile
-     * @property {PresenceStatus} desktop
+     * @type {?Object}
+     * @property {?ClientPresenceStatus} web The current presence in the web application
+     * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
+     * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
     this.clientStatus = data.client_status || null;
   }
