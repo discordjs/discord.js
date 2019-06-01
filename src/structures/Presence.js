@@ -2,12 +2,19 @@ const { ActivityFlags, Endpoints } = require('../util/Constants');
 
 /**
  * The status of this presence:
- *
  * * **`online`** - user is online
  * * **`idle`** - user is AFK
  * * **`offline`** - user is offline or invisible
  * * **`dnd`** - user is in Do Not Disturb
  * @typedef {string} PresenceStatus
+ */
+
+/**
+ * The status of this presence:
+ * * **`online`** - user is online
+ * * **`idle`** - user is AFK
+ * * **`dnd`** - user is in Do Not Disturb
+ * @typedef {string} ClientPresenceStatus
  */
 
 /**
