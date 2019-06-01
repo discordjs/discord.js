@@ -39,9 +39,9 @@ class Presence {
     /**
      * The devices this presence is on
      * @type {?Object}
-     * @property {PresenceStatus} web The current presence in the web application
-     * @property {PresenceStatus} mobile The current presence in the mobile application
-     * @property {PresenceStatus} desktop The current presence in the desktop application
+     * @property {?ClientPresenceStatus} web The current presence in the web application
+     * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
+     * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
     this.clientStatus = data.client_status || null;
   }
