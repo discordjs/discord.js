@@ -46,7 +46,7 @@ class GuildEmoji extends Emoji {
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
 
     /**
-     * Whether this emoji is available, only present on premium guilds
+     * Whether this emoji is available
      * @type {boolean}
      * @name GuildEmoji#available
      */
