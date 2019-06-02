@@ -427,6 +427,8 @@ declare module 'discord.js' {
 		public readonly nameAcronym: string;
 		public readonly owner: GuildMember | null;
 		public ownerID: Snowflake;
+		public premiumSubscriptionCount: number | null;
+		public premiumTier: PremiumTier;
 		public presences: PresenceStore;
 		public region: string;
 		public roles: RoleStore;
@@ -579,6 +581,8 @@ declare module 'discord.js' {
 		public nickname: string;
 		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
+		public readonly premiumSince: Date | null;
+		public premiumSinceTimestamp: number | null;
 		public readonly presence: Presence;
 		public roles: GuildMemberRoleStore;
 		public user: User;
@@ -2039,7 +2043,11 @@ declare module 'discord.js' {
 		| 'CHANNEL_NAME_CHANGE'
 		| 'CHANNEL_ICON_CHANGE'
 		| 'PINS_ADD'
-		| 'GUILD_MEMBER_JOIN';
+		| 'GUILD_MEMBER_JOIN'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;
@@ -2098,6 +2106,8 @@ declare module 'discord.js' {
 		deny: PermissionResolvable;
 		id: UserResolvable | RoleResolvable;
 	}
+
+	type PremiumTier = number;
 
 	interface PresenceData {
 		status?: PresenceStatusData;
