@@ -45,6 +45,13 @@ class GuildEmoji extends Emoji {
      */
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
 
+    /**
+     * Whether this emoji is available, only present on premium guilds
+     * @type {boolean}
+     * @name GuildEmoji#available
+     */
+    if (typeof data.available !== 'undefined') this.available = data.available;
+
     if (data.roles) this._roles = data.roles;
   }
 

@@ -553,6 +553,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
 
+		public available: boolean;
 		public deleted: boolean;
 		public guild: Guild;
 		public managed: boolean;
