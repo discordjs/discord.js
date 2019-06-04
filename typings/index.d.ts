@@ -1435,7 +1435,7 @@ declare module 'discord.js' {
 
 	export class GuildChannelStore extends DataStore<Snowflake, GuildChannel, typeof GuildChannel, GuildChannelResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
-		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel>;
+		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel | CategoryChannel>;
 	}
 
 	// Hacky workaround because changing the signature of an overriden method errors
