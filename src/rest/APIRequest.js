@@ -4,6 +4,7 @@ const FormData = require('form-data');
 const https = require('https');
 const { browser, UserAgent } = require('../util/Constants');
 const fetch = require('node-fetch');
+const AbortController = require('abort-controller');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 
@@ -45,13 +46,22 @@ class APIRequest {
       body = JSON.stringify(this.options.data);
       headers['Content-Type'] = 'application/json';
     }
-
+    
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
     return fetch(url, {
       method: this.method,
       headers,
       agent,
       body,
-    });
+      signal: controller.signal
+    }).then((res) => {
+      clearTimeout(timeout);
+      return res;
+    }, (error) => {
+      clearTimeout(timeout);
+      throw error;
+    })
   }
 }
 
