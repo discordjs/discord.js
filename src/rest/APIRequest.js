@@ -46,7 +46,7 @@ class APIRequest {
       body = JSON.stringify(this.options.data);
       headers['Content-Type'] = 'application/json';
     }
-    
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10000);
     return fetch(url, {
@@ -54,11 +54,11 @@ class APIRequest {
       headers,
       agent,
       body,
-      signal: controller.signal
-    }).then((res) => {
+      signal: controller.signal,
+    }).then(res => {
       clearTimeout(timeout);
       return res;
-    }, (error) => {
+    }, error => {
       clearTimeout(timeout);
       throw error;
     });
