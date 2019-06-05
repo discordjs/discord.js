@@ -61,7 +61,7 @@ class APIRequest {
     }, (error) => {
       clearTimeout(timeout);
       throw error;
-    })
+    });
   }
 }
 
