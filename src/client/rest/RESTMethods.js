@@ -499,8 +499,8 @@ class RESTMethods {
       .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
   }
 
-  getGuildMember(guild, user, cache) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).Member(user.id), true).then(data => {
+  getGuildMember(guild, userID, cache) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).Member(userID), true).then(data => {
       if (cache) return this.client.actions.GuildMemberGet.handle(guild, data).member;
       else return new GuildMember(guild, data);
     });

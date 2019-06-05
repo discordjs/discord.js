@@ -649,11 +649,11 @@ class Guild {
    *   .catch(console.error);
    */
   fetchMember(user, cache = true) {
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('Invalid or uncached id provided.'));
-    const member = this.members.get(user.id);
+    const userID = this.client.resolver.resolveUserID(user);
+    if (!userID) return Promise.reject(new Error('Invalid id provided.'));
+    const member = this.members.get(userID);
     if (member && member.joinedTimestamp) return Promise.resolve(member);
-    return this.client.rest.methods.getGuildMember(this, user, cache);
+    return this.client.rest.methods.getGuildMember(this, userID, cache);
   }
 
   /**
