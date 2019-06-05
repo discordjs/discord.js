@@ -39,7 +39,6 @@ class GuildMember extends Base {
     /**
      * The timestamp the member joined the guild at
      * @type {?number}
-     * @name GuildMember#joinedTimestamp
      */
     this.joinedTimestamp = null;
 
@@ -54,6 +53,12 @@ class GuildMember extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+
+    /**
+     * The timestamp of when the member used their Nitro boost on the guild, if it was used
+     * @type {?number}
+     */
+    this.premiumSinceTimestamp = null;
 
     /**
      * Whether the member has been removed from the guild
@@ -74,6 +79,7 @@ class GuildMember extends Base {
     if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
     if (data.roles) this._roles = data.roles;
@@ -129,6 +135,15 @@ class GuildMember extends Base {
    */
   get joinedAt() {
     return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
+  }
+
+  /**
+   * The time of when the member used their Nitro boost on the guild, if it was used
+   * @type {?Date}
+   * @readonly
+   */
+  get premiumSince() {
+    return this.premiumSinceTimestamp ? new Date(this.premiumSinceTimestamp) : null;
   }
 
   /**
