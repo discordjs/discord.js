@@ -992,6 +992,40 @@ class Guild extends Base {
   }
 
   /**
+   * The data needed for updating a guild role's position
+   * @typedef {Object} GuildRolePosition
+   * @property {GuildRoleResolveable} role The ID of the role
+   * @property {number} position The position to update
+   */
+
+  /**
+   * Batch-updates the guild's role positions
+   * @param {GuildRolePosition[]} rolePositions Role positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.setRolePositions([{ role: roleID, position: updatedRoleIndex }])
+   *  .then(guild => console.log(`Role permissions updated for ${guild}`))
+   *  .catch(console.error);
+   */
+  setRolePositions(rolePositions) {
+    // Make sure rolePositions are prepared for API
+    rolePositions = rolePositions.map(o => ({
+      id: o.role,
+      position: o.position,
+    }));
+
+    // Call the API to update role positions
+    return this.client.api.guilds(this.id).roles.patch({
+      data: rolePositions,
+    }).then(() =>
+      this.client.actions.GuildRolePositionUpdate.handle({
+        guild_id: this.id,
+        roles: rolePositions,
+      }).guild
+    );
+  }
+
+  /**
    * Edits the guild's embed.
    * @param {GuildEmbedData} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
