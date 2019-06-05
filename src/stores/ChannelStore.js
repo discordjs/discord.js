@@ -79,25 +79,6 @@ class ChannelStore extends DataStore {
   }
 
   /**
-   * Obtains a channel from Discord, or the channel cache if it's already available.
-   * @param {Snowflake} id ID of the channel
-   * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
-   * @returns {Promise<Channel>}
-   * @example
-   * // Fetch a channel by its id
-   * client.channels.fetch('222109930545610754')
-   *   .then(channel => console.log(channel.name))
-   *   .catch(console.error);
-   */
-  async fetch(id, cache = true) {
-    const existing = this.get(id);
-    if (existing && !existing.partial) return existing;
-
-    const data = await this.client.api.channels(id).get();
-    return this.add(data, null, cache);
-  }
-
-  /**
    * Data that can be resolved to give a Channel object. This can be:
    * * A Channel object
    * * A Snowflake
@@ -121,6 +102,25 @@ class ChannelStore extends DataStore {
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
+
+  /**
+   * Obtains a channel from Discord, or the channel cache if it's already available.
+   * @param {Snowflake} id ID of the channel
+   * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+   * @returns {Promise<Channel>}
+   * @example
+   * // Fetch a channel by its id
+   * client.channels.fetch('222109930545610754')
+   *   .then(channel => console.log(channel.name))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true) {
+    const existing = this.get(id);
+    if (existing && !existing.partial) return existing;
+
+    const data = await this.client.api.channels(id).get();
+    return this.add(data, null, cache);
+  }
 }
 
 module.exports = ChannelStore;
