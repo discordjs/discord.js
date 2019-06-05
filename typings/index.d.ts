@@ -472,6 +472,7 @@ declare module 'discord.js' {
 		public setName(name: string, reason?: string): Promise<Guild>;
 		public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
 		public setRegion(region: string, reason?: string): Promise<Guild>;
+		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
@@ -2174,6 +2175,11 @@ declare module 'discord.js' {
 		position?: number;
 		permissions?: PermissionResolvable;
 		mentionable?: boolean;
+	}
+
+	interface RolePosition {
+		role: RoleResolvable;
+		position: number;
 	}
 
 	type RoleResolvable = Role | string;

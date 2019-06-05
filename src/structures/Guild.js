@@ -994,7 +994,7 @@ class Guild extends Base {
   /**
    * The data needed for updating a guild role's position
    * @typedef {Object} GuildRolePosition
-   * @property {GuildRoleResolveable} role The ID of the role
+   * @property {RoleResolveable} role The ID of the role
    * @property {number} position The position to update
    */
 
