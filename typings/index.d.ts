@@ -1707,6 +1707,7 @@ declare module 'discord.js' {
 		partials?: PartialTypes[];
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
+		restRequestTimeout?: number;
 		restSweepInterval?: number;
 		retryLimit?: number;
 		presence?: PresenceData;

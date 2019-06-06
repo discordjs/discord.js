@@ -28,6 +28,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
+ * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
@@ -50,6 +51,7 @@ exports.DefaultOptions = {
   partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  restRequestTimeout: 15000,
   retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,

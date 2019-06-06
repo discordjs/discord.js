@@ -42,26 +42,20 @@ class APIRequest {
       for (const file of this.options.files) if (file && file.file) body.append(file.name, file.file, file.name);
       if (typeof this.options.data !== 'undefined') body.append('payload_json', JSON.stringify(this.options.data));
       if (!browser) headers = Object.assign(headers, body.getHeaders());
-    } else if (this.options.data != null) { // eslint-disable-line eqeqeq
+    } else if (this.options.data != null) { // eslint-disable-line 
       body = JSON.stringify(this.options.data);
       headers['Content-Type'] = 'application/json';
     }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000);
+    const timeout = setTimeout(() => controller.abort(), this.client.options.restRequestTimeout);
     return fetch(url, {
       method: this.method,
       headers,
       agent,
       body,
       signal: controller.signal,
-    }).then(res => {
-      clearTimeout(timeout);
-      return res;
-    }, error => {
-      clearTimeout(timeout);
-      throw error;
-    });
+    }).finally(() => clearTimeout(timeout));
   }
 }
 
