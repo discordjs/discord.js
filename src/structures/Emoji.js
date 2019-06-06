@@ -62,6 +62,13 @@ class Emoji {
      */
     this.animated = data.animated;
 
+    /**
+     * Whether this emoji is available
+     * @type {boolean}
+     * @name Emoji#available
+     */
+    if (typeof data.available !== 'undefined') this.available = data.available;
+
     this._roles = data.roles;
   }
 

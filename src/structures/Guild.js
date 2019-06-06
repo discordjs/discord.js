@@ -184,6 +184,30 @@ class Guild {
     this.defaultMessageNotifications = Constants.DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
 
+    /**
+     * The type of premium tier:
+     * * 0: NONE
+     * * 1: TIER_1
+     * * 2: TIER_2
+     * * 3: TIER_3
+     * @typedef {number} PremiumTier
+     */
+
+    /**
+     * The premium tier on this guild
+     * @type {PremiumTier}
+     */
+    this.premiumTier = data.premium_tier;
+
+    /**
+     * The total number of users currently boosting this server
+     * @type {?number}
+     * @name Guild#premiumSubscriptionCount
+     */
+    if (typeof data.premium_subscription_count !== 'undefined') {
+      this.premiumSubscriptionCount = data.premium_subscription_count;
+    }
+
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];

@@ -37,6 +37,12 @@ class GuildMember {
      */
     this.joinedTimestamp = null;
 
+    /**
+     * The timestamp of when the member used their Nitro boost on the guild, if it was used
+     * @type {?number}
+     */
+    this.premiumSinceTimestamp = null;
+
     this._roles = [];
     if (data) this.setup(data);
 
@@ -109,6 +115,7 @@ class GuildMember {
     this.nickname = data.nick || null;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
 
     this.user = data.user;
     this._roles = data.roles;
@@ -121,6 +128,15 @@ class GuildMember {
    */
   get joinedAt() {
     return this.joinedTimestamp ? new Date(this.joinedTimestamp) : null;
+  }
+
+  /**
+   * The time of when the member used their Nitro boost on the guild, if it was used
+   * @type {?Date}
+   * @readonly
+   */
+  get premiumSince() {
+    return this.premiumSinceTimestamp ? new Date(this.premiumSinceTimestamp) : null;
   }
 
   /**
