@@ -132,10 +132,10 @@ exports.Endpoints = {
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+        makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
       Icon: (guildID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
-        return makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size });
+        return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
       },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
