@@ -144,6 +144,12 @@ class Guild extends Base {
 
     /**
      * An array of enabled guild features, here are the possible values:
+     * * ANIMATED_ICON
+     * * COMMERCE
+     * * LURKABLE
+     * * PARTNERED
+     * * NEWS
+     * * BANNER
      * * INVITE_SPLASH
      * * MORE_EMOJI
      * * VERIFIED
