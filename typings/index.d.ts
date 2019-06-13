@@ -482,6 +482,9 @@ declare module 'discord.js' {
 		public afkTimeout: number;
 		public applicationID: string;
 		public available: boolean;
+		public banner: string | null;
+		public readonly bannerURL: string | null;
+		public description: string | null;
 		public channels: Collection<Snowflake, GuildChannel>;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
 		public readonly client: Client;
@@ -489,6 +492,8 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public readonly defaultChannel: TextChannel;
 		public readonly defaultRole: Role;
+		public readonly embedChannel: TextChannel | null;
+		public embedChannelID: Snowflake | null;
 		public embedEnabled: boolean;
 		public emojis: Collection<Snowflake, Emoji>;
 		public explicitContentFilter: number;
@@ -499,6 +504,8 @@ declare module 'discord.js' {
 		public readonly joinedAt: Date;
 		public joinedTimestamp: number;
 		public large: boolean;
+		public maximumMembers?: number;
+		public maximumPresences?: number;
 		public readonly me: GuildMember;
 		public memberCount: number;
 		public members: Collection<Snowflake, GuildMember>;
@@ -518,9 +525,13 @@ declare module 'discord.js' {
 		public readonly suppressEveryone: boolean;
 		public readonly systemChannel: GuildChannel;
 		public systemChannelID: Snowflake;
+		public vanityURLCode: string;
 		public readonly verified: boolean;
 		public verificationLevel: number;
 		public readonly voiceConnection: VoiceConnection;
+		public readonly widgetChannel: TextChannel | null;
+		public widgetChannelID?: Snowflake;
+		public widgetEnabled?: boolean;
 		public acknowledge(): Promise<Guild>;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
 		public allowDMs(allow: boolean): Promise<Guild>;
@@ -533,6 +544,7 @@ declare module 'discord.js' {
 		public deleteEmoji(emoji: Emoji | string, reason?: string): Promise<void>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
+		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBan(user: UserResolvable): Promise<BanInfo>;
 		public fetchBans(withReasons?: false): Promise<Collection<Snowflake, User>>;
@@ -562,6 +574,7 @@ declare module 'discord.js' {
 		public setPosition(position: number, relative?: boolean): Promise<Guild>;
 		public setRegion(region: string, reason?: string): Promise<Guild>;
 		public setRolePosition(role: string | Role, position: number, relative?: boolean): Promise<Guild>;
+		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
@@ -2101,6 +2114,11 @@ declare module 'discord.js' {
 		position?: number;
 		permissions?: PermissionResolvable;
 		mentionable?: boolean;
+	};
+
+	type RolePosition = {
+		role: RoleResolvable;
+		position: number;
 	};
 
 	type RoleResolvable = Role | string;
