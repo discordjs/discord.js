@@ -403,6 +403,7 @@ declare module 'discord.js' {
 	export class Emoji {
 		constructor(guild: Guild, data: object);
 		public animated: boolean;
+		public available: boolean;
 		public readonly client: Client;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
@@ -516,6 +517,8 @@ declare module 'discord.js' {
 		public readonly nameAcronym: string;
 		public readonly owner: GuildMember;
 		public ownerID: string;
+		public premiumSubscriptionCount: number | null;
+		public premiumTier: PremiumTier;
 		public readonly position: number;
 		public presences: Collection<Snowflake, Presence>;
 		public region: string;
@@ -665,6 +668,8 @@ declare module 'discord.js' {
 		public nickname: string;
 		public readonly manageable: boolean;
 		public readonly permissions: Permissions;
+		public readonly premiumSince: Date | null;
+		public premiumSinceTimestamp: number | null;
 		public readonly presence: Presence;
 		public readonly roles: Collection<Snowflake, Role>;
 		public selfDeaf: boolean;
@@ -2057,6 +2062,8 @@ declare module 'discord.js' {
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
 	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
+
+	type PremiumTier = number;
 
 	type PresenceData = {
 		status?: PresenceStatus;
