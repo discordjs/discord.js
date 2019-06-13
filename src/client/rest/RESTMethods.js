@@ -499,8 +499,12 @@ class RESTMethods {
       .then(data => this.client.actions.GuildMemberGet.handle(guild, data).member);
   }
 
-  getGuildMember(guild, user, cache) {
-    return this.rest.makeRequest('get', Endpoints.Guild(guild).Member(user.id), true).then(data => {
+  getGuild(guild) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guild), true);
+  }
+
+  getGuildMember(guild, userID, cache) {
+    return this.rest.makeRequest('get', Endpoints.Guild(guild).Member(userID), true).then(data => {
       if (cache) return this.client.actions.GuildMemberGet.handle(guild, data).member;
       else return new GuildMember(guild, data);
     });
@@ -884,23 +888,6 @@ class RESTMethods {
   unblockUser(user) {
     return this.rest.makeRequest('delete', Endpoints.User('@me').Relationship(user.id), true)
       .then(() => user);
-  }
-
-  updateChannelPositions(guildID, channels) {
-    const data = new Array(channels.length);
-    for (let i = 0; i < channels.length; i++) {
-      data[i] = {
-        id: this.client.resolver.resolveChannelID(channels[i].channel),
-        position: channels[i].position,
-      };
-    }
-
-    return this.rest.makeRequest('patch', Endpoints.Guild(guildID).channels, true, data).then(() =>
-      this.client.actions.GuildChannelsPositionUpdate.handle({
-        guild_id: guildID,
-        channels,
-      }).guild
-    );
   }
 
   updateEmbed(guildID, embed, reason) {

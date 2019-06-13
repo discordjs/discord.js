@@ -208,6 +208,61 @@ class Guild {
       this.premiumSubscriptionCount = data.premium_subscription_count;
     }
 
+    /**
+     * The hash of the guild banner
+     * @type {?string}
+     */
+    this.banner = data.banner;
+
+    /**
+     * The description of the guild, if any
+     * @type {?string}
+     */
+    this.description = data.description;
+
+    /**
+     * The embed channel ID, if enabled
+     * @type {?string}
+     * @name Guild#embedChannelID
+     */
+    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+
+    /**
+     * The maximum amount of members the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumMembers
+     */
+    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
+
+    /**
+     * The maximum amount of presences the guild can have
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#maximumPresences
+     */
+    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 5000;
+
+    /**
+     * Whether widget images are enabled on this guild
+     * @type {?boolean}
+     * @name Guild#widgetEnabled
+     */
+    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+
+    /**
+     * The widget channel ID, if enabled
+     * @type {?string}
+     * @name Guild#widgetChannelID
+     */
+    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+
+    /**
+     * The vanity URL code of the guild, if any
+     * @type {?string}
+     */
+    this.vanityURLCode = data.vanity_url_code;
+
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
@@ -297,6 +352,24 @@ class Guild {
   }
 
   /**
+   * Embed channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get embedChannel() {
+    return this.channels.get(this.embedChannelID) || null;
+  }
+
+  /**
+   * Widget channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get widgetChannel() {
+    return this.channels.get(this.widgetChannelID) || null;
+  }
+
+  /**
    * The time the client user joined the guild
    * @type {Date}
    * @readonly
@@ -322,6 +395,16 @@ class Guild {
   get iconURL() {
     if (!this.icon) return null;
     return Constants.Endpoints.Guild(this).Icon(this.client.options.http.cdn, this.icon);
+  }
+
+  /**
+   * The URL to this guild's banner.
+   * @type {?string}
+   * @readonly
+   */
+  get bannerURL() {
+    if (!this.banner) return null;
+    return Constants.Endpoints.Guild(this).Banner(this.client.options.http.cdn, this.banner);
   }
 
   /**
@@ -495,6 +578,18 @@ class Guild {
    */
   member(user) {
     return this.client.resolver.resolveGuildMember(this, user);
+  }
+
+  /**
+   * Fetches this guild.
+   * @returns {Promise<Guild>}
+   */
+  fetch() {
+    return this.client.rest.methods.getGuild(this).then(data => {
+      this.setup(data);
+
+      return this;
+    });
   }
 
   /**
@@ -673,11 +768,11 @@ class Guild {
    *   .catch(console.error);
    */
   fetchMember(user, cache = true) {
-    user = this.client.resolver.resolveUser(user);
-    if (!user) return Promise.reject(new Error('Invalid or uncached id provided.'));
-    const member = this.members.get(user.id);
+    const userID = this.client.resolver.resolveUserID(user);
+    if (!userID) return Promise.reject(new Error('Invalid id provided.'));
+    const member = this.members.get(userID);
     if (member && member.joinedTimestamp) return Promise.resolve(member);
-    return this.client.rest.methods.getGuildMember(this, user, cache);
+    return this.client.rest.methods.getGuildMember(this, userID, cache);
   }
 
   /**
@@ -1139,7 +1234,25 @@ class Guild {
    *   .catch(console.error);
    */
   setChannelPositions(channelPositions) {
-    return this.client.rest.methods.updateChannelPositions(this.id, channelPositions);
+    channelPositions = channelPositions.map(({ channel, position }) => ({ id: channel.id || channel, position }));
+    return this.client.rest.methods.setChannelPositions(this.id, channelPositions);
+  }
+
+  /**
+   * The data needed for updating a role's position.
+   * @typedef {Object} RolePosition
+   * @property {RoleResolvable} role Role to update
+   * @property {number} position New position for the role
+   */
+
+  /**
+   * Batch-updates the guild's role's positions.
+   * @param {RolePosition[]} rolePositions Role positions to update
+   * @returns {Promise<Guild>}
+   */
+  setRolePositions(rolePositions) {
+    rolePositions = rolePositions.map(({ role, position }) => ({ id: role.id || role, position }));
+    return this.client.rest.methods.setRolePositions(this.id, rolePositions);
   }
 
   /**
@@ -1420,7 +1533,7 @@ class Guild {
 
     Util.moveElementInArray(updatedChannels, channel, position, relative);
 
-    updatedChannels = updatedChannels.map((r, i) => ({ id: r.id, position: i }));
+    updatedChannels = updatedChannels.map((c, i) => ({ id: c.id, position: i }));
     return this.client.rest.methods.setChannelPositions(this.id, updatedChannels);
   }
 
