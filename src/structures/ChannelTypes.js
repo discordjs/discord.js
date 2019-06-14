@@ -1,4 +1,4 @@
-const { ChannelTypes: CT } = require("discord.js/src/util/Constants.js")
+const { ChannelTypes: CT } = require("../util/Constants.js")
 
 /**
 * Represents a channel's type
