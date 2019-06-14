@@ -3,6 +3,7 @@
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
+const ChannelTypesClass = require("./ChannelTypes");
 
 /**
  * Represents any channel on Discord.
@@ -12,17 +13,8 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    const type = Object.keys(ChannelTypes)[data.type];
-    /**
-     * The type of the channel, either:
-     * * `dm` - a DM channel
-     * * `text` - a guild text channel
-     * * `voice` - a guild voice channel
-     * * `category` - a guild category channel
-     * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
-     * @type {string}
-     */
-    this.type = type ? type.toLowerCase() : 'unknown';
+    //undoc
+    this.typeNumber = data.type || null;
 
     /**
      * Whether the channel has been deleted
@@ -39,6 +31,14 @@ class Channel extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
+  }
+  
+  /**
+   * The type of channel
+   * @type {ChannelTypes}
+   */
+  get type() {
+    return new ChannelTypesClass(this.typeNumber);
   }
 
   /**
