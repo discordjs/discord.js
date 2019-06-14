@@ -283,7 +283,7 @@ class GuildMember extends Base {
   async edit(data, reason) {
     if (data.channel) {
       data.channel = this.guild.channels.resolve(data.channel);
-      if (!data.channel || data.channel.type !== 'voice') {
+      if (!data.channel || !data.channel.type.VoiceChannel) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
       data.channel_id = data.channel.id;

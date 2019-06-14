@@ -19,7 +19,7 @@ class MessageReactionAdd extends Action {
 
     // Verify channel
     const channel = this.getChannel(data);
-    if (!channel || channel.type === 'voice') return false;
+    if (!channel || !channel.type.TextChannel) return false;
 
     // Verify message
     const message = this.getMessage(data, channel);

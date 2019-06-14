@@ -496,7 +496,6 @@ class GuildChannel extends Channel {
   equals(channel) {
     let equal = channel &&
       this.id === channel.id &&
-      this.type === channel.type &&
       this.topic === channel.topic &&
       this.position === channel.position &&
       this.name === channel.name;
