@@ -3,7 +3,7 @@
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
-const ChannelTypesClass = require("./ChannelTypes");
+const ChannelTypesClass = require('./ChannelTypes');
 
 /**
  * Represents any channel on Discord.
@@ -13,7 +13,7 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    //undoc
+    // Undocumented
     this.typeNumber = data.type || null;
 
     /**
@@ -32,7 +32,7 @@ class Channel extends Base {
      */
     this.id = data.id;
   }
-  
+
   /**
    * The type of channel
    * @type {ChannelTypes}

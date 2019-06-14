@@ -57,7 +57,7 @@ module.exports = {
   APIMessage: require('./structures/APIMessage'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
-  ChannelTypes: require("./structures/ChannelTypes"),
+  ChannelTypes: require('./structures/ChannelTypes'),
   ClientApplication: require('./structures/ClientApplication'),
   get ClientUser() {
     // This is a getter so that it properly extends any custom User class

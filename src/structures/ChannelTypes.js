@@ -1,106 +1,105 @@
-const { ChannelTypes: CT } = require("../util/Constants.js")
+const { ChannelTypes: CT } = require('../util/Constants.js');
 
 /**
 * Represents a channel's type
 */
 class ChannelTypes {
   /**
-   * @param {Number} number The Discord assigned indentifier for a channel
+   * @param {number} number The Discord assigned indentifier for a channel
    */
   constructor(number) {
     this.number = number;
   }
-  
+
   /**
    * If the channel is that of a DM between a user
-   * @type {Boolean}
+   * @type {boolean}
    */
   get dm() {
-    return this.number == CT.DM;
+    return this.number === CT.DM;
   }
-  
+
   /**
    * If the channel is that of a group chat between multiple users
-   * @type {Boolean}
+   * @type {boolean}
    */
   get group() {
-    return this.number == CT.GROUP_DM;
+    return this.number === CT.GROUP_DM;
   }
-  
+
   /**
    * If the channel is that of a text channel in a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get text() {
-    return this.number == CT.TEXT;
+    return this.number === CT.TEXT;
   }
-  
+
   /**
    * If the channel is that of a voice channel in a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get voice() {
-    return this.number == CT.VOICE;
+    return this.number === CT.VOICE;
   }
-  
+
   /**
    * If the channel is that of a Category in a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get category() {
-    return this.number == CT.CATEGORY;
+    return this.number === CT.CATEGORY;
   }
-  
+
   /**
    * If the channel is that of a news channel in a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get news() {
-    return this.number == CT.NEWS
+    return this.number === CT.NEWS;
   }
-  
+
   /**
    * If the channel is that of a store channel in a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get store() {
-    return this.number == CT.STORE
+    return this.number === CT.STORE;
   }
-  
+
   // Categories
-  
+
   /**
    * If the channel is one that can have messages sent to them
-   * @type {Boolean}
+   * @type {boolean}
    */
   get TextChannel() {
     return this.constructor.TEXT_TYPES.includes(this.number);
   }
-  
+
   /**
    * If the channel is one that can be connected to via voice
-   * @type {Boolean}
+   * @type {boolean}
    */
   get VoiceChannel() {
     return this.constructor.VOICE_TYPES.includes(this.number);
   }
-  
+
   /**
    * If the channel is one that are special/vip features
-   * @type {Boolean}
+   * @type {boolean}
    */
   get SpecialChannel() {
-      return this.constructor.SPECIAL_TYPES.includes(this.number);
+    return this.constructor.SPECIAL_TYPES.includes(this.number);
   }
-  
+
   /**
    * If the channel is one that belongs to a guild
-   * @type {Boolean}
+   * @type {boolean}
    */
   get GuildChannel() {
-      return this.constructor.GUILD_TYPES.includes(this.number);
+    return this.constructor.GUILD_TYPES.includes(this.number);
   }
-  
 }
 
 /**
@@ -112,7 +111,7 @@ ChannelTypes.TEXT_TYPES = [
   CT.TEXT,
   CT.GROUP_DM,
   CT.NEWS,
-  CT.STORE
+  CT.STORE,
 ];
 
 /**
@@ -120,7 +119,7 @@ ChannelTypes.TEXT_TYPES = [
  * @type {Array}
  */
 ChannelTypes.VOICE_TYPES = [
-  CT.VOICE
+  CT.VOICE,
 ];
 
 /**
@@ -129,7 +128,7 @@ ChannelTypes.VOICE_TYPES = [
  */
 ChannelTypes.SPECIAL_TYPES = [
   CT.NEWS,
-  CT.STORE
+  CT.STORE,
 ];
 
 /**
@@ -141,7 +140,7 @@ ChannelTypes.GUILD_TYPES = [
   CT.CATEGORY,
   CT.VOICE,
   CT.NEWS,
-  CT.STORE
+  CT.STORE,
 ];
 
 module.exports = ChannelTypes;
