@@ -1322,11 +1322,12 @@ class Guild {
    * @param {Emoji|string} emoji The emoji to delete
    * @param {string} [reason] Reason for deleting the emoji
    * @returns {Promise}
+   * @deprecated
    */
   deleteEmoji(emoji, reason) {
     if (typeof emoji === 'string') emoji = this.emojis.get(emoji);
     if (!(emoji instanceof Emoji)) throw new TypeError('Emoji must be either an instance of Emoji or an ID');
-    return this.client.rest.methods.deleteEmoji(emoji, reason);
+    return emoji.delete(reason);
   }
 
   /**
@@ -1594,5 +1595,8 @@ Guild.prototype.search =
 
 Guild.prototype.sync =
   util.deprecate(Guild.prototype.sync, 'Guild#sync:, userbot methods will be removed');
+
+Guild.prototype.deleteEmoji =
+  util.deprecate(Guild.prototype.deleteEmoji, 'Guild#deleteEmoji: use Emoji#delete instead');
 
 module.exports = Guild;

@@ -420,6 +420,7 @@ declare module 'discord.js' {
 		public addRestrictedRoles(roles: Role[]): Promise<Emoji>;
 		public edit(data: EmojiEditData, reason?: string): Promise<Emoji>;
 		public equals(other: Emoji | object): boolean;
+		public delete(reason?: string): Promise<this>;
 		public fetchAuthor(): Promise<User>;
 		public removeRestrictedRole(role: Role): Promise<Emoji>;
 		public removeRestrictedRoles(roles: Role[]): Promise<Emoji>;
