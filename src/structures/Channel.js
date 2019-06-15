@@ -3,7 +3,6 @@
 const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
-const ChannelTypesClass = require('./ChannelTypes');
 
 /**
  * Represents any channel on Discord.
@@ -13,8 +12,26 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    // Undocumented
-    this.typeNumber = data.type || null;
+    /**
+     * The type of channel
+     * @type {object}
+     */
+    this.type = {
+      number: data.type,
+
+      dm: data.type === ChannelTypes.DM,
+      group: data.type === ChannelTypes.GROUP_DM,
+      text: data.type === ChannelTypes.TEXT,
+      voice: data.type === ChannelTypes.VOICE,
+      category: data.type === ChannelTypes.CATEGORY,
+      news: data.type === ChannelTypes.NEWS,
+      store: data.type === ChannelTypes.STORE,
+
+      // Categories
+      TextChannel: this.constructor.TEXT_TYPES.includes(data.type),
+      VoiceChannel: this.constructor.VOICE_TYPES.includes(data.type),
+      GuildChannel: this.constructor.GUILD_TYPES.includes(data.type),
+    };
 
     /**
      * Whether the channel has been deleted
@@ -31,14 +48,6 @@ class Channel extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
-  }
-
-  /**
-   * The type of channel
-   * @type {ChannelTypes}
-   */
-  get type() {
-    return new ChannelTypesClass(this.typeNumber);
   }
 
   /**
@@ -137,5 +146,37 @@ class Channel extends Base {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
+
+/**
+ * Channel types that count towards .TextChannel
+ * @type {Array}
+ */
+Channel.TEXT_TYPES = [
+  ChannelTypes.DM,
+  ChannelTypes.TEXT,
+  ChannelTypes.GROUP_DM,
+  ChannelTypes.NEWS,
+  ChannelTypes.STORE,
+];
+
+/**
+ * Channel types that count towards .VoiceChannel
+ * @type {Array}
+ */
+Channel.VOICE_TYPES = [
+  ChannelTypes.VOICE,
+];
+
+/**
+ * Channel types that count towards .GuildChannel
+ * @type {Array}
+ */
+Channel.GUILD_TYPES = [
+  ChannelTypes.TEXT,
+  ChannelTypes.CATEGORY,
+  ChannelTypes.VOICE,
+  ChannelTypes.NEWS,
+  ChannelTypes.STORE,
+];
 
 module.exports = Channel;
