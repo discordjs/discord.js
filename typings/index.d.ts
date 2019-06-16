@@ -687,8 +687,6 @@ declare module 'discord.js' {
 		public type: MessageType;
 		public readonly url: string;
 		public webhookID: Snowflake | null;
-		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
-		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
 		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
@@ -1491,6 +1489,8 @@ declare module 'discord.js' {
 
 	export class ReactionStore extends DataStore<Snowflake, MessageReaction, typeof MessageReaction, MessageReactionResolvable> {
 		constructor(message: Message, iterable?: Iterable<any>);
+		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
+		public createCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public removeAll(): Promise<Message>;
 	}
 
