@@ -3,7 +3,6 @@
 const Mentions = require('./MessageMentions');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
@@ -272,51 +271,6 @@ class Message extends Base {
    */
   get cleanContent() {
     return Util.cleanContent(this.content, this);
-  }
-
-  /**
-   * Creates a reaction collector.
-   * @param {CollectorFilter} filter The filter to apply
-   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
-   * @returns {ReactionCollector}
-   * @example
-   * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
-   * const collector = message.createReactionCollector(filter, { time: 15000 });
-   * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
-   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
-   */
-  createReactionCollector(filter, options = {}) {
-    return new ReactionCollector(this, filter, options);
-  }
-
-  /**
-   * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {ReactionCollectorOptions} AwaitReactionsOptions
-   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
-   */
-
-  /**
-   * Similar to createReactionCollector but in promise form.
-   * Resolves with a collection of reactions that pass the specified filter.
-   * @param {CollectorFilter} filter The filter function to use
-   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string, MessageReaction>>}
-   * @example
-   * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
-   * message.awaitReactions(filter, { time: 15000 })
-   *   .then(collected => console.log(`Collected ${collected.size} reactions`))
-   *   .catch(console.error);
-   */
-  awaitReactions(filter, options = {}) {
-    return new Promise((resolve, reject) => {
-      const collector = this.createReactionCollector(filter, options);
-      collector.once('end', (reactions, reason) => {
-        if (options.errors && options.errors.includes(reason)) reject(reactions);
-        else resolve(reactions);
-      });
-    });
   }
 
   /**
