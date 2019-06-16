@@ -482,7 +482,7 @@ class Guild extends Base {
   get embedChannel() {
     return this.client.channels.get(this.embedChannelID) || null;
   }
-  
+
   /**
    * The client user as a GuildMember of this guild
    * @type {?GuildMember}
