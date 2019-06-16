@@ -118,7 +118,7 @@ class RoleStore extends DataStore {
   get defaultRole() {
     return this.get(this.guild.id) || null;
   }
-  
+
   /**
    * The role with the highest position in the store
    * @type {Role}
