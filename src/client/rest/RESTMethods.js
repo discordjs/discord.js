@@ -754,7 +754,7 @@ class RESTMethods {
 
   deleteEmoji(emoji, reason) {
     return this.rest.makeRequest('delete', Endpoints.Guild(emoji.guild).Emoji(emoji.id), true, undefined, reason)
-      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).data);
+      .then(() => this.client.actions.GuildEmojiDelete.handle(emoji).emoji);
   }
 
   getGuildAuditLogs(guild, options = {}) {

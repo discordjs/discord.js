@@ -222,6 +222,16 @@ class Emoji {
     return this.edit({ roles: newRoles });
   }
 
+
+  /**
+   * Deletes the emoji.
+   * @param {string} [reason] Reason for deleting the emoji
+   * @returns {Promise<Emoji>}
+   */
+  delete(reason) {
+    return this.client.rest.methods.deleteEmoji(this, reason);
+  }
+
   /**
    * When concatenated with a string, this automatically returns the emoji mention rather than the object.
    * @returns {string}
