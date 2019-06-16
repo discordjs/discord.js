@@ -482,16 +482,7 @@ class Guild extends Base {
   get embedChannel() {
     return this.client.channels.get(this.embedChannelID) || null;
   }
-
-  /**
-   * The `@everyone` role of the guild
-   * @type {?Role}
-   * @readonly
-   */
-  get defaultRole() {
-    return this.roles.get(this.id) || null;
-  }
-
+  
   /**
    * The client user as a GuildMember of this guild
    * @type {?GuildMember}
