@@ -83,6 +83,8 @@ const Messages = {
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
 
+  INVALID_ROLE: 'One or more supplied roles are managed.',
+
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',

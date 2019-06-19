@@ -71,6 +71,9 @@ class GuildMemberRoleStore extends Collection {
         throw new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true);
       }
+      if (roleOrRoles.some(role => role.managed)) {
+        throw new TypeError('INVALID_Role');
+      }
 
       const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
       return this.set(newRoles, reason);
@@ -80,7 +83,9 @@ class GuildMemberRoleStore extends Collection {
         throw new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true);
       }
-
+      if (roleOrRoles.managed) {
+        throw new TypeError('INVALID_Role');
+      }
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
@@ -102,6 +107,9 @@ class GuildMemberRoleStore extends Collection {
         throw new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true);
       }
+      if (roleOrRoles.some(role => role.managed)) {
+        throw new TypeError('INVALID_Role');
+      }
 
       const newRoles = this.filter(role => !roleOrRoles.includes(role));
       return this.set(newRoles, reason);
@@ -110,6 +118,9 @@ class GuildMemberRoleStore extends Collection {
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles',
           'Array or Collection of Roles or Snowflakes', true);
+      }
+      if (roleOrRoles.managed) {
+        throw new TypeError('INVALID_Role');
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
@@ -137,7 +148,13 @@ class GuildMemberRoleStore extends Collection {
    *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
    *   .catch(console.error);
    */
-  set(roles, reason) {
+  set(roles = [], reason) {
+    for (let [Snowflake, Role] of this) {
+      if (Role.managed) {
+        if (typeof roles[0] === 'string' && !roles.includes(Snowflake)) roles.push(Snowflake);
+        else if (!roles.some(role => role.id === Snowflake)) roles.push(Snowflake);
+      }
+    }
     return this.member.edit({ roles }, reason);
   }
 
