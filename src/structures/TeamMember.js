@@ -12,7 +12,7 @@ class TeamMember extends Base {
     super(client);
 
     /**
-     * The Team
+     * The Team this member is part of
      * @type {Team}
      */
     this.team = team;
