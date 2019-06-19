@@ -145,6 +145,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
+      TeamIcon: (teamID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
