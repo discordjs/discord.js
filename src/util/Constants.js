@@ -578,6 +578,8 @@ exports.DefaultMessageNotifications = [
  * @typedef {string} MembershipStates
  */
 exports.MembershipStates = [
+  // They start at 1
+  null,
   'INVITED',
   'ACCEPTED',
 ];
