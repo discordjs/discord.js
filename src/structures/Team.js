@@ -30,9 +30,9 @@ class Team extends Base {
 
     /**
      * The Team's icon hash
-     * @type {string}
+     * @type {?string}
      */
-    this.icon = data.icon;
+    this.icon = data.icon || null;
 
     /**
      * The Team's owner id

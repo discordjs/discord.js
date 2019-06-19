@@ -268,7 +268,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object);
 		public id: Snowflake;
 		public name: string;
-		public icon: string;
+		public icon: string | null;
 		public ownerID: Snowflake | null;
 		public members: Collection<Snowflake, TeamMember>;
 
