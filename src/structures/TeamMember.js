@@ -22,12 +22,6 @@ class TeamMember extends Base {
 
   _patch(data) {
     /**
-     * The ID of the Team Member
-     * @type {Snowflake}
-     */
-    this.id = data.user.id;
-
-    /**
      * The permissions this Team Member has with reguard to the team
      * @type {string[]}
      */
@@ -44,22 +38,24 @@ class TeamMember extends Base {
      * @type {User}
      */
     this.user = this.client.users.add(data.user);
+
+    /**
+     * The ID of the Team Member
+     * @type {Snowflake}
+     */
+    this.id = this.user.id;
   }
 
   /**
-   * When concatenated with a string, this automatically returns the team members's name instead of the
+   * When concatenated with a string, this automatically returns the team members's tag instead of the
    * TeamMember object.
    * @returns {string}
    * @example
-   * // Logs: Team Member's username: Hydrabolt
-   * console.log(`Team Member's name: ${teamMember}`);
+   * // Logs: Team Member's tag: @Hydrabolt
+   * console.log(`Team Member's tag: ${teamMember}`);
    */
   toString() {
-    return this.user.username;
-  }
-
-  toJSON() {
-    return super.toJSON();
+    return this.user.toString();
   }
 }
 

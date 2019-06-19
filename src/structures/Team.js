@@ -95,7 +95,7 @@ class Team extends Base {
    * @returns {string}
    * @example
    * // Logs: Team name: My Team
-   * console.log(`Team name: ${application}`);
+   * console.log(`Team name: ${team}`);
    */
   toString() {
     return this.name;

@@ -264,6 +264,34 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
+	export class Team extends Base {
+		constructor(client: Client, data: object);
+		public id: Snowflake;
+		public name: string;
+		public icon: string;
+		public ownerID: Snowflake | null;
+		public members: Collection<Snowflake, TeamMember>
+
+		public readonly owner: TeamMember;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+
+		public iconURL(options?: AvatarOptions): string;
+		public toJSON(): object;
+		public toString(): string;
+	}
+
+	export class TeamMember extends Base {
+		constructor(client: Client, team: Team, data: object);
+		public team: Team;
+		public id: Snowflake;
+		public permissions: string[];
+		public membershipState: MembershipStates;
+		public user: User;
+
+		public toString(): string;
+	}
+
 	export interface ActivityOptions {
 		name?: string;
 		url?: string;
@@ -1991,6 +2019,9 @@ declare module 'discord.js' {
 	}
 
 	type InviteResolvable = string;
+
+	type MembershipStates = 'INVITED'
+		| 'ACCEPTED';
 
 	interface MessageCollectorOptions extends CollectorOptions {
 		max?: number;
