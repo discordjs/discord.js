@@ -569,6 +569,17 @@ exports.DefaultMessageNotifications = [
   'MENTIONS',
 ];
 
+/**
+ * The value set for a team members's membership state:
+ * * INVITED
+ * * ACCEPTED
+ * @typedef {string} MembershipStates
+ */
+exports.MembershipStates = [
+  'INVITED',
+  'ACCEPTED',
+];
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
