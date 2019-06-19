@@ -35,7 +35,7 @@ class TeamMember extends Base {
 
     /**
      * The permissions this Team Member has with reguard to the team
-     * @type {string}
+     * @type {MembershipStates}
      */
     this.membershipState = MembershipStates[data.membership_state];
 
