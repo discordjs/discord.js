@@ -270,7 +270,7 @@ declare module 'discord.js' {
 		public name: string;
 		public icon: string;
 		public ownerID: Snowflake | null;
-		public members: Collection<Snowflake, TeamMember>
+		public members: Collection<Snowflake, TeamMember>;
 
 		public readonly owner: TeamMember;
 		public readonly createdAt: Date;
