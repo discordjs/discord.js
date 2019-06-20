@@ -72,7 +72,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
       if (roleOrRoles.some(role => role.managed)) {
-        throw new TypeError('INVALID_Role');
+        throw new TypeError('INVALID_ROLE');
       }
 
       const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
@@ -84,7 +84,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
       if (roleOrRoles.managed) {
-        throw new TypeError('INVALID_Role');
+        throw new TypeError('INVALID_ROLE');
       }
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
@@ -108,7 +108,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
       if (roleOrRoles.some(role => role.managed)) {
-        throw new TypeError('INVALID_Role');
+        throw new TypeError('INVALID_ROLE');
       }
 
       const newRoles = this.filter(role => !roleOrRoles.includes(role));
@@ -120,7 +120,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
       if (roleOrRoles.managed) {
-        throw new TypeError('INVALID_Role');
+        throw new TypeError('INVALID_ROLE');
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
@@ -149,12 +149,10 @@ class GuildMemberRoleStore extends Collection {
    *   .catch(console.error);
    */
   set(roles = [], reason) {
-    for (let [Snowflake, Role] of this) {
-      if (Role.managed) {
-        if (typeof roles[0] === 'string' && !roles.includes(Snowflake)) roles.push(Snowflake);
-        else if (!roles.some(role => role.id === Snowflake)) roles.push(Snowflake);
-      }
+    if (!(roles instanceof Collection)) {
+      roles = new this.constructor(roles.map(role => [role, this.guild.roles.resolve(role)]));
     }
+    roles = roles.filter(role => !role.managed).concat(this.filter(role => role.managed));
     return this.member.edit({ roles }, reason);
   }
 
