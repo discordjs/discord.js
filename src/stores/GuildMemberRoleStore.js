@@ -150,7 +150,7 @@ class GuildMemberRoleStore extends Collection {
    */
   set(roles = [], reason) {
     if (!(roles instanceof Collection)) {
-      roles = new this.constructor(roles.map(role => [role, this.guild.roles.resolve(role)]));
+      roles = new Collection(roles.map(role => [role, this.guild.roles.resolve(role)]));
     }
     roles = roles.filter(role => !role.managed).concat(this.filter(role => role.managed));
     return this.member.edit({ roles }, reason);
