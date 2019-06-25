@@ -38,12 +38,15 @@ class TeamMember extends Base {
      * @type {User}
      */
     this.user = this.client.users.add(data.user);
+  }
 
-    /**
-     * The ID of the Team Member
-     * @type {Snowflake}
-     */
-    this.id = this.user.id;
+  /**
+   * The ID of the Team Member
+   * @type {Snowflake}
+   * @readonly
+   */
+  get id() {
+    return this.user.id;
   }
 
   /**
