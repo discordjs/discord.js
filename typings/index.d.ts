@@ -255,12 +255,40 @@ declare module 'discord.js' {
 		public icon: string;
 		public id: Snowflake;
 		public name: string;
-		public owner: User | null;
+		public owner: User | Team;
 		public rpcOrigins: string[];
 		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
 		public iconURL(options?: AvatarOptions): string;
 		public toJSON(): object;
+		public toString(): string;
+	}
+
+	export class Team extends Base {
+		constructor(client: Client, data: object);
+		public id: Snowflake;
+		public name: string;
+		public icon: string | null;
+		public ownerID: Snowflake | null;
+		public members: Collection<Snowflake, TeamMember>;
+
+		public readonly owner: TeamMember;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+
+		public iconURL(options?: AvatarOptions): string;
+		public toJSON(): object;
+		public toString(): string;
+	}
+
+	export class TeamMember extends Base {
+		constructor(client: Client, team: Team, data: object);
+		public team: Team;
+		public id: Snowflake;
+		public permissions: string[];
+		public membershipState: MembershipStates;
+		public user: User;
+
 		public toString(): string;
 	}
 
@@ -1991,6 +2019,9 @@ declare module 'discord.js' {
 	}
 
 	type InviteResolvable = string;
+
+	type MembershipStates = 'INVITED'
+		| 'ACCEPTED';
 
 	interface MessageCollectorOptions extends CollectorOptions {
 		max?: number;

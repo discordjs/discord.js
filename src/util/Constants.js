@@ -145,6 +145,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
+      TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -567,6 +569,19 @@ exports.APIErrors = {
 exports.DefaultMessageNotifications = [
   'ALL',
   'MENTIONS',
+];
+
+/**
+ * The value set for a team members's membership state:
+ * * INVITED
+ * * ACCEPTED
+ * @typedef {string} MembershipStates
+ */
+exports.MembershipStates = [
+  // They start at 1
+  null,
+  'INVITED',
+  'ACCEPTED',
 ];
 
 function keyMirror(arr) {
