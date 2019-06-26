@@ -935,6 +935,7 @@ declare module 'discord.js' {
 		public rpcApplicationState: boolean;
 		public rpcOrigins: string[];
 		public secret: string;
+		public team?: Team;
 		public reset(): OAuth2Application;
 		public toString(): string;
 	}
@@ -1230,6 +1231,34 @@ declare module 'discord.js' {
 		public pause(): void;
 		public resume(): void;
 		public setBitrate(bitrate: number | 'auto'): void;
+	}
+
+	export class Team {
+		constructor(client: Client, data: object);
+		public readonly client: Client;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+		public icon: string | null;
+		public readonly iconURL: string;
+		public id: Snowflake;
+		public members: Collection<Snowflake, TeamMember>;
+		public name: string;
+		public readonly owner: TeamMember;
+		public ownerID: Snowflake | null;
+
+		public toString(): string;
+	}
+
+	export class TeamMember {
+		constructor(client: Client, team: Team, data: object);
+		public readonly client: Client;
+		public id: Snowflake;
+		public membershipState: MembershipStates;
+		public permissions: string[];
+		public team: Team;
+		public user: User;
+
+		public toString(): string;
 	}
 
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
@@ -1872,6 +1901,9 @@ declare module 'discord.js' {
 	};
 
 	type InviteResolvable = string;
+
+	type MembershipStates = 'INVITED'
+	| 'ACCEPTED';
 
 	type MessageCollectorOptions = CollectorOptions & {
 		max?: number;
