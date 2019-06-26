@@ -152,18 +152,14 @@ class GuildMemberRoleStore extends Collection {
     // eslint-disable-next-line eqeqeq
     if (roles == undefined) return Promise.resolve(this.member);
 
-    if (!(roles instanceof Collection)) {
-      if (!Array.isArray(roles)) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-
-      roles = roles.map(role => [role, this.guild.roles.resolve(role)]);
-      if (roles.some(role => !role[1])) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
-      }
-      roles = new Collection(roles);
+    if (!((roles instanceof Collection) || Array.isArray(roles))) {
+      return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+        'Array or Collection of Roles or Snowflakes', true));
+    }
+    roles = roles.map(role => this.guild.roles.resolve(role));
+    if (roles.includes(null)) {
+      return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
+        'Array or Collection of Roles or Snowflakes', true));
     }
     roles = roles.filter(role => !role.managed).concat(this.filter(role => role.managed));
     return this.member.edit({ roles }, reason);
