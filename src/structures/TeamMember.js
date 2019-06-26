@@ -7,7 +7,7 @@ class TeamMember {
   constructor(client, team, data) {
     /**
      * The client that instantiated the Team Member
-     * @name Team#client
+     * @name TeamMember#client
      * @type {Client}
      * @readonly
      */
