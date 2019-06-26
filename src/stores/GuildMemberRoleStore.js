@@ -148,9 +148,23 @@ class GuildMemberRoleStore extends Collection {
    *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
    *   .catch(console.error);
    */
-  set(roles = [], reason) {
+  set(roles, reason) {
+    if (roles === undefined) return Promise.resolve(this.member);
+    if (!(roles instanceof Collection || Array.isArray(roles))) {
+      throw new TypeError('INVALID_TYPE', 'roles',
+        'Array or Collection of Roles or Snowflakes', true);
+    }
+
     if (!(roles instanceof Collection)) {
-      roles = new Collection(roles.map(role => [role, this.guild.roles.resolve(role)]));
+      roles = new Collection(roles.map(role => {
+        let resolvedRole = this.guild.roles.resolve(role);
+        if (resolvedRole === null) {
+          throw new TypeError('INVALID_TYPE', 'roles',
+            'Array or Collection of Roles or Snowflakes', true);
+        }
+
+        return [role, resolvedRole];
+      }));
     }
     roles = roles.filter(role => !role.managed).concat(this.filter(role => role.managed));
     return this.member.edit({ roles }, reason);
