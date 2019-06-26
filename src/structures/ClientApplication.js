@@ -71,10 +71,10 @@ class ClientApplication extends Base {
      * @type {?User|Team}
      */
     this.owner = data.team ?
-      new Team(this.client, data.team) ?
-        data.owner :
+      new Team(this.client, data.team) :
+      data.owner ?
         this.client.users.add(data.owner) :
-      null;
+        null;
   }
 
   /**
