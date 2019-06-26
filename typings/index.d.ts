@@ -255,7 +255,7 @@ declare module 'discord.js' {
 		public icon: string;
 		public id: Snowflake;
 		public name: string;
-		public owner: User | Team;
+		public owner: User | Team | null;
 		public rpcOrigins: string[];
 		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
