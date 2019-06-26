@@ -22,13 +22,13 @@ class TeamMember extends Base {
 
   _patch(data) {
     /**
-     * The permissions this Team Member has with reguard to the team
+     * The permissions this Team Member has with regard to the team
      * @type {string[]}
      */
     this.permissions = data.permissions;
 
     /**
-     * The permissions this Team Member has with reguard to the team
+     * The permissions this Team Member has with regard to the team
      * @type {MembershipStates}
      */
     this.membershipState = MembershipStates[data.membership_state];
@@ -50,12 +50,12 @@ class TeamMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the team members's tag instead of the
+   * When concatenated with a string, this automatically returns the team members's mention instead of the
    * TeamMember object.
    * @returns {string}
    * @example
-   * // Logs: Team Member's tag: @Hydrabolt
-   * console.log(`Team Member's tag: ${teamMember}`);
+   * // Logs: Team Member's mention: <@123456789012345678>
+   * console.log(`Team Member's mention: ${teamMember}`);
    */
   toString() {
     return this.user.toString();

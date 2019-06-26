@@ -62,7 +62,7 @@ class Team extends Base {
   }
 
   /**
-   * The timestamp the app was created at
+   * The timestamp the team was created at
    * @type {number}
    * @readonly
    */
@@ -71,7 +71,7 @@ class Team extends Base {
   }
 
   /**
-   * The time the app was created at
+   * The time the team was created at
    * @type {Date}
    * @readonly
    */
@@ -80,7 +80,7 @@ class Team extends Base {
   }
 
   /**
-   * A link to the application's icon.
+   * A link to the teams's icon.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the icon
    */
