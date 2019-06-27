@@ -935,7 +935,7 @@ declare module 'discord.js' {
 		public rpcApplicationState: boolean;
 		public rpcOrigins: string[];
 		public secret: string;
-		public team?: Team;
+		public team: Team | null;
 		public reset(): OAuth2Application;
 		public toString(): string;
 	}
