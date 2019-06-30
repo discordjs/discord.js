@@ -107,7 +107,9 @@ class OAuth2Application {
 
     /**
      * The owning team of this OAuth application
+     * <info>In v12.0.0 this property moves to `Team#owner`.</info>
      * @type {?Team}
+     * @deprecated
      */
     this.team = data.team ? new Team(this.client, data.team) : null;
   }
