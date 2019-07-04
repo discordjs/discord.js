@@ -1509,6 +1509,10 @@ declare module 'discord.js' {
 		public fetch(id: Snowflake, cache?: boolean): Promise<User>;
 	}
 
+	export class VoiceStateStore extends DataStore<Snowflake, VoiceState, typeof VoiceState> {
+		constructor(guild: Guild, iterable?: Iterable<any>);
+	}
+
 //#endregion
 
 //#region Mixins
