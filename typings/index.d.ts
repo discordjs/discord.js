@@ -469,6 +469,7 @@ declare module 'discord.js' {
 		public verificationLevel: number;
 		public readonly verified: boolean;
 		public readonly voice: VoiceState | null;
+		public readonly voiceStates: VoiceStateStore;
 		public readonly widgetChannel: TextChannel | null;
 		public widgetChannelID: Snowflake | null;
 		public widgetEnabled: boolean | null;
@@ -1540,6 +1541,10 @@ declare module 'discord.js' {
 	export class UserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public fetch(id: Snowflake, cache?: boolean): Promise<User>;
+	}
+
+	export class VoiceStateStore extends DataStore<Snowflake, VoiceState, typeof VoiceState> {
+		constructor(guild: Guild, iterable?: Iterable<any>);
 	}
 
 //#endregion

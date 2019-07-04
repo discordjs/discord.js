@@ -57,6 +57,10 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    /**
+     * A collection of voice states in this guild
+     * @type {VoiceStateStore<Snowflake, VoiceState>}
+     */
     this.voiceStates = new VoiceStateStore(this);
 
     /**
