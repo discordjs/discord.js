@@ -973,7 +973,7 @@ class Guild extends Base {
   }
 
   /**
-   *  Sets a new build banner.
+   * Sets a new guild banner.
    * @param {Base64Resolvable|BufferResolvable} banner The new banner of the guild
    * @param {string} [reason] Reason for changing the guild's banner
    * @returns {Promise<Guild>}

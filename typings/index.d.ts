@@ -1947,6 +1947,7 @@ declare module 'discord.js' {
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
 		splash?: Base64Resolvable;
+		banner?: Base64Resolvable;
 	}
 
 	interface GuildEmbedData {
