@@ -42,7 +42,7 @@ class APIRequest {
       for (const file of this.options.files) if (file && file.file) body.append(file.name, file.file, file.name);
       if (typeof this.options.data !== 'undefined') body.append('payload_json', JSON.stringify(this.options.data));
       if (!browser) headers = Object.assign(headers, body.getHeaders());
-    } else if (this.options.data != null) { // eslint-disable-line 
+    } else if (this.options.data != null) { // eslint-disable-line eqeqeq
       body = JSON.stringify(this.options.data);
       headers['Content-Type'] = 'application/json';
     }
