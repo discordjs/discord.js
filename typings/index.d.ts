@@ -1565,7 +1565,8 @@ declare module 'discord.js' {
 		readonly lastMessage: Message | null;
 		lastPinTimestamp: number | null;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: { split: false} &  MessageOptions | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: { split: true} &  MessageOptions | MessageAdditions): Promise<Message[]>;
 		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 	}
 
