@@ -216,6 +216,7 @@ const Endpoints = exports.Endpoints = {
       AppAsset: (clientID, hash) => `${root}/app-assets/${clientID}/${hash}.png`,
       GDMIcon: (channelID, hash) => `${root}/channel-icons/${channelID}/${hash}.jpg?size=2048`,
       Splash: (guildID, hash) => `${root}/splashes/${guildID}/${hash}.jpg`,
+      TeamIcon: (teamID, hash) => `${root}/team-icons/${teamID}/${hash}.jpg`,
     };
   },
   OAUTH2: {
@@ -852,4 +853,17 @@ exports.APIErrors = {
 exports.DefaultMessageNotifications = [
   'ALL',
   'MENTIONS',
+];
+
+/**
+ * The value set for a team members's membership state:
+ * * INVITED
+ * * ACCEPTED
+ * @typedef {string} MembershipStates
+ */
+exports.MembershipStates = [
+  // They start at 1
+  null,
+  'INVITED',
+  'ACCEPTED',
 ];

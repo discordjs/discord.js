@@ -1,4 +1,5 @@
 const Snowflake = require('../util/Snowflake');
+const Team = require('./Team');
 const util = require('util');
 
 /**
@@ -103,6 +104,14 @@ class OAuth2Application {
        */
       this.owner = this.client.dataManager.newUser(data.owner);
     }
+
+    /**
+     * The owning team of this OAuth application
+     * <info>In v12.0.0 this property moves to `Team#owner`.</info>
+     * @type {?Team}
+     * @deprecated
+     */
+    this.team = data.team ? new Team(this.client, data.team) : null;
   }
 
   /**
