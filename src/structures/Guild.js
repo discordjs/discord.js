@@ -770,6 +770,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    */
 
@@ -802,6 +803,7 @@ class Guild extends Base {
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
     if (data.splash) _data.splash = data.splash;
+    if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -969,6 +971,20 @@ class Guild extends Base {
    */
   async setSplash(splash, reason) {
     return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
+  }
+
+  /**
+   * Sets a new guild banner.
+   * @param {Base64Resolvable|BufferResolvable} banner The new banner of the guild
+   * @param {string} [reason] Reason for changing the guild's banner
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.setBanner('./banner.png')
+   *  .then(updated => console.log('Updated the guild banner'))
+   *  .catch(console.error);
+   */
+  async setBanner(banner, reason) {
+    return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
   }
 
   /**
