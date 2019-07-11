@@ -75,14 +75,144 @@ class Util {
   /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
-   * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
-   * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
+   * @param {Object} [options={}] What types of markdown to escape
+   * @param {boolean} [options.codeBlock=true] Whether to escape code blocks or not
+   * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
+   * @param {boolean} [options.bold=true] Whether to escape bolds or not
+   * @param {boolean} [options.italic=true] Whether to escape italics or not
+   * @param {boolean} [options.underline=true] Whether to escape underlines or not
+   * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
+   * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
+   * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
+   * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
    * @returns {string}
    */
-  static escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
-    if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
-    if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
-    return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+  static escapeMarkdown(text, {
+    codeBlock = true,
+    inlineCode = true,
+    bold = true,
+    italic = true,
+    underline = true,
+    strikethrough = true,
+    spoiler = true,
+    codeBlockContent = true,
+    inlineCodeContent = true,
+  } = {}) {
+    if (!codeBlockContent) {
+      return text.split('```').map((subString, index, array) => {
+        if ((index % 2) && index !== array.length - 1) return subString;
+        return Util.escapeMarkdown(subString, {
+          inlineCode,
+          bold,
+          italic,
+          underline,
+          strikethrough,
+          spoiler,
+          inlineCodeContent,
+        });
+      }).join(codeBlock ? '\\`\\`\\`' : '```');
+    }
+    if (!inlineCodeContent) {
+      return text.split(/(?<=^|[^`])`(?=[^`]|$)/g).map((subString, index, array) => {
+        if ((index % 2) && index !== array.length - 1) return subString;
+        return Util.escapeMarkdown(subString, {
+          codeBlock,
+          bold,
+          italic,
+          underline,
+          strikethrough,
+          spoiler,
+        });
+      }).join(inlineCode ? '\\`' : '`');
+    }
+    if (inlineCode) text = Util.escapeInlineCode(text);
+    if (codeBlock) text = Util.escapeCodeBlock(text);
+    if (italic) text = Util.escapeItalic(text);
+    if (bold) text = Util.escapeBold(text);
+    if (underline) text = Util.escapeUnderline(text);
+    if (strikethrough) text = Util.escapeStrikethrough(text);
+    if (spoiler) text = Util.escapeSpoiler(text);
+    return text;
+  }
+
+  /**
+   * Escapes code block markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeCodeBlock(text) {
+    return text.replace(/```/g, '\\`\\`\\`');
+  }
+
+  /**
+   * Escapes inline code markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeInlineCode(text) {
+    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+  }
+
+  /**
+   * Escapes italic markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeItalic(text) {
+    let i = 0;
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
+      if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
+      return `\\*${match}`;
+    });
+    i = 0;
+    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+      if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
+      return `\\_${match}`;
+    });
+  }
+
+  /**
+   * Escapes bold markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeBold(text) {
+    let i = 0;
+    return text.replace(/\*\*(\*)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
+      return '\\*\\*';
+    });
+  }
+
+  /**
+   * Escapes underline markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeUnderline(text) {
+    let i = 0;
+    return text.replace(/__(_)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
+      return '\\_\\_';
+    });
+  }
+
+  /**
+   * Escapes strikethrough markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeStrikethrough(text) {
+    return text.replace(/~~/g, '\\~\\~');
+  }
+
+  /**
+   * Escapes spoiler markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeSpoiler(text) {
+    return text.replace(/\|\|/g, '\\|\\|');
   }
 
   /**
@@ -419,6 +549,15 @@ class Util {
         const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
+  }
+
+  /**
+   * The content to put in a codeblock with all codeblock fences replaced by the equivalent backticks.
+   * @param {string} text The string to be converted
+   * @returns {string}
+   */
+  static cleanCodeBlockContent(text) {
+    return text.replace('```', '`\u200b``');
   }
 
   /**
