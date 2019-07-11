@@ -120,6 +120,20 @@ class Util {
   }
 
   /**
+   * Converts a verification level to a string.
+   * @param {number} level The verification level to parse.
+   * @returns {string} The verification level's name
+   */
+  static parseVerification(level) {
+    if (level === 0) return 'None';
+    if (level === 1) return 'Low';
+    if (level === 2) return 'Medium';
+    if (level === 3) return '(╯°□°）╯︵ ┻━┻';
+    if (level === 4) return '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻';
+    else return undefined;
+  }
+
+  /**
    * Shallow-copies an object with its class/prototype intact.
    * @param {Object} obj Object to clone
    * @returns {Object}
