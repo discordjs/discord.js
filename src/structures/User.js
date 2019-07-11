@@ -1,3 +1,5 @@
+'use strict';
+
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Presence } = require('./Presence');
 const Snowflake = require('../util/Snowflake');
@@ -10,6 +12,10 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class User extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the user
+   */
   constructor(client, data) {
     super(client);
 
@@ -51,6 +57,8 @@ class User extends Base {
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
+    if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
+
     /**
      * The locale of the user's client (ISO 639-1)
      * @type {?string}
@@ -69,6 +77,15 @@ class User extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+  }
+
+  /**
+   * Whether this User is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.username !== 'string';
   }
 
   /**
@@ -192,22 +209,24 @@ class User extends Base {
    * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
-  createDM() {
-    if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
+  async createDM() {
+    const { dmChannel } = this;
+    if (dmChannel) return dmChannel;
+    const data = await this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
-    } })
-      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+    } });
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
-    return this.client.api.channels(this.dmChannel.id).delete()
-      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
+  async deleteDM() {
+    const { dmChannel } = this;
+    if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
+    const data = await this.client.api.channels(dmChannel.id).delete();
+    return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
   /**
@@ -224,6 +243,14 @@ class User extends Base {
       this.avatar === user.avatar;
 
     return equal;
+  }
+
+  /**
+   * Fetches this user.
+   * @returns {Promise<User>}
+   */
+  fetch() {
+    return this.client.users.fetch(this.id, true);
   }
 
   /**

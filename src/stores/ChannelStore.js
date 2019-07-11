@@ -1,9 +1,11 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
 const kLru = Symbol('LRU');
-const lruable = ['group', 'dm'];
+const lruable = ['dm'];
 
 /**
  * Stores channels.
@@ -52,12 +54,16 @@ class ChannelStore extends DataStore {
 
   add(data, guild, cache = true) {
     const existing = this.get(data.id);
-    if (existing) return existing;
+    if (existing && existing._patch && cache) existing._patch(data);
+    if (existing && guild) {
+      guild.channels.add(existing);
+      return existing;
+    }
 
     const channel = Channel.create(this.client, data, guild);
 
     if (!channel) {
-      this.client.emit(Events.DEBUG, `Failed to find guild for channel ${data.id} ${data.type}`);
+      this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
 
@@ -96,6 +102,25 @@ class ChannelStore extends DataStore {
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}
    */
+
+  /**
+   * Obtains a channel from Discord, or the channel cache if it's already available.
+   * @param {Snowflake} id ID of the channel
+   * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+   * @returns {Promise<Channel>}
+   * @example
+   * // Fetch a channel by its id
+   * client.channels.fetch('222109930545610754')
+   *   .then(channel => console.log(channel.name))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true) {
+    const existing = this.get(id);
+    if (existing && !existing.partial) return existing;
+
+    const data = await this.client.api.channels(id).get();
+    return this.add(data, null, cache);
+  }
 }
 
 module.exports = ChannelStore;

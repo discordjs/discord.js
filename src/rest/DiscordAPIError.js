@@ -1,9 +1,11 @@
+'use strict';
+
 /**
  * Represents an error from the Discord API.
  * @extends Error
  */
 class DiscordAPIError extends Error {
-  constructor(path, error, method) {
+  constructor(path, error, method, status) {
     super();
     const flattened = this.constructor.flattenErrors(error.errors || error).join('\n');
     this.name = 'DiscordAPIError';
@@ -26,6 +28,12 @@ class DiscordAPIError extends Error {
      * @type {number}
      */
     this.code = error.code;
+
+    /**
+     * The HTTP status code
+     * @type {number}
+     */
+    this.httpStatus = status;
   }
 
   /**

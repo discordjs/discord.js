@@ -1,6 +1,12 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const VoiceState = require('../structures/VoiceState');
 
+/**
+ * Stores voice states.
+ * @extends {DataStore}
+ */
 class VoiceStateStore extends DataStore {
   constructor(guild, iterable) {
     super(guild.client, iterable, VoiceState);

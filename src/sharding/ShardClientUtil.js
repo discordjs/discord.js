@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('../util/Util');
 const { Events } = require('../util/Constants');
 
@@ -44,11 +46,11 @@ class ShardClientUtil {
   }
 
   /**
-   * ID of this shard
-   * @type {number}
+   * Array of shard IDs of this client
+   * @type {number[]}
    * @readonly
    */
-  get id() {
+  get ids() {
     return this.client.options.shards;
   }
 
@@ -58,7 +60,7 @@ class ShardClientUtil {
    * @readonly
    */
   get count() {
-    return this.client.options.shardCount;
+    return this.client.options.totalShardCount;
   }
 
   /**
@@ -141,12 +143,13 @@ class ShardClientUtil {
    * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
    * @param {number} [respawnDelay=500] How long to wait between killing a shard's process/worker and restarting it
    * (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait for a shard to become ready before
+   * continuing to another. (-1 or Infinity for no wait)
    * @returns {Promise<void>} Resolves upon the message being sent
    * @see {@link ShardingManager#respawnAll}
    */
-  respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
-    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, waitForReady } });
+  respawnAll(shardDelay = 5000, respawnDelay = 500, spawnTimeout = 30000) {
+    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, spawnTimeout } });
   }
 
   /**
@@ -179,6 +182,11 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
+      /**
+       * Emitted when the client encounters an error.
+       * @event Client#error
+       * @param {Error} error The error encountered
+       */
       this.client.emit(Events.ERROR, err);
     });
   }

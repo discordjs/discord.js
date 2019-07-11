@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
  */
@@ -18,6 +20,8 @@ class Structures {
 
   /**
    * Extends a structure.
+   * <warn> Make sure to extend all structures before instantiating your client.
+   * Extending after doing so may not work as expected. </warn>
    * @param {string} structure Name of the structure class to extend
    * @param {Function} extender Function that takes the base class to extend as its only parameter and returns the
    * extended class/prototype
@@ -41,17 +45,22 @@ class Structures {
     if (typeof extender !== 'function') {
       const received = `(received ${typeof extender})`;
       throw new TypeError(
-        `"extender" argument must be a function that returns the extended structure class/prototype ${received}`
+        `"extender" argument must be a function that returns the extended structure class/prototype ${received}.`
       );
     }
 
     const extended = extender(structures[structure]);
     if (typeof extended !== 'function') {
-      throw new TypeError('The extender function must return the extended structure class/prototype.');
+      const received = `(received ${typeof extended})`;
+      throw new TypeError(`The extender function must return the extended structure class/prototype ${received}.`);
     }
-    if (Object.getPrototypeOf(extended) !== structures[structure]) {
+
+    if (!(extended.prototype instanceof structures[structure])) {
+      const prototype = Object.getPrototypeOf(extended);
+      const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
-        'The class/prototype returned from the extender function must extend the existing structure class/prototype.'
+        'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
+        ` (received function ${received}; expected extension of ${structures[structure].name}).`
       );
     }
 
@@ -63,11 +72,11 @@ class Structures {
 const structures = {
   GuildEmoji: require('../structures/GuildEmoji'),
   DMChannel: require('../structures/DMChannel'),
-  GroupDMChannel: require('../structures/GroupDMChannel'),
   TextChannel: require('../structures/TextChannel'),
   VoiceChannel: require('../structures/VoiceChannel'),
   CategoryChannel: require('../structures/CategoryChannel'),
-  GuildChannel: require('../structures/GuildChannel'),
+  NewsChannel: require('../structures/NewsChannel'),
+  StoreChannel: require('../structures/StoreChannel'),
   GuildMember: require('../structures/GuildMember'),
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),

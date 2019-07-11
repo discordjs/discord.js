@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildEmoji = require('./GuildEmoji');
 const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');
@@ -7,6 +9,11 @@ const ReactionUserStore = require('../stores/ReactionUserStore');
  * Represents a reaction to a message.
  */
 class MessageReaction {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message reaction
+   * @param {Message} message The message the reaction refers to
+   */
   constructor(client, data, message) {
     /**
      * The message that this reaction refers to

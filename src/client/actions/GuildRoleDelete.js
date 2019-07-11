@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
@@ -12,6 +14,11 @@ class GuildRoleDeleteAction extends Action {
       if (role) {
         guild.roles.remove(data.role_id);
         role.deleted = true;
+        /**
+         * Emitted whenever a guild role is deleted.
+         * @event Client#roleDelete
+         * @param {Role} role The role that was deleted
+         */
         client.emit(Events.GUILD_ROLE_DELETE, role);
       }
     }
@@ -20,10 +27,5 @@ class GuildRoleDeleteAction extends Action {
   }
 }
 
-/**
- * Emitted whenever a guild role is deleted.
- * @event Client#roleDelete
- * @param {Role} role The role that was deleted
- */
 
 module.exports = GuildRoleDeleteAction;

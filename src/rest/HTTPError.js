@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Represents a HTTP error from a request.
  * @extends Error

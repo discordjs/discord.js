@@ -1,3 +1,5 @@
+'use strict';
+
 class ActionsManager {
   constructor(client) {
     this.client = client;

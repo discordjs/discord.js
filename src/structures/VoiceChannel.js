@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
@@ -28,6 +30,7 @@ class VoiceChannel extends GuildChannel {
    * The members in this voice channel
    * @type {Collection<Snowflake, GuildMember>}
    * @name VoiceChannel#members
+   * @readonly
    */
   get members() {
     const coll = new Collection();
@@ -37,17 +40,6 @@ class VoiceChannel extends GuildChannel {
       }
     }
     return coll;
-  }
-
-  /**
-   * The voice connection for this voice channel, if the client is connected
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.guild.voiceConnection;
-    if (connection && connection.channel.id === this.id) return connection;
-    return null;
   }
 
   /**
@@ -69,14 +61,24 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the client has permission join the voice channel
+   * Whether the channel is editable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+  }
+
+  /**
+   * Whether the channel is joinable by the client user
    * @type {boolean}
    * @readonly
    */
   get joinable() {
     if (browser) return false;
-    if (!this.permissionsFor(this.client.user).has('CONNECT', false)) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has('MOVE_MEMBERS', false)) return false;
+    if (!this.viewable) return false;
+    if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) return false;
+    if (this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)) return false;
     return true;
   }
 

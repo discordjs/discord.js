@@ -1,3 +1,5 @@
+'use strict';
+
 const Package = exports.Package = require('../../package.json');
 const { Error, RangeError } = require('../errors');
 const browser = exports.browser = typeof window !== 'undefined';
@@ -5,7 +7,7 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]} [shards=0] ID of the shard to run, or an array of shard IDs
+ * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
  * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
  * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
@@ -19,6 +21,9 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
+ * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
+ * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
@@ -35,7 +40,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  shards: 0,
   shardCount: 1,
   totalShardCount: 1,
   messageCacheMaxSize: 200,
@@ -43,6 +47,7 @@ exports.DefaultOptions = {
   messageSweepInterval: 0,
   fetchAllMembers: false,
   disableEveryone: false,
+  partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
   retryLimit: 1,
@@ -126,8 +131,12 @@ exports.Endpoints = {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
-      Icon: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+      Banner: (guildID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
+      },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
       AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -136,6 +145,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
+      TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -207,8 +218,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
-  READY: 'ready',
-  RESUMED: 'resumed',
+  CLIENT_READY: 'ready',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -241,24 +251,50 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
-  USER_NOTE_UPDATE: 'userNoteUpdate',
-  USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
+  VOICE_SERVER_UPDATE: 'voiceServerUpdate',
   VOICE_STATE_UPDATE: 'voiceStateUpdate',
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
-  DISCONNECT: 'disconnect',
-  RECONNECTING: 'reconnecting',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
+  SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_ERROR: 'shardError',
+  SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
+  SHARD_RESUMED: 'shardResumed',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
 };
+
+exports.ShardEvents = {
+  CLOSE: 'close',
+  DESTROYED: 'destroyed',
+  INVALID_SESSION: 'invalidSession',
+  READY: 'ready',
+  RESUMED: 'resumed',
+};
+
+/**
+ * The type of Structure allowed to be a partial:
+ * * USER
+ * * CHANNEL (only affects DMChannels)
+ * * GUILD_MEMBER
+ * * MESSAGE
+ * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
+ * sidebar for more information.</warn>
+ * @typedef {string} PartialType
+ */
+exports.PartialTypes = keyMirror([
+  'USER',
+  'CHANNEL',
+  'GUILD_MEMBER',
+  'MESSAGE',
+]);
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
@@ -277,6 +313,7 @@ exports.Events = {
  * * GUILD_ROLE_UPDATE
  * * GUILD_BAN_ADD
  * * GUILD_BAN_REMOVE
+ * * GUILD_EMOJIS_UPDATE
  * * CHANNEL_CREATE
  * * CHANNEL_DELETE
  * * CHANNEL_UPDATE
@@ -289,11 +326,10 @@ exports.Events = {
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
  * * USER_UPDATE
- * * USER_NOTE_UPDATE
  * * USER_SETTINGS_UPDATE
  * * PRESENCE_UPDATE
- * * VOICE_STATE_UPDATE
  * * TYPING_START
+ * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
  * @typedef {string} WSEventType
@@ -328,8 +364,8 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_REMOVE_ALL',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
-  'VOICE_STATE_UPDATE',
   'TYPING_START',
+  'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
 ]);
@@ -344,6 +380,10 @@ exports.WSEvents = keyMirror([
  * * CHANNEL_ICON_CHANGE
  * * PINS_ADD
  * * GUILD_MEMBER_JOIN
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -355,6 +395,10 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
 ];
 
 /**
@@ -378,6 +422,8 @@ exports.ChannelTypes = {
   VOICE: 2,
   GROUP: 3,
   CATEGORY: 4,
+  NEWS: 5,
+  STORE: 6,
 };
 
 exports.ClientApplicationAssetTypes = {
@@ -391,6 +437,7 @@ exports.Colors = {
   AQUA: 0x1ABC9C,
   GREEN: 0x2ECC71,
   BLUE: 0x3498DB,
+  YELLOW: 0xFFFF00,
   PURPLE: 0x9B59B6,
   LUMINOUS_VIVID_PINK: 0xE91E63,
   GOLD: 0xF1C40F,
@@ -458,6 +505,7 @@ exports.Colors = {
  * * NOTE_TOO_LONG
  * * INVALID_BULK_DELETE_QUANTITY
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
+ * * INVALID_OR_TAKEN_INVITE_CODE
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
  * * BULK_DELETE_MESSAGE_TOO_OLD
  * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
@@ -505,6 +553,7 @@ exports.APIErrors = {
   NOTE_TOO_LONG: 50015,
   INVALID_BULK_DELETE_QUANTITY: 50016,
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
+  INVALID_OR_TAKEN_INVITE_CODE: 50020,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
@@ -520,6 +569,19 @@ exports.APIErrors = {
 exports.DefaultMessageNotifications = [
   'ALL',
   'MENTIONS',
+];
+
+/**
+ * The value set for a team members's membership state:
+ * * INVITED
+ * * ACCEPTED
+ * @typedef {string} MembershipStates
+ */
+exports.MembershipStates = [
+  // They start at 1
+  null,
+  'INVITED',
+  'ACCEPTED',
 ];
 
 function keyMirror(arr) {

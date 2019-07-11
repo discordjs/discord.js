@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 const EventEmitter = require('events');
@@ -13,8 +15,8 @@ const EventEmitter = require('events');
 /**
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
- * @property {number} [time] How long to run the collector for
- * @property {number} [idle] How long to stop the collector after inactivity
+ * @property {number} [time] How long to run the collector for in milliseconds
+ * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  * @property {boolean} [dispose=false] Whether to dispose data when it's deleted
  */
 

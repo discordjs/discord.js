@@ -13,6 +13,7 @@ client.on('ready', () => {
   log('READY', client.user.tag, client.user.id);
 });
 client.on('rateLimit', log);
+client.on('error', console.error);
 
 const commands = {
   eval: message => {

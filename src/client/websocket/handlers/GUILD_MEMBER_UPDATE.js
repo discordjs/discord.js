@@ -1,3 +1,5 @@
+'use strict';
+
 const { Status, Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }, shard) => {
