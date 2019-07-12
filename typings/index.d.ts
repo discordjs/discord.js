@@ -379,7 +379,7 @@ declare module 'discord.js' {
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 	}
 
-	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
+	type AllowedImageFormat = 'default' | 'webp' | 'png' | 'jpg' | 'gif';
 
 	export interface Constants {
 		Package: {
@@ -421,20 +421,19 @@ declare module 'discord.js' {
 			};
 		};
 		WSCodes: {
-			1000: 'Connection gracefully closed';
-			4004: 'Tried to identify with an invalid token';
-			4010: 'Sharding data provided was invalid';
-			4011: 'Shard would be on too many guilds if connected';
+			1000: 'WS_CLOSE_REQUESTED';
+			4004: 'TOKEN_INVALID';
+			4010: 'SHARDING_INVALID';
+			4011: 'SHARDING_REQUIRED';
 		};
 		Events: {
 			RATE_LIMIT: 'rateLimit';
-			READY: 'ready';
+			CLIENT_READY: 'ready';
 			RESUMED: 'resumed';
 			GUILD_CREATE: 'guildCreate';
 			GUILD_DELETE: 'guildDelete';
 			GUILD_UPDATE: 'guildUpdate';
 			GUILD_UNAVAILABLE: 'guildUnavailable';
-			GUILD_AVAILABLE: 'guildAvailable';
 			GUILD_MEMBER_ADD: 'guildMemberAdd';
 			GUILD_MEMBER_REMOVE: 'guildMemberRemove';
 			GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
@@ -462,20 +461,24 @@ declare module 'discord.js' {
 			MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
 			MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
 			USER_UPDATE: 'userUpdate';
-			USER_NOTE_UPDATE: 'userNoteUpdate';
-			USER_SETTINGS_UPDATE: 'clientUserSettingsUpdate';
 			PRESENCE_UPDATE: 'presenceUpdate';
 			VOICE_STATE_UPDATE: 'voiceStateUpdate';
 			VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
 			VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
 			TYPING_START: 'typingStart';
-			TYPING_STOP: 'typingStop';
 			WEBHOOKS_UPDATE: 'webhookUpdate';
 			DISCONNECT: 'disconnect';
 			RECONNECTING: 'reconnecting';
 			ERROR: 'error';
 			WARN: 'warn';
 			DEBUG: 'debug';
+			SHARD_DISCONNECTED: 'shardDisconnected';
+			SHARD_ERROR: 'shardError';
+			SHARD_RECONNECTING: 'shardReconnecting';
+			SHARD_READY: 'shardReady';
+			SHARD_RESUMED: 'shardResumed';
+			INVALIDATED: 'invalidated';
+			RAW: 'raw';
 		};
 		WSEvents: {
 			[K in WSEventType]: K;
@@ -486,6 +489,7 @@ declare module 'discord.js' {
 			AQUA: 0x1ABC9C;
 			GREEN: 0x2ECC71;
 			BLUE: 0x3498DB;
+			YELLOW: 0xFFFF00;
 			PURPLE: 0x9B59B6;
 			LUMINOUS_VIVID_PINK: 0xE91E63;
 			GOLD: 0xF1C40F;
@@ -602,6 +606,8 @@ declare module 'discord.js' {
 			VOICE: 2;
 			GROUP: 3;
 			CATEGORY: 4;
+			NEWS: 5;
+			STORE: 6;
 		};
 		ClientApplicationAssetTypes: {
 			SMALL: 1;
