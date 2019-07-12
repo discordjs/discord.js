@@ -1167,7 +1167,6 @@ declare module 'discord.js' {
 		public static mergeDefault(def: object, given: object): object;
 		public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
 		public static parseEmoji(text: string): { animated: boolean; name: string; id: string | null; } | null;
-		public static parseVerification(level: number): string;
 		public static resolveColor(color: ColorResolvable): number;
 		public static resolveString(data: StringResolvable): string;
 		public static setPosition<T extends (Channel | Role)>(

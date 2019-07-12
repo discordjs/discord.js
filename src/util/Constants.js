@@ -463,6 +463,14 @@ exports.Colors = {
   NOT_QUITE_BLACK: 0x23272A,
 };
 
+exports.verificationLevels = [
+  'None', 
+  'Low', 
+  'Medium',
+  '(╯°□°）╯︵ ┻━┻',
+  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'
+];
+
 /**
  * An error encountered while performing an API request. Here are the potential errors:
  * * UNKNOWN_ACCOUNT
