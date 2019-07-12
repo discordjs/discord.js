@@ -464,11 +464,11 @@ exports.Colors = {
 };
 
 exports.verificationLevels = [
-  'None', 
-  'Low', 
+  'None',
+  'Low',
   'Medium',
   '(╯°□°）╯︵ ┻━┻',
-  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'
+  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻',
 ];
 
 /**
