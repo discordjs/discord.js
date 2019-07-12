@@ -482,6 +482,16 @@ declare module 'discord.js' {
 			INVALIDATED: 'invalidated';
 			RAW: 'raw';
 		};
+		ShardEvents: {
+			CLOSE: 'close';
+			DESTROYED: 'destroyed';
+			INVALID_SESSION: 'invalidSession';
+			READY: 'ready';
+			RESUMED: 'resumed';
+		};
+		PartialTypes: {
+			[K in PartialType]: K;
+		};
 		WSEvents: {
 			[K in WSEventType]: K;
 		};
@@ -618,6 +628,7 @@ declare module 'discord.js' {
 		MessageTypes: MessageType[];
 		ActivityTypes: ActivityType[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
+		MembershipStates: 'INVITED' | 'ACCEPTED';
 	}
 
 	export class DataResolver {
@@ -2531,6 +2542,11 @@ declare module 'discord.js' {
 		large_threshold?: number;
 		compress?: boolean;
 	}
+
+	type PartialType = 'USER'
+		| 'CHANNEL'
+		| 'GUILD_MEMBER'
+		| 'MESSAGE';
 
 	type WSEventType = 'READY'
 		| 'RESUMED'
