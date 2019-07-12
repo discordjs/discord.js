@@ -425,7 +425,7 @@ declare module 'discord.js' {
 			4004: 'Tried to identify with an invalid token';
 			4010: 'Sharding data provided was invalid';
 			4011: 'Shard would be on too many guilds if connected';
-		}
+		};
 		Events: {
 			RATE_LIMIT: 'rateLimit';
 			READY: 'ready';
@@ -531,7 +531,7 @@ declare module 'discord.js' {
 			INVALID_SESSION: 9;
 			HELLO: 10;
 			HEARTBEAT_ACK: 11;
-		}
+		};
 		APIErrors: {
 			UNKNOWN_ACCOUNT: 10001;
 			UNKNOWN_APPLICATION: 10002;
@@ -610,7 +610,7 @@ declare module 'discord.js' {
 		MessageTypes: MessageType[];
 		ActivityTypes: ActivityType[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
-	};
+	}
 
 	export class DataResolver {
 		public static resolveBase64(data: Base64Resolvable): string;
