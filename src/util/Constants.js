@@ -126,7 +126,7 @@ exports.Endpoints = {
     return {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
-      DefaultAvatar: id => `${root}/embed/avatars/${id}.png`,
+      DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
