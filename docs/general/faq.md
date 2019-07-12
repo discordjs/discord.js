@@ -1,10 +1,9 @@
 # Frequently Asked Questions
-These are just questions that get asked frequently, that usually have a common resolution.
-If you have issues not listed here, please ask in the [official Discord server](https://discord.gg/bRCvFy9).
-Always make sure to read the documentation.
+These questions are some of the most frequently asked.
+
 
 ## No matter what, I get `SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode`‽
-Update to Node.js 8.0.0 or newer.
+Update to Node.js 10.0.0 or newer.
 
 ## How do I get voice working?
 - Install FFMPEG.
@@ -21,3 +20,7 @@ Update to Node.js 8.0.0 or newer.
 - **Ubuntu:** Simply run `npm install node-opus`, and it's done. Congrats!
 - **Windows:** Run `npm install --global --production windows-build-tools` in an admin command prompt or PowerShell.
   Then, running `npm install node-opus` in your bot's directory should successfully build it. Woo!
+
+Other questions can be found at the [official Discord.js guide](https://discordjs.guide/popular-topics/common-questions.html)
+If you have issues not listed here or on the guide, feel free to ask in the [official Discord.js server](https://discord.gg/bRCvFy9).
+Always make sure to read the [documentation](https://discord.js.org/#/docs/main/stable/general/welcome).

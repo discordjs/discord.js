@@ -41,6 +41,7 @@ class Permissions extends BitField {
  * * `ADD_REACTIONS` (add new reactions to messages)
  * * `VIEW_AUDIT_LOG`
  * * `PRIORITY_SPEAKER`
+ * * `STREAM`
  * * `VIEW_CHANNEL`
  * * `SEND_MESSAGES`
  * * `SEND_TTS_MESSAGES`
@@ -74,7 +75,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
   PRIORITY_SPEAKER: 1 << 8,
-
+  STREAM: 1 << 9,
   VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
@@ -109,6 +110,6 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  * Bitfield representing the default permissions for users
  * @type {number}
  */
-Permissions.DEFAULT = 104324097;
+Permissions.DEFAULT = 104324673;
 
 module.exports = Permissions;

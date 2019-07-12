@@ -26,7 +26,8 @@ class VoiceStateUpdate extends Action {
 
       // Emit event
       if (member && member.user.id === client.user.id && data.channel_id) {
-        client.emit('self.voiceStateUpdate', data);
+        client.emit('debug', `[VOICE] received voice state update: ${JSON.stringify(data)}`);
+        client.voice.onVoiceStateUpdate(data);
       }
 
       /**

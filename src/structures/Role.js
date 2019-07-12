@@ -11,6 +11,11 @@ const { Error, TypeError } = require('../errors');
  * @extends {Base}
  */
 class Role extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the role
+   * @param {Guild} guild The guild the role is part of
+   */
   constructor(client, data, guild) {
     super(client);
 
@@ -172,7 +177,7 @@ class Role extends Base {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
+    if (typeof data.permissions !== 'undefined') data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
     if (typeof data.position !== 'undefined') {
       await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
@@ -298,7 +303,7 @@ class Role extends Base {
    * @param {number} position The position of the role
    * @param {Object} [options] Options for setting position
    * @param {boolean} [options.relative=false] Change the position relative to its current value
-   * @param {boolean} [options.reason] Reason for changing the position
+   * @param {string} [options.reason] Reason for changing the position
    * @returns {Promise<Role>}
    * @example
    * // Set the position of the role

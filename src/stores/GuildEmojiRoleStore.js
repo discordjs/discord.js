@@ -20,6 +20,7 @@ class GuildEmojiRoleStore extends Collection {
    * The filtered collection of roles of the guild emoji
    * @type {Collection<Snowflake, Role>}
    * @private
+   * @readonly
    */
   get _filtered() {
     return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));
@@ -32,7 +33,7 @@ class GuildEmojiRoleStore extends Collection {
    */
   add(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
-    if (!(roleOrRoles instanceof Array)) return this.add([roleOrRoles]);
+    if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles]);
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
     if (roleOrRoles.includes(null)) {
@@ -51,7 +52,7 @@ class GuildEmojiRoleStore extends Collection {
    */
   remove(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
-    if (!(roleOrRoles instanceof Array)) return this.remove([roleOrRoles]);
+    if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles]);
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {

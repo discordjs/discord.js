@@ -48,6 +48,7 @@ class VoiceConnectionUDPClient extends EventEmitter {
   }
 
   shutdown() {
+    this.emit('debug', `[UDP] shutdown requested`);
     if (this.socket) {
       this.socket.removeAllListeners('message');
       try {
@@ -77,21 +78,35 @@ class VoiceConnectionUDPClient extends EventEmitter {
       if (!this.socket) throw new Error('UDP_SEND_FAIL');
       if (!this.discordAddress || !this.discordPort) throw new Error('UDP_ADDRESS_MALFORMED');
       this.socket.send(packet, 0, packet.length, this.discordPort, this.discordAddress, error => {
-        if (error) reject(error); else resolve(packet);
+        if (error) {
+          this.emit('debug', `[UDP] >> ERROR: ${error}`);
+          reject(error);
+        } else {
+          resolve(packet);
+        }
       });
     });
   }
 
-  createUDPSocket(address) {
+  async createUDPSocket(address) {
     this.discordAddress = address;
     const socket = this.socket = udp.createSocket('udp4');
-
+    socket.on('error', e => {
+      this.emit('debug', `[UDP] Error: ${e}`);
+      this.emit('error', e);
+    });
+    socket.on('close', () => {
+      this.emit('debug', '[UDP] socket closed');
+    });
+    this.emit('debug', `[UDP] created socket`);
     socket.once('message', message => {
+      this.emit('debug', `[UDP] message: [${[...message]}] (${message})`);
       // Stop if the sockets have been deleted because the connection has been closed already
       if (!this.voiceConnection.sockets.ws) return;
 
       const packet = parseLocalPacket(message);
       if (packet.error) {
+        this.emit('debug', `[UDP] ERROR: ${packet.error}`);
         this.emit('error', packet.error);
         return;
       }
@@ -111,12 +126,16 @@ class VoiceConnectionUDPClient extends EventEmitter {
         },
       });
 
+      this.emit('debug', `[UDP] << ${JSON.stringify(packet)}`);
+
       socket.on('message', buffer => this.voiceConnection.receiver.packets.push(buffer));
     });
 
     const blankMessage = Buffer.alloc(70);
     blankMessage.writeUIntBE(this.voiceConnection.authentication.ssrc, 0, 4);
-    this.send(blankMessage);
+    this.emit('debug', `Sending IP discovery packet: [${[...blankMessage]}]`);
+    await this.send(blankMessage);
+    this.emit('debug', `Successfully sent IP discovery packet`);
   }
 }
 

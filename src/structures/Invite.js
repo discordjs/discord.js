@@ -1,6 +1,7 @@
 'use strict';
 
 const { Endpoints } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 
 /**
@@ -89,6 +90,19 @@ class Invite extends Base {
    */
   get createdAt() {
     return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
+  }
+
+  /**
+   * Whether the invite is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    const guild = this.guild;
+    if (!guild || !this.client.guilds.has(guild.id)) return false;
+    if (!guild.me) throw new Error('GUILD_UNCACHED_ME');
+    return this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) ||
+      guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD);
   }
 
   /**

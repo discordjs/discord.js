@@ -135,7 +135,7 @@ class Webhook {
       apiMessage = content.resolveData();
     } else {
       apiMessage = APIMessage.create(this, content, options).resolveData();
-      if (apiMessage.data.content instanceof Array) {
+      if (Array.isArray(apiMessage.data.content)) {
         return Promise.all(apiMessage.split().map(this.send.bind(this)));
       }
     }
@@ -211,6 +211,15 @@ class Webhook {
    */
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  }
+
+  /**
+   * The url of this webhook
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
   }
 
   static applyToClass(structure) {

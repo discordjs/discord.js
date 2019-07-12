@@ -9,10 +9,9 @@ class GuildMemberRemoveAction extends Action {
     const guild = client.guilds.get(data.guild_id);
     let member = null;
     if (guild) {
-      member = guild.members.get(data.user.id);
+      member = this.getMember(data, guild);
       guild.memberCount--;
       if (member) {
-        guild.voiceStates.delete(member.id);
         member.deleted = true;
         guild.members.remove(member.id);
         /**
@@ -22,6 +21,7 @@ class GuildMemberRemoveAction extends Action {
          */
         if (shard.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }
+      guild.voiceStates.delete(data.user.id);
     }
     return { guild, member };
   }

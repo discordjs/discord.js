@@ -18,6 +18,7 @@ class DataStore extends Collection {
 
   add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.get(id || data.id);
+    if (existing && existing._patch && cache) existing._patch(data);
     if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
