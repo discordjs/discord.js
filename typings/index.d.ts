@@ -413,11 +413,13 @@ declare module 'discord.js' {
 				DefaultAvatar: (id: string | number) => string;
 				Emoji: (emojiID: string, format: 'png' | 'gif') => string;
 				Avatar: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				Banner: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				Icon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				Splash: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				TeamIcon: (teamID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 			};
 		};
 		WSCodes: {
