@@ -58,13 +58,15 @@ exports.DefaultOptions = {
   /**
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {number} [large_threshold=50] Number of members in a guild to be considered large
    * @property {boolean} [compress=false] Whether to compress data sent on the connection
+   * @property {boolean} [guild_subscriptions=true] enables dispatching of guild subscription events (presence and typing events)
    * (defaults to `false` for browsers)
    */
   ws: {
-    large_threshold: 250,
+    large_threshold: 50,
     compress: false,
+    guild_subscriptions: true,
     properties: {
       $os: browser ? 'browser' : process.platform,
       $browser: 'discord.js',
