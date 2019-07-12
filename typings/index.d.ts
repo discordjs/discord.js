@@ -396,7 +396,7 @@ declare module 'discord.js' {
 			repository: { type: string, url: string };
 			browser: { [key: string]: boolean };
 			scripts: { [key: string]: string };
-			engines: { [ley: string]: string };
+			engines: { [key: string]: string };
 			dependencies: { [key: string]: string };
 			peerDependencies: { [key: string]: string };
 			devDependencies: { [key: string]: string };
