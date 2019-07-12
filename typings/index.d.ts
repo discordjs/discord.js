@@ -2288,6 +2288,7 @@ declare module 'discord.js' {
 	interface WebSocketOptions {
 		large_threshold?: number;
 		compress?: boolean;
+		guild_subscriptions?: boolean;
 	}
 
 	type WSEventType = 'READY'
