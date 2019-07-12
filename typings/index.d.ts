@@ -379,7 +379,7 @@ declare module 'discord.js' {
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 	}
 
-	type AllowedImageFormat = 'default' | 'webp' | 'png' | 'jpg' | 'gif';
+	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
 
 	export interface Constants {
 		Package: {
@@ -412,9 +412,9 @@ declare module 'discord.js' {
 				Asset: (name: string) => string;
 				DefaultAvatar: (id: string | number) => string;
 				Emoji: (emojiID: string, format: 'png' | 'gif') => string;
-				Avatar: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				Avatar: (userID: string | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
 				Banner: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
-				Icon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				Icon: (userID: string | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
 				AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
 				GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
