@@ -125,12 +125,8 @@ class Util {
    * @returns {string} The verification level's name
    */
   static parseVerification(level) {
-    if (level === 0) return 'None';
-    if (level === 1) return 'Low';
-    if (level === 2) return 'Medium';
-    if (level === 3) return '(╯°□°）╯︵ ┻━┻';
-    if (level === 4) return '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻';
-    else return undefined;
+    const rules = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
+    return rules[level] || 'Unknown';
   }
 
   /**
