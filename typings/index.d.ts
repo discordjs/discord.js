@@ -381,7 +381,7 @@ declare module 'discord.js' {
 
 	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
 
-	export interface Constants = {
+	export interface Constants {
 		Package: {
 			name: string;
 			version: string;
