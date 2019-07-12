@@ -1,3 +1,5 @@
+'use strict';
+
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const { TypeError } = require('../errors');
@@ -18,6 +20,7 @@ class GuildMemberRoleStore extends Collection {
    * The filtered collection of roles of the member
    * @type {Collection<Snowflake, Role>}
    * @private
+   * @readonly
    */
   get _filtered() {
     const everyone = this.guild.defaultRole;
@@ -62,11 +65,11 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async add(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
@@ -74,14 +77,14 @@ class GuildMemberRoleStore extends Collection {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
-      clone.roles._patch([...this.keys(), roleOrRoles.id]);
+      clone._roles = [...this.keys(), roleOrRoles.id];
       return clone;
     }
   }
@@ -93,11 +96,11 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async remove(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = this.filter(role => !roleOrRoles.includes(role));
@@ -105,15 +108,15 @@ class GuildMemberRoleStore extends Collection {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true));
+        throw new TypeError('INVALID_TYPE', 'roles',
+          'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
 
       const clone = this.member._clone();
       const newRoles = this.filter(role => role.id !== roleOrRoles.id);
-      clone.roles._patch([...newRoles.keys()]);
+      clone._roles = [...newRoles.keys()];
       return clone;
     }
   }
@@ -138,13 +141,9 @@ class GuildMemberRoleStore extends Collection {
     return this.member.edit({ roles }, reason);
   }
 
-  _patch(roles) {
-    this.member._roles = roles;
-  }
-
   clone() {
     const clone = new this.constructor(this.member);
-    clone._patch(this.keyArray());
+    clone.member._roles = [...this.keyArray()];
     return clone;
   }
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const Action = require('./Action');
 const Collection = require('../../util/Collection');
 const { Events } = require('../../util/Constants');
@@ -11,7 +13,10 @@ class MessageDeleteBulkAction extends Action {
       const ids = data.ids;
       const messages = new Collection();
       for (const id of ids) {
-        const message = channel.messages.get(id);
+        const message = this.getMessage({
+          id,
+          guild_id: data.guild_id,
+        }, channel, false);
         if (message) {
           message.deleted = true;
           messages.set(message.id, message);
@@ -19,6 +24,11 @@ class MessageDeleteBulkAction extends Action {
         }
       }
 
+      /**
+       * Emitted whenever messages are deleted in bulk.
+       * @event Client#messageDeleteBulk
+       * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
+       */
       if (messages.size > 0) client.emit(Events.MESSAGE_BULK_DELETE, messages);
       return { messages };
     }
@@ -26,10 +36,5 @@ class MessageDeleteBulkAction extends Action {
   }
 }
 
-/**
- * Emitted whenever messages are deleted in bulk.
- * @event Client#messageDeleteBulk
- * @param {Collection<Snowflake, Message>} messages The deleted messages, mapped by their ID
- */
 
 module.exports = MessageDeleteBulkAction;

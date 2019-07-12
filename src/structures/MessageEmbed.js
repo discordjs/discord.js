@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
 
@@ -14,6 +16,7 @@ class MessageEmbed {
      * The type of this embed, either:
      * * `image` - an image embed
      * * `video` - a video embed
+     * * `gifv` - a gifv embed
      * * `link` - a link embed
      * * `rich` - a rich embed
      * @type {string}
@@ -42,7 +45,7 @@ class MessageEmbed {
      * The color of this embed
      * @type {?number}
      */
-    this.color = data.color;
+    this.color = Util.resolveColor(data.color);
 
     /**
      * The timestamp of this embed
@@ -97,11 +100,17 @@ class MessageEmbed {
      * The video of this embed (if there is one)
      * @type {?Object}
      * @property {string} url URL of this video
+     * @property {string} proxyURL ProxyURL for this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
      * @readonly
      */
-    this.video = data.video;
+    this.video = data.video ? {
+      url: data.video.url,
+      proxyURL: data.video.proxy_url,
+      height: data.video.height,
+      width: data.video.width,
+    } : null;
 
     /**
      * The author of this embed (if there is one)
@@ -165,6 +174,20 @@ class MessageEmbed {
    */
   get hexColor() {
     return this.color ? `#${this.color.toString(16).padStart(6, '0')}` : null;
+  }
+
+  /**
+   * The accumulated length for the embed title, description, fields and footer text
+   * @type {number}
+   * @readonly
+   */
+  get length() {
+    return (
+      (this.title ? this.title.length : 0) +
+      (this.description ? this.description.length : 0) +
+      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) =>
+        prev + curr.name.length + curr.value.length, 0) : 0) +
+      (this.footer ? this.footer.text.length : 0));
   }
 
   /**

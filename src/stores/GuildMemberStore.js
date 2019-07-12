@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const GuildMember = require('../structures/GuildMember');
 const { Events, OPCodes } = require('../util/Constants');
@@ -104,11 +106,13 @@ class GuildMemberStore extends DataStore {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * <info>It's recommended to set options.count to `false` for large guilds.</info>
    * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
+   * @param {boolean} [options.count=true] Whether or not to return the number of users that have been kicked.
    * @param {string} [options.reason] Reason for this prune
-   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
    * guild.members.prune({ dry: true })
@@ -120,9 +124,12 @@ class GuildMemberStore extends DataStore {
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
-  prune({ days = 7, dry = false, reason } = {}) {
+  prune({ days = 7, dry = false, count = true, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
+    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: {
+      days,
+      compute_prune_count: count,
+    }, reason })
       .then(data => data.pruned);
   }
 
@@ -178,7 +185,7 @@ class GuildMemberStore extends DataStore {
 
   _fetchSingle({ user, cache }) {
     const existing = this.get(user);
-    if (existing && existing.joinedTimestamp) return Promise.resolve(existing);
+    if (existing && !existing.partial) return Promise.resolve(existing);
     return this.client.api.guilds(this.guild.id).members(user).get()
       .then(data => this.add(data, cache));
   }
@@ -189,7 +196,7 @@ class GuildMemberStore extends DataStore {
         resolve(query || limit ? new Collection() : this);
         return;
       }
-      this.guild.client.ws.send({
+      this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,

@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const MessageReaction = require('../structures/MessageReaction');
 

@@ -1,6 +1,7 @@
 ---
 name: Question / General support request
 about: Ask for help in Discord instead - https://discord.gg/bRCvFy9
+labels: question (please use Discord instead)
 
 ---
 

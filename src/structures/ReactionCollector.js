@@ -1,3 +1,5 @@
+'use strict';
+
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');

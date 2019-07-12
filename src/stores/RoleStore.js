@@ -1,3 +1,5 @@
+'use strict';
+
 const DataStore = require('./DataStore');
 const Role = require('../structures/Role');
 const { resolveColor } = require('../util/Util');
@@ -15,6 +17,34 @@ class RoleStore extends DataStore {
 
   add(data, cache) {
     return super.add(data, cache, { extras: [this.guild] });
+  }
+
+  /**
+   * Obtains one or more roles from Discord, or the role cache if they're already available.
+   * @param {Snowflake} [id] ID or IDs of the role(s)
+   * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
+   * @returns {Promise<Role|Role[]>}
+   * @example
+   * // Fetch all roles from the guild
+   * message.guild.roles.fetch()
+   *   .then(roles => console.log(`There are ${roles.size} roles.`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch a single role
+   * message.guild.roles.fetch('222078108977594368')
+   *   .then(role => console.log(`The role color is: ${role.color}`))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true) {
+    if (id) {
+      const existing = this.get(id);
+      if (existing) return existing;
+    }
+
+    // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
+    const roles = await this.client.api.guilds(this.guild.id).roles.get();
+    for (const role of roles) this.add(role, cache);
+    return id ? this.get(id) || null : this;
   }
 
   /**
@@ -46,7 +76,7 @@ class RoleStore extends DataStore {
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
-   * @param {RoleData} [options.data] The data to update the role with
+   * @param {RoleData} [options.data] The data to create the role with
    * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example

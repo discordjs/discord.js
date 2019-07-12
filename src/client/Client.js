@@ -1,6 +1,7 @@
+'use strict';
+
 const BaseClient = require('./BaseClient');
 const Permissions = require('../util/Permissions');
-const ClientManager = require('./ClientManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const ActionsManager = require('./actions/ActionsManager');
@@ -10,12 +11,11 @@ const Webhook = require('../structures/Webhook');
 const Invite = require('../structures/Invite');
 const ClientApplication = require('../structures/ClientApplication');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
-const VoiceBroadcast = require('./voice/VoiceBroadcast');
 const UserStore = require('../stores/UserStore');
 const ChannelStore = require('../stores/ChannelStore');
 const GuildStore = require('../stores/GuildStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
-const { Events, browser } = require('../util/Constants');
+const { Events, browser, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
@@ -31,27 +31,48 @@ class Client extends BaseClient {
   constructor(options = {}) {
     super(Object.assign({ _tokenType: 'Bot' }, options));
 
-    // Obtain shard details from environment
-    if (!browser && !this.options.shardId && 'SHARD_ID' in process.env) {
-      this.options.shardId = Number(process.env.SHARD_ID);
+    // Obtain shard details from environment or if present, worker threads
+    let data = process.env;
+    try {
+      // Test if worker threads module is present and used
+      data = require('worker_threads').workerData || data;
+    } catch (_) {
+      // Do nothing
     }
-    if (!browser && !this.options.shardCount && 'SHARD_COUNT' in process.env) {
-      this.options.shardCount = Number(process.env.SHARD_COUNT);
+
+    if (this.options.shards === DefaultOptions.shards) {
+      if ('SHARDS' in data) {
+        this.options.shards = JSON.parse(data.SHARDS);
+      }
+    }
+
+    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
+      if ('TOTAL_SHARD_COUNT' in data) {
+        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+      } else if (Array.isArray(this.options.shards)) {
+        this.options.totalShardCount = this.options.shards.length;
+      } else {
+        this.options.totalShardCount = this.options.shardCount;
+      }
+    }
+
+    if (typeof this.options.shards === 'undefined' && typeof this.options.shardCount === 'number') {
+      this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
+    }
+
+    if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
+
+    if (typeof this.options.shards !== 'undefined') {
+      this.options.shards = [...new Set(
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+      )];
     }
 
     this._validateOptions();
 
     /**
-     * The manager of the client
-     * @type {ClientManager}
-     * @private
-     */
-    this.manager = new ClientManager(this);
-
-    /**
      * The WebSocket manager of the client
      * @type {WebSocketManager}
-     * @private
      */
     this.ws = new WebSocketManager(this);
 
@@ -65,7 +86,6 @@ class Client extends BaseClient {
     /**
      * The voice manager of the client (`null` in browsers)
      * @type {?ClientVoiceManager}
-     * @private
      */
     this.voice = !browser ? new ClientVoiceManager(this) : null;
 
@@ -73,7 +93,9 @@ class Client extends BaseClient {
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard = !browser && process.env.SHARDING_MANAGER ? ShardClientUtil.singleton(this) : null;
+    this.shard = !browser && process.env.SHARDING_MANAGER ?
+      ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE) :
+      null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -91,7 +113,8 @@ class Client extends BaseClient {
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
-     * is a member of, and all DM channels
+     * is a member of. Note that DM channels will not be initially cached, and thus not be present
+     * in the store without their explicit fetching or use.
      * @type {ChannelStore<Snowflake, Channel>}
      */
     this.channels = new ChannelStore(this);
@@ -129,68 +152,9 @@ class Client extends BaseClient {
      */
     this.readyAt = null;
 
-    /**
-     * Active voice broadcasts that have been created
-     * @type {VoiceBroadcast[]}
-     */
-    this.broadcasts = [];
-
-    /**
-     * Previous heartbeat pings of the websocket (most recent first, limited to three elements)
-     * @type {number[]}
-     */
-    this.pings = [];
-
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * Timestamp of the latest ping's start time
-   * @type {number}
-   * @readonly
-   * @private
-   */
-  get _pingTimestamp() {
-    return this.ws.connection ? this.ws.connection.lastPingTimestamp : 0;
-  }
-
-  /**
-   * Current status of the client's connection to Discord
-   * @type {?Status}
-   * @readonly
-   */
-  get status() {
-    return this.ws.connection ? this.ws.connection.status : null;
-  }
-
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
-  get uptime() {
-    return this.readyAt ? Date.now() - this.readyAt : null;
-  }
-
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the {@link Client#pings} property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    return this.pings.reduce((prev, p) => prev + p, 0) / this.pings.length;
-  }
-
-  /**
-   * All active voice connections that have been established, mapped by guild ID
-   * @type {Collection<Snowflake, VoiceConnection>}
-   * @readonly
-   */
-  get voiceConnections() {
-    if (browser) return new Collection();
-    return this.voice.connections;
   }
 
   /**
@@ -216,13 +180,12 @@ class Client extends BaseClient {
   }
 
   /**
-   * Creates a voice broadcast.
-   * @returns {VoiceBroadcast}
+   * How long it has been since the client last entered the `READY` state in milliseconds
+   * @type {?number}
+   * @readonly
    */
-  createVoiceBroadcast() {
-    const broadcast = new VoiceBroadcast(this);
-    this.broadcasts.push(broadcast);
-    return broadcast;
+  get uptime() {
+    return this.readyAt ? Date.now() - this.readyAt : null;
   }
 
   /**
@@ -232,15 +195,24 @@ class Client extends BaseClient {
    * @example
    * client.login('my token');
    */
-  login(token = this.token) {
-    return new Promise((resolve, reject) => {
-      if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-      token = token.replace(/^Bot\s*/i, '');
-      this.manager.connectToWebSocket(token, resolve, reject);
-    }).catch(e => {
+  async login(token = this.token) {
+    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.emit(Events.DEBUG, `Provided token: ${token}`);
+
+    if (this.options.presence) {
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
+    }
+
+    this.emit(Events.DEBUG, 'Preparing to connect to the gateway...');
+
+    try {
+      await this.ws.connect();
+      return this.token;
+    } catch (error) {
       this.destroy();
-      return Promise.reject(e);
-    });
+      throw error;
+    }
   }
 
   /**
@@ -249,7 +221,8 @@ class Client extends BaseClient {
    */
   destroy() {
     super.destroy();
-    return this.manager.destroy();
+    this.ws.destroy();
+    this.token = null;
   }
 
   /**
@@ -283,7 +256,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains the available voice regions from Discord.
-   * @returns {Collection<string, VoiceRegion>}
+   * @returns {Promise<Collection<string, VoiceRegion>>}
    * @example
    * client.fetchVoiceRegions()
    *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
@@ -355,31 +328,22 @@ class Client extends BaseClient {
    *   .then(link => console.log(`Generated bot invite link: ${link}`))
    *   .catch(console.error);
    */
-  generateInvite(permissions) {
+  async generateInvite(permissions) {
     permissions = Permissions.resolve(permissions);
-    return this.fetchApplication().then(application =>
-      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
-    );
+    const application = await this.fetchApplication();
+    const query = new URLSearchParams({
+      client_id: application.id,
+      permissions: permissions,
+      scope: 'bot',
+    });
+    return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
   }
 
   toJSON() {
     return super.toJSON({
       readyAt: false,
-      broadcasts: false,
-      pings: false,
       presences: false,
     });
-  }
-
-  /**
-   * Adds a ping to {@link Client#pings}.
-   * @param {number} startTime Starting time of the ping
-   * @private
-   */
-  _pong(startTime) {
-    this.pings.unshift(Date.now() - startTime);
-    if (this.pings.length > 3) this.pings.length = 3;
-    this.ws.lastHeartbeatAck = true;
   }
 
   /**
@@ -399,17 +363,14 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number');
+    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
     }
-    if (typeof options.shardId !== 'number' || isNaN(options.shardId)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardId', 'a number');
+    if (options.shards && !Array.isArray(options.shards)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
-    if (options.shardCount < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 0');
-    if (options.shardId < 0) throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'at least 0');
-    if (options.shardId !== 0 && options.shardId >= options.shardCount) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'shardId', 'less than shardCount');
-    }
+    if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
+    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
@@ -425,16 +386,16 @@ class Client extends BaseClient {
     if (typeof options.disableEveryone !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
     }
+    if (!Array.isArray(options.partials)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
+    }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
-    if (typeof options.internalSharding !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'internalSharding', 'a boolean');
-    }
-    if (!(options.disabledEvents instanceof Array)) {
+    if (!Array.isArray(options.disabledEvents)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
     }
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
