@@ -57,6 +57,10 @@ class Guild extends Base {
      */
     this.presences = new PresenceStore(this.client);
 
+    /**
+     * A collection of voice states in this guild
+     * @type {VoiceStateStore<Snowflake, VoiceState>}
+     */
     this.voiceStates = new VoiceStateStore(this);
 
     /**
@@ -144,6 +148,12 @@ class Guild extends Base {
 
     /**
      * An array of enabled guild features, here are the possible values:
+     * * ANIMATED_ICON
+     * * COMMERCE
+     * * LURKABLE
+     * * PARTNERED
+     * * NEWS
+     * * BANNER
      * * INVITE_SPLASH
      * * MORE_EMOJI
      * * VERIFIED
@@ -187,6 +197,30 @@ class Guild extends Base {
      * @type {boolean}
      */
     this.embedEnabled = data.embed_enabled;
+
+    /**
+     * The type of premium tier:
+     * * 0: NONE
+     * * 1: TIER_1
+     * * 2: TIER_2
+     * * 3: TIER_3
+     * @typedef {number} PremiumTier
+     */
+
+    /**
+     * The premium tier on this guild
+     * @type {PremiumTier}
+     */
+    this.premiumTier = data.premium_tier;
+
+    /**
+     * The total number of users currently boosting this server
+     * @type {?number}
+     * @name Guild#premiumSubscriptionCount
+     */
+    if (typeof data.premium_subscription_count !== 'undefined') {
+      this.premiumSubscriptionCount = data.premium_subscription_count;
+    }
 
     /**
      * Whether widget images are enabled on this guild
@@ -736,6 +770,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    */
 
@@ -768,6 +803,7 @@ class Guild extends Base {
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
     if (data.splash) _data.splash = data.splash;
+    if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -938,6 +974,20 @@ class Guild extends Base {
   }
 
   /**
+   * Sets a new guild banner.
+   * @param {Base64Resolvable|BufferResolvable} banner The new banner of the guild
+   * @param {string} [reason] Reason for changing the guild's banner
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.setBanner('./banner.png')
+   *  .then(updated => console.log('Updated the guild banner'))
+   *  .catch(console.error);
+   */
+  async setBanner(banner, reason) {
+    return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+  }
+
+  /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
@@ -963,6 +1013,40 @@ class Guild extends Base {
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
         channels: updatedChannels,
+      }).guild
+    );
+  }
+
+  /**
+   * The data needed for updating a guild role's position
+   * @typedef {Object} GuildRolePosition
+   * @property {RoleResolveable} role The ID of the role
+   * @property {number} position The position to update
+   */
+
+  /**
+   * Batch-updates the guild's role positions
+   * @param {GuildRolePosition[]} rolePositions Role positions to update
+   * @returns {Promise<Guild>}
+   * @example
+   * guild.setRolePositions([{ role: roleID, position: updatedRoleIndex }])
+   *  .then(guild => console.log(`Role permissions updated for ${guild}`))
+   *  .catch(console.error);
+   */
+  setRolePositions(rolePositions) {
+    // Make sure rolePositions are prepared for API
+    rolePositions = rolePositions.map(o => ({
+      id: o.role,
+      position: o.position,
+    }));
+
+    // Call the API to update role positions
+    return this.client.api.guilds(this.id).roles.patch({
+      data: rolePositions,
+    }).then(() =>
+      this.client.actions.GuildRolePositionUpdate.handle({
+        guild_id: this.id,
+        roles: rolePositions,
       }).guild
     );
   }
