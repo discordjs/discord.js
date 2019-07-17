@@ -40,11 +40,11 @@ class CategoryChannel extends GuildChannel {
    *   .catch(console.error);
    */
   createChannel(name, options) {
-	if (!options) {
-	  options = { parent: this.id };
-	} else {
-	  options.parent = this.id;
-	}
+    if (!options) {
+      options = { parent: this.id };
+    } else {
+      options.parent = this.id;
+    }
     return this.guild.createChannel(name, options);
   }
 }
