@@ -102,10 +102,10 @@ class GuildChannelStore extends DataStore {
       rateLimitPerUser,
       reason,
     } = options;
-    if (this._parent) {
-      parent = this.client.channels.resolveID(this._parent);
-    } else if (parent) {
+    if (parent) {
       parent = this.client.channels.resolveID(parent);
+    } else if (this._parent) {
+      parent = this.client.channels.resolveID(this._parent);
     }
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
