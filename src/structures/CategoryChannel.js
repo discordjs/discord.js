@@ -21,7 +21,7 @@ class CategoryChannel extends GuildChannel {
    * Creates a new channel with this category as its parent.
    * @param {string} name The name of the new channel
    * @param {ChannelData} [options] Options for the new channel
-   * @returns {Promise<CategoryChannel|TextChannel|VoiceChannel>}
+   * @returns {Promise<TextChannel|VoiceChannel>}
    * @example
    * // Create a new text channel
    * category.createChannel('new-general')
