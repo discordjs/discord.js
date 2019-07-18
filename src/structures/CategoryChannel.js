@@ -14,7 +14,7 @@ class CategoryChannel extends GuildChannel {
    * @readonly
    */
   get children() {
-    const children = new GuildChannelStore(this.guild, this.guild.channels.filter(c => c.parentID === this.id));
+    const children = new GuildChannelStore(this.guild, this.guild.channels.filter(c => c.parentID === this.id).array());
     children._parent = this;
     return children;
   }
