@@ -49,6 +49,7 @@ class MessageCollector extends Collector {
       this.emit('message', message);
     };
     this.on('collect', this._reEmitter);
+    this.on('remove', this._reEmitter);
   }
 
   // Remove in v12
@@ -75,6 +76,21 @@ class MessageCollector extends Collector {
   }
 
   /**
+   * Handle an incoming message for possible collection.
+   * @param {Message} message The message that could be collected
+   * @returns {?{key: Snowflake, value: Message}}
+   * @private
+   */
+  remove(message) {
+    if (message.channel.id !== this.channel.id) return null;
+    this.received--;
+    return {
+      key: message.id,
+      value: message,
+    };
+  }
+
+  /**
    * Check after collection to see if the collector is done.
    * @returns {?string} Reason to end the collector, if any
    * @private
@@ -92,6 +108,7 @@ class MessageCollector extends Collector {
    */
   cleanup() {
     this.removeListener('collect', this._reEmitter);
+    this.removeListener('remove', this._reEmitter);
     this.client.removeListener('message', this.listener);
     this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }

@@ -5,6 +5,8 @@
 //   Zack Campbell <zajrik@gmail.com> (https://github.com/zajrik)
 // License: MIT
 
+import {MessageReaction, Snowflake, User} from 'discord.js';
+
 declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable as ReadableStream } from 'stream';
@@ -360,6 +362,7 @@ declare module 'discord.js' {
 		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
 		private _timeout: NodeJS.Timer;
 		private _handle(...args: any[]): void;
+		private _handleRemove(...args: any[]): void;
 
 		public readonly client: Client;
 		public collected: Collection<K, V>;
@@ -371,14 +374,17 @@ declare module 'discord.js' {
 
 		protected listener: Function;
 		public abstract cleanup(): void;
+		public abstract remove(...args: any[]): CollectorHandler<K, V>;
 		public abstract handle(...args: any[]): CollectorHandler<K, V>;
 		public abstract postCheck(...args: any[]): string | null;
 
 		public on(event: 'collect', listener: (element: V, collector: Collector<K, V>) => void): this;
+		public on(event: 'remove', listener: (...args: any[]) => void): this;
 		public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'collect', listener: (element: V, collector: Collector<K, V>) => void): this;
+		public on(event: 'remove', listener: (...args: any[]) => void): this;
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 		public once(event: string, listener: Function): this;
 	}
@@ -799,6 +805,7 @@ declare module 'discord.js' {
 		public received: number;
 
 		public cleanup(): void;
+		public remove(message: Message): CollectorHandler<Snowflake, Message>;
 		public handle(message: Message): CollectorHandler<Snowflake, Message>;
 		public postCheck(): string;
 	}
@@ -1011,6 +1018,7 @@ declare module 'discord.js' {
 		public users: Collection<Snowflake, User>;
 
 		public cleanup(): void;
+		public remove(reaction: MessageReaction, user: User): CollectorHandler<Snowflake, MessageReaction>;
 		public handle(reaction: MessageReaction): CollectorHandler<Snowflake, MessageReaction>;
 		public postCheck(reaction: MessageReaction, user: User): string;
 	}

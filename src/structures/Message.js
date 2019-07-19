@@ -272,6 +272,7 @@ class Message {
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
    * const collector = message.createReactionCollector(filter, { time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
+   * collector.on('remove', m => console.log(`Collected ${m.content}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
    */
   createReactionCollector(filter, options = {}) {
