@@ -1,5 +1,4 @@
 const Collector = require('./interfaces/Collector');
-const Collection = require('../util/Collection');
 const util = require('util');
 
 /**
@@ -29,12 +28,6 @@ class MessageCollector extends Collector {
     this.channel = channel;
 
     /**
-     * The users which have reacted to this message
-     * @type {Collection}
-     */
-    this.users = new Collection();
-
-    /**
      * Total number of messages that were received in the channel during message collection
      * @type {number}
      */
@@ -42,6 +35,7 @@ class MessageCollector extends Collector {
 
     this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on('message', this.listener);
+    this.client.on('messageDelete', this.removeListener);
 
     // For backwards compatibility (remove in v12)
     if (this.options.max) this.options.maxProcessed = this.options.max;
@@ -56,7 +50,6 @@ class MessageCollector extends Collector {
       this.emit('message', message);
     };
     this.on('collect', this._reEmitter);
-    this.on('remove', this._reEmitter);
   }
 
   // Remove in v12
@@ -83,6 +76,20 @@ class MessageCollector extends Collector {
   }
 
   /**
+   * Handles a message for possible disposal.
+   * @param {Message} message The message that could be disposed of
+   * @returns {?Snowflake}
+   */
+  remove(message) {
+    /**
+     * Emitted whenever a message is disposed of.
+     * @event MessageCollector#dispose
+     * @param {Message} message The message that was disposed of
+     */
+    return message.channel.id === this.channel.id ? message.id : null;
+  }
+
+  /**
    * Check after collection to see if the collector is done.
    * @returns {?string} Reason to end the collector, if any
    * @private
@@ -100,7 +107,6 @@ class MessageCollector extends Collector {
    */
   cleanup() {
     this.removeListener('collect', this._reEmitter);
-    this.removeListener('remove', this._reEmitter);
     this.client.removeListener('message', this.listener);
     this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }
