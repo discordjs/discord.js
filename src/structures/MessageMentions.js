@@ -174,6 +174,6 @@ MessageMentions.ROLES_PATTERN = /<@&(\d{17,19})>/g;
  * Regular expression that globally matches channel mentions like `<#222079895583457280>`
  * @type {RegExp}
  */
-MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})>/g;
+MessageMentions.CHANNELS_PATTERN = /<#(\d{17,19})(?::\d{17,19}:(?:[^>]+))?>/g;
 
 module.exports = MessageMentions;
