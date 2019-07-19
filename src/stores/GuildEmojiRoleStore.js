@@ -23,6 +23,7 @@ class GuildEmojiRoleStore extends Collection {
    * @readonly
    */
   get _filtered() {
+    if (!this.guild) return new this.constructor[Symbol.species]();
     return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));
   }
 
