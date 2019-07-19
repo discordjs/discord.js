@@ -39,7 +39,7 @@ class ReactionCollector extends Collector {
      */
     this.total = 0;
 
-    this.client.setMaxListeners(this.client.getMaxListeners() + 2);
+    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on('messageReactionAdd', this.listener);
     this.client.on('messageReactionRemove', this.removeListener);
   }
@@ -47,13 +47,14 @@ class ReactionCollector extends Collector {
   /**
    * Handle an incoming reaction for possible collection.
    * @param {MessageReaction} reaction The reaction to possibly collect
+   * @param {User} user The user that added the reaction
    * @returns {?{key: Snowflake, value: MessageReaction}}
    * @private
    */
-  handle(reaction) {
+  handle(reaction, user) {
     if (reaction.message.id !== this.message.id) return null;
     return {
-      key: reaction.emoji.id || reaction.emoji.name,
+      key: `${user.id}-${reaction.emoji.id || reaction.emoji.name}`,
       value: reaction,
     };
   }
@@ -66,28 +67,9 @@ class ReactionCollector extends Collector {
    * @private
    */
   remove(reaction, user) {
-    /**
-     * Emitted whenever a reaction is removed of.
-     * @event ReactionCollector#remove
-     * @param {MessageReaction} reaction The reaction that was removed of
-     * @param {User} user The user that removed the reaction
-     */
     if (reaction.message.id !== this.message.id) return null;
-
-    /**
-     * Emitted whenever a reaction is removed from a message. Will emit on all reaction removals,
-     * as opposed to {@link Collector#end} which will only be emitted when the entire reaction
-     * is removed.
-     * @event ReactionCollector#remove
-     * @param {MessageReaction} reaction The reaction that was removed
-     * @param {User} user The user that removed the reaction
-     */
-    if (this.collected.has(reaction.emoji.id || reaction.emoji.name) && this.users.has(user.id)) {
-      this.emit('remove', reaction, user);
-    }
-
     return {
-      key: reaction.emoji.id || reaction.emoji.name,
+      key: `${user.id}-${reaction.emoji.id || reaction.emoji.name}`,
       value: reaction,
     };
   }
@@ -114,7 +96,7 @@ class ReactionCollector extends Collector {
   cleanup() {
     this.client.removeListener('messageReactionAdd', this.listener);
     this.client.removeListener('messageReactionRemove', this.removeListener);
-    this.client.setMaxListeners(this.client.getMaxListeners() - 2);
+    this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }
 }
 

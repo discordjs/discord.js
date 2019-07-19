@@ -379,12 +379,12 @@ declare module 'discord.js' {
 		public abstract postCheck(...args: any[]): string | null;
 
 		public on(event: 'collect', listener: (element: V, collector: Collector<K, V>) => void): this;
-		public on(event: 'remove', listener: (...args: any[]) => void): this;
+		public on(event: 'remove', listener: (element: V, collector: Collector<K, V>) => void): this;
 		public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'collect', listener: (element: V, collector: Collector<K, V>) => void): this;
-		public on(event: 'remove', listener: (...args: any[]) => void): this;
+		public once(event: 'remove', listener: (element: V, collector: Collector<K, V>) => void): this;
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
 		public once(event: string, listener: Function): this;
 	}
@@ -1019,7 +1019,7 @@ declare module 'discord.js' {
 
 		public cleanup(): void;
 		public remove(reaction: MessageReaction, user: User): CollectorHandler<Snowflake, MessageReaction>;
-		public handle(reaction: MessageReaction): CollectorHandler<Snowflake, MessageReaction>;
+		public handle(reaction: MessageReaction, user: User): CollectorHandler<Snowflake, MessageReaction>;
 		public postCheck(reaction: MessageReaction, user: User): string;
 	}
 

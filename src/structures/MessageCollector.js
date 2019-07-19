@@ -1,4 +1,5 @@
 const Collector = require('./interfaces/Collector');
+const Collection = require('../util/Collection');
 const util = require('util');
 
 /**
@@ -26,6 +27,12 @@ class MessageCollector extends Collector {
      * @type {TextBasedChannel}
      */
     this.channel = channel;
+
+    /**
+     * The users which have reacted to this message
+     * @type {Collection}
+     */
+    this.users = new Collection();
 
     /**
      * Total number of messages that were received in the channel during message collection
@@ -69,21 +76,6 @@ class MessageCollector extends Collector {
   handle(message) {
     if (message.channel.id !== this.channel.id) return null;
     this.received++;
-    return {
-      key: message.id,
-      value: message,
-    };
-  }
-
-  /**
-   * Handle an incoming message for possible collection.
-   * @param {Message} message The message that could be collected
-   * @returns {?{key: Snowflake, value: Message}}
-   * @private
-   */
-  remove(message) {
-    if (message.channel.id !== this.channel.id) return null;
-    this.received--;
     return {
       key: message.id,
       value: message,
