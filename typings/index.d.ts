@@ -5,8 +5,6 @@
 //   Zack Campbell <zajrik@gmail.com> (https://github.com/zajrik)
 // License: MIT
 
-import {MessageReaction, Snowflake, User} from 'discord.js';
-
 declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable as ReadableStream } from 'stream';

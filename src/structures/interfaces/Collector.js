@@ -104,12 +104,12 @@ class Collector extends EventEmitter {
    */
   _handleRemove(...args) {
     const remove = this.remove(...args);
-    if (!remove || !this.filter(...args) || !this.collected.has(remove.key)) return;
+    if (!remove || !this.filter(...args, this.collected)) return;
     this.collected.delete(remove.key);
 
     /**
      * Emitted whenever an element is removed.
-     * @event Collector#collect
+     * @event Collector#remove
      * @param {*} element The element that got removed.
      * @param {Collector} collector The collector
      */
