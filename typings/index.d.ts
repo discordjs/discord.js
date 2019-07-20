@@ -441,7 +441,7 @@ declare module 'discord.js' {
 		DESTROYED = 'destroyed',
 		INVALID_SESSION = 'invalidSession',
 		READY = 'ready',
-		RESUMED = 'resumed',
+		RESUMED = 'resumed'
 	}
 
 	export enum ColorsEnum {
@@ -473,7 +473,7 @@ declare module 'discord.js' {
 		BLURPLE = 0x7289DA,
 		GREYPLE = 0x99AAB5,
 		DARK_BUT_NOT_BLACK = 0x2C2F33,
-		NOT_QUITE_BLACK = 0x23272A,
+		NOT_QUITE_BLACK = 0x23272A
 	}
 
 	export enum StatusEnum {
@@ -482,7 +482,7 @@ declare module 'discord.js' {
 		RECONNECTING = 2,
 		IDLE = 3,
 		NEARLY = 4,
-		DISCONNECTED = 5,
+		DISCONNECTED = 5
 	}
 
 	export enum OPCodesEnum {
@@ -497,7 +497,7 @@ declare module 'discord.js' {
 		REQUEST_GUILD_MEMBERS = 8,
 		INVALID_SESSION = 9,
 		HELLO = 10,
-		HEARTBEAT_ACK = 11,
+		HEARTBEAT_ACK = 11
 	}
 
 	export enum APIErrorsEnum {
@@ -544,7 +544,7 @@ declare module 'discord.js' {
 		CANNOT_EXECUTE_ON_SYSTEM_MESSAGE = 50021,
 		BULK_DELETE_MESSAGE_TOO_OLD = 50034,
 		INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT = 50036,
-		REACTION_BLOCKED = 90001,
+		REACTION_BLOCKED = 90001
 	}
 
 	export enum VoiceStatusEnum {
@@ -552,7 +552,7 @@ declare module 'discord.js' {
 		CONNECTING = 1,
 		AUTHENTICATING = 2,
 		RECONNECTING = 3,
-		DISCONNECTED = 4,
+		DISCONNECTED = 4
 	}
 
 	export enum VoiceOPCodesEnum {
@@ -564,7 +564,7 @@ declare module 'discord.js' {
 		SPEAKING = 5,
 		HELLO = 8,
 		CLIENT_CONNECT = 12,
-		CLIENT_DISCONNECT = 13,
+		CLIENT_DISCONNECT = 13
 	}
 
 	export enum ChannelTypesEnum {
@@ -574,12 +574,12 @@ declare module 'discord.js' {
 		GROUP = 3,
 		CATEGORY = 4,
 		NEWS = 5,
-		STORE = 6,
+		STORE = 6
 	}
 
 	export enum ClientApplicationAssetTypesEnum {
 		SMALL = 1,
-		BIG = 2,
+		BIG = 2
 	}
 
 	export interface Constants {
