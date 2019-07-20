@@ -381,6 +381,207 @@ declare module 'discord.js' {
 
 	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
 
+	export enum EventsEnum {
+		RATE_LIMIT = 'rateLimit',
+		CLIENT_READY = 'ready',
+		RESUMED = 'resumed',
+		GUILD_CREATE = 'guildCreate',
+		GUILD_DELETE = 'guildDelete',
+		GUILD_UPDATE = 'guildUpdate',
+		GUILD_UNAVAILABLE = 'guildUnavailable',
+		GUILD_MEMBER_ADD = 'guildMemberAdd',
+		GUILD_MEMBER_REMOVE = 'guildMemberRemove',
+		GUILD_MEMBER_UPDATE = 'guildMemberUpdate',
+		GUILD_MEMBER_AVAILABLE = 'guildMemberAvailable',
+		GUILD_MEMBER_SPEAKING = 'guildMemberSpeaking',
+		GUILD_MEMBERS_CHUNK = 'guildMembersChunk',
+		GUILD_INTEGRATIONS_UPDATE = 'guildIntegrationsUpdate',
+		GUILD_ROLE_CREATE = 'roleCreate',
+		GUILD_ROLE_DELETE = 'roleDelete',
+		GUILD_ROLE_UPDATE = 'roleUpdate',
+		GUILD_EMOJI_CREATE = 'emojiCreate',
+		GUILD_EMOJI_DELETE = 'emojiDelete',
+		GUILD_EMOJI_UPDATE = 'emojiUpdate',
+		GUILD_BAN_ADD = 'guildBanAdd',
+		GUILD_BAN_REMOVE = 'guildBanRemove',
+		CHANNEL_CREATE = 'channelCreate',
+		CHANNEL_DELETE = 'channelDelete',
+		CHANNEL_UPDATE = 'channelUpdate',
+		CHANNEL_PINS_UPDATE = 'channelPinsUpdate',
+		MESSAGE_CREATE = 'message',
+		MESSAGE_DELETE = 'messageDelete',
+		MESSAGE_UPDATE = 'messageUpdate',
+		MESSAGE_BULK_DELETE = 'messageDeleteBulk',
+		MESSAGE_REACTION_ADD = 'messageReactionAdd',
+		MESSAGE_REACTION_REMOVE = 'messageReactionRemove',
+		MESSAGE_REACTION_REMOVE_ALL = 'messageReactionRemoveAll',
+		USER_UPDATE = 'userUpdate',
+		PRESENCE_UPDATE = 'presenceUpdate',
+		VOICE_STATE_UPDATE = 'voiceStateUpdate',
+		VOICE_BROADCAST_SUBSCRIBE = 'subscribe',
+		VOICE_BROADCAST_UNSUBSCRIBE = 'unsubscribe',
+		TYPING_START = 'typingStart',
+		WEBHOOKS_UPDATE = 'webhookUpdate',
+		DISCONNECT = 'disconnect',
+		RECONNECTING = 'reconnecting',
+		ERROR = 'error',
+		WARN = 'warn',
+		DEBUG = 'debug',
+		SHARD_DISCONNECTED = 'shardDisconnected',
+		SHARD_ERROR = 'shardError',
+		SHARD_RECONNECTING = 'shardReconnecting',
+		SHARD_READY = 'shardReady',
+		SHARD_RESUMED = 'shardResumed',
+		INVALIDATED = 'invalidated',
+		RAW = 'raw'
+	}
+
+	export enum ShardEventEnum {
+		CLOSE = 'close',
+		DESTROYED = 'destroyed',
+		INVALID_SESSION = 'invalidSession',
+		READY = 'ready',
+		RESUMED = 'resumed',
+	}
+
+	export enum ColorsEnum {
+		DEFAULT = 0x000000,
+		WHITE = 0xFFFFFF,
+		AQUA = 0x1ABC9C,
+		GREEN = 0x2ECC71,
+		BLUE = 0x3498DB,
+		YELLOW = 0xFFFF00,
+		PURPLE = 0x9B59B6,
+		LUMINOUS_VIVID_PINK = 0xE91E63,
+		GOLD = 0xF1C40F,
+		ORANGE = 0xE67E22,
+		RED = 0xE74C3C,
+		GREY = 0x95A5A6,
+		NAVY = 0x34495E,
+		DARK_AQUA = 0x11806A,
+		DARK_GREEN = 0x1F8B4C,
+		DARK_BLUE = 0x206694,
+		DARK_PURPLE = 0x71368A,
+		DARK_VIVID_PINK = 0xAD1457,
+		DARK_GOLD = 0xC27C0E,
+		DARK_ORANGE = 0xA84300,
+		DARK_RED = 0x992D22,
+		DARK_GREY = 0x979C9F,
+		DARKER_GREY = 0x7F8C8D,
+		LIGHT_GREY = 0xBCC0C0,
+		DARK_NAVY = 0x2C3E50,
+		BLURPLE = 0x7289DA,
+		GREYPLE = 0x99AAB5,
+		DARK_BUT_NOT_BLACK = 0x2C2F33,
+		NOT_QUITE_BLACK = 0x23272A,
+	}
+
+	export enum StatusEnum {
+		READY = 0,
+		CONNECTING = 1,
+		RECONNECTING = 2,
+		IDLE = 3,
+		NEARLY = 4,
+		DISCONNECTED = 5,
+	}
+
+	export enum OPCodesEnum {
+		DISPATCH = 0,
+		HEARTBEAT = 1,
+		IDENTIFY = 2,
+		STATUS_UPDATE = 3,
+		VOICE_STATE_UPDATE = 4,
+		VOICE_GUILD_PING = 5,
+		RESUME = 6,
+		RECONNECT = 7,
+		REQUEST_GUILD_MEMBERS = 8,
+		INVALID_SESSION = 9,
+		HELLO = 10,
+		HEARTBEAT_ACK = 11,
+	}
+
+	export enum APIErrorsEnum {
+		UNKNOWN_ACCOUNT = 10001,
+		UNKNOWN_APPLICATION = 10002,
+		UNKNOWN_CHANNEL = 10003,
+		UNKNOWN_GUILD = 10004,
+		UNKNOWN_INTEGRATION = 10005,
+		UNKNOWN_INVITE = 10006,
+		UNKNOWN_MEMBER = 10007,
+		UNKNOWN_MESSAGE = 10008,
+		UNKNOWN_OVERWRITE = 10009,
+		UNKNOWN_PROVIDER = 10010,
+		UNKNOWN_ROLE = 10011,
+		UNKNOWN_TOKEN = 10012,
+		UNKNOWN_USER = 10013,
+		UNKNOWN_EMOJI = 10014,
+		UNKNOWN_WEBHOOK = 10015,
+		BOT_PROHIBITED_ENDPOINT = 20001,
+		BOT_ONLY_ENDPOINT = 20002,
+		MAXIMUM_GUILDS = 30001,
+		MAXIMUM_FRIENDS = 30002,
+		MAXIMUM_PINS = 30003,
+		MAXIMUM_ROLES = 30005,
+		MAXIMUM_REACTIONS = 30010,
+		UNAUTHORIZED = 40001,
+		MISSING_ACCESS = 50001,
+		INVALID_ACCOUNT_TYPE = 50002,
+		CANNOT_EXECUTE_ON_DM = 50003,
+		EMBED_DISABLED = 50004,
+		CANNOT_EDIT_MESSAGE_BY_OTHER = 50005,
+		CANNOT_SEND_EMPTY_MESSAGE = 50006,
+		CANNOT_MESSAGE_USER = 50007,
+		CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL = 50008,
+		CHANNEL_VERIFICATION_LEVEL_TOO_HIGH = 50009,
+		OAUTH2_APPLICATION_BOT_ABSENT = 50010,
+		MAXIMUM_OAUTH2_APPLICATIONS = 50011,
+		INVALID_OAUTH_STATE = 50012,
+		MISSING_PERMISSIONS = 50013,
+		INVALID_AUTHENTICATION_TOKEN = 50014,
+		NOTE_TOO_LONG = 50015,
+		INVALID_BULK_DELETE_QUANTITY = 50016,
+		CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL = 50019,
+		CANNOT_EXECUTE_ON_SYSTEM_MESSAGE = 50021,
+		BULK_DELETE_MESSAGE_TOO_OLD = 50034,
+		INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT = 50036,
+		REACTION_BLOCKED = 90001,
+	}
+
+	export enum VoiceStatusEnum {
+		CONNECTED = 0,
+		CONNECTING = 1,
+		AUTHENTICATING = 2,
+		RECONNECTING = 3,
+		DISCONNECTED = 4,
+	}
+
+	export enum VoiceOPCodesEnum {
+		IDENTIFY = 0,
+		SELECT_PROTOCOL = 1,
+		READY = 2,
+		HEARTBEAT = 3,
+		SESSION_DESCRIPTION = 4,
+		SPEAKING = 5,
+		HELLO = 8,
+		CLIENT_CONNECT = 12,
+		CLIENT_DISCONNECT = 13,
+	}
+
+	export enum ChannelTypesEnum {
+		TEXT = 0,
+		DM = 1,
+		VOICE = 2,
+		GROUP = 3,
+		CATEGORY = 4,
+		NEWS = 5,
+		STORE = 6,
+	}
+
+	export enum ClientApplicationAssetTypesEnum {
+		SMALL = 1,
+		BIG = 2,
+	}
+
 	export interface Constants {
 		Package: {
 			name: string;
@@ -428,203 +629,22 @@ declare module 'discord.js' {
 			4010: 'SHARDING_INVALID';
 			4011: 'SHARDING_REQUIRED';
 		};
-		Events: {
-			RATE_LIMIT: 'rateLimit';
-			CLIENT_READY: 'ready';
-			RESUMED: 'resumed';
-			GUILD_CREATE: 'guildCreate';
-			GUILD_DELETE: 'guildDelete';
-			GUILD_UPDATE: 'guildUpdate';
-			GUILD_UNAVAILABLE: 'guildUnavailable';
-			GUILD_MEMBER_ADD: 'guildMemberAdd';
-			GUILD_MEMBER_REMOVE: 'guildMemberRemove';
-			GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
-			GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
-			GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking';
-			GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
-			GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
-			GUILD_ROLE_CREATE: 'roleCreate';
-			GUILD_ROLE_DELETE: 'roleDelete';
-			GUILD_ROLE_UPDATE: 'roleUpdate';
-			GUILD_EMOJI_CREATE: 'emojiCreate';
-			GUILD_EMOJI_DELETE: 'emojiDelete';
-			GUILD_EMOJI_UPDATE: 'emojiUpdate';
-			GUILD_BAN_ADD: 'guildBanAdd';
-			GUILD_BAN_REMOVE: 'guildBanRemove';
-			CHANNEL_CREATE: 'channelCreate';
-			CHANNEL_DELETE: 'channelDelete';
-			CHANNEL_UPDATE: 'channelUpdate';
-			CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
-			MESSAGE_CREATE: 'message';
-			MESSAGE_DELETE: 'messageDelete';
-			MESSAGE_UPDATE: 'messageUpdate';
-			MESSAGE_BULK_DELETE: 'messageDeleteBulk';
-			MESSAGE_REACTION_ADD: 'messageReactionAdd';
-			MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
-			MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
-			USER_UPDATE: 'userUpdate';
-			PRESENCE_UPDATE: 'presenceUpdate';
-			VOICE_STATE_UPDATE: 'voiceStateUpdate';
-			VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
-			VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
-			TYPING_START: 'typingStart';
-			WEBHOOKS_UPDATE: 'webhookUpdate';
-			DISCONNECT: 'disconnect';
-			RECONNECTING: 'reconnecting';
-			ERROR: 'error';
-			WARN: 'warn';
-			DEBUG: 'debug';
-			SHARD_DISCONNECTED: 'shardDisconnected';
-			SHARD_ERROR: 'shardError';
-			SHARD_RECONNECTING: 'shardReconnecting';
-			SHARD_READY: 'shardReady';
-			SHARD_RESUMED: 'shardResumed';
-			INVALIDATED: 'invalidated';
-			RAW: 'raw';
-		};
-		ShardEvents: {
-			CLOSE: 'close';
-			DESTROYED: 'destroyed';
-			INVALID_SESSION: 'invalidSession';
-			READY: 'ready';
-			RESUMED: 'resumed';
-		};
+		Events: EventsEnum;
+		ShardEvents: ShardEventEnum;
 		PartialTypes: {
 			[K in PartialType]: K;
 		};
 		WSEvents: {
 			[K in WSEventType]: K;
 		};
-		Colors: {
-			DEFAULT: 0x000000;
-			WHITE: 0xFFFFFF;
-			AQUA: 0x1ABC9C;
-			GREEN: 0x2ECC71;
-			BLUE: 0x3498DB;
-			YELLOW: 0xFFFF00;
-			PURPLE: 0x9B59B6;
-			LUMINOUS_VIVID_PINK: 0xE91E63;
-			GOLD: 0xF1C40F;
-			ORANGE: 0xE67E22;
-			RED: 0xE74C3C;
-			GREY: 0x95A5A6;
-			NAVY: 0x34495E;
-			DARK_AQUA: 0x11806A;
-			DARK_GREEN: 0x1F8B4C;
-			DARK_BLUE: 0x206694;
-			DARK_PURPLE: 0x71368A;
-			DARK_VIVID_PINK: 0xAD1457;
-			DARK_GOLD: 0xC27C0E;
-			DARK_ORANGE: 0xA84300;
-			DARK_RED: 0x992D22;
-			DARK_GREY: 0x979C9F;
-			DARKER_GREY: 0x7F8C8D;
-			LIGHT_GREY: 0xBCC0C0;
-			DARK_NAVY: 0x2C3E50;
-			BLURPLE: 0x7289DA;
-			GREYPLE: 0x99AAB5;
-			DARK_BUT_NOT_BLACK: 0x2C2F33;
-			NOT_QUITE_BLACK: 0x23272A;
-		};
-		Status: {
-			READY: 0;
-			CONNECTING: 1;
-			RECONNECTING: 2;
-			IDLE: 3;
-			NEARLY: 4;
-			DISCONNECTED: 5;
-		};
-		OPCodes: {
-			DISPATCH: 0;
-			HEARTBEAT: 1;
-			IDENTIFY: 2;
-			STATUS_UPDATE: 3;
-			VOICE_STATE_UPDATE: 4;
-			VOICE_GUILD_PING: 5;
-			RESUME: 6;
-			RECONNECT: 7;
-			REQUEST_GUILD_MEMBERS: 8;
-			INVALID_SESSION: 9;
-			HELLO: 10;
-			HEARTBEAT_ACK: 11;
-		};
-		APIErrors: {
-			UNKNOWN_ACCOUNT: 10001;
-			UNKNOWN_APPLICATION: 10002;
-			UNKNOWN_CHANNEL: 10003;
-			UNKNOWN_GUILD: 10004;
-			UNKNOWN_INTEGRATION: 10005;
-			UNKNOWN_INVITE: 10006;
-			UNKNOWN_MEMBER: 10007;
-			UNKNOWN_MESSAGE: 10008;
-			UNKNOWN_OVERWRITE: 10009;
-			UNKNOWN_PROVIDER: 10010;
-			UNKNOWN_ROLE: 10011;
-			UNKNOWN_TOKEN: 10012;
-			UNKNOWN_USER: 10013;
-			UNKNOWN_EMOJI: 10014;
-			UNKNOWN_WEBHOOK: 10015;
-			BOT_PROHIBITED_ENDPOINT: 20001;
-			BOT_ONLY_ENDPOINT: 20002;
-			MAXIMUM_GUILDS: 30001;
-			MAXIMUM_FRIENDS: 30002;
-			MAXIMUM_PINS: 30003;
-			MAXIMUM_ROLES: 30005;
-			MAXIMUM_REACTIONS: 30010;
-			UNAUTHORIZED: 40001;
-			MISSING_ACCESS: 50001;
-			INVALID_ACCOUNT_TYPE: 50002;
-			CANNOT_EXECUTE_ON_DM: 50003;
-			EMBED_DISABLED: 50004;
-			CANNOT_EDIT_MESSAGE_BY_OTHER: 50005;
-			CANNOT_SEND_EMPTY_MESSAGE: 50006;
-			CANNOT_MESSAGE_USER: 50007;
-			CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: 50008;
-			CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: 50009;
-			OAUTH2_APPLICATION_BOT_ABSENT: 50010;
-			MAXIMUM_OAUTH2_APPLICATIONS: 50011;
-			INVALID_OAUTH_STATE: 50012;
-			MISSING_PERMISSIONS: 50013;
-			INVALID_AUTHENTICATION_TOKEN: 50014;
-			NOTE_TOO_LONG: 50015;
-			INVALID_BULK_DELETE_QUANTITY: 50016;
-			CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019;
-			CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021;
-			BULK_DELETE_MESSAGE_TOO_OLD: 50034;
-			INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036;
-			REACTION_BLOCKED: 90001;
-		};
-		VoiceStatus: {
-			CONNECTED: 0;
-			CONNECTING: 1;
-			AUTHENTICATING: 2;
-			RECONNECTING: 3;
-			DISCONNECTED: 4;
-		};
-		VoiceOPCodes: {
-			IDENTIFY: 0;
-			SELECT_PROTOCOL: 1;
-			READY: 2;
-			HEARTBEAT: 3;
-			SESSION_DESCRIPTION: 4;
-			SPEAKING: 5;
-			HELLO: 8;
-			CLIENT_CONNECT: 12;
-			CLIENT_DISCONNECT: 13;
-		};
-		ChannelTypes: {
-			TEXT: 0;
-			DM: 1;
-			VOICE: 2;
-			GROUP: 3;
-			CATEGORY: 4;
-			NEWS: 5;
-			STORE: 6;
-		};
-		ClientApplicationAssetTypes: {
-			SMALL: 1;
-			BIG: 2;
-		};
+		Colors: ColorsEnum;
+		Status: StatusEnum;
+		OPCodes: OPCodesEnum;
+		APIErrors: APIErrorsEnum;
+		VoiceStatus: VoiceStatusEnum;
+		VoiceOPCodes: VoiceOPCodesEnum;
+		ChannelTypes: ChannelTypesEnum;
+		ClientApplicationAssetTypes: ClientApplicationAssetTypesEnum;
 		MessageTypes: MessageType[];
 		ActivityTypes: ActivityType[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
