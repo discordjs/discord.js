@@ -23,11 +23,11 @@ class GuildChannelStore extends DataStore {
   }
 
   /**
-     * The parent {@link Channel} of the {@link GuildChannel}s in this store *(Only if the store
-     * was retrieved from {@link CategoryChannel}.children)*.
-     * @type {?GuildChannel}
-     * @readonly
-     */
+   * The parent {@link Channel} of the {@link GuildChannel}s in this store *(Only if the store
+   * was retrieved from {@link CategoryChannel}.children)*.
+   * @type {?GuildChannel}
+   * @readonly
+   */
   get parent() {
     return this._parent;
   }
