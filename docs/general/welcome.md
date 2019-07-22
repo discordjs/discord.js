@@ -24,8 +24,8 @@ v12 is still very much a work-in-progress, as we're aiming to make it the best i
 Only use it if you are fond of living life on the bleeding edge.
 
 ## About
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
-[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+[Discord API](https://discordapp.com/developers/docs/intro).
 
 - Object-oriented
 - Predictable abstractions
@@ -33,11 +33,11 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 10.0.0 or newer is required.**
+**Node.js 10.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discordjs/discord.js`
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`
+Without voice support: `npm install discordjs/discord.js`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.js opusscript`
 
 ### Audio engines
@@ -46,7 +46,7 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`)
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for faster WebSocket data inflation (`npm install zlib-sync`)
 - [zucc](https://www.npmjs.com/package/zucc) for significantly faster WebSocket data inflation (`npm install zucc`)
 - [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
@@ -77,7 +77,7 @@ client.login('token');
 ## Links
 * [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
-* [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable
+* [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
   See also the WIP [Update Guide](https://github.com/discordjs/guide/blob/v12-changes/guide/additional-info/changes-in-v12.md) also including updated and removed items in the library.
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
@@ -90,7 +90,7 @@ client.login('token');
 
 ## Contributing
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs).
+[documentation](https://discord.js.org/#/docs).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
