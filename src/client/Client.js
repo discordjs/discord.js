@@ -51,13 +51,11 @@ class Client extends BaseClient {
         this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
         this.options.totalShardCount = this.options.shards.length;
-      } else {
-        this.options.totalShardCount = this.options.shardCount;
       }
     }
 
-    if (typeof this.options.shards === 'undefined' && typeof this.options.shardCount === 'number') {
-      this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
+    if (typeof this.options.shards === 'undefined' && typeof this.options.totalShardCount === 'number') {
+      this.options.shards = Array.from({ length: this.options.totalShardCount }, (_, i) => i);
     }
 
     if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
@@ -363,14 +361,16 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
+    if (
+      options.totalShardCount !== 'auto' &&
+      (typeof options.totalShardCount !== 'number' || isNaN(options.totalShardCount) || options.totalShardCount < 1)
+    ) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'totalShardCount', 'a number greater than 1 or "auto"');
     }
     if (options.shards && !Array.isArray(options.shards)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
-    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }

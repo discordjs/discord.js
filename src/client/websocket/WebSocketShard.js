@@ -171,31 +171,30 @@ class WebSocketShard extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      const onReady = () => {
+      const cleanup = () => {
         this.off(ShardEvents.CLOSE, onClose);
+        this.off(ShardEvents.READY, onReady);
         this.off(ShardEvents.RESUMED, onResumed);
         this.off(ShardEvents.INVALID_SESSION, onInvalid);
+      };
+
+      const onReady = () => {
+        cleanup();
         resolve();
       };
 
       const onResumed = () => {
-        this.off(ShardEvents.CLOSE, onClose);
-        this.off(ShardEvents.READY, onReady);
-        this.off(ShardEvents.INVALID_SESSION, onInvalid);
+        cleanup();
         resolve();
       };
 
       const onClose = event => {
-        this.off(ShardEvents.READY, onReady);
-        this.off(ShardEvents.RESUMED, onResumed);
-        this.off(ShardEvents.INVALID_SESSION, onInvalid);
+        cleanup();
         reject(event);
       };
 
       const onInvalid = () => {
-        this.off(ShardEvents.READY, onReady);
-        this.off(ShardEvents.RESUMED, onResumed);
-        this.off(ShardEvents.CLOSE, onClose);
+        cleanup();
         // eslint-disable-next-line prefer-promise-reject-errors
         reject();
       };
@@ -290,7 +289,7 @@ class WebSocketShard extends EventEmitter {
 
     if (error.message === 'uWs client connection error') {
       this.debug('Received a uWs error. Closing the connection and reconnecting...');
-      this.connection.close(4000);
+      this.destroy(4000);
       return;
     }
 
@@ -605,8 +604,9 @@ class WebSocketShard extends EventEmitter {
   destroy(closeCode = 1000) {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
+
     // Close the WebSocket connection, if any
-    if (this.connection && this.connection.readyState !== WebSocket.CLOSED) {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       this.connection.close(closeCode);
     } else {
       /**
@@ -616,11 +616,12 @@ class WebSocketShard extends EventEmitter {
        */
       this.emit(ShardEvents.DESTROYED);
     }
+
     this.connection = null;
     // Set the shard status
     this.status = Status.DISCONNECTED;
     // Reset the sequence
-    this.sequence = -1;
+    if (closeCode !== 4000) this.sequence = -1;
     // Reset the ratelimit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;

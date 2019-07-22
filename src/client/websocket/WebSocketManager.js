@@ -47,9 +47,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * The amount of shards this manager handles
      * @private
-     * @type {number|string}
+     * @type {number}
      */
-    this.totalShards = this.client.options.shardCount;
+    this.totalShards = this.client.options.shards.length;
 
     /**
      * A collection of all shards this manager handles
@@ -152,15 +152,15 @@ class WebSocketManager extends EventEmitter {
 
     this.gateway = `${gatewayURL}/`;
 
-    if (this.totalShards === 'auto') {
+    const { shards, totalShardCount } = this.client.options;
+
+    if (totalShardCount === 'auto') {
       this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
-      this.totalShards = this.client.options.shardCount = this.client.options.totalShardCount = recommendedShards;
+      this.totalShards = this.client.options.totalShardCount = recommendedShards;
       if (typeof this.client.options.shards === 'undefined' || !this.client.options.shards.length) {
         this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
       }
     }
-
-    const { shards } = this.client.options;
 
     if (Array.isArray(shards)) {
       this.totalShards = shards.length;
@@ -215,7 +215,7 @@ class WebSocketManager extends EventEmitter {
         }
 
         if (event.code === 1000 || event.code === 4006) {
-          // Any event code in this range cannot be resumed.
+          // These event codes cannot be resumed
           shard.sessionID = undefined;
         }
 
@@ -246,7 +246,7 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
-        this.debug('Shard was destroyed but no WebSocket connection existed... Reconnecting...', shard);
+        this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
