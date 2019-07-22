@@ -77,7 +77,6 @@
     "ws": false,
     "uws": false,
     "@discordjs/uws": false,
-    "earl": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
