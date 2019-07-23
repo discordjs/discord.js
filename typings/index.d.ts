@@ -7,7 +7,7 @@ declare module 'discord.js' {
 
 	export const version: string;
 
-//#region Classes
+	//#region Classes
 
 	export class Activity {
 		constructor(presence: Presence, data?: object);
@@ -814,11 +814,9 @@ declare module 'discord.js' {
 		public rawPosition: number;
 		public readonly viewable: boolean;
 		public clone(options?: GuildChannelCloneOptions): Promise<GuildChannel>;
-		public createInvite(options?: InviteOptions): Promise<Invite>;
 		public createOverwrite(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<GuildChannel>;
 		public edit(data: ChannelData, reason?: string): Promise<GuildChannel>;
 		public equals(channel: GuildChannel): boolean;
-		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<GuildChannel>;
 		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<GuildChannel>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
@@ -1361,7 +1359,9 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
 		public topic: string;
+		public createInvite(options?: InviteOptions): Promise<Invite>;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
+		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -1476,6 +1476,8 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public readonly speakable: boolean;
 		public userLimit: number;
+		public createInvite(options?: InviteOptions): Promise<Invite>;
+		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public join(): Promise<VoiceConnection>;
 		public leave(): void;
 		public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
@@ -1697,9 +1699,9 @@ declare module 'discord.js' {
 		public once(event: string, listener: Function): this;
 	}
 
-//#endregion
+	//#endregion
 
-//#region Stores
+	//#region Stores
 
 	export class ChannelStore extends DataStore<Snowflake, Channel, typeof Channel, ChannelResolvable> {
 		constructor(client: Client, iterable: Iterable<any>, options?: { lru: boolean });
@@ -1810,9 +1812,9 @@ declare module 'discord.js' {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 	}
 
-//#endregion
+	//#endregion
 
-//#region Mixins
+	//#region Mixins
 
 	// Model the TextBasedChannel mixin system, allowing application of these fields
 	// to the classes that use these methods without having to manually add them
@@ -1855,9 +1857,9 @@ declare module 'discord.js' {
 		sendSlackMessage(body: object): Promise<Message | object>;
 	}
 
-//#endregion
+	//#endregion
 
-//#region Typedefs
+	//#region Typedefs
 
 	type ActivityFlagsString = 'INSTANCE'
 		| 'JOIN'
@@ -2587,5 +2589,5 @@ declare module 'discord.js' {
 	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
 	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
 
-//#endregion
+	//#endregion
 }
