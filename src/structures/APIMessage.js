@@ -80,6 +80,7 @@ class APIMessage {
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
+    const isSpoiler = typeof this.options.spoiler !== 'undefined' && this.options.spoiler !== false;
 
     let mentionPart = '';
     if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
@@ -107,6 +108,10 @@ class APIMessage {
         this.options.disableEveryone;
       if (disableEveryone) {
         content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1');
+      }
+
+      if (isSpoiler) {
+        content = `||${content}||`;
       }
 
       if (isSplit) {
