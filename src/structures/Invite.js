@@ -72,7 +72,7 @@ class Invite extends Base {
 
     /**
      * The channel the invite is for
-     * @type {Channel}
+     * @type {TextChannel|VoiceChannel}
      */
     this.channel = this.client.channels.add(data.channel, this.guild, false);
 
