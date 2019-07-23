@@ -46,7 +46,6 @@
     "ws": "^7.1.1"
   },
   "peerDependencies": {
-    "@discordjs/uws": "^11.149.1",
     "bufferutil": "^4.0.1",
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.4",
@@ -75,8 +74,6 @@
   "browser": {
     "https": false,
     "ws": false,
-    "uws": false,
-    "@discordjs/uws": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,

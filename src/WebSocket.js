@@ -16,11 +16,7 @@ if (browser) {
   exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   TextDecoder = require('util').TextDecoder;
-  try {
-    exports.WebSocket = require('@discordjs/uws');
-  } catch {
-    exports.WebSocket = require('ws');
-  }
+  exports.WebSocket = require('ws');
 }
 
 const ab = new TextDecoder();

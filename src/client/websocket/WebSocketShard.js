@@ -280,18 +280,12 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Called whenever an error occurs with the WebSocket.
-   * @param {ErrorEvent|Object} event The error that occurred
+   * @param {ErrorEvent} event The error that occurred
    * @private
    */
   onError(event) {
     const error = event && event.error ? event.error : event;
     if (!error) return;
-
-    if (error.message === 'uWs client connection error') {
-      this.debug('Received a uWs error. Closing the connection and reconnecting...');
-      this.destroy(4000);
-      return;
-    }
 
     /**
      * Emitted whenever a shard's WebSocket encounters a connection error.
@@ -621,7 +615,7 @@ class WebSocketShard extends EventEmitter {
     // Set the shard status
     this.status = Status.DISCONNECTED;
     // Reset the sequence
-    if (closeCode !== 4000) this.sequence = -1;
+    this.sequence = -1;
     // Reset the ratelimit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
