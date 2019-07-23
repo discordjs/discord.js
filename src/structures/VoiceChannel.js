@@ -109,11 +109,9 @@ class VoiceChannel extends GuildChannel {
    *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
-    return this.client.api.channels(this.id).invites.post({
-      data: {
-        temporary, max_age: maxAge, max_uses: maxUses, unique,
-      }, reason
-    })
+    return this.client.api.channels(this.id).invites.post({ data: {
+      temporary, max_age: maxAge, max_uses: maxUses, unique,
+    }, reason })
       .then(invite => new Invite(this.client, invite));
   }
 

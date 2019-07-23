@@ -1,10 +1,10 @@
 'use strict';
 
 const GuildChannel = require('./GuildChannel');
-const Invite = require('./Invite');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
+const Invite = require('./Invite');
 const DataResolver = require('../util/DataResolver');
 const MessageStore = require('../stores/MessageStore');
 
@@ -102,11 +102,9 @@ class TextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
-    return this.client.api.channels(this.id).invites.post({
-      data: {
-        temporary, max_age: maxAge, max_uses: maxUses, unique,
-      }, reason
-    })
+    return this.client.api.channels(this.id).invites.post({ data: {
+      temporary, max_age: maxAge, max_uses: maxUses, unique,
+    }, reason })
       .then(invite => new Invite(this.client, invite));
   }
 
@@ -162,26 +160,24 @@ class TextChannel extends GuildChannel {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    return this.client.api.channels[this.id].webhooks.post({
-      data: {
-        name, avatar,
-      }, reason
-    }).then(data => new Webhook(this.client, data));
+    return this.client.api.channels[this.id].webhooks.post({ data: {
+      name, avatar,
+    }, reason }).then(data => new Webhook(this.client, data));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
-  get lastMessage() { }
-  get lastPinAt() { }
-  send() { }
-  startTyping() { }
-  stopTyping() { }
-  get typing() { }
-  get typingCount() { }
-  createMessageCollector() { }
-  awaitMessages() { }
-  bulkDelete() { }
-  acknowledge() { }
+  get lastMessage() {}
+  get lastPinAt() {}
+  send() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createMessageCollector() {}
+  awaitMessages() {}
+  bulkDelete() {}
+  acknowledge() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
