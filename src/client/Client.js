@@ -64,7 +64,7 @@ class Client extends BaseClient {
 
     if (Array.isArray(this.options.shards)) {
       this.options.shards = [...new Set(
-        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0))
       )];
     }
 
