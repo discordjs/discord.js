@@ -1797,8 +1797,8 @@ declare module 'discord.js' {
 		public readonly highest: Role;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;
-		public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
 		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
+		public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
 	}
 
 	export class UserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
