@@ -62,13 +62,13 @@ class Client extends BaseClient {
 
     if (typeofShards === 'number') this.options.shards = [this.options.shards];
 
-    this._validateOptions();
-
-    if (typeofShards !== 'undefined' && typeofShards !== 'string') {
+    if (Array.isArray(this.options.shards)) {
       this.options.shards = [...new Set(
         this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
       )];
     }
+
+    this._validateOptions();
 
     /**
      * The WebSocket manager of the client
@@ -198,7 +198,9 @@ class Client extends BaseClient {
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.emit(Events.DEBUG, `Provided token: ${token}`);
+    this.emit(Events.DEBUG,
+      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`
+    );
 
     if (this.options.presence) {
       this.options.ws.presence = await this.presence._parse(this.options.presence);
