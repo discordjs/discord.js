@@ -79,6 +79,7 @@ class APIMessage {
 
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
+    const isWrapped = typeof this.options.wrap !== 'undefined' && this.options.wrap !== '';
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
 
     let mentionPart = '';
@@ -107,6 +108,10 @@ class APIMessage {
         this.options.disableEveryone;
       if (disableEveryone) {
         content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1');
+      }
+      
+      if (isWrapped) {
+        content = `${this.options.wrap}${content}${this.options.wrap}`;
       }
 
       if (isSplit) {
