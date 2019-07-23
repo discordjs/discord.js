@@ -54,19 +54,21 @@ class Client extends BaseClient {
       }
     }
 
-    if (typeof this.options.shards === 'undefined' && typeof this.options.totalShardCount === 'number') {
+    const typeofShards = typeof this.options.shards;
+
+    if (typeofShards === 'undefined' && typeof this.options.totalShardCount === 'number') {
       this.options.shards = Array.from({ length: this.options.totalShardCount }, (_, i) => i);
     }
 
-    if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
+    if (typeofShards === 'number') this.options.shards = [this.options.shards];
 
-    if (typeof this.options.shards !== 'undefined') {
+    this._validateOptions();
+
+    if (typeofShards !== 'undefined' && typeofShards !== 'string') {
       this.options.shards = [...new Set(
         this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
       )];
     }
-
-    this._validateOptions();
 
     /**
      * The WebSocket manager of the client
@@ -361,14 +363,13 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (
-      options.totalShardCount !== 'auto' &&
-      (typeof options.totalShardCount !== 'number' || isNaN(options.totalShardCount) || options.totalShardCount < 1)
-    ) {
+    if (typeof options.totalShardCount !== 'number' || isNaN(options.totalShardCount) || options.totalShardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'totalShardCount', 'a number greater than 1 or "auto"');
     }
-    if (options.shards && !Array.isArray(options.shards)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
+    if (options.shards &&
+      !(options.shards === 'auto' || Array.isArray(options.shards))
+    ) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', '\'auto\', a number or array of numbers');
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {

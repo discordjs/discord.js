@@ -152,12 +152,12 @@ class WebSocketManager extends EventEmitter {
 
     this.gateway = `${gatewayURL}/`;
 
-    const { shards, totalShardCount } = this.client.options;
+    const { shards } = this.client.options;
 
-    if (totalShardCount === 'auto') {
+    if (shards === 'auto') {
       this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
       this.totalShards = this.client.options.totalShardCount = recommendedShards;
-      if (typeof this.client.options.shards === 'undefined' || !this.client.options.shards.length) {
+      if (shards === 'auto' || !this.client.options.shards.length) {
         this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
       }
     }
