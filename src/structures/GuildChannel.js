@@ -2,7 +2,6 @@
 
 const Channel = require('./Channel');
 const Role = require('./Role');
-const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
 const Util = require('../util/Util');
 const Permissions = require('../util/Permissions');
