@@ -98,7 +98,7 @@ class VoiceChannel extends GuildChannel {
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
-   * @param {number} [options.maxUses=0] Maximum number of uses
+   * @param {number} [options.maxUses=0] Maximum number of uses (0 for unlimited)
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
