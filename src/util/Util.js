@@ -85,6 +85,8 @@ class Util {
    * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
    * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
    * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
+   * @param {boolean} [options.inlineQuote=true] Whether to escape text inside inline quotes or not
+   * @param {boolean} [options.blockQuote=true] Whether to escape text inside block quotes or not
    * @returns {string}
    */
   static escapeMarkdown(text, {
@@ -97,6 +99,8 @@ class Util {
     spoiler = true,
     codeBlockContent = true,
     inlineCodeContent = true,
+    inlineQuote = true,
+    blockQuote = true,
   } = {}) {
     if (!codeBlockContent) {
       return text.split('```').map((subString, index, array) => {
@@ -109,6 +113,8 @@ class Util {
           strikethrough,
           spoiler,
           inlineCodeContent,
+          inlineQuote,
+          blockQuote,
         });
       }).join(codeBlock ? '\\`\\`\\`' : '```');
     }
@@ -122,6 +128,8 @@ class Util {
           underline,
           strikethrough,
           spoiler,
+          inlineQuote,
+          blockQuote,
         });
       }).join(inlineCode ? '\\`' : '`');
     }
@@ -132,6 +140,8 @@ class Util {
     if (underline) text = Util.escapeUnderline(text);
     if (strikethrough) text = Util.escapeStrikethrough(text);
     if (spoiler) text = Util.escapeSpoiler(text);
+    if (blockQuote) text = Util.escapeBlockQuote(text);
+    if (inlineQuote) text = Util.escapeInlineQuote(text);
     return text;
   }
 
@@ -213,6 +223,24 @@ class Util {
    */
   static escapeSpoiler(text) {
     return text.replace(/\|\|/g, '\\|\\|');
+  }
+
+  /**
+   * Escapes a block quote markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeBlockQuote(text) {
+    return text.replace(/^>>>/mg, '\\>>>');
+  }
+
+  /**
+   * Escapes a inline quote markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeInlineQuote(text) {
+    return text.replace(/^>/mg, '\\>');
   }
 
   /**
