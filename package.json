@@ -1,5 +1,5 @@
 {
-  "name": "discord.js",
+  "name": "discord.uwu",
   "version": "12.0.0-dev",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/discordjs/discord.js.git"
+    "url": "git+https://github.com/discordjs/discord.uwu.git"
   },
   "keywords": [
     "discord",
@@ -31,7 +31,7 @@
   "bugs": {
     "url": "https://github.com/discordjs/discord.js/issues"
   },
-  "homepage": "https://github.com/discordjs/discord.js#readme",
+  "homepage": "https://github.com/discordjs/discord.uwu#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
