@@ -195,14 +195,14 @@ class Collector extends EventEmitter {
     const reason = this.endReason();
     if (reason) this.stop(reason);
   }
-  
+
   /**
    * Resets the collectors timeout and idle timer.
    */
   resetTimer() {
     if (this._timeout) {
       this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), this.options.time)
+      this._timeout = this.client.setTimeout(() => this.stop('time'), this.options.time);
     }
     if (this._idletimeout) {
       this.client.clearTimeout(this._idletimeout);
