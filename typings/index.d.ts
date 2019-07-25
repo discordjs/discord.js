@@ -360,6 +360,7 @@ declare module 'discord.js' {
 		public readonly next: Promise<V>;
 		public options: CollectorOptions;
 		public checkEnd(): void;
+		public resetTimer(): void;		  
 		public handleCollect(...args: any[]): void;
 		public handleDispose(...args: any[]): void;
 		public stop(reason?: string): void;
