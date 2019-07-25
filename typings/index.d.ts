@@ -1736,7 +1736,7 @@ declare module 'discord.js' {
 		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel | CategoryChannel>;
 	}
 
-	// Hacky workaround because changing the signature of an overriden method errors
+	// Hacky workaround because changing the signature of an overridden method errors
 	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any> extends DataStore<V, K, VConstructor, R> {
 		public add(data: any, cache: any): any;
 		public set(key: any): any;

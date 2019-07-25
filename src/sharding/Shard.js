@@ -319,7 +319,7 @@ class Shard extends EventEmitter {
     }
 
     /**
-     * Emitted upon recieving a message from the child process/worker.
+     * Emitted upon receiving a message from the child process/worker.
      * @event Shard#message
      * @param {*} message Message that was received
      */

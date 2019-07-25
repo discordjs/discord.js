@@ -11,7 +11,7 @@ fi
 DONT_COMMIT=false
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - not commiting"
+  echo -e "\e[36m\e[1mBuild triggered for PR #${TRAVIS_PULL_REQUEST} to branch \"${TRAVIS_BRANCH}\" - not committing"
   SOURCE_TYPE="pr"
   DONT_COMMIT=true
 elif [ -n "$TRAVIS_TAG" ]; then
@@ -29,7 +29,7 @@ npm run docs
 NODE_ENV=production npm run build:browser
 
 if [ $DONT_COMMIT == true ]; then
-  echo -e "\e[36m\e[1mNot commiting - exiting early"
+  echo -e "\e[36m\e[1mNot committing - exiting early"
   exit 0
 fi
 
