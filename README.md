@@ -18,7 +18,7 @@
 </div>
 
 ## About
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+discord.uwu is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
 [Discord API](https://discordapp.com/developers/docs/intro).
 
 - Object-oriented
@@ -30,12 +30,12 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 **Node.js 10.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discordjs/discord.js`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.js opusscript`
+Without voice support: `npm install discordjs/discord.uwu`  
+With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.uwu node-opus`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.uwu opusscript`
 
 ### Audio engines
-The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
+The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.uwu will automatically choose node-opus.
 Using opusscript is only recommended for development environments where node-opus is tough to get working.
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
