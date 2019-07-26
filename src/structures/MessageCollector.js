@@ -35,7 +35,6 @@ class MessageCollector extends Collector {
 
     this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on('message', this.listener);
-    this.client.on('messageDelete', this.removeListener);
 
     // For backwards compatibility (remove in v12)
     if (this.options.max) this.options.maxProcessed = this.options.max;
@@ -73,20 +72,6 @@ class MessageCollector extends Collector {
       key: message.id,
       value: message,
     };
-  }
-
-  /**
-   * Handles a message for possible disposal.
-   * @param {Message} message The message that could be disposed of
-   * @returns {?Snowflake}
-   */
-  remove(message) {
-    /**
-     * Emitted whenever a message is disposed of.
-     * @event MessageCollector#dispose
-     * @param {Message} message The message that was disposed of
-     */
-    return message.channel.id === this.channel.id ? message.id : null;
   }
 
   /**
