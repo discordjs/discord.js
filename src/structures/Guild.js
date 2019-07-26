@@ -160,6 +160,7 @@ class Guild extends Base {
      * * VIP_REGIONS
      * * VANITY_URL
      * * DISCOVERABLE
+     * * FEATURABLE 
      * @typedef {string} Features
      */
 
