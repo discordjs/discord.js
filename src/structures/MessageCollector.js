@@ -93,6 +93,8 @@ class MessageCollector extends Collector {
   cleanup() {
     this.removeListener('collect', this._reEmitter);
     this.client.removeListener('message', this.listener);
+    // This doesn't have a purpose for MessageCollector.
+    this.client.removeListener('remove', this.removeListener);
     this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }
 }
