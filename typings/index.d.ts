@@ -2223,7 +2223,9 @@ declare module 'discord.js' {
 		| 'MORE_EMOJI'
 		| 'VERIFIED'
 		| 'VIP_REGIONS'
-		| 'VANITY_URL';
+		| 'VANITY_URL'
+		| 'DISCOVERABLE'
+		| 'FEATURABLE';
 
 	interface GuildMemberEditData {
 		nick?: string;
