@@ -1440,7 +1440,7 @@ declare module 'discord.js' {
 			route: object,
 			reason?: string
 		): Promise<{ id: Snowflake; position: number }[]>;
-		public static splitMessage(text: string, options?: SplitOptions): string | string[];
+		public static splitMessage(text: string, options?: SplitOptions): string[];
 		public static str2ab(str: string): ArrayBuffer;
 	}
 
