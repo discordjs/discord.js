@@ -261,7 +261,6 @@ class TextBasedChannel {
       for (const message of data) {
         const msg = new Message(this, message, this.client);
         messages.set(message.id, msg);
-        this._cacheMessage(msg);
       }
       return messages;
     });
