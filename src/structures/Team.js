@@ -47,7 +47,7 @@ class Team extends Base {
     this.members = new Collection();
 
     for (const memberData of data.members) {
-      const member = new TeamMember(this.client, this, memberData);
+      const member = new TeamMember(this, memberData);
       this.members.set(member.id, member);
     }
   }
