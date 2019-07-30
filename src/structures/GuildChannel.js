@@ -331,7 +331,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setPosition(position, relative) {
-    return this.guild.setChannelPosition(this, position, relative);
+    return this.guild.setChannelPosition(this, position, relative).then(() => this);
   }
 
   /**
