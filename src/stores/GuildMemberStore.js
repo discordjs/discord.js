@@ -192,8 +192,8 @@ class GuildMemberStore extends DataStore {
 
   _fetchMany({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.size) {
-        resolve(query || limit ? new Collection() : this);
+      if (this.guild.memberCount === this.size && !query && !limit) {
+        resolve(this);
         return;
       }
       this.guild.shard.send({
