@@ -45,6 +45,13 @@ class GuildEmoji extends Emoji {
      */
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
 
+    /**
+     * Whether this emoji is available
+     * @type {boolean}
+     * @name GuildEmoji#available
+     */
+    if (typeof data.available !== 'undefined') this.available = data.available;
+
     if (data.roles) this._roles = data.roles;
   }
 
@@ -60,6 +67,7 @@ class GuildEmoji extends Emoji {
    * @readonly
    */
   get deletable() {
+    if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
     return !this.managed &&
       this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
   }
@@ -80,8 +88,11 @@ class GuildEmoji extends Emoji {
   fetchAuthor() {
     if (this.managed) {
       return Promise.reject(new Error('EMOJI_MANAGED'));
-    } else if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-      return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
+    } else {
+      if (!this.guild.me) return Promise.reject(new Error('GUILD_UNCACHED_ME'));
+      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+        return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
+      }
     }
     return this.client.api.guilds(this.guild.id).emojis(this.id).get()
       .then(emoji => this.client.users.add(emoji.user));

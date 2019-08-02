@@ -136,7 +136,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(WebSocket.unpack(event.data));
+      return this.onPacket(WebSocket.unpack(event.data, 'json'));
     } catch (error) {
       return this.onError(error);
     }

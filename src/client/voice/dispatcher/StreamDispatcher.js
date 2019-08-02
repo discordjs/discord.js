@@ -151,7 +151,7 @@ class StreamDispatcher extends Writable {
   get paused() { return Boolean(this.pausedSince); }
 
   /**
-   * Total time that this dispatcher has been paused
+   * Total time that this dispatcher has been paused in milliseconds
    * @type {number}
    * @readonly
    */

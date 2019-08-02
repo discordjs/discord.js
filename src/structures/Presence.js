@@ -37,6 +37,12 @@ class Presence {
    * @param {Object} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
+    /**
+     * The client that instantiated this
+     * @name Presence#client
+     * @type {Client}
+     * @readonly
+     */
     Object.defineProperty(this, 'client', { value: client });
     /**
      * The user ID of this presence

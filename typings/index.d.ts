@@ -2,6 +2,7 @@ declare module 'discord.js' {
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
+	import { PathLike } from 'fs';
 	import * as WebSocket from 'ws';
 
 	export const version: string;
@@ -255,12 +256,40 @@ declare module 'discord.js' {
 		public icon: string;
 		public id: Snowflake;
 		public name: string;
-		public owner: User | null;
+		public owner: User | Team | null;
 		public rpcOrigins: string[];
 		public coverImage(options?: AvatarOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
 		public iconURL(options?: AvatarOptions): string;
 		public toJSON(): object;
+		public toString(): string;
+	}
+
+	export class Team extends Base {
+		constructor(client: Client, data: object);
+		public id: Snowflake;
+		public name: string;
+		public icon: string | null;
+		public ownerID: Snowflake | null;
+		public members: Collection<Snowflake, TeamMember>;
+
+		public readonly owner: TeamMember;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+
+		public iconURL(options?: AvatarOptions): string;
+		public toJSON(): object;
+		public toString(): string;
+	}
+
+	export class TeamMember extends Base {
+		constructor(client: Client, team: Team, data: object);
+		public team: Team;
+		public readonly id: Snowflake;
+		public permissions: string[];
+		public membershipState: MembershipStates;
+		public user: User;
+
 		public toString(): string;
 	}
 
@@ -311,7 +340,7 @@ declare module 'discord.js' {
 		public random(count: number): V[];
 		public randomKey(): K | undefined;
 		public randomKey(count: number): K[];
-		public reduce<T>(fn: (accumulator: any, value: V, key: K, collection: Collection<K, V>) => T, initialValue?: any): T;
+		public reduce<T>(fn: (accumulator: T, value: V, key: K, collection: Collection<K, V>) => T, initialValue?: T): T;
 		public some(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): boolean;
 		public sort(compareFunction?: (a: V, b: V, c?: K, d?: K) => number): Collection<K, V>;
 		public sweep(fn: (value: V, key: K, collection: Collection<K, V>) => boolean, thisArg?: any): number;
@@ -322,6 +351,7 @@ declare module 'discord.js' {
 	export abstract class Collector<K, V> extends EventEmitter {
 		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
 		private _timeout: NodeJS.Timer | null;
+		private _idletimeout: NodeJS.Timer | null;
 
 		public readonly client: Client;
 		public collected: Collection<K, V>;
@@ -347,6 +377,258 @@ declare module 'discord.js' {
 		public once(event: 'collect', listener: (...args: any[]) => void): this;
 		public once(event: 'dispose', listener: (...args: any[]) => void): this;
 		public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
+	}
+
+	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
+
+	export interface Constants {
+		Package: {
+			name: string;
+			version: string;
+			description: string;
+			author: string;
+			license: string;
+			main: PathLike;
+			types: PathLike;
+			homepage: string;
+			keywords: string[];
+			bugs: { url: string };
+			repository: { type: string, url: string };
+			browser: { [key: string]: boolean };
+			scripts: { [key: string]: string };
+			engines: { [key: string]: string };
+			dependencies: { [key: string]: string };
+			peerDependencies: { [key: string]: string };
+			devDependencies: { [key: string]: string };
+			[key: string]: any;
+		};
+		browser: boolean;
+		DefaultOptions: ClientOptions;
+		UserAgent: string | null;
+		Endpoints: {
+			botGateway: string;
+			invite: (root: string, code: string) => string;
+			CDN: (root: string) => {
+				Asset: (name: string) => string;
+				DefaultAvatar: (id: string | number) => string;
+				Emoji: (emojiID: string, format: 'png' | 'gif') => string;
+				Avatar: (userID: string | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
+				Banner: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				Icon: (userID: string | number, hash: string, format: 'default' | AllowedImageFormat, size: number) => string;
+				AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				Splash: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+				TeamIcon: (teamID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+			};
+		};
+		WSCodes: {
+			1000: 'WS_CLOSE_REQUESTED';
+			4004: 'TOKEN_INVALID';
+			4010: 'SHARDING_INVALID';
+			4011: 'SHARDING_REQUIRED';
+		};
+		Events: {
+			RATE_LIMIT: 'rateLimit';
+			CLIENT_READY: 'ready';
+			RESUMED: 'resumed';
+			GUILD_CREATE: 'guildCreate';
+			GUILD_DELETE: 'guildDelete';
+			GUILD_UPDATE: 'guildUpdate';
+			GUILD_UNAVAILABLE: 'guildUnavailable';
+			GUILD_MEMBER_ADD: 'guildMemberAdd';
+			GUILD_MEMBER_REMOVE: 'guildMemberRemove';
+			GUILD_MEMBER_UPDATE: 'guildMemberUpdate';
+			GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable';
+			GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking';
+			GUILD_MEMBERS_CHUNK: 'guildMembersChunk';
+			GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate';
+			GUILD_ROLE_CREATE: 'roleCreate';
+			GUILD_ROLE_DELETE: 'roleDelete';
+			GUILD_ROLE_UPDATE: 'roleUpdate';
+			GUILD_EMOJI_CREATE: 'emojiCreate';
+			GUILD_EMOJI_DELETE: 'emojiDelete';
+			GUILD_EMOJI_UPDATE: 'emojiUpdate';
+			GUILD_BAN_ADD: 'guildBanAdd';
+			GUILD_BAN_REMOVE: 'guildBanRemove';
+			CHANNEL_CREATE: 'channelCreate';
+			CHANNEL_DELETE: 'channelDelete';
+			CHANNEL_UPDATE: 'channelUpdate';
+			CHANNEL_PINS_UPDATE: 'channelPinsUpdate';
+			MESSAGE_CREATE: 'message';
+			MESSAGE_DELETE: 'messageDelete';
+			MESSAGE_UPDATE: 'messageUpdate';
+			MESSAGE_BULK_DELETE: 'messageDeleteBulk';
+			MESSAGE_REACTION_ADD: 'messageReactionAdd';
+			MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
+			MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
+			USER_UPDATE: 'userUpdate';
+			PRESENCE_UPDATE: 'presenceUpdate';
+			VOICE_STATE_UPDATE: 'voiceStateUpdate';
+			VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
+			VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
+			TYPING_START: 'typingStart';
+			WEBHOOKS_UPDATE: 'webhookUpdate';
+			DISCONNECT: 'disconnect';
+			RECONNECTING: 'reconnecting';
+			ERROR: 'error';
+			WARN: 'warn';
+			DEBUG: 'debug';
+			SHARD_DISCONNECTED: 'shardDisconnected';
+			SHARD_ERROR: 'shardError';
+			SHARD_RECONNECTING: 'shardReconnecting';
+			SHARD_READY: 'shardReady';
+			SHARD_RESUMED: 'shardResumed';
+			INVALIDATED: 'invalidated';
+			RAW: 'raw';
+		};
+		ShardEvents: {
+			CLOSE: 'close';
+			DESTROYED: 'destroyed';
+			INVALID_SESSION: 'invalidSession';
+			READY: 'ready';
+			RESUMED: 'resumed';
+		};
+		PartialTypes: {
+			[K in PartialType]: K;
+		};
+		WSEvents: {
+			[K in WSEventType]: K;
+		};
+		Colors: {
+			DEFAULT: 0x000000;
+			WHITE: 0xFFFFFF;
+			AQUA: 0x1ABC9C;
+			GREEN: 0x2ECC71;
+			BLUE: 0x3498DB;
+			YELLOW: 0xFFFF00;
+			PURPLE: 0x9B59B6;
+			LUMINOUS_VIVID_PINK: 0xE91E63;
+			GOLD: 0xF1C40F;
+			ORANGE: 0xE67E22;
+			RED: 0xE74C3C;
+			GREY: 0x95A5A6;
+			NAVY: 0x34495E;
+			DARK_AQUA: 0x11806A;
+			DARK_GREEN: 0x1F8B4C;
+			DARK_BLUE: 0x206694;
+			DARK_PURPLE: 0x71368A;
+			DARK_VIVID_PINK: 0xAD1457;
+			DARK_GOLD: 0xC27C0E;
+			DARK_ORANGE: 0xA84300;
+			DARK_RED: 0x992D22;
+			DARK_GREY: 0x979C9F;
+			DARKER_GREY: 0x7F8C8D;
+			LIGHT_GREY: 0xBCC0C0;
+			DARK_NAVY: 0x2C3E50;
+			BLURPLE: 0x7289DA;
+			GREYPLE: 0x99AAB5;
+			DARK_BUT_NOT_BLACK: 0x2C2F33;
+			NOT_QUITE_BLACK: 0x23272A;
+		};
+		Status: {
+			READY: 0;
+			CONNECTING: 1;
+			RECONNECTING: 2;
+			IDLE: 3;
+			NEARLY: 4;
+			DISCONNECTED: 5;
+		};
+		OPCodes: {
+			DISPATCH: 0;
+			HEARTBEAT: 1;
+			IDENTIFY: 2;
+			STATUS_UPDATE: 3;
+			VOICE_STATE_UPDATE: 4;
+			VOICE_GUILD_PING: 5;
+			RESUME: 6;
+			RECONNECT: 7;
+			REQUEST_GUILD_MEMBERS: 8;
+			INVALID_SESSION: 9;
+			HELLO: 10;
+			HEARTBEAT_ACK: 11;
+		};
+		APIErrors: {
+			UNKNOWN_ACCOUNT: 10001;
+			UNKNOWN_APPLICATION: 10002;
+			UNKNOWN_CHANNEL: 10003;
+			UNKNOWN_GUILD: 10004;
+			UNKNOWN_INTEGRATION: 10005;
+			UNKNOWN_INVITE: 10006;
+			UNKNOWN_MEMBER: 10007;
+			UNKNOWN_MESSAGE: 10008;
+			UNKNOWN_OVERWRITE: 10009;
+			UNKNOWN_PROVIDER: 10010;
+			UNKNOWN_ROLE: 10011;
+			UNKNOWN_TOKEN: 10012;
+			UNKNOWN_USER: 10013;
+			UNKNOWN_EMOJI: 10014;
+			UNKNOWN_WEBHOOK: 10015;
+			BOT_PROHIBITED_ENDPOINT: 20001;
+			BOT_ONLY_ENDPOINT: 20002;
+			MAXIMUM_GUILDS: 30001;
+			MAXIMUM_FRIENDS: 30002;
+			MAXIMUM_PINS: 30003;
+			MAXIMUM_ROLES: 30005;
+			MAXIMUM_REACTIONS: 30010;
+			UNAUTHORIZED: 40001;
+			MISSING_ACCESS: 50001;
+			INVALID_ACCOUNT_TYPE: 50002;
+			CANNOT_EXECUTE_ON_DM: 50003;
+			EMBED_DISABLED: 50004;
+			CANNOT_EDIT_MESSAGE_BY_OTHER: 50005;
+			CANNOT_SEND_EMPTY_MESSAGE: 50006;
+			CANNOT_MESSAGE_USER: 50007;
+			CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL: 50008;
+			CHANNEL_VERIFICATION_LEVEL_TOO_HIGH: 50009;
+			OAUTH2_APPLICATION_BOT_ABSENT: 50010;
+			MAXIMUM_OAUTH2_APPLICATIONS: 50011;
+			INVALID_OAUTH_STATE: 50012;
+			MISSING_PERMISSIONS: 50013;
+			INVALID_AUTHENTICATION_TOKEN: 50014;
+			NOTE_TOO_LONG: 50015;
+			INVALID_BULK_DELETE_QUANTITY: 50016;
+			CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019;
+			CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021;
+			BULK_DELETE_MESSAGE_TOO_OLD: 50034;
+			INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036;
+			REACTION_BLOCKED: 90001;
+		};
+		VoiceStatus: {
+			CONNECTED: 0;
+			CONNECTING: 1;
+			AUTHENTICATING: 2;
+			RECONNECTING: 3;
+			DISCONNECTED: 4;
+		};
+		VoiceOPCodes: {
+			IDENTIFY: 0;
+			SELECT_PROTOCOL: 1;
+			READY: 2;
+			HEARTBEAT: 3;
+			SESSION_DESCRIPTION: 4;
+			SPEAKING: 5;
+			HELLO: 8;
+			CLIENT_CONNECT: 12;
+			CLIENT_DISCONNECT: 13;
+		};
+		ChannelTypes: {
+			TEXT: 0;
+			DM: 1;
+			VOICE: 2;
+			GROUP: 3;
+			CATEGORY: 4;
+			NEWS: 5;
+			STORE: 6;
+		};
+		ClientApplicationAssetTypes: {
+			SMALL: 1;
+			BIG: 2;
+		};
+		MessageTypes: MessageType[];
+		ActivityTypes: ActivityType[];
+		DefaultMessageNotifications: DefaultMessageNotifications[];
+		MembershipStates: 'INVITED' | 'ACCEPTED';
 	}
 
 	export class DataResolver {
@@ -398,21 +680,27 @@ declare module 'discord.js' {
 		public afkTimeout: number;
 		public applicationID: Snowflake;
 		public available: boolean;
+		public banner: string | null;
 		public channels: GuildChannelStore;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
-		public readonly defaultRole: Role | null;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
+		public readonly defaultRole: Role | null;
 		public deleted: boolean;
+		public description: string | null;
+		public embedChannel: GuildChannel | null;
+		public embedChannelID: Snowflake | null;
 		public embedEnabled: boolean;
 		public emojis: GuildEmojiStore;
 		public explicitContentFilter: number;
 		public features: GuildFeatures[];
-		public icon: string;
+		public icon: string | null;
 		public id: Snowflake;
 		public readonly joinedAt: Date;
 		public joinedTimestamp: number;
 		public large: boolean;
+		public maximumMembers: number | null;
+		public maximumPresences: number | null;
 		public readonly me: GuildMember | null;
 		public memberCount: number;
 		public members: GuildMemberStore;
@@ -421,29 +709,26 @@ declare module 'discord.js' {
 		public readonly nameAcronym: string;
 		public readonly owner: GuildMember | null;
 		public ownerID: Snowflake;
+		public premiumSubscriptionCount: number | null;
+		public premiumTier: PremiumTier;
 		public presences: PresenceStore;
 		public region: string;
 		public roles: RoleStore;
 		public readonly shard: WebSocketShard;
 		public shardID: number;
-		public splash: string;
+		public splash: string | null;
 		public readonly systemChannel: TextChannel | null;
-		public systemChannelID: Snowflake;
+		public systemChannelID: Snowflake | null;
+		public vanityURLCode: string | null;
 		public verificationLevel: number;
-		public maximumMembers: number;
-		public maximumPresences: number;
-		public vanityURLCode: string;
-		public description: string;
-		public banner: string;
-		public widgetEnabled: boolean;
-		public widgetChannelID: Snowflake;
-		public readonly widgetChannel: TextChannel;
-		public embedChannelID: Snowflake;
-		public readonly embedChannel: TextChannel;
 		public readonly verified: boolean;
-		public readonly voiceConnection: VoiceConnection | null;
+		public readonly voice: VoiceState | null;
+		public readonly voiceStates: VoiceStateStore;
+		public readonly widgetChannel: TextChannel | null;
+		public widgetChannelID: Snowflake | null;
+		public widgetEnabled: boolean | null;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-		public bannerURL(options?: AvatarOptions): string;
+		public bannerURL(options?: AvatarOptions): string | null;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
@@ -451,29 +736,31 @@ declare module 'discord.js' {
 		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
+		public fetchEmbed(): Promise<GuildEmbedData>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-		public fetchEmbed(): Promise<GuildEmbedData>;
-		public iconURL(options?: AvatarOptions): string;
+		public iconURL(options?: AvatarOptions): string | null;
 		public leave(): Promise<Guild>;
-		public member(user: UserResolvable): GuildMember;
-		public setAFKChannel(afkChannel: ChannelResolvable, reason?: string): Promise<Guild>;
+		public member(user: UserResolvable): GuildMember | null;
+		public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
+		public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
 		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications | number, reason?: string): Promise<Guild>;
+		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
-		public setIcon(icon: Base64Resolvable, reason?: string): Promise<Guild>;
+		public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setName(name: string, reason?: string): Promise<Guild>;
 		public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
 		public setRegion(region: string, reason?: string): Promise<Guild>;
-		public setSplash(splash: Base64Resolvable, reason?: string): Promise<Guild>;
-		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<Guild>;
+		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
+		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
-		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
-		public splashURL(options?: AvatarOptions): string;
+		public splashURL(options?: AvatarOptions): string | null;
 		public toJSON(): object;
 		public toString(): string;
 	}
@@ -551,6 +838,7 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
 
+		public available: boolean;
 		public deleted: boolean;
 		public guild: Guild;
 		public managed: boolean;
@@ -579,6 +867,8 @@ declare module 'discord.js' {
 		public nickname: string;
 		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
+		public readonly premiumSince: Date | null;
+		public premiumSinceTimestamp: number | null;
 		public readonly presence: Presence;
 		public roles: GuildMemberRoleStore;
 		public user: User;
@@ -1123,7 +1413,15 @@ declare module 'discord.js' {
 		public static convertToBuffer(ab: ArrayBuffer | string): Buffer;
 		public static delayFor(ms: number): Promise<void>;
 		public static discordSort<K, V extends { rawPosition: number; id: string; }>(collection: Collection<K, V>): Collection<K, V>;
-		public static escapeMarkdown(text: string, onlyCodeBlock?: boolean, onlyInlineCode?: boolean): string;
+		public static escapeMarkdown(text: string, options?: { codeBlock?: boolean, inlineCode?: boolean, bold?: boolean, italic?: boolean, underline?: boolean, strikethrough?: boolean, spoiler?: boolean, inlineCodeContent?: boolean, codeBlockContent?: boolean }): string;
+		public static escapeCodeBlock(text: string): string;
+		public static escapeInlineCode(text: string): string;
+		public static escapeBold(text: string): string;
+		public static escapeItalic(text: string): string;
+		public static escapeUnderline(text: string): string;
+		public static escapeStrikethrough(text: string): string;
+		public static escapeSpoiler(text: string): string;
+		public static cleanCodeBlockContent(text: string): string;
 		public static fetchRecommendedShards(token: string, guildsPerShard?: number): Promise<number>;
 		public static flatten(obj: object, ...props: { [key: string]: boolean | string }[]): object;
 		public static idToBinary(num: Snowflake): string;
@@ -1142,7 +1440,7 @@ declare module 'discord.js' {
 			route: object,
 			reason?: string
 		): Promise<{ id: Snowflake; position: number }[]>;
-		public static splitMessage(text: string, options?: SplitOptions): string | string[];
+		public static splitMessage(text: string, options?: SplitOptions): string[];
 		public static str2ab(str: string): ArrayBuffer;
 	}
 
@@ -1271,6 +1569,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data: object);
 		public readonly channel: VoiceChannel | null;
 		public channelID?: Snowflake;
+		public readonly connection: VoiceConnection | null;
 		public readonly deaf?: boolean;
 		public guild: Guild;
 		public id: Snowflake;
@@ -1355,7 +1654,6 @@ declare module 'discord.js' {
 		private sessionID?: string;
 		private lastPingTimestamp: number;
 		private lastHeartbeatAcked: boolean;
-		private trace: string[];
 		private ratelimit: { queue: object[]; total: number; remaining: number; time: 60e3; timer: NodeJS.Timeout | null; };
 		private connection: WebSocket | null;
 		private helloTimeout: NodeJS.Timeout | null;
@@ -1435,10 +1733,10 @@ declare module 'discord.js' {
 
 	export class GuildChannelStore extends DataStore<Snowflake, GuildChannel, typeof GuildChannel, GuildChannelResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
-		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel>;
+		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel | CategoryChannel>;
 	}
 
-	// Hacky workaround because changing the signature of an overriden method errors
+	// Hacky workaround because changing the signature of an overridden method errors
 	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any> extends DataStore<V, K, VConstructor, R> {
 		public add(data: any, cache: any): any;
 		public set(key: any): any;
@@ -1508,6 +1806,10 @@ declare module 'discord.js' {
 		public fetch(id: Snowflake, cache?: boolean): Promise<User>;
 	}
 
+	export class VoiceStateStore extends DataStore<Snowflake, VoiceState, typeof VoiceState> {
+		constructor(guild: Guild, iterable?: Iterable<any>);
+	}
+
 //#endregion
 
 //#region Mixins
@@ -1526,8 +1828,10 @@ declare module 'discord.js' {
 		readonly lastMessage: Message | null;
 		lastPinTimestamp: number | null;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+		send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message | Message>;
+		send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message | Message[]>;
 	}
 
 	interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -1548,8 +1852,10 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+		send(options?: WebhookMessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
 		sendSlackMessage(body: object): Promise<Message | object>;
 	}
 
@@ -1719,6 +2025,7 @@ declare module 'discord.js' {
 
 	interface CollectorOptions {
 		time?: number;
+		idle?: number;
 		dispose?: boolean;
 	}
 
@@ -1908,6 +2215,7 @@ declare module 'discord.js' {
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
 		splash?: Base64Resolvable;
+		banner?: Base64Resolvable;
 	}
 
 	interface GuildEmbedData {
@@ -1919,7 +2227,9 @@ declare module 'discord.js' {
 		| 'MORE_EMOJI'
 		| 'VERIFIED'
 		| 'VIP_REGIONS'
-		| 'VANITY_URL';
+		| 'VANITY_URL'
+		| 'DISCOVERABLE'
+		| 'FEATURABLE';
 
 	interface GuildMemberEditData {
 		nick?: string;
@@ -1986,6 +2296,9 @@ declare module 'discord.js' {
 
 	type InviteResolvable = string;
 
+	type MembershipStates = 'INVITED'
+		| 'ACCEPTED';
+
 	interface MessageCollectorOptions extends CollectorOptions {
 		max?: number;
 		maxProcessed?: number;
@@ -2039,7 +2352,11 @@ declare module 'discord.js' {
 		| 'CHANNEL_NAME_CHANGE'
 		| 'CHANNEL_ICON_CHANGE'
 		| 'PINS_ADD'
-		| 'GUILD_MEMBER_JOIN';
+		| 'GUILD_MEMBER_JOIN'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;
@@ -2067,6 +2384,7 @@ declare module 'discord.js' {
 		| 'ADD_REACTIONS'
 		| 'VIEW_AUDIT_LOG'
 		| 'PRIORITY_SPEAKER'
+		| 'STREAM'
 		| 'VIEW_CHANNEL'
 		| 'SEND_MESSAGES'
 		| 'SEND_TTS_MESSAGES'
@@ -2097,6 +2415,8 @@ declare module 'discord.js' {
 		deny: PermissionResolvable;
 		id: UserResolvable | RoleResolvable;
 	}
+
+	type PremiumTier = number;
 
 	interface PresenceData {
 		status?: PresenceStatusData;
@@ -2164,6 +2484,11 @@ declare module 'discord.js' {
 		mentionable?: boolean;
 	}
 
+	interface RolePosition {
+		role: RoleResolvable;
+		position: number;
+	}
+
 	type RoleResolvable = Role | string;
 
 	type ShardingManagerMode = 'process' | 'worker';
@@ -2182,7 +2507,7 @@ declare module 'discord.js' {
 	interface StreamOptions {
 		type?: StreamType;
 		seek?: number;
-		volume?: number;
+		volume?: number | boolean;
 		passes?: number;
 		plp?: number;
 		fec?: boolean;
@@ -2223,6 +2548,11 @@ declare module 'discord.js' {
 		large_threshold?: number;
 		compress?: boolean;
 	}
+
+	type PartialType = 'USER'
+		| 'CHANNEL'
+		| 'GUILD_MEMBER'
+		| 'MESSAGE';
 
 	type WSEventType = 'READY'
 		| 'RESUMED'

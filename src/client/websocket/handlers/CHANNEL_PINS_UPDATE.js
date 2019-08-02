@@ -14,7 +14,7 @@ module.exports = (client, { d: data }) => {
      * Emitted whenever the pins of a channel are updated. Due to the nature of the WebSocket event,
      * not much information can be provided easily here - you need to manually check the pins yourself.
      * @event Client#channelPinsUpdate
-     * @param {DMChannel|TextChannel} channel The channel that the pins update occured in
+     * @param {DMChannel|TextChannel} channel The channel that the pins update occurred in
      * @param {Date} time The time of the pins update
      */
     client.emit(Events.CHANNEL_PINS_UPDATE, channel, time);

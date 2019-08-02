@@ -256,7 +256,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains the available voice regions from Discord.
-   * @returns {Collection<string, VoiceRegion>}
+   * @returns {Promise<Collection<string, VoiceRegion>>}
    * @example
    * client.fetchVoiceRegions()
    *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))

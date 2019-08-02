@@ -126,15 +126,17 @@ exports.Endpoints = {
     return {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
-      DefaultAvatar: number => `${root}/embed/avatars/${number}.png`,
+      DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userID, hash, format = 'default', size) => {
         if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size }),
+      Icon: (guildID, hash, format = 'default', size) => {
+        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+        return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
+      },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
       AppAsset: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -143,6 +145,8 @@ exports.Endpoints = {
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
       Splash: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
+      TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
+        makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
     };
   },
   invite: (root, code) => `${root}/${code}`,
@@ -309,6 +313,7 @@ exports.PartialTypes = keyMirror([
  * * GUILD_ROLE_UPDATE
  * * GUILD_BAN_ADD
  * * GUILD_BAN_REMOVE
+ * * GUILD_EMOJIS_UPDATE
  * * CHANNEL_CREATE
  * * CHANNEL_DELETE
  * * CHANNEL_UPDATE
@@ -323,7 +328,6 @@ exports.PartialTypes = keyMirror([
  * * USER_UPDATE
  * * USER_SETTINGS_UPDATE
  * * PRESENCE_UPDATE
- * * VOICE_STATE_UPDATE
  * * TYPING_START
  * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
@@ -360,7 +364,6 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_REMOVE_ALL',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
-  'VOICE_STATE_UPDATE',
   'TYPING_START',
   'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
@@ -377,6 +380,10 @@ exports.WSEvents = keyMirror([
  * * CHANNEL_ICON_CHANGE
  * * PINS_ADD
  * * GUILD_MEMBER_JOIN
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
+ * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -388,6 +395,10 @@ exports.MessageTypes = [
   'CHANNEL_ICON_CHANGE',
   'PINS_ADD',
   'GUILD_MEMBER_JOIN',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
+  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
 ];
 
 /**
@@ -559,6 +570,19 @@ exports.APIErrors = {
 exports.DefaultMessageNotifications = [
   'ALL',
   'MENTIONS',
+];
+
+/**
+ * The value set for a team members's membership state:
+ * * INVITED
+ * * ACCEPTED
+ * @typedef {string} MembershipStates
+ */
+exports.MembershipStates = [
+  // They start at 1
+  null,
+  'INVITED',
+  'ACCEPTED',
 ];
 
 function keyMirror(arr) {
