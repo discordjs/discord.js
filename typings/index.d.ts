@@ -1828,10 +1828,12 @@ declare module 'discord.js' {
 		readonly lastMessage: Message | null;
 		lastPinTimestamp: number | null;
 		readonly lastPinAt: Date;
+		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
 		send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
 		send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
-		send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message | Message>;
-		send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
 	}
 
 	interface TextBasedChannelFields extends PartialTextBasedChannelFields {
