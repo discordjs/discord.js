@@ -177,7 +177,7 @@ class GuildMemberStore extends DataStore {
    */
   unban(user, reason) {
     const id = this.client.users.resolveID(user);
-    if (!id) throw new Error('BAN_RESOLVE_ID');
+    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
     return this.client.api.guilds(this.guild.id).bans[id].delete({ reason })
       .then(() => this.client.users.resolve(user));
   }
