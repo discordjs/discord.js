@@ -1501,7 +1501,7 @@ declare module 'discord.js' {
 
 	export class RoleStore extends DataStore<Snowflake, Role, typeof Role, RoleResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
-		public readonly defaultRole: Role | null;
+		public readonly everyone: Role | null;
 		public readonly highest: Role;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;

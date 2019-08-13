@@ -115,7 +115,7 @@ class RoleStore extends DataStore {
    * @type {?Role}
    * @readonly
    */
-  get defaultRole() {
+  get everyone() {
     return this.get(this.guild.id) || null;
   }
 
