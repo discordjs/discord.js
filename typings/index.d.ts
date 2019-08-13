@@ -1440,7 +1440,7 @@ declare module 'discord.js' {
 			route: object,
 			reason?: string
 		): Promise<{ id: Snowflake; position: number }[]>;
-		public static splitMessage(text: string, options?: SplitOptions): string | string[];
+		public static splitMessage(text: string, options?: SplitOptions): string[];
 		public static str2ab(str: string): ArrayBuffer;
 	}
 
@@ -1736,7 +1736,7 @@ declare module 'discord.js' {
 		public create(name: string, options?: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel | CategoryChannel>;
 	}
 
-	// Hacky workaround because changing the signature of an overriden method errors
+	// Hacky workaround because changing the signature of an overridden method errors
 	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any> extends DataStore<V, K, VConstructor, R> {
 		public add(data: any, cache: any): any;
 		public set(key: any): any;
@@ -1828,8 +1828,12 @@ declare module 'discord.js' {
 		readonly lastMessage: Message | null;
 		lastPinTimestamp: number | null;
 		readonly lastPinAt: Date;
-		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+		send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
 	}
 
 	interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -1850,8 +1854,10 @@ declare module 'discord.js' {
 		token: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
-		send(content?: StringResolvable, options?: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		send(options?: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+		send(options?: WebhookMessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		send(options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
 		sendSlackMessage(body: object): Promise<Message | object>;
 	}
 
@@ -2224,7 +2230,9 @@ declare module 'discord.js' {
 		| 'MORE_EMOJI'
 		| 'VERIFIED'
 		| 'VIP_REGIONS'
-		| 'VANITY_URL';
+		| 'VANITY_URL'
+		| 'DISCOVERABLE'
+		| 'FEATURABLE';
 
 	interface GuildMemberEditData {
 		nick?: string;
