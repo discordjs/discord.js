@@ -168,7 +168,7 @@ class Guild extends Base {
      * An array of guild features partnered guilds have enabled
      * @type {Features[]}
      */
-    this.features = data.features;
+    this.features = data.features || [];
 
     /**
      * The ID of the application that created this guild (if applicable)
@@ -312,8 +312,7 @@ class Guild extends Base {
 
     this.id = data.id;
     this.available = !data.unavailable;
-    this.features = data.features || this.features || [];
-
+    
     if (data.channels) {
       this.channels.clear();
       for (const rawChannel of data.channels) {
