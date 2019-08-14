@@ -1858,7 +1858,7 @@ declare module 'discord.js' {
 		send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
 		send(options?: WebhookMessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
 		send(options?: WebhookMessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
-		sendSlackMessage(body: object): Promise<Message | object>;
+		sendSlackMessage(body: object): Promise<boolean>;
 	}
 
 //#endregion
