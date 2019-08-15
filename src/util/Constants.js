@@ -163,6 +163,7 @@ exports.Endpoints = {
  * * IDLE: 3
  * * NEARLY: 4
  * * DISCONNECTED: 5
+ * * WAITING_FOR_GUILDS: 6
  * @typedef {number} Status
  */
 exports.Status = {
@@ -172,6 +173,7 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+  WAITING_FOR_GUILDS: 6,
 };
 
 /**
@@ -279,6 +281,7 @@ exports.ShardEvents = {
   INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',
+  ALL_READY: 'allReady',
 };
 
 /**

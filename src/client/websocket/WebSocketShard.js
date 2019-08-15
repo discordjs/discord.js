@@ -70,10 +70,10 @@ class WebSocketShard extends EventEmitter {
     this.sessionID = undefined;
 
     /**
-     * The previous 3 heartbeat pings of the shard (most recent first)
-     * @type {number[]}
+     * The previous heartbeat ping of the shard
+     * @type {number}
      */
-    this.pings = [];
+    this.ping = -1;
 
     /**
      * The last time a ping was sent (a timestamp)
@@ -136,16 +136,20 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     Object.defineProperty(this, 'eventsAttached', { value: false, writable: true });
-  }
 
-  /**
-   * Average heartbeat ping of the websocket, obtained by averaging the WebSocketShard#pings property
-   * @type {number}
-   * @readonly
-   */
-  get ping() {
-    const sum = this.pings.reduce((a, b) => a + b, 0);
-    return sum / this.pings.length;
+    /**
+     * A set of guild IDs this shard expects to receive
+     * @type {Set<string>}
+     * @private
+     */
+    Object.defineProperty(this, 'expectedGuilds', { value: undefined, writable: true });
+
+    /**
+     * The ready timeout
+     * @type {?NodeJS.Timer}
+     * @private
+     */
+    Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
   }
 
   /**
@@ -252,7 +256,7 @@ class WebSocketShard extends EventEmitter {
   onMessage({ data }) {
     let raw;
     if (zstd) {
-      raw = this.inflate.decompress(new Uint8Array(data).buffer);
+      raw = this.inflate.decompress(new Uint8Array(data));
     } else {
       if (data instanceof ArrayBuffer) data = new Uint8Array(data);
       const l = data.length;
@@ -353,16 +357,18 @@ class WebSocketShard extends EventEmitter {
     switch (packet.t) {
       case WSEvents.READY:
         /**
-         * Emitted when the shard becomes ready
+         * Emitted when the shard receives the READY payload and is now waiting for guilds
          * @event WebSocketShard#ready
          */
         this.emit(ShardEvents.READY);
 
         this.sessionID = packet.d.session_id;
-        this.status = Status.READY;
+        this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
+        this.status = Status.WAITING_FOR_GUILDS;
         this.debug(`READY | Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
+        this.checkReady();
         break;
       case WSEvents.RESUMED: {
         /**
@@ -376,6 +382,7 @@ class WebSocketShard extends EventEmitter {
         this.debug(`RESUMED | Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
+        break;
       }
     }
 
@@ -414,7 +421,45 @@ class WebSocketShard extends EventEmitter {
         break;
       default:
         this.manager.handlePacket(packet, this);
+        if (packet.t === WSEvents.GUILD_CREATE) {
+          this.expectedGuilds.delete(packet.d.id);
+          this.checkReady();
+        }
     }
+  }
+
+  /**
+   * Checks if the shard can be marked as ready
+   * @private
+   */
+  checkReady() {
+    // Step 0. Clear the ready timeout, if it exists
+    if (this.readyTimeout) this.manager.client.clearTimeout(this.readyTimeout);
+    // Step 1. If we don't have any other guilds pending, we are ready
+    if (!this.expectedGuilds.size) {
+      this.debug('Shard received all its guilds. Marking as fully ready.');
+      this.status = Status.READY;
+
+      /**
+       * Emitted when the shard is fully ready.
+       * This event is emitted if:
+       * * all guilds were received by this shard
+       * * the ready timeout expired, and some guilds are unavailable
+       * @event WebSocketShard#allReady
+       * @param {?Set<string>} unavailableGuilds Set of unavailable guilds, if any
+       */
+      this.emit(ShardEvents.ALL_READY);
+      return;
+    }
+    // Step 2. Create a 15s timeout that will mark the shard as ready if there are still unavailable guilds
+    this.readyTimeout = this.manager.client.setTimeout(() => {
+      this.debug(`Shard did not receive any more guild packets in 15 seconds.
+  Unavailable guild count: ${this.expectedGuilds.size}`);
+
+      this.status = Status.READY;
+
+      this.emit(ShardEvents.ALL_READY, this.expectedGuilds);
+    }, 15000);
   }
 
   /**
@@ -462,11 +507,14 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   sendHeartbeat() {
-    if (!this.lastHeartbeatAcked) {
-      this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
+    if (!this.lastHeartbeatAcked && this.status !== Status.WAITING_FOR_GUILDS) {
+      this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
       this.destroy(4009);
       return;
+    } else if (!this.lastHeartbeatAcked) {
+      this.debug("Didn't process heartbeat ack yet; still waiting for guilds.");
     }
+
     this.debug('Sending a heartbeat.');
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
@@ -481,8 +529,7 @@ class WebSocketShard extends EventEmitter {
     this.lastHeartbeatAcked = true;
     const latency = Date.now() - this.lastPingTimestamp;
     this.debug(`Heartbeat acknowledged, latency of ${latency}ms.`);
-    this.pings.unshift(latency);
-    if (this.pings.length > 3) this.pings.length = 3;
+    this.ping = latency;
   }
 
   /**

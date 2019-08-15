@@ -1651,8 +1651,8 @@ declare module 'discord.js' {
 		private destroy(): void;
 		private _handleSessionLimit(remaining?: number, resetAfter?: number): Promise<void>;
 		private handlePacket(packet?: object, shard?: WebSocketShard): Promise<boolean>;
-		private checkReady(): boolean;
-		private triggerReady(): void;
+		private checkShardsReady(): void;
+		private triggerClientReady(): void;
 	}
 
 	export class WebSocketShard extends EventEmitter {

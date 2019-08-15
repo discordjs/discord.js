@@ -190,15 +190,17 @@ class WebSocketManager extends EventEmitter {
     this.shardQueue.delete(shard);
 
     if (!shard.eventsAttached) {
-      shard.on(ShardEvents.READY, () => {
+      shard.on(ShardEvents.ALL_READY, unavailableGuilds => {
         /**
          * Emitted when a shard turns ready.
          * @event Client#shardReady
          * @param {number} id The shard ID that turned ready
+         * @param {?Set<string>} unavailableGuilds Set of unavailable guild IDs, if any
          */
-        this.client.emit(Events.SHARD_READY, shard.id);
+        this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
 
         if (!this.shardQueue.size) this.reconnecting = false;
+        this.checkShardsReady();
       });
 
       shard.on(ShardEvents.CLOSE, event => {
@@ -396,45 +398,37 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Checks whether the client is ready to be marked as ready.
-   * @returns {boolean}
    * @private
    */
-  checkReady() {
+  async checkShardsReady() {
+    if (this.status === Status.READY) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
-      return false;
+      return;
     }
 
-    const unavailableGuilds = this.client.guilds.reduce((acc, guild) => guild.available ? acc : acc + 1, 0);
+    this.status = Status.NEARLY;
 
-    // TODO: Rethink implementation for this
-    if (unavailableGuilds === 0) {
-      this.status = Status.NEARLY;
-      if (!this.client.options.fetchAllMembers) return this.triggerReady();
-      // Fetch all members before marking self as ready
-      const promises = this.client.guilds.map(g => g.members.fetch());
-      Promise.all(promises)
-        .then(() => this.triggerReady())
-        .catch(e => {
-          this.debug(`Failed to fetch all members before ready! ${e}\n${e.stack}`);
-          this.triggerReady();
+    if (this.client.options.fetchAllMembers) {
+      try {
+        const promises = this.client.guilds.map(guild => {
+          if (guild.available) return guild.members.fetch();
+          // Return no-op if guild is unavailable
+          return () => null;
         });
-    } else {
-      this.debug(`There are ${unavailableGuilds} unavailable guilds. Waiting for their GUILD_CREATE packets`);
+        await Promise.all(promises);
+      } catch (err) {
+        this.debug(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
+      }
     }
 
-    return true;
+    this.triggerClientReady();
   }
 
   /**
    * Causes the client to be marked as ready and emits the ready event.
    * @private
    */
-  triggerReady() {
-    if (this.status === Status.READY) {
-      this.debug('Tried to mark self as ready, but already ready');
-      return;
-    }
-
+  triggerClientReady() {
     this.status = Status.READY;
 
     this.client.readyAt = new Date();
