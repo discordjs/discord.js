@@ -508,7 +508,7 @@ class WebSocketShard extends EventEmitter {
    */
   sendHeartbeat() {
     if (!this.lastHeartbeatAcked && this.status !== Status.WAITING_FOR_GUILDS) {
-      this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
+      this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
       this.destroy(4009);
       return;
     } else if (!this.lastHeartbeatAcked) {
