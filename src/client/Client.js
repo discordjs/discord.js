@@ -36,7 +36,7 @@ class Client extends BaseClient {
     try {
       // Test if worker threads module is present and used
       data = require('worker_threads').workerData || data;
-    } catch (_) {
+    } catch {
       // Do nothing
     }
 
