@@ -421,7 +421,7 @@ class WebSocketShard extends EventEmitter {
         break;
       default:
         this.manager.handlePacket(packet, this);
-        if (packet.t === WSEvents.GUILD_CREATE) {
+        if (this.status === Status.WAITING_FOR_GUILDS && packet.t === WSEvents.GUILD_CREATE) {
           this.expectedGuilds.delete(packet.d.id);
           this.checkReady();
         }
