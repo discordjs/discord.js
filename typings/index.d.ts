@@ -1699,12 +1699,14 @@ declare module 'discord.js' {
 		public on(event: 'resumed', listener: () => void): this;
 		public on(event: 'close', listener: (event: CloseEvent) => void): this;
 		public on(event: 'invalidSession', listener: () => void): this;
+		public on(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'resumed', listener: () => void): this;
 		public once(event: 'close', listener: (event: CloseEvent) => void): this;
 		public once(event: 'invalidSession', listener: () => void): this;
+		public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
