@@ -463,7 +463,16 @@ exports.Colors = {
   NOT_QUITE_BLACK: 0x23272A,
 };
 
-exports.verificationLevels = [
+/**
+ * The value set for the verification levels for a guild:
+ * * None
+ * * Low
+ * * Medium
+ * * (╯°□°）╯︵ ┻━┻
+ * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
+ * @typedef {string} VerificationLevels
+ */
+exports.VerificationLevels = [
   'None',
   'Low',
   'Medium',
