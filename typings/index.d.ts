@@ -908,12 +908,17 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
+	export class MessageFlags extends BitField<MessageFlagsString> {
+		public static FLAGS: Record<MessageFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
+	}
+
 	export class Message extends Base {
 		constructor(client: Client, data: object, channel: TextChannel | DMChannel);
 		private _edits: Message[];
 		private patch(data: object): void;
 
-		public activity: GroupActivity | null;
+		public activity: MessageActivity | null;
 		public application: ClientApplication | null;
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: User | null;
@@ -933,7 +938,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public readonly member: GuildMember | null;
 		public mentions: MessageMentions;
-		public nonce: string;
+		public nonce: string | null;
 		public readonly partial: boolean;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
@@ -943,6 +948,8 @@ declare module 'discord.js' {
 		public type: MessageType;
 		public readonly url: string;
 		public webhookID: Snowflake | null;
+		public flags: Readonly<MessageFlags>;
+		public reference: MessageReference | null;
 		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
@@ -1853,6 +1860,10 @@ declare module 'discord.js' {
 		| 'LISTENING'
 		| 'WATCHING';
 
+	type MessageFlagsString = 'CROSSPOSTED'
+		| 'IS_CROSSPOST'
+		| 'SUPPRESS_EMBEDS';
+
 	interface APIErrror {
 		UNKNOWN_ACCOUNT: number;
 		UNKNOWN_APPLICATION: number;
@@ -2095,9 +2106,15 @@ declare module 'discord.js' {
 		name?: string;
 	}
 
-	interface GroupActivity {
+	interface MessageActivity {
 		partyID: string;
 		type: number;
+	}
+
+	interface MessageReference {
+		channelID: string;
+		guildID: string;
+		messageID: string | null;
 	}
 
 	type GuildAuditLogsAction = keyof GuildAuditLogsActions;
@@ -2335,7 +2352,8 @@ declare module 'discord.js' {
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
-		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3';
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
+		| 'CHANNEL_FOLLOW_ADD';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;

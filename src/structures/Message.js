@@ -82,7 +82,9 @@ class Message extends Base {
 
     /**
      * A random number or string used for checking message delivery
-     * @type {string}
+     * <warn>This is only received after the message was sent successfully, and
+     * lost if re-fetched</warn>
+     * @type {?string}
      */
     this.nonce = data.nonce;
 
@@ -90,7 +92,7 @@ class Message extends Base {
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
      */
-    this.system = data.type === 6;
+    this.system = data.type !== 0;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
