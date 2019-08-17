@@ -283,7 +283,7 @@ declare module 'discord.js' {
 	}
 
 	export class TeamMember extends Base {
-		constructor(client: Client, team: Team, data: object);
+		constructor(team: Team, data: object);
 		public team: Team;
 		public readonly id: Snowflake;
 		public permissions: string[];

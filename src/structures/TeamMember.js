@@ -8,8 +8,8 @@ const { MembershipStates } = require('../util/Constants');
  * @extends {Base}
  */
 class TeamMember extends Base {
-  constructor(client, team, data) {
-    super(client);
+  constructor(team, data) {
+    super(team.client);
 
     /**
      * The Team this member is part of
