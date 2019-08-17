@@ -388,6 +388,7 @@ class VoiceConnection extends EventEmitter {
       ws.removeAllListeners('ready');
       ws.removeAllListeners('sessionDescription');
       ws.removeAllListeners('speaking');
+      ws.shutdown();
     }
 
     if (udp) udp.removeAllListeners('error');
