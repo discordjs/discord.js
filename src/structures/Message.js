@@ -454,11 +454,7 @@ class Message extends Base {
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.channel.messages.remove(this.id, reason).then(() =>
-        this.client.actions.MessageDelete.handle({
-          id: this.id,
-          channel_id: this.channel.id,
-        }).message);
+      return this.channel.messages.remove(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
