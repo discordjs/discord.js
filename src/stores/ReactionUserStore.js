@@ -48,14 +48,7 @@ class ReactionUserStore extends DataStore {
     return message.client.api.channels[message.channel.id].messages[message.id]
       .reactions[this.reaction.emoji.identifier][userID === message.client.user.id ? '@me' : userID]
       .delete()
-      .then(() =>
-        message.client.actions.MessageReactionRemove.handle({
-          user_id: userID,
-          message_id: message.id,
-          emoji: this.reaction.emoji,
-          channel_id: message.channel.id,
-        }).reaction
-      );
+      .then(() => this.reaction);
   }
 }
 
