@@ -686,7 +686,6 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
-		public readonly defaultRole: Role | null;
 		public deleted: boolean;
 		public description: string | null;
 		public embedChannel: GuildChannel | null;
@@ -1795,6 +1794,7 @@ declare module 'discord.js' {
 
 	export class RoleStore extends DataStore<Snowflake, Role, typeof Role, RoleResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public readonly everyone: Role | null;
 		public readonly highest: Role;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;
