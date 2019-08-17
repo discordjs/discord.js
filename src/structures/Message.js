@@ -13,6 +13,7 @@ const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const APIMessage = require('./APIMessage');
+const MessageFlags = require('../util/MessageFlags');
 
 /**
  * Represents a message on Discord.
@@ -172,6 +173,30 @@ class Message extends Base {
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
+
+    /**
+     * Flags that are applied to the message
+     * @type {Readonly<MessageFlags>}
+     */
+    this.flags = new MessageFlags(data.flags).freeze();
+
+    /**
+     * Reference data sent in a crossposted message.
+     * @typedef {Object} MessageReference
+     * @property {string} channelID ID of the channel the message was crossposted from
+     * @property {string} guildID ID of the guild the message was crossposted from
+     * @property {string} [messageID] ID of the message that was crossposted
+     */
+
+    /**
+     * Message reference data
+     * @type {?MessageReference}
+     */
+    this.reference = data.message_reference ? {
+      channelID: data.message_reference.channel_id,
+      guildID: data.message_reference.guild_id,
+      messageID: data.message_reference.message_id,
+    } : null;
   }
 
   /**
@@ -216,6 +241,8 @@ class Message extends Base {
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
     );
+
+    this.flags = new MessageFlags('flags' in data ? data.flags : this.flags.bitfield).freeze();
   }
 
   /**
