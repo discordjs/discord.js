@@ -928,6 +928,8 @@ declare module 'discord.js' {
 		public maxUses: number | null;
 		public memberCount: number;
 		public presenceCount: number;
+		public targetUser: User | null;
+		public targetUserType: TargetUser | null;
 		public temporary: boolean | null;
 		public readonly url: string;
 		public uses: number | null;
@@ -2523,6 +2525,8 @@ declare module 'discord.js' {
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
 	type StringResolvable = string | string[] | any;
+
+	type TargetUser = number;
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
 
