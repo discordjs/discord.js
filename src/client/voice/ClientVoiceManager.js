@@ -1,7 +1,6 @@
 'use strict';
 
 const Collection = require('../../util/Collection');
-const { VoiceStatus } = require('../../util/Constants');
 const VoiceConnection = require('./VoiceConnection');
 const VoiceBroadcast = require('./VoiceBroadcast');
 const { Error } = require('../../errors');
@@ -52,8 +51,9 @@ class ClientVoiceManager {
     const connection = this.connections.get(guild_id);
     this.client.emit('debug', `[VOICE] connection? ${!!connection}, ${guild_id} ${session_id} ${channel_id}`);
     if (!connection) return;
-    if (!channel_id && connection.status !== VoiceStatus.DISCONNECTED) {
+    if (!channel_id) {
       connection._disconnect();
+      this.connections.delete(guild_id);
       return;
     }
     connection.channel = this.client.channels.get(channel_id);

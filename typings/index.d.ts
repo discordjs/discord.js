@@ -283,7 +283,7 @@ declare module 'discord.js' {
 	}
 
 	export class TeamMember extends Base {
-		constructor(client: Client, team: Team, data: object);
+		constructor(team: Team, data: object);
 		public team: Team;
 		public readonly id: Snowflake;
 		public permissions: string[];
@@ -363,6 +363,7 @@ declare module 'discord.js' {
 		public handleCollect(...args: any[]): void;
 		public handleDispose(...args: any[]): void;
 		public stop(reason?: string): void;
+		public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
 		public toJSON(): object;
 
 		protected listener: Function;
@@ -685,7 +686,6 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
-		public readonly defaultRole: Role | null;
 		public deleted: boolean;
 		public description: string | null;
 		public embedChannel: GuildChannel | null;
@@ -928,6 +928,8 @@ declare module 'discord.js' {
 		public maxUses: number | null;
 		public memberCount: number;
 		public presenceCount: number;
+		public targetUser: User | null;
+		public targetUserType: TargetUser | null;
 		public temporary: boolean | null;
 		public readonly url: string;
 		public uses: number | null;
@@ -1794,11 +1796,12 @@ declare module 'discord.js' {
 
 	export class RoleStore extends DataStore<Snowflake, Role, typeof Role, RoleResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public readonly everyone: Role | null;
 		public readonly highest: Role;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;
-		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
 		public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
+		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
 	}
 
 	export class UserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
@@ -2522,6 +2525,8 @@ declare module 'discord.js' {
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
 	type StringResolvable = string | string[] | any;
+
+	type TargetUser = number;
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
 

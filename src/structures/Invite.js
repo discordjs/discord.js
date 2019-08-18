@@ -71,6 +71,24 @@ class Invite extends Base {
     this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
 
     /**
+     * The target user for this invite
+     * @type {?User}
+     */
+    this.targetUser = data.target_user ? this.client.users.add(data.target_user) : null;
+
+    /**
+     * The type of the target user:
+     * * 1: STREAM
+     * @typedef {number} TargetUser
+     */
+
+    /**
+     * The target user type
+     * @type {?TargetUser}
+     */
+    this.targetUserType = typeof data.target_user_type === 'number' ? data.target_user_type : null;
+
+    /**
      * The channel the invite is for
      * @type {Channel}
      */

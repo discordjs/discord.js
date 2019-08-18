@@ -146,8 +146,9 @@ class Webhook {
       query: { wait: true },
       auth: false,
     }).then(d => {
-      if (!this.client.channels) return d;
-      return this.client.channels.get(d.channel_id).messages.add(d, false);
+      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      if (!channel) return d;
+      return channel.messages.add(d, false);
     });
   }
 

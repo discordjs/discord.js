@@ -244,9 +244,9 @@ class Util {
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
-    const m = text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/);
+    const m = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
     if (!m) return null;
-    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] || null };
   }
 
   /**

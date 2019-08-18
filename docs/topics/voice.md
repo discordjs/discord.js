@@ -114,7 +114,7 @@ Make sure to consult the documentation for a full list of what you can play - th
 A voice broadcast is very useful for "radio" bots, that play the same audio across multiple channels. It means audio is only transcoded once, and is much better on performance.
 
 ```js
-const broadcast = client.createVoiceBroadcast();
+const broadcast = client.voice.createBroadcast();
 
 broadcast.on('subscribe', dispatcher => {
   console.log('New broadcast subscriber!');

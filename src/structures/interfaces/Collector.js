@@ -196,6 +196,37 @@ class Collector extends EventEmitter {
     if (reason) this.stop(reason);
   }
 
+  /**
+   * Allows collectors to be consumed with for-await-of loops
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
+   */
+  async *[Symbol.asyncIterator]() {
+    const queue = [];
+    const onCollect = item => queue.push(item);
+    this.on('collect', onCollect);
+
+    try {
+      while (queue.length || !this.ended) {
+        if (queue.length) {
+          yield queue.shift();
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            const tick = () => {
+              this.off('collect', tick);
+              this.off('end', tick);
+              return resolve();
+            };
+            this.on('collect', tick);
+            this.on('end', tick);
+          });
+        }
+      }
+    } finally {
+      this.off('collect', onCollect);
+    }
+  }
+
   toJSON() {
     return Util.flatten(this);
   }
