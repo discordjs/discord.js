@@ -9,7 +9,7 @@ discard the event. With partials, you're able to receive the event, with a Messa
 Partials are opt-in, and you can enable them in the Client options by specifying [PartialTypes](../typedef/PartialType):
 
 ```js
-// Accept partial messages, DM channels and reactions when emitting events
+// Accept partial messages, DM channels, and reactions when emitting events
 new Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
 ```
 
