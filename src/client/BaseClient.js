@@ -2,7 +2,7 @@
 
 require('setimmediate');
 const EventEmitter = require('events');
-const RESTManager = require('../rest/RESTManager');
+const RESTManager = require('../rest/new/RESTManager');
 const Util = require('../util/Util');
 const { DefaultOptions } = require('../util/Constants');
 
