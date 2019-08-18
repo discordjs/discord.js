@@ -146,8 +146,9 @@ class Webhook {
       query: { wait: true },
       auth: false,
     }).then(d => {
-      if (!this.client.channels) return d;
-      return this.client.channels.get(d.channel_id).messages.add(d, false);
+      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      if (!channel) return d;
+      return channel.messages.add(d, false);
     });
   }
 
@@ -173,9 +174,10 @@ class Webhook {
       query: { wait: true },
       auth: false,
       data: body,
-    }).then(data => {
-      if (!this.client.channels) return data;
-      return this.client.channels.get(data.channel_id).messages.add(data, false);
+    }).then(d => {
+      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      if (!channel) return d;
+      return channel.messages.add(d, false);
     });
   }
 
