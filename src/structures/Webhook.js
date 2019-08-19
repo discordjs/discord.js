@@ -155,7 +155,7 @@ class Webhook {
   /**
    * Sends a raw slack message with this webhook.
    * @param {Object} body The raw body to send
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<boolean>}
    * @example
    * // Send a slack message
    * webhook.sendSlackMessage({
@@ -174,11 +174,7 @@ class Webhook {
       query: { wait: true },
       auth: false,
       data: body,
-    }).then(d => {
-      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
-      if (!channel) return d;
-      return channel.messages.add(d, false);
-    });
+    }).then(data => data.toString() === 'ok');
   }
 
   /**
