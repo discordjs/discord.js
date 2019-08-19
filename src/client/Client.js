@@ -392,6 +392,9 @@ class Client extends BaseClient {
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
     }
+    if (typeof options.restRequestTimeout !== 'number' || isNaN(options.restRequestTimeout)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restRequestTimeout', 'a number');
+    }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
