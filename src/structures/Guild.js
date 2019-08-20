@@ -149,18 +149,17 @@ class Guild extends Base {
     /**
      * An array of enabled guild features, here are the possible values:
      * * ANIMATED_ICON
-     * * COMMERCE
-     * * LURKABLE
-     * * PARTNERED
-     * * NEWS
      * * BANNER
-     * * INVITE_SPLASH
-     * * MORE_EMOJI
-     * * VERIFIED
-     * * VIP_REGIONS
-     * * VANITY_URL
+     * * COMMERCE
      * * DISCOVERABLE
      * * FEATURABLE
+     * * INVITE_SPLASH
+     * * LURKABLE
+     * * NEWS
+     * * PARTNERED
+     * * VANITY_URL
+     * * VERIFIED
+     * * VIP_REGIONS
      * @typedef {string} Features
      */
 
