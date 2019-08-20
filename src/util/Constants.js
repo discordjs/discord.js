@@ -470,7 +470,7 @@ exports.Colors = {
  * * Medium
  * * (╯°□°）╯︵ ┻━┻
  * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
- * @typedef {string} VerificationLevels
+ * @typedef {string} VerificationLevel
  */
 exports.VerificationLevels = [
   'None',
