@@ -10,7 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Install
+      run: npm install
     - name: ESLint
+      if: github.event_name == 'pull_request'
       uses: ./.github/actions/eslint
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: ESLint
+      if: github.event_name == 'push'
+      run: npm run lint
+    - name: Lint typings
+      run: npm run lint:typings
+    - name: Lint docs
+      run: npm run docs:test
