@@ -15,15 +15,19 @@ const apiRouter = restManager => {
     get(_, name) {
       if (reflectors.includes(name)) return () => route.join('/');
       if (methods.includes(name)) {
+        const normalizedRoute = [];
+        for (const [i, r] of route.entries()) {
+          if (r === 'reactions') {
+            normalizedRoute.push('reactions/*');
+            break;
+          }
+          if (/\d{16,19}/g.test(r) && !/channels|guilds|webhooks/.test(route[i - 1])) normalizedRoute.push(':id');
+          else normalizedRoute.push(r);
+        }
         // Method, normalized route, full path, otherOptions, stack
         return options => restManager.request(
           name,
-          route.map((r, i) => {
-            if (/\d{16,19}/g.test(r)) return /channels|guilds|webhooks/.test(route[i - 1]) ? r : ':id';
-            if (route[i - 1] === 'reactions') return ':reaction';
-            if (route[i - 2] === 'reactions') return ':id';
-            return r;
-          }).join('/'),
+          normalizedRoute.join('/'),
           route.join('/'),
           {
             ...options,
