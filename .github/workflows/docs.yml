@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - stable
 
 jobs:
   docs:
