@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -10,7 +10,14 @@ NODE_ENV=production npm run build:browser
 
 # Initialise some useful variables
 REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-CURRENT_BRANCH=`git rev-parse --abbrev-ref HEAD`
+BRANCH_OR_TAG=`awk -F/ '{print $2}' <<< $GITHUB_REF`
+CURRENT_BRANCH=`awk -F/ '{print $NF}' <<< $GITHUB_REF`
+
+if [ "BRANCH_OR_TAG" == "heads" ]; then
+  SOURCE_TYPE="branch"
+else
+  SOURCE_TYPE="tag"
+fi
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="docs"
@@ -24,7 +31,7 @@ cd out
 git add .
 git config user.name "${GITHUB_ACTOR}"
 git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-git commit -m "Docs build for ${GITHUB_EVENT_NAME} ${CURRENT_BRANCH}: ${GITHUB_SHA}" || true
+git commit -m "Docs build for ${SOURCE_TYPE} ${CURRENT_BRANCH}: ${GITHUB_SHA}" || true
 git push origin $TARGET_BRANCH
 
 # Clean up...
@@ -43,5 +50,5 @@ cd out
 git add .
 git config user.name "${GITHUB_ACTOR}"
 git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-git commit -m "Webpack build for ${GITHUB_EVENT_NAME} ${CURRENT_BRANCH}: ${GITHUB_SHA}" || true
+git commit -m "Webpack build for ${SOURCE_TYPE} ${CURRENT_BRANCH}: ${GITHUB_SHA}" || true
 git push origin $TARGET_BRANCH
