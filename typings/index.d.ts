@@ -709,6 +709,7 @@ declare module 'discord.js' {
 		public readonly nameAcronym: string;
 		public readonly owner: GuildMember | null;
 		public ownerID: Snowflake;
+		public partnered: boolean;
 		public premiumSubscriptionCount: number | null;
 		public premiumTier: PremiumTier;
 		public presences: PresenceStore;
