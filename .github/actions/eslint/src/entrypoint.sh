@@ -13,4 +13,4 @@ else
 fi
 
 echo "## Installing modules & running ESLint"
-sh -c "$setup NODE_PATH=node_modules node /action/eslint/src/index.js"
+sh -c "$setup NODE_PATH=node_modules node /actions/eslint/src/index.js"
