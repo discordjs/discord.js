@@ -8,21 +8,24 @@ on:
 
 jobs:
   lint:
-    name: Lint
+    name: lint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Install
+    - name: npm install
+      uses: actions/setup-node@master
+      with:
+        node-version: 12
       run: npm install
-    - name: ESLint
+    - name: eslint
       if: github.event_name == 'pull_request'
       uses: ./.github/actions/eslint
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: ESLint
+    - name: eslint
       if: github.event_name == 'push'
       run: npm run lint
-    - name: Lint typings
+    - name: lint typings
       run: npm run lint:typings
-    - name: Lint docs
+    - name: lint docs
       run: npm run docs:test

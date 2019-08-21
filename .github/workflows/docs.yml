@@ -1,0 +1,27 @@
+name: Docs
+
+on:
+  push:
+    branches:
+    - master
+    - gh-actions
+
+jobs:
+  docs:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: npm install
+      uses: actions/setup-node@master
+      with:
+        node-version: 12
+      run: npm install
+    - name: build docs
+      run: npm run docs
+    - name: build webpack
+      run: npm run build:browser
+    - name: deploy docs
+      uses: ./.github/actions/commit
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
