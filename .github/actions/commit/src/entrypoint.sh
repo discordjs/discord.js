@@ -2,6 +2,8 @@
 
 set -e
 
+cd $GITHUB_WORKSPACE
+
 # Initialise some useful variables
 REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
