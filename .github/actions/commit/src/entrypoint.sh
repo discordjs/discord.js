@@ -4,6 +4,10 @@ set -e
 
 cd $GITHUB_WORKSPACE
 
+# Run the build
+npm run docs
+NODE_ENV=production npm run build:browser
+
 # Initialise some useful variables
 REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
