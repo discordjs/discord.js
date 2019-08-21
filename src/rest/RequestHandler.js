@@ -171,7 +171,15 @@ class RequestHandler {
       } else if (res.status === 429) {
         // A ratelimit was hit - this should never happen
         this.requestQueue.unshift(requestData);
-        this.debug(`Encountered a 429. Retrying in ${bucket.retryAfter}ms`);
+        this.debug(
+          `Encountered a 429. Retrying in ${bucket.retryAfter}ms
+            [Bucket Info]
+            Hash       : ${bucket.hash}
+            Limit      : ${bucket.limit}
+            Reset      : ${new Date(bucket.reset).toISOString()}
+            Retry After: ${bucket.retryAfter}
+          `
+        );
         await Util.delayFor(bucket.retryAfter);
       } else if (res.status >= 500 && res.status <= 600) {
         // Retry the specified number of times for possible serverside issues
