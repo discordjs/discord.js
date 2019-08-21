@@ -5,11 +5,7 @@ set -e
 if [ -e node_modules/.bin/eslint ]; then
 	setup=""
 else
-	if [ -f yarn.lock ]; then
-		setup="yarn --production=false &&"
-	else
-		setup="NODE_ENV=development npm install &&"
-	fi
+	setup="NODE_ENV=development npm install &&"
 fi
 
 echo "## Installing modules & running ESLint"
