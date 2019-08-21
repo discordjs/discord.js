@@ -5,7 +5,7 @@ LABEL com.github.actions.description="Commit docs to the docs/ branch."
 LABEL com.github.actions.icon="upload-cloud"
 LABEL com.github.actions.color="blue"
 
-RUN apt-get update && apt-get install git
+RUN apt-get update && apt-get install -y git
 
 COPY src /actions/commit/src
 ENTRYPOINT ["/actions/commit/src/entrypoint.sh"]
