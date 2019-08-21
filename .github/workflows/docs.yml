@@ -8,7 +8,7 @@ on:
 
 jobs:
   docs:
-    name: docs
+    name: deploy
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
@@ -18,10 +18,6 @@ jobs:
         node-version: 12
     - name: npm install
       run: npm install
-    - name: build docs
-      run: npm run docs
-    - name: build webpack
-      run: npm run build:browser
     - name: deploy docs
       uses: ./.github/actions/commit
       env:
