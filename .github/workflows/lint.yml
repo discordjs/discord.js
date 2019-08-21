@@ -12,10 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: npm install
+    - name: install node v12
       uses: actions/setup-node@master
       with:
         node-version: 12
+    - name: npm install
       run: npm install
     - name: eslint
       if: github.event_name == 'pull_request'
