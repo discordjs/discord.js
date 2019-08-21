@@ -139,7 +139,7 @@ class RequestHandler {
         }
 
         bucket._patch(
-          limit ? Number(limit) : 10,
+          limit ? Number(limit) : Infinity,
           remaining ? Number(remaining) : 1,
           reset ? calculateReset(reset, serverDate) : Date.now(),
           retryAfter ? Number(retryAfter) : -1
