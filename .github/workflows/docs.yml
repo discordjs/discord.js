@@ -19,6 +19,6 @@ jobs:
     - name: npm install
       run: npm install
     - name: deploy docs
-      uses: ./.github/actions/commit
+      uses: ./.github/actions/docs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
