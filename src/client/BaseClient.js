@@ -2,9 +2,10 @@
 
 require('setimmediate');
 const EventEmitter = require('events');
-const RESTManager = require('../rest/new/RESTManager');
+const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
 const { DefaultOptions } = require('../util/Constants');
+const apiRouter = require('../rest/APIRouter');
 
 /**
  * The base class for all clients.
@@ -51,12 +52,12 @@ class BaseClient extends EventEmitter {
 
   /**
    * API shortcut
-   * @type {Object}
+   * @type {Proxy}
    * @readonly
    * @private
    */
   get api() {
-    return this.rest.api;
+    return apiRouter(this.rest);
   }
 
   /**

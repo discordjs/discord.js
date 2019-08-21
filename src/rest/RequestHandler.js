@@ -1,181 +1,207 @@
 'use strict';
 
+const BucketLock = require('./BucketLock');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const Util = require('../util/Util');
 const { Events: { RATE_LIMIT }, browser } = require('../util/Constants');
 
-function parseResponse(res) {
+const parseResponse = res => {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json();
   if (browser) return res.blob();
   return res.buffer();
-}
+};
 
-function getAPIOffset(serverDate) {
-  return new Date(serverDate).getTime() - Date.now();
-}
+const getAPIOffset = serverDate => new Date(serverDate).getTime() - Date.now();
 
-function calculateReset(reset, serverDate) {
-  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
-}
+const calculateReset = (reset, serverData) => new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverData);
 
 class RequestHandler {
-  constructor(manager) {
-    this.manager = manager;
+  constructor(restManager, normalizedPath) {
+    Object.defineProperty(this, 'restManager', { value: restManager });
+    this.normalizedPath = normalizedPath;
+
     this.busy = false;
-    this.queue = [];
-    this.reset = -1;
-    this.remaining = -1;
-    this.limit = -1;
-    this.retryAfter = -1;
+    this.requestQueue = [];
+
+    this.bucketHash = undefined;
   }
 
-  push(request) {
-    if (this.busy) {
-      this.queue.push(request);
-      return this.run();
-    } else {
-      return this.execute(request);
-    }
-  }
-
-  run() {
-    if (this.queue.length === 0) return Promise.resolve();
-    return this.execute(this.queue.shift());
+  get isInactive() {
+    return !this.requestQueue.length && !this.limited && !this.busy;
   }
 
   get limited() {
-    return (this.manager.globalTimeout || this.remaining <= 0) && Date.now() < this.reset;
+    const { bucket } = this;
+    return (this.restManager.globalTimeout || bucket.remaining <= 0) && Date.now() < bucket.reset;
   }
 
-  get _inactive() {
-    return this.queue.length === 0 && !this.limited && this.busy !== true;
+  get bucket() {
+    if (!this.bucketHash) return new BucketLock();
+    let b = this.restManager.buckets.get(this.bucketHash);
+    if (!b) {
+      b = new BucketLock(this.bucketHash);
+      this.restManager.buckets.set(this.bucketHash, b);
+    }
+
+    return b;
+  }
+
+  debug(message) {
+    return this.restManager.debug(message, this.normalizedPath);
+  }
+
+  queue(request) {
+    this.requestQueue.push(request);
+    if (this.busy) return request.promise;
+    return this.run();
   }
 
   /* eslint-disable-next-line complexity */
-  async execute(item) {
-    // Insert item back to the beginning if currently busy
-    if (this.busy) {
-      this.queue.unshift(item);
-      return null;
-    }
+  async run() {
+    if (!this.requestQueue.length) return null;
+
+    const requestData = this.requestQueue.shift();
 
     this.busy = true;
-    const { reject, request, resolve } = item;
+    const { request, resolve, reject, retries, stack } = requestData;
+    let { bucket } = this;
 
-    // After calculations and requests have been done, pre-emptively stop further requests
+    // Check if we are limited before requesting again
     if (this.limited) {
-      const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
+      const restOffset = this.restManager.client.options.restTimeOffset;
+      const timeout = bucket.reset + (restOffset < 0 ? -restOffset : restOffset) - Date.now();
 
-      if (this.manager.client.listenerCount(RATE_LIMIT)) {
+      if (this.restManager.client.listenerCount(RATE_LIMIT)) {
         /**
          * Emitted when the client hits a rate limit while making a request
          * @event Client#rateLimit
          * @param {Object} rateLimitInfo Object containing the rate limit info
          * @param {number} rateLimitInfo.timeout Timeout in ms
-         * @param {number} rateLimitInfo.limit Number of requests that can be made to this endpoint
          * @param {string} rateLimitInfo.method HTTP method used for request that triggered this event
          * @param {string} rateLimitInfo.path Path used for request that triggered this event
          * @param {string} rateLimitInfo.route Route used for request that triggered this event
+         * @param {Object} bucket The ratelimit bucket
+         * @param {string} bucket.hash The bucket hash
+         * @param {number} bucket.limit Number of requests that can be made to this endpoint
          */
-        this.manager.client.emit(RATE_LIMIT, {
+        this.restManager.client.emit(RATE_LIMIT, {
           timeout,
-          limit: this.limit,
+          bucket: {
+            hash: bucket.hash,
+            limit: bucket.limit,
+          },
           method: request.method,
           path: request.path,
-          route: request.route,
+          route: this.normalizedPath,
         });
       }
 
-      if (this.manager.globalTimeout) {
-        await this.manager.globalTimeout;
+      if (this.restManager.globalTimeout) {
+        await this.restManager.globalTimeout;
       } else {
         // Wait for the timeout to expire in order to avoid an actual 429
         await Util.delayFor(timeout);
       }
     }
 
-    // Perform the request
+    // Wait for the bucket lock to be done
+    await bucket.waitLock();
+
+    const release = bucket.acquireLock();
+
     let res;
+
     try {
       res = await request.make();
     } catch (error) {
       // NodeFetch error expected for all "operational" errors, such as 500 status code
-      this.busy = false;
-      return reject(
-        new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path)
+      reject(
+        new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path, stack)
       );
     }
 
-    if (res && res.headers) {
-      const serverDate = res.headers.get('date');
-      const limit = res.headers.get('x-ratelimit-limit');
-      const remaining = res.headers.get('x-ratelimit-remaining');
-      const reset = res.headers.get('x-ratelimit-reset');
-      const retryAfter = res.headers.get('retry-after');
+    if (res) {
+      if (res.headers) {
+        const serverDate = res.headers.get('date');
+        const limit = res.headers.get('x-ratelimit-limit');
+        const remaining = res.headers.get('x-ratelimit-remaining');
+        const reset = res.headers.get('x-ratelimit-reset');
+        const retryAfter = res.headers.get('retry-after');
+        const bucketHash = res.headers.get('x-ratelimit-bucket');
 
-      this.limit = limit ? Number(limit) : Infinity;
-      this.remaining = remaining ? Number(remaining) : 1;
-      this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
-      this.retryAfter = retryAfter ? Number(retryAfter) : -1;
-
-      // https://github.com/discordapp/discord-api-docs/issues/182
-      if (item.request.route.includes('reactions')) {
-        this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
-      }
-
-      // Handle global ratelimit
-      if (res.headers.get('x-ratelimit-global')) {
-        // Set the manager's global timeout as the promise for other requests to "wait"
-        this.manager.globalTimeout = Util.delayFor(this.retryAfter);
-
-        // Wait for the global timeout to resolve before continuing
-        await this.manager.globalTimeout;
-
-        // Clean up global timeout
-        this.manager.globalTimeout = null;
-      }
-    }
-
-    // Finished handling headers, safe to unlock manager
-    this.busy = false;
-
-    if (res.ok) {
-      const success = await parseResponse(res);
-      // Nothing wrong with the request, proceed with the next one
-      resolve(success);
-      return this.run();
-    } else if (res.status === 429) {
-      // A ratelimit was hit - this should never happen
-      this.queue.unshift(item);
-      this.manager.client.emit('debug', `429 hit on route ${item.request.route}`);
-      await Util.delayFor(this.retryAfter);
-      return this.run();
-    } else if (res.status >= 500 && res.status < 600) {
-      // Retry the specified number of times for possible serverside issues
-      if (item.retries === this.manager.client.options.retryLimit) {
-        return reject(
-          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.path)
-        );
-      } else {
-        item.retries++;
-        this.queue.unshift(item);
-        return this.run();
-      }
-    } else {
-      // Handle possible malformed requests
-      try {
-        const data = await parseResponse(res);
-        if (res.status >= 400 && res.status < 500) {
-          return reject(new DiscordAPIError(request.path, data, request.method, res.status));
+        if (this.bucketHash !== bucketHash) {
+          this.debug(`Received bucket hash\n  Old: ${this.bucketHash}\n  New: ${bucketHash}`);
+          this.bucketHash = bucketHash;
+          bucket = this.bucket;
         }
-        return null;
-      } catch (err) {
-        return reject(
-          new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path)
+
+        bucket._patch(
+          limit ? Number(limit) : 10,
+          remaining ? Number(remaining) : 1,
+          reset ? calculateReset(reset, serverDate) : Date.now(),
+          retryAfter ? Number(retryAfter) : -1
         );
+
+        // https://github.com/discordapp/discord-api-docs/issues/182
+        if (this.normalizedPath.includes('reactions')) {
+          bucket.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
+        }
+
+        // Handle global ratelimit
+        if (res.headers.get('x-ratelimit-global')) {
+          this.restManager.debug(`Encountered a global ratelimit; continuing requests in ${bucket.retryAfter}ms`);
+          // Set the manager's global timeout as the promise for other requests to "wait"
+          this.restManager.globalTimeout = Util.delayFor(bucket.retryAfter);
+
+          // Wait for the global timeout to resolve before continuing
+          await this.restManager.globalTimeout;
+
+          // Clean up global timeout
+          this.restManager.globalTimeout = null;
+        }
+      }
+
+      if (res.ok) {
+        const data = await parseResponse(res);
+        // Nothing wrong with the request, proceed with the next one
+        resolve(data);
+      } else if (res.status === 429) {
+        // A ratelimit was hit - this should never happen
+        this.requestQueue.unshift(requestData);
+        this.debug(`Encountered a 429. Retrying in ${bucket.retryAfter}ms`);
+        await Util.delayFor(bucket.retryAfter);
+      } else if (res.status >= 500 && res.status <= 600) {
+        // Retry the specified number of times for possible serverside issues
+        if (retries === this.restManager.client.options.retryLimit) {
+          reject(
+            new HTTPError(
+              res.statusText, res.constructor.name, res.status, requestData.request.method, request.path, stack
+            )
+          );
+        } else {
+          requestData.retries++;
+          this.requestQueue.unshift(requestData);
+        }
+      } else {
+        // Handle possible malformed requests
+        try {
+          const data = await parseResponse(res);
+          if (res.status >= 400 && res.status < 500) {
+            reject(new DiscordAPIError(request.path, data, request.method, res.status, stack));
+          }
+        } catch (err) {
+          reject(
+            new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path, stack)
+          );
+        }
       }
     }
+
+    this.busy = false;
+    release();
+
+    return this.run();
   }
 }
 

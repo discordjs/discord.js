@@ -5,7 +5,7 @@
  * @extends Error
  */
 class HTTPError extends Error {
-  constructor(message, name, code, method, path) {
+  constructor(message, name, code, method, path, stack) {
     super(message);
 
     /**
@@ -31,6 +31,11 @@ class HTTPError extends Error {
      * @type {string}
      */
     this.path = path;
+
+    const _stack = stack.split('\n');
+    _stack[0] = `${this.name}: ${this.message}`;
+
+    this.stack = _stack.join('\n');
   }
 }
 

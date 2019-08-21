@@ -7,30 +7,41 @@ const reflectors = [
   Symbol.toPrimitive, Symbol.for('util.inspect.custom'),
 ];
 
-function buildRoute(manager) {
+const apiRouter = restManager => {
+  const stackHolder = {};
+  Error.captureStackTrace(stackHolder, apiRouter);
   const route = [''];
   const handler = {
-    get(target, name) {
+    get(_, name) {
       if (reflectors.includes(name)) return () => route.join('/');
       if (methods.includes(name)) {
-        return options => manager.request(name, route.join('/'), Object.assign({
-          versioned: manager.versioned,
-          route: route.map((r, i) => {
-            if (/\d{16,19}/g.test(r)) return /channels|guilds/.test(route[i - 1]) ? r : ':id';
+        // Method, normalized route, full path, otherOptions, stack
+        return options => restManager.request(
+          name,
+          route.map((r, i) => {
+            if (/\d{16,19}/g.test(r)) return /channels|guilds|webhooks/.test(route[i - 1]) ? r : ':id';
             if (route[i - 1] === 'reactions') return ':reaction';
+            if (route[i - 2] === 'reactions') return ':id';
             return r;
           }).join('/'),
-        }, options));
+          route.join('/'),
+          {
+            ...options,
+            versioned: restManager.versioned,
+          },
+          stackHolder.stack,
+        );
       }
       route.push(name);
       return new Proxy(noop, handler);
     },
-    apply(target, _, args) {
+    apply(_, __, args) {
       route.push(...args.filter(x => x != null)); // eslint-disable-line eqeqeq
       return new Proxy(noop, handler);
     },
   };
-  return new Proxy(noop, handler);
-}
 
-module.exports = buildRoute;
+  return new Proxy(noop, handler);
+};
+
+module.exports = apiRouter;

@@ -599,6 +599,22 @@ class Util {
         };
       });
   }
+
+  /**
+   * Creates a promise object
+   * @private
+   * @returns {{ promise: Promise, resolve: Function, reject: Function }}
+   */
+  static createPromiseObject() {
+    let resolve;
+    let reject;
+    const promise = new Promise((pResolve, pReject) => {
+      resolve = pResolve;
+      reject = pReject;
+    });
+
+    return { promise, resolve, reject };
+  }
 }
 
 module.exports = Util;
