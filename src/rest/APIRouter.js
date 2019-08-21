@@ -7,7 +7,7 @@ const reflectors = [
   Symbol.toPrimitive, Symbol.for('util.inspect.custom'),
 ];
 
-const apiRouter = restManager => {
+function apiRouter(restManager) {
   const stackHolder = {};
   Error.captureStackTrace(stackHolder, apiRouter);
   const route = [''];
@@ -46,6 +46,6 @@ const apiRouter = restManager => {
   };
 
   return new Proxy(noop, handler);
-};
+}
 
 module.exports = apiRouter;

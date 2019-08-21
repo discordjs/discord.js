@@ -6,15 +6,19 @@ const HTTPError = require('./HTTPError');
 const Util = require('../util/Util');
 const { Events: { RATE_LIMIT }, browser } = require('../util/Constants');
 
-const parseResponse = res => {
+function parseResponse(res) {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json();
   if (browser) return res.blob();
   return res.buffer();
-};
+}
 
-const getAPIOffset = serverDate => new Date(serverDate).getTime() - Date.now();
+function getAPIOffset(serverDate) {
+  return new Date(serverDate).getTime() - Date.now();
+}
 
-const calculateReset = (reset, serverData) => new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverData);
+function calculateReset(reset, serverDate) {
+  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
+}
 
 class RequestHandler {
   constructor(restManager, normalizedPath) {
@@ -139,8 +143,8 @@ class RequestHandler {
         }
 
         bucket._patch(
-          limit ? Number(limit) : Infinity,
-          remaining ? Number(remaining) : 1,
+          limit ? Number(limit) : bucket.limit || Infinity,
+          remaining ? Number(remaining) : bucket.remaining || 1,
           reset ? calculateReset(reset, serverDate) : Date.now(),
           retryAfter ? Number(retryAfter) : -1
         );

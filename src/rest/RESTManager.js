@@ -39,13 +39,11 @@ class RESTManager {
     this._checkAuthToken();
     const apiRequest = new APIRequest(this, method, path, options);
 
-    const handlerKey = normalizedPath.includes('reactions') ? `*:${normalizedPath}` : `${method}:${normalizedPath}`;
-
-    let handler = this.handlers.get(handlerKey);
+    let handler = this.handlers.get(normalizedPath);
 
     if (!handler) {
-      handler = new RequestHandler(this, handlerKey);
-      this.handlers.set(handlerKey, handler);
+      handler = new RequestHandler(this, normalizedPath);
+      this.handlers.set(normalizedPath, handler);
     }
 
     const { promise, resolve, reject } = createPromiseObject();
