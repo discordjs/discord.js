@@ -403,7 +403,7 @@ class Guild extends Base {
   get joinedAt() {
     return new Date(this.joinedTimestamp);
   }
-  
+
   /**
    * If this guild is partnered
    * @type {boolean}
