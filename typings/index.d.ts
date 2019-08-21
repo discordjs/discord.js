@@ -805,7 +805,7 @@ declare module 'discord.js' {
 		public readonly deletable: boolean;
 		public guild: Guild;
 		public readonly manageable: boolean;
-		public readonly members: Collection<Snowflake, GuildMember>
+		public readonly members: Collection<Snowflake, GuildMember>;
 		public name: string;
 		public readonly parent: CategoryChannel | null;
 		public parentID: Snowflake;
