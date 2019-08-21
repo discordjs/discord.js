@@ -24,10 +24,6 @@ class BucketLock {
     return lock.resolve;
   }
 
-  releaseLock() {
-    for (const lock of this._locks) lock.resolve();
-  }
-
   waitLock() {
     return Promise.all(this._locks.map(lock => lock.promise));
   }
