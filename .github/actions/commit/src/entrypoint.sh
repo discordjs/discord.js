@@ -13,7 +13,7 @@ REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.gi
 BRANCH_OR_TAG=`awk -F/ '{print $2}' <<< $GITHUB_REF`
 CURRENT_BRANCH=`awk -F/ '{print $NF}' <<< $GITHUB_REF`
 
-if [ "BRANCH_OR_TAG" == "heads" ]; then
+if [ "$BRANCH_OR_TAG" == "heads" ]; then
   SOURCE_TYPE="branch"
 else
   SOURCE_TYPE="tag"
