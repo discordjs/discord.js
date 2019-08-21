@@ -1,0 +1,16 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: ESLint
+      uses: ./.github/actions/eslint
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
