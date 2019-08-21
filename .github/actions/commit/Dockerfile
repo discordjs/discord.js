@@ -7,5 +7,5 @@ LABEL com.github.actions.color="blue"
 
 RUN apk add --no-cache git openssh-client
 
-COPY src /action/commit/src
-ENTRYPOINT ["/action/commit/src/entrypoint.sh"]
+COPY src /actions/commit/src
+ENTRYPOINT ["/actions/commit/src/entrypoint.sh"]

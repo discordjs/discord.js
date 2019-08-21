@@ -5,5 +5,5 @@ LABEL com.github.actions.description="Lint your Javascript projects with inline 
 LABEL com.github.actions.icon="code"
 LABEL com.github.actions.color="yellow"
 
-COPY src /action/eslint/src
-ENTRYPOINT ["/action/eslint/src/entrypoint.sh"]
+COPY src /actions/eslint/src
+ENTRYPOINT ["/actions/eslint/src/entrypoint.sh"]
