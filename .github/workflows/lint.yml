@@ -19,6 +19,14 @@ jobs:
     - name: npm install
       run: npm install
     - name: eslint
+      if: github.event_name == 'pull_request'
+      uses: discordjs/action-eslint@releases/v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        job-name: lint
+    - name: eslint
+      if: github.event_name == 'push'
       run: npm run lint
     - name: lint typings
       run: npm run lint:typings
