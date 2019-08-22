@@ -19,12 +19,6 @@ jobs:
     - name: npm install
       run: npm install
     - name: eslint
-      if: github.event_name == 'pull_request'
-      uses: ./.github/actions/eslint
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: eslint
-      if: github.event_name == 'push'
       run: npm run lint
     - name: lint typings
       run: npm run lint:typings
