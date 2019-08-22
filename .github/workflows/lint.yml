@@ -11,16 +11,16 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v1
     - name: install node v12
-      uses: actions/setup-node@master
+      uses: actions/setup-node@v1
       with:
         node-version: 12
     - name: npm install
       run: npm install
     - name: eslint
       if: github.event_name == 'pull_request'
-      uses: discordjs/action-eslint@releases/v1
+      uses: discordjs/action-eslint@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
