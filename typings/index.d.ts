@@ -2514,7 +2514,6 @@ declare module 'discord.js' {
 		type?: StreamType;
 		seek?: number;
 		volume?: number | boolean;
-		passes?: number;
 		plp?: number;
 		fec?: boolean;
 		bitrate?: number | 'auto';

@@ -70,12 +70,9 @@ We can also pass in options when we first play the stream:
 
 ```js
 const dispatcher = connection.play('/home/discord/audio.mp3', {
-  volume: 0.5,
-  passes: 3
+  volume: 0.5
 });
 ```
-
-These are just a subset of the options available (consult documentation for a full list). Most users may be interested in the `passes` option, however. As audio is sent over UDP, there is a chance packets may not arrive. Increasing the number of passes, e.g. to `3` gives you a better chance that your packets reach your recipients, at the cost of triple the bandwidth. We recommend not going over 5 passes.
 
 ### What can I play?
 

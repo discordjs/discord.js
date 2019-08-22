@@ -33,9 +33,9 @@ const nonce = Buffer.alloc(24);
 class StreamDispatcher extends Writable {
   constructor(
     player,
-    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {},
+    { seek = 0, volume = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {},
     streams) {
-    const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
+    const streamOptions = { seek, volume, fec, plp, bitrate, highWaterMark };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
@@ -289,24 +289,21 @@ class StreamDispatcher extends Writable {
   }
 
   _sendPacket(packet) {
-    let repeats = this.streamOptions.passes;
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
      * @param {string} info The debug info
      */
     this._setSpeaking(1);
-    while (repeats--) {
-      if (!this.player.voiceConnection.sockets.udp) {
-        this.emit('debug', 'Failed to send a packet - no UDP socket');
-        return;
-      }
-      this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => {
-          this._setSpeaking(0);
-          this.emit('debug', `Failed to send a packet - ${e}`);
-        });
+    if (!this.player.voiceConnection.sockets.udp) {
+      this.emit('debug', 'Failed to send a packet - no UDP socket');
+      return;
     }
+    this.player.voiceConnection.sockets.udp.send(packet)
+      .catch(e => {
+        this._setSpeaking(0);
+        this.emit('debug', `Failed to send a packet - ${e}`);
+      });
   }
 
   _setSpeaking(value) {
