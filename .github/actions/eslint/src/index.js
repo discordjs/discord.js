@@ -53,6 +53,7 @@ function lint() {
 			});
 		}
 	}
+	console.log(annotations);
 
 	return {
 		conclusion: errorCount > 0 ? 'failure' : 'success',
@@ -65,18 +66,22 @@ function lint() {
 }
 
 async function update(id, conclusion, output) {
-	await fetch(`https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`, {
-		method: 'PATCH',
-		headers,
-		body: JSON.stringify({
-			name: GITHUB_ACTION,
-			head_sha: GITHUB_SHA,
-			status: 'completed',
-			completed_at: new Date(),
-			conclusion,
-			output
-		})
-	});
+	try {
+		await fetch(`https://api.github.com/repos/${owner}/${repo}/check-runs/${id}`, {
+			method: 'PATCH',
+			headers,
+			body: JSON.stringify({
+				name: GITHUB_ACTION,
+				head_sha: GITHUB_SHA,
+				status: 'completed',
+				completed_at: new Date(),
+				conclusion,
+				output
+			})
+		});
+	} catch (e) {
+		console.log(e);
+	}
 }
 
 async function run() {
