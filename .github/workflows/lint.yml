@@ -3,8 +3,6 @@ name: Lint
 on:
   push:
     branches:
-    - master
-    - gh-actions
   pull_request:
 
 jobs:
