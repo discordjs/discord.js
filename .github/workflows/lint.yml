@@ -1,12 +1,12 @@
-name: Lint
+name: ESLint, Typings, and Docs
 
 on:
   push:
   pull_request:
 
 jobs:
-  lint:
-    name: lint
+  eslint:
+    name: eslint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -21,8 +21,28 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        job-name: lint
+        job-name: eslint
+    
+  typings-lint:
+    name: typings-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
     - name: lint typings
       run: npm run lint:typings
+
+  docs-lint:
+    name: docs-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
     - name: lint docs
       run: npm run docs:test
