@@ -5,6 +5,7 @@ on:
     branches:
     - master
     - stable
+    - gh-actions
 
 jobs:
   docs:
