@@ -9,7 +9,7 @@ on:
     - '!docs'
 
 jobs:
-  docs:
+  deploy:
     name: deploy
     runs-on: ubuntu-latest
     steps:
