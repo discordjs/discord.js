@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    name: lint
+    name: Lint
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -19,15 +19,11 @@ jobs:
     - name: npm install
       run: npm install
     - name: eslint
-      if: github.event_name == 'pull_request'
       uses: discordjs/action-eslint@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        job-name: lint
-    - name: eslint
-      if: github.event_name == 'push'
-      run: npm run lint
+        job-name: Lint
     - name: lint typings
       run: npm run lint:typings
     - name: lint docs
