@@ -20,4 +20,4 @@ else
 fi
 
 # Run the tests
-npm test
+npm run docs:test && npm run lint:typings
