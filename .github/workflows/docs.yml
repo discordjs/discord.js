@@ -21,6 +21,6 @@ jobs:
     - name: npm install
       run: npm install
     - name: deploy docs
-      uses: ./.github/actions/docs
+      uses: discordjs/action-docs@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
