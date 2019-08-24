@@ -1,4 +1,4 @@
-name: ESLint, Typings, and Docs
+name: Lint
 
 on:
   push:
@@ -32,6 +32,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12
+    - name: npm install
+      run: npm install
     - name: lint typings
       run: npm run lint:typings
 
@@ -44,5 +46,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12
+    - name: npm install
+      run: npm install
     - name: lint docs
       run: npm run docs:test
