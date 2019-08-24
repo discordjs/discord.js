@@ -3,9 +3,9 @@ name: Docs
 on:
   push:
     branches:
-    - master
-    - stable
-    - gh-actions
+    - '!gh-action'
+    - '!webpack'
+    - '!docs'
 
 jobs:
   docs:
