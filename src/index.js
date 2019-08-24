@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('./util/Util')
+const Util = require('./util/Util');
 
 module.exports = {
   // "Root" classes (starting points)
