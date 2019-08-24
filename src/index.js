@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('./util/Util');
+const Util = require('./util/Util')
 
 module.exports = {
   // "Root" classes (starting points)
@@ -93,4 +93,4 @@ module.exports = {
   Webhook: require('./structures/Webhook'),
 
   WebSocket: require('./WebSocket'),
-}
+};
