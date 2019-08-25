@@ -946,7 +946,7 @@ declare module 'discord.js' {
 		public activity: GroupActivity | null;
 		public application: ClientApplication | null;
 		public attachments: Collection<Snowflake, MessageAttachment>;
-		public author: User | null;
+		public author: User;
 		public channel: TextChannel | DMChannel;
 		public readonly cleanContent: string;
 		public content: string;
