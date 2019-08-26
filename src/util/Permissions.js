@@ -208,6 +208,7 @@ class Permissions {
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
  * - `PRIORITY_SPEAKER`
+ * - `STREAM`
  * - `VIEW_CHANNEL`
  * - `READ_MESSAGES` **(deprecated)**
  * - `SEND_MESSAGES`
@@ -244,6 +245,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
   PRIORITY_SPEAKER: 1 << 8,
+  STREAM: 1 << 9,
 
   VIEW_CHANNEL: 1 << 10,
   READ_MESSAGES: 1 << 10,
