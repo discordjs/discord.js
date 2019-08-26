@@ -1997,6 +1997,7 @@ declare module 'discord.js' {
 		ADD_REACTIONS?: number;
 		VIEW_AUDIT_LOG?: number;
 		PRIORITY_SPEAKER?: number;
+		STREAM?: number;
 		VIEW_CHANNEL?: number;
 		READ_MESSAGES?: number;
 		SEND_MESSAGES?: number;
@@ -2032,6 +2033,7 @@ declare module 'discord.js' {
 		ADD_REACTIONS?: boolean;
 		VIEW_AUDIT_LOG?: boolean;
 		PRIORITY_SPEAKER?: boolean;
+		STREAM?: boolean;
 		VIEW_CHANNEL?: boolean;
 		READ_MESSAGES?: boolean;
 		SEND_MESSAGES?: boolean;
@@ -2066,6 +2068,7 @@ declare module 'discord.js' {
 		| 'ADD_REACTIONS'
 		| 'VIEW_AUDIT_LOG'
 		| 'PRIORITY_SPEAKER'
+		| 'STREAM'
 		| 'VIEW_CHANNEL'
 		| 'READ_MESSAGES'
 		| 'SEND_MESSAGES'

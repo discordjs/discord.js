@@ -284,7 +284,7 @@ Permissions.ALL = Object.keys(Permissions.FLAGS).reduce((all, p) => all | Permis
  * Bitfield representing the default permissions for users
  * @type {number}
  */
-Permissions.DEFAULT = 104324097;
+Permissions.DEFAULT = 104324673;
 
 /**
  * @class EvaluatedPermissions
