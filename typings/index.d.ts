@@ -1716,8 +1716,8 @@ declare module 'discord.js' {
 		public holds: VConstructor;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
 		public remove(key: K): void;
-		public resolve(resolvable: R): V;
-		public resolveID(resolvable: R): K;
+		public resolve(resolvable: R): V | null;
+		public resolveID(resolvable: R): K | null;
 	}
 
 	export class GuildEmojiRoleStore extends OverridableDataStore<Snowflake, Role, typeof Role, RoleResolvable> {
