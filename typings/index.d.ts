@@ -99,6 +99,7 @@ declare module 'discord.js' {
 		constructor(bits?: BitFieldResolvable<S>);
 		public bitfield: number;
 		public add(...bits: BitFieldResolvable<S>[]): BitField<S>;
+		public any(bit: BitFieldResolvable<S>): boolean;
 		public equals(bit: BitFieldResolvable<S>): boolean;
 		public freeze(): Readonly<BitField<S>>;
 		public has(bit: BitFieldResolvable<S>): boolean;
@@ -1111,6 +1112,7 @@ declare module 'discord.js' {
 	}
 
 	export class Permissions extends BitField<PermissionString> {
+		public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 
 		public static ALL: number;
