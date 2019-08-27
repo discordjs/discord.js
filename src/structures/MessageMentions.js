@@ -104,8 +104,9 @@ class MessageMentions {
     this.crosspostedChannels = new Collection();
 
     if (crosspostedChannels) {
+      const channelTypes = Object.keys(ChannelTypes);
       for (const d of crosspostedChannels) {
-        const type = Object.keys(ChannelTypes)[d.type];
+        const type = channelTypes[d.type];
         this.crosspostedChannels.set(d.id, {
           channelID: d.id,
           guildID: d.guild_id,
