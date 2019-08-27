@@ -125,7 +125,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'text' | 'voice' | 'category' | 'news' | 'store' | 'unknown';
+		public type: keyof typeof ChannelType;
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -1055,6 +1055,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember> | null;
 		public roles: Collection<Snowflake, Role>;
 		public users: Collection<Snowflake, User>;
+		public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
 		public toJSON(): object;
 
 		public static CHANNELS_PATTERN: RegExp;
@@ -2180,7 +2181,7 @@ declare module 'discord.js' {
 	interface GuildCreateChannelOptions {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		topic?: string;
-		type?: 'text' | 'voice' | 'category';
+		type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
 		nsfw?: boolean;
 		parent?: ChannelResolvable;
 		bitrate?: number;
@@ -2590,6 +2591,24 @@ declare module 'discord.js' {
 	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
 	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
 	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
+
+	enum ChannelType {
+		text,
+		dm,
+		voice,
+		group,
+		category,
+		news,
+		store,
+		unknown
+	}
+
+	interface CrosspostedChannel {
+		channelID: Snowflake;
+		guildID: Snowflake;
+		type: keyof typeof ChannelType;
+		name: string;
+	}
 
 //#endregion
 }

@@ -99,17 +99,21 @@ class MessageMentions {
 
     /**
      * An array of crossposted channels
-     * @type {?CrosspostedChannel[]}
+     * @type {Collection<Snowflake, CrosspostedChannel>}
      */
-    this.crosspostedChannels = crosspostedChannels ? crosspostedChannels.map(d => {
-      const type = Object.keys(ChannelTypes)[d.type];
-      return {
-        channelID: d.id,
-        guildID: d.guild_id,
-        type: type ? type.toLowerCase() : 'unknown',
-        name: d.name,
-      };
-    }) : null;
+    this.crosspostedChannels = new Collection();
+
+    if (crosspostedChannels) {
+      for (const d of crosspostedChannels) {
+        const type = Object.keys(ChannelTypes)[d.type];
+        this.crosspostedChannels.set(d.id, {
+          channelID: d.id,
+          guildID: d.guild_id,
+          type: type ? type.toLowerCase() : 'unknown',
+          name: d.name,
+        });
+      }
+    }
   }
 
   /**
