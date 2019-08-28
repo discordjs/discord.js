@@ -1,3 +1,14 @@
+declare enum ChannelType {
+	text,
+	dm,
+	voice,
+	group,
+	category,
+	news,
+	store,
+	unknown
+}
+
 declare module 'discord.js' {
 	import BaseCollection, { CollectionConstructor } from '@discordjs/collection';
 	import { EventEmitter } from 'events';
@@ -2591,17 +2602,6 @@ declare module 'discord.js' {
 	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
 	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
 	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
-
-	enum ChannelType {
-		text,
-		dm,
-		voice,
-		group,
-		category,
-		news,
-		store,
-		unknown
-	}
 
 	interface CrosspostedChannel {
 		channelID: Snowflake;
