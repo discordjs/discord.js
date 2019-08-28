@@ -63,6 +63,26 @@ class GuildEmojiStore extends DataStore {
   }
 
   /**
+   * Gets an emoji, or all emojis, from this guild.
+   * @param {Snowflake} [emoji] The emoji ID to fetch, if any
+   * @param {boolean} [cache=true] Whether to cache the emoji(s)
+   * @returns {Promise<GuildEmoji>|Promise<Collection<Snowflake, GuildEmoji>>}
+   * @example
+   * // Get emoji
+   * guild.emojis.fetch('590908848689119232')
+   *    .then(emoji => console.log(emoji.name))
+   *    .catch(console.error);
+   * @example
+   * // Get all emojis
+   * guild.emojis.fetch()
+   *    .then(emojis => console.log(`Received ${emojis.size} emojis`))
+   *    .catch(console.error);
+   */
+  fetch(emoji, cache = true) {
+    return typeof emoji === 'string' ? this._fetchSingle(emoji, cache) : this._fetchAll(cache);
+  }
+
+  /**
    * Data that can be resolved into an GuildEmoji object. This can be:
    * * A custom emoji ID
    * * A GuildEmoji object
@@ -111,6 +131,20 @@ class GuildEmojiStore extends DataStore {
       else return emoji;
     }
     return null;
+  }
+
+  async _fetchSingle(emoji, cache) {
+    const existing = this.get(emoji);
+    if (existing) return existing;
+    const data = await this.client.api.guilds(this.guild.id).emojis(emoji).get();
+    return this.add(data, cache);
+  }
+
+  async _fetchAll(cache) {
+    const data = await this.client.api.guilds(this.guild.id).emojis.get();
+    const emojis = new Collection();
+    for (const emoji of data) emojis.set(emoji.id, this.add(emoji, cache));
+    return emojis;
   }
 }
 

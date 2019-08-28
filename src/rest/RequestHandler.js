@@ -41,7 +41,7 @@ class RequestHandler {
   }
 
   get bucket() {
-    if (!this.bucketHash) return new BucketLock();
+    if (this.bucketHash === undefined) return new BucketLock();
     let b = this.restManager.buckets.get(this.bucketHash);
     if (!b) {
       b = new BucketLock(this.bucketHash);
