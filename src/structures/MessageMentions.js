@@ -97,23 +97,28 @@ class MessageMentions {
      * @property {string} name The name of the channel
      */
 
-    /**
-     * An array of crossposted channels
-     * @type {Collection<Snowflake, CrosspostedChannel>}
-     */
-    this.crosspostedChannels = new Collection();
-
     if (crosspostedChannels) {
-      const channelTypes = Object.keys(ChannelTypes);
-      for (const d of crosspostedChannels) {
-        const type = channelTypes[d.type];
-        this.crosspostedChannels.set(d.id, {
-          channelID: d.id,
-          guildID: d.guild_id,
-          type: type ? type.toLowerCase() : 'unknown',
-          name: d.name,
-        });
+      if (crosspostedChannels instanceof Collection) {
+        /**
+         * An array of crossposted channels
+         * @type {Collection<Snowflake, CrosspostedChannel>}
+         */
+        this.crosspostedChannels = new Collection(crosspostedChannels);
+      } else {
+        this.crosspostedChannels = new Collection();
+        const channelTypes = Object.keys(ChannelTypes);
+        for (const d of crosspostedChannels) {
+          const type = channelTypes[d.type];
+          this.crosspostedChannels.set(d.id, {
+            channelID: d.id,
+            guildID: d.guild_id,
+            type: type ? type.toLowerCase() : 'unknown',
+            name: d.name,
+          });
+        }
       }
+    } else {
+      this.crosspostedChannels = new Collection();
     }
   }
 
