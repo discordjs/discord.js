@@ -9,7 +9,7 @@ const BitField = require('./BitField');
 class MessageFlags extends BitField {}
 
 /**
- * Numeric activity flags. All available properties:
+ * Numeric message flags. All available properties:
  * * `CROSSPOSTED`
  * * `IS_CROSSPOST`
  * * `SUPPRESS_EMBEDS`
