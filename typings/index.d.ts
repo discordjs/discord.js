@@ -1715,7 +1715,7 @@ declare module 'discord.js' {
 		public client: Client;
 		public holds: VConstructor;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
-		public remove(key: K): boolean;
+		public remove(key: K): void;
 		public resolve(resolvable: R): V | null;
 		public resolveID(resolvable: R): K | null;
 	}
