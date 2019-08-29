@@ -1728,6 +1728,8 @@ declare module 'discord.js' {
 	export class GuildEmojiStore extends DataStore<Snowflake, GuildEmoji, typeof GuildEmoji, EmojiResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public create(attachment: BufferResolvable | Base64Resolvable, name: string, options?: GuildEmojiCreateOptions): Promise<GuildEmoji>;
+		public fetch(): Promise<Collection<Snowflake, GuildEmoji>>;
+		public fetch(emoji: string): Promise<GuildEmoji>;
 		public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 	}
 
