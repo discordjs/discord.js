@@ -187,11 +187,11 @@ declare module 'discord.js' {
 		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public on(event: 'invalidated', listener: () => void): this;
-		public on(event: 'shardDisconnected', listener: (event: CloseEvent, id: number) => void): this;
+		public on(event: 'shardDisconnect', listener: (event: CloseEvent, id: number) => void): this;
 		public on(event: 'shardError', listener: (error: Error, id: number) => void): this;
 		public on(event: 'shardReconnecting', listener: (id: number) => void): this;
 		public on(event: 'shardReady', listener: (id: number) => void): this;
-		public on(event: 'shardResumed', listener: (id: number, replayed: number) => void): this;
+		public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
@@ -224,11 +224,11 @@ declare module 'discord.js' {
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public once(event: 'invalidated', listener: () => void): this;
-		public once(event: 'shardDisconnected', listener: (event: CloseEvent, id: number) => void): this;
+		public once(event: 'shardDisconnect', listener: (event: CloseEvent, id: number) => void): this;
 		public once(event: 'shardError', listener: (error: Error, id: number) => void): this;
 		public once(event: 'shardReconnecting', listener: (id: number) => void): this;
 		public once(event: 'shardReady', listener: (id: number) => void): this;
-		public once(event: 'shardResumed', listener: (id: number, replayed: number) => void): this;
+		public once(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
@@ -473,11 +473,11 @@ declare module 'discord.js' {
 			ERROR: 'error';
 			WARN: 'warn';
 			DEBUG: 'debug';
-			SHARD_DISCONNECTED: 'shardDisconnected';
+			SHARD_DISCONNECT: 'shardDisconnect';
 			SHARD_ERROR: 'shardError';
 			SHARD_RECONNECTING: 'shardReconnecting';
 			SHARD_READY: 'shardReady';
-			SHARD_RESUMED: 'shardResumed';
+			SHARD_RESUME: 'shardResume';
 			INVALIDATED: 'invalidated';
 			RAW: 'raw';
 		};
