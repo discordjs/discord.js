@@ -264,11 +264,11 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
-  SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_DISCONNECT: 'shardDisconnect',
   SHARD_ERROR: 'shardError',
   SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
-  SHARD_RESUMED: 'shardResumed',
+  SHARD_RESUME: 'shardResume',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
 };

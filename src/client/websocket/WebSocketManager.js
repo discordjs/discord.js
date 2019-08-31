@@ -205,11 +205,11 @@ class WebSocketManager extends EventEmitter {
         if (event.code === 1000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
           /**
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
-           * @event Client#shardDisconnected
+           * @event Client#shardDisconnect
            * @param {CloseEvent} event The WebSocket close event
            * @param {number} id The shard ID that disconnected
            */
-          this.client.emit(Events.SHARD_DISCONNECTED, event, shard.id);
+          this.client.emit(Events.SHARD_DISCONNECT, event, shard.id);
           this.debug(WSCodes[event.code], shard);
           return;
         }
