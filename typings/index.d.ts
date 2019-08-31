@@ -180,7 +180,6 @@ declare module 'discord.js' {
 		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
-		public on(event: 'resume', listener: (replayed: number, shardID: number) => void): this;
 		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
 		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
@@ -192,7 +191,7 @@ declare module 'discord.js' {
 		public on(event: 'shardError', listener: (error: Error, id: number) => void): this;
 		public on(event: 'shardReconnecting', listener: (id: number) => void): this;
 		public on(event: 'shardReady', listener: (id: number) => void): this;
-		public on(event: 'shardResumed', listener: (id: number) => void): this;
+		public on(event: 'shardResumed', listener: (id: number, replayed: number) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
@@ -218,7 +217,6 @@ declare module 'discord.js' {
 		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
-		public once(event: 'resume', listener: (replayed: number, shardID: number) => void): this;
 		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
 		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
@@ -230,7 +228,7 @@ declare module 'discord.js' {
 		public once(event: 'shardError', listener: (error: Error, id: number) => void): this;
 		public once(event: 'shardReconnecting', listener: (id: number) => void): this;
 		public once(event: 'shardReady', listener: (id: number) => void): this;
-		public once(event: 'shardResumed', listener: (id: number) => void): this;
+		public once(event: 'shardResumed', listener: (id: number, replayed: number) => void): this;
 		public once(event: string, listener: Function): this;
 	}
 
