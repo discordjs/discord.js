@@ -1,0 +1,48 @@
+name: Lint Cronjob
+
+on:
+  schedule:
+  - cron: '0 */12 * * *'
+
+jobs:
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: eslint
+      uses: npm run lint
+    
+  typings-lint:
+    name: typings-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: lint typings
+      run: npm run lint:typings
+
+  docs-lint:
+    name: docs-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: lint docs
+      run: npm run docs:test
