@@ -1,26 +1,27 @@
 'use strict';
 
+const { createLogger } = require('../utils');
+const { guildID, channelID, messageID, clientID } = require('../config.json');
+
 /* eslint-disable max-len */
 
-function log(method, route, extras = '') {
-  console.log(`Testing :: ${method} ${route} ${extras}`);
-}
+const log = createLogger('channels');
 
 async function getChannel(client) {
   for (let i = 0; i < 50; i++) {
-    await client.api.channels('387339871565643787').get();
+    await client.api.channels(channelID).get();
   }
 }
 
 async function updateChannel(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   for (let i = 0; i < 50; i++) {
     await channel.setTopic(`Test ${i + 1}`);
   }
 }
 
 async function createChannels(client) {
-  const guild = client.guilds.get('387339871057870848');
+  const guild = client.guilds.get(guildID);
   const channels = new Map();
 
   for (let i = 0; i < 25; i++) {
@@ -38,22 +39,22 @@ async function deleteChannels(_, channels) {
 }
 
 async function getMessages(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   for (let i = 0; i < 50; i++) {
     await channel.messages.fetch();
   }
 }
 
 async function getMessage(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   for (let i = 0; i < 50; i++) {
-    channel.messages.delete('602830739351928862');
-    await channel.messages.fetch('602830739351928862');
+    channel.messages.delete(messageID);
+    await channel.messages.fetch(messageID);
   }
 }
 
 async function postMessages(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   const messages = new Map();
   for (let i = 0; i < 25; i++) {
     const d = await channel.send(`Test ${i + 1}`);
@@ -74,14 +75,19 @@ async function deleteReaction(messages) {
   let client;
   for (const m of messages.values()) {
     if (!client) ({ client } = m);
-    await client.api.channels(m.channel.id).messages(m.id).reactions(ear, '410507142974668800').delete();
+    await client.api.channels(m.channel.id).messages(m.id).reactions(ear, clientID).delete();
   }
 }
 
 async function getReaction(client) {
   const emoji = encodeURIComponent('😏');
+  await client.api
+    .channels(channelID)
+    .messages(messageID)
+    .reactions(emoji, '@me')
+    .put();
   for (let i = 0; i < 50; i++) {
-    await client.api.channels('387339871565643787').messages('610049551935733760').reactions(emoji).get();
+    await client.api.channels(channelID).messages(messageID).reactions(emoji).get();
   }
 }
 
@@ -104,7 +110,7 @@ async function deleteMessages(messages) {
 }
 
 async function bulkDelete(client, messages) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   await channel.bulkDelete(messages);
 }
 
@@ -125,14 +131,14 @@ async function deleteOverwrites(channels) {
 }
 
 async function getInvites(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   for (let i = 0; i < 50; i++) {
     await channel.fetchInvites();
   }
 }
 
 async function postInvites(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   const invites = new Map();
   for (let i = 0; i < 25; i++) {
     const d = await channel.createInvite();
@@ -144,12 +150,12 @@ async function postInvites(client) {
 
 async function postTyping(client) {
   for (let i = 0; i < 25; i++) {
-    await client.api.channels('387339871565643787').typing.post();
+    await client.api.channels(channelID).typing.post();
   }
 }
 
 async function getPins(client) {
-  const channel = client.channels.get('387339871565643787');
+  const channel = client.channels.get(channelID);
   for (let i = 0; i < 50; i++) {
     await channel.messages.fetchPinned();
   }

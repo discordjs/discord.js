@@ -1,28 +1,29 @@
 'use strict';
-const { promises: fs } = require('fs');
 
-function log(method, route) {
-  console.log(`Testing :: ${method} ${route}`);
-}
+const { promises: fs } = require('fs');
+const { createLogger } = require('../utils');
+const { guildID, emojiID } = require('../config.json');
+
+const log = createLogger('emojis');
 
 async function getEmojis(client) {
-  const guild = client.guilds.get('387339871057870848');
+  const guild = client.guilds.get(guildID);
   for (let i = 0; i < 50; i++) {
     await guild.emojis.fetch();
   }
 }
 
 async function getEmoji(client) {
-  const guild = client.guilds.get('387339871057870848');
+  const guild = client.guilds.get(guildID);
   for (let i = 0; i < 50; i++) {
-    guild.emojis.delete('615912839269318668');
-    await guild.emojis.fetch('615912839269318668');
+    guild.emojis.delete(emojiID);
+    await guild.emojis.fetch(emojiID);
   }
 }
 
 async function createEmoji(client) {
   const emoji = await fs.readFile('../emoji.png');
-  const guild = client.guilds.get('387339871057870848');
+  const guild = client.guilds.get(guildID);
   const emojis = new Map();
   for (let i = 0; i < 25; i++) {
     const d = await guild.emojis.create(emoji, `test-${i + 1}`);
@@ -44,7 +45,7 @@ async function deleteEmoji(emojis) {
   }
 }
 
-async function run(client) {
+async function runTests(client) {
   log('get', '/guilds/{guild.id}/emojis');
   await getEmojis(client);
 
@@ -61,4 +62,4 @@ async function run(client) {
   await deleteEmoji(emojis);
 }
 
-module.exports = run;
+module.exports = runTests;
