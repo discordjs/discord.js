@@ -137,7 +137,7 @@ class RequestHandler {
         const bucketHash = res.headers.get('x-ratelimit-bucket');
 
         if (this.bucketHash !== bucketHash) {
-          this.debug(`Received bucket hash\n  Old: ${this.bucketHash}\n  New: ${bucketHash}`);
+          this.debug(`Received bucket hash\n  Old: ${this.bucketHash}\n  New: ${bucketHash}\n  Limit: ${limit}`);
           this.bucketHash = bucketHash;
           bucket = this.bucket;
         }
