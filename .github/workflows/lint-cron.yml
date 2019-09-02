@@ -17,7 +17,7 @@ jobs:
     - name: npm install
       run: npm install
     - name: eslint
-      uses: npm run lint
+      run: npm run lint
     
   typings-lint:
     name: typings-lint
