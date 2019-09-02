@@ -498,21 +498,24 @@ class WebSocketShard extends EventEmitter {
       return;
     }
     this.debug(`Setting a heartbeat interval for ${time}ms.`);
+    // Sanity checks
+    if (this.heartbeatInterval) this.manager.client.clearInterval(this.heartbeatInterval);
     this.heartbeatInterval = this.manager.client.setInterval(() => this.sendHeartbeat(), time);
   }
 
   /**
    * Sends a heartbeat to the WebSocket.
    * If this shard didn't receive a heartbeat last time, it will destroy it and reconnect
+   * @param {boolean} [ignoreHeartbeatAck] If we should send the heartbeat forcefully.
    * @private
    */
-  sendHeartbeat() {
-    if (!this.lastHeartbeatAcked && this.status !== Status.WAITING_FOR_GUILDS) {
+  sendHeartbeat(ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.RESUMING].includes(this.status)) {
+    if (!this.lastHeartbeatAcked && !ignoreHeartbeatAck) {
       this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
       this.destroy(4009);
       return;
-    } else if (!this.lastHeartbeatAcked) {
-      this.debug("Didn't process heartbeat ack yet; still waiting for guilds.");
+    } else if (ignoreHeartbeatAck) {
+      this.debug("Didn't process heartbeat ack yet but we are still connected. Sending one now.");
     }
 
     this.debug('Sending a heartbeat.');
@@ -573,6 +576,8 @@ class WebSocketShard extends EventEmitter {
       this.identifyNew();
       return;
     }
+
+    this.status = Status.RESUMING;
 
     this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.closeSequence}`);
 
@@ -661,7 +666,7 @@ class WebSocketShard extends EventEmitter {
     this.connection = null;
     // Set the shard status
     this.status = Status.DISCONNECTED;
-    this.closeSequence = this.sequence;
+    if (this.sequence !== -1) this.closeSequence = this.sequence;
     // Reset the sequence
     this.sequence = -1;
     // Reset the ratelimit data

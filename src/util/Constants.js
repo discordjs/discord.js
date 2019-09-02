@@ -164,6 +164,7 @@ exports.Endpoints = {
  * * NEARLY: 4
  * * DISCONNECTED: 5
  * * WAITING_FOR_GUILDS: 6
+ * * RESUMING: 7
  * @typedef {number} Status
  */
 exports.Status = {
@@ -174,6 +175,7 @@ exports.Status = {
   NEARLY: 4,
   DISCONNECTED: 5,
   WAITING_FOR_GUILDS: 6,
+  RESUMING: 7,
 };
 
 /**
