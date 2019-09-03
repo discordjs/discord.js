@@ -1,4 +1,4 @@
-name: Webpack
+name: Deploy
 
 on:
   push:
@@ -8,8 +8,23 @@ on:
     - '!docs'
 
 jobs:
-  deploy:
-    name: deploy
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: install node v12
+      uses: actions/setup-node@master
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: docs
+      uses: discordjs/action-docs@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  webpack:
+    name: webpack
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
