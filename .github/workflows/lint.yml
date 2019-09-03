@@ -23,8 +23,8 @@ jobs:
       with:
         job-name: eslint
     
-  typings-lint:
-    name: typings-lint
+  typings:
+    name: typings
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -37,8 +37,8 @@ jobs:
     - name: lint typings
       run: npm run lint:typings
 
-  docs-lint:
-    name: docs-lint
+  docs:
+    name: docs
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
