@@ -1,4 +1,4 @@
-name: Docs
+name: Webpack
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
         node-version: 12
     - name: npm install
       run: npm install
-    - name: deploy docs
-      uses: discordjs/action-docs@v1
+    - name: deploy webpack
+      uses: discordjs/action-webpack@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
