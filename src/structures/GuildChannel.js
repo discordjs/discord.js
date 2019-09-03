@@ -263,21 +263,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
-  }
-
-  /**
    * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel

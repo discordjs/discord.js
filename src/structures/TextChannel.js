@@ -65,6 +65,21 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * A collection of members that can see this channel, mapped by their ID
+   * @type {Collection<Snowflake, GuildMember>}
+   * @readonly
+   */
+  get members() {
+    const members = new Collection();
+    for (const member of this.guild.members.values()) {
+      if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
+        members.set(member.id, member);
+      }
+    }
+    return members;
+  }
+
+  /**
    * Sets the rate limit per user for this channel.
    * @param {number} rateLimitPerUser The new ratelimit in seconds
    * @param {string} [reason] Reason for changing the channel's ratelimits
