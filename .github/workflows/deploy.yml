@@ -1,40 +1,47 @@
-name: Deploy
-
+name: Deployment
 on:
   push:
     branches:
-    - '*'
-    - '!webpack'
-    - '!docs'
-
+      - '*'
+      - '!webpack'
+      - '!docs'
 jobs:
   docs:
-    name: docs
+    name: Documentation
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: install node v12
-      uses: actions/setup-node@master
-      with:
-        node-version: 12
-    - name: npm install
-      run: npm install
-    - name: docs
-      uses: discordjs/action-docs@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+      - name: Install Node v12
+        uses: actions/setup-node@master
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and deploy documentation
+        uses: discordjs/action-docs@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   webpack:
-    name: webpack
+    name: Webpack
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: install node v12
-      uses: actions/setup-node@master
-      with:
-        node-version: 12
-    - name: npm install
-      run: npm install
-    - name: deploy webpack
-      uses: discordjs/action-webpack@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout repository
+        uses: actions/checkout@master
+
+      - name: Install Node v12
+        uses: actions/setup-node@master
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build and deploy Webpack
+        uses: discordjs/action-webpack@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
