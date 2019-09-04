@@ -23,7 +23,7 @@ class BitField {
    * @returns {boolean}
    */
   any(bit) {
-    if (Array.isArray(bit)) return bit.some(p => this.has(p));
+    return (this.bitfield & this.constructor.resolve(bit)) !== 0;
     bit = this.constructor.resolve(bit);
     return (this.bitfield & bit) === bit;
   }
