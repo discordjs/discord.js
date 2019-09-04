@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   webpack:
-    name: Webpack
+    name: webpack
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build and deploy Webpack
+      - name: Build and deploy webpack
         uses: discordjs/action-webpack@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
