@@ -69,21 +69,21 @@ class PlayInterface {
       if (type === 'unknown') {
         return this.player.playUnknown(resource, options);
       } else if (type === 'converted') {
-        return this.player.playPCMStream([['input', resource]], options);
+        return this.player.playPCMStream(new Map([['input', resource]]), options);
       } else if (type === 'opus') {
-        return this.player.playOpusStream([['input', resource]], options);
+        return this.player.playOpusStream(new Map([['input', resource]]), options);
       } else if (type === 'ogg/opus') {
         if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-        return this.player.playOpusStream([
+        return this.player.playOpusStream(new Map([
           ['input', resource],
           ['demuxer:ogg', new prism.opus.OggDemuxer()],
-        ], options);
+        ]), options);
       } else if (type === 'webm/opus') {
         if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-        return this.player.playOpusStream([
+        return this.player.playOpusStream(new Map([
           ['input', resource],
           ['demuxer:webm', new prism.opus.WebmDemuxer()],
-        ], options);
+        ]), options);
       }
     }
     throw new Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
