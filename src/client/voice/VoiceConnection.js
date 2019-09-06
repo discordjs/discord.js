@@ -452,7 +452,7 @@ class VoiceConnection extends EventEmitter {
   onSessionDescription(data) {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
-    const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
+    const dispatcher = this.play(new SingleSilence(), { type: 'opus', volume: false });
     dispatcher.on('finish', () => {
       clearTimeout(this.connectTimeout);
       this.emit('debug', `Ready with authentication details: ${JSON.stringify(this.authentication)}`);
