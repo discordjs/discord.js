@@ -18,5 +18,5 @@ module.exports = Collection;
 
 /**
  * @external BaseCollection
- * @see {@link https://github.com/discordjs/collection}
+ * @see {@link https://discord.js.org/#/docs/commando/}
  */
