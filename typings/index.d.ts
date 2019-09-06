@@ -981,8 +981,12 @@ declare module 'discord.js' {
 		public fetch(): Promise<Message>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+		public reply(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message>;
+		public reply(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
+		public reply(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<Message[]>;
+		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message>;
+		public reply(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
+		public reply(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
