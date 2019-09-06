@@ -4,12 +4,12 @@ const { register } = require('./DJSError');
 
 const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
+  CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
 
   WS_CLOSE_REQUESTED: 'WebSocket closed due to user request.',
-  WS_CONNECTION_TIMEOUT: 'The connection to the gateway timed out.',
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
@@ -51,6 +51,8 @@ const Messages = {
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
+  VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
+  VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
 
   UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',
   UDP_ADDRESS_MALFORMED: 'Malformed UDP address or port.',
@@ -77,6 +79,7 @@ const Messages = {
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
   GUILD_OWNED: 'Guild is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
+  GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
 

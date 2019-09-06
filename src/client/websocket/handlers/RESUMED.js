@@ -5,10 +5,10 @@ const { Events } = require('../../../util/Constants');
 module.exports = (client, packet, shard) => {
   const replayed = shard.sequence - shard.closeSequence;
   /**
-   * Emitted when the client gateway resumes.
-   * @event Client#resume
-   * @param {number} replayed The number of events that were replayed
-   * @param {number} shardID The ID of the shard that resumed
+   * Emitted when a shard resumes successfully.
+   * @event Client#shardResume
+   * @param {number} id The shard ID that resumed
+   * @param {number} replayedEvents The amount of replayed events
    */
-  client.emit(Events.RESUMED, replayed, shard.id);
+  client.emit(Events.SHARD_RESUME, shard.id, replayed);
 };

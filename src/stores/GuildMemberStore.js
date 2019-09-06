@@ -106,11 +106,13 @@ class GuildMemberStore extends DataStore {
 
   /**
    * Prunes members from the guild based on how long they have been inactive.
+   * <info>It's recommended to set options.count to `false` for large guilds.</info>
    * @param {Object} [options] Prune options
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
+   * @param {boolean} [options.count=true] Whether or not to return the number of users that have been kicked.
    * @param {string} [options.reason] Reason for this prune
-   * @returns {Promise<number>} The number of members that were/will be kicked
+   * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
    * guild.members.prune({ dry: true })
@@ -122,9 +124,12 @@ class GuildMemberStore extends DataStore {
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
    */
-  prune({ days = 7, dry = false, reason } = {}) {
+  prune({ days = 7, dry = false, count = true, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: { days }, reason })
+    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: {
+      days,
+      compute_prune_count: count,
+    }, reason })
       .then(data => data.pruned);
   }
 
@@ -172,7 +177,7 @@ class GuildMemberStore extends DataStore {
    */
   unban(user, reason) {
     const id = this.client.users.resolveID(user);
-    if (!id) throw new Error('BAN_RESOLVE_ID');
+    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
     return this.client.api.guilds(this.guild.id).bans[id].delete({ reason })
       .then(() => this.client.users.resolve(user));
   }
@@ -187,8 +192,8 @@ class GuildMemberStore extends DataStore {
 
   _fetchMany({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.size) {
-        resolve(query || limit ? new Collection() : this);
+      if (this.guild.memberCount === this.size && !query && !limit) {
+        resolve(this);
         return;
       }
       this.guild.shard.send({

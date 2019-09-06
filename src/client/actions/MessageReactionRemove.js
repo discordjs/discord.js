@@ -14,7 +14,7 @@ class MessageReactionRemove extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const user = this.client.users.get(data.user_id);
+    const user = this.getUser(data);
     if (!user) return false;
 
     // Verify channel
@@ -26,8 +26,7 @@ class MessageReactionRemove extends Action {
     if (!message) return false;
 
     // Verify reaction
-    const emojiID = data.emoji.id || decodeURIComponent(data.emoji.name);
-    const reaction = message.reactions.get(emojiID);
+    const reaction = this.getReaction(data, message, user);
     if (!reaction) return false;
     reaction._remove(user);
     /**

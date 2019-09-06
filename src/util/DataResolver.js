@@ -62,7 +62,7 @@ class DataResolver {
    * @returns {?string}
    */
   static resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
     return data;
   }
 
@@ -85,7 +85,7 @@ class DataResolver {
    * @returns {Promise<Buffer>}
    */
   static resolveFile(resource) {
-    if (!browser && resource instanceof Buffer) return Promise.resolve(resource);
+    if (!browser && Buffer.isBuffer(resource)) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {

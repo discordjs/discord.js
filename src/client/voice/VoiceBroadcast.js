@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
-const DispatcherSet = require('./util/DispatcherSet');
+const { Events } = require('../../util/Constants');
 const PlayInterface = require('./util/PlayInterface');
 
 /**
@@ -10,10 +10,10 @@ const PlayInterface = require('./util/PlayInterface');
  *
  * Example usage:
  * ```js
- * const broadcast = client.createVoiceBroadcast();
+ * const broadcast = client.voice.createBroadcast();
  * broadcast.play('./music.mp3');
  * // Play "music.mp3" in all voice connections that the client is in
- * for (const connection of client.voiceConnections.values()) {
+ * for (const connection of client.voice.connections.values()) {
  *   connection.play(broadcast);
  * }
  * ```
@@ -27,13 +27,18 @@ class VoiceBroadcast extends EventEmitter {
      * @type {Client}
      */
     this.client = client;
-    this.dispatchers = new DispatcherSet(this);
+    /**
+     * The subscribed StreamDispatchers of this broadcast
+     * @type {StreamDispatcher[]}
+     */
+    this.subscribers = [];
     this.player = new BroadcastAudioPlayer(this);
   }
 
   /**
    * The current master dispatcher, if any. This dispatcher controls all that is played by subscribed dispatchers.
    * @type {?BroadcastDispatcher}
+   * @readonly
    */
   get dispatcher() {
     return this.player.dispatcher;
@@ -55,6 +60,48 @@ class VoiceBroadcast extends EventEmitter {
    * @returns {BroadcastDispatcher}
    */
   play() { return null; }
+
+
+  /**
+   * Ends the broadcast, unsubscribing all subscribed channels and deleting the broadcast
+   */
+  end() {
+    for (const dispatcher of this.subscribers) this.delete(dispatcher);
+    const index = this.client.voice.broadcasts.indexOf(this);
+    if (index !== -1) this.client.voice.broadcasts.splice(index, 1);
+  }
+
+  add(dispatcher) {
+    const index = this.subscribers.indexOf(dispatcher);
+    if (index === -1) {
+      this.subscribers.push(dispatcher);
+      /**
+       * Emitted whenever a stream dispatcher subscribes to the broadcast.
+       * @event VoiceBroadcast#subscribe
+       * @param {StreamDispatcher} subscriber The subscribed dispatcher
+       */
+      this.emit(Events.VOICE_BROADCAST_SUBSCRIBE, dispatcher);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  delete(dispatcher) {
+    const index = this.subscribers.indexOf(dispatcher);
+    if (index !== -1) {
+      this.subscribers.splice(index, 1);
+      dispatcher.destroy();
+      /**
+       * Emitted whenever a stream dispatcher unsubscribes to the broadcast.
+       * @event VoiceBroadcast#unsubscribe
+       * @param {StreamDispatcher} dispatcher The unsubscribed dispatcher
+       */
+      this.emit(Events.VOICE_BROADCAST_UNSUBSCRIBE, dispatcher);
+      return true;
+    }
+    return false;
+  }
 }
 
 PlayInterface.applyToClass(VoiceBroadcast);

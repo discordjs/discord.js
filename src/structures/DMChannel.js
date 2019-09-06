@@ -10,6 +10,10 @@ const MessageStore = require('../stores/MessageStore');
  * @implements {TextBasedChannel}
  */
 class DMChannel extends Channel {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the DM channel
+   */
   constructor(client, data) {
     super(client, data);
     // Override the channel type so partials have a known type
@@ -49,6 +53,7 @@ class DMChannel extends Channel {
   /**
    * Whether this DMChannel is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return !this.recipient;

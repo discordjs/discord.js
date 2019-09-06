@@ -20,9 +20,10 @@ class GuildMemberRoleStore extends Collection {
    * The filtered collection of roles of the member
    * @type {Collection<Snowflake, Role>}
    * @private
+   * @readonly
    */
   get _filtered() {
-    const everyone = this.guild.defaultRole;
+    const everyone = this.guild.roles.everyone;
     return this.guild.roles.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
   }
 
@@ -64,7 +65,7 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async add(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
         throw new TypeError('INVALID_TYPE', 'roles',
@@ -83,7 +84,7 @@ class GuildMemberRoleStore extends Collection {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
-      clone.roles._patch([...this.keys(), roleOrRoles.id]);
+      clone._roles = [...this.keys(), roleOrRoles.id];
       return clone;
     }
   }
@@ -95,7 +96,7 @@ class GuildMemberRoleStore extends Collection {
    * @returns {Promise<GuildMember>}
    */
   async remove(roleOrRoles, reason) {
-    if (roleOrRoles instanceof Collection || roleOrRoles instanceof Array) {
+    if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
         throw new TypeError('INVALID_TYPE', 'roles',
@@ -115,7 +116,7 @@ class GuildMemberRoleStore extends Collection {
 
       const clone = this.member._clone();
       const newRoles = this.filter(role => role.id !== roleOrRoles.id);
-      clone.roles._patch([...newRoles.keys()]);
+      clone._roles = [...newRoles.keys()];
       return clone;
     }
   }
@@ -140,13 +141,9 @@ class GuildMemberRoleStore extends Collection {
     return this.member.edit({ roles }, reason);
   }
 
-  _patch(roles) {
-    this.member._roles = roles;
-  }
-
   clone() {
     const clone = new this.constructor(this.member);
-    clone._patch(this.keyArray());
+    clone.member._roles = [...this.keyArray()];
     return clone;
   }
 

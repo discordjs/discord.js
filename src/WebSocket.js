@@ -1,15 +1,18 @@
 'use strict';
 
 const { browser } = require('./util/Constants');
-const querystring = require('querystring');
 try {
   var erlpack = require('erlpack');
   if (!erlpack.pack) erlpack = null;
 } catch (err) {} // eslint-disable-line no-empty
 
+let TextDecoder;
+
 if (browser) {
+  TextDecoder = window.TextDecoder; // eslint-disable-line no-undef
   exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
+  TextDecoder = require('util').TextDecoder;
   try {
     exports.WebSocket = require('@discordjs/uws');
   } catch (err) {
@@ -17,21 +20,29 @@ if (browser) {
   }
 }
 
+const ab = new TextDecoder();
+
 exports.encoding = erlpack ? 'etf' : 'json';
 
 exports.pack = erlpack ? erlpack.pack : JSON.stringify;
 
-exports.unpack = data => {
-  if (!erlpack || data[0] === '{') return JSON.parse(data);
-  if (!(data instanceof Buffer)) data = Buffer.from(new Uint8Array(data));
+exports.unpack = (data, type) => {
+  if (exports.encoding === 'json' || type === 'json') {
+    if (typeof data !== 'string') {
+      data = ab.decode(data);
+    }
+    return JSON.parse(data);
+  }
+  if (!Buffer.isBuffer(data)) data = Buffer.from(new Uint8Array(data));
   return erlpack.unpack(data);
 };
 
 exports.create = (gateway, query = {}, ...args) => {
   const [g, q] = gateway.split('?');
   query.encoding = exports.encoding;
-  if (q) query = Object.assign(querystring.parse(q), query);
-  const ws = new exports.WebSocket(`${g}?${querystring.stringify(query)}`, ...args);
+  query = new URLSearchParams(query);
+  if (q) new URLSearchParams(q).forEach((v, k) => query.set(k, v));
+  const ws = new exports.WebSocket(`${g}?${query}`, ...args);
   if (browser) ws.binaryType = 'arraybuffer';
   return ws;
 };

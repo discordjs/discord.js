@@ -73,7 +73,7 @@ class ShardingManager extends EventEmitter {
       if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
       if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
         !Number.isInteger(shardID) || shardID < 0)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of postive integers.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of positive integers.');
       }
     }
 
@@ -156,12 +156,13 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Spawns multiple shards.
-   * @param {number} [amount=this.totalShards] Number of shards to spawn
+   * @param {number|string} [amount=this.totalShards] Number of shards to spawn
    * @param {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
+   * before resolving. (-1 or Infinity for no wait)
    * @returns {Promise<Collection<number, Shard>>}
    */
-  async spawn(amount = this.totalShards, delay = 5500, waitForReady = true) {
+  async spawn(amount = this.totalShards, delay = 5500, spawnTimeout) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
@@ -193,8 +194,8 @@ class ShardingManager extends EventEmitter {
     for (const shardID of this.shardList) {
       const promises = [];
       const shard = this.createShard(shardID);
-      promises.push(shard.spawn(waitForReady));
-      if (delay > 0 && this.shards.size !== this.shardList.length - 1) promises.push(Util.delayFor(delay));
+      promises.push(shard.spawn(spawnTimeout));
+      if (delay > 0 && this.shards.size !== this.shardList.length) promises.push(Util.delayFor(delay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
 
@@ -245,13 +246,14 @@ class ShardingManager extends EventEmitter {
    * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
    * @param {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
    * (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait for a shard to become ready before
+   * continuing to another. (-1 or Infinity for no wait)
    * @returns {Promise<Collection<string, Shard>>}
    */
-  async respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
+  async respawnAll(shardDelay = 5000, respawnDelay = 500, spawnTimeout) {
     let s = 0;
     for (const shard of this.shards.values()) {
-      const promises = [shard.respawn(respawnDelay, waitForReady)];
+      const promises = [shard.respawn(respawnDelay, spawnTimeout)];
       if (++s < this.shards.size && shardDelay > 0) promises.push(Util.delayFor(shardDelay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }

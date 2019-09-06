@@ -19,6 +19,11 @@ const APIMessage = require('./APIMessage');
  * @extends {Base}
  */
 class Message extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message
+   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   */
   constructor(client, data, channel) {
     super(client);
 
@@ -172,6 +177,7 @@ class Message extends Base {
   /**
    * Whether or not this message is a partial
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return typeof this.content !== 'string' || !this.author;
@@ -351,8 +357,8 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return !this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false);
+    return this.type === 'DEFAULT' && (!this.guild ||
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false));
   }
 
   /**
@@ -365,7 +371,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content=''] The new content for the message
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -448,13 +454,7 @@ class Message extends Base {
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.client.api.channels(this.channel.id).messages(this.id)
-        .delete({ reason })
-        .then(() =>
-          this.client.actions.MessageDelete.handle({
-            id: this.id,
-            channel_id: this.channel.id,
-          }).message);
+      return this.channel.messages.remove(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {

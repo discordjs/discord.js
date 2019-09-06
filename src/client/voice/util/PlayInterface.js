@@ -11,7 +11,6 @@ const { Error } = require('../../../errors');
  * @property {number} [seek=0] The time to seek to, will be ignored when playing `ogg/opus` or `webm/opus` streams
  * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
  * this stream to improve performance.
- * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
  * @property {number} [plp] Expected packet loss percentage
  * @property {boolean} [fec] Enabled forward error correction
  * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps.

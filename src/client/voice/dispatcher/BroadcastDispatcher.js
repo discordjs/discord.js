@@ -15,7 +15,7 @@ class BroadcastDispatcher extends StreamDispatcher {
 
   _write(chunk, enc, done) {
     if (!this.startTime) this.startTime = Date.now();
-    for (const dispatcher of this.broadcast.dispatchers) {
+    for (const dispatcher of this.broadcast.subscribers) {
       dispatcher._write(chunk, enc);
     }
     this._step(done);
@@ -29,6 +29,12 @@ class BroadcastDispatcher extends StreamDispatcher {
     super._destroy(err, cb);
   }
 
+  /**
+   * Set the bitrate of the current Opus encoder if using a compatible Opus stream.
+   * @param {number} value New bitrate, in kbps
+   * If set to 'auto', 48kbps will be used
+   * @returns {boolean} true if the bitrate has been successfully changed.
+   */
   setBitrate(value) {
     if (!value || !this.streams.opus || !this.streams.opus.setBitrate) return false;
     const bitrate = value === 'auto' ? 48 : value;

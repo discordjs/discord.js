@@ -13,6 +13,10 @@ const MessageStore = require('../stores/MessageStore');
  * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
+  /**
+   * @param {Guild} guild The guild the text channel is part of
+   * @param {Object} data The data for the text channel
+   */
   constructor(guild, data) {
     super(guild, data);
     /**
@@ -46,7 +50,7 @@ class TextChannel extends GuildChannel {
     this.lastMessageID = data.last_message_id;
 
     /**
-     * The ratelimit per user for this channel
+     * The ratelimit per user for this channel in seconds
      * @type {number}
      */
     this.rateLimitPerUser = data.rate_limit_per_user || 0;
@@ -62,7 +66,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Sets the rate limit per user for this channel.
-   * @param {number} rateLimitPerUser The new ratelimit
+   * @param {number} rateLimitPerUser The new ratelimit in seconds
    * @param {string} [reason] Reason for changing the channel's ratelimits
    * @returns {Promise<TextChannel>}
    */
@@ -135,7 +139,6 @@ class TextChannel extends GuildChannel {
   awaitMessages() {}
   bulkDelete() {}
   acknowledge() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

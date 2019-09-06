@@ -6,6 +6,10 @@ const { ActivityTypes, OPCodes } = require('../util/Constants');
 const { TypeError } = require('../errors');
 
 class ClientPresence extends Presence {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} [data={}] The data for the client presence
+   */
   constructor(client, data = {}) {
     super(client, Object.assign(data, { status: 'online', user: { id: null } }));
   }

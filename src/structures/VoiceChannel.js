@@ -30,6 +30,7 @@ class VoiceChannel extends GuildChannel {
    * The members in this voice channel
    * @type {Collection<Snowflake, GuildMember>}
    * @name VoiceChannel#members
+   * @readonly
    */
   get members() {
     const coll = new Collection();
@@ -39,17 +40,6 @@ class VoiceChannel extends GuildChannel {
       }
     }
     return coll;
-  }
-
-  /**
-   * The voice connection for this voice channel, if the client is connected
-   * @type {?VoiceConnection}
-   * @readonly
-   */
-  get connection() {
-    const connection = this.guild.voiceConnection;
-    if (connection && connection.channel.id === this.id) return connection;
-    return null;
   }
 
   /**
@@ -68,6 +58,15 @@ class VoiceChannel extends GuildChannel {
    */
   get deletable() {
     return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
+  }
+
+  /**
+   * Whether the channel is editable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get editable() {
+    return this.manageable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
   }
 
   /**

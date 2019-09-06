@@ -1,6 +1,5 @@
 'use strict';
 
-const Channel = require('../structures/Channel');
 const { ChannelTypes } = require('../util/Constants');
 const DataStore = require('./DataStore');
 const GuildChannel = require('../structures/GuildChannel');
@@ -16,12 +15,37 @@ class GuildChannelStore extends DataStore {
     this.guild = guild;
   }
 
-  add(data) {
-    const existing = this.get(data.id);
+  add(channel) {
+    const existing = this.get(channel.id);
     if (existing) return existing;
-
-    return Channel.create(this.client, data, this.guild);
+    this.set(channel.id, channel);
+    return channel;
   }
+
+  /**
+   * Data that can be resolved to give a Guild Channel object. This can be:
+   * * A GuildChannel object
+   * * A Snowflake
+   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof GuildChannelStore
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Snowflake}
+   */
 
   /**
    * Creates a new channel in the guild.
@@ -91,31 +115,6 @@ class GuildChannelStore extends DataStore {
     });
     return this.client.actions.ChannelCreate.handle(data).channel;
   }
-
-  /**
-   * Data that can be resolved to give a Guild Channel object. This can be:
-   * * A GuildChannel object
-   * * A Snowflake
-   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
-   */
-
-  /**
-   * Resolves a GuildChannelResolvable to a Channel object.
-   * @method resolve
-   * @memberof GuildChannelStore
-   * @instance
-   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?Channel}
-   */
-
-  /**
-   * Resolves a GuildChannelResolvable to a channel ID string.
-   * @method resolveID
-   * @memberof GuildChannelStore
-   * @instance
-   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
 module.exports = GuildChannelStore;

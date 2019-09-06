@@ -32,6 +32,7 @@ class VoiceWebSocket extends EventEmitter {
   /**
    * The client of this voice WebSocket
    * @type {Client}
+   * @readonly
    */
   get client() {
     return this.connection.voiceManager.client;
@@ -135,7 +136,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(WebSocket.unpack(event.data));
+      return this.onPacket(WebSocket.unpack(event.data, 'json'));
     } catch (error) {
       return this.onError(error);
     }

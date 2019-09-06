@@ -45,17 +45,22 @@ class Structures {
     if (typeof extender !== 'function') {
       const received = `(received ${typeof extender})`;
       throw new TypeError(
-        `"extender" argument must be a function that returns the extended structure class/prototype ${received}`
+        `"extender" argument must be a function that returns the extended structure class/prototype ${received}.`
       );
     }
 
     const extended = extender(structures[structure]);
     if (typeof extended !== 'function') {
-      throw new TypeError('The extender function must return the extended structure class/prototype.');
+      const received = `(received ${typeof extended})`;
+      throw new TypeError(`The extender function must return the extended structure class/prototype ${received}.`);
     }
-    if (Object.getPrototypeOf(extended) !== structures[structure]) {
+
+    if (!(extended.prototype instanceof structures[structure])) {
+      const prototype = Object.getPrototypeOf(extended);
+      const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
-        'The class/prototype returned from the extender function must extend the existing structure class/prototype.'
+        'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
+        ` (received function ${received}; expected extension of ${structures[structure].name}).`
       );
     }
 
@@ -70,7 +75,8 @@ const structures = {
   TextChannel: require('../structures/TextChannel'),
   VoiceChannel: require('../structures/VoiceChannel'),
   CategoryChannel: require('../structures/CategoryChannel'),
-  GuildChannel: require('../structures/GuildChannel'),
+  NewsChannel: require('../structures/NewsChannel'),
+  StoreChannel: require('../structures/StoreChannel'),
   GuildMember: require('../structures/GuildMember'),
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),

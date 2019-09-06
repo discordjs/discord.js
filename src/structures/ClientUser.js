@@ -8,6 +8,11 @@ const DataResolver = require('../util/DataResolver');
  * @extends {User}
  */
 class ClientUser extends Structures.get('User') {
+  constructor(client, data) {
+    super(client, data);
+    this._typing = new Map();
+  }
+
   _patch(data) {
     super._patch(data);
 
@@ -23,15 +28,13 @@ class ClientUser extends Structures.get('User') {
      */
     this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
 
-    this._typing = new Map();
-
     if (data.token) this.client.token = data.token;
   }
 
   /**
    * ClientUser's presence
-   * @readonly
    * @type {Presence}
+   * @readonly
    */
   get presence() {
     return this.client.presence;

@@ -36,10 +36,11 @@
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "collection": "discordjs/collection",
+    "abort-controller": "^3.0.0",
     "form-data": "^2.3.3",
     "node-fetch": "^2.3.0",
     "pako": "^1.0.8",
-    "prism-media": "amishshah/prism-media",
+    "prism-media": "^1.0.0",
     "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.1",
     "ws": "^6.1.3"
@@ -50,12 +51,15 @@
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.4",
     "sodium": "^3.0.2",
-    "zlib-sync": "^0.1.4"
+    "zlib-sync": "^0.1.4",
+    "zucc": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
+    "@types/ws": "^6.0.1",
     "discord.js-docgen": "discordjs/docgen",
     "eslint": "^5.13.0",
+    "jest": "^24.7.1",
     "json-filter-loader": "^1.0.0",
     "terser-webpack-plugin": "^1.2.2",
     "tslint": "^5.12.1",
@@ -80,6 +84,7 @@
     "sodium": false,
     "worker_threads": false,
     "zlib-sync": false,
+    "zucc": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
