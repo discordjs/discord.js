@@ -432,7 +432,7 @@ class Util {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.clone().sort((a, b) =>
+    return collection.sorted((a, b) =>
       a.rawPosition - b.rawPosition ||
       parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
       parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
@@ -586,7 +586,7 @@ class Util {
         if (ignored.includes(prop)) return;
         if (prop === 'size') {
           Object.defineProperty(store.prototype, prop, {
-            get: function() {
+            get: function () {
               return this._filtered[prop];
             },
           });
@@ -594,7 +594,7 @@ class Util {
         }
         const func = Collection.prototype[prop];
         if (prop === 'constructor' || typeof func !== 'function') return;
-        store.prototype[prop] = function(...args) {
+        store.prototype[prop] = function (...args) {
           return func.apply(this._filtered, args);
         };
       });
