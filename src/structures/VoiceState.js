@@ -140,6 +140,15 @@ class VoiceState extends Base {
   }
 
   /**
+   * Kicks the member from the voice channel.
+   * @param {string} [reason] Reason for kicking member from the channel
+   * @returns {Promise<GuildMember>}
+   */
+  kick(reason) {
+    return this.setChannel(null, reason);
+  }
+
+  /**
    * Moves the member to a different channel, or kick them from the one they're in.
    * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to kick them from
    * voice
