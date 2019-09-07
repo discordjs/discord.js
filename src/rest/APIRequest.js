@@ -60,7 +60,7 @@ class APIRequest {
       agent,
       body,
       signal: controller.signal,
-    }).finally(() => this.client.clearTimeout(timeout));
+    }).finally(() => client.clearTimeout(timeout));
   }
 }
 
