@@ -3,6 +3,7 @@
 const BucketLock = require('./BucketLock');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
+const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const { Events: { RATE_LIMIT }, browser } = require('../util/Constants');
 
@@ -20,6 +21,14 @@ function calculateReset(reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
+function checkBucketUsable(bucket) {
+  return bucket.remaining <= 0;
+}
+
+function checkBucketReset(bucket) {
+  return Date.now() < bucket.reset;
+}
+
 class RequestHandler {
   constructor(restManager, normalizedPath) {
     Object.defineProperty(this, 'restManager', { value: restManager });
@@ -28,31 +37,36 @@ class RequestHandler {
     this.busy = false;
     this.requestQueue = [];
 
-    this.bucketHash = undefined;
+    this.bucketHashes = new Collection();
   }
 
   get isInactive() {
-    return !this.requestQueue.length && !this.limited && !this.busy;
+    return !this.requestQueue.length && !this.limited() && !this.busy;
   }
 
-  get limited() {
-    const { bucket } = this;
-    return (this.restManager.globalTimeout || bucket.remaining <= 0) && Date.now() < bucket.reset;
+  limited(bucket) {
+    return (this.restManager.globalTimeout ||
+      bucket ? checkBucketUsable(bucket) : this.bucketHashes.some(hash =>
+        checkBucketUsable(this.restManager.buckets.get(hash)))
+    ) &&
+      bucket ? checkBucketReset(bucket) : this.bucketHashes.some(hash =>
+        checkBucketReset(this.restManager.buckets.get(hash)));
   }
 
-  get bucket() {
-    if (this.bucketHash === undefined) return new BucketLock();
-    let b = this.restManager.buckets.get(this.bucketHash);
-    if (!b) {
-      b = new BucketLock(this.bucketHash);
-      this.restManager.buckets.set(this.bucketHash, b);
+  bucketFor(method) {
+    const methodHash = this.bucketHashes.get(method) || null;
+    let bucket = this.restManager.buckets.get(methodHash);
+
+    if (!bucket) {
+      bucket = new BucketLock(methodHash);
+      this.restManager.buckets.set(methodHash, bucket);
     }
 
-    return b;
+    return bucket;
   }
 
-  debug(message) {
-    return this.restManager.debug(message, this.normalizedPath);
+  debug(message, method = '') {
+    return this.restManager.debug(message, `${method ? `${method}:` : ''}${this.normalizedPath}`);
   }
 
   queue(request) {
@@ -69,10 +83,11 @@ class RequestHandler {
 
     this.busy = true;
     const { request, resolve, reject, retries, stack } = requestData;
-    let { bucket } = this;
+    const oldBucketHash = this.bucketHashes.get(request.method) || null;
+    let bucket = this.bucketFor(request.method);
 
     // Check if we are limited before requesting again
-    if (this.limited) {
+    if (this.limited(bucket)) {
       const restOffset = this.restManager.client.options.restTimeOffset;
       const timeout = bucket.reset + (restOffset < 0 ? -restOffset : restOffset) - Date.now();
 
@@ -135,11 +150,20 @@ class RequestHandler {
         const reset = res.headers.get('x-ratelimit-reset');
         const retryAfter = res.headers.get('retry-after');
         const bucketHash = res.headers.get('x-ratelimit-bucket');
+        const resetAfter = res.headers.get('x-ratelimit-reset-after');
 
-        if (this.bucketHash !== bucketHash) {
-          this.debug(`Received bucket hash\n  Old: ${this.bucketHash}\n  New: ${bucketHash}\n  Limit: ${limit}`);
-          this.bucketHash = bucketHash;
-          bucket = this.bucket;
+        if (oldBucketHash !== bucketHash) {
+          this.debug(
+            `Received bucket hash
+    Old      : ${oldBucketHash}
+    New      : ${bucketHash}
+    Remaining: ${remaining}
+    Limit    : ${limit}
+    Reset    : ${resetAfter} seconds`,
+            request.method
+          );
+          this.bucketHashes.set(request.method, bucketHash);
+          bucket = this.bucketFor(request.method);
         }
 
         bucket._patch(
@@ -177,13 +201,11 @@ class RequestHandler {
         this.requestQueue.unshift(requestData);
         this.debug(
           `Encountered a 429. Retrying in ${bucket.retryAfter}ms
-            [Bucket Info]
-            Hash       : ${bucket.hash}
-            Limit      : ${bucket.limit}
-            Reset      : ${new Date(bucket.reset).toISOString()}
-            Retry After: ${bucket.retryAfter}
-          `
-        );
+    [Bucket Info]
+    Hash       : ${bucket.hash}
+    Limit      : ${bucket.limit}
+    Reset      : ${new Date(bucket.reset).toISOString()}
+    Retry After: ${bucket.retryAfter}`);
         await Util.delayFor(bucket.retryAfter);
       } else if (res.status >= 500 && res.status <= 600) {
         // Retry the specified number of times for possible serverside issues

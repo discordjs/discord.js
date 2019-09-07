@@ -7,6 +7,7 @@ const { token } = require('../auth.json');
 
 const client = new Client({
   presence: { status: 'invisible' },
+  restTimeOffset: 0,
 });
 const cache = new Map();
 
@@ -25,6 +26,11 @@ client.on('debug', message => {
     process.exit(-420);
   }
   return null;
+});
+
+client.on('rateLimit', data => {
+  console.log('Handling ratelimit');
+  console.log(data);
 });
 
 async function main() {
