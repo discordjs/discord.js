@@ -88,15 +88,20 @@
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
     "src/client/voice/ClientVoiceManager.js": false,
+    "src/client/voice/VoiceBroadcast.js": false,
     "src/client/voice/VoiceConnection.js": false,
+    "src/client/voice/dispatcher/BroadcastDispatcher.js": false,
+    "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/networking/VoiceUDPClient.js": false,
     "src/client/voice/networking/VoiceWebSocket.js": false,
-    "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/player/AudioPlayer.js": false,
+    "src/client/voice/player/BasePlayer.js": false,
+    "src/client/voice/player/BroadcastAudioPlayer.js": false,
     "src/client/voice/receiver/PacketHandler.js": false,
     "src/client/voice/receiver/Receiver.js": false,
+    "src/client/voice/util/PlayInterface.js": false,
     "src/client/voice/util/Secretbox.js": false,
-    "src/client/voice/util/VolumeInterface.js": false,
-    "src/client/voice/VoiceBroadcast.js": false
+    "src/client/voice/util/Silence.js": false,
+    "src/client/voice/util/VolumeInterface.js": false
   }
 }
