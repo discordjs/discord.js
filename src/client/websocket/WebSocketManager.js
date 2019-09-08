@@ -342,7 +342,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy();
+    for (const shard of this.shards.values()) shard.destroy(1000, true);
   }
 
   /**

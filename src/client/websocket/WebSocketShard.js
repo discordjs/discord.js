@@ -645,16 +645,17 @@ class WebSocketShard extends EventEmitter {
   /**
    * Destroys this shard and closes its WebSocket connection.
    * @param {number} [closeCode=1000] The close code to use
+   * @param {boolean} [cleanup=false] If the shard should attempt a reconnect
    * @private
    */
-  destroy(closeCode = 1000) {
+  destroy(closeCode = 1000, cleanup = false) {
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
 
     // Close the WebSocket connection, if any
     if (this.connection && this.connection.readyState === WebSocket.OPEN) {
       this.connection.close(closeCode);
-    } else {
+    } else if (!cleanup) {
       /**
        * Emitted when a shard is destroyed, but no WebSocket connection was present.
        * @private
