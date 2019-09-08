@@ -198,7 +198,6 @@ async function runTests(client) {
   log('put', '/channels/{channel.id}/messages/{message.id}/reactions/{emoji}/@me', 'Shared bucket: /channels/{channel.id}/messages/:id/reactions/*');
   await putReactions(messages);
 
-  // TODO: Check that ratelimits don't fuck up with this
   log('delete', '/channels/{channel.id}/messages/{message.id}/reactions/{emoji}/{user.id}', 'Shared bucket: /channels/{channel.id}/messages/:id/reactions/*');
   await deleteReaction(messages);
 
@@ -246,6 +245,9 @@ async function runTests(client) {
 
   log('delete', '/channels/{channel.id}/pins/{message.id}');
   await deletePins(messages4);
+
+  // Cleanup
+  await deleteChannels(client, channels2);
 
   return invites;
 }
