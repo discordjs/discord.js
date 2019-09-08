@@ -63,7 +63,7 @@ class Message extends Base {
 
     /**
      * The author of the message
-     * @type {User}
+     * @type {?User}
      */
     this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
