@@ -1,5 +1,5 @@
 declare module 'discord.js' {
-	import BaseCollection = require('collection');
+	import BaseCollection from '@discord.js/collection';
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
