@@ -25,8 +25,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   any(permission, checkAdmin = true) {
-    if (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) return true;
-    return super.any(permission);
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.any(permission);
   }
 
   /**
@@ -36,8 +35,7 @@ class Permissions extends BitField {
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    if (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) return true;
-    return super.has(permission);
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
   }
 }
 
