@@ -2,19 +2,24 @@
 
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
-const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
 let zstd;
 let zlib;
 
-try {
-  zstd = require('zucc');
-} catch (e) {
+if (browser) {
+  zlib = require('pako');
+} else {
   try {
-    zlib = require('zlib-sync');
-    if (!zlib.Inflate) zlib = require('pako');
-  } catch (err) {
-    zlib = require('pako');
+    zstd = require('zucc');
+    if (!zstd.DecompressStream) zstd = null;
+  } catch (e) {
+    try {
+      zlib = require('zlib-sync');
+      if (!zlib.Inflate) zlib = require('pako');
+    } catch (err) {
+      zlib = require('pako');
+    }
   }
 }
 
