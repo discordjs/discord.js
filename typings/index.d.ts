@@ -2050,7 +2050,7 @@ declare module 'discord.js' {
 
 	interface ClientOptions {
 		shards?: number | number[] | 'auto';
-		totalShardCount?: number;
+		shardCount?: number;
 		messageCacheMaxSize?: number;
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;

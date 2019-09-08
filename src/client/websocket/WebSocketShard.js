@@ -559,10 +559,10 @@ class WebSocketShard extends EventEmitter {
     const d = {
       ...client.options.ws,
       token: client.token,
-      shard: [this.id, Number(client.options.totalShardCount)],
+      shard: [this.id, Number(client.options.shardCount)],
     };
 
-    this.debug(`Identifying as a new session. Shard ${this.id}/${client.options.totalShardCount}`);
+    this.debug(`Identifying as a new session. Shard ${this.id}/${client.options.shardCount}`);
     this.send({ op: OPCodes.IDENTIFY, d }, true);
   }
 

@@ -156,7 +156,7 @@ class WebSocketManager extends EventEmitter {
 
     if (shards === 'auto') {
       this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
-      this.totalShards = this.client.options.totalShardCount = recommendedShards;
+      this.totalShards = this.client.options.shardCount = recommendedShards;
       if (shards === 'auto' || !this.client.options.shards.length) {
         this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
       }

@@ -60,7 +60,7 @@ class ShardClientUtil {
    * @readonly
    */
   get count() {
-    return this.client.options.totalShardCount;
+    return this.client.options.shardCount;
   }
 
   /**

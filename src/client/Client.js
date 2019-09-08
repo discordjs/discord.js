@@ -46,18 +46,18 @@ class Client extends BaseClient {
       }
     }
 
-    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
-      if ('TOTAL_SHARD_COUNT' in data) {
-        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+    if (this.options.shardCount === DefaultOptions.shardCount) {
+      if ('SHARD_COUNT' in data) {
+        this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
-        this.options.totalShardCount = this.options.shards.length;
+        this.options.shardCount = this.options.shards.length;
       }
     }
 
     const typeofShards = typeof this.options.shards;
 
-    if (typeofShards === 'undefined' && typeof this.options.totalShardCount === 'number') {
-      this.options.shards = Array.from({ length: this.options.totalShardCount }, (_, i) => i);
+    if (typeofShards === 'undefined' && typeof this.options.shardCount === 'number') {
+      this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
     }
 
     if (typeofShards === 'number') this.options.shards = [this.options.shards];
@@ -365,8 +365,8 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (typeof options.totalShardCount !== 'number' || isNaN(options.totalShardCount) || options.totalShardCount < 1) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'totalShardCount', 'a number greater than 1 or "auto"');
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than 1 or "auto"');
     }
     if (options.shards &&
       !(options.shards === 'auto' || Array.isArray(options.shards))

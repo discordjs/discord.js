@@ -8,9 +8,9 @@ const browser = exports.browser = typeof window !== 'undefined';
  * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
- * the client will spawn {@link ClientOptions#totalShardCount} shards. If set to `auto`, it will fetch the
+ * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
- * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
@@ -42,7 +42,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
-  totalShardCount: 1,
+  shardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
