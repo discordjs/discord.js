@@ -150,7 +150,7 @@ class Role extends Base {
    */
   comparePositionTo(role) {
     role = this.guild.roles.resolve(role);
-    if (!role) return Promise.reject(new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake'));
+    if (!role) throw new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake');
     return this.constructor.comparePositions(this, role);
   }
 
