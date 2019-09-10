@@ -26,8 +26,11 @@ class MessageReactionAdd extends Action {
     if (!message) return false;
 
     // Verify reaction
-    const reaction = this.getReaction(data, message, user);
-    if (!reaction) return false;
+    const reaction = message.reactions.add({
+      emoji: data.emoji,
+      count: 0,
+      me: user.id === this.client.user.id,
+    });
     reaction._add(user);
     /**
      * Emitted whenever a reaction is added to a cached message.
