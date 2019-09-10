@@ -804,6 +804,7 @@ declare module 'discord.js' {
 		public readonly deletable: boolean;
 		public guild: Guild;
 		public readonly manageable: boolean;
+		public readonly members: Collection<Snowflake, GuildMember>;
 		public name: string;
 		public readonly parent: CategoryChannel | null;
 		public parentID: Snowflake;
@@ -1362,7 +1363,6 @@ declare module 'discord.js' {
 
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data?: object);
-		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: MessageStore;
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
@@ -1375,7 +1375,6 @@ declare module 'discord.js' {
 
 	export class NewsChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data?: object);
-		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: MessageStore;
 		public nsfw: boolean;
 		public topic: string;
@@ -1479,7 +1478,6 @@ declare module 'discord.js' {
 		public readonly editable: boolean;
 		public readonly full: boolean;
 		public readonly joinable: boolean;
-		public readonly members: Collection<Snowflake, GuildMember>;
 		public readonly speakable: boolean;
 		public userLimit: number;
 		public join(): Promise<VoiceConnection>;
