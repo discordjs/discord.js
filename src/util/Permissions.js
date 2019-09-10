@@ -19,14 +19,23 @@ class Permissions extends BitField {
    */
 
   /**
+   * Checks whether the bitfield has a permission, or any of multiple permissions.
+   * @param {PermissionResolvable} permission Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {boolean}
+   */
+  any(permission, checkAdmin = true) {
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.any(permission);
+  }
+
+  /**
    * Checks whether the bitfield has a permission, or multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    if (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) return true;
-    return super.has(permission);
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
   }
 }
 
