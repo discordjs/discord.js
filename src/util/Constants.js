@@ -468,6 +468,23 @@ exports.Colors = {
 };
 
 /**
+ * The value set for the verification levels for a guild:
+ * * None
+ * * Low
+ * * Medium
+ * * (╯°□°）╯︵ ┻━┻
+ * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
+ * @typedef {string} VerificationLevel
+ */
+exports.VerificationLevels = [
+  'None',
+  'Low',
+  'Medium',
+  '(╯°□°）╯︵ ┻━┻',
+  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻',
+];
+
+/**
  * An error encountered while performing an API request. Here are the potential errors:
  * * UNKNOWN_ACCOUNT
  * * UNKNOWN_APPLICATION
