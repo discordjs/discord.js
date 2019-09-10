@@ -404,6 +404,15 @@ class Guild extends Base {
   }
 
   /**
+   * If this guild is partnered
+   * @type {boolean}
+   * @readonly
+   */
+  get partnered() {
+    return this.features.includes('PARTNERED');
+  }
+
+  /**
    * If this guild is verified
    * @type {boolean}
    * @readonly
