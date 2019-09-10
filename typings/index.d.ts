@@ -783,20 +783,20 @@ declare module 'discord.js' {
 		public readonly position: number;
 		public rawPosition: number;
 		public readonly viewable: boolean;
-		public clone<Ch extends this>(options?: GuildChannelCloneOptions): Promise<Ch>;
+		public clone<T extends this>(options?: GuildChannelCloneOptions): Promise<T>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
-		public createOverwrite<Ch extends this>(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<Ch>;
-		public edit<Ch extends this>(data: ChannelData, reason?: string): Promise<Ch>;
+		public createOverwrite<T extends this>(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<T>;
+		public edit<T extends this>(data: ChannelData, reason?: string): Promise<T>;
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
-		public lockPermissions<Ch extends this>(): Promise<Ch>;
-		public overwritePermissions<Ch extends this>(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<Ch>;
+		public lockPermissions<T extends this>(): Promise<T>;
+		public overwritePermissions<T extends this>(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string }): Promise<T>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
-		public setName<Ch extends this>(name: string, reason?: string): Promise<Ch>;
-		public setParent<Ch extends this>(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<Ch>;
-		public setPosition<Ch extends this>(position: number, options?: { relative?: boolean, reason?: string }): Promise<Ch>;
-		public setTopic<Ch extends this>(topic: string, reason?: string): Promise<Ch>;
-		public updateOverwrite<Ch extends this>(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<Ch>;
+		public setName<T extends this>(name: string, reason?: string): Promise<T>;
+		public setParent<T extends this>(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean, reason?: string }): Promise<T>;
+		public setPosition<T extends this>(position: number, options?: { relative?: boolean, reason?: string }): Promise<T>;
+		public setTopic<T extends this>(topic: string, reason?: string): Promise<T>;
+		public updateOverwrite<T extends this>(userOrRole: RoleResolvable | UserResolvable, options: PermissionOverwriteOption, reason?: string): Promise<T>;
 	}
 
 	export class StoreChannel extends GuildChannel {
