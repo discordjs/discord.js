@@ -366,7 +366,7 @@ class Client extends BaseClient {
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than 1 or "auto"');
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
     if (options.shards &&
       !(options.shards === 'auto' || Array.isArray(options.shards))
