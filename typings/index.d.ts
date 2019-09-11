@@ -1684,7 +1684,7 @@ declare module 'discord.js' {
 
 	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
 		constructor(client: Client, iterable: Iterable<any>, holds: VConstructor);
-		public static readonly [Symbol.species]: typeof CollectionConstructor;
+		public static readonly [Symbol.species]: CollectionConstructor;
 		public client: Client;
 		public holds: VConstructor;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
