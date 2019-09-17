@@ -1,5 +1,5 @@
 declare module 'discord.js' {
-	import BaseCollection, { CollectionConstructor } from '@discordjs/collection';
+	import BaseCollection from '@discordjs/collection';
 	import { EventEmitter } from 'events';
 	import { Stream, Readable, Writable } from 'stream';
 	import { ChildProcess } from 'child_process';
@@ -313,6 +313,12 @@ declare module 'discord.js' {
 	}
 
 	export class Collection<K, V> extends BaseCollection<K, V> {
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
+		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
+		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
 		public toJSON(): object;
 	}
 
@@ -1684,13 +1690,37 @@ declare module 'discord.js' {
 
 	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
 		constructor(client: Client, iterable: Iterable<any>, holds: VConstructor);
-		public static readonly [Symbol.species]: CollectionConstructor;
 		public client: Client;
 		public holds: VConstructor;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
 		public remove(key: K): void;
 		public resolve(resolvable: R): V | null;
 		public resolveID(resolvable: R): K | null;
+		// Don't worry about those bunch of ts-ignores here, this is intended https://github.com/microsoft/TypeScript/issues/1213
+		// @ts-ignore
+		public filter(fn: (value: V, key: K, collection: this) => boolean): Collection<K, V>;
+		// @ts-ignore
+		public filter<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): Collection<K, V>;
+		// @ts-ignore
+		public filter(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): Collection<K, V>;
+		// @ts-ignore
+		public partition(fn: (value: V, key: K, collection: this) => boolean): [Collection<K, V>, Collection<K, V>];
+		// @ts-ignore
+		public partition<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): [Collection<K, V>, Collection<K, V>];
+		// @ts-ignore
+		public partition(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): [Collection<K, V>, Collection<K, V>];
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
+		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
+		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
+		// @ts-ignore
+		public clone(): Collection<K, V>;
+		// @ts-ignore
+		public concat(...collections: Collection<K, V>[]): Collection<K, V>;
+		// @ts-ignore
+		public sorted(compareFunction: (firstValue: V, secondValue: V, firstKey: K, secondKey: K) => number): Collection<K, V>;
 	}
 
 	export class GuildEmojiRoleStore extends OverridableDataStore<Snowflake, Role, typeof Role, RoleResolvable> {
