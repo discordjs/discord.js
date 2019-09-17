@@ -313,6 +313,12 @@ declare module 'discord.js' {
 	}
 
 	export class Collection<K, V> extends BaseCollection<K, V> {
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
+		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
+		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
 		public toJSON(): object;
 	}
 
@@ -1691,6 +1697,21 @@ declare module 'discord.js' {
 		public remove(key: K): void;
 		public resolve(resolvable: R): V | null;
 		public resolveID(resolvable: R): K | null;
+		public filter(fn: (value: V, key: K, collection: this) => boolean): Collection<K, V>;
+		public filter<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): Collection<K, V>;
+		public filter(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): Collection<K, V>;
+		public partition(fn: (value: V, key: K, collection: this) => boolean): [Collection<K, V>, Collection<K, V>];
+		public partition<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): [Collection<K, V>, Collection<K, V>];
+		public partition(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): [Collection<K, V>, Collection<K, V>];
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
+		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
+		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
+		public clone(): Collection<K, V>;
+		public concat(...collections: Collection<K, V>[]): Collection<K, V>;
+		public sorted(compareFunction: (firstValue: V, secondValue: V, firstKey: K, secondKey: K) => number): Collection<K, V>;
 	}
 
 	export class GuildEmojiRoleStore extends OverridableDataStore<Snowflake, Role, typeof Role, RoleResolvable> {
