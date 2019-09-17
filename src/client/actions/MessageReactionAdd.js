@@ -2,6 +2,7 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const { PartialTypes } = require('../../util/Constants');
 
 /*
 { user_id: 'id',
@@ -26,7 +27,12 @@ class MessageReactionAdd extends Action {
     if (!message) return false;
 
     // Verify reaction
-    const reaction = this.getReaction(data, message, user);
+    if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
+    const reaction = message.reactions.add({
+      emoji: data.emoji,
+      count: message.partial ? null : 0,
+      me: user.id === this.client.user.id,
+    });
     if (!reaction) return false;
     reaction._add(user);
     /**
