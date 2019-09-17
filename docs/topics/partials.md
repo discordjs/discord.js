@@ -48,7 +48,7 @@ client.on('messageReactionAdd', async (reaction, user) => {
   // Fetches and caches the reaction itself, updating resources that were possibly defunct.
   if (reaction.partial) await reaction.fetch();
   // Now the reaction is fully available and the properties will be reflected accurately:
-  console.log(`${reaction.count} user(s) have given the same reaction this message!`);
+  console.log(`${reaction.count} user(s) have given the same reaction to this message!`);
 });
 ```
 
