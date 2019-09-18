@@ -100,7 +100,7 @@ class MessageMentions {
     if (crosspostedChannels) {
       if (crosspostedChannels instanceof Collection) {
         /**
-         * An array of crossposted channels
+         * A collection of crossposted channels
          * @type {Collection<Snowflake, CrosspostedChannel>}
          */
         this.crosspostedChannels = new Collection(crosspostedChannels);
