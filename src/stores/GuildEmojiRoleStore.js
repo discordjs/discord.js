@@ -106,8 +106,8 @@ class GuildEmojiRoleStore extends Collection {
     return this._filtered;
   }
 
-  static get [Symbol.species]() { 
-    return Collection; 
+  static get [Symbol.species]() {
+    return Collection;
   }
 }
 
