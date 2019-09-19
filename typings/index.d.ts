@@ -1712,7 +1712,6 @@ declare module 'discord.js' {
 		public create(name: string, options: GuildCreateChannelOptions & { type: 'category' }): Promise<CategoryChannel>;
 		public create(name: string, options?: GuildCreateChannelOptions & { type?: 'text' }): Promise<TextChannel>;
 		public create(name: string, options: GuildCreateChannelOptions): Promise<TextChannel | VoiceChannel | CategoryChannel>;
-		
 	}
 
 	// Hacky workaround because changing the signature of an overridden method errors
