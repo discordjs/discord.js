@@ -1268,6 +1268,7 @@ declare module 'discord.js' {
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
 		public topic: string;
+		public rateLimitPerUser: number;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
