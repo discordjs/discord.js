@@ -128,7 +128,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?NodeJS.Timer}
      * @private
      */
-    Object.defineProperty(this, 'helloTimeout', { value: null, writable: true });
+    Object.defineProperty(this, 'helloTimeout', { value: undefined, writable: true });
 
     /**
      * If the manager attached its event handlers on the shard
@@ -149,7 +149,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?NodeJS.Timer}
      * @private
      */
-    Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
+    Object.defineProperty(this, 'readyTimeout', { value: undefined, writable: true });
   }
 
   /**
@@ -321,7 +321,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onClose(event) {
-    this.closeSequence = this.sequence;
+    if (this.sequence !== -1) this.closeSequence = this.sequence;
     this.sequence = -1;
 
     this.debug(`WebSocket was closed.
@@ -510,12 +510,12 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   sendHeartbeat(ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.RESUMING].includes(this.status)) {
-    if (!this.lastHeartbeatAcked && !ignoreHeartbeatAck) {
+    if (ignoreHeartbeatAck) {
+      this.debug("Didn't process heartbeat ack yet but we are still connected. Sending one now.");
+    } else if (!this.lastHeartbeatAcked) {
       this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
       this.destroy(4009);
       return;
-    } else if (ignoreHeartbeatAck) {
-      this.debug("Didn't process heartbeat ack yet but we are still connected. Sending one now.");
     }
 
     this.debug('Sending a heartbeat.');

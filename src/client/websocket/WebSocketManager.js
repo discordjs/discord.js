@@ -216,7 +216,7 @@ class WebSocketManager extends EventEmitter {
           return;
         }
 
-        if (event.code === 1000 || event.code === 4006) {
+        if (event.code === 1000 || event.code === 4006 || event.code === 4007) {
           // These event codes cannot be resumed
           shard.sessionID = undefined;
         }
