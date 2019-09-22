@@ -102,7 +102,7 @@ class RequestHandler {
          * @param {string} rateLimitInfo.route Route used for request that triggered this event
          * @param {Object} bucket The ratelimit bucket
          * @param {string} bucket.hash The bucket hash
-         * @param {number} bucket.limit Number of requests that can be made to this endpoint
+         * @param {number} bucket.limit Total number of requests that can be made to this endpoint
          * @param {number} bucket.reset UNIX timestamp when the bucket resets
          */
         this.restManager.client.emit(RATE_LIMIT, {
