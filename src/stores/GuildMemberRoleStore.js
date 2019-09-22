@@ -154,6 +154,10 @@ class GuildMemberRoleStore extends Collection {
   valueOf() {
     return this._filtered;
   }
+
+  static get [Symbol.species]() {
+    return Collection;
+  }
 }
 
 Util.mixin(GuildMemberRoleStore, ['set']);

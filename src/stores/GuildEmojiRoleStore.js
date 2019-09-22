@@ -105,6 +105,10 @@ class GuildEmojiRoleStore extends Collection {
   valueOf() {
     return this._filtered;
   }
+
+  static get [Symbol.species]() {
+    return Collection;
+  }
 }
 
 Util.mixin(GuildEmojiRoleStore, ['set']);
