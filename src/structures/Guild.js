@@ -154,7 +154,7 @@ class Guild extends Base {
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
-     * * LURKABLE
+     * * PUBLIC
      * * NEWS
      * * PARTNERED
      * * VANITY_URL
