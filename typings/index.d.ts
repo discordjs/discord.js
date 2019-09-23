@@ -2235,13 +2235,18 @@ declare module 'discord.js' {
 		channel: GuildChannelResolvable | null;
 	}
 
-	type GuildFeatures = 'INVITE_SPLASH'
-		| 'MORE_EMOJI'
-		| 'VERIFIED'
-		| 'VIP_REGIONS'
-		| 'VANITY_URL'
+	type GuildFeatures = 'ANIMATED_ICON'
+		| 'BANNER'
+		| 'COMMERCE'
 		| 'DISCOVERABLE'
-		| 'FEATURABLE';
+		| 'FEATURABLE'
+		| 'INVITE_SPLASH'
+		| 'PUBLIC'
+		| 'NEWS'
+		| 'PARTNERED'
+		| 'VANITY_URL'
+		| 'VERIFIED'
+		| 'VIP_REGIONS';
 
 	interface GuildMemberEditData {
 		nick?: string;
