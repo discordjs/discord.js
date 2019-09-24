@@ -245,7 +245,7 @@ class Message extends Base {
       'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels
     );
 
-    this.flags = new MessageFlags('flags' in data ? data.flags : this.flags.bitfield).freeze();
+    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
   }
 
   /**
