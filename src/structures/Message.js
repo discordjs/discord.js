@@ -186,8 +186,8 @@ class Message extends Base {
      * Reference data sent in a crossposted message.
      * @typedef {Object} MessageReference
      * @property {string} channelID ID of the channel the message was crossposted from
-     * @property {string} guildID ID of the guild the message was crossposted from
-     * @property {string} [messageID] ID of the message that was crossposted
+     * @property {?string} guildID ID of the guild the message was crossposted from
+     * @property {?string} messageID ID of the message that was crossposted
      */
 
     /**
