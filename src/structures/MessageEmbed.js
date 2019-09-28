@@ -67,12 +67,16 @@ class MessageEmbed {
     this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
 
     /**
-     * The thumbnail of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedThumbnail
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
      * @property {number} height Height of this thumbnail
      * @property {number} width Width of this thumbnail
+     */
+
+    /**
+     * The thumbnail of this embed (if there is one)
+     * @type {?MessageEmbedThumbnail}
      */
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url,
@@ -82,12 +86,16 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The image of this embed, if there is one
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedImage
      * @property {string} url URL for this image
      * @property {string} proxyURL ProxyURL for this image
      * @property {number} height Height of this image
      * @property {number} width Width of this image
+     */
+
+    /**
+     * The image of this embed, if there is one
+     * @type {?MessageEmbedImage}
      */
     this.image = data.image ? {
       url: data.image.url,
@@ -97,12 +105,16 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The video of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedVideo
      * @property {string} url URL of this video
      * @property {string} proxyURL ProxyURL for this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
+     */
+
+    /**
+     * The video of this embed (if there is one)
+     * @type {?MessageEmbedVideo}
      * @readonly
      */
     this.video = data.video ? {
@@ -113,12 +125,16 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The author of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedAuthor
      * @property {string} name The name of this author
      * @property {string} url URL of this author
      * @property {string} iconURL URL of the icon for this author
      * @property {string} proxyIconURL Proxied URL of the icon for this author
+     */
+
+    /**
+     * The author of this embed (if there is one)
+     * @type {?MessageEmbedAuthor}
      */
     this.author = data.author ? {
       name: data.author.name,
@@ -128,19 +144,27 @@ class MessageEmbed {
     } : null;
 
     /**
-     * The provider of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedProvider
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
+     */
+
+    /**
+     * The provider of this embed (if there is one)
+     * @type {?MessageEmbedProvider}
      */
     this.provider = data.provider;
 
     /**
-     * The footer of this embed
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedFooter
      * @property {string} text The text of this footer
      * @property {string} iconURL URL of the icon for this footer
      * @property {string} proxyIconURL Proxied URL of the icon for this footer
+     */
+
+    /**
+     * The footer of this embed
+     * @type {?MessageEmbedFooter}
      */
     this.footer = data.footer ? {
       text: data.footer.text,
