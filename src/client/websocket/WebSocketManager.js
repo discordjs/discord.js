@@ -19,6 +19,7 @@ const BeforeReadyWhitelist = [
 ];
 
 const UNRECOVERABLE_CLOSE_CODES = [4004, 4010, 4011];
+const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
  * The WebSocket manager for this client.
@@ -216,7 +217,7 @@ class WebSocketManager extends EventEmitter {
           return;
         }
 
-        if (event.code === 1000 || event.code === 4006 || event.code === 4007) {
+        if (UNRESUMABLE_CLOSE_CODES.includes(event.code)) {
           // These event codes cannot be resumed
           shard.sessionID = undefined;
         }
@@ -228,23 +229,19 @@ class WebSocketManager extends EventEmitter {
          */
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
+        this.shardQueue.add(shard);
+
         if (shard.sessionID) {
           this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
-          shard.connect().catch(() => null);
-          return;
+          this.reconnect(true);
+        } else {
+          shard.destroy(null, true);
+          this.reconnect();
         }
-
-        shard.destroy();
-
-        this.shardQueue.add(shard);
-        this.reconnect();
       });
 
       shard.on(ShardEvents.INVALID_SESSION, () => {
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
-
-        this.shardQueue.add(shard);
-        this.reconnect();
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
@@ -287,14 +284,15 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Handles reconnects for this manager.
+   * @param {boolean} [skipLimit=false] IF this reconnect should skip checking the session limit
    * @private
    * @returns {Promise<boolean>}
    */
-  async reconnect() {
+  async reconnect(skipLimit = false) {
     if (this.reconnecting || this.status !== Status.READY) return false;
     this.reconnecting = true;
     try {
-      await this._handleSessionLimit();
+      if (!skipLimit) await this._handleSessionLimit();
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);

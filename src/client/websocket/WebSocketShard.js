@@ -170,7 +170,7 @@ class WebSocketShard extends EventEmitter {
   connect() {
     const { gateway, client } = this.manager;
 
-    if (this.status === Status.READY && this.connection && this.connection.readyState === WebSocket.OPEN) {
+    if (this.connection && this.connection.readyState === WebSocket.OPEN && this.status === Status.READY) {
       return Promise.resolve();
     }
 
@@ -209,6 +209,7 @@ class WebSocketShard extends EventEmitter {
       this.once(ShardEvents.INVALID_SESSION, onInvalid);
 
       if (this.connection && this.connection.readyState === WebSocket.OPEN) {
+        this.debug('Connection found, attempting an immediate identify.');
         this.identify();
         return;
       }
@@ -367,7 +368,7 @@ class WebSocketShard extends EventEmitter {
         this.status = Status.WAITING_FOR_GUILDS;
         this.debug(`READY | Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
-        this.sendHeartbeat();
+        this.sendHeartbeat('Ready');
         this.checkReady();
         break;
       case WSEvents.RESUMED: {
@@ -381,7 +382,7 @@ class WebSocketShard extends EventEmitter {
         const replayed = packet.s - this.closeSequence;
         this.debug(`RESUMED | Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
-        this.sendHeartbeat();
+        this.sendHeartbeat('Resume');
         break;
       }
     }
@@ -417,7 +418,7 @@ class WebSocketShard extends EventEmitter {
         this.ackHeartbeat();
         break;
       case OPCodes.HEARTBEAT:
-        this.sendHeartbeat();
+        this.sendHeartbeat('HeartbeatRequest');
         break;
       default:
         this.manager.handlePacket(packet, this);
@@ -506,19 +507,23 @@ class WebSocketShard extends EventEmitter {
   /**
    * Sends a heartbeat to the WebSocket.
    * If this shard didn't receive a heartbeat last time, it will destroy it and reconnect
+   * @param {string} [tag='HeartbeatTimer'] What caused this heartbeat to be sent
    * @param {boolean} [ignoreHeartbeatAck] If we should send the heartbeat forcefully.
    * @private
    */
-  sendHeartbeat(ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.RESUMING].includes(this.status)) {
-    if (ignoreHeartbeatAck) {
-      this.debug("Didn't process heartbeat ack yet but we are still connected. Sending one now.");
+  sendHeartbeat(tag = 'HeartbeatTimer',
+    ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.RESUMING].includes(this.status)) {
+    if (ignoreHeartbeatAck && !this.lastHeartbeatAcked) {
+      this.debug(`[${tag}] Didn't process heartbeat ack yet but we are still connected. Sending one now.`);
     } else if (!this.lastHeartbeatAcked) {
-      this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
+      this.debug(
+        `[${tag}] Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.`
+      );
       this.destroy(4009);
       return;
     }
 
-    this.debug('Sending a heartbeat.');
+    this.debug(`[${tag}] Sending a heartbeat.`);
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
     this.send({ op: OPCodes.HEARTBEAT, d: this.sequence }, true);
