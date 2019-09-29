@@ -159,33 +159,33 @@ declare module 'discord.js' {
 		public sweepMessages(lifetime?: number): number;
 		public toJSON(): object;
 
-		public on(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
-		public on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
-		public on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
+		public on(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannelResolvable<Channel>) => void): this;
+		public on(event: 'channelPinsUpdate', listener: (channel: PartialChannelResolvable<Channel>, time: Date) => void): this;
+		public on(event: 'channelUpdate', listener: (oldChannel: PartialChannelResolvable<Channel>, newChannel: PartialChannelResolvable<Channel>) => void): this;
 		public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
 		public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public on(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public on(event: 'error', listener: (error: Error) => void): this;
-		public on(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild, user: User) => void): this;
+		public on(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild, user: PartialUserResolvable<User>) => void): this;
 		public on(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: Guild) => void): this;
-		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
-		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
-		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
-		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: PartialGuildMemberResolvable<GuildMember>) => void): this;
+		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, PartialGuildMemberResolvable<GuildMember>>, guild: Guild) => void): this;
+		public on(event: 'guildMemberSpeaking', listener: (member: PartialGuildMemberResolvable<GuildMember>, speaking: Readonly<Speaking>) => void): this;
+		public on(event: 'guildMemberUpdate', listener: (oldMember: PartialGuildMemberResolvable<GuildMember>, newMember: PartialGuildMemberResolvable<GuildMember>) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
-		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
-		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
-		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
-		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: PartialMessageResolvable<Message>) => void): this;
+		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, PartialMessageResolvable<Message>>) => void): this;
+		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: PartialUserResolvable<User>) => void): this;
+		public on(event: 'messageUpdate', listener: (oldMessage: PartialMessageResolvable<Message>, newMessage: PartialMessageResolvable<Message>) => void): this;
 		public on(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public on(event: 'ready', listener: () => void): this;
 		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public on(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
-		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
+		public on(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannelResolvable<Channel>, user: PartialUserResolvable<User>) => void): this;
+		public on(event: 'userUpdate', listener: (oldUser: PartialUserResolvable<User>, newUser: PartialUserResolvable<User>) => void): this;
 		public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public on(event: 'invalidated', listener: () => void): this;
@@ -196,33 +196,33 @@ declare module 'discord.js' {
 		public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
 		public on(event: string, listener: Function): this;
 
-		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
-		public once(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
-		public once(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
+		public once(event: 'channelCreate' | 'channelDelete', listener: (channel: PartialChannelResolvable<Channel>) => void): this;
+		public once(event: 'channelPinsUpdate', listener: (channel: PartialChannelResolvable<Channel>, time: Date) => void): this;
+		public once(event: 'channelUpdate', listener: (oldChannel: PartialChannelResolvable<Channel>, newChannel: PartialChannelResolvable<Channel>) => void): this;
 		public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
 		public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
 		public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
 		public once(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
 		public once(event: 'error', listener: (error: Error) => void): this;
-		public once(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild, user: User) => void): this;
+		public once(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild, user: PartialUserResolvable<User>) => void): this;
 		public once(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable', listener: (guild: Guild) => void): this;
-		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
-		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
-		public once(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: Readonly<Speaking>) => void): this;
-		public once(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public once(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: PartialGuildMemberResolvable<GuildMember>) => void): this;
+		public once(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, PartialGuildMemberResolvable<GuildMember>>, guild: Guild) => void): this;
+		public once(event: 'guildMemberSpeaking', listener: (member: PartialGuildMemberResolvable<GuildMember>, speaking: Readonly<Speaking>) => void): this;
+		public once(event: 'guildMemberUpdate', listener: (oldMember: PartialGuildMemberResolvable<GuildMember>, newMember: PartialGuildMemberResolvable<GuildMember>) => void): this;
 		public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public once(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
-		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message) => void): this;
-		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
-		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
-		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public once(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: PartialMessageResolvable<Message>) => void): this;
+		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, PartialMessageResolvable<Message>>) => void): this;
+		public once(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: PartialUserResolvable<User>) => void): this;
+		public once(event: 'messageUpdate', listener: (oldMessage: PartialMessageResolvable<Message>, newMessage: PartialMessageResolvable<Message>) => void): this;
 		public once(event: 'presenceUpdate', listener: (oldPresence: Presence | undefined, newPresence: Presence) => void): this;
 		public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
 		public once(event: 'ready', listener: () => void): this;
 		public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
 		public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		public once(event: 'typingStart' | 'typingStop', listener: (channel: Channel, user: User) => void): this;
-		public once(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
+		public once(event: 'typingStart' | 'typingStop', listener: (channel: PartialChannelResolvable<Channel>, user: PartialUserResolvable<User>) => void): this;
+		public once(event: 'userUpdate', listener: (oldUser: PartialUserResolvable<User>, newUser: PartialUserResolvable<User>) => void): this;
 		public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
 		public once(event: 'invalidated', listener: () => void): this;
@@ -465,7 +465,7 @@ declare module 'discord.js' {
 			RESUMED: 'resumed';
 		};
 		PartialTypes: {
-			[K in PartialType]: K;
+			[K in PartialTypes]: K;
 		};
 		WSEvents: {
 			[K in WSEventType]: K;
@@ -922,7 +922,7 @@ declare module 'discord.js' {
 		public activity: GroupActivity | null;
 		public application: ClientApplication | null;
 		public attachments: Collection<Snowflake, MessageAttachment>;
-		public author: User | null;
+		public author: User;
 		public channel: TextChannel | DMChannel;
 		public readonly cleanContent: string;
 		public content: string;
@@ -935,9 +935,9 @@ declare module 'discord.js' {
 		public editedTimestamp: number | null;
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
-		public readonly guild: Guild | null;
+		public readonly guild: Guild;
 		public id: Snowflake;
-		public readonly member: GuildMember | null;
+		public readonly member: GuildMember;
 		public mentions: MessageMentions;
 		public nonce: string;
 		public readonly partial: boolean;
@@ -2461,6 +2461,16 @@ declare module 'discord.js' {
 		| 'GUILD_MEMBER'
 		| 'MESSAGE';
 
+	type PartialUser = Pick<User, "id" | "partial" | "fetch">;
+	type PartialChannel = Pick<DMChannel, "id" | "partial" | "fetch">;
+	type PartialGuildMember = Pick<GuildMember, "id" | "partial" | "fetch">;
+	type PartialMessage = Pick<Message, "id" | "partial" | "fetch">;
+
+	type PartialUserResolvable<T extends User> = T["partial"] extends true ? PartialUser : User;
+	type PartialChannelResolvable<T> = T extends DMChannel ? (T["partial"] extends true ? PartialChannel : Channel) : Channel;
+	type PartialGuildMemberResolvable<T extends GuildMember> = T["partial"] extends true ? PartialGuildMember : GuildMember;
+	type PartialMessageResolvable<T extends Message> = T["partial"] extends true ? PartialMessage : Message;
+
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 
 	type PresenceStatusData = ClientPresenceStatus | 'invisible';
@@ -2566,11 +2576,6 @@ declare module 'discord.js' {
 		large_threshold?: number;
 		compress?: boolean;
 	}
-
-	type PartialType = 'USER'
-		| 'CHANNEL'
-		| 'GUILD_MEMBER'
-		| 'MESSAGE';
 
 	type WSEventType = 'READY'
 		| 'RESUMED'
