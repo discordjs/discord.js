@@ -2466,32 +2466,32 @@ declare module 'discord.js' {
 		partial: true;
 		fetch(): Promise<Message>;
 	} & {
-		[P in keyof Omit<Message, "id" | "partial" | "fetch">]: null;
-	}
+		[P in keyof Omit<Message, 'id' | 'partial' | 'fetch'>]: null;
+	};
 
 	type PartialChannel = {
 		id: string;
 		partial: true;
 		fetch(): Promise<Channel>;
 	} & {
-		[P in keyof Omit<DMChannel, "id" | "partial" | "fetch">]: null;
-	}
+		[P in keyof Omit<DMChannel, 'id' | 'partial' | 'fetch'>]: null;
+	};
 
 	type PartialGuildMember = {
 		id: string;
 		partial: true;
 		fetch(): Promise<GuildMember>;
 	} & {
-		[P in keyof Omit<GuildMember, "id" | "partial" | "fetch">]: null;
-	}
+		[P in keyof Omit<GuildMember, 'id' | 'partial' | 'fetch'>]: null;
+	};
 
 	type PartialUser = {
 		id: string;
 		partial: true;
 		fetch(): Promise<User>;
 	} & {
-		[P in keyof Omit<User, "id" | "partial" | "fetch">]: null;
-	}
+		[P in keyof Omit<User, 'id' | 'partial' | 'fetch'>]: null;
+	};
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 
