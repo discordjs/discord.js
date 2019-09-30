@@ -2467,7 +2467,7 @@ declare module 'discord.js' {
 		fetch(): Promise<Message>;
 	} & {
 		[K in keyof Omit<Message, 'id' | 'partial' | 'fetch'>]: Message[K] | null;
-	}
+	};
 
 	type PartialChannel = {
 		id: string;
@@ -2475,7 +2475,7 @@ declare module 'discord.js' {
 		fetch(): Promise<Channel>;
 	} & {
 		[K in keyof Omit<Channel, 'id' | 'partial' | 'fetch'>]: Channel[K] | null;
-	}
+	};
 
 	type PartialGuildMember = {
 		id: string;
@@ -2483,7 +2483,7 @@ declare module 'discord.js' {
 		fetch(): Promise<GuildMember>;
 	} & {
 		[K in keyof Omit<GuildMember, 'id' | 'partial' | 'fetch'>]: GuildMember[K] | null;
-	}
+	};
 
 	type PartialUser = {
 		id: string;
@@ -2491,7 +2491,7 @@ declare module 'discord.js' {
 		fetch(): Promise<User>;
 	} & {
 		[K in keyof Omit<User, 'id' | 'partial' | 'fetch'>]: User[K] | null;
-	}
+	};
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 
