@@ -836,8 +836,8 @@ declare module 'discord.js' {
 		public readonly displayName: string;
 		public guild: Guild;
 		public readonly id: Snowflake;
-		public readonly joinedAt: Date | null;
-		public joinedTimestamp: number | null;
+		public readonly joinedAt: Date;
+		public joinedTimestamp: number;
 		public readonly kickable: boolean;
 		public readonly manageable: boolean;
 		public nickname: string;
@@ -2461,31 +2461,36 @@ declare module 'discord.js' {
 		| 'GUILD_MEMBER'
 		| 'MESSAGE';
 
-	interface PartialMessage {
+	type PartialMessage = {
 		id: string;
 		partial: true;
-		author: null;
-		member: null;
-		guild: null;
 		fetch(): Promise<Message>;
+	} & {
+		[P in keyof Omit<Message, "id" | "partial" | "fetch">]: null;
 	}
 
-	interface PartialChannel {
+	type PartialChannel = {
 		id: string;
 		partial: true;
 		fetch(): Promise<Channel>;
+	} & {
+		[P in keyof Omit<DMChannel, "id" | "partial" | "fetch">]: null;
 	}
 
-	interface PartialGuildMember {
+	type PartialGuildMember = {
 		id: string;
 		partial: true;
 		fetch(): Promise<GuildMember>;
+	} & {
+		[P in keyof Omit<GuildMember, "id" | "partial" | "fetch">]: null;
 	}
 
-	interface PartialUser {
+	type PartialUser = {
 		id: string;
 		partial: true;
 		fetch(): Promise<User>;
+	} & {
+		[P in keyof Omit<User, "id" | "partial" | "fetch">]: null;
 	}
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
