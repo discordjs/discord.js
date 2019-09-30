@@ -935,9 +935,9 @@ declare module 'discord.js' {
 		public editedTimestamp: number | null;
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
-		public readonly guild: Guild;
+		public readonly guild: Guild | null;
 		public id: Snowflake;
-		public readonly member: GuildMember;
+		public readonly member: GuildMember | null;
 		public mentions: MessageMentions;
 		public nonce: string;
 		public readonly partial: false;
@@ -2466,32 +2466,32 @@ declare module 'discord.js' {
 		partial: true;
 		fetch(): Promise<Message>;
 	} & {
-		[P in keyof Omit<Message, 'id' | 'partial' | 'fetch'>]: null;
-	};
+		[K in keyof Omit<Message, 'id' | 'partial' | 'fetch'>]: Message[K] | null;
+	}
 
 	type PartialChannel = {
 		id: string;
 		partial: true;
 		fetch(): Promise<Channel>;
 	} & {
-		[P in keyof Omit<DMChannel, 'id' | 'partial' | 'fetch'>]: null;
-	};
+		[K in keyof Omit<Channel, "id" | "partial" | "fetch">]: Channel[K] | null;
+	}
 
 	type PartialGuildMember = {
 		id: string;
 		partial: true;
 		fetch(): Promise<GuildMember>;
 	} & {
-		[P in keyof Omit<GuildMember, 'id' | 'partial' | 'fetch'>]: null;
-	};
+		[K in keyof Omit<GuildMember, "id" | "partial" | "fetch">]: GuildMember[K] | null;
+	}
 
 	type PartialUser = {
 		id: string;
 		partial: true;
 		fetch(): Promise<User>;
 	} & {
-		[P in keyof Omit<User, 'id' | 'partial' | 'fetch'>]: null;
-	};
+		[K in keyof Omit<User, "id" | "partial" | "fetch">]: User[K] | null;
+	}
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 
