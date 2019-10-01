@@ -629,6 +629,7 @@ declare module 'discord.js' {
 		public parentID: Snowflake;
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public position: number;
+		public permissionsLocked: boolean | null;
 		public clone(name?: string, withPermissions?: boolean, withTopic?: boolean, reason?: string): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions, reason?: string): Promise<Invite>;
 		public delete(reason?: string): Promise<GuildChannel>;
