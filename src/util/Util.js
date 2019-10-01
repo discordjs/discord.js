@@ -84,9 +84,9 @@ class Util {
   }
 
   /**
-   * Checks whether the arrays are equal, also removes duplicated entries from b.
-   * @param {Array<*>} a Array which will not be modified.
-   * @param {Array<*>} b Array to remove duplicated entries from.
+   * Checks whether two arrays are equal or have the same elements.
+   * @param {Array<*>} a The first array.
+   * @param {Array<*>} b The second array.
    * @returns {boolean} Whether the arrays are equal.
    * @private
    */
@@ -94,12 +94,10 @@ class Util {
     if (a === b) return true;
     if (a.length !== b.length) return false;
 
-    for (const item of a) {
-      const ind = b.indexOf(item);
-      if (ind !== -1) b.splice(ind, 1);
-    }
+    const setA = new Set(a);
+    const setB = new Set(b);
 
-    return b.length === 0;
+    return a.every(e => setB.has(e)) && b.every(e => setA.has(e));
   }
 
   /**
