@@ -1,3 +1,14 @@
+declare enum ChannelType {
+	text,
+	dm,
+	voice,
+	group,
+	category,
+	news,
+	store,
+	unknown
+}
+
 declare module 'discord.js' {
 	import BaseCollection from '@discordjs/collection';
 	import { EventEmitter } from 'events';
@@ -125,7 +136,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'text' | 'voice' | 'category' | 'news' | 'store' | 'unknown';
+		public type: keyof typeof ChannelType;
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -914,12 +925,17 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
+	export class MessageFlags extends BitField<MessageFlagsString> {
+		public static FLAGS: Record<MessageFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
+	}
+
 	export class Message extends Base {
 		constructor(client: Client, data: object, channel: TextChannel | DMChannel);
 		private _edits: Message[];
 		private patch(data: object): void;
 
-		public activity: GroupActivity | null;
+		public activity: MessageActivity | null;
 		public application: ClientApplication | null;
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: User | null;
@@ -939,7 +955,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public readonly member: GuildMember | null;
 		public mentions: MessageMentions;
-		public nonce: string;
+		public nonce: string | null;
 		public readonly partial: boolean;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
@@ -949,6 +965,8 @@ declare module 'discord.js' {
 		public type: MessageType;
 		public readonly url: string;
 		public webhookID: Snowflake | null;
+		public flags: Readonly<MessageFlags>;
+		public reference: MessageReference | null;
 		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
@@ -1054,6 +1072,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember> | null;
 		public roles: Collection<Snowflake, Role>;
 		public users: Collection<Snowflake, User>;
+		public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
 		public toJSON(): object;
 
 		public static CHANNELS_PATTERN: RegExp;
@@ -1886,6 +1905,10 @@ declare module 'discord.js' {
 		| 'LISTENING'
 		| 'WATCHING';
 
+	type MessageFlagsString = 'CROSSPOSTED'
+		| 'IS_CROSSPOST'
+		| 'SUPPRESS_EMBEDS';
+
 	interface APIErrror {
 		UNKNOWN_ACCOUNT: number;
 		UNKNOWN_APPLICATION: number;
@@ -2128,9 +2151,15 @@ declare module 'discord.js' {
 		name?: string;
 	}
 
-	interface GroupActivity {
+	interface MessageActivity {
 		partyID: string;
 		type: number;
+	}
+
+	interface MessageReference {
+		channelID: string;
+		guildID: string;
+		messageID: string | null;
 	}
 
 	type GuildAuditLogsAction = keyof GuildAuditLogsActions;
@@ -2196,7 +2225,7 @@ declare module 'discord.js' {
 	interface GuildCreateChannelOptions {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		topic?: string;
-		type?: 'text' | 'voice' | 'category';
+		type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
 		nsfw?: boolean;
 		parent?: ChannelResolvable;
 		bitrate?: number;
@@ -2373,7 +2402,8 @@ declare module 'discord.js' {
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
-		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3';
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
+		| 'CHANNEL_FOLLOW_ADD';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;
@@ -2610,6 +2640,13 @@ declare module 'discord.js' {
 	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
 	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
 	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
+
+	interface CrosspostedChannel {
+		channelID: Snowflake;
+		guildID: Snowflake;
+		type: keyof typeof ChannelType;
+		name: string;
+	}
 
 //#endregion
 }

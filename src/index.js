@@ -20,6 +20,7 @@ module.exports = {
   DataStore: require('./stores/DataStore'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
+  MessageFlags: require('./util/MessageFlags'),
   Permissions: require('./util/Permissions'),
   Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
