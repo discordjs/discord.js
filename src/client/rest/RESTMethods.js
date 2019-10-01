@@ -276,7 +276,7 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name,
       topic,
-      type: type ? Constants.ChannelTypes[type.toUpperCase()] : 'text',
+      type: type ? Constants.ChannelTypes[type.toUpperCase()] : Constants.ChannelTypes.TEXT,
       nsfw,
       bitrate,
       user_limit: userLimit,
