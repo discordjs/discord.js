@@ -102,7 +102,7 @@ class GuildChannelStore extends DataStore {
       data: {
         name,
         topic,
-        type: type ? ChannelTypes[type.toUpperCase()] : 'text',
+        type: type ? ChannelTypes[type.toUpperCase()] : ChannelTypes.TEXT,
         nsfw,
         bitrate,
         user_limit: userLimit,
