@@ -74,6 +74,22 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * If the permissionOverwrites match the parent channel, null if no parent
+   * @type {?boolean}
+   * @readonly
+   */
+  get permissionsLocked() {
+    if (!this.parent) return null;
+    if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
+    return this.permissionOverwrites.every((value, key) => {
+      const testVal = this.parent.permissionOverwrites.get(key);
+      return testVal !== undefined &&
+        testVal.deny === value.deny &&
+        testVal.allow === value.allow;
+    });
+  }
+
+  /**
    * Gets the overall set of permissions for a user in this channel, taking into account channel overwrites.
    * @param {GuildMemberResolvable} member The user that you want to obtain the overall permissions for
    * @returns {?Permissions}
