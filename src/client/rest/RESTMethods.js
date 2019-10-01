@@ -522,7 +522,7 @@ class RESTMethods {
       data.channel_id = null;
       data.channel = undefined;
     }
-    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+    if (data.roles) data.roles = [...new Set(data.roles.map(role => role instanceof Role ? role.id : role))];
 
     let endpoint = Endpoints.Member(member);
     // Fix your endpoints, discord ;-;
