@@ -773,8 +773,12 @@ declare module 'discord.js' {
 		public isMentioned(data: GuildChannel | User | Role | Snowflake): boolean;
 		public pin(): Promise<Message>;
 		public react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
-		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
-		public reply(options?: MessageOptions): Promise<Message | Message[]>;
+		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message>;
+		public reply(content?: StringResolvable, options?: MessageOptions & { split?: false }): Promise<Message>;
+		public reply(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+		public reply(options?: MessageOptions): Promise<Message>;
+		public reply(options?: MessageOptions & { split?: false }): Promise<Message>;
+		public reply(options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 		public toString(): string;
 		public unpin(): Promise<Message>;
 	}
@@ -1571,13 +1575,22 @@ declare module 'discord.js' {
 		public token: string;
 		public delete(reason?: string): Promise<void>;
 		public edit(name: string, avatar: BufferResolvable): Promise<Webhook>;
-		public send(content?: StringResolvable, options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
-		public send(options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
-		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions): Promise<Message | Message[]>;
+		public send(content?: StringResolvable, options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message>;
+		public send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | RichEmbed | Attachment): Promise<Message>;
+		public send(content?: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions } | RichEmbed | Attachment): Promise<Message[]>;
+		public send(options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message>;
+		public send(options?: WebhookMessageOptions & { split?: false } | RichEmbed | Attachment): Promise<Message>;
+		public send(options?: WebhookMessageOptions & { split: true | SplitOptions } | RichEmbed | Attachment): Promise<Message[]>;
+		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions): Promise<Message>;
+		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions & { split?: false }): Promise<Message>;
+		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 		public sendFile(attachment: BufferResolvable, name?: string, content?: StringResolvable, options?: WebhookMessageOptions): Promise<Message>;
-		public sendMessage(content?: StringResolvable, options?: WebhookMessageOptions): Promise<Message | Message[]>;
-		public sendMessage(options?: WebhookMessageOptions): Promise<Message | Message[]>;
-		public sendSlackMessage(body: object): Promise<void>;
+		public sendMessage(content?: string, options?: WebhookMessageOptions): Promise<Message>;
+		public sendMessage(content?: string, options?: WebhookMessageOptions & { split?: false }): Promise<Message>;
+		public sendMessage(content?: string, options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+		public sendMessage(options?: WebhookMessageOptions): Promise<Message>;
+		public sendMessage(options?: WebhookMessageOptions & { split?: false }): Promise<Message>;
+		public sendMessage(options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 	}
 
 	export class WebhookClient extends Webhook {
@@ -1610,14 +1623,24 @@ declare module 'discord.js' {
 	type PartialTextBasedChannelFields = {
 		lastMessage: Message;
 		acknowledge(): Promise<DMChannel | GroupDMChannel | TextChannel>;
-		send(content?: StringResolvable, options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
-		send(options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
-		sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+		send(content?: StringResolvable, options?: MessageOptions | RichEmbed | Attachment): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split?: false } | RichEmbed | Attachment): Promise<Message>;
+		send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | RichEmbed | Attachment): Promise<Message[]>;
+		send(options?: MessageOptions | RichEmbed | Attachment): Promise<Message>;
+		send(options?: MessageOptions & { split?: false } | RichEmbed | Attachment): Promise<Message>;
+		send(options?: MessageOptions & { split: true | SplitOptions } | RichEmbed | Attachment): Promise<Message[]>;
+		sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message>;
+		sendCode(lang: string, content: StringResolvable, options?: MessageOptions & { split?: false }): Promise<Message>;
+		sendCode(lang: string, content: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 		sendEmbed(embed: RichEmbed | RichEmbedOptions, content?: string, options?: MessageOptions): Promise<Message>;
 		sendEmbed(embed: RichEmbed | RichEmbedOptions, options?: MessageOptions): Promise<Message>;
 		sendFile(attachment: BufferResolvable, name?: string, content?: StringResolvable, options?: MessageOptions): Promise<Message>;
-		sendMessage(content?: string, options?: MessageOptions): Promise<Message | Message[]>;
-		sendMessage(options?: MessageOptions): Promise<Message | Message[]>;
+		sendMessage(content?: string, options?: MessageOptions): Promise<Message>;
+		sendMessage(content?: string, options?: MessageOptions & { split?: false }): Promise<Message>;
+		sendMessage(content?: string, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+		sendMessage(options?: MessageOptions): Promise<Message>;
+		sendMessage(options?: MessageOptions & { split?: false }): Promise<Message>;
+		sendMessage(options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
 	};
 
 	type TextBasedChannelFields = {
