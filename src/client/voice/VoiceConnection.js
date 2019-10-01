@@ -53,7 +53,7 @@ class VoiceConnection extends EventEmitter {
 
     /**
      * The current status of the voice connection
-     * @type {number}
+     * @type {VoiceStatus}
      */
     this.status = Constants.VoiceStatus.AUTHENTICATING;
 
