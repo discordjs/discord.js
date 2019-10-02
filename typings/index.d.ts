@@ -1591,6 +1591,7 @@ declare module 'discord.js' {
 		public sendMessage(options?: WebhookMessageOptions): Promise<Message>;
 		public sendMessage(options?: WebhookMessageOptions & { split?: false }): Promise<Message>;
 		public sendMessage(options?: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+		public sendSlackMessage(body: object): Promise<void>;
 	}
 
 	export class WebhookClient extends Webhook {
