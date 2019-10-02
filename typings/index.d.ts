@@ -625,8 +625,8 @@ declare module 'discord.js' {
 		public readonly messageNotifications: GuildChannelMessageNotifications;
 		public readonly muted: boolean;
 		public name: string;
-		public readonly parent: CategoryChannel;
-		public parentID: Snowflake;
+		public readonly parent: CategoryChannel | null;
+		public parentID: Snowflake | null;
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public position: number;
 		public clone(name?: string, withPermissions?: boolean, withTopic?: boolean, reason?: string): Promise<GuildChannel>;
