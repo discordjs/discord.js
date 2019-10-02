@@ -794,7 +794,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public name: string;
 		public readonly parent: CategoryChannel | null;
-		public parentID: Snowflake;
+		public parentID: Snowflake | null;
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public readonly permissionsLocked: boolean | null;
 		public readonly position: number;
