@@ -851,7 +851,7 @@ declare module 'discord.js' {
 		public joinedTimestamp: number | null;
 		public readonly kickable: boolean;
 		public readonly manageable: boolean;
-		public nickname: string;
+		public nickname: string | null;
 		public readonly partial: boolean;
 		public readonly permissions: Readonly<Permissions>;
 		public readonly premiumSince: Date | null;
