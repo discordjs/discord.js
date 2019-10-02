@@ -572,7 +572,7 @@ declare module 'discord.js' {
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
 		public setChannelPosition(channel: string | GuildChannel, position: number, relative?: boolean): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
-		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason: string): Promise<Guild>;
+		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason?: string): Promise<Guild>;
 		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable, reason?: string): Promise<Guild>;
