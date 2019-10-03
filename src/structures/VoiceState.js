@@ -54,6 +54,11 @@ class VoiceState extends Base {
      */
     this.sessionID = data.session_id;
     /**
+     * Whether this member is streaming using "Go Live"
+     * @type {boolean}
+     */
+    this.streaming = data.self_stream || false;
+    /**
      * The ID of the voice channel that this member is in
      * @type {?Snowflake}
      */
