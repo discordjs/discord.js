@@ -34,6 +34,7 @@ class VoiceStateUpdateHandler extends AbstractHandler {
         member.serverDeaf = data.deaf;
         member.selfMute = data.self_mute;
         member.selfDeaf = data.self_deaf;
+        member.selfStream = data.self_stream || false;
         member.voiceSessionID = data.session_id;
         member.voiceChannelID = data.channel_id;
         client.emit(Constants.Events.VOICE_STATE_UPDATE, oldVoiceChannelMember, member);

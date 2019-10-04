@@ -91,6 +91,12 @@ class GuildMember {
     this.selfDeaf = data.self_deaf;
 
     /**
+     * Whether this member is streaming using "Go Live"
+     * @type {boolean}
+     */
+    this.selfStream = data.self_stream || false;
+
+    /**
      * The voice session ID of this member, if any
      * @type {?Snowflake}
      */

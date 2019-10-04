@@ -679,6 +679,7 @@ declare module 'discord.js' {
 		public readonly roles: Collection<Snowflake, Role>;
 		public selfDeaf: boolean;
 		public selfMute: boolean;
+		public selfStream: boolean;
 		public serverDeaf: boolean;
 		public serverMute: boolean;
 		public speaking: boolean;
