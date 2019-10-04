@@ -50,6 +50,7 @@ declare module 'discord.js' {
 		public readonly client: Client;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
+		public deleted: boolean;
 		public id: Snowflake;
 		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'news' | 'store';
 		public delete(): Promise<Channel>;
@@ -408,6 +409,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public readonly deletable: boolean;
+		public deleted: boolean;
 		public guild: Guild;
 		public id: Snowflake;
 		public readonly identifier: string;
@@ -486,6 +488,7 @@ declare module 'discord.js' {
 		public available: boolean;
 		public banner: string | null;
 		public readonly bannerURL: string | null;
+		public deleted: boolean;
 		public description: string | null;
 		public channels: Collection<Snowflake, GuildChannel>;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
@@ -569,7 +572,7 @@ declare module 'discord.js' {
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
 		public setChannelPosition(channel: string | GuildChannel, position: number, relative?: boolean): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
-		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason: string): Promise<Guild>;
+		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason?: string): Promise<Guild>;
 		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable, reason?: string): Promise<Guild>;
@@ -654,6 +657,7 @@ declare module 'discord.js' {
 		public readonly client: Client;
 		public readonly colorRole: Role;
 		public readonly deaf: boolean;
+		public deleted: boolean;
 		public readonly displayColor: number;
 		public readonly displayHexColor: string;
 		public readonly displayName: string;
@@ -741,6 +745,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
 		public readonly deletable: boolean;
+		public deleted: boolean;
 		public readonly editable: boolean;
 		public readonly editedAt: Date;
 		public editedTimestamp: number;
@@ -1082,6 +1087,7 @@ declare module 'discord.js' {
 		public color: number;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
+		public deleted: boolean;
 		public readonly editable: boolean;
 		public guild: Guild;
 		public readonly hexColor: string;
@@ -1272,7 +1278,7 @@ declare module 'discord.js' {
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-		public setNSFW(nsfw: boolean, reason: string): Promise<this>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
 	}
 
 	export class User extends PartialTextBasedChannel() {
