@@ -666,7 +666,7 @@ declare module 'discord.js' {
 		public readonly kickable: boolean;
 		public lastMessageID: string;
 		public readonly mute: boolean;
-		public nickname: string;
+		public nickname: string | null;
 		public readonly manageable: boolean;
 		public readonly permissions: Permissions;
 		public readonly premiumSince: Date | null;
