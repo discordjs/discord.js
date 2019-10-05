@@ -14,6 +14,8 @@
       path: web.md
     - name: Partials
       path: partials.md
+    - name: Using with TypeScript
+      path: typescript.md
 - name: Examples
   files:
     - name: Ping
