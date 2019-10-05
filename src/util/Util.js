@@ -249,7 +249,7 @@ class Util {
     let m;
     if (!text.match(discordRegex)) {
       m = text.match(emojiRegex);
-      if(!m) return null;
+      if (!m) return null;
       return { animated: false, name: m[0], id: null };
     }
     m = text.match(discordRegex);
