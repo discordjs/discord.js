@@ -4,6 +4,9 @@ const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
+const STATUS_KEYS = Object.keys(Status);
+const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
+
 let zstd;
 let zlib;
 
@@ -215,6 +218,7 @@ class WebSocketShard extends EventEmitter {
       }
 
       if (zstd) {
+        if (this.inflate) this.inflate.free();
         this.inflate = new zstd.DecompressStream();
       } else {
         this.inflate = new zlib.Inflate({
@@ -322,7 +326,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onClose(event) {
-    if (this.sequence !== -1) this.closeSequence = this.sequence;
+    if (this.sequence && this.sequence !== -1) this.closeSequence = this.sequence;
     this.sequence = -1;
 
     this.debug(`WebSocket was closed.
@@ -512,12 +516,15 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   sendHeartbeat(tag = 'HeartbeatTimer',
-    ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.RESUMING].includes(this.status)) {
+    ignoreHeartbeatAck = [Status.WAITING_FOR_GUILDS, Status.IDENTIFYING, Status.RESUMING].includes(this.status)) {
     if (ignoreHeartbeatAck && !this.lastHeartbeatAcked) {
       this.debug(`[${tag}] Didn't process heartbeat ack yet but we are still connected. Sending one now.`);
     } else if (!this.lastHeartbeatAcked) {
       this.debug(
-        `[${tag}] Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.`
+        `[${tag}] Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.
+      Status          : ${STATUS_KEYS[this.status]}
+      Sequence        : ${this.sequence}
+      Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`
       );
       this.destroy(4009);
       return;
@@ -559,6 +566,8 @@ class WebSocketShard extends EventEmitter {
       this.debug('No token available to identify a new session.');
       return;
     }
+
+    this.status = Status.IDENTIFYING;
 
     // Clone the identify payload and assign the token and shard info
     const d = {
