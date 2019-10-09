@@ -1949,8 +1949,8 @@ declare module 'discord.js' {
 
 	interface ImageURLOptions {
 		format?: ImageExt;
-		dynamic?: boolean;
 		size?: ImageSize;
+		dynamic?: boolean;
 	}
 
 	interface AwaitMessagesOptions extends MessageCollectorOptions {
