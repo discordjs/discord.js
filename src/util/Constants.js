@@ -121,7 +121,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * @property {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
  * defaults to `webp`.
  * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is true.
+ * animated avatars; the default is false.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
  */
 
@@ -131,13 +131,13 @@ exports.Endpoints = {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userID, hash, format = 'webp', size, dynamic = true) => {
+      Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'webp', size, dynamic = true) => {
+      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
       },
