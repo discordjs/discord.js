@@ -426,9 +426,9 @@ class Guild extends Base {
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  iconURL({ format, size } = {}) {
+  iconURL({ format, size, dynamic } = {}) {
     if (!this.icon) return null;
-    return this.client.rest.cdn.Icon(this.id, this.icon, format, size);
+    return this.client.rest.cdn.Icon(this.id, this.icon, format, size, dynamic);
   }
 
   /**
