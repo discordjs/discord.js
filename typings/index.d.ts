@@ -258,9 +258,9 @@ declare module 'discord.js' {
 		public name: string;
 		public owner: User | Team | null;
 		public rpcOrigins: string[];
-		public coverImage(options?: AvatarOptions): string;
+		public coverImage(options?: ImageURLOptions): string;
 		public fetchAssets(): Promise<ClientApplicationAsset>;
-		public iconURL(options?: AvatarOptions): string;
+		public iconURL(options?: ImageURLOptions): string;
 		public toJSON(): object;
 		public toString(): string;
 	}
@@ -277,7 +277,7 @@ declare module 'discord.js' {
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 
-		public iconURL(options?: AvatarOptions): string;
+		public iconURL(options?: ImageURLOptions): string;
 		public toJSON(): object;
 		public toString(): string;
 	}
@@ -703,7 +703,7 @@ declare module 'discord.js' {
 		public widgetChannelID: Snowflake | null;
 		public widgetEnabled: boolean | null;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-		public bannerURL(options?: AvatarOptions): string | null;
+		public bannerURL(options?: ImageURLOptions): string | null;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
@@ -717,7 +717,7 @@ declare module 'discord.js' {
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-		public iconURL(options?: AvatarOptions): string | null;
+		public iconURL(options?: ImageURLOptions): string | null;
 		public leave(): Promise<Guild>;
 		public member(user: UserResolvable): GuildMember | null;
 		public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -735,7 +735,7 @@ declare module 'discord.js' {
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
-		public splashURL(options?: AvatarOptions): string | null;
+		public splashURL(options?: ImageURLOptions): string | null;
 		public toJSON(): object;
 		public toString(): string;
 	}
@@ -1149,8 +1149,8 @@ declare module 'discord.js' {
 		public largeText: string | null;
 		public smallImage: Snowflake | null;
 		public smallText: string | null;
-		public largeImageURL(options: AvatarOptions): string | null;
-		public smallImageURL(options: AvatarOptions): string | null;
+		public largeImageURL(options: ImageURLOptions): string | null;
+		public smallImageURL(options: ImageURLOptions): string | null;
 	}
 
 	export class Role extends Base {
@@ -1374,10 +1374,10 @@ declare module 'discord.js' {
 		public readonly presence: Presence;
 		public readonly tag: string;
 		public username: string;
-		public avatarURL(options?: AvatarOptions): string | null;
+		public avatarURL(options?: ImageURLOptions): string | null;
 		public createDM(): Promise<DMChannel>;
 		public deleteDM(): Promise<DMChannel>;
-		public displayAvatarURL(options?: AvatarOptions): string;
+		public displayAvatarURL(options?: ImageURLOptions): string;
 		public equals(user: User): boolean;
 		public fetch(): Promise<User>;
 		public toString(): string;
@@ -1947,8 +1947,9 @@ declare module 'discord.js' {
 		new?: any;
 	}
 
-	interface AvatarOptions {
+	interface ImageURLOptions {
 		format?: ImageExt;
+		dynamic?: boolean;
 		size?: ImageSize;
 	}
 
