@@ -717,7 +717,7 @@ declare module 'discord.js' {
 		public fetchVanityCode(): Promise<string>;
 		public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-		public iconURL(options?: ImageURLOptions): string | null;
+		public iconURL(options?: ImageURLOptions & {dynamic?: boolean}): string | null;
 		public leave(): Promise<Guild>;
 		public member(user: UserResolvable): GuildMember | null;
 		public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -1374,10 +1374,10 @@ declare module 'discord.js' {
 		public readonly presence: Presence;
 		public readonly tag: string;
 		public username: string;
-		public avatarURL(options?: ImageURLOptions): string | null;
+		public avatarURL(options?: ImageURLOptions & {dynamic?: boolean}): string | null;
 		public createDM(): Promise<DMChannel>;
 		public deleteDM(): Promise<DMChannel>;
-		public displayAvatarURL(options?: ImageURLOptions): string;
+		public displayAvatarURL(options?: ImageURLOptions & {dynamic?: boolean}): string;
 		public equals(user: User): boolean;
 		public fetch(): Promise<User>;
 		public toString(): string;
@@ -1950,7 +1950,6 @@ declare module 'discord.js' {
 	interface ImageURLOptions {
 		format?: ImageExt;
 		size?: ImageSize;
-		dynamic?: boolean;
 	}
 
 	interface AwaitMessagesOptions extends MessageCollectorOptions {
