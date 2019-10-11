@@ -1,3 +1,14 @@
+declare enum ChannelType {
+	text,
+	dm,
+	voice,
+	group,
+	category,
+	news,
+	store,
+	unknown
+}
+
 declare module 'discord.js' {
 	import BaseCollection from '@discordjs/collection';
 	import { EventEmitter } from 'events';
@@ -125,7 +136,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'text' | 'voice' | 'category' | 'news' | 'store' | 'unknown';
+		public type: keyof typeof ChannelType;
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -546,7 +557,10 @@ declare module 'discord.js' {
 			MAXIMUM_PINS: 30003;
 			MAXIMUM_ROLES: 30005;
 			MAXIMUM_REACTIONS: 30010;
+			MAXIMUM_CHANNELS: 30013;
+			MAXIMUM_INVITES: 30016;
 			UNAUTHORIZED: 40001;
+			USER_BANNED: 40007;
 			MISSING_ACCESS: 50001;
 			INVALID_ACCOUNT_TYPE: 50002;
 			CANNOT_EXECUTE_ON_DM: 50003;
@@ -565,9 +579,13 @@ declare module 'discord.js' {
 			INVALID_BULK_DELETE_QUANTITY: 50016;
 			CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019;
 			CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021;
+			INVALID_OAUTH_TOKEN: 50025;
 			BULK_DELETE_MESSAGE_TOO_OLD: 50034;
+			INVALID_FORM_BODY: 50035;
 			INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036;
+			INVALID_API_VERSION: 50041;
 			REACTION_BLOCKED: 90001;
+			RESOURCE_OVERLOADED: 130000;
 		};
 		VoiceStatus: {
 			CONNECTED: 0;
@@ -783,7 +801,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public name: string;
 		public readonly parent: CategoryChannel | null;
-		public parentID: Snowflake;
+		public parentID: Snowflake | null;
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public readonly permissionsLocked: boolean | null;
 		public readonly position: number;
@@ -914,12 +932,17 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
+	export class MessageFlags extends BitField<MessageFlagsString> {
+		public static FLAGS: Record<MessageFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
+	}
+
 	export class Message extends Base {
 		constructor(client: Client, data: object, channel: TextChannel | DMChannel);
 		private _edits: Message[];
 		private patch(data: object): void;
 
-		public activity: GroupActivity | null;
+		public activity: MessageActivity | null;
 		public application: ClientApplication | null;
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: User;
@@ -949,6 +972,8 @@ declare module 'discord.js' {
 		public type: MessageType;
 		public readonly url: string;
 		public webhookID: Snowflake | null;
+		public flags: Readonly<MessageFlags>;
+		public reference: MessageReference | null;
 		public awaitReactions(filter: CollectorFilter, options?: AwaitReactionsOptions): Promise<Collection<Snowflake, MessageReaction>>;
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(options?: { timeout?: number, reason?: string }): Promise<Message>;
@@ -1054,6 +1079,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember> | null;
 		public roles: Collection<Snowflake, Role>;
 		public users: Collection<Snowflake, User>;
+		public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
 		public toJSON(): object;
 
 		public static CHANNELS_PATTERN: RegExp;
@@ -1560,6 +1586,7 @@ declare module 'discord.js' {
 		public serverDeaf?: boolean;
 		public serverMute?: boolean;
 		public sessionID?: string;
+		public streaming: boolean;
 		public readonly speaking: boolean | null;
 
 		public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
@@ -1886,6 +1913,10 @@ declare module 'discord.js' {
 		| 'LISTENING'
 		| 'WATCHING';
 
+	type MessageFlagsString = 'CROSSPOSTED'
+		| 'IS_CROSSPOST'
+		| 'SUPPRESS_EMBEDS';
+
 	interface APIErrror {
 		UNKNOWN_ACCOUNT: number;
 		UNKNOWN_APPLICATION: number;
@@ -2128,9 +2159,15 @@ declare module 'discord.js' {
 		name?: string;
 	}
 
-	interface GroupActivity {
+	interface MessageActivity {
 		partyID: string;
 		type: number;
+	}
+
+	interface MessageReference {
+		channelID: string;
+		guildID: string;
+		messageID: string | null;
 	}
 
 	type GuildAuditLogsAction = keyof GuildAuditLogsActions;
@@ -2196,7 +2233,7 @@ declare module 'discord.js' {
 	interface GuildCreateChannelOptions {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		topic?: string;
-		type?: 'text' | 'voice' | 'category';
+		type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
 		nsfw?: boolean;
 		parent?: ChannelResolvable;
 		bitrate?: number;
@@ -2373,7 +2410,8 @@ declare module 'discord.js' {
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
-		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3';
+		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
+		| 'CHANNEL_FOLLOW_ADD';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;
@@ -2618,6 +2656,13 @@ declare module 'discord.js' {
 	type MessageEvent = { data: WebSocket.Data; type: string; target: WebSocket; };
 	type CloseEvent = { wasClean: boolean; code: number; reason: string; target: WebSocket; };
 	type ErrorEvent = { error: any, message: string, type: string, target: WebSocket; };
+
+	interface CrosspostedChannel {
+		channelID: Snowflake;
+		guildID: Snowflake;
+		type: keyof typeof ChannelType;
+		name: string;
+	}
 
 //#endregion
 }
