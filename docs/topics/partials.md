@@ -6,7 +6,7 @@ discard the event. With partials, you're able to receive the event, with a Messa
 
 ## Opting in
 
-Partials are opt-in, and you can enable them in the Client options by specifying [PartialTypes](../typedef/PartialType):
+Partials are opt-in, and you can enable them in the Client options by specifying [PartialTypes](/#/docs/main/master/typedef/PartialType):
 
 ```js
 // Accept partial messages and DM channels when emitting events
