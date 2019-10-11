@@ -836,11 +836,11 @@ declare module 'discord.js' {
 		public readonly displayName: string;
 		public guild: Guild;
 		public readonly id: Snowflake;
-		public readonly joinedAt: Date;
-		public joinedTimestamp: number;
+		public readonly joinedAt: Date | null;
+		public joinedTimestamp: number | null;
 		public readonly kickable: boolean;
 		public readonly manageable: boolean;
-		public nickname: string;
+		public nickname: string | null;
 		public readonly partial: false;
 		public readonly permissions: Readonly<Permissions>;
 		public readonly premiumSince: Date | null;
@@ -939,7 +939,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public readonly member: GuildMember | null;
 		public mentions: MessageMentions;
-		public nonce: string;
+		public nonce: string | null;
 		public readonly partial: false;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
