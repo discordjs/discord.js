@@ -218,7 +218,6 @@ class WebSocketShard extends EventEmitter {
       }
 
       if (zstd) {
-        if (this.inflate) this.inflate.free();
         this.inflate = new zstd.DecompressStream();
       } else {
         this.inflate = new zlib.Inflate({
