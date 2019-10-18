@@ -834,6 +834,7 @@ declare module 'discord.js' {
 
 		public available: boolean;
 		public deleted: boolean;
+		public readonly deletable: boolean;
 		public guild: Guild;
 		public managed: boolean;
 		public requiresColons: boolean;
