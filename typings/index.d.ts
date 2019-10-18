@@ -651,13 +651,13 @@ declare module 'discord.js' {
 	export class Emoji extends Base {
 		constructor(client: Client, emoji: object);
 		public animated: boolean;
-		public readonly createdAt: Date;
-		public readonly createdTimestamp: number;
-		public readonly deletable: boolean;
-		public id: Snowflake;
+		public readonly createdAt: Date | null;
+		public readonly createdTimestamp: number | null;
+		public deleted: boolean;
+		public id: Snowflake | null;
 		public name: string;
 		public readonly identifier: string;
-		public readonly url: string;
+		public readonly url: string | null;
 		public toJSON(): object;
 		public toString(): string;
 	}
