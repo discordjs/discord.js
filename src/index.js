@@ -28,6 +28,7 @@ module.exports = {
   Structures: require('./util/Structures'),
   Util: Util,
   util: Util,
+  DiscordUtil: Util,
   version: require('../package.json').version,
 
   // Stores
