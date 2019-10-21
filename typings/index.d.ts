@@ -1706,6 +1706,7 @@ declare module 'discord.js' {
 		parent?: ChannelResolvable;
 		permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[];
 		rateLimitPerUser?: number;
+		reason?: string;
 	};
 
 	type ChannelLogsQueryOptions = {
