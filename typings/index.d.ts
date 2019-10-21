@@ -1875,7 +1875,7 @@ declare module 'discord.js' {
 	interface TextBasedChannelFields extends PartialTextBasedChannelFields {
 		typing: boolean;
 		typingCount: number;
-		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions & { max: 1 }): Promise<Message>;
+		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions & { max: 1 }): Promise<Message | undefined>;
 		awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
 		bulkDelete(messages: Collection<Snowflake, Message> | Message[] | Snowflake[] | number, filterOld?: boolean): Promise<Collection<Snowflake, Message>>;
 		createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
