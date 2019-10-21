@@ -277,7 +277,7 @@ class TextBasedChannel {
         if (options.errors && options.errors.includes(reason)) {
           reject(collection);
         } else {
-          resolve(collection);
+          resolve(options.max && options.max === 1 ? collection.first() : collection);
         }
       });
     });
