@@ -23,6 +23,7 @@ declare module 'discord.js' {
 
 	export class Activity {
 		constructor(presence: Presence, data?: object);
+		public readonly createdAt: Date;
 		public applicationID: Snowflake | null;
 		public assets: RichPresenceAssets | null;
 		public details: string | null;
@@ -38,6 +39,8 @@ declare module 'discord.js' {
 		} | null;
 		public type: ActivityType;
 		public url: string | null;
+		public emoji: Emoji | null;
+		public createdTimestamp: number;
 		public equals(activity: Activity): boolean;
 	}
 
@@ -1911,7 +1914,8 @@ declare module 'discord.js' {
 	type ActivityType = 'PLAYING'
 		| 'STREAMING'
 		| 'LISTENING'
-		| 'WATCHING';
+		| 'WATCHING'
+		| 'CUSTOM_STATUS';
 
 	type MessageFlagsString = 'CROSSPOSTED'
 		| 'IS_CROSSPOST'
