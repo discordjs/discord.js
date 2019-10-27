@@ -264,11 +264,11 @@ exports.Status = {
 
 /**
  * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED
- * * CONNECTING
- * * AUTHENTICATING
- * * RECONNECTING
- * * DISCONNECTED
+ * * CONNECTED: 0
+ * * CONNECTING: 1
+ * * AUTHENTICATING: 2
+ * * RECONNECTING: 3
+ * * DISCONNECTED: 4
  * @typedef {number} VoiceStatus
  */
 exports.VoiceStatus = {
