@@ -454,7 +454,7 @@ class VoiceConnection extends EventEmitter {
     this.status = VoiceStatus.CONNECTED;
     const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
     dispatcher.on('finish', () => {
-      clearTimeout(this.connectTimeout);
+      this.client.clearTimeout(this.connectTimeout);
       this.emit('debug', `Ready with authentication details: ${JSON.stringify(this.authentication)}`);
       /**
        * Emitted once the connection is ready, when a promise to join a voice channel resolves,
