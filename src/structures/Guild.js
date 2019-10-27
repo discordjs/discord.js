@@ -310,6 +310,7 @@ class Guild {
           member.serverDeaf = voiceState.deaf;
           member.selfMute = voiceState.self_mute;
           member.selfDeaf = voiceState.self_deaf;
+          member.selfStream = voiceState.self_stream || false;
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
           voiceChannel.members.set(member.user.id, member);
