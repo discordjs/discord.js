@@ -164,6 +164,7 @@ class TextBasedChannel {
     if (this.client.user._typing.has(this.id)) {
       const entry = this.client.user._typing.get(this.id);
       entry.count = count || entry.count + 1;
+      this.client.user._typing.set(this.id, entry);
       return entry.promise;
     }
 
