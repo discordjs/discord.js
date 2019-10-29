@@ -63,7 +63,9 @@ class PacketHandler extends EventEmitter {
         if (byte === 0) continue;
         offset += 1 + (0b1111 & (byte >> 4));
       }
-      while (packet[offset] === 0) offset++;
+      // Skip over undocumented Discord byte
+      offset++;
+
       packet = packet.slice(offset);
     }
 
