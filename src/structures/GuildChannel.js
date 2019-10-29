@@ -10,7 +10,7 @@ const Collection = require('../util/Collection');
 const { Error, TypeError } = require('../errors');
 
 /**
- * Represents a guild channel (i.g. a {@link TextChannel}, {@link VoiceChannel} or {@link CategoryChannel}).
+ * Represents a guild channel (i.g. a {@link TextChannel}, {@link VoiceChannel}, {@link CategoryChannel}, {@link NewsChannel} or {@link StoreChannel}).
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
