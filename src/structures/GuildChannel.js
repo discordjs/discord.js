@@ -11,7 +11,11 @@ const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild channel from any of the following:
- * {@link TextChannel}, {@link VoiceChannel}, {@link CategoryChannel}, {@link NewsChannel}, {@link StoreChannel})
+ * - {@link TextChannel}
+ * - {@link VoiceChannel}
+ * - {@link CategoryChannel}
+ * - {@link NewsChannel}
+ * - {@link StoreChannel}
  * @extends {Channel}
  */
 class GuildChannel extends Channel {
