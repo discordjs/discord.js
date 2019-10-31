@@ -711,6 +711,7 @@ declare module 'discord.js' {
 		public shardID: number;
 		public splash: string | null;
 		public readonly systemChannel: TextChannel | null;
+		public readonly systemChannelFlags: SystemChannelFlags;
 		public systemChannelID: Snowflake | null;
 		public vanityURLCode: string | null;
 		public verificationLevel: number;
@@ -752,6 +753,7 @@ declare module 'discord.js' {
 		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
+		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlags, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
 		public splashURL(options?: AvatarOptions): string | null;
 		public toJSON(): object;
@@ -1361,6 +1363,11 @@ declare module 'discord.js' {
 		static get(structure: string): Function;
 		static extend<K extends keyof Extendable, T extends Extendable[K]>(structure: K, extender: (baseClass: Extendable[K]) => T): T;
 		static extend<T extends Function>(structure: string, extender: (baseClass: typeof Function) => T): T;
+	}
+
+	export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
+		public static FLAGS: Record<SystemChannelFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString>): number;
 	}
 
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
@@ -2260,6 +2267,7 @@ declare module 'discord.js' {
 		defaultMessageNotifications?: DefaultMessageNotifications | number;
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
+		systemChannelFlags?: SystemChannelFlags;
 		afkTimeout?: number;
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
@@ -2587,6 +2595,9 @@ declare module 'discord.js' {
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
 	type StringResolvable = string | string[] | any;
+
+	type SystemChannelFlagsString = 'WELCOME_MESSAGE_DISABLED'
+		| 'BOOST_MESSAGE_DISABLED';
 
 	type TargetUser = number;
 

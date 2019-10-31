@@ -26,6 +26,7 @@ module.exports = {
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
   Structures: require('./util/Structures'),
+  SystemChannelFlags: require('./util/SystemChannelFlags'),
   Util: Util,
   util: Util,
   version: require('../package.json').version,
