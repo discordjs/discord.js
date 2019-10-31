@@ -410,8 +410,8 @@ class WebSocketManager extends EventEmitter {
       try {
         const promises = this.client.guilds.map(guild => {
           if (guild.available) return guild.members.fetch();
-          // Return no-op if guild is unavailable
-          return () => null;
+          // Return empty promise if guild is unavailable
+          return Promise.resolve();
         });
         await Promise.all(promises);
       } catch (err) {
