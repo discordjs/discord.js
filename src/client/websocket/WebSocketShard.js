@@ -7,22 +7,16 @@ const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../
 const STATUS_KEYS = Object.keys(Status);
 const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
 
-let zstd;
 let zlib;
 
 if (browser) {
   zlib = require('pako');
 } else {
   try {
-    zstd = require('zucc');
-    if (!zstd.DecompressStream) zstd = null;
-  } catch (e) {
-    try {
-      zlib = require('zlib-sync');
-      if (!zlib.Inflate) zlib = require('pako');
-    } catch (err) {
-      zlib = require('pako');
-    }
+    zlib = require('zlib-sync');
+    if (!zlib.Inflate) zlib = require('pako');
+  } catch {
+    zlib = require('pako');
   }
 }
 
@@ -217,15 +211,11 @@ class WebSocketShard extends EventEmitter {
         return;
       }
 
-      if (zstd) {
-        this.inflate = new zstd.DecompressStream();
-      } else {
-        this.inflate = new zlib.Inflate({
-          chunkSize: 65535,
-          flush: zlib.Z_SYNC_FLUSH,
-          to: WebSocket.encoding === 'json' ? 'string' : '',
-        });
-      }
+      this.inflate = new zlib.Inflate({
+        chunkSize: 65535,
+        flush: zlib.Z_SYNC_FLUSH,
+        to: WebSocket.encoding === 'json' ? 'string' : '',
+      });
 
       this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
 
@@ -258,22 +248,17 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onMessage({ data }) {
-    let raw;
-    if (zstd) {
-      raw = this.inflate.decompress(new Uint8Array(data));
-    } else {
-      if (data instanceof ArrayBuffer) data = new Uint8Array(data);
-      const l = data.length;
-      const flush = l >= 4 &&
+    if (data instanceof ArrayBuffer) data = new Uint8Array(data);
+    const l = data.length;
+    const flush = l >= 4 &&
         data[l - 4] === 0x00 &&
         data[l - 3] === 0x00 &&
         data[l - 2] === 0xFF &&
         data[l - 1] === 0xFF;
 
-      this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
-      if (!flush) return;
-      raw = this.inflate.result;
-    }
+    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+    if (!flush) return;
+    const raw = this.inflate.result;
     let packet;
     try {
       packet = WebSocket.unpack(raw);

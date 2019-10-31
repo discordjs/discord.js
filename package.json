@@ -51,8 +51,7 @@
     "libsodium-wrappers": "^0.7.4",
     "sodium": "^3.0.2",
     "utf-8-validate": "^5.0.2",
-    "zlib-sync": "^0.1.4",
-    "zucc": "^0.1.2"
+    "zlib-sync": "^0.1.4"
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
@@ -82,7 +81,6 @@
     "sodium": false,
     "worker_threads": false,
     "zlib-sync": false,
-    "zucc": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
