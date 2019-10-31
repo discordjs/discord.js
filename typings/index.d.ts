@@ -753,7 +753,7 @@ declare module 'discord.js' {
 		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
-		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlags, reason?: string): Promise<Guild>;
+		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
 		public splashURL(options?: AvatarOptions): string | null;
 		public toJSON(): object;
@@ -2598,6 +2598,8 @@ declare module 'discord.js' {
 
 	type SystemChannelFlagsString = 'WELCOME_MESSAGE_DISABLED'
 		| 'BOOST_MESSAGE_DISABLED';
+
+	type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
 
 	type TargetUser = number;
 

@@ -277,8 +277,8 @@ class Guild extends Base {
       data.default_message_notifications;
 
     /**
-     * The value set for the guild's default message notifications
-     * @type {SystemChannelFlags}
+     * The value set for the guild's system channel flags
+     * @type {ReadOnly<SystemChannelFlags>}
      */
     this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
