@@ -224,7 +224,7 @@ class WebSocketShard extends EventEmitter {
 
       const ws = this.connection = WebSocket.create(gateway, {
         v: client.options.ws.version,
-        compress: zstd ? 'zstd-stream' : 'zlib-stream',
+        compress: 'zlib-stream',
       });
       ws.onopen = this.onOpen.bind(this);
       ws.onmessage = this.onMessage.bind(this);
