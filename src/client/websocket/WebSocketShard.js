@@ -423,7 +423,10 @@ class WebSocketShard extends EventEmitter {
    */
   checkReady() {
     // Step 0. Clear the ready timeout, if it exists
-    if (this.readyTimeout) this.manager.client.clearTimeout(this.readyTimeout);
+    if (this.readyTimeout) {
+      this.manager.client.clearTimeout(this.readyTimeout);
+      this.readyTimeout = undefined;
+    }
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
       this.debug('Shard received all its guilds. Marking as fully ready.');
@@ -445,6 +448,8 @@ class WebSocketShard extends EventEmitter {
       this.debug(`Shard did not receive any more guild packets in 15 seconds.
   Unavailable guild count: ${this.expectedGuilds.size}`);
 
+      this.readyTimeout = undefined;
+
       this.status = Status.READY;
 
       this.emit(ShardEvents.ALL_READY, this.expectedGuilds);
@@ -461,7 +466,7 @@ class WebSocketShard extends EventEmitter {
       if (this.helloTimeout) {
         this.debug('Clearing the HELLO timeout.');
         this.manager.client.clearTimeout(this.helloTimeout);
-        this.helloTimeout = null;
+        this.helloTimeout = undefined;
       }
       return;
     }
@@ -482,7 +487,7 @@ class WebSocketShard extends EventEmitter {
       if (this.heartbeatInterval) {
         this.debug('Clearing the heartbeat interval.');
         this.manager.client.clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = null;
+        this.heartbeatInterval = undefined;
       }
       return;
     }
