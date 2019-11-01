@@ -1665,10 +1665,10 @@ declare module 'discord.js' {
 		private lastHeartbeatAcked: boolean;
 		private ratelimit: { queue: object[]; total: number; remaining: number; time: 60e3; timer: NodeJS.Timeout | null; };
 		private connection: WebSocket | null;
-		private helloTimeout: NodeJS.Timeout | null;
+		private helloTimeout: NodeJS.Timeout | undefined;
 		private eventsAttached: boolean;
-		private expectedGuilds: Set<Snowflake>;
-		private readyTimeout: NodeJS.Timeout | null;
+		private expectedGuilds: Set<Snowflake> | undefined;
+		private readyTimeout: NodeJS.Timeout | undefined;
 
 		public manager: WebSocketManager;
 		public id: number;

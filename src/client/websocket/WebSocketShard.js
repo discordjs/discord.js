@@ -136,7 +136,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * A set of guild IDs this shard expects to receive
-     * @type {Set<string>}
+     * @type {?Set<string>}
      * @private
      */
     Object.defineProperty(this, 'expectedGuilds', { value: undefined, writable: true });
@@ -310,7 +310,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onClose(event) {
-    if (this.sequence && this.sequence !== -1) this.closeSequence = this.sequence;
+    if (this.sequence !== -1) this.closeSequence = this.sequence;
     this.sequence = -1;
 
     this.debug(`WebSocket was closed.
