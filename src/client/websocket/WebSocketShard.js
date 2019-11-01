@@ -9,15 +9,10 @@ const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
 
 let zlib;
 
-if (browser) {
-  zlib = require('pako');
-} else {
+if (!browser) {
   try {
     zlib = require('zlib-sync');
-    if (!zlib.Inflate) zlib = require('pako');
-  } catch {
-    zlib = require('pako');
-  }
+  } catch {} // eslint-disable-line no-empty
 }
 
 /**
@@ -147,6 +142,13 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     Object.defineProperty(this, 'readyTimeout', { value: undefined, writable: true });
+
+    /**
+     * Time when the WebSocket connection was opened
+     * @type {number}
+     * @private
+     */
+    Object.defineProperty(this, 'connectedAt', { value: 0, writable: true });
   }
 
   /**
@@ -211,21 +213,30 @@ class WebSocketShard extends EventEmitter {
         return;
       }
 
-      this.inflate = new zlib.Inflate({
-        chunkSize: 65535,
-        flush: zlib.Z_SYNC_FLUSH,
-        to: WebSocket.encoding === 'json' ? 'string' : '',
-      });
+      const wsQuery = { v: client.options.ws.version };
 
-      this.debug(`Trying to connect to ${gateway}, version ${client.options.ws.version}`);
+      if (zlib) {
+        this.inflate = new zlib.Inflate({
+          chunkSize: 65535,
+          flush: zlib.Z_SYNC_FLUSH,
+          to: WebSocket.encoding === 'json' ? 'string' : '',
+        });
+        wsQuery.compress = 'zlib-stream';
+      }
+
+      this.debug(
+        `[CONNECT]
+    Gateway: ${gateway}
+    Version: ${client.options.ws.version}
+    Encoding: ${WebSocket.encoding}
+    Compression: ${zlib ? 'zlib-stream' : 'none'}`);
 
       this.status = this.status === Status.DISCONNECTED ? Status.RECONNECTING : Status.CONNECTING;
       this.setHelloTimeout();
 
-      const ws = this.connection = WebSocket.create(gateway, {
-        v: client.options.ws.version,
-        compress: 'zlib-stream',
-      });
+      this.connectedAt = Date.now();
+
+      const ws = this.connection = WebSocket.create(gateway, wsQuery);
       ws.onopen = this.onOpen.bind(this);
       ws.onmessage = this.onMessage.bind(this);
       ws.onerror = this.onError.bind(this);
@@ -238,7 +249,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onOpen() {
-    this.debug('Opened a connection to the gateway successfully.');
+    this.debug(`[CONNECTED] ${this.connection.url} in ${Date.now() - this.connectedAt}ms`);
     this.status = Status.NEARLY;
   }
 
@@ -248,17 +259,22 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onMessage({ data }) {
+    let raw;
     if (data instanceof ArrayBuffer) data = new Uint8Array(data);
-    const l = data.length;
-    const flush = l >= 4 &&
+    if (zlib) {
+      const l = data.length;
+      const flush = l >= 4 &&
         data[l - 4] === 0x00 &&
         data[l - 3] === 0x00 &&
         data[l - 2] === 0xFF &&
         data[l - 1] === 0xFF;
 
-    this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
-    if (!flush) return;
-    const raw = this.inflate.result;
+      this.inflate.push(data, flush && zlib.Z_SYNC_FLUSH);
+      if (!flush) return;
+      raw = this.inflate.result;
+    } else {
+      raw = data;
+    }
     let packet;
     try {
       packet = WebSocket.unpack(raw);
@@ -313,10 +329,10 @@ class WebSocketShard extends EventEmitter {
     if (this.sequence !== -1) this.closeSequence = this.sequence;
     this.sequence = -1;
 
-    this.debug(`WebSocket was closed.
-      Event Code: ${event.code}
-      Clean: ${event.wasClean}
-      Reason: ${event.reason || 'No reason received'}`);
+    this.debug(`[CLOSE]
+    Event Code: ${event.code}
+    Clean: ${event.wasClean}
+    Reason: ${event.reason || 'No reason received'}`);
 
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
@@ -354,9 +370,9 @@ class WebSocketShard extends EventEmitter {
         this.sessionID = packet.d.session_id;
         this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
         this.status = Status.WAITING_FOR_GUILDS;
-        this.debug(`READY | Session ${this.sessionID}.`);
+        this.debug(`[READY] Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
-        this.sendHeartbeat('Ready');
+        this.sendHeartbeat('ReadyHeartbeat');
         this.checkReady();
         break;
       case WSEvents.RESUMED: {
@@ -368,9 +384,9 @@ class WebSocketShard extends EventEmitter {
 
         this.status = Status.READY;
         const replayed = packet.s - this.closeSequence;
-        this.debug(`RESUMED | Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.debug(`[RESUMED] Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
-        this.sendHeartbeat('Resume');
+        this.sendHeartbeat('ResumeHeartbeat');
         break;
       }
     }
@@ -387,7 +403,7 @@ class WebSocketShard extends EventEmitter {
         this.connection.close(1001);
         break;
       case OPCodes.INVALID_SESSION:
-        this.debug(`Session invalidated. Resumable: ${packet.d}.`);
+        this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
         // If we can resume the session, do so immediately
         if (packet.d) {
           this.identifyResume();
@@ -552,7 +568,7 @@ class WebSocketShard extends EventEmitter {
   identifyNew() {
     const { client } = this.manager;
     if (!client.token) {
-      this.debug('No token available to identify a new session.');
+      this.debug('[IDENTIFY] No token available to identify a new session.');
       return;
     }
 
@@ -565,7 +581,7 @@ class WebSocketShard extends EventEmitter {
       shard: [this.id, Number(client.options.shardCount)],
     };
 
-    this.debug(`Identifying as a new session. Shard ${this.id}/${client.options.shardCount}`);
+    this.debug(`[IDENTIFY] Shard ${this.id}/${client.options.shardCount}`);
     this.send({ op: OPCodes.IDENTIFY, d }, true);
   }
 
@@ -575,14 +591,14 @@ class WebSocketShard extends EventEmitter {
    */
   identifyResume() {
     if (!this.sessionID) {
-      this.debug('Warning: attempted to resume but no session ID was present; identifying as a new session.');
+      this.debug('[RESUME] No session ID was present; identifying as a new session.');
       this.identifyNew();
       return;
     }
 
     this.status = Status.RESUMING;
 
-    this.debug(`Attempting to resume session ${this.sessionID} at sequence ${this.closeSequence}`);
+    this.debug(`[RESUME] Session ${this.sessionID}, sequence ${this.closeSequence}`);
 
     const d = {
       token: this.manager.client.token,

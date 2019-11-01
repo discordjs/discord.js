@@ -39,11 +39,10 @@
     "abort-controller": "^3.0.0",
     "form-data": "^2.3.3",
     "node-fetch": "^2.3.0",
-    "pako": "^1.0.10",
     "prism-media": "^1.0.0",
     "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.1",
-    "ws": "^7.1.1"
+    "ws": "^7.2.0"
   },
   "peerDependencies": {
     "bufferutil": "^4.0.1",
@@ -51,7 +50,7 @@
     "libsodium-wrappers": "^0.7.4",
     "sodium": "^3.0.2",
     "utf-8-validate": "^5.0.2",
-    "zlib-sync": "^0.1.4"
+    "zlib-sync": "^0.1.6"
   },
   "devDependencies": {
     "@types/node": "^10.12.24",

@@ -144,12 +144,12 @@ class WebSocketManager extends EventEmitter {
     const { total, remaining, reset_after } = sessionStartLimit;
 
     this.debug(`Fetched Gateway Information
-      URL: ${gatewayURL}
-      Recommended Shards: ${recommendedShards}`);
+    URL: ${gatewayURL}
+    Recommended Shards: ${recommendedShards}`);
 
     this.debug(`Session Limit Information
-      Total: ${total}
-      Remaining: ${remaining}`);
+    Total: ${total}
+    Remaining: ${remaining}`);
 
     this.gateway = `${gatewayURL}/`;
 
@@ -356,8 +356,8 @@ class WebSocketManager extends EventEmitter {
       remaining = session_start_limit.remaining;
       resetAfter = session_start_limit.reset_after;
       this.debug(`Session Limit Information
-        Total: ${session_start_limit.total}
-        Remaining: ${remaining}`);
+    Total: ${session_start_limit.total}
+    Remaining: ${remaining}`);
     }
     if (!remaining) {
       this.debug(`Exceeded identify threshold. Will attempt a connection in ${resetAfter}ms`);
