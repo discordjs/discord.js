@@ -54,6 +54,29 @@
     "zlib-sync": "^0.1.4",
     "zucc": "^0.1.0"
   },
+  "peerDependenciesMeta": {
+    "@discordjs/uws": {
+      "optional": true
+    },
+    "bufferutil": {
+      "optional": true
+    },
+    "erlpack": {
+      "optional": true
+    },
+    "libsodium-wrappers": {
+      "optional": true
+    },
+    "sodium": {
+      "optional": true
+    },
+    "zlib-sync": {
+      "optional": true
+    },
+    "zucc": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/node": "^10.12.24",
     "@types/ws": "^6.0.1",
