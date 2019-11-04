@@ -1006,6 +1006,7 @@ declare module 'discord.js' {
 		public size: number;
 		public url: string;
 		public width: number | null;
+		public readonly spoiler: boolean;
 		public setFile(attachment: BufferResolvable | Stream, name?: string): this;
 		public setName(name: string): this;
 		public toJSON(): object;
