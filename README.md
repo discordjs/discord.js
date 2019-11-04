@@ -17,6 +17,17 @@
   </p>
 </div>
 
+## Table of contents
+- [About](#about)
+- [Installation](#installation)
+  - [Audio engines](#audio-engines)
+  - [Optional packages](#optional-packages)
+ - [Example Usage](#example-usage)
+ - [Links](#links)
+    - [Extensions](#extensions)
+ - [Contributing](#contributing)
+ - [Help](#help)
+
 ## About
 discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
 [Discord API](https://discordapp.com/developers/docs/intro).
