@@ -984,6 +984,7 @@ declare module 'discord.js' {
 		public bitfield: number;
 		public member: GuildMember;
 		public add(...permissions: PermissionResolvable[]): this;
+		public any(permissions: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public freeze(): this;
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public hasPermission(permission: PermissionResolvable, explicit?: boolean): boolean;
