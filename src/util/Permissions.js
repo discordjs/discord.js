@@ -71,7 +71,7 @@ class Permissions {
    */
   any(permissions, checkAdmin = true) {
     return (checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR)) ||
-      (this.bitfield & this.constructor.resolve(permissions, checkAdmin)) !== 0;
+      (this.bitfield & this.constructor.resolve(permissions)) !== 0;
   }
 
   /**
