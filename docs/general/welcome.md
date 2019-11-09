@@ -77,7 +77,7 @@ client.login('token');
 * [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
 * [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the WIP [Update Guide](https://github.com/discordjs/guide/blob/v12-changes/guide/additional-info/changes-in-v12.md) also including updated and removed items in the library.
+  See also the WIP [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html) also including updated and removed items in the library.
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
 * [GitHub](https://github.com/discordjs/discord.js)
