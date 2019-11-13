@@ -465,8 +465,7 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
-  onStartSpeaking({ user_id, ssrc, speaking }) {
-    const user = this.client.users.get(user_id);
+  onStartSpeaking({ user_id, ssrc }) {
     this.ssrcMap.set(+ssrc, user_id);
   }
 
@@ -479,6 +478,7 @@ class VoiceConnection extends EventEmitter {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
+    this.ssrcMap.set(+ssrc, user_id);
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**

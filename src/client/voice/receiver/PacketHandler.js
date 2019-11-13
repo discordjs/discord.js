@@ -83,17 +83,15 @@ class PacketHandler extends EventEmitter {
     if (this.speakingTimeouts.get(ssrc)) {
       clearTimeout(this.speakingTimeouts.get(ssrc));
       this.speakingTimeouts.delete(ssrc);
-    }
-    else {
+    } else {
       this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
     }
     let speakingTimer = setTimeout(() => {
       try {
         this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
         this.speakingTimeouts.delete(ssrc);
-      }
-      catch (ex) {
-        console.log("Connection already closed", ex);
+      } catch (ex) {
+        // Connection already closed, ignore
       }
     }, 50);
     this.speakingTimeouts.set(ssrc, speakingTimer);
