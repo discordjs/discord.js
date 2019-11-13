@@ -3,7 +3,7 @@
 const secretbox = require('../util/Secretbox');
 const EventEmitter = require('events');
 
-class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
+class Readable extends require('stream').Readable { _read() { } } // eslint-disable-line no-empty-function
 
 class PacketHandler extends EventEmitter {
   constructor(receiver) {
@@ -11,6 +11,7 @@ class PacketHandler extends EventEmitter {
     this.nonce = Buffer.alloc(24);
     this.receiver = receiver;
     this.streams = new Map();
+    this.speakingTimeouts = new Map();
   }
 
   get connection() {
@@ -78,6 +79,25 @@ class PacketHandler extends EventEmitter {
     const ssrc = buffer.readUInt32BE(8);
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
+
+    if (this.speakingTimeouts.get(ssrc)) {
+      clearTimeout(this.speakingTimeouts.get(ssrc));
+      this.speakingTimeouts.delete(ssrc);
+    }
+    else {
+      this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
+    }
+    let speakingTimer = setTimeout(() => {
+      try {
+        this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
+        this.speakingTimeouts.delete(ssrc);
+      }
+      catch (ex) {
+        console.log("Connection already closed", ex);
+      }
+    }, 50);
+    this.speakingTimeouts.set(ssrc, speakingTimer);
+
     let stream = this.streams.get(user.id);
     if (!stream) return;
     stream = stream.stream;

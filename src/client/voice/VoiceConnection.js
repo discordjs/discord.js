@@ -422,7 +422,7 @@ class VoiceConnection extends EventEmitter {
     udp.on('error', err => this.emit('error', err));
     ws.on('ready', this.onReady.bind(this));
     ws.on('sessionDescription', this.onSessionDescription.bind(this));
-    ws.on('speaking', this.onSpeaking.bind(this));
+    ws.on('startSpeaking', this.onStartSpeaking.bind(this));
 
     this.sockets.ws.connect();
   }
@@ -465,6 +465,11 @@ class VoiceConnection extends EventEmitter {
     });
   }
 
+  onStartSpeaking({ user_id, ssrc, speaking }) {
+    const user = this.client.users.get(user_id);
+    this.ssrcMap.set(+ssrc, user_id);
+  }
+
   /**
    * Invoked when a speaking event is received.
    * @param {Object} data The received data
@@ -474,7 +479,6 @@ class VoiceConnection extends EventEmitter {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
-    this.ssrcMap.set(+ssrc, user_id);
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**
@@ -504,7 +508,7 @@ class VoiceConnection extends EventEmitter {
     }
   }
 
-  play() {} // eslint-disable-line no-empty-function
+  play() { } // eslint-disable-line no-empty-function
 }
 
 PlayInterface.applyToClass(VoiceConnection);
