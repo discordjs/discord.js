@@ -88,7 +88,7 @@ class PacketHandler extends EventEmitter {
     if (typeof previousTimeout === 'undefined') {
       this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
     } else {
-      clearTimeout(this.speakingTimeouts.get(ssrc));
+      clearTimeout(previousTimeout);
       this.speakingTimeouts.delete(ssrc);
     }
     const speakingTimer = setTimeout(() => {
