@@ -1118,15 +1118,14 @@ declare module 'discord.js' {
 	export class Permissions extends BitField<PermissionString> {
 		public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
+		public missing(bits: BitFieldResolvable<PermissionString>, checkAdmin?: boolean): PermissionString[];
+		public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
+		public toArray(checkAdmin?: boolean): PermissionString[];
 
 		public static ALL: number;
 		public static DEFAULT: number;
 		public static FLAGS: PermissionFlags;
 		public static resolve(permission?: PermissionResolvable): number;
-
-		public missing(bits: BitFieldResolvable<PermissionString>, checkAdmin?: boolean): PermissionString[];
-		public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
-		public toArray(checkAdmin?: boolean): PermissionString[];
 	}
 
 	export class Presence {
