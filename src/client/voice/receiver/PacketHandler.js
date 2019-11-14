@@ -3,7 +3,11 @@
 const secretbox = require('../util/Secretbox');
 const EventEmitter = require('events');
 
-class Readable extends require('stream').Readable { _read() { } } // eslint-disable-line no-empty-function
+// The delay between packets when a user is considered to have stopped speaking
+// https://github.com/discordjs/discord.js/issues/3524#issuecomment-540373200
+const DISCORD_SPEAKING_DELAY = 250;
+
+class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
 class PacketHandler extends EventEmitter {
   constructor(receiver) {
@@ -80,11 +84,12 @@ class PacketHandler extends EventEmitter {
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
 
-    if (this.speakingTimeouts.has(ssrc)) {
+    const previousTimeout = this.speakingTimeouts.get(ssrc);
+    if (typeof previousTimeout === 'undefined') {
+      this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
+    } else {
       clearTimeout(this.speakingTimeouts.get(ssrc));
       this.speakingTimeouts.delete(ssrc);
-    } else {
-      this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
     }
     const speakingTimer = setTimeout(() => {
       try {
@@ -93,7 +98,7 @@ class PacketHandler extends EventEmitter {
       } catch (ex) {
         // Connection already closed, ignore
       }
-    }, 50);
+    }, DISCORD_SPEAKING_DELAY);
     this.speakingTimeouts.set(ssrc, speakingTimer);
 
     let stream = this.streams.get(user.id);
