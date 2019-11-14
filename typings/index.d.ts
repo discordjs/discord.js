@@ -117,8 +117,8 @@ declare module 'discord.js' {
 		public has(bit: BitFieldResolvable<S>): boolean;
 		public missing(bits: BitFieldResolvable<S>, ...hasParams: any[]): S[];
 		public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
-		public serialize(...hasParams: BitFieldResolvable<S>[]): Record<S, boolean>;
-		public toArray(): S[];
+		public serialize(...hasParams: any[]): Record<S, boolean>;
+		public toArray(...hasParams: any[]): S[];
 		public toJSON(): number;
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
