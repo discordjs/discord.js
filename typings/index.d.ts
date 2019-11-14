@@ -115,10 +115,10 @@ declare module 'discord.js' {
 		public equals(bit: BitFieldResolvable<S>): boolean;
 		public freeze(): Readonly<BitField<S>>;
 		public has(bit: BitFieldResolvable<S>): boolean;
-		public missing(bits: BitFieldResolvable<S>, ...hasParams: any[]): S[];
+		public missing(bits: BitFieldResolvable<S>, ...hasParam: readonly unknown[]): S[];
 		public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
-		public serialize(...hasParams: any[]): Record<S, boolean>;
-		public toArray(...hasParams: any[]): S[];
+		public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
+		public toArray(...hasParam: readonly unknown[]): S[];
 		public toJSON(): number;
 		public valueOf(): number;
 		public [Symbol.iterator](): Iterator<S>;
@@ -1123,6 +1123,10 @@ declare module 'discord.js' {
 		public static DEFAULT: number;
 		public static FLAGS: PermissionFlags;
 		public static resolve(permission?: PermissionResolvable): number;
+		
+		public missing(bit: BitFieldResolvable<PermissionString>, checkAdmin: boolean) : PermissionString[];
+		public serialize(checkAdmin: boolean) : Record<PermissionString, boolean>;
+		public toArray(checkAdmin: boolean) : PermissionString[];
 	}
 
 	export class Presence {
