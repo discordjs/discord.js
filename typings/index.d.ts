@@ -1124,9 +1124,9 @@ declare module 'discord.js' {
 		public static FLAGS: PermissionFlags;
 		public static resolve(permission?: PermissionResolvable): number;
 
-		public missing(bit: BitFieldResolvable<PermissionString>, checkAdmin: boolean): PermissionString[];
-		public serialize(checkAdmin: boolean): Record<PermissionString, boolean>;
-		public toArray(checkAdmin: boolean): PermissionString[];
+		public missing(bit: BitFieldResolvable<PermissionString>, checkAdmin?: boolean): PermissionString[];
+		public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
+		public toArray(checkAdmin?: boolean): PermissionString[];
 	}
 
 	export class Presence {
