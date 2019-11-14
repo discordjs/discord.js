@@ -80,13 +80,13 @@ class PacketHandler extends EventEmitter {
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
 
-    if (this.speakingTimeouts.get(ssrc)) {
+    if (this.speakingTimeouts.has(ssrc)) {
       clearTimeout(this.speakingTimeouts.get(ssrc));
       this.speakingTimeouts.delete(ssrc);
     } else {
       this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
     }
-    let speakingTimer = setTimeout(() => {
+    const speakingTimer = setTimeout(() => {
       try {
         this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
         this.speakingTimeouts.delete(ssrc);
