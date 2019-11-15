@@ -84,22 +84,22 @@ class PacketHandler extends EventEmitter {
     const user = this.userFromSSRC(ssrc);
     if (!user) return;
 
-    const previousTimeout = this.speakingTimeouts.get(ssrc);
-    if (typeof previousTimeout === 'undefined') {
+    let speakingTimeout = this.speakingTimeouts.get(ssrc);
+    if (typeof speakingTimeout === 'undefined') {
       this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
+      speakingTimeout = this.receiver.connection.client.setTimeout(() => {
+        try {
+          this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
+          this.receiver.connection.client.clearTimeout(speakingTimeout);
+          this.speakingTimeouts.delete(ssrc);
+        } catch (ex) {
+          // Connection already closed, ignore
+        }
+      }, DISCORD_SPEAKING_DELAY);
+      this.speakingTimeouts.set(ssrc, speakingTimeout);
     } else {
-      clearTimeout(previousTimeout);
-      this.speakingTimeouts.delete(ssrc);
+      speakingTimeout.refresh();
     }
-    const speakingTimer = setTimeout(() => {
-      try {
-        this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
-        this.speakingTimeouts.delete(ssrc);
-      } catch (ex) {
-        // Connection already closed, ignore
-      }
-    }, DISCORD_SPEAKING_DELAY);
-    this.speakingTimeouts.set(ssrc, speakingTimer);
 
     let stream = this.streams.get(user.id);
     if (!stream) return;
