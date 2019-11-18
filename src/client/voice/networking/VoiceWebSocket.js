@@ -201,7 +201,7 @@ class VoiceWebSocket extends EventEmitter {
         /**
          * Emitted whenever a speaking packet is received.
          * @param {Object} data
-         * @event VoiceWebSocket#speaking
+         * @event VoiceWebSocket#startSpeaking
          */
         this.emit('startSpeaking', packet.d);
         break;
