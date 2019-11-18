@@ -183,7 +183,7 @@ class Invite extends Base {
       guild: 'guildID',
     });
   }
-  
+
   valueOf() {
     return this.code;
   }
