@@ -817,6 +817,7 @@ class RESTMethods {
     return this.rest.makeRequest('patch', endpoint, auth, options, undefined, reason).then(data => {
       webhook.name = data.name;
       webhook.avatar = data.avatar;
+      webhook.channelID = data.channel_id;
       return webhook;
     });
   }
