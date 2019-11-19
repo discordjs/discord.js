@@ -1891,7 +1891,7 @@ declare module 'discord.js' {
 		token: string;
 		readonly createdAt: Date;
 		readonly createdTimestamp: number;
-		readonly url: String;
+		readonly url: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
