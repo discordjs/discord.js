@@ -2222,7 +2222,7 @@ declare module 'discord.js' {
 		before?: Snowflake | GuildAuditLogsEntry;
 		limit?: number;
 		user?: UserResolvable;
-		type?: string | number;
+		type?: GuildAuditLogsAction | number;
 	}
 
 	type GuildAuditLogsTarget = keyof GuildAuditLogsTargets;
