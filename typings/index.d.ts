@@ -878,6 +878,7 @@ declare module 'discord.js' {
 		public setNickname(nickname: string, reason?: string): Promise<GuildMember>;
 		public toJSON(): object;
 		public toString(): string;
+		public valueOf(): string;
 	}
 
 	export class Integration extends Base {
