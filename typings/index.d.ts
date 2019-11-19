@@ -1620,6 +1620,7 @@ declare module 'discord.js' {
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object | null;
+		public type: WebhookTypes;
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -2615,6 +2616,8 @@ declare module 'discord.js' {
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 	}
+
+	type WebhookTypes = 'Incoming' | 'Channel Follower';
 
 	interface WebSocketOptions {
 		large_threshold?: number;

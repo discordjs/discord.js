@@ -619,6 +619,19 @@ exports.MembershipStates = [
   'ACCEPTED',
 ];
 
+/**
+ * The value set for a webhook's type:
+ * * Incoming
+ * * Channel Follower
+ * @typedef {string} WebhookTypes
+ */
+exports.WebhookTypes = [
+  // They start at 1
+  null,
+  'Incoming',
+  'Channel Follower',
+];
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;

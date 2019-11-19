@@ -1,5 +1,6 @@
 'use strict';
 
+const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const Channel = require('./Channel');
@@ -45,6 +46,12 @@ class Webhook {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The type of the webhook
+     * @type {WebhookTypes}
+     */
+    this.type = WebhookTypes[data.type];
 
     /**
      * The guild the webhook belongs to
