@@ -1620,7 +1620,6 @@ declare module 'discord.js' {
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object | null;
-		public readonly url: string;
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
@@ -1889,6 +1888,9 @@ declare module 'discord.js' {
 		readonly client: Client;
 		id: Snowflake;
 		token: string;
+		readonly createdAt: Date;
+		readonly createdTimestamp: number;
+		readonly url: String;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;

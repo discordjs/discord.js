@@ -1,6 +1,7 @@
 'use strict';
 
 const DataResolver = require('../util/DataResolver');
+const Snowflake = require('../util/Snowflake');
 const Channel = require('./Channel');
 const APIMessage = require('./APIMessage');
 
@@ -210,6 +211,23 @@ class Webhook {
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
+  /**
+   * The timestamp the webhook was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the webhook was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
 
   /**
    * The url of this webhook
@@ -226,6 +244,9 @@ class Webhook {
       'sendSlackMessage',
       'edit',
       'delete',
+      'createdTimestamp',
+      'createdAt',
+      'url',
     ]) {
       Object.defineProperty(structure.prototype, prop,
         Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
