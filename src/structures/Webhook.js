@@ -277,18 +277,45 @@ class Webhook extends EventEmitter {
   }
 
   /**
+   * Options provided to edit a webhook.
+   * @property {string} [name] The new name for the webhook
+   * @property {BufferResolvable} [avatar] The new avatar for the webhook
+   * @property {ChannelResolvable} [channel] The new channel for the webhook
+   * @typedef {Object} WebhookEditOptions
+   */
+
+  /**
    * Edit the webhook.
-   * @param {string} name The new name for the webhook
-   * @param {BufferResolvable} [avatar] The new avatar for the webhook
+   * @param {string|WebhookEditOptions} nameOrOptions The new name for the webhook **(deprecated, use options)**
+   * Alternatively options for the webhook, overriding the avatar parameter.
+   * @param {BufferResolvable|string} [avatarOrReason] The new avatar for the webhook **(deprecated, use options)**
+   * Alternatively a reason to edit, if using options as first parameter.
    * @returns {Promise<Webhook>}
    */
-  edit(name = this.name, avatar) {
-    if (avatar) {
-      return this.client.resolver.resolveImage(avatar).then(data =>
-        this.client.rest.methods.editWebhook(this, name, data)
-      );
+  edit(nameOrOptions = this.name, avatarOrReason) {
+    if (typeof nameOrOptions !== 'object') {
+      process.emitWarning('Webhook#edit: Use options object instead of separate parameters.');
+      nameOrOptions = {
+        name: nameOrOptions,
+        avatar: avatarOrReason,
+      };
+      // Parameter was an avatar here; Clear the now reason parameter
+      avatarOrReason = undefined;
     }
-    return this.client.rest.methods.editWebhook(this, name);
+
+    if (nameOrOptions.channel) {
+      nameOrOptions.channel_id = this.client.resolver.resolveChannelID(nameOrOptions.channel);
+      nameOrOptions.channel = undefined;
+    }
+
+    if (nameOrOptions.avatar) {
+      return this.client.resolver.resolveImage(nameOrOptions.avatar).then(data => {
+        nameOrOptions.avatar = data;
+        return this.client.rest.methods.editWebhook(this, nameOrOptions, avatarOrReason);
+      });
+    }
+
+    return this.client.rest.methods.editWebhook(this, nameOrOptions, avatarOrReason);
   }
 
   /**
