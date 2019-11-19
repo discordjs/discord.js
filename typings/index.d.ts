@@ -2188,6 +2188,9 @@ declare module 'discord.js' {
 		MEMBER_BAN_REMOVE?: number;
 		MEMBER_UPDATE?: number;
 		MEMBER_ROLE_UPDATE?: number;
+		MEMBER_MOVE?: number;
+		MEMBER_DISCONNECT?: number;
+		BOT_ADD?: number;
 		ROLE_CREATE?: number;
 		ROLE_UPDATE?: number;
 		ROLE_DELETE?: number;
@@ -2201,6 +2204,12 @@ declare module 'discord.js' {
 		EMOJI_UPDATE?: number;
 		EMOJI_DELETE?: number;
 		MESSAGE_DELETE?: number;
+		MESSAGE_BULK_DELETE?: number;
+		MESSAGE_PIN?: number;
+		MESSAGE_UNPIN?: number;
+		INTEGRATION_CREATE?: number;
+		INTEGRATION_UPDATE?: number;
+		INTEGRATION_DELETE?: number;
 	}
 
 	type GuildAuditLogsActionType = 'CREATE'
