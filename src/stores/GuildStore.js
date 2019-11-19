@@ -20,6 +20,8 @@ class GuildStore extends DataStore {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
+   * * A GuildChannel object
+   * * A Role object
    * * A Snowflake
    * @typedef {Guild|GuildChannel|GuildMember|Role|Snowflake} GuildResolvable
    */
