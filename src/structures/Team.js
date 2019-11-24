@@ -89,6 +89,14 @@ class Team extends Base {
     return this.client.rest.cdn.TeamIcon(this.id, this.icon, { format, size });
   }
 
+  fetch() {
+    return this.client.api.oauth2.applications('@me').get()
+        .then(data => {
+          this._patch(data.team);
+          return this;
+        });
+  }
+
   /**
    * When concatenated with a string, this automatically returns the Team's name instead of the
    * Team object.
