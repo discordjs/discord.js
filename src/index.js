@@ -89,6 +89,8 @@ module.exports = {
   Team: require('./structures/Team'),
   TeamMember: require('./structures/TeamMember'),
   TextChannel: require('./structures/TextChannel'),
+  NewsChannel: require('./structures/NewsChannel'),
+  StoreChannel: require('./structures/StoreChannel'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),
