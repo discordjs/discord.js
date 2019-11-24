@@ -289,6 +289,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 
 		public iconURL(options?: AvatarOptions): string;
+		public fetch(): Promise<Team>;
 		public toJSON(): object;
 		public toString(): string;
 	}

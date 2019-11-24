@@ -89,12 +89,16 @@ class Team extends Base {
     return this.client.rest.cdn.TeamIcon(this.id, this.icon, { format, size });
   }
 
+  /**
+   * Fetch this Team.
+   * @returns {Promise<Team>}
+   */
   fetch() {
     return this.client.api.oauth2.applications('@me').get()
-        .then(data => {
-          this._patch(data.team);
-          return this;
-        });
+      .then(data => {
+        this._patch(data.team);
+        return this;
+      });
   }
 
   /**
