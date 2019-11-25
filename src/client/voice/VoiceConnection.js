@@ -312,6 +312,15 @@ class VoiceConnection extends EventEmitter {
     this.sendVoiceStateUpdate({
       channel_id: null,
     });
+
+    this._disconnect();
+  }
+
+  /**
+   * Internally disconnects (doesn't send disconnect packet).
+   * @private
+   */
+  _disconnect() {
     this.player.destroy();
     this.cleanup();
     this.status = Constants.VoiceStatus.DISCONNECTED;
@@ -334,6 +343,7 @@ class VoiceConnection extends EventEmitter {
       ws.removeAllListeners('ready');
       ws.removeAllListeners('sessionDescription');
       ws.removeAllListeners('speaking');
+      ws.shutdown();
     }
 
     if (udp) udp.removeAllListeners('error');

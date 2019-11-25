@@ -30,10 +30,15 @@ class ClientVoiceManager {
 
   onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
     const connection = this.connections.get(guild_id);
-    if (connection) {
-      connection.channel = this.client.channels.get(channel_id);
-      connection.setSessionID(session_id);
+    if (!connection) return;
+    if (!channel_id) {
+      connection._disconnect();
+      this.connections.delete(guild_id);
+      return;
     }
+
+    connection.channel = this.client.channels.get(channel_id);
+    connection.setSessionID(session_id);
   }
 
   /**
