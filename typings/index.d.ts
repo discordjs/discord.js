@@ -121,7 +121,7 @@ declare module 'discord.js' {
 		public toArray(): S[];
 		public toJSON(): number;
 		public valueOf(): number;
-		public [Symbol.iterator](): Iterator<S>;
+		public [Symbol.iterator](): IterableIterator<S>;
 		public static FLAGS: object;
 		public static resolve(bit?: BitFieldResolvable<any>): number;
 	}
