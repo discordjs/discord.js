@@ -48,6 +48,9 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
+          if (mention.member && message.guild) {
+            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+          }
           const user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
