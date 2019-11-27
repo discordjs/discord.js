@@ -474,7 +474,7 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} data The received data
    * @private
    */
-  onSpeaking({ user_id, ssrc, speaking }) {
+  onSpeaking({ user_id, speaking }) {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
@@ -507,7 +507,7 @@ class VoiceConnection extends EventEmitter {
     }
   }
 
-  play() {} // eslint-disable-line no-empty-function
+  play() { } // eslint-disable-line no-empty-function
 }
 
 PlayInterface.applyToClass(VoiceConnection);
