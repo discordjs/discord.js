@@ -77,19 +77,17 @@ class PacketHandler extends EventEmitter {
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
-
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);
-    const user = this.userFromSSRC(ssrc);
-    if (!user) return;
+    const userStat = this.connection.ssrcMap.get(ssrc);
+    if (!userStat) return;
 
     let speakingTimeout = this.speakingTimeouts.get(ssrc);
     if (typeof speakingTimeout === 'undefined') {
-      this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 1 });
+      this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: userStat.speaking });
       speakingTimeout = this.receiver.connection.client.setTimeout(() => {
         try {
-          this.connection.onSpeaking({ user_id: user.id, ssrc: ssrc, speaking: 0 });
+          this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: 0 });
           this.receiver.connection.client.clearTimeout(speakingTimeout);
           this.speakingTimeouts.delete(ssrc);
         } catch (ex) {
@@ -101,7 +99,7 @@ class PacketHandler extends EventEmitter {
       speakingTimeout.refresh();
     }
 
-    let stream = this.streams.get(user.id);
+    let stream = this.streams.get(userStat.userID);
     if (!stream) return;
     stream = stream.stream;
     const opusPacket = this.parseBuffer(buffer);
