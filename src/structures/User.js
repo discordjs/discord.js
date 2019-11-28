@@ -60,6 +60,13 @@ class User extends Base {
     if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
+     * Whether the user is an Official Discord System user (part of the urgent message system)
+     * @type {?boolean}
+     * @name User#system
+     */
+    if (typeof data.system !== 'undefined') this.system = Boolean(data.system);
+
+    /**
      * The locale of the user's client (ISO 639-1)
      * @type {?string}
      * @name User#locale
