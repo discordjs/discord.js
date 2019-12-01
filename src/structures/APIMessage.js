@@ -106,7 +106,7 @@ class APIMessage {
         this.target.client.options.disableEveryone :
         this.options.disableEveryone;
       if (disableEveryone) {
-        content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1').replace(/\u202e/g, '');
+        content = (content || '').replace(/@\u202e?(everyone|here)/g, '@\u200b$1');
       }
 
       if (isSplit) {
