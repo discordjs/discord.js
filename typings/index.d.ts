@@ -1620,11 +1620,13 @@ declare module 'discord.js' {
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object | null;
+		public token: string | null;
 		public type: WebhookTypes;
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
+		public token: string;
 	}
 
 	export class WebSocketManager extends EventEmitter {
@@ -1888,7 +1890,6 @@ declare module 'discord.js' {
 	interface WebhookFields {
 		readonly client: Client;
 		id: Snowflake;
-		token: string;
 		readonly createdAt: Date;
 		readonly createdTimestamp: number;
 		readonly url: string;
