@@ -525,6 +525,7 @@ class Util {
   static cleanContent(str, message) {
     return str
       .replace(/@(everyone|here)/g, '@\u200b$1')
+      .replace(/\u202e/g, '')
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
