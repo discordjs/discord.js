@@ -2243,6 +2243,7 @@ declare module 'discord.js' {
 
 	interface GuildCreateChannelOptions {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+		lockPermissions?: boolean;
 		topic?: string;
 		type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
 		nsfw?: boolean;
