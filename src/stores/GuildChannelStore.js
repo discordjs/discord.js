@@ -57,6 +57,7 @@ class GuildChannelStore extends DataStore {
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {ChannelResolvable} [options.parent] Parent of the new channel
+   * @param {boolean} [options.lockPermissions] Set the permissions of parent
    * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites]
    * Permission overwrites of the new channel
    * @param {number} [options.position] Position of the new channel
@@ -88,6 +89,7 @@ class GuildChannelStore extends DataStore {
       bitrate,
       userLimit,
       parent,
+      lockPermissions,
       permissionOverwrites,
       position,
       rateLimitPerUser,
@@ -96,6 +98,13 @@ class GuildChannelStore extends DataStore {
     if (parent) parent = this.client.channels.resolveID(parent);
     if (permissionOverwrites) {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    }
+    if (lockPermissions) {
+      if (!parent) return Promise.reject(new Error('GUILD_CHANNEL_ORPHAN'));
+      permissionOverwrites = PermissionOverwrites.concatOverwritePermissions(
+        parent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild)),
+        permissionOverwrites
+      );
     }
 
     const data = await this.client.api.guilds(this.guild.id).channels.post({
