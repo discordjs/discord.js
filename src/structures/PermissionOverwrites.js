@@ -137,6 +137,24 @@ class PermissionOverwrites {
   }
 
   /**
+   * Concat two Overwrite Permissions.
+   * @param {Array<OverwriteResolvable>} initialPermissions The initial permissions
+   * @param {Array<OverwriteResolvable>} newPermissions The permissions to concat
+   * @returns {Array<OverwriteResolvable>}
+   */
+  static concatOverwritePermissions(initialPermissions, newPermissions) {
+    const permissions = initialPermissions.concat(newPermissions);
+    let result = [];
+    for (const permission of permissions) {
+      if (!result.some(({ id }) => id === permission.id)) {
+        result.push(permission);
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * The raw data for a permission overwrite
    * @typedef {Object} RawOverwriteData
    * @property {Snowflake} id The id of the overwrite
