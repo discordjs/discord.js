@@ -411,6 +411,7 @@ exports.MessageTypes = [
  * * STREAMING
  * * LISTENING
  * * WATCHING
+ * * CUSTOM_STATUS
  * @typedef {string} ActivityType
  */
 exports.ActivityTypes = [
@@ -418,6 +419,7 @@ exports.ActivityTypes = [
   'STREAMING',
   'LISTENING',
   'WATCHING',
+  'CUSTOM_STATUS',
 ];
 
 exports.ChannelTypes = {

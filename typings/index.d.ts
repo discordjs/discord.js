@@ -25,7 +25,10 @@ declare module 'discord.js' {
 		constructor(presence: Presence, data?: object);
 		public applicationID: Snowflake | null;
 		public assets: RichPresenceAssets | null;
+		public readonly createdAt: Date;
+		public createdTimestamp: number;
 		public details: string | null;
+		public emoji: Emoji | null;
 		public name: string;
 		public party: {
 			id: string | null;
@@ -1913,7 +1916,8 @@ declare module 'discord.js' {
 	type ActivityType = 'PLAYING'
 		| 'STREAMING'
 		| 'LISTENING'
-		| 'WATCHING';
+		| 'WATCHING'
+		| 'CUSTOM_STATUS';
 
 	type MessageFlagsString = 'CROSSPOSTED'
 		| 'IS_CROSSPOST'
