@@ -23,10 +23,12 @@ declare module 'discord.js' {
 
 	export class Activity {
 		constructor(presence: Presence, data?: object);
-		public readonly createdAt: Date;
 		public applicationID: Snowflake | null;
 		public assets: RichPresenceAssets | null;
+		public readonly createdAt: Date;
+		public createdTimestamp: number;
 		public details: string | null;
+		public emoji: Emoji | null;
 		public name: string;
 		public party: {
 			id: string | null;
@@ -39,8 +41,6 @@ declare module 'discord.js' {
 		} | null;
 		public type: ActivityType;
 		public url: string | null;
-		public emoji: Emoji | null;
-		public createdTimestamp: number;
 		public equals(activity: Activity): boolean;
 	}
 
