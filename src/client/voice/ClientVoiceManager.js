@@ -93,12 +93,13 @@ class ClientVoiceManager {
         reject(reason);
       });
 
+      connection.on('error', reject);
+
       connection.once('authenticated', () => {
         connection.once('ready', () => {
           resolve(connection);
           connection.removeListener('error', reject);
         });
-        connection.on('error', reject);
         connection.once('disconnect', () => this.connections.delete(channel.guild.id));
       });
     });
