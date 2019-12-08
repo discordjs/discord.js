@@ -38,7 +38,7 @@ class ReactionStore extends DataStore {
     * @method resolveID
     * @memberof ReactionStore
     * @instance
-    * @param {MessageReactionResolvable} Reaction The MessageReaction to resolve
+    * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?Snowflake}
     */
 
