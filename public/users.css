@@ -1,0 +1,15 @@
+
+.navbar{
+  background-color:transparent
+}
+.top-nav-collapse{
+  background-color:#7a7676
+}
+main{
+  background-color: #2e2e2e; 
+}
+@media only screen and (max-width:768px){
+  .navbar{
+    background-color:#7a7676
+  }
+}html,body,header,.view{height:100%}

@@ -1,0 +1,15 @@
+
+.navbar{
+  background-color:transparent
+}
+.top-nav-collapse{
+  background-color:#7a7676
+}
+main{
+  background: url(https://images8.alphacoders.com/632/thumb-1920-632051.png) 50% 50%; 
+}
+@media only screen and (max-width:768px){
+  .navbar{
+    background-color:#7a7676
+  }
+}html,body,header,.view{height:100%}

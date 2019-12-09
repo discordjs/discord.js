@@ -1,0 +1,111 @@
+<html lang="en" class="full-height"><head>
+  <title><%=guild.name%> | Member</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta property="og:type" content="">
+  <meta property="og:title" content="">
+  <meta name="author" content="">
+  <meta content="#54FCFF" name="theme-color">
+  <meta content="#54FCFF" name="msapplication-navbutton-color">
+  <meta property="og:url" content="https://human62-web.glitch.me">
+  <meta property="og:image" content="<%=guild.iconURL%>">
+  <meta property="og:description" content="">
+  <meta property="og:footer" content="• ">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" href="<%=guild.iconURL%>">
+  <link rel="shortcut icon" type="image/png" href="<%=guild.iconURL%>">
+
+ <link rel="stylesheet" href="/users.css">
+  <link rel="stylesheet" href="https://api.zealcord.xyz/assets/font/fontawesome/all.min.css">
+  <link href="https://api.zealcord.xyz/assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://api.zealcord.xyz/assets/css/mdb.min.css" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- import the webpage's stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="materialize.css">
+  <link rel="stylesheet" href="animate.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.2/fullpage.min.css" />
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.2/fullpage.min.js"></script>
+  <script src="script.js"></script>
+  <script type="text/javascript" src="https://api.zealcord.xyz/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="https://api.zealcord.xyz/assets/js/popper.min.js">
+  </script>
+  <script type="text/javascript" src="https://api.zealcord.xyz/assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://api.zealcord.xyz/assets/js/mdb.min.js"></script>
+<style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style></head>
+
+<body>
+<header>
+    <div class="navbar-fixed">
+      <nav class="blackFade z-depth-1" role="navigation">
+        <div class="nav-wrapper container">
+          <!-- Icons -->
+          <a href="/" class="left valign-wrapper hide-on-med-and-down" style="height: 100%;">
+            <img style="height: 80%;" src="<%=guild.iconURL%>">
+          </a>
+          <a href="/" class="right hide-on-large-only valign-wrapper animated fadeIn" style="height: 100%;">
+            <img style="height: 80%;" src="<%=guild.iconURL%>">
+          </a>
+
+          <!-- Nav -->
+          <ul class="right hide-on-med-and-down">
+            <li>
+              <a href="/user" class="f waves-effect waves-light white-text">User</a>
+              <a href="/" class="f waves-effect waves-light white-text">Home</a>
+              <a href="#" class="f waves-effect waves-light white-text">#</a>
+            </li>
+          </ul>
+
+          <a href="#" data-target="nav-mobile" class="sidenav-trigger left animated fadeIn">
+            <i class="material-icons white-text">menu</i>
+          </a>
+        </div>
+      </nav>
+    </div>
+<main>
+  <div class="container text-center white-text wow fadeInUp">
+    <br><br><br>
+
+    <section class="team-section text-center my-5">
+      <h2 class="h1-responsive font-weight-bold my-5">Member <%=guild.name%></h2>
+
+      <div class="row">
+        
+    <!-- Grid column -->
+        <% function chunk(array, chunkSize) {
+    const temp = [];
+    for(let i = 0; i < array.length; i+= chunkSize){
+      temp.push(array.slice(i, i+chunkSize));
+    }
+    return temp;
+} %>
+        <% let index = 0; %>
+
+        <% let DOARRR = guild.members.array().map(m => { %>
+        
+        <div class="col-lg-3 col-md-6 mb-lg-4 mb-5">
+          <div class="avatar mx-auto">
+            <a href="/user/<%=m.id%>"> <img src="<%=m.user.displayAvatarURL%>" width="128px" class="rounded-circle z-depth-1" style="cursor: pointer;"></a>
+          </div>
+          <h5 class="font-weight-bold mt-4 mb-2" style="color:ff0000; font-family: "Montserrat", sans-serif; "><%=m.user.tag%></h5>
+<!--      <p class="text-uppercase" style="color:<=lorduwu.color>"><strong><=lorduwu.name%></strong></p> -->
+        </div>
+        
+        <%  }) %>
+        <% DOARRR = chunk(DOARRR, 10) %>
+            <!-- Grid column -->
+
+    </section>
+    <br><br>
+  </div>
+</main>
+</header><div class="hiddendiv common"></div></body></html>

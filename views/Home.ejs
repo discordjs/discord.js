@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#000000">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#000000">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="#000000">
+
+  <meta name="description" content="<%=guild.name%>" />
+  <meta name="keywords" content="<%=guild.name%>" />
+  <meta name="author" content="<%=guild.owner.user.tag%>" />
+  <link rel="shortcut icon" href="<%=guild.iconURL%>">
+
+  <title><%=guild.name%> | Home</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- import the webpage's stylesheet -->
+  <link rel="stylesheet" href="style.css">
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="materialize.css">
+  <link rel="stylesheet" href="animate.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.2/fullpage.min.css" />
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.0.2/fullpage.min.js"></script>
+  <script src="script.js"></script>
+</head>
+
+<style>
+  
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #111;
+    color: white;
+  }
+  
+</style>
+
+<body>
+
+  <!-- Global full div -->
+  <div class="full hidden">
+
+    <div class="navbar-fixed">
+      <nav class="blackFade z-depth-1" role="navigation">
+        <div class="nav-wrapper container">
+          <!-- Icons -->
+          <a href="/" class="left valign-wrapper hide-on-med-and-down" style="height: 100%;">
+            <img style="height: 80%;" src="<%=guild.iconURL%>">
+          </a>
+          <a href="/" class="right hide-on-large-only valign-wrapper animated fadeIn" style="height: 100%;">
+            <img style="height: 80%;" src="<%=guild.iconURL%>">
+          </a>
+
+          <!-- Nav -->
+          <ul class="right hide-on-med-and-down">
+            <li>
+              <a href="/user" class="f waves-effect waves-light white-text">User</a>
+              <a href="/Staff" class="f waves-effect waves-light white-text">Staff</a>
+              <a href="/Partner" class="f waves-effect waves-light white-text">Partner</a>
+              <a href="#" class="f waves-effect waves-light white-text">#</a>
+            </li>
+          </ul>
+
+          <a href="#" data-target="nav-mobile" class="sidenav-trigger left animated fadeIn">
+            <i class="material-icons white-text">menu</i>
+          </a>
+        </div>
+      </nav>
+    </div>
+    <!-- Nav-mobile -->
+    <ul id="nav-mobile" class="sidenav black-gradient z-depth-0">
+      <li>
+        <a href="/user" class="f waves-effect waves-light white-text">User</a>
+        <a href="/Staff" class="f waves-effect waves-light white-text">Staff</a>
+        <a href="/Partner" class="f waves-effect waves-light white-text">Partner</a>
+        <a href="#" class="f waves-effect waves-light white-text">#</a>
+      </li>
+    </ul>
+
+    <!-- Pages -->
+    <div class="fullpage">
+      
+      <!-- Section 1 | Intro -->
+      <div class="header-wrapper section" style="background: transparent">
+        <div class="txt">
+          <h2 class="center white-text animated fadeInUp" style="color: red;"><%=guild.name%></h2>
+          <p class="center white-text animated fadeInUp">Link Serper</p>
+          <a target="_blank" href="https://discord.gg/xpRf9DA" class="animated fadeInUp waves-effect waves-light btn-flat white-text center" style="border-style: solid; border-width: 2px; border-radius: 5px; border-color: white;"><%=mCount%> Manusia</a>
+        </div>
+      </div>
+
+      <!-- Section 2 | Management -->
+      <div class="header-wrapper section" style="background: url(https://images.alphacoders.com/105/thumb-1920-1050920.png);">
+        <div class="col s12 m6 valign-wrapper" style="height: 100%; color: white;">
+          <div class="container">
+            <h3>Serverinfo</h3>
+            <p class="flow-text" style="font-family: Montserrat, sans-serif;"><%=mCount%> User<br><%=bCount%> Bot<br><%=guild.channels.size%> Channel
+              <br><%=mg.filter(m => m.presence.status === 'online').size%> Online<br>
+            </p>
+          </div>
+          <div class="container">
+            <img class="responsive-img bouncing" src="<%=guild.iconURL%>" style="margin-right: 50px; animation-delay: 0.75s;">
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- Pages div end -->
+
+  </div> <!-- Full div end -->
+
+  <script src="particles.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+  <script src="scriptParticles.js"></script>
+
+</body>
+
+</html>
