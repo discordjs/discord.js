@@ -51,6 +51,7 @@ declare namespace Discord {
 		public readonly client: Client;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
+		public deleted: boolean;
 		public id: Snowflake;
 		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'news' | 'store';
 		public delete(): Promise<Channel>;
@@ -404,10 +405,12 @@ declare namespace Discord {
 	export class Emoji {
 		constructor(guild: Guild, data: object);
 		public animated: boolean;
+		public available: boolean;
 		public readonly client: Client;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public readonly deletable: boolean;
+		public deleted: boolean;
 		public guild: Guild;
 		public id: Snowflake;
 		public readonly identifier: string;
@@ -420,6 +423,7 @@ declare namespace Discord {
 		public addRestrictedRoles(roles: Role[]): Promise<Emoji>;
 		public edit(data: EmojiEditData, reason?: string): Promise<Emoji>;
 		public equals(other: Emoji | object): boolean;
+		public delete(reason?: string): Promise<this>;
 		public fetchAuthor(): Promise<User>;
 		public removeRestrictedRole(role: Role): Promise<Emoji>;
 		public removeRestrictedRoles(roles: Role[]): Promise<Emoji>;
@@ -483,6 +487,10 @@ declare namespace Discord {
 		public afkTimeout: number;
 		public applicationID: string;
 		public available: boolean;
+		public banner: string | null;
+		public readonly bannerURL: string | null;
+		public deleted: boolean;
+		public description: string | null;
 		public channels: Collection<Snowflake, GuildChannel>;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
 		public readonly client: Client;
@@ -490,6 +498,8 @@ declare namespace Discord {
 		public readonly createdTimestamp: number;
 		public readonly defaultChannel: TextChannel;
 		public readonly defaultRole: Role;
+		public readonly embedChannel: TextChannel | null;
+		public embedChannelID: Snowflake | null;
 		public embedEnabled: boolean;
 		public emojis: Collection<Snowflake, Emoji>;
 		public explicitContentFilter: number;
@@ -500,6 +510,8 @@ declare namespace Discord {
 		public readonly joinedAt: Date;
 		public joinedTimestamp: number;
 		public large: boolean;
+		public maximumMembers?: number;
+		public maximumPresences?: number;
 		public readonly me: GuildMember;
 		public memberCount: number;
 		public members: Collection<Snowflake, GuildMember>;
@@ -510,6 +522,8 @@ declare namespace Discord {
 		public readonly nameAcronym: string;
 		public readonly owner: GuildMember;
 		public ownerID: string;
+		public premiumSubscriptionCount: number | null;
+		public premiumTier: PremiumTier;
 		public readonly position: number;
 		public presences: Collection<Snowflake, Presence>;
 		public region: string;
@@ -519,9 +533,13 @@ declare namespace Discord {
 		public readonly suppressEveryone: boolean;
 		public readonly systemChannel: GuildChannel;
 		public systemChannelID: Snowflake;
+		public vanityURLCode: string;
 		public readonly verified: boolean;
 		public verificationLevel: number;
 		public readonly voiceConnection: VoiceConnection;
+		public readonly widgetChannel: TextChannel | null;
+		public widgetChannelID?: Snowflake;
+		public widgetEnabled?: boolean;
 		public acknowledge(): Promise<Guild>;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
 		public allowDMs(allow: boolean): Promise<Guild>;
@@ -534,6 +552,7 @@ declare namespace Discord {
 		public deleteEmoji(emoji: Emoji | string, reason?: string): Promise<void>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
+		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
 		public fetchBan(user: UserResolvable): Promise<BanInfo>;
 		public fetchBans(withReasons?: false): Promise<Collection<Snowflake, User>>;
@@ -554,7 +573,7 @@ declare namespace Discord {
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
 		public setChannelPosition(channel: string | GuildChannel, position: number, relative?: boolean): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
-		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason: string): Promise<Guild>;
+		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason?: string): Promise<Guild>;
 		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
 		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable, reason?: string): Promise<Guild>;
@@ -563,6 +582,7 @@ declare namespace Discord {
 		public setPosition(position: number, relative?: boolean): Promise<Guild>;
 		public setRegion(region: string, reason?: string): Promise<Guild>;
 		public setRolePosition(role: string | Role, position: number, relative?: boolean): Promise<Guild>;
+		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
@@ -609,10 +629,11 @@ declare namespace Discord {
 		public readonly messageNotifications: GuildChannelMessageNotifications;
 		public readonly muted: boolean;
 		public name: string;
-		public readonly parent: CategoryChannel;
-		public parentID: Snowflake;
+		public readonly parent: CategoryChannel | null;
+		public parentID: Snowflake | null;
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public position: number;
+		public readonly permissionsLocked: boolean | null;
 		public clone(name?: string, withPermissions?: boolean, withTopic?: boolean, reason?: string): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions, reason?: string): Promise<Invite>;
 		public delete(reason?: string): Promise<GuildChannel>;
@@ -638,6 +659,7 @@ declare namespace Discord {
 		public readonly client: Client;
 		public readonly colorRole: Role;
 		public readonly deaf: boolean;
+		public deleted: boolean;
 		public readonly displayColor: number;
 		public readonly displayHexColor: string;
 		public readonly displayName: string;
@@ -650,13 +672,16 @@ declare namespace Discord {
 		public readonly kickable: boolean;
 		public lastMessageID: string;
 		public readonly mute: boolean;
-		public nickname: string;
+		public nickname: string | null;
 		public readonly manageable: boolean;
 		public readonly permissions: Permissions;
+		public readonly premiumSince: Date | null;
+		public premiumSinceTimestamp: number | null;
 		public readonly presence: Presence;
 		public readonly roles: Collection<Snowflake, Role>;
 		public selfDeaf: boolean;
 		public selfMute: boolean;
+		public selfStream: boolean;
 		public serverDeaf: boolean;
 		public serverMute: boolean;
 		public speaking: boolean;
@@ -723,6 +748,7 @@ declare namespace Discord {
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
 		public readonly deletable: boolean;
+		public deleted: boolean;
 		public readonly editable: boolean;
 		public readonly editedAt: Date;
 		public editedTimestamp: number;
@@ -917,6 +943,7 @@ declare namespace Discord {
 		public rpcApplicationState: boolean;
 		public rpcOrigins: string[];
 		public secret: string;
+		public team: Team | null;
 		public reset(): OAuth2Application;
 		public toString(): string;
 	}
@@ -1063,6 +1090,7 @@ declare namespace Discord {
 		public color: number;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
+		public deleted: boolean;
 		public readonly editable: boolean;
 		public guild: Guild;
 		public readonly hexColor: string;
@@ -1214,6 +1242,34 @@ declare namespace Discord {
 		public setBitrate(bitrate: number | 'auto'): void;
 	}
 
+	export class Team {
+		constructor(client: Client, data: object);
+		public readonly client: Client;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+		public icon: string | null;
+		public readonly iconURL: string;
+		public id: Snowflake;
+		public members: Collection<Snowflake, TeamMember>;
+		public name: string;
+		public readonly owner: TeamMember;
+		public ownerID: Snowflake | null;
+
+		public toString(): string;
+	}
+
+	export class TeamMember {
+		constructor(client: Client, team: Team, data: object);
+		public readonly client: Client;
+		public id: Snowflake;
+		public membershipState: MembershipStates;
+		public permissions: string[];
+		public team: Team;
+		public user: User;
+
+		public toString(): string;
+	}
+
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data: object);
 		public lastMessageID: string;
@@ -1221,10 +1277,11 @@ declare namespace Discord {
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
 		public topic: string;
+		public rateLimitPerUser: number;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-		public setNSFW(nsfw: boolean, reason: string): Promise<this>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<this>;
 	}
 
 	export class User extends PartialTextBasedChannel() {
@@ -1651,6 +1708,7 @@ declare namespace Discord {
 		parent?: ChannelResolvable;
 		permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[];
 		rateLimitPerUser?: number;
+		reason?: string;
 	};
 
 	type ChannelLogsQueryOptions = {
@@ -1855,6 +1913,9 @@ declare namespace Discord {
 
 	type InviteResolvable = string;
 
+	type MembershipStates = 'INVITED'
+	| 'ACCEPTED';
+
 	type MessageCollectorOptions = CollectorOptions & {
 		max?: number;
 		maxMatches?: number;
@@ -1947,6 +2008,7 @@ declare namespace Discord {
 		ADD_REACTIONS?: number;
 		VIEW_AUDIT_LOG?: number;
 		PRIORITY_SPEAKER?: number;
+		STREAM?: number;
 		VIEW_CHANNEL?: number;
 		READ_MESSAGES?: number;
 		SEND_MESSAGES?: number;
@@ -1982,6 +2044,7 @@ declare namespace Discord {
 		ADD_REACTIONS?: boolean;
 		VIEW_AUDIT_LOG?: boolean;
 		PRIORITY_SPEAKER?: boolean;
+		STREAM?: boolean;
 		VIEW_CHANNEL?: boolean;
 		READ_MESSAGES?: boolean;
 		SEND_MESSAGES?: boolean;
@@ -2016,6 +2079,7 @@ declare namespace Discord {
 		| 'ADD_REACTIONS'
 		| 'VIEW_AUDIT_LOG'
 		| 'PRIORITY_SPEAKER'
+		| 'STREAM'
 		| 'VIEW_CHANNEL'
 		| 'READ_MESSAGES'
 		| 'SEND_MESSAGES'
@@ -2045,6 +2109,8 @@ declare namespace Discord {
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
 	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
+
+	type PremiumTier = number;
 
 	type PresenceData = {
 		status?: PresenceStatus;
@@ -2102,6 +2168,11 @@ declare namespace Discord {
 		position?: number;
 		permissions?: PermissionResolvable;
 		mentionable?: boolean;
+	};
+
+	type RolePosition = {
+		role: RoleResolvable;
+		position: number;
 	};
 
 	type RoleResolvable = Role | string;
@@ -2189,5 +2260,5 @@ declare namespace Discord {
 
 //#endregion
 }
-
+							
 export = Discord;
