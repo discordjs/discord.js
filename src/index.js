@@ -1,66 +1,64 @@
 const Util = require('./util/Util');
+const Client = require('./client/Client');
 
-module.exports = {
-  // "Root" classes (starting points)
-  Client: require('./client/Client'),
-  Shard: require('./sharding/Shard'),
-  ShardClientUtil: require('./sharding/ShardClientUtil'),
-  ShardingManager: require('./sharding/ShardingManager'),
-  WebhookClient: require('./client/WebhookClient'),
+function Discord() {
+  return new Client();
+}
 
-  // Utilities
-  Collection: require('./util/Collection'),
-  Constants: require('./util/Constants'),
-  DiscordAPIError: require('./client/rest/DiscordAPIError'),
-  EvaluatedPermissions: require('./util/Permissions'),
-  Permissions: require('./util/Permissions'),
-  Snowflake: require('./util/Snowflake'),
-  SnowflakeUtil: require('./util/Snowflake'),
-  Util: Util,
-  util: Util,
-  version: require('../package').version,
+Discord.Client = Client;
+Discord.Shard = require('./sharding/Shard');
+Discord.ShardClientUtil = require('./sharding/ShardClientUtil');
+Discord.ShardingManager = require('./sharding/ShardingManager');
+Discord.WebhookClient = require('./client/WebhookClient');
+Discord.Collection = require('./util/Collection');
+Discord.Constants = require('./util/Constants');
+Discord.DiscordAPIError = require('./client/rest/DiscordAPIError');
+Discord.EvaluatedPermissions = require('./util/Permissions');
+Discord.Permissions = require('./util/Permissions');
+Discord.Snowflake = require('./util/Snowflake');
+Discord.SnowflakeUtil = require('./util/Snowflake');
+Discord.Util = Util;
+Discord.util = Util;
+Discord.version = require('../package').version;
+Discord.escapeMarkdown = Util.escapeMarkdown;
+Discord.fetchRecommendedShards = Util.fetchRecommendedShards;
+Discord.splitMessage = Util.splitMessage;
+Discord.Attachment = require('./structures/Attachment');
+Discord.CategoryChannel = require('./structures/CategoryChannel');
+Discord.Channel = require('./structures/Channel');
+Discord.ClientUser = require('./structures/ClientUser');
+Discord.ClientUserSettings = require('./structures/ClientUserSettings');
+Discord.Collector = require('./structures/interfaces/Collector');
+Discord.DMChannel = require('./structures/DMChannel');
+Discord.Emoji = require('./structures/Emoji');
+Discord.Game = require('./structures/Presence').Game;
+Discord.GroupDMChannel = require('./structures/GroupDMChannel');
+Discord.Guild = require('./structures/Guild');
+Discord.GuildAuditLogs = require('./structures/GuildAuditLogs');
+Discord.GuildChannel = require('./structures/GuildChannel');
+Discord.GuildMember = require('./structures/GuildMember');
+Discord.Invite = require('./structures/Invite');
+Discord.Message = require('./structures/Message');
+Discord.MessageAttachment = require('./structures/MessageAttachment');
+Discord.MessageCollector = require('./structures/MessageCollector');
+Discord.MessageEmbed = require('./structures/MessageEmbed');
+Discord.MessageMentions = require('./structures/MessageMentions');
+Discord.MessageReaction = require('./structures/MessageReaction');
+Discord.NewsChannel = require('./structures/NewsChannel');
+Discord.OAuth2Application = require('./structures/OAuth2Application');
+Discord.ClientOAuth2Application = require('./structures/OAuth2Application');
+Discord.PartialGuild = require('./structures/PartialGuild');
+Discord.PartialGuildChannel = require('./structures/PartialGuildChannel');
+Discord.PermissionOverwrites = require('./structures/PermissionOverwrites');
+Discord.Presence = require('./structures/Presence').Presence;
+Discord.ReactionEmoji = require('./structures/ReactionEmoji');
+Discord.ReactionCollector = require('./structures/ReactionCollector');
+Discord.RichEmbed = require('./structures/RichEmbed');
+Discord.Role = require('./structures/Role');
+Discord.StoreChannel = require('./structures/StoreChannel');
+Discord.TextChannel = require('./structures/TextChannel');
+Discord.User = require('./structures/User');
+Discord.VoiceChannel = require('./structures/VoiceChannel');
+Discord.Webhook = require('./structures/Webhook');
 
-  // Shortcuts to Util methods
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  splitMessage: Util.splitMessage,
-
-  // Structures
-  Attachment: require('./structures/Attachment'),
-  CategoryChannel: require('./structures/CategoryChannel'),
-  Channel: require('./structures/Channel'),
-  ClientUser: require('./structures/ClientUser'),
-  ClientUserSettings: require('./structures/ClientUserSettings'),
-  Collector: require('./structures/interfaces/Collector'),
-  DMChannel: require('./structures/DMChannel'),
-  Emoji: require('./structures/Emoji'),
-  Game: require('./structures/Presence').Game,
-  GroupDMChannel: require('./structures/GroupDMChannel'),
-  Guild: require('./structures/Guild'),
-  GuildAuditLogs: require('./structures/GuildAuditLogs'),
-  GuildChannel: require('./structures/GuildChannel'),
-  GuildMember: require('./structures/GuildMember'),
-  Invite: require('./structures/Invite'),
-  Message: require('./structures/Message'),
-  MessageAttachment: require('./structures/MessageAttachment'),
-  MessageCollector: require('./structures/MessageCollector'),
-  MessageEmbed: require('./structures/MessageEmbed'),
-  MessageMentions: require('./structures/MessageMentions'),
-  MessageReaction: require('./structures/MessageReaction'),
-  NewsChannel: require('./structures/NewsChannel'),
-  OAuth2Application: require('./structures/OAuth2Application'),
-  ClientOAuth2Application: require('./structures/OAuth2Application'),
-  PartialGuild: require('./structures/PartialGuild'),
-  PartialGuildChannel: require('./structures/PartialGuildChannel'),
-  PermissionOverwrites: require('./structures/PermissionOverwrites'),
-  Presence: require('./structures/Presence').Presence,
-  ReactionEmoji: require('./structures/ReactionEmoji'),
-  ReactionCollector: require('./structures/ReactionCollector'),
-  RichEmbed: require('./structures/RichEmbed'),
-  Role: require('./structures/Role'),
-  StoreChannel: require('./structures/StoreChannel'),
-  TextChannel: require('./structures/TextChannel'),
-  User: require('./structures/User'),
-  VoiceChannel: require('./structures/VoiceChannel'),
-  Webhook: require('./structures/Webhook'),
-};
+module.exports = Discord;
