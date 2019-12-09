@@ -49,7 +49,7 @@ For production bots, using node-opus should be considered a necessity, especiall
 ## Example usage
 ```js
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord();
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
