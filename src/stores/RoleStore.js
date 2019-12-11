@@ -76,7 +76,7 @@ class RoleStore extends DataStore {
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
-   * @param {RoleData} [options.data] The data to update the role with
+   * @param {RoleData} [options.data] The data to create the role with
    * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
@@ -108,6 +108,15 @@ class RoleStore extends DataStore {
       if (data.position) return role.setPosition(data.position, reason);
       return role;
     });
+  }
+
+  /**
+   * The `@everyone` role of the guild
+   * @type {?Role}
+   * @readonly
+   */
+  get everyone() {
+    return this.get(this.guild.id) || null;
   }
 
   /**

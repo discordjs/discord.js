@@ -83,31 +83,6 @@ class MessageStore extends DataStore {
   }
 
   /**
-   * Deletes a message, even if it's not cached.
-   * @param {MessageResolvable} message The message to delete
-   * @param {string} [reason] Reason for deleting this message, if it does not belong to the client user
-   */
-  async remove(message, reason) {
-    message = this.resolveID(message);
-    if (message) await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
-  }
-
-  async _fetchId(messageID, cache) {
-    const existing = this.get(messageID);
-    if (existing && !existing.partial) return existing;
-    const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
-    return this.add(data, cache);
-  }
-
-  async _fetchMany(options = {}, cache) {
-    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
-    const messages = new Collection();
-    for (const message of data) messages.set(message.id, this.add(message, cache));
-    return messages;
-  }
-
-
-  /**
    * Data that can be resolved to a Message object. This can be:
    * * A Message
    * * A Snowflake
@@ -131,6 +106,30 @@ class MessageStore extends DataStore {
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?Snowflake}
     */
+
+  /**
+   * Deletes a message, even if it's not cached.
+   * @param {MessageResolvable} message The message to delete
+   * @param {string} [reason] Reason for deleting this message, if it does not belong to the client user
+   */
+  async remove(message, reason) {
+    message = this.resolveID(message);
+    if (message) await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
+  }
+
+  async _fetchId(messageID, cache) {
+    const existing = this.get(messageID);
+    if (existing && !existing.partial) return existing;
+    const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
+    return this.add(data, cache);
+  }
+
+  async _fetchMany(options = {}, cache) {
+    const data = await this.client.api.channels[this.channel.id].messages.get({ query: options });
+    const messages = new Collection();
+    for (const message of data) messages.set(message.id, this.add(message, cache));
+    return messages;
+  }
 }
 
 module.exports = MessageStore;

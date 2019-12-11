@@ -25,7 +25,7 @@ class VoiceStateUpdate extends Action {
       }
 
       // Emit event
-      if (member && member.user.id === client.user.id && data.channel_id) {
+      if (member && member.user.id === client.user.id) {
         client.emit('debug', `[VOICE] received voice state update: ${JSON.stringify(data)}`);
         client.voice.onVoiceStateUpdate(data);
       }
@@ -33,7 +33,7 @@ class VoiceStateUpdate extends Action {
       /**
        * Emitted whenever a member changes voice state - e.g. joins/leaves a channel, mutes/unmutes.
        * @event Client#voiceStateUpdate
-       * @param {?VoiceState} oldState The voice state before the update
+       * @param {VoiceState} oldState The voice state before the update
        * @param {VoiceState} newState The voice state after the update
        */
       client.emit(Events.VOICE_STATE_UPDATE, oldState, newState);

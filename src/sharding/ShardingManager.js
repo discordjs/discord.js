@@ -73,7 +73,7 @@ class ShardingManager extends EventEmitter {
       if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
       if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
         !Number.isInteger(shardID) || shardID < 0)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of postive integers.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of positive integers.');
       }
     }
 

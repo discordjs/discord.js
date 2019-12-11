@@ -93,7 +93,7 @@ class APIMessage {
     if (content || mentionPart) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.escapeMarkdown(content || '', true)}\n\`\`\``;
+        content = `${mentionPart}\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content || '')}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;

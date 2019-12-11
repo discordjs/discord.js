@@ -2,23 +2,24 @@
 
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
-const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
-const { TextDecoder } = require('util');
+const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
 let zstd;
-let decoder;
-
 let zlib;
 
-try {
-  zstd = require('zucc');
-  decoder = new TextDecoder('utf8');
-} catch (e) {
+if (browser) {
+  zlib = require('pako');
+} else {
   try {
-    zlib = require('zlib-sync');
-    if (!zlib.Inflate) zlib = require('pako');
-  } catch (err) {
-    zlib = require('pako');
+    zstd = require('zucc');
+    if (!zstd.DecompressStream) zstd = null;
+  } catch (e) {
+    try {
+      zlib = require('zlib-sync');
+      if (!zlib.Inflate) zlib = require('pako');
+    } catch (err) {
+      zlib = require('pako');
+    }
   }
 }
 
@@ -87,13 +88,6 @@ class WebSocketShard extends EventEmitter {
      * @private
      */
     this.lastHeartbeatAcked = true;
-
-    /**
-     * List of servers the shard is connected to
-     * @type {string[]}
-     * @private
-     */
-    this.trace = [];
 
     /**
      * Contains the rate limit queue and metadata
@@ -259,8 +253,7 @@ class WebSocketShard extends EventEmitter {
   onMessage({ data }) {
     let raw;
     if (zstd) {
-      const ab = this.inflate.decompress(new Uint8Array(data).buffer);
-      raw = decoder.decode(ab);
+      raw = this.inflate.decompress(new Uint8Array(data).buffer);
     } else {
       if (data instanceof ArrayBuffer) data = new Uint8Array(data);
       const l = data.length;
@@ -373,9 +366,8 @@ class WebSocketShard extends EventEmitter {
         this.emit(ShardEvents.READY);
 
         this.sessionID = packet.d.session_id;
-        this.trace = packet.d._trace;
         this.status = Status.READY;
-        this.debug(`READY ${this.trace.join(' -> ')} | Session ${this.sessionID}.`);
+        this.debug(`READY | Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
         break;
@@ -386,10 +378,9 @@ class WebSocketShard extends EventEmitter {
          */
         this.emit(ShardEvents.RESUMED);
 
-        this.trace = packet.d._trace;
         this.status = Status.READY;
         const replayed = packet.s - this.closeSequence;
-        this.debug(`RESUMED ${this.trace.join(' -> ')} | Session ${this.sessionID} | Replayed ${replayed} events.`);
+        this.debug(`RESUMED | Session ${this.sessionID} | Replayed ${replayed} events.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat();
       }
@@ -479,7 +470,7 @@ class WebSocketShard extends EventEmitter {
    */
   sendHeartbeat() {
     if (!this.lastHeartbeatAcked) {
-      this.debug("Didn't receive a heartbeat ack last time, assuming zombie conenction. Destroying and reconnecting.");
+      this.debug("Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.");
       this.destroy(4009);
       return;
     }

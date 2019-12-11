@@ -18,6 +18,15 @@ class BitField {
   }
 
   /**
+   * Checks whether the bitfield has a bit, or any of multiple bits.
+   * @param {BitFieldResolvable} bit Bit(s) to check for
+   * @returns {boolean}
+   */
+  any(bit) {
+    return (this.bitfield & this.constructor.resolve(bit)) !== 0;
+  }
+
+  /**
    * Checks if this bitfield equals another
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
@@ -137,7 +146,7 @@ class BitField {
     if (typeof bit === 'number' && bit >= 0) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (typeof bit === 'string') return this.FLAGS[bit];
+    if (typeof bit === 'string' && typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
     throw new RangeError('BITFIELD_INVALID');
   }
 }

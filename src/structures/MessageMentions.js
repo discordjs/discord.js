@@ -3,12 +3,13 @@
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const GuildMember = require('./GuildMember');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
-  constructor(message, users, roles, everyone) {
+  constructor(message, users, roles, everyone, crosspostedChannels) {
     /**
      * The client the message is from
      * @type {Client}
@@ -47,7 +48,7 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          let user = message.client.users.add(mention);
+          const user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
       }
@@ -86,6 +87,39 @@ class MessageMentions {
      * @private
      */
     this._channels = null;
+
+    /**
+     * Crossposted channel data.
+     * @typedef {Object} CrosspostedChannel
+     * @property {string} channelID ID of the mentioned channel
+     * @property {string} guildID ID of the guild that has the channel
+     * @property {string} type Type of the channel
+     * @property {string} name The name of the channel
+     */
+
+    if (crosspostedChannels) {
+      if (crosspostedChannels instanceof Collection) {
+        /**
+         * A collection of crossposted channels
+         * @type {Collection<Snowflake, CrosspostedChannel>}
+         */
+        this.crosspostedChannels = new Collection(crosspostedChannels);
+      } else {
+        this.crosspostedChannels = new Collection();
+        const channelTypes = Object.keys(ChannelTypes);
+        for (const d of crosspostedChannels) {
+          const type = channelTypes[d.type];
+          this.crosspostedChannels.set(d.id, {
+            channelID: d.id,
+            guildID: d.guild_id,
+            type: type ? type.toLowerCase() : 'unknown',
+            name: d.name,
+          });
+        }
+      }
+    } else {
+      this.crosspostedChannels = new Collection();
+    }
   }
 
   /**

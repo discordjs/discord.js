@@ -3,6 +3,7 @@
 const Util = require('../util/Util');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
+const Emoji = require('./Emoji');
 
 /**
  * Activity sent in a message.
@@ -37,6 +38,12 @@ class Presence {
    * @param {Object} [data={}] The data for the presence
    */
   constructor(client, data = {}) {
+    /**
+     * The client that instantiated this
+     * @name Presence#client
+     * @type {Client}
+     * @readonly
+     */
     Object.defineProperty(this, 'client', { value: client });
     /**
      * The user ID of this presence
@@ -199,6 +206,18 @@ class Activity {
      * @type {Readonly<ActivityFlags>}
      */
     this.flags = new ActivityFlags(data.flags).freeze();
+
+    /**
+     * Emoji for a custom activity
+     * @type {?Emoji}
+     */
+    this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
+
+    /**
+     * Creation date of the activity
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
   }
 
   /**
@@ -213,6 +232,15 @@ class Activity {
       this.type === activity.type &&
       this.url === activity.url
     );
+  }
+
+  /**
+   * The time the activity was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**

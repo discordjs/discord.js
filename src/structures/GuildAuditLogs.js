@@ -53,6 +53,9 @@ const Targets = {
  * * MEMBER_BAN_REMOVE: 23
  * * MEMBER_UPDATE: 24
  * * MEMBER_ROLE_UPDATE: 25
+ * * MEMBER_MOVE: 26
+ * * MEMBER_DISCONNECT: 27
+ * * BOT_ADD: 28,
  * * ROLE_CREATE: 30
  * * ROLE_UPDATE: 31
  * * ROLE_DELETE: 32
@@ -66,6 +69,12 @@ const Targets = {
  * * EMOJI_UPDATE: 61
  * * EMOJI_DELETE: 62
  * * MESSAGE_DELETE: 72
+ * * MESSAGE_BULK_DELETE: 73
+ * * MESSAGE_PIN: 74
+ * * MESSAGE_UNPIN: 75
+ * * INTEGRATION_CREATE: 80
+ * * INTEGRATION_UPDATE: 81
+ * * INTEGRATION_DELETE: 82
  * @typedef {?number|string} AuditLogAction
  */
 
@@ -89,6 +98,9 @@ const Actions = {
   MEMBER_BAN_REMOVE: 23,
   MEMBER_UPDATE: 24,
   MEMBER_ROLE_UPDATE: 25,
+  MEMBER_MOVE: 26,
+  MEMBER_DISCONNECT: 27,
+  BOT_ADD: 28,
   ROLE_CREATE: 30,
   ROLE_UPDATE: 31,
   ROLE_DELETE: 32,
@@ -102,6 +114,12 @@ const Actions = {
   EMOJI_UPDATE: 61,
   EMOJI_DELETE: 62,
   MESSAGE_DELETE: 72,
+  MESSAGE_BULK_DELETE: 73,
+  MESSAGE_PIN: 74,
+  MESSAGE_UNPIN: 75,
+  INTEGRATION_CREATE: 80,
+  INTEGRATION_UPDATE: 81,
+  INTEGRATION_DELETE: 82,
 };
 
 
@@ -349,19 +367,20 @@ class GuildAuditLogsEntry {
             guild_id: guild.id,
           }));
     } else if (targetType === Targets.INVITE) {
-      if (guild.me.permissions.has('MANAGE_GUILD')) {
-        const change = this.changes.find(c => c.key === 'code');
-        this.target = guild.fetchInvites()
-          .then(invites => {
+      this.target = guild.members.fetch(guild.client.user.id).then(me => {
+        if (me.permissions.has('MANAGE_GUILD')) {
+          const change = this.changes.find(c => c.key === 'code');
+          return guild.fetchInvites().then(invites => {
             this.target = invites.find(i => i.code === (change.new || change.old));
-            return this.target;
           });
-      } else {
-        this.target = this.changes.reduce((o, c) => {
-          o[c.key] = c.new || c.old;
-          return o;
-        }, {});
-      }
+        } else {
+          this.target = this.changes.reduce((o, c) => {
+            o[c.key] = c.new || c.old;
+            return o;
+          }, {});
+          return this.target;
+        }
+      });
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.get(data.target_id);
     } else {

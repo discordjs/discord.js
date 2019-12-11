@@ -2,6 +2,7 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const DMChannel = require('../../structures/DMChannel');
 
 class ChannelDeleteAction extends Action {
   constructor(client) {
@@ -16,6 +17,11 @@ class ChannelDeleteAction extends Action {
     if (channel) {
       client.channels.remove(channel.id);
       channel.deleted = true;
+      if (channel.messages && !(channel instanceof DMChannel)) {
+        for (const message of channel.messages.values()) {
+          message.deleted = true;
+        }
+      }
       /**
        * Emitted whenever a channel is deleted.
        * @event Client#channelDelete
