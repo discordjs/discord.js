@@ -727,8 +727,8 @@ declare module 'discord.js' {
 		public editedTimestamp: number;
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
-		public readonly guild: Guild;
-		public hit: boolean;
+		public readonly guild?: Guild;
+		public hit?: boolean;
 		public id: Snowflake;
 		public member: GuildMember;
 		public mentions: MessageMentions;
