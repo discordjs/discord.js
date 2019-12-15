@@ -1403,6 +1403,7 @@ declare module 'discord.js' {
 		public locale: string;
 		public readonly partial: false;
 		public readonly presence: Presence;
+		public system?: boolean;
 		public readonly tag: string;
 		public username: string;
 		public avatarURL(options?: AvatarOptions): string | null;
@@ -1922,7 +1923,9 @@ declare module 'discord.js' {
 
 	type MessageFlagsString = 'CROSSPOSTED'
 		| 'IS_CROSSPOST'
-		| 'SUPPRESS_EMBEDS';
+		| 'SUPPRESS_EMBEDS'
+		| 'SOURCE_MESSAGE_DELETED'
+		| 'URGENT';
 
 	interface APIErrror {
 		UNKNOWN_ACCOUNT: number;
