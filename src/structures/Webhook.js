@@ -220,6 +220,16 @@ class Webhook {
     return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
   }
 
+  /**
+   * A link to the webhook's avatar.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  avatarURL({ format, size } = {}) {
+    if (!this.avatar) return null;
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+  }
+
   static applyToClass(structure) {
     for (const prop of [
       'send',
