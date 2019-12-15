@@ -219,7 +219,7 @@ class Webhook {
   get url() {
     return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
   }
-  
+
   /**
    * A link to the user's avatar.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
