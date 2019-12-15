@@ -1620,6 +1620,7 @@ declare module 'discord.js' {
 	export class Webhook extends WebhookMixin() {
 		constructor(client: Client, data?: object);
 		public avatar: string;
+		public avatarURL(options?: AvatarOptions): string | null;
 		public channelID: Snowflake;
 		public guildID: Snowflake;
 		public name: string;
