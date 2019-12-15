@@ -7,9 +7,10 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
- * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
- * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
+ * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
+ * recommended amount of shards from Discord and spawn that amount
+ * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
@@ -42,7 +43,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  */
 exports.DefaultOptions = {
   shardCount: 1,
-  totalShardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -163,6 +163,9 @@ exports.Endpoints = {
  * * IDLE: 3
  * * NEARLY: 4
  * * DISCONNECTED: 5
+ * * WAITING_FOR_GUILDS: 6
+ * * IDENTIFYING: 7
+ * * RESUMING: 8
  * @typedef {number} Status
  */
 exports.Status = {
@@ -172,6 +175,9 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+  WAITING_FOR_GUILDS: 6,
+  IDENTIFYING: 7,
+  RESUMING: 8,
 };
 
 /**
@@ -279,6 +285,7 @@ exports.ShardEvents = {
   INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',
+  ALL_READY: 'allReady',
 };
 
 /**

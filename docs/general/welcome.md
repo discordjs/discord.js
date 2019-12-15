@@ -24,8 +24,8 @@ v12 is still very much a work-in-progress, as we're aiming to make it the best i
 Only use it if you are fond of living life on the bleeding edge.
 
 ## About
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
-[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+[Discord API](https://discordapp.com/developers/docs/intro).
 
 - Object-oriented
 - Predictable abstractions
@@ -46,14 +46,13 @@ Using opusscript is only recommended for development environments where node-opu
 For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`)
-- [zucc](https://www.npmjs.com/package/zucc) for significantly faster WebSocket data inflation (`npm install zucc`)
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for faster WebSocket data inflation (`npm install zlib-sync`)
 - [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
     - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
-- [uws](https://www.npmjs.com/package/@discordjs/uws) for a much faster WebSocket connection (`npm install @discordjs/uws`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection when *not* using uws (`npm install bufferutil`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Example usage
 ```js
