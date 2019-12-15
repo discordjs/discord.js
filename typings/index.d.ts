@@ -711,7 +711,7 @@ declare module 'discord.js' {
 		public shardID: number;
 		public splash: string | null;
 		public readonly systemChannel: TextChannel | null;
-		public readonly systemChannelFlags: SystemChannelFlags;
+		public systemChannelFlags: Readonly<SystemChannelFlags>;
 		public systemChannelID: Snowflake | null;
 		public vanityURLCode: string | null;
 		public verificationLevel: number;

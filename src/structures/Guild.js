@@ -278,7 +278,7 @@ class Guild extends Base {
 
     /**
      * The value set for the guild's system channel flags
-     * @type {ReadOnly<SystemChannelFlags>}
+     * @type {Readonly<SystemChannelFlags>}
      */
     this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
@@ -780,7 +780,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [splash] The splash screen of the guild
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
-   * @property {SystemChannelFlags} [systemChannelFlags] The system channel settings of the guild
+   * @property {SystemChannelFlags} [systemChannelFlags] The system channel flags of the guild
    */
 
   /**
@@ -851,9 +851,9 @@ class Guild extends Base {
   /* eslint-enable max-len */
 
   /**
-   * Edits the setting of the default message notifications of the guild.
-   * @param {SystemChannelFlags} systemChannelFlags The new setting for the default message notifications
-   * @param {string} [reason] Reason for changing the setting of the default message notifications
+   * Edits the flags of the default message notifications of the guild.
+   * @param {SystemChannelFlags} systemChannelFlags The new flags for the default message notifications
+   * @param {string} [reason] Reason for changing the flags of the default message notifications
    * @returns {Promise<Guild>}
    */
   setSystemChannelFlags(systemChannelFlags, reason) {
