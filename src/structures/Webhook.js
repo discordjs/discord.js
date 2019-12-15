@@ -221,7 +221,7 @@ class Webhook {
   }
 
   /**
-   * A link to the user's avatar.
+   * A link to the webhooks's avatar.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
