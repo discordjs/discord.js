@@ -69,7 +69,7 @@ client.on('message', msg => {
   }
 });
 
-client.login('token');
+client.login('NjE4MDgxNjg0MTg4ODIzNTcy.XfZzbA.DRrg97dI_4sHjUc2Dt4AVxnoTns');
 ```
 
 ## Links
