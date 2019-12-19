@@ -1384,7 +1384,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data?: object);
 		public messages: MessageStore;
 		public nsfw: boolean;
-		public topic?: string;
+		public topic: string | null;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
