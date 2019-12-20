@@ -2148,6 +2148,8 @@ declare module 'discord.js' {
 		TextChannel: typeof TextChannel;
 		VoiceChannel: typeof VoiceChannel;
 		CategoryChannel: typeof CategoryChannel;
+		NewsChannel: typeof NewsChannel;
+		StoreChannel: typeof StoreChannel;
 		GuildMember: typeof GuildMember;
 		Guild: typeof Guild;
 		Message: typeof Message;
