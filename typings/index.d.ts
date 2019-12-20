@@ -1021,6 +1021,8 @@ declare module 'discord.js' {
 		public channel: Channel;
 		public options: MessageCollectorOptions;
 		public received: number;
+		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
+		private _handleGuildDeletion(guild: Guild): Guild | null;
 
 		public collect(message: Message): Snowflake;
 		public dispose(message: Message): Snowflake;
@@ -1154,6 +1156,9 @@ declare module 'discord.js' {
 		public dispose(reaction: MessageReaction, user: User): Snowflake | string;
 		public empty(): void;
 		public endReason(): string | null;
+		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
+		private _handleGuildDeletion(guild: Guild): Guild | null;
+		private _handleMessageDeletion(message: Message): Message | null;
 
 		public on(event: 'collect', listener: (reaction: MessageReaction, user: User) => void): this;
 		public on(event: 'dispose', listener: (reaction: MessageReaction, user: User) => void): this;
