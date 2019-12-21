@@ -2328,7 +2328,7 @@ declare module 'discord.js' {
 
 	type GuildMemberResolvable = GuildMember | UserResolvable;
 
-	type GuildResolvable = Guild | Snowflake;
+	type GuildResolvable = Guild | GuildChannel | GuildMember | Role | Snowflake;
 
 	interface GuildPruneMembersOptions {
 		count?: boolean;
