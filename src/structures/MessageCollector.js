@@ -11,6 +11,7 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects messages on a channel.
+ * Will automatically stop if the Channel or Guild are deleted.
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
@@ -103,29 +104,25 @@ class MessageCollector extends Collector {
   /**
    * Handles checking if the Channel has been deleted, and if so, stops the Collector with a reason of 'channelDelete'.
    * @private
-   * @param {GuildChannel} channel The channel that was deleted.
-   * @returns {TextChannel|null}
+   * @param {GuildChannel} channel The channel that was deleted
+   * @returns {void}
    */
   _handleChannelDeletion(channel) {
     if (channel.id === this.channel.id) {
       this.stop('channelDelete');
-      return channel;
     }
-    return null;
   }
 
   /**
    * Handles checking if the Guild has been deleted, and if so, stops the Collector with a reason of 'guildDelete'.
    * @private
-   * @param {Guild} guild The guild that was deleted.
-   * @returns {Guild|null}
+   * @param {Guild} guild The guild that was deleted
+   * @returns {void}
    */
   _handleGuildDeletion(guild) {
-    if (this.channel.guild && guild.id === this.channel.guild) {
+    if (this.channel.guild && guild.id === this.channel.guild.id) {
       this.stop('guildDelete');
-      return guild;
     }
-    return null;
   }
 }
 

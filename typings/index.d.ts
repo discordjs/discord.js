@@ -1018,11 +1018,12 @@ declare module 'discord.js' {
 
 	export class MessageCollector extends Collector<Snowflake, Message> {
 		constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
+		private _handleGuildDeletion(guild: Guild): Guild | null;
+
 		public channel: Channel;
 		public options: MessageCollectorOptions;
 		public received: number;
-		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
-		private _handleGuildDeletion(guild: Guild): Guild | null;
 
 		public collect(message: Message): Snowflake;
 		public dispose(message: Message): Snowflake;
@@ -1145,6 +1146,10 @@ declare module 'discord.js' {
 
 	export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
 		constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
+		private _handleGuildDeletion(guild: Guild): Guild | null;
+		private _handleMessageDeletion(message: Message): Message | null;
+		
 		public message: Message;
 		public options: ReactionCollectorOptions;
 		public total: number;
@@ -1156,9 +1161,6 @@ declare module 'discord.js' {
 		public dispose(reaction: MessageReaction, user: User): Snowflake | string;
 		public empty(): void;
 		public endReason(): string | null;
-		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
-		private _handleGuildDeletion(guild: Guild): Guild | null;
-		private _handleMessageDeletion(message: Message): Message | null;
 
 		public on(event: 'collect', listener: (reaction: MessageReaction, user: User) => void): this;
 		public on(event: 'dispose', listener: (reaction: MessageReaction, user: User) => void): this;
