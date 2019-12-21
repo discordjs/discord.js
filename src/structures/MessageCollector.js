@@ -107,7 +107,7 @@ class MessageCollector extends Collector {
    * @returns {TextChannel|null}
    */
   _handleChannelDeletion(channel) {
-    if (channel.id === this.message.channel.id) {
+    if (channel.id === this.channel.id) {
       this.stop('channelDelete');
       return channel;
     }
@@ -121,7 +121,7 @@ class MessageCollector extends Collector {
    * @returns {Guild|null}
    */
   _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
+    if (this.channel.guild && guild.id === this.channel.guild) {
       this.stop('guildDelete');
       return guild;
     }
