@@ -1149,7 +1149,7 @@ declare module 'discord.js' {
 		private _handleChannelDeletion(channel: GuildChannel): TextChannel | null;
 		private _handleGuildDeletion(guild: Guild): Guild | null;
 		private _handleMessageDeletion(message: Message): Message | null;
-		
+
 		public message: Message;
 		public options: ReactionCollectorOptions;
 		public total: number;
