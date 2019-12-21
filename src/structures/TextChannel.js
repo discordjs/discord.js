@@ -138,7 +138,6 @@ class TextChannel extends GuildChannel {
   createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
-  acknowledge() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);
