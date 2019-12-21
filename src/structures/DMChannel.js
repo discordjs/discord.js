@@ -83,7 +83,6 @@ class DMChannel extends Channel {
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
-  acknowledge() {}
   _cacheMessage() {}
 }
 
