@@ -10,6 +10,7 @@ const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
+const SystemChannelFlags = require('../util/SystemChannelFlags');
 const GuildMemberStore = require('../stores/GuildMemberStore');
 const RoleStore = require('../stores/RoleStore');
 const GuildEmojiStore = require('../stores/GuildEmojiStore');
@@ -274,6 +275,12 @@ class Guild extends Base {
      */
     this.defaultMessageNotifications = DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
+
+    /**
+     * The value set for the guild's system channel flags
+     * @type {Readonly<SystemChannelFlags>}
+     */
+    this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
     /**
      * The maximum amount of members the guild can have
@@ -773,6 +780,7 @@ class Guild extends Base {
    * @property {Base64Resolvable} [splash] The splash screen of the guild
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
+   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    */
 
   /**
@@ -813,6 +821,9 @@ class Guild extends Base {
         DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
         Number(data.defaultMessageNotifications);
     }
+    if (typeof data.systemChannelFlags !== 'undefined') {
+      _data.systemChannelFlags = SystemChannelFlags.resolve(data.systemChannelFlags);
+    }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
@@ -838,6 +849,16 @@ class Guild extends Base {
     return this.edit({ defaultMessageNotifications }, reason);
   }
   /* eslint-enable max-len */
+
+  /**
+   * Edits the flags of the default message notifications of the guild.
+   * @param {SystemChannelFlagsResolvable} systemChannelFlags The new flags for the default message notifications
+   * @param {string} [reason] Reason for changing the flags of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setSystemChannelFlags(systemChannelFlags, reason) {
+    return this.edit({ systemChannelFlags }, reason);
+  }
 
   /**
    * Edits the name of the guild.
