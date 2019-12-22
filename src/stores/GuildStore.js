@@ -6,6 +6,7 @@ const { Events } = require('../util/Constants');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildMember = require('../structures/GuildMember');
+const GuildEmoji = require('../structures/GuildEmoji');
 const Role = require('../structures/Role');
 
 /**
@@ -21,9 +22,10 @@ class GuildStore extends DataStore {
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
    * * A GuildChannel object
+   * * A GuildEmoji object
    * * A Role object
    * * A Snowflake
-   * @typedef {Guild|GuildChannel|GuildMember|Role|Snowflake} GuildResolvable
+   * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake} GuildResolvable
    */
 
   /**
@@ -37,6 +39,7 @@ class GuildStore extends DataStore {
   resolve(guild) {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
+      guild instanceof GuildEmoji ||
       guild instanceof Role) return super.resolve(guild.guild);
     return super.resolve(guild);
   }
@@ -52,6 +55,7 @@ class GuildStore extends DataStore {
   resolveID(guild) {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
+      guild instanceof GuildEmoji ||
       guild instanceof Role) return super.resolveID(guild.guild.id);
     return super.resolveID(guild);
   }
