@@ -16,4 +16,6 @@ module.exports = (client, { d: data }, shard) => {
     guild.shardID = shard.id;
     client.guilds.add(guild);
   }
+
+  shard.checkReady();
 };

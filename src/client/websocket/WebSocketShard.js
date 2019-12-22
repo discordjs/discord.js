@@ -373,7 +373,6 @@ class WebSocketShard extends EventEmitter {
         this.debug(`[READY] Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
         this.sendHeartbeat('ReadyHeartbeat');
-        this.checkReady();
         break;
       case WSEvents.RESUMED: {
         /**
