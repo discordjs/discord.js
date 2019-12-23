@@ -53,9 +53,6 @@
     "zlib-sync": "^0.1.6"
   },
   "peerDependenciesMeta": {
-    "@discordjs/uws": {
-      "optional": true
-    },
     "bufferutil": {
       "optional": true
     },
@@ -72,9 +69,6 @@
       "optional": true
     },
     "zlib-sync": {
-      "optional": true
-    },
-    "zucc": {
       "optional": true
     }
   },
