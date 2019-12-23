@@ -53,9 +53,6 @@
     "zlib-sync": "^0.1.6"
   },
   "peerDependenciesMeta": {
-    "@discordjs/uws": {
-      "optional": true
-    },
     "bufferutil": {
       "optional": true
     },
@@ -68,10 +65,10 @@
     "sodium": {
       "optional": true
     },
-    "zlib-sync": {
+    "utf-8-validate": {
       "optional": true
     },
-    "zucc": {
+    "zlib-sync": {
       "optional": true
     }
   },
