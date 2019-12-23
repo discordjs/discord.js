@@ -43,7 +43,7 @@ class GuildStore extends DataStore {
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      guild instanceof Invite && guild.guild) return super.resolve(guild.guild);
+      (guild instanceof Invite && guild.guild)) return super.resolve(guild.guild);
     return super.resolve(guild);
   }
 
