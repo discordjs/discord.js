@@ -68,6 +68,9 @@
     "sodium": {
       "optional": true
     },
+    "utf-8-validate": {
+      "optional": true
+    },
     "zlib-sync": {
       "optional": true
     },
