@@ -7,6 +7,7 @@ const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildMember = require('../structures/GuildMember');
 const GuildEmoji = require('../structures/GuildEmoji');
+const Invite = require('../structures/Invite');
 const Role = require('../structures/Role');
 
 /**
@@ -25,6 +26,7 @@ class GuildStore extends DataStore {
    * * A GuildEmoji object
    * * A Role object
    * * A Snowflake
+   * * An Invite object
    * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake} GuildResolvable
    */
 
@@ -40,7 +42,8 @@ class GuildStore extends DataStore {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
-      guild instanceof Role) return super.resolve(guild.guild);
+      guild instanceof Role ||
+      guild instanceof Invite && guild.guild) return super.resolve(guild.guild);
     return super.resolve(guild);
   }
 
@@ -56,7 +59,8 @@ class GuildStore extends DataStore {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
-      guild instanceof Role) return super.resolveID(guild.guild.id);
+      guild instanceof Role ||
+      guild instanceof Invite && guild.guild) return super.resolveID(guild.guild.id);
     return super.resolveID(guild);
   }
 
