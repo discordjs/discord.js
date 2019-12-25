@@ -87,7 +87,7 @@
     "webpack-cli": "^3.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=10.2.0"
   },
   "browser": {
     "https": false,
