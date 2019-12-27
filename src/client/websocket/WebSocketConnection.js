@@ -21,7 +21,8 @@ const WebSocket = (function findWebSocket() {
     const uws = require('@discordjs/uws');
     if (!warnedUWS) {
       warnedUWS = true;
-      process.emitWarning('uws support is being removed in the next version of discord.js', 'DeprecationWarning', findWebSocket);
+      process.emitWarning('uws support is being removed in the next version of discord.js',
+        'DeprecationWarning', findWebSocket);
     }
     return uws;
   } catch (e) {
