@@ -1636,11 +1636,13 @@ declare module 'discord.js' {
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object | null;
-		public readonly url: string;
+		public token: string | null;
+		public type: WebhookTypes;
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
+		public token: string;
 	}
 
 	export class WebSocketManager extends EventEmitter {
@@ -1909,7 +1911,9 @@ declare module 'discord.js' {
 	interface WebhookFields {
 		readonly client: Client;
 		id: Snowflake;
-		token: string;
+		readonly createdAt: Date;
+		readonly createdTimestamp: number;
+		readonly url: string;
 		delete(reason?: string): Promise<void>;
 		edit(options: WebhookEditData): Promise<Webhook>;
 		send(content?: StringResolvable, options?: WebhookMessageOptions & { split?: false } | MessageAdditions): Promise<Message>;
@@ -2653,6 +2657,8 @@ declare module 'discord.js' {
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 	}
+
+	type WebhookTypes = 'Incoming' | 'Channel Follower';
 
 	interface WebSocketOptions {
 		large_threshold?: number;
