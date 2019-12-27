@@ -194,20 +194,20 @@ class Webhook {
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit({ name = this.name, avatar, channel }, reason) {
+  async edit({ name = this.name, avatar, channel }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
+      avatar = await DataResolver.resolveImage(avatar);
     }
     if (channel) channel = channel instanceof Channel ? channel.id : channel;
-    return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+    const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
-    }).then(data => {
-      this.name = data.name;
-      this.avatar = data.avatar;
-      this.channelID = data.channel_id;
-      return this;
     });
+
+    this.name = data.name;
+    this.avatar = data.avatar;
+    this.channelID = data.channel_id;
+    return this;
   }
 
   /**
