@@ -13,17 +13,12 @@ const erlpack = (function findErlpack() {
   }
 }());
 
-let warnedUWS;
-
 const WebSocket = (function findWebSocket() {
   if (browser) return window.WebSocket; // eslint-disable-line no-undef
   try {
     const uws = require('@discordjs/uws');
-    if (!warnedUWS) {
-      warnedUWS = true;
-      process.emitWarning('uws support is being removed in the next version of discord.js',
-        'DeprecationWarning', findWebSocket);
-    }
+    process.emitWarning('uws support is being removed in the next version of discord.js',
+      'DeprecationWarning', findWebSocket);
     return uws;
   } catch (e) {
     return require('ws');
