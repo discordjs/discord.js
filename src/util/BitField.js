@@ -103,7 +103,7 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const flag of Object.keys(this.constructor.FLAGS)) serialized[flag] = this.has(flag, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.FLAGS)) serialized[flag] = this.has(bit, ...hasParams);
     return serialized;
   }
 
