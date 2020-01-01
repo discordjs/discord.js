@@ -843,6 +843,7 @@ declare module 'discord.js' {
 		public managed: boolean;
 		public requiresColons: boolean;
 		public roles: GuildEmojiRoleStore;
+		public url: string;
 		public delete(reason?: string): Promise<GuildEmoji>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
 		public equals(other: GuildEmoji | object): boolean;
