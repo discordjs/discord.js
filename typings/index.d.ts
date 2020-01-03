@@ -1285,6 +1285,7 @@ declare module 'discord.js' {
 	export class ShardingManager extends EventEmitter {
 		constructor(file: string, options?: {
 			totalShards?: number | 'auto';
+			shardList?: number[] | 'auto';
 			mode?: ShardingManagerMode;
 			respawn?: boolean;
 			shardArgs?: string[];
