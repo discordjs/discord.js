@@ -85,12 +85,11 @@ class Presence {
      */
     this.status = data.status || this.status || 'offline';
 
-    const activity = data.game || data.activity;
     /**
-     * The activity of this presence
-     * @type {?Activity}
+     * The activities of this presence
+     * @type {Activity[]}
      */
-    this.activity = activity ? new Activity(this, activity) : null;
+    this.activities = data.activities ? data.activities.map(activity => new Activity(this, activity)) : [];
 
     /**
      * The devices this presence is on
