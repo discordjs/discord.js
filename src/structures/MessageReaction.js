@@ -28,18 +28,23 @@ class MessageReaction {
     this.me = data.me;
 
     /**
-     * The number of people that have given the same reaction
-     * @type {number}
-     */
-    this.count = data.count || 0;
-
-    /**
      * The users that have given this reaction, mapped by their ID
      * @type {ReactionUserStore<Snowflake, User>}
      */
     this.users = new ReactionUserStore(client, undefined, this);
 
     this._emoji = new ReactionEmoji(this, data.emoji);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
+     * The number of people that have given the same reaction
+     * @type {?number}
+     */
+    // eslint-disable-next-line eqeqeq
+    if (this.count == undefined) this.count = data.count;
   }
 
   /**
@@ -63,18 +68,36 @@ class MessageReaction {
     return this._emoji;
   }
 
+  /**
+   * Whether or not this reaction is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.count === null;
+  }
+
+  /**
+   * Fetch this reaction.
+   * @returns {Promise<MessageReaction>}
+   */
+  fetch() {
+    return this.message.reactions._fetchReaction(this.emoji, true);
+  }
 
   toJSON() {
     return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });
   }
 
   _add(user) {
+    if (this.partial) return;
     this.users.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
     if (!this.me) this.me = user.id === this.message.client.user.id;
   }
 
   _remove(user) {
+    if (this.partial) return;
     this.users.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;

@@ -218,7 +218,7 @@ class User extends Base {
    */
   async createDM() {
     const { dmChannel } = this;
-    if (dmChannel) return dmChannel;
+    if (dmChannel && !dmChannel.partial) return dmChannel;
     const data = await this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
     } });

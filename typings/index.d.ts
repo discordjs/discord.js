@@ -649,6 +649,7 @@ declare module 'discord.js' {
 		public messages: MessageStore;
 		public recipient: User;
 		public readonly partial: false;
+		public fetch(): Promise<DMChannel>;
 	}
 
 	export class Emoji extends Base {
@@ -1100,11 +1101,13 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, message: Message);
 		private _emoji: GuildEmoji | ReactionEmoji;
 
-		public count: number;
+		public count: number | null;
 		public readonly emoji: GuildEmoji | ReactionEmoji;
 		public me: boolean;
 		public message: Message;
+		public readonly partial: boolean;
 		public users: ReactionUserStore;
+		public fetch(): Promise<MessageReaction>;
 		public toJSON(): object;
 	}
 
@@ -2539,7 +2542,8 @@ declare module 'discord.js' {
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
 		| 'GUILD_MEMBER'
-		| 'MESSAGE';
+		| 'MESSAGE'
+		| 'REACTION';
 
 	type Partialize<T> = {
 		id: string;
