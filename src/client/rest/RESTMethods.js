@@ -801,13 +801,23 @@ class RESTMethods {
       .then(data => new Webhook(this.client, data));
   }
 
-  editWebhook(webhook, name, avatar) {
-    return this.rest.makeRequest('patch', Endpoints.Webhook(webhook.id, webhook.token), false, {
-      name,
-      avatar,
-    }).then(data => {
+  editWebhook(webhook, options, reason) {
+    let endpoint;
+    let auth;
+
+    // Changing the channel of a webhook or specifying a reason requires a bot token
+    if (options.channel_id || reason) {
+      endpoint = Endpoints.Webhook(webhook.id);
+      auth = true;
+    } else {
+      endpoint = Endpoints.Webhook(webhook.id, webhook.token);
+      auth = false;
+    }
+
+    return this.rest.makeRequest('patch', endpoint, auth, options, undefined, reason).then(data => {
       webhook.name = data.name;
       webhook.avatar = data.avatar;
+      webhook.channelID = data.channel_id;
       return webhook;
     });
   }

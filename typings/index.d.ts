@@ -1579,7 +1579,8 @@ declare module 'discord.js' {
 		public owner: User | object;
 		public token: string;
 		public delete(reason?: string): Promise<void>;
-		public edit(name: string, avatar: BufferResolvable): Promise<Webhook>;
+		public edit(name?: string, avatar?: BufferResolvable): Promise<Webhook>;
+		public edit(options?: WebhookEditOptions, reason?: string): Promise<Webhook>;
 		public send(content?: StringResolvable, options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		public send(options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions): Promise<Message | Message[]>;
@@ -2200,6 +2201,12 @@ declare module 'discord.js' {
 	type UserResolvable = User | Snowflake | Message | Guild | GuildMember;
 
 	type VoiceStatus = number;
+
+	type WebhookEditOptions = {
+		name?: string;
+		avatar?: BufferResolvable;
+		channel?: ChannelResolvable;
+	};
 
 	type WebhookMessageOptions = {
 		username?: string;
