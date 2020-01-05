@@ -65,6 +65,17 @@ class Permissions {
   }
 
   /**
+   * Checks whether the bitfield has a permission, or any of multiple permissions.
+   * @param {PermissionResolvable} permissions Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {boolean}
+   */
+  any(permissions, checkAdmin = true) {
+    return (checkAdmin && this.has(this.constructor.FLAGS.ADMINISTRATOR)) ||
+      (this.bitfield & this.constructor.resolve(permissions)) !== 0;
+  }
+
+  /**
    * Gets all given permissions that are missing from the bitfield.
    * @param {PermissionResolvable} permissions Permissions to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
