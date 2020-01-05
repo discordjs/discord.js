@@ -96,7 +96,7 @@ class DataResolver {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
+            if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2);
               else resolve(data);
