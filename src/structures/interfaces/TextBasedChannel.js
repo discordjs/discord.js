@@ -315,10 +315,9 @@ class TextBasedChannel {
       }
       await this.client.api.channels[this.id].messages['bulk-delete']
         .post({ data: { messages: messageIDs } });
-      return this.client.actions.MessageDeleteBulk.handle({
-        channel_id: this.id,
-        ids: messageIDs,
-      }).messages;
+      return messageIDs.reduce((col, id) => col.set(id, this.client.actions.MessageDeleteBulk.getMessage({
+        message_id: id,
+      }, this)), new Collection());
     }
     if (!isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
