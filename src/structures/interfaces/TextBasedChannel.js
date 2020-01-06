@@ -1,6 +1,7 @@
 'use strict';
 
 const MessageCollector = require('../MessageCollector');
+const Action = require('../../client/actions/Action');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
@@ -315,10 +316,9 @@ class TextBasedChannel {
       }
       await this.client.api.channels[this.id].messages['bulk-delete']
         .post({ data: { messages: messageIDs } });
-      return this.client.actions.MessageDeleteBulk.handle({
-        channel_id: this.id,
-        ids: messageIDs,
-      }).messages;
+      return messageIDs.reduce((col, id) => col.set(id, Action.getMessage({
+        message_id: id,
+      }, this, false), new Collection()));
     }
     if (!isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
