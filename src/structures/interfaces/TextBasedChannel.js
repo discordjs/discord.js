@@ -305,13 +305,13 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
-        const message = this.client.actions.MessageDelete.handle({
-          channel_id: this.id,
-          id: messageIDs[0],
-        }).message;
-        if (message) return new Collection([[message.id, message]]);
-        return new Collection();
+        return this.client.api.channels(this.id).messages(messageIDs[0]).delete()
+          .then(() => {
+            const message = this.client.actions.MessageDelete.getMessage({
+              message_id: messageIDs[0],
+            }, this);
+            return message ? new Collection([[message.id, message]]) : new Collection();
+          });
       }
       await this.client.api.channels[this.id].messages['bulk-delete']
         .post({ data: { messages: messageIDs } });
