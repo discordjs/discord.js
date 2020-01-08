@@ -102,7 +102,7 @@ declare module 'discord.js' {
 		public destroy(): void;
 		public setInterval(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
 		public setTimeout(fn: Function, delay: number, ...args: any[]): NodeJS.Timer;
-		public setImmediate(fn: Function, delay: number, ...args: any[]): NodeJS.Immediate;
+		public setImmediate(fn: Function, ...args: any[]): NodeJS.Immediate;
 		public toJSON(...props: { [key: string]: boolean | string }[]): object;
 	}
 
