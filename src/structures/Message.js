@@ -89,6 +89,12 @@ class Message {
     this.nonce = data.nonce;
 
     /**
+     * The flags attached to this message
+     * @type number
+     */
+    this.flags = data.flags;
+
+    /**
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
      */
@@ -402,6 +408,15 @@ class Message {
     }
     if (options instanceof RichEmbed) options = { embed: options };
     return this.client.rest.methods.updateMessage(this, content, options);
+  }
+
+  /**
+   * Suppresses embeds of a message
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds() {
+    this.flags = this.flags ^ 4;
+    return this.client.rest.methods.updateMessage(this, this.content, {});
   }
 
   /**
