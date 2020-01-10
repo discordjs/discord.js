@@ -415,7 +415,7 @@ class Message {
    * @returns {Promise<Message>}
    */
   suppressEmbeds() {
-    this.flags = this.flags ^ 4;
+    this.flags = this.flags | 4;
     return this.client.rest.methods.updateFlags(this);
   }
 
