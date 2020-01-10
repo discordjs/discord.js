@@ -151,7 +151,7 @@ class RESTMethods {
     if (embed instanceof RichEmbed) embed = embed._apiTransform();
 
     return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
-      content, embed, flags: message.flags,
+      content, embed,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
