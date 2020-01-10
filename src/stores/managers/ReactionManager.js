@@ -19,6 +19,13 @@ class ReactionStore extends BaseManager {
   }
 
   /**
+   * Cool cache!
+   * @property {?Collection<Snowflake, MessageReaction>} cache
+   * @memberof ReactionStore
+   * @instance
+   */
+
+  /**
    * Data that can be resolved to a MessageReaction object. This can be:
    * * A MessageReaction
    * * A Snowflake
@@ -54,13 +61,13 @@ class ReactionStore extends BaseManager {
 
   _partial(emoji) {
     const id = emoji.id || emoji.name;
-    const existing = this.cache.get(id);
+    const existing = this.cache ? this.cache.get(id) : null;
     return !existing || existing.partial;
   }
 
   async _fetchReaction(reactionEmoji, cache) {
     const id = reactionEmoji.id || reactionEmoji.name;
-    const existing = this.cache.get(id);
+    const existing = this.cache ? this.cache.get(id) : null;
     if (!this._partial(reactionEmoji)) return existing;
     const data = await this.client.api.channels(this.message.channel.id).messages(this.message.id).get();
     if (!data.reactions || !data.reactions.some(r => (r.emoji.id || r.emoji.name) === id)) {

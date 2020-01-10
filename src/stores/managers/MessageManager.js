@@ -6,23 +6,26 @@ const LimitedCollection = require('../../util/LimitedCollection');
 const Collection = require('../../util/Collection');
 
 /**
-	* Manages API methods for Messages and holds cache.
+	* Manages API methods for Messages and holds their cache.
 	* @extends {BaseManager}
 	*/
 class MessageManager extends BaseManager {
   constructor(channel, iterable) {
     super(channel.client, iterable, Message, LimitedCollection, channel.client.options.messageCacheMaxSize);
+
     /**
     * The channel the messages belong to.
     * @type {TextBasedChannel}
     */
     this.channel = channel;
-
-    /**
-    * The cache of Messages.
-    * @type {LimitedCollection<Snowflake, Message>}
-    */
   }
+
+  /**
+  * The cache of Messages.
+  * @property {?LimitedCollection<Snowflake, Message>} cache
+  * @memberof MessageManager
+  * @instance
+  */
 
   add(data, cache) {
     return super.add(data, cache, { extras: [this.channel] });
@@ -123,7 +126,7 @@ class MessageManager extends BaseManager {
   }
 
   async _fetchId(messageID, cache) {
-    const existing = this.cache.get(messageID);
+    const existing = this.cache ? this.cache.get(messageID) : null;
     if (existing && !existing.partial) return existing;
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
     return this.add(data, cache);

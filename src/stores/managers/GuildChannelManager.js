@@ -6,19 +6,31 @@ const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 
 /**
- * Stores guild channels.
- * @extends {DataStore}
+ * Manages API methods for GuildChannels and stores their cache.
+ * @extends {BaseManager}
  */
-class GuildChannelStore extends BaseManager {
+class GuildChannelManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, GuildChannel);
+
+    /**
+     * The guild this Manager belongs to.
+     * @type {Guild}
+     */
     this.guild = guild;
   }
 
+  /**
+   * The cache of this Manager.
+   * @property {?Collection<Snowflake, GuildChannel>} cache
+   * @memberof GuildChannelManager
+   * @instance
+   */
+
   add(channel) {
-    const existing = this.get(channel.id);
+    const existing = this.cache ? this.cache.get(channel.id) : null;
     if (existing) return existing;
-    this.set(channel.id, channel);
+    if (this.cache) this.set(channel.id, channel);
     return channel;
   }
 
@@ -117,4 +129,4 @@ class GuildChannelStore extends BaseManager {
   }
 }
 
-module.exports = GuildChannelStore;
+module.exports = GuildChannelManager;

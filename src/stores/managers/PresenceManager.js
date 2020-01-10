@@ -6,16 +6,17 @@ const BaseManager = require('./BaseManager');
 class PresenceManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, Presence);
-
-    /**
-     * The Presence cache of this Manager.
-     * @type {Collection<Snowflake, Presence>}
-     */
-    this.cache = super.cache;
   }
 
+  /**
+  * The cache of Presences.
+  * @property {?Collection<Snowflake, Presence>} cache
+  * @memberof PresenceManager
+  * @instance
+  */
+
   add(data, cache) {
-    const existing = this.cache.get(data.user.id);
+    const existing = this.cache ? this.cache.get(data.user.id) : null;
     return existing ? existing.patch(data) : super.add(data, cache, { id: data.user.id });
   }
 
