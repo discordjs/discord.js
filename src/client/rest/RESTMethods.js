@@ -155,6 +155,12 @@ class RESTMethods {
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
+  updateFlags(message) {
+    return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
+      flags: message.flags,
+    }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
+  }
+
   deleteMessage(message) {
     return this.rest.makeRequest('delete', Endpoints.Message(message), true)
       .then(() =>

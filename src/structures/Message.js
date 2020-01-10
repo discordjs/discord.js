@@ -416,7 +416,7 @@ class Message {
    */
   suppressEmbeds() {
     this.flags = this.flags ^ 4;
-    return this.client.rest.methods.updateMessage(this, this.content, {});
+    return this.client.rest.methods.updateFlags(this);
   }
 
   /**
