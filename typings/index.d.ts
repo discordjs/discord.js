@@ -759,6 +759,7 @@ declare module 'discord.js' {
 		public member: GuildMember;
 		public mentions: MessageMentions;
 		public nonce: string;
+		public readonly flags: number;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
 		public reactions: Collection<Snowflake, MessageReaction>;
@@ -773,6 +774,7 @@ declare module 'discord.js' {
 		public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
 		public delete(timeout?: number): Promise<Message>;
 		public edit(content: StringResolvable, options?: MessageEditOptions | RichEmbed): Promise<Message>;
+		public suppressEmbeds(): Promise<Message>;
 		public editCode(lang: string, content: StringResolvable): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
