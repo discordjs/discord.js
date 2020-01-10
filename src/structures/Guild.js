@@ -4,6 +4,7 @@ const Invite = require('./Invite');
 const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
+const GuildMemberCollector = require('./GuildMemberCollector');
 const VoiceRegion = require('./VoiceRegion');
 const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const Collection = require('../util/Collection');
@@ -607,6 +608,55 @@ class Guild extends Base {
   }
 
   /**
+   * Creates a Guild Member Collector.
+   * @param {CollectorFilter} filter The filter to create the collector with
+   * @param {GuildMemberCollectorOptions} [options={}] The options to pass to the collector
+   * @returns {GuildMemberCollector}
+   * @example
+   * // Create a member collector
+   * const filter = member => member.displayName.includes('discord');
+   * const collector = guild.createMemberCollector(filter, { time: 15000 });
+   * collector.on('collect', m => console.log(`Collected ${m.displayName}`));
+   * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
+   */
+  createMemberCollector(filter, options = {}) {
+    return new GuildMemberCollector(this, filter, options);
+  }
+
+  /**
+   * An object containing the same properties as CollectorOptions, but a few more:
+   * @typedef {GuildMemberCollectorOptions} AwaitGuildMemberOptions
+   * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
+   */
+
+  /**
+   * Similar to createMemberCollector but in promise form.
+   * Resolves with a collection of members that pass the specified filter.
+   * @param {CollectorFilter} filter The filter function to use
+   * @param {AwaitGuildMemberOptions} [options={}] Optional options to pass to the internal collector
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
+   * @example
+   * // Await member joins
+   * const filter = m => m.displayName.includes('fan');
+   * // Errors: ['time'] treats ending because of the time limit as an error
+   * guild.awaitGuildMembers(filter, { max: 10, time: 60000, errors: ['time'] })
+   *   .then(collected => console.log(collected.size))
+   *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 10 joined.`));
+   */
+  awaitGuildMembers(filter, options = {}) {
+    return new Promise((resolve, reject) => {
+      const collector = this.createMemberCollector(filter, options);
+      collector.once('end', (collection, reason) => {
+        if (options.errors && options.errors.includes(reason)) {
+          reject(collection);
+        } else {
+          resolve(collection);
+        }
+      });
+    });
+  }
+
+  /**
    * Fetches a collection of invites to this guild.
    * Resolves with a collection mapping invites by their codes.
    * @returns {Promise<Collection<string, Invite>>}
@@ -723,12 +773,14 @@ class Guild extends Base {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api.guilds(this.id)['audit-logs'].get({ query: {
-      before: options.before,
-      limit: options.limit,
-      user_id: this.client.users.resolveID(options.user),
-      action_type: options.type,
-    } })
+    return this.client.api.guilds(this.id)['audit-logs'].get({
+      query: {
+        before: options.before,
+        limit: options.limit,
+        user_id: this.client.users.resolveID(options.user),
+        action_type: options.type,
+      },
+    })
       .then(data => GuildAuditLogs.build(this, data));
   }
 
