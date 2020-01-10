@@ -34,6 +34,8 @@ class GuildMemberCollector extends Collector {
      */
     this.joined = 0;
 
+    this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
+
     const chunkListener = (members => {
       for (const member of members.values()) this.handleDispose(member);
     }).bind(this);
@@ -41,11 +43,13 @@ class GuildMemberCollector extends Collector {
     if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on(Events.GUILD_MEMBER_ADD, this.handleCollect);
     this.client.on(Events.GUILD_MEMBER_REMOVE, this.handleDispose);
+    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
     this.client.on(Events.GUILD_MEMBERS_CHUNK, chunkListener);
 
     this.once('end', () => {
       this.client.removeListener(Events.GUILD_MEMBER_ADD, this.handleCollect);
       this.client.removeListener(Events.GUILD_MEMBER_REMOVE, this.handleDispose);
+      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
       this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, chunkListener);
       if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
@@ -91,6 +95,18 @@ class GuildMemberCollector extends Collector {
     if (this.options.max && this.collected.size > this.options.max) return 'limit';
     if (this.options.maxJoined && this.joined > this.options.maxJoined) return 'joinedLimit';
     return null;
+  }
+
+  /**
+   * Handles checking if the Guild has been deleted, and if so, stops the Collector with a reason of `guildDelete`.
+   * @private
+   * @param {Guild} guild The guild that was deleted
+   * @returns {void}
+   */
+  _handleGuildDeletion(guild) {
+    if (this.guild.id === guild.id) {
+      this.stop('guildDelete');
+    }
   }
 }
 
