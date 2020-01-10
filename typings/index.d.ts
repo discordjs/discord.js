@@ -726,8 +726,10 @@ declare module 'discord.js' {
 		public widgetChannelID: Snowflake | null;
 		public widgetEnabled: boolean | null;
 		public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
+		public awaitGuildMembers(filter: CollectorFilter, options?: AwaitGuildMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
 		public bannerURL(options?: AvatarOptions): string | null;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
+		public createMemberCollector(filter: CollectorFilter, options?: GuildMemberCollectorOptions): GuildMemberCollector;
 		public delete(): Promise<Guild>;
 		public edit(data: GuildEditData, reason?: string): Promise<Guild>;
 		public equals(guild: Guild): boolean;
@@ -886,6 +888,17 @@ declare module 'discord.js' {
 		public toJSON(): object;
 		public toString(): string;
 		public valueOf(): string;
+	}
+
+	export class GuildMemberCollector extends Collector<Snowflake, GuildMember> {
+		constructor(guild: Guild, filter: CollectorFilter, options?: GuildMemberCollectorOptions);
+		public guild: Guild;
+		public options: GuildMemberCollectorOptions;
+		public joined: number;
+
+		public collect(member: GuildMember): Snowflake;
+		public dispose(member: GuildMember): Snowflake;
+		public endReason(): string;
 	}
 
 	export class Integration extends Base {
@@ -2017,6 +2030,10 @@ declare module 'discord.js' {
 		size?: ImageSize;
 	}
 
+	interface AwaitGuildMembersOptions extends GuildMemberCollectorOptions {
+		errors?: string[];
+	}
+
 	interface AwaitMessagesOptions extends MessageCollectorOptions {
 		errors?: string[];
 	}
@@ -2537,6 +2554,11 @@ declare module 'discord.js' {
 		web?: ClientPresenceStatus;
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
+	}
+
+	interface GuildMemberCollectorOptions extends CollectorOptions {
+		max?: number;
+		maxJoined?: number;
 	}
 
 	type PartialTypes = 'USER'
