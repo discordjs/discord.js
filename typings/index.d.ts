@@ -1475,7 +1475,8 @@ declare module 'discord.js' {
 	class VoiceBroadcast extends EventEmitter {
 		constructor(client: Client);
 		public client: Client;
-		public dispatchers: StreamDispatcher[];
+		public subscribers: StreamDispatcher[];
+		public player: BroadcastAudioPlayer;
 		public readonly dispatcher: BroadcastDispatcher;
 		public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher;
 
