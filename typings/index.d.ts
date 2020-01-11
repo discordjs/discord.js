@@ -1497,7 +1497,6 @@ declare module 'discord.js' {
 	export class VoiceChannel extends GuildChannel {
 		constructor(guild: Guild, data?: object);
 		public bitrate: number;
-		public readonly connection: VoiceConnection;
 		public readonly editable: boolean;
 		public readonly full: boolean;
 		public readonly joinable: boolean;
