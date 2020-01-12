@@ -2627,7 +2627,7 @@ declare module 'discord.js' {
 		highWaterMark?: number;
 	}
 
-	type SpeakingString = 'SPEAKING' | 'SOUNDSHARE';
+	type SpeakingString = 'SPEAKING' | 'SOUNDSHARE' | 'PRIORITY_SPEAKING';
 
 	type StreamType = 'unknown' | 'converted' | 'opus' | 'ogg/opus' | 'webm/opus';
 
