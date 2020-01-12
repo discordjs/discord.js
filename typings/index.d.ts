@@ -1717,6 +1717,7 @@ declare module 'discord.js' {
 		private _send(data: object): void;
 		private processQueue(): void;
 		private destroy(closeCode: number): void;
+		private _cleanupConnection(): void;
 
 		public send(data: object): void;
 		public on(event: 'ready', listener: () => void): this;
