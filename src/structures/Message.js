@@ -148,6 +148,10 @@ class Message {
      * @private
      */
     this._edits = [];
+
+    if (data.member && this.guild && this.author) {
+      this.guild.members.set(data.member.id, Object.assign(data.member, { user: this.author }));
+    }
   }
 
   /**
