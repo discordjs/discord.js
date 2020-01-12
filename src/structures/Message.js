@@ -424,6 +424,22 @@ class Message extends Base {
   }
 
   /**
+   * Suppresses embeds of a message
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds() {
+    const { data } = APIMessage.create(this).resolveData();
+    data.flags = new MessageFlags(this.flags.bitfield | 4).freeze();
+    return this.client.api.channels[this.channel.id].messages[this.id]
+      .patch({ data })
+      .then(d => {
+        const clone = this._clone();
+        clone._patch(d);
+        return clone;
+      });
+  }
+
+  /**
    * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */

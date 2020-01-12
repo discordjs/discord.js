@@ -998,6 +998,7 @@ declare module 'discord.js' {
 		public reply(options?: MessageOptions | MessageAdditions | APIMessage): Promise<Message>;
 		public reply(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<Message>;
 		public reply(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<Message[]>;
+		public suppressEmbeds(): Promise<Message>;
 		public toJSON(): object;
 		public toString(): string;
 		public unpin(): Promise<Message>;
