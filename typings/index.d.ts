@@ -1476,7 +1476,6 @@ declare module 'discord.js' {
 		constructor(client: Client);
 		public client: Client;
 		public subscribers: StreamDispatcher[];
-		private player: BroadcastAudioPlayer;
 		public readonly dispatcher: BroadcastDispatcher;
 		public play(input: string | Readable, options?: StreamOptions): BroadcastDispatcher;
 
