@@ -2,7 +2,7 @@ const AbstractHandler = require('./AbstractHandler');
 const Constants = require('../../../../util/Constants');
 
 class ResumedHandler extends AbstractHandler {
-  handle(packet) {
+  handle() {
     const client = this.packetManager.client;
     const ws = client.ws.connection;
 
