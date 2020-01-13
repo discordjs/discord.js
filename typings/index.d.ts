@@ -918,9 +918,14 @@ declare module 'discord.js' {
 		public remove(user?: UserResolvable): Promise<MessageReaction>;
 	}
 
-	export class NewsChannel extends TextChannel {
+	export class NewsChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data: object);
-		public rateLimitPerUser: 0;
+		public messages: Collection<Snowflake, Message>;
+		public nsfw: boolean;
+		public topic: string | null;
+		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
+		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
+		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
 	}
 
 	export class OAuth2Application {
