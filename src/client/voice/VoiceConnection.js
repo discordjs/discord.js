@@ -452,8 +452,7 @@ class VoiceConnection extends EventEmitter {
   onSessionDescription(data) {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
-    const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
-    dispatcher.on('finish', () => {
+    const ready = () => {
       this.client.clearTimeout(this.connectTimeout);
       this.emit('debug', `Ready with authentication details: ${JSON.stringify(this.authentication)}`);
       /**
@@ -462,7 +461,14 @@ class VoiceConnection extends EventEmitter {
        * @event VoiceConnection#ready
        */
       this.emit('ready');
-    });
+    };
+    if (this.dispatcher) {
+      ready();
+    } else {
+      // This serves to provide support for voice receive, sending audio is required to receive it.
+      const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
+      dispatcher.once('finish', ready);
+    }
   }
 
   onStartSpeaking({ user_id, ssrc, speaking }) {
