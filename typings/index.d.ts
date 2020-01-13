@@ -1276,7 +1276,7 @@ declare module 'discord.js' {
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
-		public topic: string;
+		public topic: string | null;
 		public rateLimitPerUser: number;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
 		public createWebhook(name: string, avatar: BufferResolvable, reason?: string): Promise<Webhook>;
