@@ -74,8 +74,7 @@ class ReadyHandler extends AbstractHandler {
     const ws = this.packetManager.ws;
 
     ws.sessionID = data.session_id;
-    ws._trace = data._trace;
-    client.emit('debug', `READY ${ws._trace.join(' -> ')} ${ws.sessionID}`);
+    client.emit('debug', `READY ${ws.sessionID}`);
     ws.checkIfReady();
   }
 }
