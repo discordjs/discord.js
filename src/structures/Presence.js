@@ -22,6 +22,12 @@ const { ActivityFlags, Endpoints } = require('../util/Constants');
  */
 class Presence {
   constructor(data = {}, client) {
+    /**
+     * The client that instantiated this
+     * @name Presence#client
+     * @type {Client}
+     * @readonly
+     */
     Object.defineProperty(this, 'client', { value: client });
 
     /**
