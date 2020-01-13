@@ -323,6 +323,10 @@ class GuildAuditLogsEntry {
           count: data.options.count,
           channel: guild.channels.get(data.options.channel_id),
         };
+      } else if (data.action_type === Actions.MESSAGE_BULK_DELETE) {
+        this.extra = {
+          count: data.options.count,
+        };
       } else {
         switch (data.options.type) {
           case 'member':
