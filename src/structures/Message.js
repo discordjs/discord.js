@@ -151,9 +151,15 @@ class Message {
 
     if (data.member && this.guild && this.author) {
       if (!this.guild.members.has(data.member.id)) {
-        this.guild._addMember(this.author, false);
+        this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
       }
     }
+
+    /**
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
+     * @type {?GuildMember}
+     */
     this.member = this.guild ? this.guild.member(this.author) || null : null;
   }
 
