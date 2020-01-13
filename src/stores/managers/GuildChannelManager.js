@@ -22,15 +22,15 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * The cache of this Manager.
-   * @property {?Collection<Snowflake, GuildChannel>} cache
+   * @property {Collection<Snowflake, GuildChannel>} cache
    * @memberof GuildChannelManager
    * @instance
    */
 
   add(channel) {
-    const existing = this.cache ? this.cache.get(channel.id) : null;
+    const existing = this.cache.get(channel.id);
     if (existing) return existing;
-    if (this.cache) this.set(channel.id, channel);
+    this.set(channel.id, channel);
     return channel;
   }
 

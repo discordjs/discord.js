@@ -23,7 +23,7 @@ class GuildEmojiManager extends BaseManager {
 
   /**
   * The cache of GuildEmojis.
-  * @property {?Collection<Snowflake, GuildEmoji>} cache
+  * @property {Collection<Snowflake, GuildEmoji>} cache
   * @memberof GuildEmojiManager
   * @instance
   */
