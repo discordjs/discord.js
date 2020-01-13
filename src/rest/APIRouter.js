@@ -4,7 +4,7 @@ const noop = () => {}; // eslint-disable-line no-empty-function
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
 const reflectors = [
   'toString', 'valueOf', 'inspect', 'constructor',
-  Symbol.toPrimitive, Symbol.for('util.inspect.custom'),
+  Symbol.toPrimitive, Symbol.for('nodejs.util.inspect.custom'),
 ];
 
 function buildRoute(manager) {

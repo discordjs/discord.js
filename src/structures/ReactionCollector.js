@@ -44,7 +44,7 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
 
-    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
@@ -53,7 +53,7 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
-      this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+      if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
 
     this.on('collect', (reaction, user) => {

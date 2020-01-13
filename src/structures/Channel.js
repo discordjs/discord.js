@@ -19,6 +19,8 @@ class Channel extends Base {
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
+     * * `news` - a guild news channel
+     * * `store` - a guild store channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */

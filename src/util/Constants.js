@@ -7,9 +7,10 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
- * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
- * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
+ * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
+ * recommended amount of shards from Discord and spawn that amount
+ * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
@@ -42,7 +43,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  */
 exports.DefaultOptions = {
   shardCount: 1,
-  totalShardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -119,7 +119,9 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
  * @property {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
- * it will be `gif` for animated avatars or otherwise `webp`
+ * defaults to `webp`.
+ * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
+ * animated avatars; the default is false.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
  */
 
@@ -129,14 +131,14 @@ exports.Endpoints = {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
       },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -163,6 +165,9 @@ exports.Endpoints = {
  * * IDLE: 3
  * * NEARLY: 4
  * * DISCONNECTED: 5
+ * * WAITING_FOR_GUILDS: 6
+ * * IDENTIFYING: 7
+ * * RESUMING: 8
  * @typedef {number} Status
  */
 exports.Status = {
@@ -172,6 +177,9 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+  WAITING_FOR_GUILDS: 6,
+  IDENTIFYING: 7,
+  RESUMING: 8,
 };
 
 /**
@@ -279,6 +287,7 @@ exports.ShardEvents = {
   INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',
+  ALL_READY: 'allReady',
 };
 
 /**
@@ -287,6 +296,7 @@ exports.ShardEvents = {
  * * CHANNEL (only affects DMChannels)
  * * GUILD_MEMBER
  * * MESSAGE
+ * * REACTION
  * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
  * sidebar for more information.</warn>
  * @typedef {string} PartialType
@@ -296,6 +306,7 @@ exports.PartialTypes = keyMirror([
   'CHANNEL',
   'GUILD_MEMBER',
   'MESSAGE',
+  'REACTION',
 ]);
 
 /**
@@ -411,6 +422,7 @@ exports.MessageTypes = [
  * * STREAMING
  * * LISTENING
  * * WATCHING
+ * * CUSTOM_STATUS
  * @typedef {string} ActivityType
  */
 exports.ActivityTypes = [
@@ -418,6 +430,7 @@ exports.ActivityTypes = [
   'STREAMING',
   'LISTENING',
   'WATCHING',
+  'CUSTOM_STATUS',
 ];
 
 exports.ChannelTypes = {
@@ -617,6 +630,19 @@ exports.MembershipStates = [
   null,
   'INVITED',
   'ACCEPTED',
+];
+
+/**
+ * The value set for a webhook's type:
+ * * Incoming
+ * * Channel Follower
+ * @typedef {string} WebhookTypes
+ */
+exports.WebhookTypes = [
+  // They start at 1
+  null,
+  'Incoming',
+  'Channel Follower',
 ];
 
 function keyMirror(arr) {

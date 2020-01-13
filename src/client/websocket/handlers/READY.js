@@ -17,5 +17,5 @@ module.exports = (client, { d: data }, shard) => {
     client.guilds.add(guild);
   }
 
-  client.ws.checkReady();
+  shard.checkReady();
 };

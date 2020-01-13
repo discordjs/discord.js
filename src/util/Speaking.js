@@ -13,12 +13,14 @@ class Speaking extends BitField {}
  * Numeric speaking flags. All available properties:
  * * `SPEAKING`
  * * `SOUNDSHARE`
+ * * `PRIORITY_SPEAKING`
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/topics/voice-connections#speaking}
  */
 Speaking.FLAGS = {
   SPEAKING: 1 << 0,
   SOUNDSHARE: 1 << 1,
+  PRIORITY_SPEAKING: 1 << 2,
 };
 
 module.exports = Speaking;

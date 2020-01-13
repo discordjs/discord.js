@@ -3,6 +3,7 @@
 const Util = require('../util/Util');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
+const Emoji = require('./Emoji');
 
 /**
  * Activity sent in a message.
@@ -205,6 +206,18 @@ class Activity {
      * @type {Readonly<ActivityFlags>}
      */
     this.flags = new ActivityFlags(data.flags).freeze();
+
+    /**
+     * Emoji for a custom activity
+     * @type {?Emoji}
+     */
+    this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
+
+    /**
+     * Creation date of the activity
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
   }
 
   /**
@@ -219,6 +232,15 @@ class Activity {
       this.type === activity.type &&
       this.url === activity.url
     );
+  }
+
+  /**
+   * The time the activity was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -290,6 +312,8 @@ class RichPresenceAssets {
     if (!this.largeImage) return null;
     if (/^spotify:/.test(this.largeImage)) {
       return `https://i.scdn.co/image/${this.largeImage.slice(8)}`;
+    } else if (/^twitch:/.test(this.largeImage)) {
+      return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
     }
     return this.activity.presence.client.rest.cdn
       .AppAsset(this.activity.applicationID, this.largeImage, { format, size });

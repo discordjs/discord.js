@@ -56,7 +56,15 @@ class DMChannel extends Channel {
    * @readonly
    */
   get partial() {
-    return !this.recipient;
+    return typeof this.lastMessageID === 'undefined';
+  }
+
+  /**
+   * Fetch this DMChannel.
+   * @returns {Promise<DMChannel>}
+   */
+  fetch() {
+    return this.recipient.createDM();
   }
 
   /**
@@ -83,7 +91,6 @@ class DMChannel extends Channel {
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
-  acknowledge() {}
   _cacheMessage() {}
 }
 
