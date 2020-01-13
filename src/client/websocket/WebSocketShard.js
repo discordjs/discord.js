@@ -208,9 +208,16 @@ class WebSocketShard extends EventEmitter {
       this.once(ShardEvents.INVALID_SESSION, onInvalid);
 
       if (this.connection && this.connection.readyState === WebSocket.OPEN) {
-        this.debug('Connection found, attempting an immediate identify.');
+        this.debug('An open connection was found, attempting an immediate identify.');
         this.identify();
         return;
+      }
+
+      if (this.connection) {
+        this.debug(`A connection was found. Cleaning up before continuing.
+    State: ${CONNECTION_STATE[this.connection.readyState]}`);
+        this._cleanupConnection();
+        this.connection.close(1000);
       }
 
       const wsQuery = { v: client.options.ws.version };
@@ -526,9 +533,9 @@ class WebSocketShard extends EventEmitter {
     } else if (!this.lastHeartbeatAcked) {
       this.debug(
         `[${tag}] Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.
-      Status          : ${STATUS_KEYS[this.status]}
-      Sequence        : ${this.sequence}
-      Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`
+    Status          : ${STATUS_KEYS[this.status]}
+    Sequence        : ${this.sequence}
+    Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`
       );
       this.destroy(4009);
       return;
@@ -629,7 +636,8 @@ class WebSocketShard extends EventEmitter {
    */
   _send(data) {
     if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available!`);
+      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available! Resetting the shard...`);
+      this.destroy(4000);
       return;
     }
 
@@ -667,6 +675,8 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   destroy(closeCode = 1000, cleanup = false) {
+    this.debug(`Destroying with close code ${closeCode}, attempting a reconnect: ${!cleanup}`);
+
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
 
@@ -695,6 +705,17 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.clearTimeout(this.ratelimit.timer);
       this.ratelimit.timer = null;
     }
+  }
+
+  /**
+   * Cleans up the WebSocket connection listeners.
+   * @private
+   */
+  _cleanupConnection() {
+    this.connection.onopen =
+    this.connection.onclose =
+    this.connection.onerror =
+    this.connection.onmessage = null;
   }
 }
 
