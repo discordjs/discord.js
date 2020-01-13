@@ -1140,7 +1140,7 @@ declare module 'discord.js' {
 
 	export class Presence {
 		constructor(client: Client, data?: object);
-		public activity: Activity | null;
+		public activities: Activity[];
 		public clientStatus: ClientPresenceStatusData | null;
 		public flags: Readonly<ActivityFlags>;
 		public guild: Guild | null;
