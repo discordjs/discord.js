@@ -21,12 +21,12 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          if (mention.member && message.guild) {
-            message.guild.members.set(mention.id, Object.assign(mention.member, { user: mention }));
-          }
           let user = message.client.users.get(mention.id);
           if (!user) user = message.client.dataManager.newUser(mention);
           this.users.set(user.id, user);
+          if (mention.member && message.guild && !message.guild.members.has(mention.id)) {
+            this.guild._addMember(user, false);
+          }
         }
       }
     } else {
