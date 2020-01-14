@@ -23,6 +23,12 @@ class GuildEmoji extends Emoji {
      * @type {Guild}
      */
     this.guild = guild;
+    
+    /**
+     * The ID of this emoji
+     * @type {Snowflake}
+     * @name GuildEmoji#id
+     */
 
     this._roles = [];
     this._patch(data);
