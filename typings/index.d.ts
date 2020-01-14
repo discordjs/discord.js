@@ -838,10 +838,10 @@ declare module 'discord.js' {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
 
-		public id: Snowflake;
 		public available: boolean;
 		public readonly deletable: boolean;
 		public guild: Guild;
+		public id: Snowflake;
 		public managed: boolean;
 		public requiresColons: boolean;
 		public roles: GuildEmojiRoleStore;
