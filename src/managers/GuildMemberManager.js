@@ -60,7 +60,7 @@ class GuildMemberManager extends BaseManager {
     const memberResolvable = super.resolveID(member);
     if (memberResolvable) return memberResolvable;
     const userResolvable = this.client.users.resolveID(member);
-    return this.has(userResolvable) ? userResolvable : null;
+    return this.cache.has(userResolvable) ? userResolvable : null;
   }
 
   /**

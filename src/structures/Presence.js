@@ -66,7 +66,7 @@ class Presence {
    * @readonly
    */
   get user() {
-    return this.client.users.get(this.userID) || null;
+    return this.client.users.cache.get(this.userID) || null;
   }
 
   /**
@@ -75,7 +75,7 @@ class Presence {
    * @readonly
    */
   get member() {
-    return this.guild.members.get(this.userID) || null;
+    return this.guild.members.cache.get(this.userID) || null;
   }
 
   patch(data) {

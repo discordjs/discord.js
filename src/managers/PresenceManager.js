@@ -49,7 +49,7 @@ class PresenceManager extends BaseManager {
     const presenceResolvable = super.resolveID(presence);
     if (presenceResolvable) return presenceResolvable;
     const userResolvable = this.client.users.resolveID(presence);
-    return this.has(userResolvable) ? userResolvable : null;
+    return this.cache.has(userResolvable) ? userResolvable : null;
   }
 }
 

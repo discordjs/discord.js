@@ -285,7 +285,7 @@ class GuildAuditLogsEntry {
      */
     this.executor = guild.client.options.partials.includes(PartialTypes.USER) ?
       guild.client.users.add({ id: data.user_id }) :
-      guild.client.users.get(data.user_id);
+      guild.client.users.cache.get(data.user_id);
 
     /**
      * An entry in the audit log representing a specific change.
@@ -321,7 +321,7 @@ class GuildAuditLogsEntry {
       } else if (data.action_type === Actions.MESSAGE_DELETE) {
         this.extra = {
           count: data.options.count,
-          channel: guild.channels.get(data.options.channel_id),
+          channel: guild.channels.cache.get(data.options.channel_id),
         };
       } else if (data.action_type === Actions.MESSAGE_BULK_DELETE) {
         this.extra = {
@@ -330,11 +330,11 @@ class GuildAuditLogsEntry {
       } else {
         switch (data.options.type) {
           case 'member':
-            this.extra = guild.members.get(data.options.id);
+            this.extra = guild.members.cache.get(data.options.id);
             if (!this.extra) this.extra = { id: data.options.id };
             break;
           case 'role':
-            this.extra = guild.roles.get(data.options.id);
+            this.extra = guild.roles.cache.get(data.options.id);
             if (!this.extra) this.extra = { id: data.options.id, name: data.options.role_name };
             break;
           default:
@@ -357,9 +357,9 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.USER) {
       this.target = guild.client.options.partials.includes(PartialTypes.USER) ?
         guild.client.users.add({ id: data.target_id }) :
-        guild.client.users.get(data.target_id);
+        guild.client.users.cache.get(data.target_id);
     } else if (targetType === Targets.GUILD) {
-      this.target = guild.client.guilds.get(data.target_id);
+      this.target = guild.client.guilds.cache.get(data.target_id);
     } else if (targetType === Targets.WEBHOOK) {
       this.target = logs.webhooks.get(data.target_id) ||
         new Webhook(guild.client,
@@ -386,7 +386,7 @@ class GuildAuditLogsEntry {
         }
       });
     } else if (targetType === Targets.MESSAGE) {
-      this.target = guild.client.users.get(data.target_id);
+      this.target = guild.client.users.cache.get(data.target_id);
     } else {
       this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id) || { id: data.target_id };
     }

@@ -119,8 +119,8 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.client.channels.get(this.lastMessageChannelID);
-    return (channel && channel.messages.get(this.lastMessageID)) || null;
+    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
+    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
   }
 
   /**
@@ -130,7 +130,7 @@ class User extends Base {
    */
   get presence() {
     for (const guild of this.client.guilds.values()) {
-      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
     }
     return new Presence(this.client, { user: { id: this.id } });
   }

@@ -69,7 +69,7 @@ class MessageMentions {
       } else {
         this.roles = new Collection();
         for (const mention of roles) {
-          const role = message.channel.guild.roles.get(mention);
+          const role = message.channel.guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
@@ -151,7 +151,7 @@ class MessageMentions {
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this.client.channels.get(matches[1]);
+      const chan = this.client.channels.cache.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;

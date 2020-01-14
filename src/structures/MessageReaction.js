@@ -3,7 +3,7 @@
 const GuildEmoji = require('./GuildEmoji');
 const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');
-const ReactionUserStore = require('../stores/ReactionUserStore');
+const ReactionUserManager = require('../managers/ReactionUserManager');
 
 /**
  * Represents a reaction to a message.
@@ -28,10 +28,10 @@ class MessageReaction {
     this.me = data.me;
 
     /**
-     * The users that have given this reaction, mapped by their ID
-     * @type {ReactionUserStore<Snowflake, User>}
+     * A manager managing the users belonging to this reaction.
+     * @type {ReactionUserManager}
      */
-    this.users = new ReactionUserStore(client, undefined, this);
+    this.users = new ReactionUserManager(client, undefined, this);
 
     this._emoji = new ReactionEmoji(this, data.emoji);
 
@@ -58,7 +58,7 @@ class MessageReaction {
     if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
-      const emojis = this.message.client.emojis;
+      const emojis = this.message.client.emojis.cache;
       if (emojis.has(this._emoji.id)) {
         const emoji = emojis.get(this._emoji.id);
         this._emoji = emoji;
@@ -98,11 +98,11 @@ class MessageReaction {
 
   _remove(user) {
     if (this.partial) return;
-    this.users.delete(user.id);
+    this.users.cache.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;
-    if (this.count <= 0 && this.users.size === 0) {
-      this.message.reactions.remove(this.emoji.id || this.emoji.name);
+    if (this.count <= 0 && this.users.cache.size === 0) {
+      this.message.reactions.cache.remove(this.emoji.id || this.emoji.name);
     }
   }
 }

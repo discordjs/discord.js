@@ -6,7 +6,7 @@ const { Events, Status } = require('../../util/Constants');
 class GuildMemberRemoveAction extends Action {
   handle(data, shard) {
     const client = this.client;
-    const guild = client.guilds.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     let member = null;
     if (guild) {
       member = this.getMember(data, guild);

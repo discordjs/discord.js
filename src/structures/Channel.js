@@ -100,7 +100,7 @@ class Channel extends Base {
       const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
     } else {
-      guild = guild || client.guilds.get(data.guild_id);
+      guild = guild || client.guilds.cache.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {

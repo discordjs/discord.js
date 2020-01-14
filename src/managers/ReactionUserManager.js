@@ -1,0 +1,67 @@
+'use strict';
+
+const Collection = require('../util/Collection');
+const BaseManager = require('./BaseManager');
+const { Error } = require('../errors');
+const User = require('../../structures/User');
+
+/**
+ * Manages API methods for users who reacted to a reaction and stores their cache.
+ * @extends {BaseManager}
+ */
+class ReactionUserManager extends BaseManager {
+  constructor(client, iterable, reaction) {
+    super(client, iterable, User);
+    /**
+     * The reaction this manager belongs to.
+     * @type {MessageReaction}
+     */
+    this.reaction = reaction;
+  }
+
+  /**
+   * The cache of this Manager.
+   * @property {Collection<Snowflake, User>} cache
+   * @memberof GuildManager
+   * @instance
+   */
+
+  /**
+   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
+   * @param {Object} [options] Options for fetching the users
+   * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
+   * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
+   * @param {Snowflake} [options.after] Limit fetching users to those with an id grAeater than the supplied id
+   * @returns {Promise<Collection<Snowflake, User>>}
+   */
+  async fetch({ limit = 100, after, before } = {}) {
+    const message = this.reaction.message;
+    const data = await this.client.api.channels[message.channel.id].messages[message.id]
+      .reactions[this.reaction.emoji.identifier]
+      .get({ query: { limit, before, after } });
+    const users = new Collection();
+    for (const rawUser of data) {
+      const user = this.client.users.add(rawUser);
+      if (this.cache) this.cache.set(user.id, user);
+      users.set(user.id, user);
+    }
+    return users;
+  }
+
+  /**
+   * Removes a user from this reaction.
+   * @param {UserResolvable} [user=this.reaction.message.client.user] The user to remove the reaction of
+   * @returns {Promise<MessageReaction>}
+   */
+  remove(user = this.reaction.message.client.user) {
+    const message = this.reaction.message;
+    const userID = message.client.users.resolveID(user);
+    if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
+    return message.client.api.channels[message.channel.id].messages[message.id]
+      .reactions[this.reaction.emoji.identifier][userID === message.client.user.id ? '@me' : userID]
+      .delete()
+      .then(() => this.reaction);
+  }
+}
+
+module.exports = ReactionUserManager;

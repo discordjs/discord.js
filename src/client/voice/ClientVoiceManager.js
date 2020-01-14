@@ -56,7 +56,7 @@ class ClientVoiceManager {
       this.connections.delete(guild_id);
       return;
     }
-    connection.channel = this.client.channels.get(channel_id);
+    connection.channel = this.client.channels.cache.get(channel_id);
     connection.setSessionID(session_id);
   }
 

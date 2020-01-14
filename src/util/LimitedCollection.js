@@ -6,12 +6,12 @@ const Collection = require('./Collection.js');
  * A Collection which holds a max amount of entries. The first key is deleted if the Collection has
  * reached max size.
  * @extends {Collection}
- * @param {iterable} iterable Optional entries passed to the Map constructor.
  * @param {number} [maxSize=0] The maximum size of the Collection
+ * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
 
 class LimitedCollection extends Collection {
-  constructor(iterable, maxSize = 0) {
+  constructor(maxSize = 0, iterable = null) {
     super(iterable);
     /**
      * The max size of the Collection.

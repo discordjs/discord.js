@@ -12,7 +12,7 @@ class GuildDeleteAction extends Action {
   handle(data) {
     const client = this.client;
 
-    let guild = client.guilds.get(data.id);
+    let guild = client.guilds.cache.get(data.id);
     if (guild) {
       for (const channel of guild.channels.values()) {
         if (channel.type === 'text') channel.stopTyping(true);

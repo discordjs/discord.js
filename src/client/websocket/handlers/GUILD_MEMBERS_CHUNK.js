@@ -4,7 +4,7 @@ const { Events } = require('../../../util/Constants');
 const Collection = require('../../../util/Collection');
 
 module.exports = (client, { d: data }) => {
-  const guild = client.guilds.get(data.guild_id);
+  const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;
   const members = new Collection();
 

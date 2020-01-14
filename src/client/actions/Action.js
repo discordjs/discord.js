@@ -23,10 +23,10 @@ class GenericAction {
     return data;
   }
 
-  getPayload(data, store, id, partialType, cache) {
-    const existing = store.get(id);
+  getPayload(data, manager, id, partialType, cache) {
+    const existing = manager.cache.get(id);
     if (!existing && this.client.options.partials.includes(partialType)) {
-      return store.add(data, cache);
+      return manager.add(data, cache);
     }
     return existing;
   }

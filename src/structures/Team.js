@@ -58,7 +58,7 @@ class Team extends Base {
    * @readonly
    */
   get owner() {
-    return this.members.get(this.ownerID) || null;
+    return this.members.cache.get(this.ownerID) || null;
   }
 
   /**

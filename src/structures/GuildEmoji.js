@@ -1,6 +1,6 @@
 'use strict';
 
-const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
+const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 const Permissions = require('../util/Permissions');
 const { Error } = require('../errors');
 const Emoji = require('./Emoji');
@@ -73,12 +73,12 @@ class GuildEmoji extends Emoji {
   }
 
   /**
-   * A collection of roles this emoji is active for (empty if all), mapped by role ID
-   * @type {GuildEmojiRoleStore<Snowflake, Role>}
+   * A manager for roles this emoji is active for.
+   * @type {GuildEmojiRoleManager}
    * @readonly
    */
   get roles() {
-    return new GuildEmojiRoleStore(this);
+    return new GuildEmojiRoleManager(this);
   }
 
   /**
@@ -162,15 +162,15 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
-        other.roles.size === this.roles.size &&
-        other.roles.every(role => this.roles.has(role.id))
+        other.roles.size === this.roles.cache.size &&
+        other.roles.every(role => this.roles.cache.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other.roles.length === this.roles.size &&
-        other.roles.every(role => this.roles.has(role))
+        other.roles.length === this.roles.cache.size &&
+        other.roles.every(role => this.roles.cache.has(role))
       );
     }
   }
