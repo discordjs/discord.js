@@ -42,7 +42,7 @@ class ReactionUserManager extends BaseManager {
     const users = new Collection();
     for (const rawUser of data) {
       const user = this.client.users.add(rawUser);
-      if (this.cache) this.cache.set(user.id, user);
+      this.cache.set(user.id, user);
       users.set(user.id, user);
     }
     return users;

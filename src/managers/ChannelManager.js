@@ -10,6 +10,13 @@ class ChannelManager extends BaseManager {
     super(client, iterable, Channel, LRUCollection);
   }
 
+  /**
+  * The cache of Channels.
+  * @property {LRUCollection<Snowflake, Channel>} cache
+  * @memberof ChannelManager
+  * @instance
+  */
+
   add(data, guild, cache = true) {
     const existing = this.cache.get(data.id);
     if (existing) {

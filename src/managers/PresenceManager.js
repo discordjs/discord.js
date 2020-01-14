@@ -10,13 +10,13 @@ class PresenceManager extends BaseManager {
 
   /**
   * The cache of Presences.
-  * @property {?Collection<Snowflake, Presence>} cache
+  * @property {Collection<Snowflake, Presence>} cache
   * @memberof PresenceManager
   * @instance
   */
 
   add(data, cache) {
-    const existing = this.cache ? this.cache.get(data.user.id) : null;
+    const existing = this.cache.get(data.user.id);
     return existing ? existing.patch(data) : super.add(data, cache, { id: data.user.id });
   }
 

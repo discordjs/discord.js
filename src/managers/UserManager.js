@@ -16,7 +16,7 @@ class UserManager extends BaseManager {
 
   /**
    * The cache of this Manager.
-   * @property {?Collection<Snowflake, User>} cache
+   * @property {Collection<Snowflake, User>} cache
    * @memberof UserManager
    * @instance
    */
@@ -59,7 +59,7 @@ class UserManager extends BaseManager {
    * @returns {Promise<User>}
    */
   async fetch(id, cache = true) {
-    const existing = this.cache ? this.cache.get(id) : null;
+    const existing = this.cache.get(id);
     if (existing && !existing.partial) return existing;
     const data = await this.client.api.users(id).get();
     return this.add(data, cache);

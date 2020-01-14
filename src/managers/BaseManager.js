@@ -25,7 +25,7 @@ class BaseManager {
 
     /**
      * The type of Collection of the Manager.
-     * @type {?Collection}
+     * @type {Collection}
      */
     this.cacheType = cacheType;
 
@@ -33,18 +33,17 @@ class BaseManager {
     * Holds the cache for the data model.
     * @type {?Collection}
     */
-    this.cache = cacheType ? new cacheType(...cacheOptions) : null;
+    this.cache = new cacheType(...cacheOptions);
     if (iterable) for (const i of iterable) this.add(i);
   }
 
   add(data, cache = true, { id, extras = [] } = {}) {
-    if (this.cache) {
-      const existing = this.cache.get(id || data.id);
-      if (existing && existing._patch && cache) existing._patch(data);
-      if (existing) return existing;
-    }
+    const existing = this.cache.get(id || data.id);
+    if (existing && existing._patch && cache) existing._patch(data);
+    if (existing) return existing;
+
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache && this.cache) this.cache.set(id || entry.id, entry);
+    if (cache) this.cache.set(id || entry.id, entry);
     return entry;
   }
 
@@ -55,7 +54,7 @@ class BaseManager {
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
-    if (typeof idOrInstance === 'string' && this.cache) return this.cache.get(idOrInstance) || null;
+    if (typeof idOrInstance === 'string') return this.cache.get(idOrInstance) || null;
     return null;
   }
 
