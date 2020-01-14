@@ -23,7 +23,7 @@ class GuildEmoji extends Emoji {
      * @type {Guild}
      */
     this.guild = guild;
-    
+
     /**
      * The ID of this emoji
      * @type {Snowflake}
