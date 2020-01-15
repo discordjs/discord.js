@@ -35,6 +35,56 @@ class ChannelManager extends BaseManager {
 
     return channel;
   }
+
+  remove(id) {
+    const channel = this.cache.get(id);
+    if (channel.guild) channel.guild.channels.cache.remove(id);
+    this.cache.delete(id);
+  }
+
+  /**
+   * Data that can be resolved to give a Channel object. This can be:
+   * * A Channel object
+   * * A Snowflake
+   * @typedef {Channel|Snowflake} ChannelResolvable
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a ChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof ChannelStore
+   * @instance
+   * @param {ChannelResolvable} channel The channel resolvable to resolve
+   * @returns {?Snowflake}
+   */
+
+  /**
+   * Obtains a channel from Discord, or the channel cache if it's already available.
+   * @param {Snowflake} id ID of the channel
+   * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+   * @returns {Promise<Channel>}
+   * @example
+   * // Fetch a channel by its id
+   * client.channels.fetch('222109930545610754')
+   *   .then(channel => console.log(channel.name))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true) {
+    const existing = this.cache.get(id);
+    if (existing && !existing.partial) return existing;
+
+    const data = await this.client.api.channels(id).get();
+    return this.add(data, null, cache);
+  }
 }
 
 module.exports = ChannelManager;

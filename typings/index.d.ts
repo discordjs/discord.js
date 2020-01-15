@@ -151,16 +151,16 @@ declare module 'discord.js' {
 		private _eval(script: string): any;
 		private _validateOptions(options?: ClientOptions): void;
 
-		public channels: ChannelStore;
-		public readonly emojis: GuildEmojiStore;
-		public guilds: GuildStore;
+		public channels: ChannelManager;
+		public readonly emojis: GuildEmojiManager;
+		public guilds: GuildManager;
 		public readyAt: Date | null;
 		public readonly readyTimestamp: number | null;
 		public shard: ShardClientUtil | null;
 		public token: string | null;
 		public readonly uptime: number | null;
 		public user: ClientUser | null;
-		public users: UserStore;
+		public users: UserManager;
 		public voice: ClientVoiceManager | null;
 		public ws: WebSocketManager;
 		public destroy(): void;
@@ -646,7 +646,7 @@ declare module 'discord.js' {
 
 	export class DMChannel extends TextBasedChannel(Channel) {
 		constructor(client: Client, data?: object);
-		public messages: MessageStore;
+		public messages: MessageManager;
 		public recipient: User;
 		public readonly partial: false;
 		public fetch(): Promise<DMChannel>;
@@ -678,7 +678,7 @@ declare module 'discord.js' {
 		public applicationID: Snowflake;
 		public available: boolean;
 		public banner: string | null;
-		public channels: GuildChannelStore;
+		public channels: GuildChannelManager;
 		public readonly createdAt: Date;
 		public readonly createdTimestamp: number;
 		public defaultMessageNotifications: DefaultMessageNotifications | number;
@@ -687,7 +687,7 @@ declare module 'discord.js' {
 		public embedChannel: GuildChannel | null;
 		public embedChannelID: Snowflake | null;
 		public embedEnabled: boolean;
-		public emojis: GuildEmojiStore;
+		public emojis: GuildEmojiManager;
 		public explicitContentFilter: number;
 		public features: GuildFeatures[];
 		public icon: string | null;
@@ -699,7 +699,7 @@ declare module 'discord.js' {
 		public maximumPresences: number | null;
 		public readonly me: GuildMember | null;
 		public memberCount: number;
-		public members: GuildMemberStore;
+		public members: GuildMemberManager;
 		public mfaLevel: number;
 		public name: string;
 		public readonly nameAcronym: string;
@@ -708,9 +708,9 @@ declare module 'discord.js' {
 		public readonly partnered: boolean;
 		public premiumSubscriptionCount: number | null;
 		public premiumTier: PremiumTier;
-		public presences: PresenceStore;
+		public presences: PresenceManager;
 		public region: string;
-		public roles: RoleStore;
+		public roles: RoleManager;
 		public readonly shard: WebSocketShard;
 		public shardID: number;
 		public splash: string | null;
@@ -721,7 +721,7 @@ declare module 'discord.js' {
 		public verificationLevel: number;
 		public readonly verified: boolean;
 		public readonly voice: VoiceState | null;
-		public readonly voiceStates: VoiceStateStore;
+		public readonly voiceStates: VoiceStateManager;
 		public readonly widgetChannel: TextChannel | null;
 		public widgetChannelID: Snowflake | null;
 		public widgetEnabled: boolean | null;
@@ -843,7 +843,7 @@ declare module 'discord.js' {
 		public guild: Guild;
 		public managed: boolean;
 		public requiresColons: boolean;
-		public roles: GuildEmojiRoleStore;
+		public roles: GuildEmojiRoleManager;
 		public readonly url: string;
 		public delete(reason?: string): Promise<GuildEmoji>;
 		public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
@@ -871,7 +871,7 @@ declare module 'discord.js' {
 		public readonly premiumSince: Date | null;
 		public premiumSinceTimestamp: number | null;
 		public readonly presence: Presence;
-		public roles: GuildMemberRoleStore;
+		public roles: GuildMemberRoleManager;
 		public user: User;
 		public readonly voice: VoiceState;
 		public ban(options?: BanOptions): Promise<GuildMember>;
@@ -974,7 +974,7 @@ declare module 'discord.js' {
 		public readonly partial: false;
 		public readonly pinnable: boolean;
 		public pinned: boolean;
-		public reactions: ReactionStore;
+		public reactions: ReactionManager;
 		public system: boolean;
 		public tts: boolean;
 		public type: MessageType;
@@ -1106,7 +1106,7 @@ declare module 'discord.js' {
 		public me: boolean;
 		public message: Message;
 		public readonly partial: boolean;
-		public users: ReactionUserStore;
+		public users: ReactionUserManager;
 		public fetch(): Promise<MessageReaction>;
 		public toJSON(): object;
 	}
@@ -1385,7 +1385,7 @@ declare module 'discord.js' {
 
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data?: object);
-		public messages: MessageStore;
+		public messages: MessageManager;
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
 		public topic: string | null;
@@ -1397,7 +1397,7 @@ declare module 'discord.js' {
 
 	export class NewsChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data?: object);
-		public messages: MessageStore;
+		public messages: MessageManager;
 		public nsfw: boolean;
 		public topic: string | null;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
@@ -1736,63 +1736,40 @@ declare module 'discord.js' {
 
 //#endregion
 
-//#region Stores
+//#region Managers
 
-	export class ChannelStore extends DataStore<Snowflake, Channel, typeof Channel, ChannelResolvable> {
-		constructor(client: Client, iterable: Iterable<any>, options?: { lru: boolean });
-		constructor(client: Client, options?: { lru: boolean });
+	export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
+		constructor(client: Client, iterable: Iterable<any>);
 		public fetch(id: Snowflake, cache?: boolean): Promise<Channel>;
 	}
 
-	export class DataStore<K, V, VConstructor = Constructable<V>, R = any> extends Collection<K, V> {
-		constructor(client: Client, iterable: Iterable<any>, holds: VConstructor);
+	export abstract class BaseManager<K, Holds, R> {
+		constructor(client: Client, iterable: Iterable<any>, holds: Constructable<Holds>, cacheType: Collection<Snowflake, Holds>);
+		public holds: Constructable<Holds>;
 		public client: Client;
-		public holds: VConstructor;
-		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): V;
+		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): Holds;
 		public remove(key: K): void;
-		public resolve(resolvable: R): V | null;
+		public resolve(resolvable: R): Holds | null;
 		public resolveID(resolvable: R): K | null;
-		// Don't worry about those bunch of ts-ignores here, this is intended https://github.com/microsoft/TypeScript/issues/1213
-		// @ts-ignore
-		public filter(fn: (value: V, key: K, collection: this) => boolean): Collection<K, V>;
-		// @ts-ignore
-		public filter<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): Collection<K, V>;
-		// @ts-ignore
-		public filter(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): Collection<K, V>;
-		// @ts-ignore
-		public partition(fn: (value: V, key: K, collection: this) => boolean): [Collection<K, V>, Collection<K, V>];
-		// @ts-ignore
-		public partition<T>(fn: (this: T, value: V, key: K, collection: this) => boolean, thisArg: T): [Collection<K, V>, Collection<K, V>];
-		// @ts-ignore
-		public partition(fn: (value: V, key: K, collection: this) => boolean, thisArg?: unknown): [Collection<K, V>, Collection<K, V>];
-		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
-		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
-		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
-		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
-		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
-		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
-		// @ts-ignore
-		public clone(): Collection<K, V>;
-		// @ts-ignore
-		public concat(...collections: Collection<K, V>[]): Collection<K, V>;
-		// @ts-ignore
-		public sorted(compareFunction: (firstValue: V, secondValue: V, firstKey: K, secondKey: K) => number): Collection<K, V>;
 	}
 
-	export class GuildEmojiRoleStore extends OverridableDataStore<Snowflake, Role, typeof Role, RoleResolvable> {
+	export class GuildEmojiRoleManager {
 		constructor(emoji: GuildEmoji);
+		public emoji: GuildEmoji;
+		public guild: Guild;
+		public cache: Collection<Snowflake, Role>;
 		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
 		public set(roles: RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
 		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
 	}
 
-	export class GuildEmojiStore extends DataStore<Snowflake, GuildEmoji, typeof GuildEmoji, EmojiResolvable> {
+	export class GuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public create(attachment: BufferResolvable | Base64Resolvable, name: string, options?: GuildEmojiCreateOptions): Promise<GuildEmoji>;
 		public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 	}
 
-	export class GuildChannelStore extends DataStore<Snowflake, GuildChannel, typeof GuildChannel, GuildChannelResolvable> {
+	export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
 		public create(name: string, options: GuildCreateChannelOptions & { type: 'category' }): Promise<CategoryChannel>;
@@ -1801,12 +1778,12 @@ declare module 'discord.js' {
 	}
 
 	// Hacky workaround because changing the signature of an overridden method errors
-	class OverridableDataStore<V, K, VConstructor = Constructable<V>, R = any> extends DataStore<V, K, VConstructor, R> {
+	class OverridableManager<V, K, R = any> extends BaseManager<V, K, R> {
 		public add(data: any, cache: any): any;
 		public set(key: any): any;
 	}
 
-	export class GuildMemberRoleStore extends OverridableDataStore<Snowflake, Role, typeof Role, RoleResolvable> {
+	export class GuildMemberRoleManager extends OverridableManager<Snowflake, Role, RoleResolvable> {
 		constructor(member: GuildMember);
 		public readonly hoist: Role | null;
 		public readonly color: Role | null;
@@ -1817,46 +1794,47 @@ declare module 'discord.js' {
 		public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>, reason?: string): Promise<GuildMember>;
 	}
 
-	export class GuildMemberStore extends DataStore<Snowflake, GuildMember, typeof GuildMember, GuildMemberResolvable> {
+	export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
 		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
-		public fetch(): Promise<GuildMemberStore>;
+		public fetch(): Promise<GuildMemberManager>;
 		public fetch(options: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
 		public prune(options: GuildPruneMembersOptions & { dry?: false, count: false }): Promise<null>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
 		public unban(user: UserResolvable, reason?: string): Promise<User>;
 	}
 
-	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
+	export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public create(name: string, options?: { region?: string, icon: BufferResolvable | Base64Resolvable | null }): Promise<Guild>;
 	}
 
-	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
+	export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
 		constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
+		public cache: LimitedCollection<Snowflake, Message>;
 		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
 		public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
-		public remove(message: MessageResolvable, reason?: string): Promise<void>;
+		public delete(message: MessageResolvable, reason?: string): Promise<void>;
 	}
 
-	export class PresenceStore extends DataStore<Snowflake, Presence, typeof Presence, PresenceResolvable> {
+	export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 	}
 
-	export class ReactionStore extends DataStore<Snowflake, MessageReaction, typeof MessageReaction, MessageReactionResolvable> {
+	export class ReactionManager extends BaseManager<Snowflake, MessageReaction, MessageReactionResolvable> {
 		constructor(message: Message, iterable?: Iterable<any>);
 		public removeAll(): Promise<Message>;
 	}
 
-	export class ReactionUserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
+	export class ReactionUserManager extends BaseManager<Snowflake, User, UserResolvable> {
 		constructor(client: Client, iterable: Iterable<any> | undefined, reaction: MessageReaction);
 		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, User>>;
 		public remove(user?: UserResolvable): Promise<MessageReaction>;
 	}
 
-	export class RoleStore extends DataStore<Snowflake, Role, typeof Role, RoleResolvable> {
+	export class RoleManager extends BaseManager<Snowflake, Role, RoleResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public readonly everyone: Role | null;
 		public readonly highest: Role;
@@ -1866,12 +1844,12 @@ declare module 'discord.js' {
 		public fetch(id?: Snowflake, cache?: boolean): Promise<this>;
 	}
 
-	export class UserStore extends DataStore<Snowflake, User, typeof User, UserResolvable> {
+	export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public fetch(id: Snowflake, cache?: boolean): Promise<User>;
 	}
 
-	export class VoiceStateStore extends DataStore<Snowflake, VoiceState, typeof VoiceState> {
+	export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 	}
 

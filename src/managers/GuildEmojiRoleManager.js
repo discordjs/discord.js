@@ -10,7 +10,7 @@ class GuildEmojiRoleManager {
   constructor(emoji) {
     /**
      * The emoji belonging to this manager.
-     * @type {Emoji}
+     * @type {GuildEmoji}
      */
     this.emoji = emoji;
     /**
