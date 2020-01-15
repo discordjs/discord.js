@@ -1728,20 +1728,20 @@ declare module 'discord.js' {
 
 //#region Collections
 
-export class Collection<K, V> extends BaseCollection<K, V> {
-	public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
-	public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
-	public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
-	public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
-	public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
-	public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
-	public toJSON(): object;
-}
+	export class Collection<K, V> extends BaseCollection<K, V> {
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>): Collection<K, T>;
+		public flatMap<T, This>(fn: (this: This, value: V, key: K, collection: this) => Collection<K, T>, thisArg: This): Collection<K, T>;
+		public flatMap<T>(fn: (value: V, key: K, collection: this) => Collection<K, T>, thisArg?: unknown): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T): Collection<K, T>;
+		public mapValues<This, T>(fn: (this: This, value: V, key: K, collection: this) => T, thisArg: This): Collection<K, T>;
+		public mapValues<T>(fn: (value: V, key: K, collection: this) => T, thisArg?: unknown): Collection<K, T>;
+		public toJSON(): object;
+	}
 
-export class LimitedCollection<K, V> extends Collection<K, V> {
-	public constructor(maxSize: number, iterable: Iterable<any>);
-	public maxSize: number;
-}
+	export class LimitedCollection<K, V> extends Collection<K, V> {
+		public constructor(maxSize: number, iterable: Iterable<any>);
+		public maxSize: number;
+	}
 
 //#endregion
 
