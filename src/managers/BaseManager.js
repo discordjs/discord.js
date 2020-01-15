@@ -50,8 +50,8 @@ class BaseManager {
 
   /**
    * Resolves a data entry to a data Object.
-   * @param {string|Object} idOrInstance The id or instance of something in this DataStore
-   * @returns {?Object} An instance from this DataStore
+   * @param {string|Object} idOrInstance The id or instance of something in this Manager
+   * @returns {?Object} An instance from this Manager
    */
   resolve(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance;
@@ -61,7 +61,7 @@ class BaseManager {
 
   /**
    * Resolves a data entry to a instance ID.
-   * @param {string|Instance} idOrInstance The id or instance of something in this DataStore
+   * @param {string|Instance} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {

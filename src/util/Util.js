@@ -571,34 +571,6 @@ class Util {
       setTimeout(resolve, ms);
     });
   }
-
-  /**
-   * Adds methods from collections and maps onto the provided store
-   * @param {DataStore} store The store to mixin
-   * @param {string[]} ignored The properties to ignore
-   * @private
-   */
-  /* eslint-disable func-names */
-  static mixin(store, ignored) {
-    const Collection = require('./Collection');
-    Object.getOwnPropertyNames(Collection.prototype)
-      .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
-        if (ignored.includes(prop)) return;
-        if (prop === 'size') {
-          Object.defineProperty(store.prototype, prop, {
-            get: function() {
-              return this._filtered[prop];
-            },
-          });
-          return;
-        }
-        const func = Collection.prototype[prop];
-        if (prop === 'constructor' || typeof func !== 'function') return;
-        store.prototype[prop] = function(...args) {
-          return func.apply(this._filtered, args);
-        };
-      });
-  }
 }
 
 module.exports = Util;

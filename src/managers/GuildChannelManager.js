@@ -44,7 +44,7 @@ class GuildChannelManager extends BaseManager {
   /**
    * Resolves a GuildChannelResolvable to a Channel object.
    * @method resolve
-   * @memberof GuildChannelStore
+   * @memberof GuildChannelManager
    * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Channel}
@@ -53,7 +53,7 @@ class GuildChannelManager extends BaseManager {
   /**
    * Resolves a GuildChannelResolvable to a channel ID string.
    * @method resolveID
-   * @memberof GuildChannelStore
+   * @memberof GuildChannelManager
    * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
    * @returns {?Snowflake}

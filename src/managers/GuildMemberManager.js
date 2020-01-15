@@ -195,7 +195,7 @@ class GuildMemberManager extends BaseManager {
 
 
   _fetchSingle({ user, cache }) {
-    const existing = this.cache ? this.cacheget(user) : null;
+    const existing = this.cache.get(user);
     if (existing && !existing.partial) return Promise.resolve(existing);
     return this.client.api.guilds(this.guild.id).members(user).get()
       .then(data => this.add(data, cache));

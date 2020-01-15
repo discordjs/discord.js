@@ -36,7 +36,7 @@ class GuildManager extends BaseManager {
   /**
    * Resolves a GuildResolvable to a Guild object.
    * @method resolve
-   * @memberof GuildStore
+   * @memberof GuildManager
    * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Guild}
@@ -51,7 +51,7 @@ class GuildManager extends BaseManager {
   /**
    * Resolves a GuildResolvable to a Guild ID string.
    * @method resolveID
-   * @memberof GuildStore
+   * @memberof GuildManager
    * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Snowflake}

@@ -68,7 +68,7 @@ class RoleManager extends BaseManager {
   /**
    * Resolves a RoleResolvable to a Role object.
    * @method resolve
-   * @memberof RoleStore
+   * @memberof RoleManager
    * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
    * @returns {?Role}
@@ -77,7 +77,7 @@ class RoleManager extends BaseManager {
   /**
    * Resolves a RoleResolvable to a role ID string.
    * @method resolveID
-   * @memberof RoleStore
+   * @memberof RoleManager
    * @instance
    * @param {RoleResolvable} role The role resolvable to resolve
    * @returns {?Snowflake}

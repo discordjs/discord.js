@@ -5,7 +5,7 @@ const VoiceState = require('../structures/VoiceState');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
- * @extends {DataStore}
+ * @extends {BaseManager}
  */
 class VoiceStateManager extends BaseManager {
   constructor(guild, iterable) {

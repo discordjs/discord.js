@@ -52,7 +52,7 @@ class ChannelManager extends BaseManager {
   /**
    * Resolves a ChannelResolvable to a Channel object.
    * @method resolve
-   * @memberof ChannelStore
+   * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Channel}
@@ -61,7 +61,7 @@ class ChannelManager extends BaseManager {
   /**
    * Resolves a ChannelResolvable to a channel ID string.
    * @method resolveID
-   * @memberof ChannelStore
+   * @memberof ChannelManager
    * @instance
    * @param {ChannelResolvable} channel The channel resolvable to resolve
    * @returns {?Snowflake}

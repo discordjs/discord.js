@@ -510,10 +510,10 @@ class Guild extends Base {
    * @readonly
    */
   get me() {
-    // eslint-disable-next-line max-len
-    return this.members.cache.get(this.client.user.id) || (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
-      this.members.add({ user: { id: this.client.user.id } }, true) :
-      null);
+    return this.members.cache.get(this.client.user.id) ||
+      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER) ?
+        this.members.add({ user: { id: this.client.user.id } }, true) :
+        null);
   }
 
   /**

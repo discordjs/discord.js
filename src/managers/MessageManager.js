@@ -6,13 +6,12 @@ const LimitedCollection = require('../util/LimitedCollection');
 const Collection = require('../util/Collection');
 
 /**
-	* Manages API methods for Messages and holds their cache.
-	* @extends {BaseManager}
-	*/
+* Manages API methods for Messages and holds their cache.
+* @extends {BaseManager}
+*/
 class MessageManager extends BaseManager {
   constructor(channel, iterable) {
     super(channel.client, iterable, Message, LimitedCollection, channel.client.options.messageCacheMaxSize);
-
     /**
     * The channel the messages belong to.
     * @type {TextBasedChannel}
@@ -99,7 +98,7 @@ class MessageManager extends BaseManager {
   /**
     * Resolves a MessageResolvable to a Message object.
     * @method resolve
-    * @memberof MessageStore
+    * @memberof MessageManager
     * @instance
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?Message}
@@ -108,7 +107,7 @@ class MessageManager extends BaseManager {
   /**
     * Resolves a MessageResolvable to a Message ID string.
     * @method resolveID
-    * @memberof MessageStore
+    * @memberof MessageManager
     * @instance
     * @param {MessageResolvable} message The message resolvable to resolve
     * @returns {?Snowflake}

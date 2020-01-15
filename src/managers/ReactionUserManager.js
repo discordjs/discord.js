@@ -31,7 +31,7 @@ class ReactionUserManager extends BaseManager {
    * @param {Object} [options] Options for fetching the users
    * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
    * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
-   * @param {Snowflake} [options.after] Limit fetching users to those with an id grAeater than the supplied id
+   * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ limit = 100, after, before } = {}) {

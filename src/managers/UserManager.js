@@ -6,7 +6,7 @@ const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
 
 /**
- * A data store to store User models.
+ * Manages API methods for users and stores their cache.
  * @extends {BaseManager}
  */
 class UserManager extends BaseManager {

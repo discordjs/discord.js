@@ -3,7 +3,7 @@
 const MessageReaction = require('../structures/MessageReaction');
 const BaseManager = require('./BaseManager');
 
-class ReactionStore extends BaseManager {
+class ReactionManager extends BaseManager {
   constructor(message, iterable) {
     super(message.client, iterable, MessageReaction);
 
@@ -35,7 +35,7 @@ class ReactionStore extends BaseManager {
   /**
     * Resolves a MessageReactionResolvable to a MessageReaction object.
     * @method resolve
-    * @memberof ReactionStore
+    * @memberof ReactionManager
     * @instance
     * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?MessageReaction}
@@ -44,7 +44,7 @@ class ReactionStore extends BaseManager {
   /**
     * Resolves a MessageReactionResolvable to a MessageReaction ID string.
     * @method resolveID
-    * @memberof ReactionStore
+    * @memberof ReactionManager
     * @instance
     * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?Snowflake}
@@ -82,4 +82,4 @@ class ReactionStore extends BaseManager {
   }
 }
 
-module.exports = ReactionStore;
+module.exports = ReactionManager;

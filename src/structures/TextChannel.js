@@ -21,7 +21,7 @@ class TextChannel extends GuildChannel {
     super(guild, data);
     /**
      * A manager managing the messages sent to this channel
-     * @type {MessageStore<Snowflake, Message>}
+     * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
     this._typing = new Map();
