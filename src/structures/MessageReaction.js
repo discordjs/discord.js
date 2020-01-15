@@ -91,7 +91,7 @@ class MessageReaction {
 
   _add(user) {
     if (this.partial) return;
-    this.users.set(user.id, user);
+    this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
     if (!this.me) this.me = user.id === this.message.client.user.id;
   }

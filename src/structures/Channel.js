@@ -129,7 +129,7 @@ class Channel extends Base {
             break;
           }
         }
-        if (channel) guild.channels.set(channel.id, channel);
+        if (channel) guild.channels.cache.set(channel.id, channel);
       }
     }
     return channel;

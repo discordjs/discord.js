@@ -29,7 +29,7 @@ class GuildMemberRoleManager {
    */
   get _roles() {
     const everyone = this.guild.roles.everyone;
-    return this.guild.roles.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
+    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
   }
 
   /**

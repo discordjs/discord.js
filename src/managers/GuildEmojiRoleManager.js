@@ -33,7 +33,7 @@ class GuildEmojiRoleManager {
    * @readonly
    */
   get _roles() {
-    return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));
+    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
   }
 
   /**

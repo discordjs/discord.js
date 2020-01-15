@@ -1,7 +1,7 @@
 'use strict';
 
-const Collection = require('../../util/Collection');
-const Structures = require('../../util/Structures');
+const Collection = require('../util/Collection');
+let Structures;
 
 /**
  * Manages the API methods of a data model and holds its cache.
@@ -9,6 +9,7 @@ const Structures = require('../../util/Structures');
  */
 class BaseManager {
   constructor(client, iterable, holds, cacheType = Collection, ...cacheOptions) {
+    if (!Structures) Structures = require('../util/Structures');
     /**
      * The data structure belonging to this Manager
      * @private

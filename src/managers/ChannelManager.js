@@ -1,18 +1,17 @@
 'use strict';
 
-const LRUCollection = require('../util/LRUCollection');
 const Channel = require('../structures/Channel');
 const BaseManager = require('./BaseManager');
 const { Events } = require('../util/Constants');
 
 class ChannelManager extends BaseManager {
   constructor(client, iterable) {
-    super(client, iterable, Channel, LRUCollection);
+    super(client, iterable, Channel);
   }
 
   /**
   * The cache of Channels.
-  * @property {LRUCollection<Snowflake, Channel>} cache
+  * @property {Collection<Snowflake, Channel>} cache
   * @memberof ChannelManager
   * @instance
   */
