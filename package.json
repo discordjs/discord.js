@@ -90,12 +90,12 @@
     "node": ">=10.2.0"
   },
   "browser": {
+    "@discordjs/opus": false,
     "https": false,
     "ws": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
-    "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
     "worker_threads": false,
