@@ -1,4 +1,5 @@
 const list = [
+  require('./DiscordJsOpus'),
   require('./NodeOpusEngine'),
   require('./OpusScriptEngine'),
 ];

@@ -44,6 +44,7 @@
     "bufferutil": "^4.0.0",
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.3",
+    "@discordjs/opus": "^0.1.0",
     "node-opus": "^0.2.7",
     "opusscript": "^0.0.6",
     "sodium": "^2.0.3"
