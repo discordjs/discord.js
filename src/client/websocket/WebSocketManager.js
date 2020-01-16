@@ -245,6 +245,8 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
+        shard._cleanupConnection();
+
         this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
