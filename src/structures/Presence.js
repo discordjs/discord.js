@@ -89,7 +89,11 @@ class Presence {
      * The activities of this presence
      * @type {Activity[]}
      */
-    this.activities = data.activities ? data.activities.map(activity => new Activity(this, activity)) : [];
+    this.activities = data.activities ?
+      data.activities.map(activity => new Activity(this, activity)) :
+      data.game || data.activity ?
+        [new Activity(this, data.game || data.activity)] :
+        [];
 
     /**
      * The devices this presence is on
@@ -105,7 +109,7 @@ class Presence {
 
   _clone() {
     const clone = Object.assign(Object.create(this), this);
-    if (this.activity) clone.activity = this.activity._clone();
+    if (this.activities) clone.activities = this.activities.map(activity => activity._clone());
     return clone;
   }
 
@@ -117,8 +121,9 @@ class Presence {
   equals(presence) {
     return this === presence || (
       presence &&
-      this.status === presence.status &&
-      this.activity ? this.activity.equals(presence.activity) : !presence.activity &&
+        this.status === presence.status &&
+        this.activities.length === presence.activities.length &&
+        this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
         this.clientStatus.web === presence.clientStatus.web &&
         this.clientStatus.mobile === presence.clientStatus.mobile &&
         this.clientStatus.desktop === presence.clientStatus.desktop
