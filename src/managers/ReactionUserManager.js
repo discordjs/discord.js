@@ -13,14 +13,14 @@ class ReactionUserManager extends BaseManager {
   constructor(client, iterable, reaction) {
     super(client, iterable, User);
     /**
-     * The reaction this manager belongs to.
+     * The reaction this manager belongs to
      * @type {MessageReaction}
      */
     this.reaction = reaction;
   }
 
   /**
-   * The cache of this Manager.
+   * The cache of this manager
    * @property {Collection<Snowflake, User>} cache
    * @memberof GuildManager
    * @instance

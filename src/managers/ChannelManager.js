@@ -4,13 +4,16 @@ const Channel = require('../structures/Channel');
 const BaseManager = require('./BaseManager');
 const { Events } = require('../util/Constants');
 
+/**
+ * A manager of channels belonging to a client
+ */
 class ChannelManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, Channel);
   }
 
   /**
-  * The cache of Channels.
+  * The cache of Channels
   * @property {Collection<Snowflake, Channel>} cache
   * @memberof ChannelManager
   * @instance

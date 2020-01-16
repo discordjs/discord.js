@@ -101,7 +101,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * A manager for the roles belonging to this member.
+   * A manager for the roles belonging to this member
    * @type {GuildMemberRoleManager}
    * @readonly
    */

@@ -162,15 +162,15 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
-        other.roles.size === this.roles.cache.size &&
-        other.roles.every(role => this.roles.cache.has(role.id))
+        other.roles.cache.size === this.roles.cache.size &&
+        other.roles.cache.every(role => this.roles.cache.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other.roles.length === this.roles.cache.size &&
-        other.roles.every(role => this.roles.cache.has(role))
+        other.roles.cache.length === this.roles.cache.size &&
+        other.roles.cache.every(role => this.roles.cache.has(role))
       );
     }
   }

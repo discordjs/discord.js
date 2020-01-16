@@ -21,7 +21,7 @@ class LimitedCollection extends Collection {
 
   set(key, value) {
     if (this.maxSize === 0) return;
-    if (this.size >= this.maxSize) this.delete(this.firstKey());
+    if (this.size >= this.maxSize && !this.has(key)) this.delete(this.firstKey());
     super.set(key, value);
   }
 }

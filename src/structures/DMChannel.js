@@ -19,7 +19,7 @@ class DMChannel extends Channel {
     // Override the channel type so partials have a known type
     this.type = 'dm';
     /**
-     * A manager managing the messages belonging to this channel.
+     * A manager of the messages belonging to this channel
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);

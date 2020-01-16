@@ -15,14 +15,14 @@ class GuildEmojiManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, GuildEmoji);
     /**
-     * The guild this manager belongs to.
+     * The guild this manager belongs to
      * @type {Guild}
      */
     this.guild = guild;
   }
 
   /**
-  * The cache of GuildEmojis.
+  * The cache of GuildEmojis
   * @property {Collection<Snowflake, GuildEmoji>} cache
   * @memberof GuildEmojiManager
   * @instance

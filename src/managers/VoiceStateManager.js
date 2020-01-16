@@ -11,14 +11,14 @@ class VoiceStateManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, VoiceState);
     /**
-     * The guild this manager belongs to.
+     * The guild this manager belongs to
      * @type {Guild}
      */
     this.guild = guild;
   }
 
   /**
-   * The cache of this Manager.
+   * The cache of this manager
    * @property {Collection<Snowflake, VoiceState>} cache
    * @memberof VoiceStateManager
    * @instance

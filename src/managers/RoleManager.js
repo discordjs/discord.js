@@ -13,14 +13,14 @@ class RoleManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, Role);
     /**
-     * The guild belonging to this manager.
+     * The guild belonging to this manager
      * @type {Guild}
      */
     this.guild = guild;
   }
 
   /**
-   * The role cache of this manager.
+   * The role cache of this manager
    * @property {Collection<Snowflake, Role>} cache
    * @memberof RoleManager
    * @instance

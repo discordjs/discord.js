@@ -28,7 +28,7 @@ class MessageReaction {
     this.me = data.me;
 
     /**
-     * A manager managing the users belonging to this reaction.
+     * A manager of the users that have given this reaction
      * @type {ReactionUserManager}
      */
     this.users = new ReactionUserManager(client, undefined, this);

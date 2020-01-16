@@ -13,7 +13,7 @@ const APIMessage = require('../APIMessage');
 class TextBasedChannel {
   constructor() {
     /**
-     * A manager managing the messages sent to this channel
+     * A manager of the messages sent to this channel
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);

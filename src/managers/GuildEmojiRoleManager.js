@@ -9,17 +9,17 @@ const { TypeError } = require('../errors');
 class GuildEmojiRoleManager {
   constructor(emoji) {
     /**
-     * The emoji belonging to this manager.
+     * The emoji belonging to this manager
      * @type {GuildEmoji}
      */
     this.emoji = emoji;
     /**
-     * The Guild belonging to this manager.
+     * The guild belonging to this manager
      * @type {Guild}
      */
     this.guild = emoji.guild;
     /**
-     * The client belonging to this manager.
+     * The client belonging to this manager
      * @type {Client}
      * @readonly
      */
@@ -37,7 +37,7 @@ class GuildEmojiRoleManager {
   }
 
   /**
-   * The cache of roles belonging to this emoji.
+   * The cache of roles belonging to this emoji
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */

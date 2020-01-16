@@ -129,7 +129,7 @@ class User extends Base {
    * @readonly
    */
   get presence() {
-    for (const guild of this.client.guilds.values()) {
+    for (const guild of this.client.guilds.cache.values()) {
       if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
     }
     return new Presence(this.client, { user: { id: this.id } });

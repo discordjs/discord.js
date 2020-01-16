@@ -9,12 +9,12 @@ const { TypeError } = require('../errors');
 class GuildMemberRoleManager {
   constructor(member) {
     /**
-     * The GuildMember this manager belongs to.
+     * The GuildMember this manager belongs to
      * @type {GuildMember}
      */
     this.member = member;
     /**
-     * The Guild this manager belongs to.
+     * The Guild this manager belongs to
      * @type {Guild}
      */
     this.guild = member.guild;
@@ -33,7 +33,7 @@ class GuildMemberRoleManager {
   }
 
   /**
-   * The roles of this member.
+   * The roles of this member
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */

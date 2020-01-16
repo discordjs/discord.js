@@ -9,7 +9,7 @@ class PresenceManager extends BaseManager {
   }
 
   /**
-  * The cache of Presences.
+  * The cache of Presences
   * @property {Collection<Snowflake, Presence>} cache
   * @memberof PresenceManager
   * @instance

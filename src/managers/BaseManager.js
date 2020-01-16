@@ -11,7 +11,8 @@ class BaseManager {
   constructor(client, iterable, holds, cacheType = Collection, ...cacheOptions) {
     if (!Structures) Structures = require('../util/Structures');
     /**
-     * The data structure belonging to this Manager
+     * The data structure belonging to this manager
+     * @name holds
      * @private
      * @readonly
      */
@@ -19,19 +20,20 @@ class BaseManager {
 
     /**
      * The client that instantiated this Manager
+     * @name client
      * @type {Client}
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * The type of Collection of the Manager.
+     * The type of Collection of the Manager
      * @type {Collection}
      */
     this.cacheType = cacheType;
 
     /**
-    * Holds the cache for the data model.
+    * Holds the cache for the data model
     * @type {?Collection}
     */
     this.cache = new cacheType(...cacheOptions);

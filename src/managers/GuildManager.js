@@ -18,7 +18,7 @@ class GuildManager extends BaseManager {
   }
 
   /**
-   * The cache of this Manager.
+   * The cache of this Manager
    * @property {Collection<Snowflake, Guild>} cache
    * @memberof GuildManager
    * @instance
@@ -77,7 +77,7 @@ class GuildManager extends BaseManager {
       return new Promise((resolve, reject) =>
         this.client.api.guilds.post({ data: { name, region, icon } })
           .then(data => {
-            if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.get(data.id));
+            if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
 
             const handleGuild = guild => {
               if (guild.id === data.id) {

@@ -8,7 +8,7 @@ class ReactionManager extends BaseManager {
     super(message.client, iterable, MessageReaction);
 
     /**
-     * The message this manager belongs to.
+     * The message this manager belongs to
      * @type {Message}
      */
     this.message = message;
@@ -19,7 +19,7 @@ class ReactionManager extends BaseManager {
   }
 
   /**
-   * The reaction cache of this manager.
+   * The reaction cache of this manager
    * @property {Collection<Snowflake, MessageReaction>} cache
    * @memberof ReactionManager
    * @instance

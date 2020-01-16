@@ -170,7 +170,7 @@ class MessageMentions {
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     if (!ignoreEveryone && this.everyone) return true;
     if (!ignoreRoles && data instanceof GuildMember) {
-      for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
+      for (const role of this.roles.cache.values()) if (data.roles.has(role.id)) return true;
     }
 
     if (!ignoreDirect) {

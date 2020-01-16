@@ -126,7 +126,7 @@ class Message extends Base {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A manager managing the reactions belonging to this message.
+     * A manager of the reactions belonging to this message
      * @type {ReactionManager}
      */
     this.reactions = new ReactionManager(this);

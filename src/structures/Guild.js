@@ -35,31 +35,31 @@ class Guild extends Base {
     super(client);
 
     /**
-     * A manager managing the members belonging to this guild.
+     * A manager of the members belonging to this guild
      * @type {GuildMemberManager}
      */
     this.members = new GuildMemberManager(this);
 
     /**
-     * A manager managing the members belonging to this guild.
+     * A manager of the members belonging to this guild
      * @type {GuildChannelManager}
      */
     this.channels = new GuildChannelManager(this);
 
     /**
-     * A manager managing the roles belonging to this guild.
+     * A manager of the roles belonging to this guild
      * @type {RoleManager}
      */
     this.roles = new RoleManager(this);
 
     /**
-     * A manager managing the presences belonging to this guild.
+     * A manager of the presences belonging to this guild
      * @type {PresenceManager}
      */
     this.presences = new PresenceManager(this.client);
 
     /**
-     * A manager managing the voice states of this guild.
+     * A manager of the voice states of this guild
      * @type {VoiceStateManager}
      */
     this.voiceStates = new VoiceStateManager(this);
@@ -360,7 +360,7 @@ class Guild extends Base {
 
     if (!this.emojis) {
       /**
-       * A manager managing the emojis belonging to this guild.
+       * A manager of the emojis belonging to this guild
        * @type {GuildEmojiManager}
        */
       this.emojis = new GuildEmojiManager(this);

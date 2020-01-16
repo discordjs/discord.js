@@ -14,14 +14,14 @@ class GuildChannelManager extends BaseManager {
     super(guild.client, iterable, GuildChannel);
 
     /**
-     * The guild this Manager belongs to.
+     * The guild this Manager belongs to
      * @type {Guild}
      */
     this.guild = guild;
   }
 
   /**
-   * The cache of this Manager.
+   * The cache of this Manager
    * @property {Collection<Snowflake, GuildChannel>} cache
    * @memberof GuildChannelManager
    * @instance

@@ -14,14 +14,14 @@ class GuildMemberManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, GuildMember);
     /**
-     * The guild this manager belongs to.
+     * The guild this manager belongs to
      * @type {Guild}
      */
     this.guild = guild;
   }
 
   /**
-   * The cache of this Manager.
+   * The cache of this Manager
    * @property {Collection<Snowflake, GuildMember>} cache
    * @memberof GuildMemberManager
    * @instance
