@@ -102,6 +102,7 @@
     "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/opus/BaseOpusEngine.js": false,
     "src/client/voice/opus/NodeOpusEngine.js": false,
+    "src/client/voice/opus/DiscordJsOpusEngine.js": false,
     "src/client/voice/opus/OpusEngineList.js": false,
     "src/client/voice/opus/OpusScriptEngine.js": false,
     "src/client/voice/pcm/ConverterEngine.js": false,

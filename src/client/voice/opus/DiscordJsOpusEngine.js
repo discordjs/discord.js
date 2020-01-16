@@ -1,6 +1,6 @@
 const OpusEngine = require('./BaseOpusEngine');
 
-class NodeOpusEngine extends OpusEngine {
+class DiscordJsOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
     const opus = require('@discordjs/opus');
@@ -31,4 +31,4 @@ class NodeOpusEngine extends OpusEngine {
   }
 }
 
-module.exports = NodeOpusEngine;
+module.exports = DiscordJsOpusEngine;
