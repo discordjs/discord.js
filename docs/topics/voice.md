@@ -4,7 +4,7 @@ Voice in discord.js can be used for many things, such as music bots, recording o
 In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `VoiceConnection`, where you can start streaming and receiving audio.
 
 To get started, make sure you have:
-* FFmpeg - `npm install ffmpeg-binaries`
+* FFmpeg - `npm install ffmpeg-static`
 * an opus encoder, choose one from below:
   * `npm install node-opus` (better performance)
   * `npm install opusscript`
