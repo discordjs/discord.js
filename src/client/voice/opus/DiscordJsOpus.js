@@ -11,7 +11,7 @@ class NodeOpusEngine extends OpusEngine {
   }
 
   setBitrate(bitrate) {
-    this.encoder.applyEncoderCTL(this.ctl.BITRATE, Math.min(128, Math.max(16, bitrate)) * 1000);
+    this.encoder.setBitrate(Math.min(128, Math.max(16, bitrate)) * 1000);
   }
 
   setFEC(enabled) {
