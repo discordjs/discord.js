@@ -56,6 +56,9 @@
     "erlpack": {
       "optional": true
     },
+    "@discordjs/opus": {
+      "optional": true
+    },
     "node-opus": {
       "optional": true
     },
@@ -94,6 +97,7 @@
     "prism-media": false,
     "opusscript": false,
     "node-opus": false,
+    "@discordjs/opus": false,
     "tweetnacl": false,
     "sodium": false,
     "src/sharding/Shard.js": false,
