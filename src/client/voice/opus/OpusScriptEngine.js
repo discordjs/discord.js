@@ -5,11 +5,7 @@ let OpusScript;
 class OpusScriptEngine extends OpusEngine {
   constructor(player) {
     super(player);
-    try {
-      OpusScript = require('opusscript');
-    } catch (err) {
-      throw err;
-    }
+    OpusScript = require('opusscript');
     this.encoder = new OpusScript(this.samplingRate, this.channels);
     super.init();
   }

@@ -5,11 +5,7 @@ let opus;
 class NodeOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
-    try {
-      opus = require('node-opus');
-    } catch (err) {
-      throw err;
-    }
+    opus = require('node-opus');
     this.encoder = new opus.OpusEncoder(this.samplingRate, this.channels);
     super.init();
   }
