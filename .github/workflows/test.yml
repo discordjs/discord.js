@@ -17,11 +17,7 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        uses: discordjs/action-eslint@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          job-name: ESLint
+        uses: icrawl/action-eslint@v1
 
   typings:
     name: TSLint
