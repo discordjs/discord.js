@@ -90,6 +90,7 @@
     "node": ">=10.2.0"
   },
   "browser": {
+    "@discordjs/opus": false,
     "https": false,
     "ws": false,
     "erlpack": false,
