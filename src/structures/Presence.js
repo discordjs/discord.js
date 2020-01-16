@@ -85,15 +85,17 @@ class Presence {
      */
     this.status = data.status || this.status || 'offline';
 
-    /**
-     * The activities of this presence
-     * @type {Activity[]}
-     */
-    this.activities = data.activities ?
-      data.activities.map(activity => new Activity(this, activity)) :
-      data.game || data.activity ?
-        [new Activity(this, data.game || data.activity)] :
-        [];
+    if (data.activities) {
+      /**
+       * The activities of this presence
+       * @type {Activity[]}
+       */
+      this.activities = data.activities.map(activity => new Activity(this, activity));
+    } else if (data.activity || data.game) {
+      this.activities = [new Activity(this, data.game || data.activity)];
+    } else {
+      this.activities = [];
+    }
 
     /**
      * The devices this presence is on
@@ -121,12 +123,12 @@ class Presence {
   equals(presence) {
     return this === presence || (
       presence &&
-        this.status === presence.status &&
-        this.activities.length === presence.activities.length &&
-        this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
-        this.clientStatus.web === presence.clientStatus.web &&
-        this.clientStatus.mobile === presence.clientStatus.mobile &&
-        this.clientStatus.desktop === presence.clientStatus.desktop
+      this.status === presence.status &&
+      this.activities.length === presence.activities.length &&
+      this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
+      this.clientStatus.web === presence.clientStatus.web &&
+      this.clientStatus.mobile === presence.clientStatus.mobile &&
+      this.clientStatus.desktop === presence.clientStatus.desktop
     );
   }
 
