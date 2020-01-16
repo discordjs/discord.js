@@ -1,11 +1,9 @@
 const OpusEngine = require('./BaseOpusEngine');
 
-let opus;
-
 class NodeOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
-    opus = require('node-opus');
+    const opus = require('node-opus');
     this.encoder = new opus.OpusEncoder(this.samplingRate, this.channels);
     super.init();
   }

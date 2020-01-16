@@ -1,11 +1,9 @@
 const OpusEngine = require('./BaseOpusEngine');
 
-let opus;
-
 class NodeOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
-    opus = require('@discordjs/opus');
+    const opus = require('@discordjs/opus');
     this.encoder = new opus.OpusEncoder(this.samplingRate, this.channels);
     super.init();
   }
