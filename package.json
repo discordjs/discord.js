@@ -96,6 +96,7 @@
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
+    "node-opus": false,
     "tweetnacl": false,
     "sodium": false,
     "worker_threads": false,
