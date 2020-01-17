@@ -841,6 +841,7 @@ declare module 'discord.js' {
 		public available: boolean;
 		public readonly deletable: boolean;
 		public guild: Guild;
+		public id: Snowflake;
 		public managed: boolean;
 		public requiresColons: boolean;
 		public roles: GuildEmojiRoleStore;
