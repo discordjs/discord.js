@@ -7,12 +7,12 @@ To get started, make sure you have:
 * FFmpeg - `npm install ffmpeg-binaries`
 * an opus encoder, choose one from below:
   * `npm install opusscript`
-  * `npm install node-opus`
+  * `npm install @discordjs/opus`
 * a good network connection
 
-The preferred opus engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred opus engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
+Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
+For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ## Joining a voice channel
 The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
