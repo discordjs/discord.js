@@ -169,8 +169,8 @@ class GuildEmoji extends Emoji {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other.roles.cache.length === this.roles.cache.size &&
-        other.roles.cache.every(role => this.roles.cache.has(role))
+        other.roles.length === this.roles.cache.size &&
+        other.roles.every(role => this.roles.cache.has(role))
       );
     }
   }

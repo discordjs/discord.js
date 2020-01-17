@@ -13,7 +13,7 @@ class ReactionUserManager extends BaseManager {
   constructor(client, iterable, reaction) {
     super(client, iterable, User);
     /**
-     * The reaction this manager belongs to
+     * The reaction that this manager belongs to
      * @type {MessageReaction}
      */
     this.reaction = reaction;

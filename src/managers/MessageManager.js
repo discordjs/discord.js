@@ -13,7 +13,7 @@ class MessageManager extends BaseManager {
   constructor(channel, iterable) {
     super(channel.client, iterable, Message, LimitedCollection, channel.client.options.messageCacheMaxSize);
     /**
-    * The channel the messages belong to
+    * The channel that the messages belong to
     * @type {TextBasedChannel}
     */
     this.channel = channel;

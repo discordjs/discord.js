@@ -8,7 +8,7 @@ class ReactionManager extends BaseManager {
     super(message.client, iterable, MessageReaction);
 
     /**
-     * The message this manager belongs to
+     * The message that this manager belongs to
      * @type {Message}
      */
     this.message = message;

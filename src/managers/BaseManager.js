@@ -12,7 +12,7 @@ class BaseManager {
     if (!Structures) Structures = require('../util/Structures');
     /**
      * The data structure belonging to this manager
-     * @name holds
+     * @name BaseManager#holds
      * @private
      * @readonly
      */
@@ -20,7 +20,7 @@ class BaseManager {
 
     /**
      * The client that instantiated this Manager
-     * @name client
+     * @name BaseManager#client
      * @type {Client}
      * @readonly
      */
