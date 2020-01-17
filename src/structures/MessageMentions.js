@@ -147,7 +147,6 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
-   * <info>Order as received from the API, not left to right by occurence in the message content</info>
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
