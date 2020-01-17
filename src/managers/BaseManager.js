@@ -13,6 +13,7 @@ class BaseManager {
     /**
      * The data structure belonging to this manager
      * @name BaseManager#holds
+     * @type {Function}
      * @private
      * @readonly
      */
