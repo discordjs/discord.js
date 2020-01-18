@@ -1570,7 +1570,8 @@ declare module 'discord.js' {
 
 	export class Webhook {
 		constructor(client: Client, dataOrID: object | string, token: string);
-		public avatar: string;
+		public avatar: string | null;
+		public readonly avatarURL: string | null;
 		public channelID: string;
 		public readonly client: Client;
 		public guildID: string;

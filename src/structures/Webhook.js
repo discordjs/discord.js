@@ -3,6 +3,7 @@ const path = require('path');
 const Util = require('../util/Util');
 const Attachment = require('./Attachment');
 const RichEmbed = require('./RichEmbed');
+const Constants = require('../util/Constants');
 
 /**
  * Represents a webhook.
@@ -73,6 +74,16 @@ class Webhook extends EventEmitter {
     } else {
       this.owner = null;
     }
+  }
+
+  /**
+   * A link to the webhook user's avatar
+   * @type {?stirng}
+   * @readonly
+   */
+  get avatarURL() {
+    if (!this.avatar) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar);
   }
 
   /**
