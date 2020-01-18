@@ -4,6 +4,9 @@ const DataStore = require('./DataStore');
 const DataResolver = require('../util/DataResolver');
 const { Events } = require('../util/Constants');
 const Guild = require('../structures/Guild');
+const GuildChannel = require('../structures/GuildChannel');
+const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 
 /**
  * Stores guilds.
@@ -17,8 +20,10 @@ class GuildStore extends DataStore {
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
+   * * A GuildChannel object
+   * * A Role object
    * * A Snowflake
-   * @typedef {Guild|Snowflake} GuildResolvable
+   * @typedef {Guild|GuildChannel|GuildMember|Role|Snowflake} GuildResolvable
    */
 
   /**
@@ -29,6 +34,12 @@ class GuildStore extends DataStore {
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Guild}
    */
+  resolve(guild) {
+    if (guild instanceof GuildChannel ||
+      guild instanceof GuildMember ||
+      guild instanceof Role) return super.resolve(guild.guild);
+    return super.resolve(guild);
+  }
 
   /**
    * Resolves a GuildResolvable to a Guild ID string.
@@ -38,6 +49,12 @@ class GuildStore extends DataStore {
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Snowflake}
    */
+  resolveID(guild) {
+    if (guild instanceof GuildChannel ||
+      guild instanceof GuildMember ||
+      guild instanceof Role) return super.resolveID(guild.guild.id);
+    return super.resolveID(guild);
+  }
 
   /**
    * Creates a guild.

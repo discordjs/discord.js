@@ -36,6 +36,7 @@ class GenericAction {
     return data.channel || this.getPayload({
       id,
       guild_id: data.guild_id,
+      recipients: [data.author || { id: data.user_id }],
     }, this.client.channels, id, PartialTypes.CHANNEL);
   }
 
@@ -52,9 +53,9 @@ class GenericAction {
     const id = data.emoji.id || decodeURIComponent(data.emoji.name);
     return this.getPayload({
       emoji: data.emoji,
-      count: 0,
+      count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
-    }, message.reactions, id, PartialTypes.MESSAGE);
+    }, message.reactions, id, PartialTypes.REACTION);
   }
 
   getMember(data, guild) {

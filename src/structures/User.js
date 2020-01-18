@@ -60,6 +60,13 @@ class User extends Base {
     if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
+     * Whether the user is an Official Discord System user (part of the urgent message system)
+     * @type {?boolean}
+     * @name User#system
+     */
+    if (typeof data.system !== 'undefined') this.system = Boolean(data.system);
+
+    /**
      * The locale of the user's client (ISO 639-1)
      * @type {?string}
      * @name User#locale
@@ -133,9 +140,9 @@ class User extends Base {
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  avatarURL({ format, size } = {}) {
+  avatarURL({ format, size, dynamic } = {}) {
     if (!this.avatar) return null;
-    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
   }
 
   /**
@@ -211,7 +218,7 @@ class User extends Base {
    */
   async createDM() {
     const { dmChannel } = this;
-    if (dmChannel) return dmChannel;
+    if (dmChannel && !dmChannel.partial) return dmChannel;
     const data = await this.client.api.users(this.client.user.id).channels.post({ data: {
       recipient_id: this.id,
     } });

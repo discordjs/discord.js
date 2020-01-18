@@ -42,12 +42,16 @@ class MessageMentions {
       if (users instanceof Collection) {
         /**
          * Any users that were mentioned
+         * <info>Order as received from the API, not left to right by occurence in the message content</info>
          * @type {Collection<Snowflake, User>}
          */
         this.users = new Collection(users);
       } else {
         this.users = new Collection();
         for (const mention of users) {
+          if (mention.member && message.guild) {
+            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+          }
           const user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
@@ -60,6 +64,7 @@ class MessageMentions {
       if (roles instanceof Collection) {
         /**
          * Any roles that were mentioned
+         * <info>Order as received from the API, not left to right by occurence in the message content</info>
          * @type {Collection<Snowflake, Role>}
          */
         this.roles = new Collection(roles);
@@ -101,6 +106,7 @@ class MessageMentions {
       if (crosspostedChannels instanceof Collection) {
         /**
          * A collection of crossposted channels
+         * <info>Order as received from the API, not left to right by occurence in the message content</info>
          * @type {Collection<Snowflake, CrosspostedChannel>}
          */
         this.crosspostedChannels = new Collection(crosspostedChannels);
@@ -124,6 +130,7 @@ class MessageMentions {
 
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
+   * <info>Order as received from the API, not left to right by occurence in the message content</info>
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -140,6 +147,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
+   * <info>Order as received from the API, not left to right by occurence in the message content</info>
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
