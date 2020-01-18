@@ -46,7 +46,7 @@ class ClientDataResolver {
     if (typeof user === 'string') return this.client.users.get(user) || null;
     if (user instanceof GuildMember) return user.user;
     if (user instanceof Message) return user.author;
-    if (user instanceof Guild) return user.owner;
+    if (user instanceof Guild) return this.resolveUser(user.ownerID);
     return null;
   }
 
