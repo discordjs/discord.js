@@ -79,17 +79,17 @@ class Collector extends EventEmitter {
    */
   _handle(...args) {
     const collect = this.handle(...args);
-    if (!collect || !this.filter(...args, this.collected)) return;
+    if (collect && this.filter(...args, this.collected)) {
+      this.collected.set(collect.key, collect.value);
 
-    this.collected.set(collect.key, collect.value);
-
-    /**
-     * Emitted whenever an element is collected.
-     * @event Collector#collect
-     * @param {*} element The element that got collected
-     * @param {Collector} collector The collector
-     */
-    this.emit('collect', collect.value, this);
+      /**
+       * Emitted whenever an element is collected.
+       * @event Collector#collect
+       * @param {*} element The element that got collected
+       * @param {Collector} collector The collector
+       */
+      this.emit('collect', collect.value, this);
+    }
 
     const post = this.postCheck(...args);
     if (post) this.stop(post);

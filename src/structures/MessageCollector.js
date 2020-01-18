@@ -37,8 +37,14 @@ class MessageCollector extends Collector {
     this.client.on('message', this.listener);
 
     // For backwards compatibility (remove in v12)
-    if (this.options.max) this.options.maxProcessed = this.options.max;
-    if (this.options.maxMatches) this.options.max = this.options.maxMatches;
+    if (this.options.max) {
+      this.options.maxProcessed = this.options.max;
+      delete this.options.max;
+    }
+    if (this.options.maxMatches) {
+      this.options.max = this.options.maxMatches;
+      delete this.options.maxMatches;
+    }
     this._reEmitter = message => {
       /**
        * Emitted when the collector receives a message.
