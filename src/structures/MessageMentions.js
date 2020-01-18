@@ -25,7 +25,7 @@ class MessageMentions {
           if (!user) user = message.client.dataManager.newUser(mention);
           this.users.set(user.id, user);
           if (mention.member && message.guild && !message.guild.members.has(mention.id)) {
-            this.guild._addMember(Object.assign(mention.member, { user }), false);
+            message.guild._addMember(Object.assign(mention.member, { user }), false);
           }
         }
       }
