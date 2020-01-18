@@ -94,6 +94,8 @@ class Webhook extends EventEmitter {
 
   /**
    * The time the webhook was created at
+   * @type {Date}
+   * @readonly
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
