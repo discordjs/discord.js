@@ -973,7 +973,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild owner
-   * guild.setOwner(guild.members.first())
+   * guild.setOwner(guild.members.cache.first())
    *  .then(updated => console.log(`Updated the guild owner to ${updated.owner.displayName}`))
    *  .catch(console.error);
    */
