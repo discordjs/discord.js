@@ -795,6 +795,7 @@ declare module 'discord.js' {
 		public id: Snowflake;
 		public message: Message;
 		public proxyURL: string;
+		public readonly spoiler: boolean;
 		public url: string;
 		public width: number;
 	}

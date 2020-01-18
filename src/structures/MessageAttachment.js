@@ -1,3 +1,5 @@
+const { basename } = require('path');
+
 /**
  * Represents an attachment in a message.
  */
@@ -62,6 +64,15 @@ class MessageAttachment {
      * @type {?number}
      */
     this.width = data.width;
+  }
+
+  /**
+   * Whether or not this attachment has been marked as a spoiler
+   * @type {boolean}
+   * @readonly
+   */
+  get spoiler() {
+    return basename(this.url).startsWith('SPOILER_');
   }
 }
 
