@@ -15,6 +15,7 @@ class MessageMentions {
       if (users instanceof Collection) {
         /**
          * Any users that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, User>}
          */
         this.users = new Collection(users);
@@ -34,6 +35,7 @@ class MessageMentions {
       if (roles instanceof Collection) {
         /**
          * Any roles that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</
          * @type {Collection<Snowflake, Role>}
          */
         this.roles = new Collection(roles);
@@ -86,6 +88,7 @@ class MessageMentions {
 
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
+   * <info>Order as received from the API, not as they appear in the message content</
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -102,6 +105,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
+   * <info>Order as they appear first in the message content</info>
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
