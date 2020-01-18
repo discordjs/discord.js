@@ -4,6 +4,7 @@ const Util = require('../util/Util');
 const Attachment = require('./Attachment');
 const RichEmbed = require('./RichEmbed');
 const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a webhook.
@@ -37,9 +38,9 @@ class Webhook extends EventEmitter {
     /**
      * The token for the webhook
      * @name Webhook#token
-     * @type {string}
+     * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -52,6 +53,12 @@ class Webhook extends EventEmitter {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The type of the webhook
+     * @type {WebhookTypes}
+     */
+    this.type = Constants.WebhookTypes[data.type];
 
     /**
      * The guild the webhook belongs to
@@ -74,6 +81,22 @@ class Webhook extends EventEmitter {
     } else {
       this.owner = null;
     }
+  }
+
+  /**
+   * The timestamp the webhook was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the webhook was created at
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
