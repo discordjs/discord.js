@@ -13,7 +13,8 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects reactions on messages.
- * Will automatically stop if the message (`'messageDelete'`), channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
+ * Will automatically stop if the message (`'messageDelete'`),
+ *  channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
