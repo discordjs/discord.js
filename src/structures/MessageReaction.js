@@ -31,7 +31,7 @@ class MessageReaction {
      */
     this.users = new Collection();
 
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+    this._emoji = new ReactionEmoji(this, emoji);
   }
 
   /**

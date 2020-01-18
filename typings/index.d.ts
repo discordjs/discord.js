@@ -1024,11 +1024,16 @@ declare module 'discord.js' {
 	}
 
 	export class ReactionEmoji {
-		constructor(reaction: MessageReaction, name: string, id: string);
+		constructor(reaction: MessageReaction, emoji: object);
+		public animated: boolean;
+		public readonly client: Client;
+		public readonly createdAt: number | null;
+		public readonly createdTimestamp: number | null;
 		public id: Snowflake;
 		public readonly identifier: string;
 		public name: string;
 		public reaction: MessageReaction;
+		public readonly url: string | null;
 		public toString(): string;
 	}
 
