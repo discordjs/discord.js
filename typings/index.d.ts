@@ -1580,6 +1580,7 @@ declare module 'discord.js' {
 		public owner: User | object;
 		public token: string | null;
 		public type: WebhookTypes;
+		public readonly url: string;
 		public delete(reason?: string): Promise<void>;
 		public edit(name?: string, avatar?: BufferResolvable): Promise<Webhook>;
 		public edit(options?: WebhookEditOptions, reason?: string): Promise<Webhook>;

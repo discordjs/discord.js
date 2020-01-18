@@ -110,6 +110,16 @@ class Webhook extends EventEmitter {
   }
 
   /**
+   * The url of this webhook
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    return API + Constants.Endpoints.Webhook(this.id, this.token);
+  }
+
+  /**
    * Options that can be passed into send, sendMessage, sendFile, sendEmbed, and sendCode.
    * @typedef {Object} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
