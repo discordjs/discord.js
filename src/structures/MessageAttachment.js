@@ -84,6 +84,7 @@ class MessageAttachment {
   /**
    * Whether or not this attachment has been marked as a spoiler
    * @type {boolean}
+   * @readonly
    */
   get spoiler() {
     return Util.basename(this.url).startsWith('SPOILER_');
