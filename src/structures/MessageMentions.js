@@ -42,7 +42,7 @@ class MessageMentions {
       if (users instanceof Collection) {
         /**
          * Any users that were mentioned
-         * <info>Order as received from the API, not left to right by occurence in the message content</info>
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, User>}
          */
         this.users = new Collection(users);
@@ -64,7 +64,7 @@ class MessageMentions {
       if (roles instanceof Collection) {
         /**
          * Any roles that were mentioned
-         * <info>Order as received from the API, not left to right by occurence in the message content</info>
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, Role>}
          */
         this.roles = new Collection(roles);
@@ -106,7 +106,7 @@ class MessageMentions {
       if (crosspostedChannels instanceof Collection) {
         /**
          * A collection of crossposted channels
-         * <info>Order as received from the API, not left to right by occurence in the message content</info>
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, CrosspostedChannel>}
          */
         this.crosspostedChannels = new Collection(crosspostedChannels);
@@ -130,7 +130,7 @@ class MessageMentions {
 
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
-   * <info>Order as received from the API, not left to right by occurence in the message content</info>
+   * <info>Order as received from the API, not as they appear in the message content</info>
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
    */
