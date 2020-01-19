@@ -16,6 +16,8 @@ class ActionsManager {
     this.register(require('./ChannelUpdate'));
     this.register(require('./GuildDelete'));
     this.register(require('./GuildUpdate'));
+    this.register(require('./InviteCreate'));
+    this.register(require('./InviteDelete'));
     this.register(require('./GuildMemberRemove'));
     this.register(require('./GuildBanRemove'));
     this.register(require('./GuildRoleCreate'));
