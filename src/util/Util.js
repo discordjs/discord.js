@@ -541,7 +541,7 @@ class Util {
         }
       })
       .replace(/<#[0-9]+>/g, input => {
-        const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
+        const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
