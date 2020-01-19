@@ -64,13 +64,6 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author, !data.webhook_id);
 
     /**
-     * Represents the author of the message as a guild member
-     * Only available if the message comes from a guild where the author is still a member
-     * @type {?GuildMember}
-     */
-    this.member = this.guild ? this.guild.member(this.author) || null : null;
-
-    /**
      * Whether or not this message is pinned
      * @type {boolean}
      */
@@ -155,6 +148,17 @@ class Message {
      * @private
      */
     this._edits = [];
+
+    if (data.member && this.guild && this.author && !this.guild.members.has(this.author.id)) {
+      this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
+    }
+
+    /**
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
+     * @type {?GuildMember}
+     */
+    this.member = this.guild ? this.guild.member(this.author) || null : null;
   }
 
   /**
