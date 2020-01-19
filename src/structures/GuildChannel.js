@@ -118,7 +118,7 @@ class GuildChannel extends Channel {
     if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
-    roles = roles || member.roles;
+    roles = roles || member.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
@@ -274,7 +274,7 @@ class GuildChannel extends Channel {
    */
   get members() {
     const members = new Collection();
-    for (const member of this.guild.members.values()) {
+    for (const member of this.guild.members.cache.values()) {
       if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
         members.set(member.id, member);
       }
