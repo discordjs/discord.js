@@ -54,7 +54,7 @@ class GenericAction {
     return this.getPayload({
       emoji: data.emoji,
       count: message.partial ? null : 0,
-      me: user.id === this.client.user.id,
+      me: user ? user.id === this.client.user.id : false,
     }, message.reactions, id, PartialTypes.REACTION);
   }
 

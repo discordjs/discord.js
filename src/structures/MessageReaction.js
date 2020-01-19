@@ -15,6 +15,7 @@ class MessageReaction {
    * @param {Message} message The message the reaction refers to
    */
   constructor(client, data, message) {
+    this.client = client;
     /**
      * The message that this reaction refers to
      * @type {Message}
@@ -45,6 +46,16 @@ class MessageReaction {
      */
     // eslint-disable-next-line eqeqeq
     if (this.count == undefined) this.count = data.count;
+  }
+
+  /**
+   * Removes all users from this reaction.
+   * @returns {Promise<MessageReaction>}
+   */
+  remove() {
+    return this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions(this._emoji.identifier)
+      .delete()
+      .then(() => this);
   }
 
   /**
