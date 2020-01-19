@@ -570,6 +570,7 @@ declare module 'discord.js' {
 		public search(options?: MessageSearchOptions): Promise<MessageSearchResult>;
 		public setAFKChannel(afkChannel: ChannelResolvable, reason?: string): Promise<Guild>;
 		public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
+		public setBanner(banner: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setChannelPosition(channel: string | GuildChannel, position: number, relative?: boolean): Promise<Guild>;
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
 		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications, reason?: string): Promise<Guild>;
@@ -1877,6 +1878,7 @@ declare module 'discord.js' {
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
 		afkTimeout?: number;
+		banner?: Base64Resolvable;
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
 		splash?: Base64Resolvable;

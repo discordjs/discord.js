@@ -851,6 +851,7 @@ class Guild {
    * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
    */
@@ -884,6 +885,7 @@ class Guild {
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (typeof data.splash !== 'undefined') _data.splash = data.splash;
+    if (typeof data.banner !== 'undefined') _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -893,6 +895,16 @@ class Guild {
         Number(data.defaultMessageNotifications);
     }
     return this.client.rest.methods.updateGuild(this, _data, reason);
+  }
+
+  /**
+   * Sets a new guild banner.
+   * @param {BufferResolvable|Base64Resolvable} banner The new banner of the guild
+   * @param {string} [reason] Reason for changing the guild's banner
+   * @returns {Guild}
+   */
+  setBanner(banner, reason) {
+    return this.client.resolver.resolveImage(banner).then(data => this.edit({ banner: data }, reason));
   }
 
   /**
