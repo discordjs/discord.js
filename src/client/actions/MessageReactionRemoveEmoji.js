@@ -13,6 +13,7 @@ class MessageReactionRemoveEmoji extends Action {
 
     const reaction = this.getReaction(data, message);
     if (!reaction) return false;
+    message.reactions.delete(reaction.emoji.id || reaction.emoji.name);
     /**
      * Emitted when a bot removes a reaction from a cached message.
      * @event Client#messageReactionRemoveEmoji
