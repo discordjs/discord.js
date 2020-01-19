@@ -555,6 +555,21 @@ class Guild extends Base {
    */
 
   /**
+   * Fetches the information of a specific ban.
+   * @param {UserResolvable} user The User ID of the ban to fetch
+   * @returns {Promise<BanInfo>}
+   */
+  fetchBan(user) {
+    const id = this.client.users.resolveID(user);
+    if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
+    return this.client.api.guilds(this.id).bans(id).get()
+      .then(ban => ({
+        reason: ban.reason,
+        user: this.client.users.add(ban.user),
+      }));
+  }
+
+  /**
    * Fetches a collection of banned users in this guild.
    * @returns {Promise<Collection<Snowflake, BanInfo>>}
    */
@@ -566,7 +581,7 @@ class Guild extends Base {
           user: this.client.users.add(ban.user),
         });
         return collection;
-      }, new Collection())
+      }, new Collection()),
     );
   }
 
@@ -584,7 +599,7 @@ class Guild extends Base {
     return this.client.api.guilds(this.id).integrations.get().then(data =>
       data.reduce((collection, integration) =>
         collection.set(integration.id, new Integration(this.client, integration, this)),
-      new Collection())
+      new Collection()),
     );
   }
 
@@ -1035,7 +1050,7 @@ class Guild extends Base {
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
         channels: updatedChannels,
-      }).guild
+      }).guild,
     );
   }
 
@@ -1069,7 +1084,7 @@ class Guild extends Base {
       this.client.actions.GuildRolePositionUpdate.handle({
         guild_id: this.id,
         roles: rolePositions,
-      }).guild
+      }).guild,
     );
   }
 
@@ -1199,7 +1214,7 @@ class Guild extends Base {
   _sortedChannels(channel) {
     const category = channel.type === ChannelTypes.CATEGORY;
     return Util.discordSort(this.channels.filter(c =>
-      c.type === channel.type && (category || c.parent === channel.parent)
+      c.type === channel.type && (category || c.parent === channel.parent),
     ));
   }
 }
