@@ -13,8 +13,11 @@ class NewsChannel extends TextChannel {
   setup(data) {
     super.setup(data);
 
-    // News channels don't have a rate limit per user, remove it
-    this.rateLimitPerUser = undefined;
+    /**
+     * The ratelimit per user for this channel (always 0)
+     * @type {number}
+     */
+    this.rateLimitPerUser = 0;
   }
 }
 
