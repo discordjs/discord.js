@@ -3,7 +3,6 @@
 const Collection = require('../util/Collection');
 const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
-const User = require('../structures/User');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.
@@ -11,7 +10,7 @@ const User = require('../structures/User');
  */
 class ReactionUserManager extends BaseManager {
   constructor(client, iterable, reaction) {
-    super(client, iterable, User);
+    super(client, iterable, { name: 'User' });
     /**
      * The reaction that this manager belongs to
      * @type {MessageReaction}
