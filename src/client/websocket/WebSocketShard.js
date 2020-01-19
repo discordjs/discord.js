@@ -219,7 +219,7 @@ class WebSocketShard extends EventEmitter {
         this.destroy({ emit: false });
       }
 
-      const wsQuery = { v: client.options.ws.version, vladdyUUID: Date.now().toString(36) };
+      const wsQuery = { v: client.options.ws.version };
 
       if (zlib) {
         this.inflate = new zlib.Inflate({
@@ -542,8 +542,7 @@ class WebSocketShard extends EventEmitter {
       return;
     }
 
-    this.debug(`[${tag}] Sending a heartbeat.
-    UUID: ${this.connection.url.split('&').find(i => i.startsWith('vladdy')).split('=')[1]}`);
+    this.debug(`[${tag}] Sending a heartbeat.`);
     this.lastHeartbeatAcked = false;
     this.lastPingTimestamp = Date.now();
     this.send({ op: OPCodes.HEARTBEAT, d: this.sequence }, true);
