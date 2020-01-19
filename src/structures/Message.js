@@ -149,7 +149,7 @@ class Message {
      */
     this._edits = [];
 
-    if (data.member && this.guild && this.author & !this.guild.members.has(data.member.id)) {
+    if (data.member && this.guild && this.author && !this.guild.members.has(this.author.id)) {
       this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
     }
 
@@ -542,12 +542,12 @@ class Message {
     if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
     let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
+      this.author.id === message.author.id &&
+      this.content === message.content &&
+      this.tts === message.tts &&
+      this.nonce === message.nonce &&
+      this.embeds.length === message.embeds.length &&
+      this.attachments.length === message.attachments.length;
 
     if (equal && rawData) {
       equal = this.mentions.everyone === message.mentions.everyone &&
