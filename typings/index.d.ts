@@ -1023,6 +1023,9 @@ declare module 'discord.js' {
 
 	export class MessageCollector extends Collector<Snowflake, Message> {
 		constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): void;
+		private _handleGuildDeletion(guild: Guild): void;
+
 		public channel: Channel;
 		public options: MessageCollectorOptions;
 		public received: number;
@@ -1153,6 +1156,10 @@ declare module 'discord.js' {
 
 	export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
 		constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): void;
+		private _handleGuildDeletion(guild: Guild): void;
+		private _handleMessageDeletion(message: Message): void;
+
 		public message: Message;
 		public options: ReactionCollectorOptions;
 		public total: number;
