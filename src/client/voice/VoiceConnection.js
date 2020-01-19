@@ -229,7 +229,7 @@ class VoiceConnection extends EventEmitter {
     const { token, endpoint, sessionID } = this.authentication;
 
     if (token && endpoint && sessionID) {
-      clearTimeout(this.connectTimeout);
+      this.client.clearTimeout(this.connectTimeout);
       this.status = Constants.VoiceStatus.CONNECTING;
       /**
        * Emitted when we successfully initiate a voice connection.
@@ -246,7 +246,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   authenticateFailed(reason) {
-    clearTimeout(this.connectTimeout);
+    this.client.clearTimeout(this.connectTimeout);
     if (this.status === Constants.VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
