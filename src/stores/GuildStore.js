@@ -27,7 +27,7 @@ class GuildStore extends DataStore {
    * * A Role object
    * * A Snowflake
    * * An Invite object
-   * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake} GuildResolvable
+   * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake|Invite} GuildResolvable
    */
 
   /**
