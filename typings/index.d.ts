@@ -920,6 +920,7 @@ declare module 'discord.js' {
 
 	export class NewsChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data: object);
+		public rateLimitPerUser: 0;
 		public messages: Collection<Snowflake, Message>;
 		public nsfw: boolean;
 		public topic: string | null;
