@@ -149,10 +149,8 @@ class Message {
      */
     this._edits = [];
 
-    if (data.member && this.guild && this.author) {
-      if (!this.guild.members.has(data.member.id)) {
-        this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
-      }
+    if (data.member && this.guild && this.author & !this.guild.members.has(data.member.id)) {
+      this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
     }
 
     /**
