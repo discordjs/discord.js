@@ -1197,8 +1197,8 @@ declare module 'discord.js' {
 		public largeText: string | null;
 		public smallImage: Snowflake | null;
 		public smallText: string | null;
-		public largeImageURL(options: ImageURLOptions): string | null;
-		public smallImageURL(options: ImageURLOptions): string | null;
+		public largeImageURL(options?: ImageURLOptions): string | null;
+		public smallImageURL(options?: ImageURLOptions): string | null;
 	}
 
 	export class Role extends Base {
