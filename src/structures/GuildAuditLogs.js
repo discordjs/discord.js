@@ -388,7 +388,7 @@ class GuildAuditLogsEntry {
     } else if (targetType === Targets.MESSAGE) {
       this.target = guild.client.users.cache.get(data.target_id);
     } else {
-      this.target = guild[`${targetType.toLowerCase()}s`].get(data.target_id) || { id: data.target_id };
+      this.target = guild[`${targetType.toLowerCase()}s`].cache.get(data.target_id) || { id: data.target_id };
     }
   }
 

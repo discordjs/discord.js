@@ -3,6 +3,10 @@
 const MessageReaction = require('../structures/MessageReaction');
 const BaseManager = require('./BaseManager');
 
+/**
+ * Manages API methods for reactions and holds their cache.
+ * @extends {BaseManager}
+ */
 class ReactionManager extends BaseManager {
   constructor(message, iterable) {
     super(message.client, iterable, MessageReaction);

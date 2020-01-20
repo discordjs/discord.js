@@ -3,6 +3,10 @@
 const { Presence } = require('../structures/Presence');
 const BaseManager = require('./BaseManager');
 
+/**
+ * Manages API methods for Presences and holds their cache.
+ * @extends {BaseManager}
+ */
 class PresenceManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, Presence);
