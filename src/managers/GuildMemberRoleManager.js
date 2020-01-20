@@ -117,7 +117,7 @@ class GuildMemberRoleManager {
           'Array or Collection of Roles or Snowflakes', true);
       }
 
-      const newRoles = this.filter(role => !roleOrRoles.includes(role));
+      const newRoles = this._roles.filter(role => !roleOrRoles.includes(role));
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
