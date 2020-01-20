@@ -302,7 +302,7 @@ class Client extends BaseClient {
       if (!channel.messages) continue;
       channels++;
 
-      messages += channel.messages.sweep(
+      messages += channel.messages.cache.sweep(
         message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
       );
     }
