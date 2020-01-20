@@ -12,7 +12,7 @@ class GuildRoleDeleteAction extends Action {
     if (guild) {
       role = guild.roles.cache.get(data.role_id);
       if (role) {
-        guild.roles.remove(data.role_id);
+        guild.roles.cache.delete(data.role_id);
         role.deleted = true;
         /**
          * Emitted whenever a guild role is deleted.

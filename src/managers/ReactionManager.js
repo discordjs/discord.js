@@ -72,7 +72,7 @@ class ReactionManager extends BaseManager {
     const data = await this.client.api.channels(this.message.channel.id).messages(this.message.id).get();
     if (!data.reactions || !data.reactions.some(r => (r.emoji.id || r.emoji.name) === id)) {
       reactionEmoji.reaction._patch({ count: 0 });
-      this.message.reactions.remove(id);
+      this.message.reactions.cache.delete(id);
       return existing;
     }
     for (const reaction of data.reactions) {

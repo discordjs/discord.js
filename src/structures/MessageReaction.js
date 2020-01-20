@@ -102,7 +102,7 @@ class MessageReaction {
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;
     if (this.count <= 0 && this.users.cache.size === 0) {
-      this.message.reactions.cache.remove(this.emoji.id || this.emoji.name);
+      this.message.reactions.cache.delete(this.emoji.id || this.emoji.name);
     }
   }
 }
