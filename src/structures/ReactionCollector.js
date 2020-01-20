@@ -63,7 +63,7 @@ class ReactionCollector extends Collector {
 
     this.on('remove', (reaction, user) => {
       this.total--;
-      if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
+      if (!this.collected.some(r => r.users.cache.has(user.id))) this.users.delete(user.id);
     });
   }
 
