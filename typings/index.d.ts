@@ -132,6 +132,7 @@ declare module 'discord.js' {
 		public on(event: 'guildUnavailable', listener: (guild: Guild) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
 		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
+		public on(event: 'inviteCreate' | 'inviteDelete', listener: (invite: Invite) => void): this;
 		public on(event: 'message', listener: (message: Message) => void): this;
 		public on(event: 'messageDelete', listener: (message: Message) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
