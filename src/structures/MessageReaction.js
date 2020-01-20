@@ -52,10 +52,10 @@ class MessageReaction {
    * Removes all users from this reaction.
    * @returns {Promise<MessageReaction>}
    */
-  remove() {
-    return this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions(this._emoji.identifier)
-      .delete()
-      .then(() => this);
+  async remove() {
+    await this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions(this._emoji.identifier)
+      .delete();
+    return this;
   }
 
   /**
