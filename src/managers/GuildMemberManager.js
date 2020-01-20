@@ -218,7 +218,6 @@ class GuildMemberManager extends BaseManager {
       const fetchedMembers = new Collection();
       const handler = (members, guild) => {
         if (guild.id !== this.guild.id) return;
-        timeout.refresh();
         for (const member of members.values()) {
           if (query || limit) fetchedMembers.set(member.id, member);
         }
@@ -229,11 +228,11 @@ class GuildMemberManager extends BaseManager {
           resolve(query || limit ? fetchedMembers : this);
         }
       };
-      const timeout = this.guild.client.setTimeout(() => {
+      this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
+      this.guild.client.setTimeout(() => {
         this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, 120e3);
-      this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
     });
   }
 }
