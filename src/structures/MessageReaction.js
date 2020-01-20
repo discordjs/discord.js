@@ -15,7 +15,13 @@ class MessageReaction {
    * @param {Message} message The message the reaction refers to
    */
   constructor(client, data, message) {
-    this.client = client;
+    /**
+     * The client that instantiated this message reaction
+     * @name MessageReaction#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
     /**
      * The message that this reaction refers to
      * @type {Message}
