@@ -560,7 +560,7 @@ class Guild extends Base {
    */
   fetchBan(user) {
     const id = this.client.users.resolveID(user);
-    if (id) throw new Error('FETCH_BAN_RESOLVE_ID');
+    if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
     return this.client.api.guilds(this.id).bans(id).get()
       .then(ban => ({
         reason: ban.reason,
