@@ -8,8 +8,8 @@ class InviteCreateAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.get(data.guild_id);
-    if (guild) {
-      const channel = client.channels.get(data.channel_id);
+    const channel = client.channels.get(data.channel_id);
+    if (guild && channel) {
       const inviteData = Object.assign(data, { guild, channel });
       const invite = new Invite(client, inviteData);
       /**
