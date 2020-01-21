@@ -124,7 +124,7 @@ class MessageManager extends BaseManager {
   }
 
   async _fetchId(messageID, cache) {
-    const existing = this.cache ? this.cache.get(messageID) : null;
+    const existing = this.cache.get(messageID);
     if (existing && !existing.partial) return existing;
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
     return this.add(data, cache);

@@ -30,7 +30,7 @@ class GuildChannelManager extends BaseManager {
   add(channel) {
     const existing = this.cache.get(channel.id);
     if (existing) return existing;
-    this.set(channel.id, channel);
+    this.cache.set(channel.id, channel);
     return channel;
   }
 

@@ -149,7 +149,7 @@ class GuildChannel extends Channel {
   memberPermissions(member) {
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
-    const roles = member.roles;
+    const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
