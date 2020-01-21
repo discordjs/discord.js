@@ -831,6 +831,7 @@ declare module 'discord.js' {
 		public available: boolean;
 		public readonly deletable: boolean;
 		public guild: Guild;
+		public id: Snowflake;
 		public managed: boolean;
 		public requiresColons: boolean;
 		public roles: GuildEmojiRoleManager;
@@ -1012,6 +1013,9 @@ declare module 'discord.js' {
 
 	export class MessageCollector extends Collector<Snowflake, Message> {
 		constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): void;
+		private _handleGuildDeletion(guild: Guild): void;
+
 		public channel: Channel;
 		public options: MessageCollectorOptions;
 		public received: number;
@@ -1142,6 +1146,10 @@ declare module 'discord.js' {
 
 	export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
 		constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
+		private _handleChannelDeletion(channel: GuildChannel): void;
+		private _handleGuildDeletion(guild: Guild): void;
+		private _handleMessageDeletion(message: Message): void;
+
 		public message: Message;
 		public options: ReactionCollectorOptions;
 		public total: number;
@@ -1179,8 +1187,8 @@ declare module 'discord.js' {
 		public largeText: string | null;
 		public smallImage: Snowflake | null;
 		public smallText: string | null;
-		public largeImageURL(options: ImageURLOptions): string | null;
-		public smallImageURL(options: ImageURLOptions): string | null;
+		public largeImageURL(options?: ImageURLOptions): string | null;
+		public smallImageURL(options?: ImageURLOptions): string | null;
 	}
 
 	export class Role extends Base {
