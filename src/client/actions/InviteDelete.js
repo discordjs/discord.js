@@ -8,7 +8,7 @@ class InviteDeleteAction extends Action {
   handle(data) {
     const client = this.client;
     const channel = client.channels.get(data.channel_id);
-    const guild = client.channels.get(data.guild_id);
+    const guild = client.guilds.get(data.guild_id);
     if (!channel && !guild) return false;
 
     const inviteData = Object.assign(data, { channel, guild });
