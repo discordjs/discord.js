@@ -23,7 +23,7 @@ class GuildMemberRoleStore extends Collection {
    * @readonly
    */
   get _filtered() {
-    const everyone = this.guild.defaultRole;
+    const everyone = this.guild.roles.everyone;
     return this.guild.roles.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
   }
 
@@ -153,6 +153,10 @@ class GuildMemberRoleStore extends Collection {
 
   valueOf() {
     return this._filtered;
+  }
+
+  static get [Symbol.species]() {
+    return Collection;
   }
 }
 

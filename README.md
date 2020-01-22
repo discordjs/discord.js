@@ -8,7 +8,7 @@
     <a href="https://discord.gg/bRCvFy9"><img src="https://discordapp.com/api/guilds/222078108977594368/embed.png" alt="Discord server" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://travis-ci.org/discordjs/discord.js"><img src="https://travis-ci.org/discordjs/discord.js.svg" alt="Build status" /></a>
+    <a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/workflows/Testing/badge.svg" alt="Build status" /></a>
     <a href="https://david-dm.org/discordjs/discord.js"><img src="https://img.shields.io/david/discordjs/discord.js.svg?maxAge=3600" alt="Dependencies" /></a>
     <a href="https://www.patreon.com/discordjs"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
   </p>
@@ -16,6 +16,17 @@
     <a href="https://nodei.co/npm/discord.js/"><img src="https://nodei.co/npm/discord.js.png?downloads=true&stars=true" alt="npm installnfo" /></a>
   </p>
 </div>
+
+## Table of contents
+- [About](#about)
+- [Installation](#installation)
+  - [Audio engines](#audio-engines)
+  - [Optional packages](#optional-packages)
+ - [Example Usage](#example-usage)
+ - [Links](#links)
+    - [Extensions](#extensions)
+ - [Contributing](#contributing)
+ - [Help](#help)
 
 ## About
 discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
@@ -27,27 +38,26 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 10.0.0 or newer is required.**  
+**Node.js 10.2.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discordjs/discord.js`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`  
+With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discordjs/discord.js @discordjs/opus`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.js opusscript`
 
 ### Audio engines
-The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred audio engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
+Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
+For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for faster WebSocket data inflation (`npm install zlib-sync`)
-- [zucc](https://www.npmjs.com/package/zucc) for significantly faster WebSocket data inflation (`npm install zucc`)
 - [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
     - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
-- [uws](https://www.npmjs.com/package/@discordjs/uws) for a much faster WebSocket connection (`npm install @discordjs/uws`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection when *not* using uws (`npm install bufferutil`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Example usage
 ```js

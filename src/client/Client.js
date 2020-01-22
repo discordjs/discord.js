@@ -36,7 +36,7 @@ class Client extends BaseClient {
     try {
       // Test if worker threads module is present and used
       data = require('worker_threads').workerData || data;
-    } catch (_) {
+    } catch {
       // Do nothing
     }
 
@@ -46,25 +46,25 @@ class Client extends BaseClient {
       }
     }
 
-    if (this.options.totalShardCount === DefaultOptions.totalShardCount) {
-      if ('TOTAL_SHARD_COUNT' in data) {
-        this.options.totalShardCount = Number(data.TOTAL_SHARD_COUNT);
+    if (this.options.shardCount === DefaultOptions.shardCount) {
+      if ('SHARD_COUNT' in data) {
+        this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
-        this.options.totalShardCount = this.options.shards.length;
-      } else {
-        this.options.totalShardCount = this.options.shardCount;
+        this.options.shardCount = this.options.shards.length;
       }
     }
 
-    if (typeof this.options.shards === 'undefined' && typeof this.options.shardCount === 'number') {
+    const typeofShards = typeof this.options.shards;
+
+    if (typeofShards === 'undefined' && typeof this.options.shardCount === 'number') {
       this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
     }
 
-    if (typeof this.options.shards === 'number') this.options.shards = [this.options.shards];
+    if (typeofShards === 'number') this.options.shards = [this.options.shards];
 
-    if (typeof this.options.shards !== 'undefined') {
+    if (Array.isArray(this.options.shards)) {
       this.options.shards = [...new Set(
-        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity)
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0))
       )];
     }
 
@@ -198,7 +198,9 @@ class Client extends BaseClient {
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.emit(Events.DEBUG, `Provided token: ${token}`);
+    this.emit(Events.DEBUG,
+      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`
+    );
 
     if (this.options.presence) {
       this.options.ws.presence = await this.presence._parse(this.options.presence);
@@ -363,14 +365,15 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (options.shardCount !== 'auto' && (typeof options.shardCount !== 'number' || isNaN(options.shardCount))) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number or "auto"');
+    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
-    if (options.shards && !Array.isArray(options.shards)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', 'a number or array');
+    if (options.shards &&
+      !(options.shards === 'auto' || Array.isArray(options.shards))
+    ) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', '\'auto\', a number or array of numbers');
     }
     if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
-    if (options.shardCount < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardCount', 'at least 1');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
@@ -391,6 +394,9 @@ class Client extends BaseClient {
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
+    }
+    if (typeof options.restRequestTimeout !== 'number' || isNaN(options.restRequestTimeout)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'restRequestTimeout', 'a number');
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');

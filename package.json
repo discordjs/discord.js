@@ -35,22 +35,42 @@
   "runkitExampleFilename": "./docs/examples/ping.js",
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
+    "@discordjs/collection": "^0.1.1",
+    "abort-controller": "^3.0.0",
     "form-data": "^2.3.3",
     "node-fetch": "^2.3.0",
-    "pako": "^1.0.8",
     "prism-media": "^1.0.0",
     "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.1",
-    "ws": "^6.1.3"
+    "ws": "^7.2.0"
   },
   "peerDependencies": {
-    "@discordjs/uws": "^11.149.1",
     "bufferutil": "^4.0.1",
     "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.4",
     "sodium": "^3.0.2",
-    "zlib-sync": "^0.1.4",
-    "zucc": "^0.1.0"
+    "utf-8-validate": "^5.0.2",
+    "zlib-sync": "^0.1.6"
+  },
+  "peerDependenciesMeta": {
+    "bufferutil": {
+      "optional": true
+    },
+    "erlpack": {
+      "optional": true
+    },
+    "libsodium-wrappers": {
+      "optional": true
+    },
+    "sodium": {
+      "optional": true
+    },
+    "utf-8-validate": {
+      "optional": true
+    },
+    "zlib-sync": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
@@ -67,13 +87,12 @@
     "webpack-cli": "^3.2.3"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=10.2.0"
   },
   "browser": {
+    "@discordjs/opus": false,
     "https": false,
     "ws": false,
-    "uws": false,
-    "@discordjs/uws": false,
     "erlpack": false,
     "prism-media": false,
     "opusscript": false,
@@ -82,20 +101,24 @@
     "sodium": false,
     "worker_threads": false,
     "zlib-sync": false,
-    "zucc": false,
     "src/sharding/Shard.js": false,
     "src/sharding/ShardClientUtil.js": false,
     "src/sharding/ShardingManager.js": false,
     "src/client/voice/ClientVoiceManager.js": false,
+    "src/client/voice/VoiceBroadcast.js": false,
     "src/client/voice/VoiceConnection.js": false,
+    "src/client/voice/dispatcher/BroadcastDispatcher.js": false,
+    "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/networking/VoiceUDPClient.js": false,
     "src/client/voice/networking/VoiceWebSocket.js": false,
-    "src/client/voice/dispatcher/StreamDispatcher.js": false,
     "src/client/voice/player/AudioPlayer.js": false,
+    "src/client/voice/player/BasePlayer.js": false,
+    "src/client/voice/player/BroadcastAudioPlayer.js": false,
     "src/client/voice/receiver/PacketHandler.js": false,
     "src/client/voice/receiver/Receiver.js": false,
+    "src/client/voice/util/PlayInterface.js": false,
     "src/client/voice/util/Secretbox.js": false,
-    "src/client/voice/util/VolumeInterface.js": false,
-    "src/client/voice/VoiceBroadcast.js": false
+    "src/client/voice/util/Silence.js": false,
+    "src/client/voice/util/VolumeInterface.js": false
   }
 }

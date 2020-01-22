@@ -197,16 +197,33 @@ class Collector extends EventEmitter {
   }
 
   /**
-   * Resets the collectors timeout and idle timer.
+   * Allows collectors to be consumed with for-await-of loops
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
-  resetTimer() {
-    if (this._timeout) {
-      this.client.clearTimeout(this._timeout);
-      this._timeout = this.client.setTimeout(() => this.stop('time'), this.options.time);
-    }
-    if (this._idletimeout) {
-      this.client.clearTimeout(this._idletimeout);
-      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
+  async *[Symbol.asyncIterator]() {
+    const queue = [];
+    const onCollect = item => queue.push(item);
+    this.on('collect', onCollect);
+
+    try {
+      while (queue.length || !this.ended) {
+        if (queue.length) {
+          yield queue.shift();
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          await new Promise(resolve => {
+            const tick = () => {
+              this.off('collect', tick);
+              this.off('end', tick);
+              return resolve();
+            };
+            this.on('collect', tick);
+            this.on('end', tick);
+          });
+        }
+      }
+    } finally {
+      this.off('collect', onCollect);
     }
   }
 

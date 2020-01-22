@@ -19,6 +19,7 @@ const BeforeReadyWhitelist = [
 ];
 
 const UNRECOVERABLE_CLOSE_CODES = [4004, 4010, 4011];
+const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
  * The WebSocket manager for this client.
@@ -47,9 +48,9 @@ class WebSocketManager extends EventEmitter {
     /**
      * The amount of shards this manager handles
      * @private
-     * @type {number|string}
+     * @type {number}
      */
-    this.totalShards = this.client.options.shardCount;
+    this.totalShards = this.client.options.shards.length;
 
     /**
      * A collection of all shards this manager handles
@@ -143,24 +144,24 @@ class WebSocketManager extends EventEmitter {
     const { total, remaining, reset_after } = sessionStartLimit;
 
     this.debug(`Fetched Gateway Information
-      URL: ${gatewayURL}
-      Recommended Shards: ${recommendedShards}`);
+    URL: ${gatewayURL}
+    Recommended Shards: ${recommendedShards}`);
 
     this.debug(`Session Limit Information
-      Total: ${total}
-      Remaining: ${remaining}`);
+    Total: ${total}
+    Remaining: ${remaining}`);
 
     this.gateway = `${gatewayURL}/`;
 
-    if (this.totalShards === 'auto') {
+    const { shards } = this.client.options;
+
+    if (shards === 'auto') {
       this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
-      this.totalShards = this.client.options.shardCount = this.client.options.totalShardCount = recommendedShards;
-      if (typeof this.client.options.shards === 'undefined' || !this.client.options.shards.length) {
+      this.totalShards = this.client.options.shardCount = recommendedShards;
+      if (shards === 'auto' || !this.client.options.shards.length) {
         this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
       }
     }
-
-    const { shards } = this.client.options;
 
     if (Array.isArray(shards)) {
       this.totalShards = shards.length;
@@ -190,32 +191,34 @@ class WebSocketManager extends EventEmitter {
     this.shardQueue.delete(shard);
 
     if (!shard.eventsAttached) {
-      shard.on(ShardEvents.READY, () => {
+      shard.on(ShardEvents.ALL_READY, unavailableGuilds => {
         /**
          * Emitted when a shard turns ready.
          * @event Client#shardReady
          * @param {number} id The shard ID that turned ready
+         * @param {?Set<string>} unavailableGuilds Set of unavailable guild IDs, if any
          */
-        this.client.emit(Events.SHARD_READY, shard.id);
+        this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
 
         if (!this.shardQueue.size) this.reconnecting = false;
+        this.checkShardsReady();
       });
 
       shard.on(ShardEvents.CLOSE, event => {
         if (event.code === 1000 ? this.destroyed : UNRECOVERABLE_CLOSE_CODES.includes(event.code)) {
           /**
            * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
-           * @event Client#shardDisconnected
+           * @event Client#shardDisconnect
            * @param {CloseEvent} event The WebSocket close event
            * @param {number} id The shard ID that disconnected
            */
-          this.client.emit(Events.SHARD_DISCONNECTED, event, shard.id);
+          this.client.emit(Events.SHARD_DISCONNECT, event, shard.id);
           this.debug(WSCodes[event.code], shard);
           return;
         }
 
-        if (event.code === 1000 || event.code === 4006) {
-          // Any event code in this range cannot be resumed.
+        if (UNRESUMABLE_CLOSE_CODES.includes(event.code)) {
+          // These event codes cannot be resumed
           shard.sessionID = undefined;
         }
 
@@ -226,27 +229,25 @@ class WebSocketManager extends EventEmitter {
          */
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
+        this.shardQueue.add(shard);
+
         if (shard.sessionID) {
           this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
-          shard.connect().catch(() => null);
-          return;
+          this.reconnect(true);
+        } else {
+          shard.destroy(undefined, true);
+          this.reconnect();
         }
-
-        shard.destroy();
-
-        this.shardQueue.add(shard);
-        this.reconnect();
       });
 
       shard.on(ShardEvents.INVALID_SESSION, () => {
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
-
-        this.shardQueue.add(shard);
-        this.reconnect();
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
-        this.debug('Shard was destroyed but no WebSocket connection existed... Reconnecting...', shard);
+        shard._cleanupConnection();
+
+        this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
 
@@ -264,7 +265,7 @@ class WebSocketManager extends EventEmitter {
     } catch (error) {
       if (error && error.code && UNRECOVERABLE_CLOSE_CODES.includes(error.code)) {
         throw new DJSError(WSCodes[error.code]);
-        // Undefined if session is invalid, error event (or uws' event mimicking it) for regular closes
+        // Undefined if session is invalid, error event for regular closes
       } else if (!error || error.code) {
         this.debug('Failed to connect to the gateway, requeueing...', shard);
         this.shardQueue.add(shard);
@@ -285,14 +286,15 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Handles reconnects for this manager.
+   * @param {boolean} [skipLimit=false] IF this reconnect should skip checking the session limit
    * @private
    * @returns {Promise<boolean>}
    */
-  async reconnect() {
+  async reconnect(skipLimit = false) {
     if (this.reconnecting || this.status !== Status.READY) return false;
     this.reconnecting = true;
     try {
-      await this._handleSessionLimit();
+      if (!skipLimit) await this._handleSessionLimit();
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
@@ -340,7 +342,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy();
+    for (const shard of this.shards.values()) shard.destroy(1000, true);
   }
 
   /**
@@ -356,8 +358,8 @@ class WebSocketManager extends EventEmitter {
       remaining = session_start_limit.remaining;
       resetAfter = session_start_limit.reset_after;
       this.debug(`Session Limit Information
-        Total: ${session_start_limit.total}
-        Remaining: ${remaining}`);
+    Total: ${session_start_limit.total}
+    Remaining: ${remaining}`);
     }
     if (!remaining) {
       this.debug(`Exceeded identify threshold. Will attempt a connection in ${resetAfter}ms`);
@@ -396,45 +398,37 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Checks whether the client is ready to be marked as ready.
-   * @returns {boolean}
    * @private
    */
-  checkReady() {
+  async checkShardsReady() {
+    if (this.status === Status.READY) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
-      return false;
+      return;
     }
 
-    const unavailableGuilds = this.client.guilds.reduce((acc, guild) => guild.available ? acc : acc + 1, 0);
+    this.status = Status.NEARLY;
 
-    // TODO: Rethink implementation for this
-    if (unavailableGuilds === 0) {
-      this.status = Status.NEARLY;
-      if (!this.client.options.fetchAllMembers) return this.triggerReady();
-      // Fetch all members before marking self as ready
-      const promises = this.client.guilds.map(g => g.members.fetch());
-      Promise.all(promises)
-        .then(() => this.triggerReady())
-        .catch(e => {
-          this.debug(`Failed to fetch all members before ready! ${e}\n${e.stack}`);
-          this.triggerReady();
+    if (this.client.options.fetchAllMembers) {
+      try {
+        const promises = this.client.guilds.map(guild => {
+          if (guild.available) return guild.members.fetch();
+          // Return empty promise if guild is unavailable
+          return Promise.resolve();
         });
-    } else {
-      this.debug(`There are ${unavailableGuilds} unavailable guilds. Waiting for their GUILD_CREATE packets`);
+        await Promise.all(promises);
+      } catch (err) {
+        this.debug(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
+      }
     }
 
-    return true;
+    this.triggerClientReady();
   }
 
   /**
    * Causes the client to be marked as ready and emits the ready event.
    * @private
    */
-  triggerReady() {
-    if (this.status === Status.READY) {
-      this.debug('Tried to mark self as ready, but already ready');
-      return;
-    }
-
+  triggerClientReady() {
     this.status = Status.READY;
 
     this.client.readyAt = new Date();

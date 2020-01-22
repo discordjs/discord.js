@@ -111,6 +111,15 @@ class RoleStore extends DataStore {
   }
 
   /**
+   * The `@everyone` role of the guild
+   * @type {?Role}
+   * @readonly
+   */
+  get everyone() {
+    return this.get(this.guild.id) || null;
+  }
+
+  /**
    * The role with the highest position in the store
    * @type {Role}
    * @readonly

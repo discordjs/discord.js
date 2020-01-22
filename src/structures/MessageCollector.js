@@ -11,6 +11,7 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects messages on a channel.
+ * Will automatically stop if the channel (`'channelDelete'`) or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
 class MessageCollector extends Collector {
@@ -38,17 +39,23 @@ class MessageCollector extends Collector {
     const bulkDeleteListener = (messages => {
       for (const message of messages.values()) this.handleDispose(message);
     }).bind(this);
+    this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+    this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
 
-    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
     this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
     this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
+    this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
       this.client.removeListener(Events.MESSAGE_CREATE, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_DELETE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
-      this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+      this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
+      if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
   }
 
@@ -92,6 +99,30 @@ class MessageCollector extends Collector {
     if (this.options.max && this.collected.size >= this.options.max) return 'limit';
     if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
     return null;
+  }
+
+  /**
+   * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   * @private
+   * @param {GuildChannel} channel The channel that was deleted
+   * @returns {void}
+   */
+  _handleChannelDeletion(channel) {
+    if (channel.id === this.channel.id) {
+      this.stop('channelDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   * @private
+   * @param {Guild} guild The guild that was deleted
+   * @returns {void}
+   */
+  _handleGuildDeletion(guild) {
+    if (this.channel.guild && guild.id === this.channel.guild.id) {
+      this.stop('guildDelete');
+    }
   }
 }
 

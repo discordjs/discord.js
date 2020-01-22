@@ -13,6 +13,7 @@ const Permissions = require('../util/Permissions');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const APIMessage = require('./APIMessage');
+const MessageFlags = require('../util/MessageFlags');
 
 /**
  * Represents a message on Discord.
@@ -63,7 +64,7 @@ class Message extends Base {
 
     /**
      * The author of the message
-     * @type {User}
+     * @type {?User}
      */
     this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
@@ -81,7 +82,9 @@ class Message extends Base {
 
     /**
      * A random number or string used for checking message delivery
-     * @type {string}
+     * <warn>This is only received after the message was sent successfully, and
+     * lost if re-fetched</warn>
+     * @type {?string}
      */
     this.nonce = data.nonce;
 
@@ -89,7 +92,7 @@ class Message extends Base {
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
      */
-    this.system = data.type === 6;
+    this.system = data.type !== 0;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
@@ -137,7 +140,7 @@ class Message extends Base {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone, data.mention_channels);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -172,6 +175,30 @@ class Message extends Base {
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
+
+    /**
+     * Flags that are applied to the message
+     * @type {Readonly<MessageFlags>}
+     */
+    this.flags = new MessageFlags(data.flags).freeze();
+
+    /**
+     * Reference data sent in a crossposted message.
+     * @typedef {Object} MessageReference
+     * @property {string} channelID ID of the channel the message was crossposted from
+     * @property {?string} guildID ID of the guild the message was crossposted from
+     * @property {?string} messageID ID of the message that was crossposted
+     */
+
+    /**
+     * Message reference data
+     * @type {?MessageReference}
+     */
+    this.reference = data.message_reference ? {
+      channelID: data.message_reference.channel_id,
+      guildID: data.message_reference.guild_id,
+      messageID: data.message_reference.message_id,
+    } : null;
   }
 
   /**
@@ -192,7 +219,7 @@ class Message extends Base {
     const clone = this._clone();
     this._edits.unshift(clone);
 
-    this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
@@ -214,8 +241,11 @@ class Message extends Base {
       this,
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
+      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
+      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels
     );
+
+    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
   }
 
   /**
@@ -454,11 +484,7 @@ class Message extends Base {
    */
   delete({ timeout = 0, reason } = {}) {
     if (timeout <= 0) {
-      return this.channel.messages.remove(this.id, reason).then(() =>
-        this.client.actions.MessageDelete.handle({
-          id: this.id,
-          channel_id: this.channel.id,
-        }).message);
+      return this.channel.messages.remove(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {

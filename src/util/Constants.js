@@ -7,9 +7,10 @@ const browser = exports.browser = typeof window !== 'undefined';
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
- * @property {number|number[]} [shards] ID of the shard to run, or an array of shard IDs
- * @property {number} [shardCount=1] Total number of shards that will be spawned by this Client
- * @property {number} [totalShardCount=1] The total amount of shards used by all processes of this bot
+ * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
+ * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
+ * recommended amount of shards from Discord and spawn that amount
+ * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
  * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
@@ -28,6 +29,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * corresponding websocket events
  * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
+ * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
@@ -41,7 +43,6 @@ const browser = exports.browser = typeof window !== 'undefined';
  */
 exports.DefaultOptions = {
   shardCount: 1,
-  totalShardCount: 1,
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
@@ -50,6 +51,7 @@ exports.DefaultOptions = {
   partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
+  restRequestTimeout: 15000,
   retryLimit: 1,
   restTimeOffset: 500,
   restSweepInterval: 60,
@@ -117,7 +119,9 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
  * @property {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
- * it will be `gif` for animated avatars or otherwise `webp`
+ * defaults to `webp`.
+ * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
+ * animated avatars; the default is false.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
  */
 
@@ -127,14 +131,14 @@ exports.Endpoints = {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
       },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -161,6 +165,9 @@ exports.Endpoints = {
  * * IDLE: 3
  * * NEARLY: 4
  * * DISCONNECTED: 5
+ * * WAITING_FOR_GUILDS: 6
+ * * IDENTIFYING: 7
+ * * RESUMING: 8
  * @typedef {number} Status
  */
 exports.Status = {
@@ -170,6 +177,9 @@ exports.Status = {
   IDLE: 3,
   NEARLY: 4,
   DISCONNECTED: 5,
+  WAITING_FOR_GUILDS: 6,
+  IDENTIFYING: 7,
+  RESUMING: 8,
 };
 
 /**
@@ -262,11 +272,11 @@ exports.Events = {
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
-  SHARD_DISCONNECTED: 'shardDisconnected',
+  SHARD_DISCONNECT: 'shardDisconnect',
   SHARD_ERROR: 'shardError',
   SHARD_RECONNECTING: 'shardReconnecting',
   SHARD_READY: 'shardReady',
-  SHARD_RESUMED: 'shardResumed',
+  SHARD_RESUME: 'shardResume',
   INVALIDATED: 'invalidated',
   RAW: 'raw',
 };
@@ -277,6 +287,7 @@ exports.ShardEvents = {
   INVALID_SESSION: 'invalidSession',
   READY: 'ready',
   RESUMED: 'resumed',
+  ALL_READY: 'allReady',
 };
 
 /**
@@ -285,6 +296,7 @@ exports.ShardEvents = {
  * * CHANNEL (only affects DMChannels)
  * * GUILD_MEMBER
  * * MESSAGE
+ * * REACTION
  * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
  * sidebar for more information.</warn>
  * @typedef {string} PartialType
@@ -294,6 +306,7 @@ exports.PartialTypes = keyMirror([
   'CHANNEL',
   'GUILD_MEMBER',
   'MESSAGE',
+  'REACTION',
 ]);
 
 /**
@@ -384,6 +397,7 @@ exports.WSEvents = keyMirror([
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
+ * * CHANNEL_FOLLOW_ADD
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -399,6 +413,7 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
+  'CHANNEL_FOLLOW_ADD',
 ];
 
 /**
@@ -407,6 +422,7 @@ exports.MessageTypes = [
  * * STREAMING
  * * LISTENING
  * * WATCHING
+ * * CUSTOM_STATUS
  * @typedef {string} ActivityType
  */
 exports.ActivityTypes = [
@@ -414,6 +430,7 @@ exports.ActivityTypes = [
   'STREAMING',
   'LISTENING',
   'WATCHING',
+  'CUSTOM_STATUS',
 ];
 
 exports.ChannelTypes = {
@@ -464,6 +481,23 @@ exports.Colors = {
 };
 
 /**
+ * The value set for the verification levels for a guild:
+ * * None
+ * * Low
+ * * Medium
+ * * (╯°□°）╯︵ ┻━┻
+ * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
+ * @typedef {string} VerificationLevel
+ */
+exports.VerificationLevels = [
+  'None',
+  'Low',
+  'Medium',
+  '(╯°□°）╯︵ ┻━┻',
+  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻',
+];
+
+/**
  * An error encountered while performing an API request. Here are the potential errors:
  * * UNKNOWN_ACCOUNT
  * * UNKNOWN_APPLICATION
@@ -487,7 +521,10 @@ exports.Colors = {
  * * MAXIMUM_PINS
  * * MAXIMUM_ROLES
  * * MAXIMUM_REACTIONS
+ * * MAXIMUM_CHANNELS
+ * * MAXIMUM_INVITES
  * * UNAUTHORIZED
+ * * USER_BANNED
  * * MISSING_ACCESS
  * * INVALID_ACCOUNT_TYPE
  * * CANNOT_EXECUTE_ON_DM
@@ -507,9 +544,13 @@ exports.Colors = {
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
  * * INVALID_OR_TAKEN_INVITE_CODE
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * * INVALID_OAUTH_TOKEN
  * * BULK_DELETE_MESSAGE_TOO_OLD
+ * * INVALID_FORM_BODY
  * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
+ * * INVALID_API_VERSION
  * * REACTION_BLOCKED
+ * * RESOURCE_OVERLOADED
  * @typedef {string} APIError
  */
 exports.APIErrors = {
@@ -535,7 +576,10 @@ exports.APIErrors = {
   MAXIMUM_PINS: 30003,
   MAXIMUM_ROLES: 30005,
   MAXIMUM_REACTIONS: 30010,
+  MAXIMUM_CHANNELS: 30013,
+  MAXIMUM_INVITES: 30016,
   UNAUTHORIZED: 40001,
+  USER_BANNED: 40007,
   MISSING_ACCESS: 50001,
   INVALID_ACCOUNT_TYPE: 50002,
   CANNOT_EXECUTE_ON_DM: 50003,
@@ -555,9 +599,13 @@ exports.APIErrors = {
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
   INVALID_OR_TAKEN_INVITE_CODE: 50020,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
+  INVALID_OAUTH_TOKEN: 50025,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
+  INVALID_FORM_BODY: 50035,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
+  INVALID_API_VERSION: 50041,
   REACTION_BLOCKED: 90001,
+  RESOURCE_OVERLOADED: 130000,
 };
 
 /**
@@ -582,6 +630,19 @@ exports.MembershipStates = [
   null,
   'INVITED',
   'ACCEPTED',
+];
+
+/**
+ * The value set for a webhook's type:
+ * * Incoming
+ * * Channel Follower
+ * @typedef {string} WebhookTypes
+ */
+exports.WebhookTypes = [
+  // They start at 1
+  null,
+  'Incoming',
+  'Channel Follower',
 ];
 
 function keyMirror(arr) {

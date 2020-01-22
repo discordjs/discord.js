@@ -53,11 +53,11 @@ class Util {
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
    * @param {StringResolvable} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
-   * @returns {string|string[]}
+   * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-    text = this.resolveString(text);
-    if (text.length <= maxLength) return text;
+    text = Util.resolveString(text);
+    if (text.length <= maxLength) return [text];
     const splitText = text.split(char);
     if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
@@ -244,9 +244,9 @@ class Util {
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
-    const m = text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/);
+    const m = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
     if (!m) return null;
-    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] || null };
   }
 
   /**
@@ -432,7 +432,7 @@ class Util {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.sort((a, b) =>
+    return collection.sorted((a, b) =>
       a.rawPosition - b.rawPosition ||
       parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
       parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
