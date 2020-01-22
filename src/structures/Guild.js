@@ -5,7 +5,8 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
+const { ChannelTypes, DefaultMessageNotifications, PartialTypes, VerificationLevels,
+  ExplicitContentFilterLevels } = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
@@ -247,15 +248,15 @@ class Guild extends Base {
 
     /**
      * The verification level of the guild
-     * @type {number}
+     * @type {VerificationLevel}
      */
-    this.verificationLevel = data.verification_level;
+    this.verificationLevel = VerificationLevels[data.verification_level];
 
     /**
      * The explicit content filter level of the guild
-     * @type {number}
+     * @type {ExplicitContentFilterLevel}
      */
-    this.explicitContentFilter = data.explicit_content_filter;
+    this.explicitContentFilter = ExplicitContentFilterLevels[data.explicit_content_filter];
 
     /**
      * The required MFA level for the guild
@@ -766,12 +767,37 @@ class Guild extends Base {
   }
 
   /**
+   * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
+   * * ALL
+   * * MENTIONS
+   * @typedef {string} DefaultMessageNotifications
+   */
+
+  /**
+   * The value set for the explicit content filter levels for a guild:
+   * * DISABLED
+   * * MEMBERS_WITHOUT_ROLES
+   * * ALL_MEMBERS
+   * @typedef {string} ExplicitContentFilterLevel
+   */
+
+  /**
+   * The value set for the verification levels for a guild:
+   * * NONE
+   * * LOW
+   * * MEDIUM
+   * * HIGH
+   * * VERY_HIGH
+   * @typedef {string} VerificationLevel
+   */
+
+  /**
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
-   * @property {number} [verificationLevel] The verification level of the guild
-   * @property {number} [explicitContentFilter] The level of the explicit content filter
+   * @property {VerificationLevel|number} [verificationLevel] The verification level of the guild
+   * @property {ExplicitContentFilterLevel|number} [explicitContentFilter] The level of the explicit content filter
    * @property {ChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
@@ -801,7 +827,11 @@ class Guild extends Base {
     const _data = {};
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
-    if (typeof data.verificationLevel !== 'undefined') _data.verification_level = Number(data.verificationLevel);
+    if (typeof data.verificationLevel !== 'undefined') {
+      _data.verification_level = typeof data.verificationLevel === 'number' ?
+        Number(data.verificationLevel) :
+        ExplicitContentFilterLevels.indexOf(data.verificationLevel);
+    }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
     }
@@ -814,7 +844,9 @@ class Guild extends Base {
     if (data.splash) _data.splash = data.splash;
     if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = Number(data.explicitContentFilter);
+      _data.explicit_content_filter = typeof data.explicitContentFilter === 'number' ?
+        Number(data.explicitContentFilter) :
+        ExplicitContentFilterLevels.indexOf(data.explicitContentFilter);
     }
     if (typeof data.defaultMessageNotifications !== 'undefined') {
       _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
@@ -830,7 +862,7 @@ class Guild extends Base {
 
   /**
    * Edits the level of the explicit content filter.
-   * @param {number} explicitContentFilter The new level of the explicit content filter
+   * @param {ExplicitContentFilterLevel|number} explicitContentFilter The new level of the explicit content filter
    * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
    * @returns {Promise<Guild>}
    */
@@ -892,7 +924,7 @@ class Guild extends Base {
 
   /**
    * Edits the verification level of the guild.
-   * @param {number} verificationLevel The new verification level of the guild
+   * @param {VerificationLevel|number} verificationLevel The new verification level of the guild
    * @param {string} [reason] Reason for changing the guild's verification level
    * @returns {Promise<Guild>}
    * @example
