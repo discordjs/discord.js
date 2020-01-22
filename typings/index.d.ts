@@ -718,7 +718,7 @@ declare module 'discord.js' {
 		public systemChannelFlags: Readonly<SystemChannelFlags>;
 		public systemChannelID: Snowflake | null;
 		public vanityURLCode: string | null;
-		public verificationLevel: number;
+		public verificationLevel: GuildVerificationLevel;
 		public readonly verified: boolean;
 		public readonly voice: VoiceState | null;
 		public readonly voiceStates: VoiceStateStore;
@@ -749,7 +749,7 @@ declare module 'discord.js' {
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
 		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications | number, reason?: string): Promise<Guild>;
 		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
-		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
+		public setExplicitContentFilter(explicitContentFilter: GuildExplicitContentFilter, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setName(name: string, reason?: string): Promise<Guild>;
 		public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
@@ -758,7 +758,7 @@ declare module 'discord.js' {
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
+		public setVerificationLevel(verificationLevel: GuildVerificationLevel, reason?: string): Promise<Guild>;
 		public splashURL(options?: ImageURLOptions): string | null;
 		public toJSON(): object;
 		public toString(): string;
@@ -2307,8 +2307,8 @@ declare module 'discord.js' {
 	interface GuildEditData {
 		name?: string;
 		region?: string;
-		verificationLevel?: number;
-		explicitContentFilter?: number;
+		verificationLevel?: GuildVerificationLevel;
+		explicitContentFilter?: GuildExplicitContentFilter;
 		defaultMessageNotifications?: DefaultMessageNotifications | number;
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
@@ -2324,6 +2324,8 @@ declare module 'discord.js' {
 		enabled: boolean;
 		channel: GuildChannelResolvable | null;
 	}
+
+	type GuildExplicitContentFilterLevel: 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
 
 	type GuildFeatures = 'ANIMATED_ICON'
 		| 'BANNER'
@@ -2356,6 +2358,8 @@ declare module 'discord.js' {
 		dry?: boolean;
 		reason?: string;
 	}
+
+	type GuildVerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
 	interface HTTPOptions {
 		version?: number;
