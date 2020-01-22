@@ -1761,8 +1761,9 @@ declare module 'discord.js' {
 	}
 
 	export abstract class BaseManager<K, Holds, R> {
-		constructor(client: Client, iterable: Iterable<any>, holds: Constructable<Holds>, cacheType: Collection<Snowflake, Holds>);
+		constructor(client: Client, iterable: Iterable<any>, holds: Constructable<Holds>, cacheType: Collection<K, Holds>);
 		public holds: Constructable<Holds>;
+		public cache: Collection<K, Holds>;
 		public client: Client;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): Holds;
 		public remove(key: K): void;
