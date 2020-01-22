@@ -203,8 +203,8 @@ class GuildMemberManager extends BaseManager {
 
   _fetchMany({ query = '', limit = 0 } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.size && !query && !limit) {
-        resolve(this);
+      if (this.guild.memberCount === this.cache.size && !query && !limit) {
+        resolve(this.cache);
         return;
       }
       this.guild.shard.send({
@@ -221,11 +221,11 @@ class GuildMemberManager extends BaseManager {
         for (const member of members.values()) {
           if (query || limit) fetchedMembers.set(member.id, member);
         }
-        if (this.guild.memberCount <= this.size ||
+        if (this.guild.memberCount <= this.cache.size ||
           ((query || limit) && members.size < 1000) ||
           (limit && fetchedMembers.size >= limit)) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(query || limit ? fetchedMembers : this);
+          resolve(query || limit ? fetchedMembers : this.cache);
         }
       };
       this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
