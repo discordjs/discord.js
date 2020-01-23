@@ -178,7 +178,8 @@ class WebSocketShard extends EventEmitter {
         this.off(ShardEvents.CLOSE, onClose);
         this.off(ShardEvents.READY, onReady);
         this.off(ShardEvents.RESUMED, onResumed);
-        this.off(ShardEvents.INVALID_SESSION, onInvalid);
+        this.off(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
+        this.off(ShardEvents.DESTROYED, onInvalidOrDestroyed);
       };
 
       const onReady = () => {
@@ -196,7 +197,7 @@ class WebSocketShard extends EventEmitter {
         reject(event);
       };
 
-      const onInvalid = () => {
+      const onInvalidOrDestroyed = () => {
         cleanup();
         // eslint-disable-next-line prefer-promise-reject-errors
         reject();
@@ -205,7 +206,8 @@ class WebSocketShard extends EventEmitter {
       this.once(ShardEvents.READY, onReady);
       this.once(ShardEvents.RESUMED, onResumed);
       this.once(ShardEvents.CLOSE, onClose);
-      this.once(ShardEvents.INVALID_SESSION, onInvalid);
+      this.once(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
+      this.once(ShardEvents.DESTROYED, onInvalidOrDestroyed);
 
       if (this.connection && this.connection.readyState === WebSocket.OPEN) {
         this.debug('An open connection was found, attempting an immediate identify.');
@@ -696,6 +698,12 @@ class WebSocketShard extends EventEmitter {
         this.debug(`WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
         // Remove listeners from the connection
         this._cleanupConnection();
+        // Attempt to close the connection just in case
+        try {
+          this.connection.close(closeCode);
+        } catch {
+          // No-op
+        }
         // Emit the destroyed event if needed
         if (emit) this._emitDestroyed();
       }
