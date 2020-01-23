@@ -1840,7 +1840,13 @@ declare module 'discord.js' {
 
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
-		public create(name: string, options?: { region?: string, icon: BufferResolvable | Base64Resolvable | null }): Promise<Guild>;
+		public create(name: string, options?: {
+      defaultMessageNotifications?: DefaultMessageNotifications;
+      explicitContentFilter?: ExplicitContentFilterLevel;
+      icon?: BufferResolvable | Base64Resolvable;
+      region?: string;
+      verificationLevel?: VerificationLevel;
+    }): Promise<Guild>;
 	}
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
