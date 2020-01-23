@@ -751,14 +751,12 @@ class Guild extends Base {
     if (this.members.has(user)) return Promise.resolve(this.members.get(user));
     options.access_token = options.accessToken;
     if (options.roles) {
-      const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
         role = this.roles.resolve(role);
         if (!role) {
           return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
             'Array or Collection of Roles or Snowflakes', true));
         }
-        roles.push(role.id);
       }
     }
     return this.client.api.guilds(this.id).members(user).put({ data: options })
