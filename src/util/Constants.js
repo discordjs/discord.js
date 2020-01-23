@@ -625,7 +625,7 @@ exports.APIErrors = {
  * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
  * * ALL
  * * MENTIONS
- * @typedef {string} DefaultMessageNotifications
+ * @typedef {string} DefaultMessageNotification
  */
 exports.DefaultMessageNotifications = [
   'ALL',
