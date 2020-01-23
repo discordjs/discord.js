@@ -99,14 +99,14 @@ class Client extends BaseClient {
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {UserStore<Snowflake, User>}
+     * @type {UserStore}
      */
     this.users = new UserStore(this);
 
     /**
      * All of the guilds the client is currently handling, mapped by their IDs -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {GuildStore<Snowflake, Guild>}
+     * @type {GuildStore}
      */
     this.guilds = new GuildStore(this);
 
@@ -115,7 +115,7 @@ class Client extends BaseClient {
      * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the store without their explicit fetching or use.
-     * @type {ChannelStore<Snowflake, Channel>}
+     * @type {ChannelStore}
      */
     this.channels = new ChannelStore(this);
 
@@ -159,7 +159,7 @@ class Client extends BaseClient {
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {GuildEmojiStore<Snowflake, GuildEmoji>}
+   * @type {GuildEmojiStore}
    * @readonly
    */
   get emojis() {
