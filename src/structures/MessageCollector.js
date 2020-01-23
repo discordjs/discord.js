@@ -38,7 +38,7 @@ class MessageCollector extends Collector {
 
     const bulkDeleteListener = (messages => {
       for (const message of messages.values()) this.handleDispose(message);
-    }).bind(this);
+    });
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
 
