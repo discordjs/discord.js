@@ -159,7 +159,7 @@ class Client extends BaseClient {
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {GuildEmojiStore}
+   * @type {GuildEmojiStore<Snowflake, GuildEmoji>}
    * @readonly
    */
   get emojis() {
