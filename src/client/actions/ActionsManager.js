@@ -8,6 +8,7 @@ class ActionsManager {
     this.register(require('./MessageUpdate'));
     this.register(require('./MessageReactionAdd'));
     this.register(require('./MessageReactionRemove'));
+    this.register(require('./MessageReactionRemoveEmoji'));
     this.register(require('./MessageReactionRemoveAll'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
