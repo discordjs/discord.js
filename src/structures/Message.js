@@ -531,7 +531,6 @@ class Message extends Base {
   
   /**
    * Fetches the member of this message.
-   * @param {boolean} [cache=true] Insert the member into the members cache
    * @returns {Promise<GuildMember>}
    */
   fetchMember() {
