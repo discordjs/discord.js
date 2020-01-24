@@ -992,7 +992,7 @@ declare module 'discord.js' {
 		public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
 		public equals(message: Message, rawData: object): boolean;
 		public fetchWebhook(): Promise<Webhook>;
-		public fetchMember(cache?: boolean): Promise<GuildMember>;
+		public fetchMember(): Promise<GuildMember>;
 		public fetch(): Promise<Message>;
 		public pin(): Promise<Message>;
 		public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
