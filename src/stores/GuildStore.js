@@ -69,7 +69,7 @@ class GuildStore extends DataStore {
    * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @param {string} [options.region] The region for the server, defaults to the closest one available
-   * @param {RoleData[]} [options.roles] The roles for this guild
+   * @param {RoleData[]} [options.roles] The roles for this guild, the first element of this array is used to change properties of the guild's everyone role.
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */

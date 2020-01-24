@@ -1841,12 +1841,12 @@ declare module 'discord.js' {
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public create(name: string, options?: {
-      channels: PartialChannelData[];
+      channels?: PartialChannelData[];
       defaultMessageNotifications?: DefaultMessageNotifications;
       explicitContentFilter?: ExplicitContentFilterLevel;
       icon?: BufferResolvable | Base64Resolvable;
       region?: string;
-      roles: (RoleData & { id: number })[];
+      roles?: (RoleData & { id: number })[];
       verificationLevel?: VerificationLevel;
     }): Promise<Guild>;
 	}
@@ -2563,7 +2563,12 @@ declare module 'discord.js' {
     name: string;
     type?: ChannelType;
     topic?: string;
-    permissionOverwrites?: (ResolvedOverwriteOptions & { id: number | Snowflake, type: OverwriteType })[],
+    permissionOverwrites?: {
+      id: number | Snowflake;
+      type?: OverwriteType;
+      allow?: PermissionResolvable;
+      deny?: PermissionResolvable;
+    }[];
   }
 
 	type PartialTypes = 'USER'
