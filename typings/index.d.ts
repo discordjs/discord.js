@@ -622,10 +622,10 @@ declare module 'discord.js' {
 			BIG: 2;
 		};
 		MessageTypes: MessageType[];
-    ActivityTypes: ActivityType[];
-    ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
-    DefaultMessageNotifications: DefaultMessageNotifications[];
-    VerificationLevels: VerificationLevel[];
+		ActivityTypes: ActivityType[];
+		ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
+		DefaultMessageNotifications: DefaultMessageNotifications[];
+		VerificationLevels: VerificationLevel[];
 		MembershipStates: 'INVITED' | 'ACCEPTED';
 	}
 
@@ -1841,14 +1841,14 @@ declare module 'discord.js' {
 	export class GuildStore extends DataStore<Snowflake, Guild, typeof Guild, GuildResolvable> {
 		constructor(client: Client, iterable?: Iterable<any>);
 		public create(name: string, options?: {
-      channels?: PartialChannelData[];
-      defaultMessageNotifications?: DefaultMessageNotifications;
-      explicitContentFilter?: ExplicitContentFilterLevel;
-      icon?: BufferResolvable | Base64Resolvable;
-      region?: string;
-      roles?: (RoleData & { id: number })[];
-      verificationLevel?: VerificationLevel;
-    }): Promise<Guild>;
+			channels?: PartialChannelData[];
+			defaultMessageNotifications?: DefaultMessageNotifications;
+			explicitContentFilter?: ExplicitContentFilterLevel;
+			icon?: BufferResolvable | Base64Resolvable;
+			region?: string;
+			roles?: (RoleData & { id: number })[];
+			verificationLevel?: VerificationLevel;
+		}): Promise<Guild>;
 	}
 
 	export class MessageStore extends DataStore<Snowflake, Message, typeof Message, MessageResolvable> {
@@ -2173,13 +2173,13 @@ declare module 'discord.js' {
 		name: string;
 		value: string;
 		inline?: boolean;
-  }
+	}
 
 	type EmojiIdentifierResolvable = string | EmojiResolvable;
 
 	type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 
-  type ExplicitContentFilterLevel = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+	type ExplicitContentFilterLevel = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
 
 	interface Extendable {
 		GuildEmoji: typeof GuildEmoji;
@@ -2557,19 +2557,19 @@ declare module 'discord.js' {
 		web?: ClientPresenceStatus;
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
-  }
-  
-  interface PartialChannelData {
-    name: string;
-    type?: ChannelType;
-    topic?: string;
-    permissionOverwrites?: {
-      id: number | Snowflake;
-      type?: OverwriteType;
-      allow?: PermissionResolvable;
-      deny?: PermissionResolvable;
-    }[];
-  }
+	}
+	
+	interface PartialChannelData {
+		name: string;
+		type?: ChannelType;
+		topic?: string;
+		permissionOverwrites?: {
+			id: number | Snowflake;
+			type?: OverwriteType;
+			allow?: PermissionResolvable;
+			deny?: PermissionResolvable;
+		}[];
+	}
 
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
@@ -2583,7 +2583,7 @@ declare module 'discord.js' {
 		fetch(): Promise<T>;
 	} & {
 		[K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
-  };
+	};
 
 	interface PartialMessage extends Partialize<Message> {}
 	interface PartialChannel extends Partialize<Channel> {}
@@ -2673,9 +2673,9 @@ declare module 'discord.js' {
 
 	type TargetUser = number;
 
-  type UserResolvable = User | Snowflake | Message | GuildMember;
-  
-  type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+	type UserResolvable = User | Snowflake | Message | GuildMember;
+	
+	type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
 	type VoiceStatus = number;
 
