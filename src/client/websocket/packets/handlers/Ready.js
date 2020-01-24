@@ -63,11 +63,13 @@ class ReadyHandler extends AbstractHandler {
       client.ws.connection.triggerReady();
     }, 1200 * data.guilds.length);
 
-    client.setMaxListeners(data.guilds.length + 10);
+    const guildCount = data.guilds.length;
+
+    if (client.getMaxListeners() !== 0) client.setMaxListeners(client.getMaxListeners() + guildCount);
 
     client.once('ready', () => {
       client.syncGuilds();
-      client.setMaxListeners(10);
+      if (client.getMaxListeners() !== 0) client.setMaxListeners(client.getMaxListeners() - guildCount);
       client.clearTimeout(t);
     });
 
