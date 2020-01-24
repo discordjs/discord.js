@@ -2558,7 +2558,7 @@ declare module 'discord.js' {
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
 	}
-	
+
 	interface PartialChannelData {
 		name: string;
 		type?: ChannelType;
@@ -2674,7 +2674,7 @@ declare module 'discord.js' {
 	type TargetUser = number;
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
-	
+
 	type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
 	type VoiceStatus = number;
