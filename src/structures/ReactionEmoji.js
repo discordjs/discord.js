@@ -1,10 +1,21 @@
+const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
+
 /**
  * Represents a limited emoji set used for both custom and unicode emojis. Custom emojis
  * will use this class opposed to the Emoji class when the client doesn't know enough
  * information about them.
  */
 class ReactionEmoji {
-  constructor(reaction, name, id) {
+  constructor(reaction, emoji) {
+    /**
+     * The client that instantiated this object
+     * @name ReactionEmoji#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: reaction.message.client });
+
     /**
      * The message reaction this emoji refers to
      * @type {MessageReaction}
@@ -15,13 +26,49 @@ class ReactionEmoji {
      * The name of this reaction emoji
      * @type {string}
      */
-    this.name = name;
+    this.name = emoji.name;
 
     /**
      * The ID of this reaction emoji
      * @type {?Snowflake}
      */
-    this.id = id;
+    this.id = emoji.id;
+
+    /**
+     * Whether this reaction emoji is animated
+     * @type {boolean}
+     */
+    this.animated = emoji.animated || false;
+  }
+
+  /**
+   * The timestamp the reaction emoji was created at, or null if unicode
+   * @type {?number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    if (!this.id) return null;
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the reaction emoji was created, or null if unicode
+   * @type {?Date}
+   * @readonly
+   */
+  get createdAt() {
+    if (!this.id) return null;
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The URL to the reaction emoji file, or null if unicode
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    if (!this.id) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Emoji(this.id, this.animated ? 'gif' : 'png');
   }
 
   /**
@@ -42,7 +89,9 @@ class ReactionEmoji {
    * @returns {string}
    */
   toString() {
-    return this.id ? `<:${this.name}:${this.id}>` : this.name;
+    if (!this.id) return this.name;
+
+    return `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>`;
   }
 }
 
