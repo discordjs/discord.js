@@ -243,6 +243,8 @@ class RichPresenceAssets {
     if (!this.largeImage) return null;
     if (/^spotify:/.test(this.largeImage)) {
       return `https://i.scdn.co/image/${this.largeImage.slice(8)}`;
+    } else if (/^twitch:/.test(this.largeImage)) {
+      return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
     }
     return Endpoints.CDN(this.game.presence.client.options.http.cdn)
       .AppAsset(this.game.applicationID, this.largeImage);
