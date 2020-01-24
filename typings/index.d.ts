@@ -1578,14 +1578,17 @@ declare module 'discord.js' {
 
 	export class Webhook {
 		constructor(client: Client, dataOrID: object | string, token: string);
-		public avatar: string;
+		public avatar: string | null;
+		public readonly avatarURL: string | null;
 		public channelID: string;
 		public readonly client: Client;
 		public guildID: string;
 		public id: Snowflake;
 		public name: string;
 		public owner: User | object;
-		public token: string;
+		public token: string | null;
+		public type: WebhookTypes;
+		public readonly url: string;
 		public delete(reason?: string): Promise<void>;
 		public edit(name?: string, avatar?: BufferResolvable): Promise<Webhook>;
 		public edit(options?: WebhookEditOptions, reason?: string): Promise<Webhook>;
@@ -1604,6 +1607,7 @@ declare module 'discord.js' {
 		private _timeouts: Set<NodeJS.Timer>;
 		private resolver: ClientDataResolver;
 		private rest: object;
+		public token: string;
 
 		public options: ClientOptions;
 		public clearInterval(interval: NodeJS.Timer): void;
@@ -2229,6 +2233,8 @@ declare module 'discord.js' {
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
 	};
+
+	type WebhookTypes = 'Incoming' | 'Channel Follower';
 
 	type WebSocketOptions = {
 		large_threshold?: number;

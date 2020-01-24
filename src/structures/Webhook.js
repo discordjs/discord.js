@@ -3,6 +3,8 @@ const path = require('path');
 const Util = require('../util/Util');
 const Attachment = require('./Attachment');
 const RichEmbed = require('./RichEmbed');
+const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a webhook.
@@ -36,9 +38,9 @@ class Webhook extends EventEmitter {
     /**
      * The token for the webhook
      * @name Webhook#token
-     * @type {string}
+     * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -51,6 +53,12 @@ class Webhook extends EventEmitter {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The type of the webhook
+     * @type {WebhookTypes}
+     */
+    this.type = Constants.WebhookTypes[data.type];
 
     /**
      * The guild the webhook belongs to
@@ -73,6 +81,44 @@ class Webhook extends EventEmitter {
     } else {
       this.owner = null;
     }
+  }
+
+  /**
+   * The timestamp the webhook was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the webhook was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the webhook user's avatar
+   * @type {?stirng}
+   * @readonly
+   */
+  get avatarURL() {
+    if (!this.avatar) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar);
+  }
+
+  /**
+   * The url of this webhook
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    return API + Constants.Endpoints.Webhook(this.id, this.token);
   }
 
   /**
