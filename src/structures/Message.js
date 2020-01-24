@@ -590,15 +590,17 @@ class Message {
     const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
-      if (user && reaction.users.has(user.id)) {
+      if (!user) {
+        this.reactions.delete(emojiID);
+        return reaction;
+      }
+      if (reaction.users.has(user.id)) {
         reaction.users.delete(user.id);
         reaction.count--;
         if (user.id === this.client.user.id) reaction.me = false;
         if (reaction.count <= 0) this.reactions.delete(emojiID);
         return reaction;
       }
-      this.reactions.delete(emojiID);
-      return reaction;
     }
     return null;
   }
