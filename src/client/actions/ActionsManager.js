@@ -20,6 +20,8 @@ class ActionsManager {
     this.register(require('./GuildRoleCreate'));
     this.register(require('./GuildRoleDelete'));
     this.register(require('./GuildRoleUpdate'));
+    this.register(require('./InviteCreate'));
+    this.register(require('./InviteDelete'));
     this.register(require('./UserGet'));
     this.register(require('./UserUpdate'));
     this.register(require('./UserNoteUpdate'));
