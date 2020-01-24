@@ -528,6 +528,15 @@ class Message extends Base {
     if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
+  
+  /**
+   * Fetches the member of this message.
+   * @param {boolean} [cache=true] Insert the member into the members cache
+   * @returns {Promise<GuildMember>}
+   */
+  fetchMember(cache = true) {
+    return this.guild.fetchMember(this.author.id, cache);
+  }
 
   /**
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
