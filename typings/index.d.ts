@@ -2555,7 +2555,14 @@ declare module 'discord.js' {
 		web?: ClientPresenceStatus;
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
-	}
+  }
+  
+  interface PartialChannelData {
+    name: string;
+    type?: ChannelType;
+    topic?: string;
+    permissionOverwrites?: (ResolvedOverwriteOptions & { id: number | Snowflake, type: OverwriteType })[],
+  }
 
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
@@ -2569,7 +2576,7 @@ declare module 'discord.js' {
 		fetch(): Promise<T>;
 	} & {
 		[K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
-	};
+  };
 
 	interface PartialMessage extends Partialize<Message> {}
 	interface PartialChannel extends Partialize<Channel> {}

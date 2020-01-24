@@ -7,6 +7,8 @@ const { Events, VerificationLevels, DefaultMessageNotifications,
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildMember = require('../structures/GuildMember');
+const Permissions = require('../util/Permissions');
+const { resolveColor } = require('../util/Util');
 const Role = require('../structures/Role');
 
 /**
@@ -17,35 +19,6 @@ class GuildStore extends DataStore {
   constructor(client, iterable) {
     super(client, iterable, Guild);
   }
-
-  /**
-   * @typedef {string} Snowflake
-   */
-
-  /**
-   * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
-   * * ALL
-   * * MENTIONS
-   * @typedef {string} DefaultMessageNotifications
-   */
-
-  /**
-   * The value set for the explicit content filter levels for a guild:
-   * * DISABLED
-   * * MEMBERS_WITHOUT_ROLES
-   * * ALL_MEMBERS
-   * @typedef {string} ExplicitContentFilterLevel
-   */
-
-  /**
-   * The value set for the verification levels for a guild:
-   * * NONE
-   * * LOW
-   * * MEDIUM
-   * * HIGH
-   * * VERY_HIGH
-   * @typedef {string} VerificationLevel
-   */
 
   /**
    * Data that resolves to give a Guild object. This can be:
@@ -91,14 +64,16 @@ class GuildStore extends DataStore {
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
+   * @param {PartialChannelData[]} [options.channels] The channels for this guild
    * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications for the guild
    * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @param {string} [options.region] The region for the server, defaults to the closest one available
+   * @param {RoleData[]} [options.roles] The roles for this guild
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  create(name, { defaultMessageNotifications, explicitContentFilter, icon = null, region, verificationLevel } = {}) {
+  create(name, { channels = [], defaultMessageNotifications, explicitContentFilter, icon = null, region, roles = [], verificationLevel } = {}) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
         verificationLevel = VerificationLevels.indexOf(verificationLevel);
@@ -109,6 +84,17 @@ class GuildStore extends DataStore {
       if (typeof explicitContentFilter !== 'undefined' && typeof explicitContentFilter !== 'number') {
         explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
       }
+      for (const channel of channels) {
+        if (!channel.permissionOverwrites) continue;
+        for (const overwrite of channel.permissionOverwrites) {
+          if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
+          if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
+        }
+      }
+      for (const role of roles) {
+        if (role.color) role.color = resolveColor(role.color);
+        if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
+      }
       return new Promise((resolve, reject) =>
         this.client.api.guilds.post({ data: {
           name,
@@ -117,6 +103,8 @@ class GuildStore extends DataStore {
           verification_level: verificationLevel,
           default_message_notifications: defaultMessageNotifications,
           explicit_content_filter: explicitContentFilter,
+          channels,
+          roles,
         } })
           .then(data => {
             if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
