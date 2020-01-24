@@ -1846,7 +1846,7 @@ declare module 'discord.js' {
       explicitContentFilter?: ExplicitContentFilterLevel;
       icon?: BufferResolvable | Base64Resolvable;
       region?: string;
-      roles: RoleData & { id: number };
+      roles: (RoleData & { id: number })[];
       verificationLevel?: VerificationLevel;
     }): Promise<Guild>;
 	}

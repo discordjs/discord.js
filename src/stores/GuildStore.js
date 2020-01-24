@@ -90,6 +90,8 @@ class GuildStore extends DataStore {
           if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
           if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
         }
+        channel.permission_overwrites = channel.permissionOverwrites;
+        delete channel.permissionOverwrites;
       }
       for (const role of roles) {
         if (role.color) role.color = resolveColor(role.color);
