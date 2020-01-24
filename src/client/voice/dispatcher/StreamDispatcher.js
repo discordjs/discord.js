@@ -73,10 +73,10 @@ class StreamDispatcher extends Writable {
       this._setSpeaking(0);
     });
 
-    if (typeof volume !== 'undefined') this.setVolume(volume);
+    this.setVolume(volume);
+    this.setBitrate(bitrate);
     if (typeof fec !== 'undefined') this.setFEC(fec);
     if (typeof plp !== 'undefined') this.setPLP(plp);
-    if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
 
     const streamError = (type, err) => {
       /**

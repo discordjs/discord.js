@@ -6,7 +6,7 @@ module.exports = (client, { d: data }) => {
   const channel = client.channels.get(data.channel_id);
   const time = new Date(data.last_pin_timestamp);
 
-  if (channel && time) {
+  if (channel && !Number.isNaN(time.getTime())) {
     // Discord sends null for last_pin_timestamp if the last pinned message was removed
     channel.lastPinTimestamp = time.getTime() || null;
 

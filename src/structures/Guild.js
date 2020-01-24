@@ -775,6 +775,7 @@ class Guild extends Base {
         }
         roles.push(role.id);
       }
+      options.roles = roles;
     }
     return this.client.api.guilds(this.id).members(user).put({ data: options })
       .then(data => this.members.add(data));
