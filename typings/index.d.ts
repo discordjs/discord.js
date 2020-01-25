@@ -362,7 +362,8 @@ declare module 'discord.js' {
 
 	abstract class Collector<K, V> extends EventEmitter {
 		constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
-		private _timeout: NodeJS.Timer;
+		private _timeout: NodeJS.Timer | null;
+		private _idletimeout: NodeJS.Timer | null;
 		private _handle(...args: any[]): void;
 
 		public readonly client: Client;
@@ -1761,7 +1762,10 @@ declare module 'discord.js' {
 
 	type CollectorHandler<K, V> = { key: K, value: V };
 	type CollectorFilter = (...args: any[]) => boolean;
-	type CollectorOptions = { time?: number };
+	type CollectorOptions = {
+		time?: number;
+		idle?: number;
+	};
 
 	type ColorResolvable = ('DEFAULT'
 		| 'WHITE'
