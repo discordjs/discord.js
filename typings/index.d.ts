@@ -1112,6 +1112,7 @@ declare module 'discord.js' {
 		public message: Message;
 		public readonly partial: boolean;
 		public users: ReactionUserStore;
+		public remove(): Promise<MessageReaction>;
 		public fetch(): Promise<MessageReaction>;
 		public toJSON(): object;
 	}
