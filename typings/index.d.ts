@@ -188,6 +188,7 @@ declare module 'discord.js' {
 		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>) => void): this;
 		public on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember | PartialGuildMember) => void): this;
 		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public on(event: 'inviteCreate' | 'inviteDelete', listener: (invite: Invite) => void): this;
 		public on(event: 'guildIntegrationsUpdate', listener: (guild: Guild) => void): this;
 		public on(event: 'message' | 'messageDelete' | 'messageReactionRemoveAll', listener: (message: Message | PartialMessage) => void): this;
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message | PartialMessage>) => void): this;
@@ -723,6 +724,7 @@ declare module 'discord.js' {
 		public equals(guild: Guild): boolean;
 		public fetch(): Promise<Guild>;
 		public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
+		public fetchBan(user: UserResolvable): Promise<{ user: User, reason: string }>;
 		public fetchBans(): Promise<Collection<Snowflake, { user: User, reason: string }>>;
 		public fetchEmbed(): Promise<GuildEmbedData>;
 		public fetchIntegrations(): Promise<Collection<string, Integration>>;

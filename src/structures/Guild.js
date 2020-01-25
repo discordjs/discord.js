@@ -556,6 +556,21 @@ class Guild extends Base {
    */
 
   /**
+  * Fetches information on a banned user from this guild.
+   * @param {UserResolvable} user The User to fetch the ban info of
+   * @returns {BanInfo}
+   */
+  fetchBan(user) {
+    const id = this.client.users.resolveID(user);
+    if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
+    return this.client.api.guilds(this.id).bans(id).get()
+      .then(ban => ({
+        reason: ban.reason,
+        user: this.client.users.add(ban.user),
+      }));
+  }
+
+  /**
    * Fetches a collection of banned users in this guild.
    * @returns {Promise<Collection<Snowflake, BanInfo>>}
    */
@@ -761,6 +776,7 @@ class Guild extends Base {
         }
         roles.push(role.id);
       }
+      options.roles = roles;
     }
     return this.client.api.guilds(this.id).members(user).put({ data: options })
       .then(data => this.members.add(data));
