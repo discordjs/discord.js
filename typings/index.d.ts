@@ -1010,6 +1010,7 @@ declare module 'discord.js' {
 
 	export class Presence {
 		constructor(data: object, client: Client);
+		public activities: Game[];
 		public readonly client: Client;
 		public game: Game;
 		public status: PresenceStatusData;
