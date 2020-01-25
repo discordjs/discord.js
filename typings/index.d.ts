@@ -138,6 +138,7 @@ declare module 'discord.js' {
 		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public on(event: 'messageReactionAdd', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public on(event: 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
+		public on(event: 'messageReactionRemoveEmoji', listener: (messageReaction: MessageReaction) => void): this;
 		public on(event: 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
 		public on(event: 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
@@ -187,6 +188,7 @@ declare module 'discord.js' {
 		public once(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
 		public once(event: 'messageReactionAdd', listener: (messageReaction: MessageReaction, user: User) => void): this;
 		public once(event: 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
+		public once(event: 'messageReactionRemoveEmoji', listener: (messageReaction: MessageReaction) => void): this;
 		public once(event: 'messageReactionRemoveAll', listener: (message: Message) => void): this;
 		public once(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
 		public once(event: 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
@@ -919,6 +921,7 @@ declare module 'discord.js' {
 		public users: Collection<string, User>;
 		public fetchUsers(limit?: number, options?: { after?: number; before?: number }): Promise<Collection<Snowflake, User>>;
 		public remove(user?: UserResolvable): Promise<MessageReaction>;
+		public removeAll(): Promise<MessageReaction>;
 	}
 
 	export class NewsChannel extends TextChannel {

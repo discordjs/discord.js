@@ -70,6 +70,17 @@ class MessageReaction {
   }
 
   /**
+   * Removes this reaction from the message
+   * @returns {Promise<MessageReaction>}
+   */
+  removeAll() {
+    const message = this.message;
+    return message.client.rest.methods.removeMessageReactionEmoji(
+      message, this.emoji.identifier
+    );
+  }
+
+  /**
    * Fetch all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {number} [limit=100] The maximum amount of users to fetch, defaults to 100
    * @param {Object} [options] Options to fetch users

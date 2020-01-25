@@ -590,6 +590,10 @@ class Message {
     const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
+      if (!user) {
+        this.reactions.delete(emojiID);
+        return reaction;
+      }
       if (reaction.users.has(user.id)) {
         reaction.users.delete(user.id);
         reaction.count--;

@@ -945,6 +945,17 @@ class RESTMethods {
     );
   }
 
+  removeMessageReactionEmoji(message, emoji) {
+    const endpoint = Endpoints.Message(message).Reaction(emoji);
+    return this.rest.makeRequest('delete', endpoint, true).then(() =>
+      this.client.actions.MessageReactionRemoveEmoji.handle({
+        message_id: message.id,
+        emoji: Util.parseEmoji(emoji),
+        channel_id: message.channel.id,
+      }).reaction
+    );
+  }
+
   removeMessageReactions(message) {
     return this.rest.makeRequest('delete', Endpoints.Message(message).reactions, true)
       .then(() => message);
