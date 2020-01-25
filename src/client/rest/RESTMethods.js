@@ -238,7 +238,7 @@ class RESTMethods {
       include_nsfw: options.nsfw,
     };
 
-    for (const key in options) if (options[key] === undefined) delete options[key];
+    for (const key of Object.keys(options)) if (options[key] === undefined) delete options[key];
     const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let endpoint;
