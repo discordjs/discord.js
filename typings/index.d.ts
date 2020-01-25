@@ -438,6 +438,7 @@ declare module 'discord.js' {
 		public applicationID: string;
 		public assets: RichPresenceAssets;
 		public details: string;
+		public emoji: Omit<ReactionEmoji, 'reaction'> | null;
 		public name: string;
 		public readonly streaming: boolean;
 		public party: {

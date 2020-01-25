@@ -1,4 +1,5 @@
 const { ActivityFlags, Endpoints } = require('../util/Constants');
+const ReactionEmoji = require('./ReactionEmoji');
 
 /**
  * The status of this presence:
@@ -159,8 +160,36 @@ class Game {
      */
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
 
+    if (data.emoji) {
+      /**
+       * Emoji for a custom activity
+       * <warn>There is no `reaction` property for this emoji.</warn>
+       * @type {?ReactionEmoji}
+       */
+      this.emoji = new ReactionEmoji({ message: { client: this.presence.client } }, data.emoji);
+      this.emoji.reaction = null;
+    } else {
+      this.emoji = null;
+    }
+
+
+    /**
+     * Creation date of the activity
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
+
     this.syncID = data.sync_id;
     this._flags = data.flags;
+  }
+
+  /**
+   * The time the activity was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   get flags() {
