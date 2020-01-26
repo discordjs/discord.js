@@ -175,9 +175,9 @@ class VoiceReceiver extends EventEmitter {
         }
         offset += 1 + (0b1111 & (byte >> 4));
       }
-      while (data[offset] === 0) {
-        offset++;
-      }
+      // Skip over undocumented Discord byte
+      offset++;
+
       data = data.slice(offset);
     }
 
