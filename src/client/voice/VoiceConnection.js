@@ -4,6 +4,7 @@ const Util = require('../../util/Util');
 const Constants = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/VoiceReceiver');
+const SingleSilence = require('./util/SingleSilence');
 const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
 
@@ -411,12 +412,20 @@ class VoiceConnection extends EventEmitter {
     this.authentication.secretKey = secret;
 
     this.status = Constants.VoiceStatus.CONNECTED;
-    /**
-     * Emitted once the connection is ready, when a promise to join a voice channel resolves,
-     * the connection will already be ready.
-     * @event VoiceConnection#ready
-     */
-    this.emit('ready');
+    const ready = () => {
+      /**
+       * Emitted once the connection is ready, when a promise to join a voice channel resolves,
+       * the connection will already be ready.
+       * @event VoiceConnection#ready
+       */
+      this.emit('ready');
+    };
+    if (this.dispatcher) {
+      ready();
+    } else {
+      // This serves to provide support for voice receive, sending audio is required to receive it.
+      this.playOpusStream(new SingleSilence()).once('end', ready);
+    }
   }
 
   /**
