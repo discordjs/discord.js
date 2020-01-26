@@ -43,7 +43,7 @@ class VoiceReceiver extends EventEmitter {
 
     this._listener = msg => {
       const ssrc = +msg.readUInt32BE(8).toString(10);
-      const user = this.voiceConnection.ssrcMap.get(ssrc);
+      const user = connection.client.users.get(connection.ssrcMap.get(ssrc));
       if (!user) {
         if (!this.queues.has(ssrc)) this.queues.set(ssrc, []);
         this.queues.get(ssrc).push(msg);

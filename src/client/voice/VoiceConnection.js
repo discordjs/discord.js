@@ -7,6 +7,10 @@ const VoiceReceiver = require('./receiver/VoiceReceiver');
 const EventEmitter = require('events').EventEmitter;
 const Prism = require('prism-media');
 
+// The delay between packets when a user is considered to have stopped speaking
+// https://github.com/discordjs/discord.js/issues/3524#issuecomment-540373200
+const DISCORD_SPEAKING_DELAY = 250;
+
 /**
  * Represents a connection to a guild's voice server.
  * ```js
@@ -101,11 +105,18 @@ class VoiceConnection extends EventEmitter {
     });
 
     /**
-     * Map SSRC to speaking values
-     * @type {Map<number, boolean>}
+     * Map SSRC to user id
+     * @type {Map<number, Snowflake>}
      * @private
      */
     this.ssrcMap = new Map();
+
+    /**
+     * Map user id to speaking timeout
+     * @type {Map<Snowflake, Timeout>}
+     * @private
+     */
+    this.speakingTimeouts = new Map();
 
     /**
      * Object that wraps contains the `ws` and `udp` sockets of this voice connection
@@ -342,7 +353,7 @@ class VoiceConnection extends EventEmitter {
       ws.removeAllListeners('error');
       ws.removeAllListeners('ready');
       ws.removeAllListeners('sessionDescription');
-      ws.removeAllListeners('speaking');
+      ws.removeAllListeners('startSpeaking');
       ws.shutdown();
     }
 
@@ -374,7 +385,7 @@ class VoiceConnection extends EventEmitter {
     udp.on('error', err => this.emit('error', err));
     ws.on('ready', this.onReady.bind(this));
     ws.on('sessionDescription', this.onSessionDescription.bind(this));
-    ws.on('speaking', this.onSpeaking.bind(this));
+    ws.on('startSpeaking', this.onStartSpeaking.bind(this));
   }
 
   /**
@@ -386,6 +397,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.port = port;
     this.authentication.ssrc = ssrc;
     this.sockets.udp.createUDPSocket(ip);
+    this.sockets.udp.socket.on('message', this.onUDPMessage.bind(this));
   }
 
   /**
@@ -408,14 +420,22 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * Invoked whenever a user initially starts speaking.
+   * @param {Object} data The speaking data
+   * @private
+   */
+  onStartSpeaking({ user_id, ssrc }) {
+    this.ssrcMap.set(+ssrc, user_id);
+  }
+
+  /**
    * Invoked when a speaking event is received.
    * @param {Object} data The received data
    * @private
    */
-  onSpeaking({ user_id, ssrc, speaking }) {
+  onSpeaking({ user_id, speaking }) {
     const guild = this.channel.guild;
     const user = this.client.users.get(user_id);
-    this.ssrcMap.set(+ssrc, user);
     if (!speaking) {
       for (const receiver of this.receivers) {
         receiver.stoppedSpeaking(user);
@@ -429,6 +449,35 @@ class VoiceConnection extends EventEmitter {
      */
     if (this.status === Constants.VoiceStatus.CONNECTED) this.emit('speaking', user, speaking);
     guild._memberSpeakUpdate(user_id, speaking);
+  }
+
+  /**
+   * Handles synthesizing of the speaking event.
+   * @param {Buffer} buffer Received packet from the UDP socket
+   * @private
+   */
+  onUDPMessage(buffer) {
+    const ssrc = +buffer.readUInt32BE(8).toString(10);
+    const user = this.client.users.get(this.ssrcMap.get(ssrc));
+    if (!user) return;
+
+    let speakingTimeout = this.speakingTimeouts.get(ssrc);
+    if (typeof speakingTimeout === 'undefined') {
+      this.onSpeaking({ user_id: user.id, ssrc, speaking: true });
+    } else {
+      this.client.clearTimeout(speakingTimeout);
+    }
+
+    speakingTimeout = this.client.setTimeout(() => {
+      try {
+        this.onSpeaking({ user_id: user.id, ssrc, speaking: false });
+        this.client.clearTimeout(speakingTimeout);
+        this.speakingTimeouts.delete(ssrc);
+      } catch (ex) {
+        // Connection already closed, ignore
+      }
+    }, DISCORD_SPEAKING_DELAY);
+    this.speakingTimeouts.set(ssrc, speakingTimeout);
   }
 
   /**
