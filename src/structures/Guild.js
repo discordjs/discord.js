@@ -557,7 +557,7 @@ class Guild extends Base {
   /**
   * Fetches information on a banned user from this guild.
    * @param {UserResolvable} user The User to fetch the ban info of
-   * @returns {BanInfo}
+   * @returns {Promise<BanInfo>}
    */
   fetchBan(user) {
     const id = this.client.users.resolveID(user);
