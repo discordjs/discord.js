@@ -1415,7 +1415,8 @@ declare module 'discord.js' {
 		constructor(voiceManager: ClientVoiceManager, channel: VoiceChannel);
 		private authentication: object;
 		private sockets: object;
-		private ssrcMap: Map<number, boolean>;
+		private ssrcMap: Map<number, Snowflake>;
+		private speakingTimeouts: Map<number, NodeJS.Timer>;
 		private authenticate(): void;
 		private authenticateFailed(reason: string): void;
 		private checkAuthenticated(): void;
@@ -1540,14 +1541,14 @@ declare module 'discord.js' {
 
 		public on(event: 'ready', listener: (packet: object) => void): this;
 		public on(event: 'sessionDescription', listener: (encryptionMode: string, secretKey: SecretKey) => void): this;
-		public on(event: 'speaking', listener: (data: object) => void): this;
+		public on(event: 'startSpeaking', listener: (data: object) => void): this;
 		public on(event: 'unknownPacket', listener: (packet: object) => void): this;
 		public on(event: 'warn', listener: (warn: string) => void): this;
 		public on(event: string, listener: Function): this;
 
 		public once(event: 'ready', listener: (packet: object) => void): this;
 		public once(event: 'sessionDescription', listener: (encryptionMode: string, secretKey: SecretKey) => void): this;
-		public once(event: 'speaking', listener: (data: object) => void): this;
+		public once(event: 'startSpeaking', listener: (data: object) => void): this;
 		public once(event: 'unknownPacket', listener: (packet: object) => void): this;
 		public once(event: 'warn', listener: (warn: string) => void): this;
 		public once(event: string, listener: Function): this;
