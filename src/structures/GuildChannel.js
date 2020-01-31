@@ -258,7 +258,7 @@ class GuildChannel extends Channel {
       payload.deny = prevOverwrite.deny;
     }
 
-    for (const perm in options) {
+    for (const perm of Object.keys(options)) {
       if (options[perm] === true) {
         payload.allow |= Permissions.FLAGS[perm] || 0;
         payload.deny &= ~(Permissions.FLAGS[perm] || 0);

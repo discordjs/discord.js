@@ -126,7 +126,7 @@ class Permissions {
    */
   serialize(checkAdmin = true) {
     const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
+    for (const perm of Object.keys(this.constructor.FLAGS)) serialized[perm] = this.has(perm, checkAdmin);
     return serialized;
   }
 
