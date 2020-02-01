@@ -439,6 +439,7 @@ declare module 'discord.js' {
 		public applicationID: string;
 		public assets: RichPresenceAssets;
 		public details: string;
+		public emoji: Omit<ReactionEmoji, 'reaction'> | null;
 		public name: string;
 		public readonly streaming: boolean;
 		public party: {
@@ -1011,6 +1012,7 @@ declare module 'discord.js' {
 
 	export class Presence {
 		constructor(data: object, client: Client);
+		public activities: Game[];
 		public readonly client: Client;
 		public game: Game;
 		public status: PresenceStatusData;
