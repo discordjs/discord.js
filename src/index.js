@@ -9,6 +9,7 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DiscordAPIError: require('./client/rest/DiscordAPIError'),

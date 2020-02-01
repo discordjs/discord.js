@@ -192,6 +192,10 @@ class Game {
     return new Date(this.createdTimestamp);
   }
 
+  /**
+   * Flags that describe the activity
+   * @type {ActivityFlags[]}
+   */
   get flags() {
     const flags = [];
     for (const [name, flag] of Object.entries(ActivityFlags)) {
