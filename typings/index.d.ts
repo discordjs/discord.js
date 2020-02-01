@@ -1673,7 +1673,8 @@ declare module 'discord.js' {
 	type ActivityType = 'PLAYING'
 		| 'STREAMING'
 		| 'LISTENING'
-		| 'WATCHING';
+		| 'WATCHING'
+		| 'CUSTOM_STATUS';
 
 	type AddGuildMemberOptions = {
 		accessToken: String;
