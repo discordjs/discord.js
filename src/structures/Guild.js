@@ -5,6 +5,7 @@ const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
+const Integration = require('./Integration');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
@@ -632,6 +633,42 @@ class Guild {
         for (const ban of bans.values()) users.set(ban.user.id, ban.user);
         return users;
       });
+  }
+
+  /**
+   * Fetches a collection of integrations to this guild.
+   * Resolves with a collection mapping integrations by their ids.
+   * @returns {Promise<Collection<string, Integration>>}
+   * @example
+   * // Fetch integrations
+   * guild.fetchIntegrations()
+   *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
+   *   .catch(console.error);
+   */
+  fetchIntegrations() {
+    return this.client.rest.methods.getIntegrations(this).then(data =>
+      data.reduce((collection, integration) =>
+        collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection())
+    );
+  }
+
+  /**
+   * The data for creating an integration.
+   * @typedef {Object} IntegrationData
+   * @property {string} id The integration id
+   * @property {string} type The integration type
+   */
+
+  /**
+   * Creates an integration by attaching an integration object
+   * @param {IntegrationData} data The data for thes integration
+   * @param {string} reason Reason for creating the integration
+   * @returns {Promise<Guild>}
+   */
+  createIntegration(data, reason) {
+    return this.client.rest.methods.createIntegration(this, data, reason)
+      .then(() => this);
   }
 
   /**
