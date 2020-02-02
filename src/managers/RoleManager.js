@@ -131,7 +131,7 @@ class RoleManager extends BaseManager {
   }
 
   /**
-   * The role with the highest position in the store
+   * The role with the highest position in the cache
    * @type {Role}
    * @readonly
    */

@@ -109,7 +109,7 @@ class GuildEmojiRoleManager {
   }
 
   /**
-   * Patches the roles for this store
+   * Patches the roles for this manager's cache
    * @param {Snowflake[]} roles The new roles
    * @private
    */
