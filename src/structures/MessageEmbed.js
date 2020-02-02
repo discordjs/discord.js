@@ -191,14 +191,12 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * Adds a fields to the embed (max 25).
+   * @param {...EmbedField|EmbedField[]} fields The fields to add
    * @returns {MessageEmbed}
    */
-  addField(name, value, inline) {
-    this.fields.push(this.constructor.checkField(name, value, inline));
+  addFields(...fields) {
+    this.fields.push(...this.constructor.normalizeFields(fields));
     return this;
   }
 
