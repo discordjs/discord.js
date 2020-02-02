@@ -215,16 +215,11 @@ class MessageEmbed {
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {...EmbedField} [fields] The replacing field objects
+   * @param {...EmbedField|EmbedField[]} [fields] The replacing field objects
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
-    if (fields) {
-      const mapper = ({ name, value, inline }) => this.constructor.checkField(name, value, inline);
-      this.fields.splice(index, deleteCount, ...fields.map(mapper));
-    } else {
-      this.fields.splice(index, deleteCount);
-    }
+    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
     return this;
   }
 
@@ -381,6 +376,15 @@ class MessageEmbed {
     value = Util.resolveString(value);
     if (!value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
+  }
+
+  /**
+   * Check for valid field input and resolves strings
+   * @param  {...EmbedField|EmbedField[]} fields Fields to normalize
+   * @returns {EmbedField[]}
+   */
+  static normalizeFields(...fields) {
+    return fields.flat(2).map(({ name, value, inline }) => this.normalizeField(name, value, inline));
   }
 }
 
