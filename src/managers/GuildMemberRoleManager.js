@@ -148,7 +148,7 @@ class GuildMemberRoleManager {
    * @example
    * // Remove all the roles from a member
    * guildMember.roles.set([])
-   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .then(member => console.log(`Member roles is now of ${member.roles.cache.size} size`))
    *   .catch(console.error);
    */
   set(roles, reason) {

@@ -1204,7 +1204,7 @@ class Guild extends Base {
    * @private
    */
   _sortedRoles() {
-    return Util.discordSort(this.roles);
+    return Util.discordSort(this.roles.cache);
   }
 
   /**
