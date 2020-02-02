@@ -164,6 +164,7 @@ const Endpoints = exports.Endpoints = {
           nickname: `${base}/members/@me/nick`,
         };
       },
+      Integration: id => `${base}/integrations/${id}`,
     };
   },
   channels: '/channels',

@@ -1009,6 +1009,55 @@ class RESTMethods {
   patchClientUserGuildSettings(guildID, data) {
     return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').Guild(guildID).settings, true, data);
   }
+
+  getIntegrations(guild) {
+    return this.rest.makeRequest(
+      'get',
+      Constants.Endpoints.Guild(guild.id).integrations,
+      true
+    );
+  }
+
+  createIntegration(guild, data, reason) {
+    return this.rest.makeRequest(
+      'post',
+      Constants.Endpoints.Guild(guild.id).integrations,
+      true,
+      data,
+      undefined,
+      reason
+    );
+  }
+
+  syncIntegration(integration) {
+    return this.rest.makeRequest(
+      'post',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true
+    );
+  }
+
+  editIntegration(integration, data, reason) {
+    return this.rest.makeRequest(
+      'patch',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true,
+      data,
+      undefined,
+      reason
+    );
+  }
+
+  deleteIntegration(integration, reason) {
+    return this.rest.makeRequest(
+      'delete',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true,
+      undefined,
+      undefined,
+      reason
+    );
+  }
 }
 
 module.exports = RESTMethods;

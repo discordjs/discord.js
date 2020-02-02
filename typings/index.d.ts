@@ -551,6 +551,7 @@ declare module 'discord.js' {
 		public createChannel(name: string, options?: ChannelData): Promise<CategoryChannel | TextChannel | VoiceChannel>;
 		public createChannel(name: string, type?: 'category' | 'text' | 'voice' | 'news' | 'store', permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
 		public createEmoji(attachment: BufferResolvable | Base64Resolvable, name: string, roles?: Collection<Snowflake, Role> | Role[], reason?: string): Promise<Emoji>;
+		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public createRole(data?: RoleData, reason?: string): Promise<Role>;
 		public delete(): Promise<Guild>;
 		public deleteEmoji(emoji: Emoji | string, reason?: string): Promise<void>;
@@ -563,6 +564,7 @@ declare module 'discord.js' {
 		public fetchBans(withReasons: true): Promise<Collection<Snowflake, BanInfo>>;
 		public fetchBans(withReasons: boolean): Promise<Collection<Snowflake, BanInfo | User>>;
 		public fetchEmbed(): Promise<GuildEmbedData>;
+		public fetchIntegrations(): Promise<Collection<string, Integration>>;
 		public fetchInvites(): Promise<Collection<Snowflake, Invite>>;
 		public fetchMember(user: UserResolvable, cache?: boolean): Promise<GuildMember>;
 		public fetchMembers(query?: string, limit?: number): Promise<Guild>;
@@ -713,6 +715,25 @@ declare module 'discord.js' {
 		public setRoles(roles: Collection<Snowflake, Role> | Role[] | Snowflake[], reason?: string): Promise<GuildMember>;
 		public setVoiceChannel(voiceChannel: ChannelResolvable | null): Promise<GuildMember>;
 		public toString(): string;
+	}
+
+	export class Integration {
+		constructor(client: Client, data: object, guild: Guild);
+		public account: IntegrationAccount;
+		public enabled: boolean;
+		public expireBehavior: number;
+		public expireGracePeriod: number;
+		public guild: Guild;
+		public id: Snowflake;
+		public name: string;
+		public role: Role;
+		public syncedAt: number;
+		public syncing: boolean;
+		public type: number;
+		public user: User;
+		public delete(reason?: string): Promise<Integration>;
+		public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
+		public sync(): Promise<Integration>;
 	}
 
 	export class Invite {
@@ -1928,6 +1949,21 @@ declare module 'discord.js' {
 		host?: string;
 		cdn?: string;
 	};
+
+	type IntegrationData = {
+		id: string;
+		type: string;
+	}
+
+	type IntegrationEditData = {
+		expireBehavior?: number;
+		expireGracePeriod?: number;
+	}
+
+	type IntegrationAccount = {
+		id: string;
+		number: string;
+	}
 
 	type InviteOptions = {
 		temporary?: boolean;
