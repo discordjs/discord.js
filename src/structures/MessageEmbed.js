@@ -215,14 +215,13 @@ class MessageEmbed {
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {StringResolvable} [name] The name of the field
-   * @param {StringResolvable} [value] The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * @param {...EmbedField} [fields] The replacing field objects
    * @returns {MessageEmbed}
    */
-  spliceField(index, deleteCount, name, value, inline) {
-    if (name && value) {
-      this.fields.splice(index, deleteCount, this.constructor.checkField(name, value, inline));
+  spliceFields(index, deleteCount, ...fields) {
+    if (fields) {
+      const mapper = ({ name, value, inline }) => this.constructor.checkField(name, value, inline);
+      this.fields.splice(index, deleteCount, ...fields.map(mapper));
     } else {
       this.fields.splice(index, deleteCount);
     }

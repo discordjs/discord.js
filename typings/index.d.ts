@@ -1071,7 +1071,7 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public spliceField(index: number, deleteCount: number, name?: StringResolvable, value?: StringResolvable, inline?: boolean): this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[]): this;
 		public toJSON(): object;
 
 		public static checkField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
