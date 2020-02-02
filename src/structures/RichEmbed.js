@@ -284,6 +284,14 @@ class RichEmbed {
       } : null,
     };
   }
+
+  static checkField(name, value, inline = false) {
+    name = util.resolveString(name);
+    if (!name) throw new RangeError('RichEmbed field names may not be empty.');
+    value = util.resolveString(value);
+    if (!value) throw new RangeError('RichEmbed field values may not be empty.');
+    return { name, value, inline };
+  }
 }
 
 module.exports = RichEmbed;

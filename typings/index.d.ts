@@ -1106,6 +1106,7 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
+		public static checkField(name:string, value:string, inline?:boolean): EmbedField;
 	}
 
 	export class RichPresenceAssets {
