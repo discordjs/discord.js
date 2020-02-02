@@ -375,7 +375,7 @@ class MessageEmbed {
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
    */
-  static checkField(name, value, inline = false) {
+  static normalizeField(name, value, inline = false) {
     name = Util.resolveString(name);
     if (!name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
