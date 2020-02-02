@@ -1,5 +1,6 @@
 const Attachment = require('./Attachment');
 const MessageEmbed = require('./MessageEmbed');
+const util = require('../util/Util');
 let ClientDataResolver;
 
 /**
@@ -175,6 +176,30 @@ class RichEmbed {
    */
   addBlankField(inline = false) {
     return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
+  * @typedef {Object} EmbedField
+  * @property {string} name The name of this field
+  * @property {string} value The value of this field
+  * @property {boolean} inline If this field will be displayed inline
+  */
+
+  /**
+   * Removes, replaces, and inserts fields in the embed (max 25).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of fields to remove
+   * @param {...EmbedField} [fields] The replacing field objects
+   * @returns {RichEmbed}
+   */
+  spliceFields(index, deleteCount, ...fields) {
+    if (fields) {
+      const mapper = ({ name, value, inline }) => this.constructor.checkField(name, value, inline);
+      this.fields.splice(index, deleteCount, ...fields.map(mapper));
+    } else {
+      this.fields.splice(index, deleteCount);
+    }
+    return this;
   }
 
   /**

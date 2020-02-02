@@ -215,6 +215,7 @@ declare module 'discord.js' {
 		public resolveChannel(channel: ChannelResolvable): Channel;
 		public resolveChannelID(channel: ChannelResolvable): Snowflake;
 		public resolveColor(color: ColorResolvable): number;
+		public resolveString(data: StringResolvable): string;
 		public resolveEmojiIdentifier(emoji: EmojiIdentifierResolvable): string;
 		public resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
 		public resolveGuild(guild: GuildResolvable): Guild;
@@ -1094,6 +1095,7 @@ declare module 'discord.js' {
 		public title?: string;
 		public url?: string;
 		public addBlankField(inline?: boolean): this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[]):this;
 		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
 		public attachFile(file: Attachment | FileOptions | string): this;
 		public attachFiles(file: Array<Attachment | FileOptions | string>): this;
@@ -2169,6 +2171,12 @@ declare module 'discord.js' {
 	type PermissionOverwriteOptions = PermissionObject;
 
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
+
+	interface EmbedField {
+		name: string;
+		value: string;
+		inline?: boolean;
+	}
 
 	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
 
