@@ -1768,7 +1768,8 @@ declare module 'discord.js' {
 		constructor(client: Client, iterable: Iterable<any>, holds: Constructable<Holds>, cacheType: Collection<K, Holds>);
 		public holds: Constructable<Holds>;
 		public cache: Collection<K, Holds>;
-		public client: Client;
+		public cacheType: Collection<K, Holds>;
+		public readonly client: Client;
 		public add(data: any, cache?: boolean, { id, extras }?: { id: K, extras: any[] }): Holds;
 		public remove(key: K): void;
 		public resolve(resolvable: R): Holds | null;
@@ -1787,12 +1788,14 @@ declare module 'discord.js' {
 
 	export class GuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public guild: Guild;
 		public create(attachment: BufferResolvable | Base64Resolvable, name: string, options?: GuildEmojiCreateOptions): Promise<GuildEmoji>;
 		public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 	}
 
 	export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public guild: Guild;
 		public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
 		public create(name: string, options: GuildCreateChannelOptions & { type: 'category' }): Promise<CategoryChannel>;
 		public create(name: string, options?: GuildCreateChannelOptions & { type?: 'text' }): Promise<TextChannel>;
@@ -1810,6 +1813,8 @@ declare module 'discord.js' {
 		public readonly hoist: Role | null;
 		public readonly color: Role | null;
 		public readonly highest: Role;
+		public member: GuildMember;
+		public guild: Guild;
 
 		public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>, reason?: string): Promise<GuildMember>;
 		public set(roles: RoleResolvable[] | Collection<Snowflake, Role>, reason?: string): Promise<GuildMember>;
@@ -1818,6 +1823,7 @@ declare module 'discord.js' {
 
 	export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public guild: Guild;
 		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
 		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
 		public fetch(): Promise<GuildMemberManager>;
@@ -1834,6 +1840,7 @@ declare module 'discord.js' {
 
 	export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
 		constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
+		public channel: TextBasedChannelFields;
 		public cache: LimitedCollection<Snowflake, Message>;
 		public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
 		public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
@@ -1847,11 +1854,13 @@ declare module 'discord.js' {
 
 	export class ReactionManager extends BaseManager<Snowflake, MessageReaction, MessageReactionResolvable> {
 		constructor(message: Message, iterable?: Iterable<any>);
+		public message: Message;
 		public removeAll(): Promise<Message>;
 	}
 
 	export class ReactionUserManager extends BaseManager<Snowflake, User, UserResolvable> {
 		constructor(client: Client, iterable: Iterable<any> | undefined, reaction: MessageReaction);
+		public reaction: MessageReaction;
 		public fetch(options?: { limit?: number, after?: Snowflake, before?: Snowflake }): Promise<Collection<Snowflake, User>>;
 		public remove(user?: UserResolvable): Promise<MessageReaction>;
 	}
@@ -1860,6 +1869,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public readonly everyone: Role | null;
 		public readonly highest: Role;
+		public guild: Guild;
 
 		public create(options?: { data?: RoleData, reason?: string }): Promise<Role>;
 		public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
@@ -1873,6 +1883,7 @@ declare module 'discord.js' {
 
 	export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
 		constructor(guild: Guild, iterable?: Iterable<any>);
+		public guild: Guild;
 	}
 
 //#endregion
