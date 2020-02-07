@@ -627,7 +627,7 @@ declare module 'discord.js' {
 		ActivityTypes: ActivityType[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
 		MembershipStates: 'INVITED' | 'ACCEPTED';
-	}
+	};
 
 	export class DataResolver {
 		public static resolveBase64(data: Base64Resolvable): string;
