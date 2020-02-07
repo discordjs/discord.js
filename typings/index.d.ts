@@ -1357,6 +1357,7 @@ declare module 'discord.js' {
 	export class TextChannel extends TextBasedChannel(GuildChannel) {
 		constructor(guild: Guild, data?: object);
 		public readonly members: Collection<Snowflake, GuildMember>;
+		public readonly sendable: boolean;
 		public messages: MessageStore;
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
