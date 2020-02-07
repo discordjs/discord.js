@@ -217,12 +217,17 @@ Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.
   'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
 Object.defineProperty(Permissions.prototype, 'raw', {
   get: util
-    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'raw').get,
       'EvaluatedPermissions#raw is deprecated use Permissions#bitfield instead'),
+  set: util.deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'raw').set,
+    'EvaluatedPermissions#raw is deprecated use Permissions#bitfield instead'),
 });
 Object.defineProperty(Permissions.prototype, 'member', {
   get: util
     .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+      'EvaluatedPermissions#member is deprecated'),
+  set: util
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').set,
       'EvaluatedPermissions#member is deprecated'),
 });
 
