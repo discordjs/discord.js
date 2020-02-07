@@ -65,6 +65,18 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * Whether or not the client user can send messages in the channel
+   * @type {boolean}
+   * @readonly
+   */
+  get sendable() {
+    if (this.client.user.id === this.guild.ownerID) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has(Permissions.FLAGS.SEND_MESSAGES, false);
+  }
+
+  /**
    * Sets the rate limit per user for this channel.
    * @param {number} rateLimitPerUser The new ratelimit in seconds
    * @param {string} [reason] Reason for changing the channel's ratelimits
