@@ -372,7 +372,7 @@ declare module 'discord.js' {
 
 	type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
 
-	export interface Constants {
+	export const Constants: {
 		Package: {
 			name: string;
 			version: string;
@@ -627,7 +627,7 @@ declare module 'discord.js' {
 		ActivityTypes: ActivityType[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
 		MembershipStates: 'INVITED' | 'ACCEPTED';
-	}
+	};
 
 	export class DataResolver {
 		public static resolveBase64(data: Base64Resolvable): string;
@@ -2363,6 +2363,7 @@ declare module 'discord.js' {
 	}
 
 	interface HTTPOptions {
+		api?: string;
 		version?: number;
 		host?: string;
 		cdn?: string;
