@@ -2363,7 +2363,7 @@ declare module 'discord.js' {
 	}
 
 	interface HTTPOptions {
-    api?: string;
+		api?: string;
 		version?: number;
 		host?: string;
 		cdn?: string;
