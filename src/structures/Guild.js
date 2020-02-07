@@ -1493,10 +1493,13 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = Util.cloneObject(member);
 
+    if (data.premium_since) member.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname ||
+    member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp ||
+    !Util.arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**
