@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
+ * Allows for the extension of built-in Discord.js structures that are instantiated by {@link BaseManager Managers}.
  */
 class Structures {
   constructor() {

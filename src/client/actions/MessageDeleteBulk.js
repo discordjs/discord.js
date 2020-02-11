@@ -7,7 +7,7 @@ const { Events } = require('../../util/Constants');
 class MessageDeleteBulkAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = client.channels.get(data.channel_id);
+    const channel = client.channels.cache.get(data.channel_id);
 
     if (channel) {
       const ids = data.ids;
@@ -20,7 +20,7 @@ class MessageDeleteBulkAction extends Action {
         if (message) {
           message.deleted = true;
           messages.set(message.id, message);
-          channel.messages.delete(id);
+          channel.messages.cache.delete(id);
         }
       }
 

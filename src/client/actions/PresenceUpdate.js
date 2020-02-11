@@ -5,7 +5,7 @@ const { Events } = require('../../util/Constants');
 
 class PresenceUpdateAction extends Action {
   handle(data) {
-    let user = this.client.users.get(data.user.id);
+    let user = this.client.users.cache.get(data.user.id);
     if (!user && data.user.username) user = this.client.users.add(data.user);
     if (!user) return;
 
@@ -13,12 +13,12 @@ class PresenceUpdateAction extends Action {
       if (!user.equals(data.user)) this.client.actions.UserUpdate.handle(data.user);
     }
 
-    const guild = this.client.guilds.get(data.guild_id);
+    const guild = this.client.guilds.cache.get(data.guild_id);
     if (!guild) return;
 
-    let oldPresence = guild.presences.get(user.id);
+    let oldPresence = guild.presences.cache.get(user.id);
     if (oldPresence) oldPresence = oldPresence._clone();
-    let member = guild.members.get(user.id);
+    let member = guild.members.cache.get(user.id);
     if (!member && data.status !== 'offline') {
       member = guild.members.add({
         user,

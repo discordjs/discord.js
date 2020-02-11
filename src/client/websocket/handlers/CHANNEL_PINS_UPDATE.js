@@ -3,7 +3,7 @@
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
-  const channel = client.channels.get(data.channel_id);
+  const channel = client.channels.cache.get(data.channel_id);
   const time = new Date(data.last_pin_timestamp);
 
   if (channel && !Number.isNaN(time.getTime())) {

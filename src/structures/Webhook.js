@@ -70,7 +70,7 @@ class Webhook {
        * The owner of the webhook
        * @type {?User|Object}
        */
-      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+      this.owner = this.client.users ? this.client.users.cache.get(data.user.id) : data.user;
     } else {
       this.owner = null;
     }
@@ -154,7 +154,7 @@ class Webhook {
       query: { wait: true },
       auth: false,
     }).then(d => {
-      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      const channel = this.client.channels ? this.client.channels.cache.get(d.channel_id) : undefined;
       if (!channel) return d;
       return channel.messages.add(d, false);
     });

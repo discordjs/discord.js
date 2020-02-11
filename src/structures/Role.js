@@ -117,7 +117,7 @@ class Role extends Base {
    * @readonly
    */
   get members() {
-    return this.guild.members.filter(m => m.roles.has(this.id));
+    return this.guild.members.cache.filter(m => m.roles.cache.has(this.id));
   }
 
   /**
