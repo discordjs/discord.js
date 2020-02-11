@@ -341,8 +341,8 @@ class GuildAuditLogsEntry {
     switch (data.action_type) {
       case Actions.MEMBER_PRUNE:
         this.extra = {
-          removed: data.options.members_removed,
-          days: data.options.delete_member_days,
+          removed: Number(data.options.members_removed),
+          days: Number(data.options.delete_member_days),
         };
         break;
 
@@ -351,7 +351,7 @@ class GuildAuditLogsEntry {
       case Actions.MESSAGE_BULK_DELETE:
         this.extra = {
           channel: guild.channels.get(data.options.channel_id) || { id: data.options.channel_id },
-          count: data.options.count,
+          count: Number(data.options.count),
         };
         break;
 
@@ -365,7 +365,7 @@ class GuildAuditLogsEntry {
 
       case Actions.MEMBER_DISCONNECT:
         this.extra = {
-          count: data.options.count,
+          count: Number(data.options.count),
         };
         break;
 
@@ -374,13 +374,13 @@ class GuildAuditLogsEntry {
       case Actions.CHANNEL_OVERWRITE_DELETE:
         switch (data.options.type) {
           case 'member':
-            this.extra = guild.members.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id, type: 'member' };
+            this.extra = guild.members.get(data.options.id) ||
+              { id: data.options.id, type: 'member' };
             break;
 
           case 'role':
-            this.extra = guild.roles.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id, name: data.options.role_name, type: 'role' };
+            this.extra = guild.roles.get(data.options.id) ||
+              { id: data.options.id, name: data.options.role_name, type: 'role' };
             break;
 
           default:
