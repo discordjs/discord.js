@@ -601,6 +601,7 @@ declare module 'discord.js' {
 	export class GuildAuditLogs {
 		constructor(guild: Guild, data: object);
 		private webhooks: Collection<Snowflake, Webhook>;
+		private integrations: Collection<Snowflake, Integration>;
 
 		public entries: Collection<Snowflake, GuildAuditLogsEntry>;
 
@@ -623,7 +624,7 @@ declare module 'discord.js' {
 		public extra: object | Role | GuildMember;
 		public id: Snowflake;
 		public reason: string;
-		public target: Guild | User | Role | Emoji | Invite | Webhook;
+		public target: Guild | User | Role | Emoji | Invite | Webhook | Integration | null;
 		public targetType: GuildAuditLogsTarget;
 	}
 
@@ -1868,6 +1869,9 @@ declare module 'discord.js' {
 		MEMBER_BAN_REMOVE?: number;
 		MEMBER_UPDATE?: number;
 		MEMBER_ROLE_UPDATE?: number;
+		MEMBER_MOVE?: number;
+		MEMBER_DISCONNECT?: number;
+		BOT_ADD?: number;
 		ROLE_CREATE?: number;
 		ROLE_UPDATE?: number;
 		ROLE_DELETE?: number;
@@ -1881,6 +1885,12 @@ declare module 'discord.js' {
 		EMOJI_UPDATE?: number;
 		EMOJI_DELETE?: number;
 		MESSAGE_DELETE?: number;
+		MESSAGE_BULK_DELETE?: number;
+		MESSAGE_PIN?: number;
+		MESSAGE_UNPIN?: number;
+		INTEGRATION_CREATE?: number;
+		INTEGRATION_UPDATE?: number;
+		INTEGRATION_DELETE?: number;
 	};
 
 	type GuildAuditLogsActionType = 'CREATE'
@@ -1908,6 +1918,8 @@ declare module 'discord.js' {
 		WEBHOOK?: string;
 		EMOJI?: string;
 		MESSAGE?: string;
+		INTEGRATION?: string;
+		UNKNOWN?: string;
 	};
 
 	type GuildChannelMessageNotifications = MessageNotifications
