@@ -88,7 +88,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has('SPEAK', false);
+    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.SPEAK, false);
   }
 
   /**
