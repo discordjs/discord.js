@@ -41,7 +41,7 @@ class Guild extends Base {
     this.members = new GuildMemberManager(this);
 
     /**
-     * A manager of the members belonging to this guild
+     * A manager of the channels belonging to this guild
      * @type {GuildChannelManager}
      */
     this.channels = new GuildChannelManager(this);
