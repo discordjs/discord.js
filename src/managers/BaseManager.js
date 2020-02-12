@@ -35,7 +35,7 @@ class BaseManager {
 
     /**
     * Holds the cache for the data model
-    * @type {?Collection}
+    * @type {Collection}
     */
     this.cache = new cacheType(...cacheOptions);
     if (iterable) for (const i of iterable) this.add(i);
@@ -64,7 +64,7 @@ class BaseManager {
 
   /**
    * Resolves a data entry to a instance ID.
-   * @param {string|Instance} idOrInstance The id or instance of something in this Manager
+   * @param {string|Object} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {

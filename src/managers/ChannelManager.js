@@ -6,6 +6,7 @@ const { Events } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
+ * @extends {BaseManager}
  */
 class ChannelManager extends BaseManager {
   constructor(client, iterable) {
