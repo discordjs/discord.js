@@ -386,6 +386,17 @@ exports.ActivityTypes = [
   'CUSTOM_STATUS',
 ];
 
+/**
+ * Numeric activity flags. All available properties:
+ * * `INSTANCE`
+ * * `JOIN`
+ * * `SPECTATE`
+ * * `JOIN_REQUEST`
+ * * `SYNC`
+ * * `PLAY`
+ * @typedef {string} ActivityFlag
+ * @see {@link https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags}
+ */
 exports.ActivityFlags = {
   INSTANCE: 1 << 0,
   JOIN: 1 << 1,

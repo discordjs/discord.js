@@ -41,6 +41,25 @@ declare module 'discord.js' {
 		public options: object;
 	}
 
+	export class BitField<S extends string> {
+		constructor(bits?: BitFieldResolvable<S>);
+		public bitfield: number;
+		public add(...bits: BitFieldResolvable<S>[]): BitField<S>;
+		public any(bit: BitFieldResolvable<S>): boolean;
+		public equals(bit: BitFieldResolvable<S>): boolean;
+		public freeze(): Readonly<BitField<S>>;
+		public has(bit: BitFieldResolvable<S>): boolean;
+		public missing(bits: BitFieldResolvable<S>, ...hasParam: readonly unknown[]): S[];
+		public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
+		public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
+		public toArray(...hasParam: readonly unknown[]): S[];
+		public toJSON(): number;
+		public valueOf(): number;
+		public [Symbol.iterator](): IterableIterator<S>;
+		public static FLAGS: object;
+		public static resolve(bit?: BitFieldResolvable<any>): number;
+	}
+
 	export class CategoryChannel extends GuildChannel {
 		public readonly children: Collection<Snowflake, GuildChannel>;
 	}
@@ -436,6 +455,9 @@ declare module 'discord.js' {
 
 	export class Game {
 		constructor(data: object, presence: Presence);
+		private _flags: string[];
+		private syncID: string;
+
 		public applicationID: string;
 		public assets: RichPresenceAssets;
 		public details: string;
@@ -456,8 +478,6 @@ declare module 'discord.js' {
 		public url: string;
 		public equals(game: Game): boolean;
 		public toString(): string;
-		private _flags: string[];
-		private syncID: string;
 	}
 
 	export class GroupDMChannel extends TextBasedChannel(Channel) {
@@ -1006,30 +1026,27 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<PermissionOverwrites>;
 	}
 
-	export class Permissions {
+	export class Permissions extends BitField<PermissionString> {
 		constructor(permissions: PermissionResolvable);
 		constructor(member: GuildMember, permissions: PermissionResolvable);
-		private readonly raw: number;
 
 		public bitfield: number;
 		public member: GuildMember;
-		public add(...permissions: PermissionResolvable[]): this;
+		public readonly raw: number;
 		public any(permissions: PermissionResolvable, checkAdmin?: boolean): boolean;
-		public freeze(): this;
 		public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
 		public hasPermission(permission: PermissionResolvable, explicit?: boolean): boolean;
 		public hasPermissions(permissions: PermissionResolvable, explicit?: boolean): boolean;
-		public missing(permissions: PermissionResolvable, checkAdmin?: boolean): PermissionResolvable;
+		public missing(permissions: PermissionResolvable, checkAdmin?: boolean): PermissionString[];
 		public missingPermissions(permissions: PermissionResolvable, checkAdmin?: boolean): PermissionResolvable;
-		public remove(...permissions: PermissionResolvable[]): this;
-		public serialize(checkAdmin?: boolean): PermissionObject;
+		public serialize(checkAdmin?: boolean): Required<PermissionObject>;
 		public toArray(checkAdmin?: boolean): PermissionString[];
 		public valueOf(): number;
 
 		public static ALL: number;
 		public static DEFAULT: number;
 		public static FLAGS: PermissionFlags;
-		public static resolve(permission: PermissionResolvable): number;
+		public static resolve(permission?: PermissionResolvable): number;
 	}
 
 	export class Presence {
@@ -1730,6 +1747,8 @@ declare module 'discord.js' {
 
 	type Base64String = string;
 
+	type BitFieldResolvable<T extends string> = RecursiveArray<T | number | Readonly<BitField<T>>> | T | number | Readonly<BitField<T>>;
+
 	type BufferResolvable = Buffer | string;
 
 	type ChannelCreationOverwrites = {
@@ -2181,7 +2200,7 @@ declare module 'discord.js' {
 
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
-	type PermissionResolvable = RecursiveArray<Permissions | PermissionString | number> | Permissions | PermissionString | number;
+	type PermissionResolvable = BitFieldResolvable<PermissionString>
 
 	type PremiumTier = number;
 
