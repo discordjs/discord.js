@@ -949,7 +949,7 @@ declare module 'discord.js' {
 		public attachments: Collection<Snowflake, MessageAttachment>;
 		public author: User;
 		public channel: TextChannel | DMChannel;
-		public readonly cleanContent: string;
+		public readonly cleanContent: string | null;
 		public content: string;
 		public readonly createdAt: Date;
 		public createdTimestamp: number;
