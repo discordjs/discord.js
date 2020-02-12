@@ -72,6 +72,10 @@ class BaseManager {
     if (typeof idOrInstance === 'string') return idOrInstance;
     return null;
   }
+
+  valueOf() {
+    return this.cache;
+  }
 }
 
 module.exports = BaseManager;
