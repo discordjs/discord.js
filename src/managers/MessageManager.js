@@ -21,9 +21,8 @@ class MessageManager extends BaseManager {
 
   /**
   * The cache of Messages
-  * @property {LimitedCollection<Snowflake, Message>} cache
-  * @memberof MessageManager
-  * @instance
+  * @type {LimitedCollection<Snowflake, Message>}
+  * @name MessageManager#cache
   */
 
   add(data, cache) {

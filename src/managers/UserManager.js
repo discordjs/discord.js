@@ -16,9 +16,8 @@ class UserManager extends BaseManager {
 
   /**
    * The cache of this manager
-   * @property {Collection<Snowflake, User>} cache
-   * @memberof UserManager
-   * @instance
+   * @type {Collection<Snowflake, User>}
+   * @name UserManager#cache
    */
 
   /**

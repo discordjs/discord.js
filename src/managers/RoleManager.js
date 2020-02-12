@@ -21,9 +21,8 @@ class RoleManager extends BaseManager {
 
   /**
    * The role cache of this manager
-   * @property {Collection<Snowflake, Role>} cache
-   * @memberof RoleManager
-   * @instance
+   * @type {Collection<Snowflake, Role>}
+   * @name RoleManager#cache
    */
 
   add(data, cache) {

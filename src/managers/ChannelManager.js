@@ -14,9 +14,8 @@ class ChannelManager extends BaseManager {
 
   /**
   * The cache of Channels
-  * @property {Collection<Snowflake, Channel>} cache
-  * @memberof ChannelManager
-  * @instance
+  * @type {Collection<Snowflake, Channel>}
+  * @name ChannelManager#cache
   */
 
   add(data, guild, cache = true) {
