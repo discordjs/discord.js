@@ -100,7 +100,7 @@ class Channel extends Base {
       const DMChannel = Structures.get('DMChannel');
       channel = new DMChannel(client, data);
     } else {
-      guild = guild || client.guilds.get(data.guild_id);
+      guild = guild || client.guilds.cache.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
@@ -129,7 +129,7 @@ class Channel extends Base {
             break;
           }
         }
-        if (channel) guild.channels.set(channel.id, channel);
+        if (channel) guild.channels.cache.set(channel.id, channel);
       }
     }
     return channel;

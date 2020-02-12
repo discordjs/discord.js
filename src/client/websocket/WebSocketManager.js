@@ -18,7 +18,7 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = [4004, 4010, 4011];
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1);
 const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
@@ -158,7 +158,7 @@ class WebSocketManager extends EventEmitter {
     if (shards === 'auto') {
       this.debug(`Using the recommended shard count provided by Discord: ${recommendedShards}`);
       this.totalShards = this.client.options.shardCount = recommendedShards;
-      if (shards === 'auto' || !this.client.options.shards.length) {
+      if (!this.client.options.shards.length) {
         this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
       }
     }
@@ -235,7 +235,7 @@ class WebSocketManager extends EventEmitter {
           this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
           this.reconnect(true);
         } else {
-          shard.destroy(undefined, true);
+          shard.destroy({ reset: true, emit: false, log: false });
           this.reconnect();
         }
       });
@@ -245,8 +245,6 @@ class WebSocketManager extends EventEmitter {
       });
 
       shard.on(ShardEvents.DESTROYED, () => {
-        shard._cleanupConnection();
-
         this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
 
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
@@ -342,7 +340,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy(1000, true);
+    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1000, reset: true, emit: false });
   }
 
   /**
@@ -410,7 +408,7 @@ class WebSocketManager extends EventEmitter {
 
     if (this.client.options.fetchAllMembers) {
       try {
-        const promises = this.client.guilds.map(guild => {
+        const promises = this.client.guilds.cache.map(guild => {
           if (guild.available) return guild.members.fetch();
           // Return empty promise if guild is unavailable
           return Promise.resolve();

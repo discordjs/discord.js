@@ -72,7 +72,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get member() {
-    return this.guild.members.get(this.id) || null;
+    return this.guild.members.cache.get(this.id) || null;
   }
 
   /**
@@ -81,7 +81,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.get(this.channelID) || null;
+    return this.guild.channels.cache.get(this.channelID) || null;
   }
 
   /**

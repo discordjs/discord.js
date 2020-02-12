@@ -16,17 +16,23 @@ class ClientUser extends Structures.get('User') {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * Whether or not this account has been verified
-     * @type {boolean}
-     */
-    this.verified = data.verified;
+    if ('verified' in data) {
+      /**
+       * Whether or not this account has been verified
+       * @type {boolean}
+       */
+      this.verified = data.verified;
+    }
 
-    /**
-     * If the bot's {@link ClientApplication#owner Owner} has MFA enabled on their account
-     * @type {?boolean}
-     */
-    this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
+    if ('mfa_enabled' in data) {
+      /**
+       * If the bot's {@link ClientApplication#owner Owner} has MFA enabled on their account
+       * @type {?boolean}
+       */
+      this.mfaEnabled = typeof data.mfa_enabled === 'boolean' ? data.mfa_enabled : null;
+    } else if (typeof this.mfaEnabled === 'undefined') {
+      this.mfaEnabled = null;
+    }
 
     if (data.token) this.client.token = data.token;
   }

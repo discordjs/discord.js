@@ -71,6 +71,7 @@ const Messages = {
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
+  FETCH_BAN_RESOLVE_ID: 'Couldn\'t resolve the user ID to fetch the ban.',
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
