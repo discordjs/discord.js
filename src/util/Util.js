@@ -36,8 +36,10 @@ class Util {
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
-      // If it's a collection, make the array of keys
+      // If it's a Collection, make the array of keys
       if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      // If the valueOf is a Collection, use it's array of keys
+      else if (valueOf instanceof require('./Collection')) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
