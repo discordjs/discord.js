@@ -41,7 +41,7 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
+    this.nsfw = data.nsfw;
 
     /**
      * The ID of the last message sent in this channel, if one was sent
