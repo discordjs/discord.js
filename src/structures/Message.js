@@ -301,7 +301,8 @@ class Message extends Base {
    * @readonly
    */
   get cleanContent() {
-    return Util.cleanContent(this.content, this);
+    // eslint-disable-next-line eqeqeq
+    return this.content != null ? Util.cleanContent(this.content, this) : null;
   }
 
   /**
