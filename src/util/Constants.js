@@ -369,6 +369,7 @@ exports.Events = {
 };
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
