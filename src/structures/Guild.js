@@ -839,7 +839,7 @@ class Guild extends Base {
         Number(data.defaultMessageNotifications);
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
-      _data.systemChannelFlags = SystemChannelFlags.resolve(data.systemChannelFlags);
+      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
     }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
