@@ -22,9 +22,8 @@ class GuildMemberManager extends BaseManager {
 
   /**
    * The cache of this Manager
-   * @property {Collection<Snowflake, GuildMember>} cache
-   * @memberof GuildMemberManager
-   * @instance
+   * @type {Collection<Snowflake, GuildMember>}
+   * @name GuildMemberManager#cache
    */
 
   add(data, cache = true) {

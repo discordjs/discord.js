@@ -22,9 +22,8 @@ class GuildChannelManager extends BaseManager {
 
   /**
    * The cache of this Manager
-   * @property {Collection<Snowflake, GuildChannel>} cache
-   * @memberof GuildChannelManager
-   * @instance
+   * @type {Collection<Snowflake, GuildChannel>}
+   * @name GuildChannelManager#cache
    */
 
   add(channel) {
