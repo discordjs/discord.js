@@ -416,6 +416,8 @@ declare module 'discord.js' {
 			GUILD_CREATE: 'guildCreate';
 			GUILD_DELETE: 'guildDelete';
 			GUILD_UPDATE: 'guildUpdate';
+			INVITE_CREATE: 'inviteCreate';
+			INVITE_DELETE: 'inviteDelete';
 			GUILD_UNAVAILABLE: 'guildUnavailable';
 			GUILD_MEMBER_ADD: 'guildMemberAdd';
 			GUILD_MEMBER_REMOVE: 'guildMemberRemove';
@@ -2688,6 +2690,8 @@ declare module 'discord.js' {
 		| 'GUILD_CREATE'
 		| 'GUILD_DELETE'
 		| 'GUILD_UPDATE'
+		| 'INVITE_CREATE'
+		| 'INVITE_DELETE'
 		| 'GUILD_MEMBER_ADD'
 		| 'GUILD_MEMBER_REMOVE'
 		| 'GUILD_MEMBER_UPDATE'
