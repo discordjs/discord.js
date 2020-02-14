@@ -8,7 +8,7 @@ const { Error } = require('../errors');
 class PartialGroupDMChannel extends Channel {
 	constructor(client, data) {
 		super(client, data);
-	
+
 		/**
 		 * The hash of the channel icon
 		 * type {?string}
