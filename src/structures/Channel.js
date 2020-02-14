@@ -118,6 +118,11 @@ class Channel extends Base {
             channel = new CategoryChannel(guild, data);
             break;
           }
+					case ChannelTypes.GROUP: {
+						const PartialGroupDMChannel = require('./PartialGroupDMChannel');
+						channel = new PartialGroupDMChannel(client, data);
+						break;
+					}
           case ChannelTypes.NEWS: {
             const NewsChannel = Structures.get('NewsChannel');
             channel = new NewsChannel(guild, data);
