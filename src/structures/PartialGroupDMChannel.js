@@ -7,7 +7,7 @@ const { Error } = require("../errors");
  */
 class PartialGroupDMChannel extends Channel {
 	constructor(client, data) {
-	  super(client, data);
+		super(client, data);
 	
 		/**
 		 * The hash of the channel icon
@@ -17,14 +17,14 @@ class PartialGroupDMChannel extends Channel {
 	}
 
 	/**
-   * The URL to this channel's icon.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
-   * @returns {?string}
-   */
+	 * The URL to this channel's icon.
+	 * @param {ImageURLOptions} [options={}] Options for the Image URL
+	 * @returns {?string}
+	 */
 	iconURL({ format, size } = {}) {
-    if (!this.icon) return null;
-    return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
-  }
+		if (!this.icon) return null;
+		return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
+  	}
 	
 	delete() {
 		throw new Error("DELETE_GROUP_DM_CHANNEL");
