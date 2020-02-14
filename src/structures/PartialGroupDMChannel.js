@@ -1,5 +1,5 @@
+'use-strict';
 const Channel = require('./Channel');
-const { Error } = require('../errors');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
