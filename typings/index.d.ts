@@ -829,6 +829,12 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 	}
 
+	export class PartialGroupDMChannel extends Channel {
+		constructor(client: Client, data: object);
+		public icon: string | null;
+		public iconURL(options?: ImageURLOptions): string | null;
+	}
+
 	export class GuildEmoji extends Emoji {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
