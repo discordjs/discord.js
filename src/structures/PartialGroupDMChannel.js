@@ -1,5 +1,5 @@
-const Channel = require("./Channel");
-const { Error } = require("../errors");
+const Channel = require('./Channel');
+const { Error } = require('../errors');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
@@ -25,14 +25,6 @@ class PartialGroupDMChannel extends Channel {
 		if (!this.icon) return null;
 		return this.client.rest.cdn.GDMIcon(this.id, this.icon, format, size);
   	}
-	
-	delete() {
-		throw new Error("DELETE_GROUP_DM_CHANNEL");
-	}
-	
-	fetch() {
-		throw new Error("FETCH_GROUP_DM_CHANNEL");
-	}
 }
 
 module.exports = PartialGroupDMChannel;
