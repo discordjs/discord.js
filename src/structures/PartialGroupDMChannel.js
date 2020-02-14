@@ -12,7 +12,7 @@ class PartialGroupDMChannel extends Channel {
 
     /**
      * The hash of the channel icon
-     * type {?string}
+     * @type {?string}
      */
     this.icon = data.icon;
   }
