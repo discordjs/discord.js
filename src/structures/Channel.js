@@ -83,7 +83,7 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   delete() {
-    if(this.type === 'group') return Promise.reject(new Error('DELETE_GROUP_DM_CHANNEL'));
+    if (this.type === 'group') return Promise.reject(new Error('DELETE_GROUP_DM_CHANNEL'));
     return this.client.api.channels(this.id).delete().then(() => this);
   }
 
@@ -92,7 +92,7 @@ class Channel extends Base {
    * @returns {Promise<Channel>}
    */
   fetch() {
-    if(this.type === 'group') return Promise.reject(new Error('FETCH_GROUP_DM_CHANNEL'));
+    if (this.type === 'group') return Promise.reject(new Error('FETCH_GROUP_DM_CHANNEL'));
     return this.client.channels.fetch(this.id, true);
   }
 
@@ -100,7 +100,7 @@ class Channel extends Base {
     const Structures = require('../util/Structures');
     let channel;
     if (!data.guild_id && !guild) {
-      switch(data.type) {
+      switch (data.type) {
         case ChannelTypes.DM: {
           const DMChannel = Structures.get('DMChannel');
           channel = new DMChannel(client, data);
