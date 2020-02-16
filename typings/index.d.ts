@@ -2562,30 +2562,31 @@ declare module 'discord.js' {
 		web?: ClientPresenceStatus;
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
-  }
+	}
 
 	interface PartialChannelData {
-    id?: number;
-    name: string;
-    topic?: string;
+		id?: number;
+		name: string;
+		topic?: string;
 		type?: ChannelType;
+		parentID?: number;
 		permissionOverwrites?: {
 			id: number | Snowflake;
 			type?: OverwriteType;
 			allow?: PermissionResolvable;
 			deny?: PermissionResolvable;
 		}[];
-  }
-  
-  interface PartialRoleData {
-    id?: number;
-    name?: string;
+	}
+
+	interface PartialRoleData {
+		id?: number;
+		name?: string;
 		color?: ColorResolvable;
 		hoist?: boolean;
 		position?: number;
 		permissions?: PermissionResolvable;
 		mentionable?: boolean;
-  }
+	}
 
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
