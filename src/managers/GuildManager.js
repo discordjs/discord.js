@@ -37,7 +37,7 @@ class GuildManager extends BaseManager {
    */
 
   /**
-   * Partial Data for a Role
+   * Partial data for a Role.
    * @typedef {Object} PartialRoleData
    * @property {number} [id] The ID for this role, used to set channel overrides,
    * this is a placeholder and will be replaced by the API after consumption
@@ -50,7 +50,16 @@ class GuildManager extends BaseManager {
    */
 
   /**
-   * Partial Data for a Channel
+   * Partial overwrite data.
+   * @typedef {Object} PartialOverwriteData
+   * @property {number|Snowflake} [id] The Role or User ID for this overwrite
+   * @property {string} [type] The type of this overwrite
+   * @property {PermissionResolvable} [allow]
+   * @property {PermissionResolvable} [deny]
+   */
+
+  /**
+   * Partial data for a Channel.
    * @typedef {Object} PartialChannelData
    * @property {number} [id] The ID for this channel, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
@@ -61,7 +70,7 @@ class GuildManager extends BaseManager {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the channel
-   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
+   * @property {PartialOverwriteData} [permissionOverwrites]
    * Overwrites of the channel
    * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
    */
@@ -108,7 +117,7 @@ class GuildManager extends BaseManager {
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {PartialRoleData[]} [options.roles] The roles for this guild,
-	 * the first element of this array is used to change properties of the guild's everyone role.
+   * the first element of this array is used to change properties of the guild's everyone role.
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
