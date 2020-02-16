@@ -1844,7 +1844,7 @@ declare module 'discord.js' {
 			explicitContentFilter?: ExplicitContentFilterLevel;
 			icon?: BufferResolvable | Base64Resolvable;
 			region?: string;
-			roles?: (RoleData & { id: number })[];
+			roles?: PartialRoleData[];
 			verificationLevel?: VerificationLevel;
 		}): Promise<Guild>;
 	}
@@ -2562,19 +2562,30 @@ declare module 'discord.js' {
 		web?: ClientPresenceStatus;
 		mobile?: ClientPresenceStatus;
 		desktop?: ClientPresenceStatus;
-	}
+  }
 
 	interface PartialChannelData {
-		name: string;
+    id?: number;
+    name: string;
+    topic?: string;
 		type?: ChannelType;
-		topic?: string;
 		permissionOverwrites?: {
 			id: number | Snowflake;
 			type?: OverwriteType;
 			allow?: PermissionResolvable;
 			deny?: PermissionResolvable;
 		}[];
-	}
+  }
+  
+  interface PartialRoleData {
+    id?: number;
+    name?: string;
+		color?: ColorResolvable;
+		hoist?: boolean;
+		position?: number;
+		permissions?: PermissionResolvable;
+		mentionable?: boolean;
+  }
 
 	type PartialTypes = 'USER'
 		| 'CHANNEL'

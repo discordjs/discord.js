@@ -37,6 +37,36 @@ class GuildManager extends BaseManager {
    */
 
   /**
+   * Partial Data for a Role
+   * @typedef {Object} PartialRoleData
+   * @property {number} [id] The ID for this role, used to set channel overrides,
+   * this is a placeholder and will be replaced by the API after consumption
+   * @property {string} [name] The name of the role
+   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
+   * @property {boolean} [hoist] Whether or not the role should be hoisted
+   * @property {number} [position] The position of the role
+   * @property {PermissionResolvable|number} [permissions] The permissions of the role
+   * @property {boolean} [mentionable] Whether or not the role should be mentionable
+   */
+
+  /**
+   * Partial Data for a Channel
+   * @typedef {Object} PartialChannelData
+   * @property {number} [id] The ID for this channel, used to set its parent,
+   * this is a placeholder and will be replaced by the API after consumption
+   * @property {number} [parentID] The parent ID for this channel
+   * @property {string} [type] The type of the channel (Only when creating)
+   * @property {string} [name] The name of the channel
+   * @property {string} [topic] The topic of the text channel
+   * @property {boolean} [nsfw] Whether the channel is NSFW
+   * @property {number} [bitrate] The bitrate of the voice channel
+   * @property {number} [userLimit] The user limit of the channel
+   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites]
+   * Overwrites of the channel
+   * @property {number} [rateLimitPerUser] The rate limit per user of the channel in seconds
+   */
+
+  /**
    * Resolves a GuildResolvable to a Guild object.
    * @method resolve
    * @memberof GuildManager
@@ -65,22 +95,32 @@ class GuildManager extends BaseManager {
       guild instanceof Role) return super.resolveID(guild.guild.id);
     return super.resolveID(guild);
   }
-  /* eslint-disable max-len */
+
   /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
    * @param {PartialChannelData[]} [options.channels] The channels for this guild
-   * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications for the guild
+   * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications
+   * for the guild
    * @param {ExplicitContentFilterLevel} [options.explicitContentFilter] The explicit content filter level for the guild
    * @param {BufferResolvable|Base64Resolvable} [options.icon=null] The icon for the guild
    * @param {string} [options.region] The region for the server, defaults to the closest one available
-   * @param {RoleData[]} [options.roles] The roles for this guild, the first element of this array is used to change properties of the guild's everyone role.
+   * @param {PartialRoleData[]} [options.roles] The roles for this guild,
+	 * the first element of this array is used to change properties of the guild's everyone role.
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  async create(name, { channels = [], defaultMessageNotifications, explicitContentFilter, icon = null, region, roles = [], verificationLevel } = {}) {
+  async create(name, {
+    channels = [],
+    defaultMessageNotifications,
+    explicitContentFilter,
+    icon = null,
+    region,
+    roles = [],
+    verificationLevel,
+  } = {}) {
     icon = await DataResolver.resolveImage(icon);
     if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
       verificationLevel = VerificationLevels.indexOf(verificationLevel);
@@ -98,7 +138,9 @@ class GuildManager extends BaseManager {
         if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
       }
       channel.permission_overwrites = channel.permissionOverwrites;
+      channel.parent_id = channel.parentID;
       delete channel.permissionOverwrites;
+      delete channel.parentID;
     }
     for (const role of roles) {
       if (role.color) role.color = resolveColor(role.color);
@@ -135,7 +177,6 @@ class GuildManager extends BaseManager {
         }, reject),
     );
   }
-  /* eslint-enable max-len */
 }
 
 module.exports = GuildManager;
