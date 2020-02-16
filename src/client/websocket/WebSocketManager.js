@@ -18,7 +18,7 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1);
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
 const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
@@ -161,14 +161,9 @@ class WebSocketManager extends EventEmitter {
       shards = this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
     }
 
-    if (Array.isArray(shards)) {
-      this.totalShards = shards.length;
-      this.debug(`Spawning shards: ${shards.join(', ')}`);
-      this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
-    } else {
-      this.debug(`Spawning ${this.totalShards} shards`);
-      this.shardQueue = new Set(Array.from({ length: this.totalShards }, (_, id) => new WebSocketShard(this, id)));
-    }
+    this.totalShards = shards.length;
+    this.debug(`Spawning shards: ${shards.join(', ')}`);
+    this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
 
     await this._handleSessionLimit(remaining, reset_after);
 
@@ -338,7 +333,7 @@ class WebSocketManager extends EventEmitter {
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
     this.shardQueue.clear();
-    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1000, reset: true, emit: false });
+    for (const shard of this.shards.values()) shard.destroy({ closeCode: 1000, reset: true, emit: false, log: false });
   }
 
   /**
