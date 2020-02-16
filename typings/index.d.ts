@@ -801,6 +801,7 @@ declare module 'discord.js' {
 		public editedTimestamp: number;
 		public readonly edits: Message[];
 		public embeds: MessageEmbed[];
+		public flags: Readonly<MessageFlags>;
 		public readonly guild: Guild;
 		public hit: boolean;
 		public id: Snowflake;
@@ -810,6 +811,7 @@ declare module 'discord.js' {
 		public readonly pinnable: boolean;
 		public pinned: boolean;
 		public reactions: Collection<Snowflake, MessageReaction>;
+		public reference: MessageReference | null;
 		public system: boolean;
 		public tts: boolean;
 		public type: string;
@@ -830,6 +832,7 @@ declare module 'discord.js' {
 		public react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
 		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public reply(options?: MessageOptions): Promise<Message | Message[]>;
+		public suppressEmbeds(suppress?: boolean): Promise<Message>;
 		public toString(): string;
 		public unpin(): Promise<Message>;
 	}
@@ -937,6 +940,11 @@ declare module 'discord.js' {
 		public width: number;
 	}
 
+	export class MessageFlags extends BitField<MessageFlagsString> {
+		public static FLAGS: Record<MessageFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
+	}
+
 	export class MessageMentions {
 		private _channels: Collection<Snowflake, GuildChannel>;
 		private _client: Client;
@@ -945,6 +953,7 @@ declare module 'discord.js' {
 		private _members: Collection<Snowflake, GuildMember>;
 
 		public readonly channels: Collection<Snowflake, TextChannel>;
+		public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
 		public everyone: boolean;
 		public readonly members: Collection<Snowflake, GuildMember>;
 		public roles: Collection<Snowflake, Role>;
@@ -1353,6 +1362,7 @@ declare module 'discord.js' {
 		public lastMessageID: string;
 		public readonly note: string;
 		public readonly presence: Presence;
+		public system?: boolean;
 		public readonly tag: string;
 		public username: string;
 		public addFriend(): Promise<User>;
@@ -1841,6 +1851,13 @@ declare module 'discord.js' {
 		| number
 		| string;
 
+	type CrosspostedChannel = {
+		channelID: Snowflake;
+		guildID: Snowflake;
+		type: Channel["type"] | 'unknown';
+		name: string;
+	};
+
 	type DeconstructedSnowflake = {
 		timestamp: number;
 		date: Date;
@@ -2016,7 +2033,14 @@ declare module 'discord.js' {
 	type MessageEditOptions = {
 		embed?: RichEmbedOptions;
 		code?: string | boolean;
+		flags?: BitFieldResolvable<MessageFlagsString>;
 	};
+
+	type MessageFlagsString = 'CROSSPOSTED'
+		| 'IS_CROSSPOST'
+		| 'SUPRRESS_EMBEDS'
+		| 'SOURCE_MESSAGE_DELETED'
+		| 'URGENT';
 
 	type MessageNotifications = 'EVERYTHING'
 		| 'MENTIONS'
@@ -2074,6 +2098,12 @@ declare module 'discord.js' {
 		after?: Date;
 		during?: Date;
 		nsfw?: boolean;
+	};
+
+	type MessageReference = {
+		channelID: Snowflake;
+		guildID: Snowflake | null;
+		messageID: Snowflake | null;
 	};
 
 	type MessageSearchResult = {
