@@ -81,6 +81,7 @@ class GuildManager extends BaseManager {
    * @returns {Promise<Guild>} The guild that was created
    */
   async create(name, { channels = [], defaultMessageNotifications, explicitContentFilter, icon = null, region, roles = [], verificationLevel } = {}) {
+    icon = await DataResolver.resolveImage(icon);
     if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
       verificationLevel = VerificationLevels.indexOf(verificationLevel);
     }
@@ -107,7 +108,7 @@ class GuildManager extends BaseManager {
       this.client.api.guilds.post({ data: {
         name,
         region,
-        icon: await DataResolver.resolveImage(icon);,
+        icon,
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
