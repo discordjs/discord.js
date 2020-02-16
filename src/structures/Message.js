@@ -533,6 +533,23 @@ class Message extends Base {
   }
 
   /**
+   * Suppresses or unsuppresses embeds on a message
+   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds(suppress = true) {
+    const flags = new MessageFlags(this.flags.bitfield);
+
+    if (suppress) {
+      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    } else {
+      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    }
+
+    return this.edit({ flags });
+  }
+
+  /**
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
