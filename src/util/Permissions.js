@@ -104,14 +104,14 @@ class Permissions extends BitField {
   missingPermissions(permissions, explicit = false) {
     return this.missing(permissions, !explicit);
   }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string (see {@link Permissions.FLAGS})
-   * * A permission number
-   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
-   */
 }
+
+/**
+ * Data that can be resolved to give a permission number. This can be:
+ * * A string (see {@link Permissions.FLAGS})
+ * * A permission number
+ * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
+ */
 
 /**
  * Numeric permission flags. All available properties:
