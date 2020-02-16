@@ -134,8 +134,7 @@ class GuildManager extends BaseManager {
           return undefined;
         }, reject),
     );
- }
-  
+  }
   /* eslint-enable max-len */
 }
 
