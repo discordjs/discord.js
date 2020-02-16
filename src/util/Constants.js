@@ -61,8 +61,6 @@ exports.DefaultOptions = {
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=false] Whether to compress data sent on the connection
-   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
@@ -119,7 +117,9 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
  * @property {string} [format] One of `webp`, `png`, `jpg`, `gif`. If no format is provided,
- * it will be `gif` for animated avatars or otherwise `webp`
+ * defaults to `webp`.
+ * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
+ * animated avatars; the default is false.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`
  */
 
@@ -129,14 +129,14 @@ exports.Endpoints = {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
-      Avatar: (userID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
       Banner: (guildID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'default', size) => {
-        if (format === 'default') format = hash.startsWith('a_') ? 'gif' : 'webp';
+      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
+        if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
       },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
@@ -241,6 +241,8 @@ exports.Events = {
   GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
   GUILD_ROLE_CREATE: 'roleCreate',
   GUILD_ROLE_DELETE: 'roleDelete',
+  INVITE_CREATE: 'inviteCreate',
+  INVITE_DELETE: 'inviteDelete',
   GUILD_ROLE_UPDATE: 'roleUpdate',
   GUILD_EMOJI_CREATE: 'emojiCreate',
   GUILD_EMOJI_DELETE: 'emojiDelete',
@@ -258,6 +260,7 @@ exports.Events = {
   MESSAGE_REACTION_ADD: 'messageReactionAdd',
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
+  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
@@ -294,6 +297,7 @@ exports.ShardEvents = {
  * * CHANNEL (only affects DMChannels)
  * * GUILD_MEMBER
  * * MESSAGE
+ * * REACTION
  * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
  * sidebar for more information.</warn>
  * @typedef {string} PartialType
@@ -303,6 +307,7 @@ exports.PartialTypes = keyMirror([
   'CHANNEL',
   'GUILD_MEMBER',
   'MESSAGE',
+  'REACTION',
 ]);
 
 /**
@@ -312,6 +317,8 @@ exports.PartialTypes = keyMirror([
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
+ * * INVITE_CREATE
+ * * INVITE_DELETE
  * * GUILD_MEMBER_ADD
  * * GUILD_MEMBER_REMOVE
  * * GUILD_MEMBER_UPDATE
@@ -349,6 +356,8 @@ exports.WSEvents = keyMirror([
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
+  'INVITE_CREATE',
+  'INVITE_DELETE',
   'GUILD_MEMBER_ADD',
   'GUILD_MEMBER_REMOVE',
   'GUILD_MEMBER_UPDATE',
@@ -371,6 +380,7 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_ADD',
   'MESSAGE_REACTION_REMOVE',
   'MESSAGE_REACTION_REMOVE_ALL',
+  'MESSAGE_REACTION_REMOVE_EMOJI',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
   'TYPING_START',
@@ -413,6 +423,7 @@ exports.MessageTypes = [
 ];
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
@@ -626,6 +637,19 @@ exports.MembershipStates = [
   null,
   'INVITED',
   'ACCEPTED',
+];
+
+/**
+ * The value set for a webhook's type:
+ * * Incoming
+ * * Channel Follower
+ * @typedef {string} WebhookTypes
+ */
+exports.WebhookTypes = [
+  // They start at 1
+  null,
+  'Incoming',
+  'Channel Follower',
 ];
 
 function keyMirror(arr) {

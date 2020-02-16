@@ -3,8 +3,8 @@
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
-  const channel = client.channels.get(data.channel_id);
-  const user = client.users.get(data.user_id);
+  const channel = client.channels.cache.get(data.channel_id);
+  const user = client.users.cache.get(data.user_id);
 
   if (channel && user) {
   /**

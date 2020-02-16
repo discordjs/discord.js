@@ -42,12 +42,16 @@ class MessageMentions {
       if (users instanceof Collection) {
         /**
          * Any users that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, User>}
          */
         this.users = new Collection(users);
       } else {
         this.users = new Collection();
         for (const mention of users) {
+          if (mention.member && message.guild) {
+            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+          }
           const user = message.client.users.add(mention);
           this.users.set(user.id, user);
         }
@@ -60,13 +64,14 @@ class MessageMentions {
       if (roles instanceof Collection) {
         /**
          * Any roles that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, Role>}
          */
         this.roles = new Collection(roles);
       } else {
         this.roles = new Collection();
         for (const mention of roles) {
-          const role = message.channel.guild.roles.get(mention);
+          const role = message.channel.guild.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
@@ -101,6 +106,7 @@ class MessageMentions {
       if (crosspostedChannels instanceof Collection) {
         /**
          * A collection of crossposted channels
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, CrosspostedChannel>}
          */
         this.crosspostedChannels = new Collection(crosspostedChannels);
@@ -124,6 +130,7 @@ class MessageMentions {
 
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
+   * <info>Order as received from the API, not as they appear in the message content</info>
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -140,6 +147,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
+   * <info>Order as they appear first in the message content</info>
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
@@ -148,7 +156,7 @@ class MessageMentions {
     this._channels = new Collection();
     let matches;
     while ((matches = this.constructor.CHANNELS_PATTERN.exec(this._content)) !== null) {
-      const chan = this.client.channels.get(matches[1]);
+      const chan = this.client.channels.cache.get(matches[1]);
       if (chan) this._channels.set(chan.id, chan);
     }
     return this._channels;
@@ -167,7 +175,7 @@ class MessageMentions {
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     if (!ignoreEveryone && this.everyone) return true;
     if (!ignoreRoles && data instanceof GuildMember) {
-      for (const role of this.roles.values()) if (data.roles.has(role.id)) return true;
+      for (const role of this.roles.values()) if (data.roles.cache.has(role.id)) return true;
     }
 
     if (!ignoreDirect) {

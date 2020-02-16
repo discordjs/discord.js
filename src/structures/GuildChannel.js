@@ -72,7 +72,7 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get parent() {
-    return this.guild.channels.get(this.parentID) || null;
+    return this.guild.channels.cache.get(this.parentID) || null;
   }
 
   /**
@@ -118,7 +118,7 @@ class GuildChannel extends Channel {
     if (!verified) member = this.guild.members.resolve(member);
     if (!member) return [];
 
-    roles = roles || member.roles;
+    roles = roles || member.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
@@ -149,7 +149,7 @@ class GuildChannel extends Channel {
   memberPermissions(member) {
     if (member.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
 
-    const roles = member.roles;
+    const roles = member.roles.cache;
     const permissions = new Permissions(roles.map(role => role.permissions));
 
     if (permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return new Permissions(Permissions.ALL).freeze();
@@ -274,7 +274,7 @@ class GuildChannel extends Channel {
    */
   get members() {
     const members = new Collection();
-    for (const member of this.guild.members.values()) {
+    for (const member of this.guild.members.cache.values()) {
       if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
         members.set(member.id, member);
       }

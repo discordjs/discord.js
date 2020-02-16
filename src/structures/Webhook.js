@@ -1,6 +1,8 @@
 'use strict';
 
+const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Snowflake = require('../util/Snowflake');
 const Channel = require('./Channel');
 const APIMessage = require('./APIMessage');
 
@@ -29,9 +31,9 @@ class Webhook {
     /**
      * The token for the webhook
      * @name Webhook#token
-     * @type {string}
+     * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -44,6 +46,12 @@ class Webhook {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The type of the webhook
+     * @type {WebhookTypes}
+     */
+    this.type = WebhookTypes[data.type];
 
     /**
      * The guild the webhook belongs to
@@ -62,7 +70,7 @@ class Webhook {
        * The owner of the webhook
        * @type {?User|Object}
        */
-      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+      this.owner = this.client.users ? this.client.users.cache.get(data.user.id) : data.user;
     } else {
       this.owner = null;
     }
@@ -146,7 +154,7 @@ class Webhook {
       query: { wait: true },
       auth: false,
     }).then(d => {
-      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      const channel = this.client.channels ? this.client.channels.cache.get(d.channel_id) : undefined;
       if (!channel) return d;
       return channel.messages.add(d, false);
     });
@@ -186,20 +194,20 @@ class Webhook {
    * @param {string} [reason] Reason for editing this webhook
    * @returns {Promise<Webhook>}
    */
-  edit({ name = this.name, avatar, channel }, reason) {
+  async edit({ name = this.name, avatar, channel }, reason) {
     if (avatar && (typeof avatar === 'string' && !avatar.startsWith('data:'))) {
-      return DataResolver.resolveImage(avatar).then(image => this.edit({ name, avatar: image }, reason));
+      avatar = await DataResolver.resolveImage(avatar);
     }
     if (channel) channel = channel instanceof Channel ? channel.id : channel;
-    return this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+    const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
       data: { name, avatar, channel_id: channel },
       reason,
-    }).then(data => {
-      this.name = data.name;
-      this.avatar = data.avatar;
-      this.channelID = data.channel_id;
-      return this;
     });
+
+    this.name = data.name;
+    this.avatar = data.avatar;
+    this.channelID = data.channel_id;
+    return this;
   }
 
   /**
@@ -209,6 +217,23 @@ class Webhook {
    */
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
+  }
+  /**
+   * The timestamp the webhook was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the webhook was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
   }
 
   /**
@@ -236,6 +261,9 @@ class Webhook {
       'sendSlackMessage',
       'edit',
       'delete',
+      'createdTimestamp',
+      'createdAt',
+      'url',
     ]) {
       Object.defineProperty(structure.prototype, prop,
         Object.getOwnPropertyDescriptor(Webhook.prototype, prop));

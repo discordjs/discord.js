@@ -68,7 +68,7 @@ class ClientPresence extends Presence {
     };
 
     if ((status || afk || since) && !activity) {
-      packet.game = this.activity;
+      packet.game = this.activities[0] || null;
     }
 
     if (packet.game) {

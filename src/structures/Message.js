@@ -7,7 +7,7 @@ const ReactionCollector = require('./ReactionCollector');
 const ClientApplication = require('./ClientApplication');
 const Util = require('../util/Util');
 const Collection = require('../util/Collection');
-const ReactionStore = require('../stores/ReactionStore');
+const ReactionManager = require('../managers/ReactionManager');
 const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Base = require('./Base');
@@ -126,10 +126,10 @@ class Message extends Base {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A collection of reactions to this message, mapped by the reaction ID
-     * @type {ReactionStore<Snowflake, MessageReaction>}
+     * A manager of the reactions belonging to this message
+     * @type {ReactionManager}
      */
-    this.reactions = new ReactionStore(this);
+    this.reactions = new ReactionManager(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
         this.reactions.add(reaction);
@@ -301,7 +301,8 @@ class Message extends Base {
    * @readonly
    */
   get cleanContent() {
-    return Util.cleanContent(this.content, this);
+    // eslint-disable-next-line eqeqeq
+    return this.content != null ? Util.cleanContent(this.content, this) : null;
   }
 
   /**
@@ -452,7 +453,7 @@ class Message extends Base {
    *   .catch(console.error);
    * @example
    * // React to a message with a custom emoji
-   * message.react(message.guild.emojis.get('123456789012345678'))
+   * message.react(message.guild.emojis.cache.get('123456789012345678'))
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -482,9 +483,11 @@ class Message extends Base {
    *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete({ timeout = 0, reason } = {}) {
+  delete(options = {}) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    const { timeout = 0, reason } = options;
     if (timeout <= 0) {
-      return this.channel.messages.remove(this.id, reason).then(() => this);
+      return this.channel.messages.delete(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
