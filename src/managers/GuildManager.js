@@ -80,66 +80,62 @@ class GuildManager extends BaseManager {
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  create(name, { channels = [], defaultMessageNotifications, explicitContentFilter, icon = null, region, roles = [], verificationLevel } = {}) {
-    if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
-      if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
-        verificationLevel = VerificationLevels.indexOf(verificationLevel);
-      }
-      if (typeof defaultMessageNotifications !== 'undefined' && typeof defaultMessageNotifications !== 'number') {
-        defaultMessageNotifications = DefaultMessageNotifications.indexOf(defaultMessageNotifications);
-      }
-      if (typeof explicitContentFilter !== 'undefined' && typeof explicitContentFilter !== 'number') {
-        explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
-      }
-      for (const channel of channels) {
-        if (!channel.permissionOverwrites) continue;
-        for (const overwrite of channel.permissionOverwrites) {
-          if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
-          if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
-        }
-        channel.permission_overwrites = channel.permissionOverwrites;
-        delete channel.permissionOverwrites;
-      }
-      for (const role of roles) {
-        if (role.color) role.color = resolveColor(role.color);
-        if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
-      }
-      return new Promise((resolve, reject) =>
-        this.client.api.guilds.post({ data: {
-          name,
-          region,
-          icon,
-          verification_level: verificationLevel,
-          default_message_notifications: defaultMessageNotifications,
-          explicit_content_filter: explicitContentFilter,
-          channels,
-          roles,
-        } })
-          .then(data => {
-            if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
-
-            const handleGuild = guild => {
-              if (guild.id === data.id) {
-                this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-                this.client.clearTimeout(timeout);
-                resolve(guild);
-              }
-            };
-            this.client.on(Events.GUILD_CREATE, handleGuild);
-
-            const timeout = this.client.setTimeout(() => {
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.guilds.add(data));
-            }, 10000);
-            return undefined;
-          }, reject)
-      );
+  async create(name, { channels = [], defaultMessageNotifications, explicitContentFilter, icon = null, region, roles = [], verificationLevel } = {}) {
+    if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
+      verificationLevel = VerificationLevels.indexOf(verificationLevel);
     }
-    /* eslint-enable max-len */
+    if (typeof defaultMessageNotifications !== 'undefined' && typeof defaultMessageNotifications !== 'number') {
+      defaultMessageNotifications = DefaultMessageNotifications.indexOf(defaultMessageNotifications);
+    }
+    if (typeof explicitContentFilter !== 'undefined' && typeof explicitContentFilter !== 'number') {
+      explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
+    }
+    for (const channel of channels) {
+      if (!channel.permissionOverwrites) continue;
+      for (const overwrite of channel.permissionOverwrites) {
+        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
+        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
+      }
+      channel.permission_overwrites = channel.permissionOverwrites;
+      delete channel.permissionOverwrites;
+    }
+    for (const role of roles) {
+      if (role.color) role.color = resolveColor(role.color);
+      if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
+    }
+    return new Promise((resolve, reject) =>
+      this.client.api.guilds.post({ data: {
+        name,
+        region,
+        icon: await DataResolver.resolveImage(icon);,
+        verification_level: verificationLevel,
+        default_message_notifications: defaultMessageNotifications,
+        explicit_content_filter: explicitContentFilter,
+        channels,
+        roles,
+      } })
+        .then(data => {
+          if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
 
-    return DataResolver.resolveImage(icon)
-      .then(data => this.create(name, { region, icon: data || null }));
+          const handleGuild = guild => {
+            if (guild.id === data.id) {
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+              this.client.clearTimeout(timeout);
+              resolve(guild);
+            }
+          };
+          this.client.on(Events.GUILD_CREATE, handleGuild);
+
+          const timeout = this.client.setTimeout(() => {
+            this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+            resolve(this.client.guilds.add(data));
+          }, 10000);
+          return undefined;
+        }, reject)
+    );
   }
+  
+  /* eslint-enable max-len */
 }
 
 module.exports = GuildManager;
