@@ -5,6 +5,7 @@ const Permissions = require('../util/Permissions');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Invite = require('./Invite');
+const Util = require('../util/Util');
 
 /**
  * Represents a guild channel (i.e. text channels and voice channels).
@@ -403,26 +404,72 @@ class GuildChannel extends Channel {
     return this.client.rest.methods.createChannelInvite(this, options, reason);
   }
 
+  /* eslint-disable max-len */
+  /**
+   * Options to clone a guild channel.
+   * @typedef {Object} GuildChannelCloneOptions
+   * @property {string} [name=this.name] Name of the new channel
+   * @property {ChannelCreationOverwrites[]|Collection<Snowflake, PermissionOverwrites>} [permissionOverwrites=this.permissionOverwrites]
+   * Permission overwrites of the new channel
+   * @property {string} [type=this.type] Type of the new channel
+   * @property {string} [topic=this.topic] Topic of the new channel (only text)
+   * @property {boolean} [nsfw=this.nsfw] Whether the new channel is nsfw (only text)
+   * @property {number} [bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
+   * @property {number} [userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
+   * @property {number} [rateLimitPerUser=ThisType.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @property {ChannelResolvable} [parent=this.parent] Parent of the new channel
+   * @property {string} [reason] Reason for cloning this channel
+   */
+  /* eslint-enable max-len */
+
   /**
    * Clone this channel.
-   * @param {string} [name=this.name] Optional name for the new channel, otherwise it has the name of this channel
+   * @param {string|GuildChannelCloneOptions} [nameOrOptions={}] Name for the new channel.
+   * **(deprecated, use options)**
+   * Alternatively options for cloning the channel
    * @param {boolean} [withPermissions=true] Whether to clone the channel with this channel's permission overwrites
+   * **(deprecated, use options)**
    * @param {boolean} [withTopic=true] Whether to clone the channel with this channel's topic
-   * @param {string} [reason] Reason for cloning this channel
+   * **(deprecated, use options)**
+   * @param {string} [reason] Reason for cloning this channel **(deprecated, user options)**
    * @returns {Promise<GuildChannel>}
    * @example
    * // Clone a channel
-   * channel.clone(undefined, true, false, 'Needed a clone')
+   * channel.clone({ topic: null, reason: 'Needed a clone' })
    *   .then(clone => console.log(`Cloned ${channel.name} to make a channel called ${clone.name}`))
    *   .catch(console.error);
    */
-  clone(name = this.name, withPermissions = true, withTopic = true, reason) {
-    return this.guild.createChannel(name, {
+  clone(nameOrOptions = {}, withPermissions = true, withTopic = true, reason) {
+    // If more than one parameter was specified or the first is a string,
+    // convert them to a compatible options object and issue a warning
+    if (arguments.length > 1 || typeof nameOrOptions === 'string') {
+      process.emitWarning(
+        'GuildChannel#clone: Clone channels using an options object instead of separate parameters.',
+        'Deprecation Warning'
+      );
+
+      nameOrOptions = {
+        name: nameOrOptions,
+        permissionOverwrites: withPermissions ? this.permissionOverwrites : null,
+        topic: withTopic ? this.topic : null,
+        reason: reason || null,
+      };
+    }
+
+    Util.mergeDefault({
+      name: this.name,
+      permissionOverwrites: this.permissionOverwrites,
+      topic: this.topic,
       type: this.type,
-      permissionOverwrites: withPermissions ? this.permissionOverwrites : undefined,
-      topic: withTopic ? this.topic : undefined,
-      reason,
-    });
+      nsfw: this.nsfw,
+      parent: this.parent,
+      bitrate: this.bitrate,
+      userLimit: this.userLimit,
+      rateLimitPerUser: this.rateLimitPerUser,
+      reason: null,
+    }, nameOrOptions);
+
+    return this.guild.createChannel(nameOrOptions.name, nameOrOptions);
   }
 
   /**
