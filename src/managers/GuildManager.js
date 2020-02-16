@@ -132,9 +132,9 @@ class GuildManager extends BaseManager {
             resolve(this.client.guilds.add(data));
           }, 10000);
           return undefined;
-        }, reject)
+        }, reject),
     );
-  }
+ }
   
   /* eslint-enable max-len */
 }
