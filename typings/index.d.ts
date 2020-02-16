@@ -831,6 +831,7 @@ declare module 'discord.js' {
 
 	export class PartialGroupDMChannel extends Channel {
 		constructor(client: Client, data: object);
+		public name: string;
 		public icon: string | null;
 		public iconURL(options?: ImageURLOptions): string | null;
 	}
