@@ -2073,8 +2073,8 @@ declare module 'discord.js' {
 
 	interface ChannelLogsQueryOptions {
 		limit?: number;
-		before?: Snowflake;
-		after?: Snowflake;
+		before?: Snowflake | number;
+		after?: Snowflake | number;
 		around?: Snowflake;
 	}
 
