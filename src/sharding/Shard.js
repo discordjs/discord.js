@@ -132,7 +132,7 @@ class Shard extends EventEmitter {
     if (spawnTimeout === -1 || spawnTimeout === Infinity) return this.process || this.worker;
     await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => reject(new Error('SHARDING_READY_TIMEOUT', this.id)), spawnTimeout);
-        this.once('ready', () => {
+      this.once('ready', () => {
         clearTimeout(timeout);
         resolve();
       });
