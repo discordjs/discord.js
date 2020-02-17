@@ -110,6 +110,10 @@ class Shard extends EventEmitter {
     if (this.process) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
     if (this.worker) throw new Error('SHARDING_WORKER_EXISTS', this.id);
 
+    // Use ts-node to execute typescript files.
+    if (path.extname(this.manager.file) === '.ts') {
+      this.execArgv = ["-r", "ts-node/register"];
+    }
     if (this.manager.mode === 'process') {
       this.process = childProcess.fork(path.resolve(this.manager.file), this.args, {
         env: this.env, execArgv: this.execArgv,
