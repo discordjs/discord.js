@@ -112,7 +112,7 @@ class Shard extends EventEmitter {
 
     // Use ts-node to execute typescript files.
     if (path.extname(this.manager.file) === '.ts') {
-      this.execArgv = ["-r", "ts-node/register"];
+      this.execArgv = ['-r', 'ts-node/register'];
     }
     if (this.manager.mode === 'process') {
       this.process = childProcess.fork(path.resolve(this.manager.file), this.args, {
