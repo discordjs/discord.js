@@ -131,10 +131,13 @@ class Shard extends EventEmitter {
 
     if (spawnTimeout === -1 || spawnTimeout === Infinity) return this.process || this.worker;
     await new Promise((resolve, reject) => {
-      this.once('ready', resolve);
+      const timeout = setTimeout(() => reject(new Error('SHARDING_READY_TIMEOUT', this.id)), spawnTimeout);
+        this.once('ready', () => {
+        clearTimeout(timeout);
+        resolve();
+      });
       this.once('disconnect', () => reject(new Error('SHARDING_READY_DISCONNECTED', this.id)));
       this.once('death', () => reject(new Error('SHARDING_READY_DIED', this.id)));
-      setTimeout(() => reject(new Error('SHARDING_READY_TIMEOUT', this.id)), spawnTimeout);
     });
     return this.process || this.worker;
   }
