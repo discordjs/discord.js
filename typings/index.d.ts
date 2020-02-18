@@ -667,9 +667,9 @@ declare module 'discord.js' {
 		private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
 		public readonly afkChannel: VoiceChannel;
-		public afkChannelID: Snowflake;
+		public afkChannelID: Snowflake | null;
 		public afkTimeout: number;
-		public applicationID: Snowflake;
+		public applicationID: Snowflake | null;
 		public available: boolean;
 		public banner: string | null;
 		public channels: GuildChannelManager;
