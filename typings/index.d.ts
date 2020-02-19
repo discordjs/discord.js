@@ -809,7 +809,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean | null;
 		public readonly position: number;
 		public rawPosition: number;
-		public type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>
+		public type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
 		public readonly viewable: boolean;
 		public clone(options?: GuildChannelCloneOptions): Promise<this>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
