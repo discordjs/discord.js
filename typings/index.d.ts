@@ -131,6 +131,7 @@ declare module 'discord.js' {
 
 	export class CategoryChannel extends GuildChannel {
 		public readonly children: Collection<Snowflake, GuildChannel>;
+		public type: 'category';
 	}
 
 	export class Channel extends Base {
@@ -643,6 +644,7 @@ declare module 'discord.js' {
 		public messages: MessageManager;
 		public recipient: User;
 		public readonly partial: false;
+		public type: 'dm';
 		public fetch(): Promise<DMChannel>;
 	}
 
@@ -807,6 +809,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean | null;
 		public readonly position: number;
 		public rawPosition: number;
+		public type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>
 		public readonly viewable: boolean;
 		public clone(options?: GuildChannelCloneOptions): Promise<this>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
@@ -827,6 +830,7 @@ declare module 'discord.js' {
 	export class StoreChannel extends GuildChannel {
 		constructor(guild: Guild, data?: object);
 		public nsfw: boolean;
+		public type: 'store';
 	}
 
 	export class GuildEmoji extends Emoji {
@@ -1394,6 +1398,7 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 		public rateLimitPerUser: number;
 		public topic: string | null;
+		public type: 'text';
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
 		public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
@@ -1405,6 +1410,7 @@ declare module 'discord.js' {
 		public messages: MessageManager;
 		public nsfw: boolean;
 		public topic: string | null;
+		public type: 'news';
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -1506,6 +1512,7 @@ declare module 'discord.js' {
 		public readonly full: boolean;
 		public readonly joinable: boolean;
 		public readonly speakable: boolean;
+		public type: 'voice';
 		public userLimit: number;
 		public join(): Promise<VoiceConnection>;
 		public leave(): void;
