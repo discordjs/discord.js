@@ -1,12 +1,12 @@
 declare enum ChannelType {
-	text,
-	dm,
-	voice,
-	group,
-	category,
-	news,
-	store,
-	unknown
+	TEXT = 'text',
+	DM = 'dm',
+	VOICE = 'voice',
+	GROUP = 'group',
+	CATEGORY = 'category',
+	NEWS = 'news',
+	STORE = 'store',
+	UNKNOWN = 'unknown'
 }
 
 declare module 'discord.js' {
@@ -131,6 +131,7 @@ declare module 'discord.js' {
 
 	export class CategoryChannel extends GuildChannel {
 		public readonly children: Collection<Snowflake, GuildChannel>;
+		public type: ChannelType.CATEGORY;
 	}
 
 	export class Channel extends Base {
@@ -139,7 +140,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: keyof typeof ChannelType;
+		public type: ChannelType;
 		public delete(reason?: string): Promise<Channel>;
 		public fetch(): Promise<Channel>;
 		public toString(): string;
@@ -643,6 +644,7 @@ declare module 'discord.js' {
 		public messages: MessageManager;
 		public recipient: User;
 		public readonly partial: false;
+		public type: ChannelType.DM;
 		public fetch(): Promise<DMChannel>;
 	}
 
@@ -807,6 +809,7 @@ declare module 'discord.js' {
 		public readonly permissionsLocked: boolean | null;
 		public readonly position: number;
 		public rawPosition: number;
+		public type: Exclude<ChannelType, ChannelType.DM | ChannelType.GROUP | ChannelType.UNKNOWN>;
 		public readonly viewable: boolean;
 		public clone(options?: GuildChannelCloneOptions): Promise<this>;
 		public createInvite(options?: InviteOptions): Promise<Invite>;
@@ -1392,6 +1395,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data?: object);
 		public messages: MessageManager;
 		public nsfw: boolean;
+		public type: ChannelType.TEXT;
 		public rateLimitPerUser: number;
 		public topic: string | null;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
@@ -1404,6 +1408,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, data?: object);
 		public messages: MessageManager;
 		public nsfw: boolean;
+		public type: ChannelType.NEWS;
 		public topic: string | null;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable, reason?: string }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
@@ -1506,6 +1511,7 @@ declare module 'discord.js' {
 		public readonly full: boolean;
 		public readonly joinable: boolean;
 		public readonly speakable: boolean;
+		public type: ChannelType.VOICE;
 		public userLimit: number;
 		public join(): Promise<VoiceConnection>;
 		public leave(): void;
@@ -2291,7 +2297,7 @@ declare module 'discord.js' {
 	interface GuildCreateChannelOptions {
 		permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
 		topic?: string;
-		type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown'>;
+		type?: Exclude<ChannelType, ChannelType.DM | ChannelType.GROUP | ChannelType.UNKNOWN>;
 		nsfw?: boolean;
 		parent?: ChannelResolvable;
 		bitrate?: number;
@@ -2731,7 +2737,7 @@ declare module 'discord.js' {
 	interface CrosspostedChannel {
 		channelID: Snowflake;
 		guildID: Snowflake;
-		type: keyof typeof ChannelType;
+		type: ChannelType;
 		name: string;
 	}
 
