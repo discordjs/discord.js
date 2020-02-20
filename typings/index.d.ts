@@ -1769,8 +1769,7 @@ declare module 'discord.js' {
 
 //#region Managers
 
-	type Channels = TextChannel | DMChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel;
-	export class ChannelManager extends BaseManager<Snowflake, Channels, ChannelResolvable> {
+	export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
 		constructor(client: Client, iterable: Iterable<any>);
 		public fetch(id: Snowflake, cache?: boolean): Promise<Channel>;
 	}
