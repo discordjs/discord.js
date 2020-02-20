@@ -579,7 +579,7 @@ class Util {
    * @param {string} text to check
    * @returns {Booelan}
    */
-  static includesEmoji(text) {
+  static includesCustomEmoji(text) {
         if (text !== string) throw new TypeError("Value is not a string")
         if (text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/)) {
             return true
