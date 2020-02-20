@@ -1059,7 +1059,6 @@ declare module 'discord.js' {
 		public type: string;
 		public url: string;
 		public readonly video: { url?: string; proxyURL?: string; height?: number; width?: number } | null;
-		public addBlankField(inline?: boolean): this;
 		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;

@@ -201,15 +201,6 @@ class MessageEmbed {
   }
 
   /**
-   * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed}
-   */
-  addBlankField(inline) {
-    return this.addField('\u200B', '\u200B', inline);
-  }
-
-  /**
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
