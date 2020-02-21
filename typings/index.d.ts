@@ -703,8 +703,12 @@ declare module 'discord.js' {
 		public premiumSubscriptionCount: number | null;
 		public premiumTier: PremiumTier;
 		public presences: PresenceManager;
+		public readonly publicUpdatesChannel: TextChannel | null;
+		public publicUpdatesChannelID: Snowflake | null;
 		public region: string;
 		public roles: RoleManager;
+		public readonly rulesChannel: TextChannel | null;
+		public rulesChannelID: Snowflake | null;
 		public readonly shard: WebSocketShard;
 		public shardID: number;
 		public splash: string | null;
