@@ -71,7 +71,7 @@ declare module 'discord.js' {
 		public readonly createdTimestamp: number;
 		public deleted: boolean;
 		public id: Snowflake;
-		public type: 'dm' | 'group' | 'text' | 'voice' | 'category' | 'news' | 'store';
+		public type: 'dm' | 'group' | GuildChannelType;
 		public delete(): Promise<Channel>;
 	}
 
@@ -569,7 +569,7 @@ declare module 'discord.js' {
 		public allowDMs(allow: boolean): Promise<Guild>;
 		public ban(user: UserResolvable, options?: BanOptions | number | string): Promise<GuildMember | User | string>;
 		public createChannel(name: string, options?: ChannelData): Promise<CategoryChannel | TextChannel | VoiceChannel>;
-		public createChannel(name: string, type?: 'category' | 'text' | 'voice' | 'news' | 'store', permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
+		public createChannel(name: string, type?: GuildChannelType, permissionOverwrites?: PermissionOverwrites[] | ChannelCreationOverwrites[], reason?: string): Promise<CategoryChannel | TextChannel | VoiceChannel>;
 		public createEmoji(attachment: BufferResolvable | Base64Resolvable, name: string, roles?: Collection<Snowflake, Role> | Role[], reason?: string): Promise<Emoji>;
 		public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
 		public createRole(data?: RoleData, reason?: string): Promise<Role>;
@@ -662,6 +662,7 @@ declare module 'discord.js' {
 		public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
 		public position: number;
 		public readonly permissionsLocked: boolean | null;
+		public clone(options: GuildChannelCloneOptions): Promise<GuildChannel>;
 		public clone(name?: string, withPermissions?: boolean, withTopic?: boolean, reason?: string): Promise<GuildChannel>;
 		public createInvite(options?: InviteOptions, reason?: string): Promise<Invite>;
 		public delete(reason?: string): Promise<GuildChannel>;
@@ -1760,7 +1761,7 @@ declare module 'discord.js' {
 	};
 
 	type ChannelData = {
-		type?: 'category' | 'text' | 'voice' | 'news' | 'store';
+		type?: GuildChannelType;
 		name?: string;
 		position?: number;
 		topic?: string;
@@ -1941,8 +1942,23 @@ declare module 'discord.js' {
 		UNKNOWN?: string;
 	};
 
+	type GuildChannelCloneOptions = {
+		name?: string;
+		permissionOverwrites?: ChannelCreationOverwrites[] | Collection<Snowflake, PermissionOverwrites>;
+		type?: GuildChannelType;
+		topic?: string;
+		nsfw?: boolean;
+		bitrate?: number;
+		userLimit?: number;
+		rateLimitPerUser?: number;
+		parent?: ChannelResolvable;
+		reason?: string;
+	}
+
 	type GuildChannelMessageNotifications = MessageNotifications
 		& 'INHERIT';
+
+	type GuildChannelType = 'category' | 'text' | 'voice' | 'news' | 'store';
 
 	type GuildEditData = {
 		name?: string;
