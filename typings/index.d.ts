@@ -2031,7 +2031,7 @@ declare module 'discord.js' {
 	}
 
 	interface AddGuildMemberOptions {
-		accessToken: String;
+		accessToken: string;
 		nick?: string;
 		roles?: Collection<Snowflake, Role> | RoleResolvable[];
 		mute?: boolean;
