@@ -53,6 +53,13 @@ class User {
     this.bot = Boolean(data.bot);
 
     /**
+     * Whether this is an Official Discord System user (part of the urgent message system)
+     * @type {?boolean}
+     * @name User#system
+     */
+    if (typeof data.system !== 'undefined') this.system = Boolean(data.system);
+
+    /**
      * The ID of the last message sent by the user, if one was sent
      * @type {?Snowflake}
      */

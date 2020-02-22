@@ -14,6 +14,7 @@ module.exports = {
   Constants: require('./util/Constants'),
   DiscordAPIError: require('./client/rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
+  MessageFlags: require('./util/MessageFlags'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
