@@ -152,10 +152,7 @@ class MessageEmbed {
      * The files of this embed
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
-    this.files = [];
-    if (data.files) {
-      this.files = data.files;
-    }
+    this.files = data.files || [];
   }
 
   /**
