@@ -81,6 +81,14 @@ class MessageAttachment {
     this.width = typeof data.width !== 'undefined' ? data.width : null;
   }
 
+  /**
+   * Whether or not this attachment has been marked as a spoiler
+   * @type {boolean}
+   */
+  get spoiler() {
+    return Util.basename(this.url).startsWith('SPOILER_');
+  }
+
   toJSON() {
     return Util.flatten(this);
   }

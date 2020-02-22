@@ -6,6 +6,7 @@ const MessageAttachment = require('./MessageAttachment');
 const { browser } = require('../util/Constants');
 const Util = require('../util/Util');
 const { RangeError } = require('../errors');
+const MessageFlags = require('../util/MessageFlags');
 
 /**
  * Represents a message to be sent to the API.
@@ -61,6 +62,16 @@ class APIMessage {
     const User = require('./User');
     const GuildMember = require('./GuildMember');
     return this.target instanceof User || this.target instanceof GuildMember;
+  }
+
+  /**
+   * Whether or not the target is a message
+   * @type {boolean}
+   * @readonly
+   */
+  get isMessage() {
+    const Message = require('./Message');
+    return this.target instanceof Message;
   }
 
   /**
@@ -126,6 +137,7 @@ class APIMessage {
 
     const content = this.makeContent();
     const tts = Boolean(this.options.tts);
+
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
       nonce = parseInt(this.options.nonce);
@@ -149,6 +161,12 @@ class APIMessage {
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
     }
 
+    let flags;
+    if (this.isMessage) {
+      // eslint-disable-next-line eqeqeq
+      flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+    }
+
     this.data = {
       content,
       tts,
@@ -157,6 +175,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
+      flags,
     };
     return this;
   }

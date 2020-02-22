@@ -24,8 +24,8 @@ v12 is still very much a work-in-progress, as we're aiming to make it the best i
 Only use it if you are fond of living life on the bleeding edge.
 
 ## About
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to interact with the
-[Discord API](https://discordapp.com/developers/docs/intro) very easily.
+discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+[Discord API](https://discordapp.com/developers/docs/intro).
 
 - Object-oriented
 - Predictable abstractions
@@ -37,23 +37,22 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discordjs/discord.js`  
-With voice support ([node-opus](https://www.npmjs.com/package/node-opus)): `npm install discordjs/discord.js node-opus`  
+With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discordjs/discord.js @discordjs/opus`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discordjs/discord.js opusscript`
 
 ### Audio engines
-The preferred audio engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred audio engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
+Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
+For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ### Optional packages
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for significantly faster WebSocket data inflation (`npm install zlib-sync`)
-- [zucc](https://www.npmjs.com/package/zucc) for significantly faster WebSocket data inflation (`npm install zucc`)
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
 - [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
     - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
     - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
-- [uws](https://www.npmjs.com/package/@discordjs/uws) for a much faster WebSocket connection (`npm install @discordjs/uws`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection when *not* using uws (`npm install bufferutil`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Example usage
 ```js
@@ -77,7 +76,7 @@ client.login('token');
 * [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 * [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
 * [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the WIP [Update Guide](https://github.com/discordjs/guide/blob/v12-changes/guide/additional-info/changes-in-v12.md) also including updated and removed items in the library.
+  See also the WIP [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html) also including updated and removed items in the library.
 * [Discord.js Discord server](https://discord.gg/bRCvFy9)
 * [Discord API Discord server](https://discord.gg/discord-api)
 * [GitHub](https://github.com/discordjs/discord.js)

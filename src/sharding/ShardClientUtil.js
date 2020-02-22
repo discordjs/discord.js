@@ -60,7 +60,7 @@ class ShardClientUtil {
    * @readonly
    */
   get count() {
-    return this.client.options.totalShardCount;
+    return this.client.options.shardCount;
   }
 
   /**
@@ -86,7 +86,7 @@ class ShardClientUtil {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array<*>>}
    * @example
-   * client.shard.fetchClientValues('guilds.size')
+   * client.shard.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
@@ -114,7 +114,7 @@ class ShardClientUtil {
    * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    * @example
-   * client.shard.broadcastEval('this.guilds.size')
+   * client.shard.broadcastEval('this.guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}

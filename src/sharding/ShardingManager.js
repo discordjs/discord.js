@@ -229,13 +229,13 @@ class ShardingManager extends EventEmitter {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array<*>>}
    * @example
-   * manager.fetchClientValues('guilds.size')
+   * manager.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
   fetchClientValues(prop) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
-    if (this.shards.size !== this.totalShards) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
+    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
     const promises = [];
     for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
     return Promise.all(promises);

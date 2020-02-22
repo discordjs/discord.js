@@ -3,6 +3,10 @@
 const secretbox = require('../util/Secretbox');
 const EventEmitter = require('events');
 
+// The delay between packets when a user is considered to have stopped speaking
+// https://github.com/discordjs/discord.js/issues/3524#issuecomment-540373200
+const DISCORD_SPEAKING_DELAY = 250;
+
 class Readable extends require('stream').Readable { _read() {} } // eslint-disable-line no-empty-function
 
 class PacketHandler extends EventEmitter {
@@ -11,6 +15,7 @@ class PacketHandler extends EventEmitter {
     this.nonce = Buffer.alloc(24);
     this.receiver = receiver;
     this.streams = new Map();
+    this.speakingTimeouts = new Map();
   }
 
   get connection() {
@@ -63,20 +68,38 @@ class PacketHandler extends EventEmitter {
         if (byte === 0) continue;
         offset += 1 + (0b1111 & (byte >> 4));
       }
-      while (packet[offset] === 0) offset++;
+      // Skip over undocumented Discord byte
+      offset++;
+
       packet = packet.slice(offset);
     }
 
     return packet;
   }
 
-  userFromSSRC(ssrc) { return this.connection.client.users.get(this.connection.ssrcMap.get(ssrc)); }
-
   push(buffer) {
     const ssrc = buffer.readUInt32BE(8);
-    const user = this.userFromSSRC(ssrc);
-    if (!user) return;
-    let stream = this.streams.get(user.id);
+    const userStat = this.connection.ssrcMap.get(ssrc);
+    if (!userStat) return;
+
+    let speakingTimeout = this.speakingTimeouts.get(ssrc);
+    if (typeof speakingTimeout === 'undefined') {
+      this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: userStat.speaking });
+      speakingTimeout = this.receiver.connection.client.setTimeout(() => {
+        try {
+          this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: 0 });
+          this.receiver.connection.client.clearTimeout(speakingTimeout);
+          this.speakingTimeouts.delete(ssrc);
+        } catch (ex) {
+          // Connection already closed, ignore
+        }
+      }, DISCORD_SPEAKING_DELAY);
+      this.speakingTimeouts.set(ssrc, speakingTimeout);
+    } else {
+      speakingTimeout.refresh();
+    }
+
+    let stream = this.streams.get(userStat.userID);
     if (!stream) return;
     stream = stream.stream;
     const opusPacket = this.parseBuffer(buffer);

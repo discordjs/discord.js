@@ -1,43 +1,66 @@
 'use strict';
 
-const DataStore = require('./DataStore');
+const BaseManager = require('./BaseManager');
 const DataResolver = require('../util/DataResolver');
 const { Events } = require('../util/Constants');
 const Guild = require('../structures/Guild');
+const GuildChannel = require('../structures/GuildChannel');
+const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 
 /**
- * Stores guilds.
- * @extends {DataStore}
+ * Manages API methods for Guilds and stores their cache.
+ * @extends {BaseManager}
  */
-class GuildStore extends DataStore {
+class GuildManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, Guild);
   }
 
   /**
+   * The cache of this Manager
+   * @type {Collection<Snowflake, Guild>}
+   * @name GuildManager#cache
+   */
+
+  /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
+   * * A GuildChannel object
+   * * A Role object
    * * A Snowflake
-   * @typedef {Guild|Snowflake} GuildResolvable
+   * @typedef {Guild|GuildChannel|GuildMember|Role|Snowflake} GuildResolvable
    */
 
   /**
    * Resolves a GuildResolvable to a Guild object.
    * @method resolve
-   * @memberof GuildStore
+   * @memberof GuildManager
    * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Guild}
    */
+  resolve(guild) {
+    if (guild instanceof GuildChannel ||
+      guild instanceof GuildMember ||
+      guild instanceof Role) return super.resolve(guild.guild);
+    return super.resolve(guild);
+  }
 
   /**
    * Resolves a GuildResolvable to a Guild ID string.
    * @method resolveID
-   * @memberof GuildStore
+   * @memberof GuildManager
    * @instance
    * @param {GuildResolvable} guild The guild resolvable to identify
    * @returns {?Snowflake}
    */
+  resolveID(guild) {
+    if (guild instanceof GuildChannel ||
+      guild instanceof GuildMember ||
+      guild instanceof Role) return super.resolveID(guild.guild.id);
+    return super.resolveID(guild);
+  }
 
   /**
    * Creates a guild.
@@ -53,7 +76,7 @@ class GuildStore extends DataStore {
       return new Promise((resolve, reject) =>
         this.client.api.guilds.post({ data: { name, region, icon } })
           .then(data => {
-            if (this.client.guilds.has(data.id)) return resolve(this.client.guilds.get(data.id));
+            if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
 
             const handleGuild = guild => {
               if (guild.id === data.id) {
@@ -78,4 +101,4 @@ class GuildStore extends DataStore {
   }
 }
 
-module.exports = GuildStore;
+module.exports = GuildManager;

@@ -13,10 +13,10 @@ const APIMessage = require('../APIMessage');
 class TextBasedChannel {
   constructor() {
     /**
-     * A collection containing the messages sent to this channel
-     * @type {MessageStore<Snowflake, Message>}
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
      */
-    this.messages = new MessageStore(this);
+    this.messages = new MessageManager(this);
 
     /**
      * The ID of the last message in the channel, if one was sent
@@ -37,7 +37,7 @@ class TextBasedChannel {
    * @readonly
    */
   get lastMessage() {
-    return this.messages.get(this.lastMessageID) || null;
+    return this.messages.cache.get(this.lastMessageID) || null;
   }
 
   /**
@@ -306,19 +306,16 @@ class TextBasedChannel {
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
         await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
-        const message = this.client.actions.MessageDelete.handle({
-          channel_id: this.id,
-          id: messageIDs[0],
-        }).message;
-        if (message) return new Collection([[message.id, message]]);
-        return new Collection();
+        const message = this.client.actions.MessageDelete.getMessage({
+          message_id: messageIDs[0],
+        }, this);
+        return message ? new Collection([[message.id, message]]) : new Collection();
       }
       await this.client.api.channels[this.id].messages['bulk-delete']
         .post({ data: { messages: messageIDs } });
-      return this.client.actions.MessageDeleteBulk.handle({
-        channel_id: this.id,
-        ids: messageIDs,
-      }).messages;
+      return messageIDs.reduce((col, id) => col.set(id, this.client.actions.MessageDeleteBulk.getMessage({
+        message_id: id,
+      }, this)), new Collection());
     }
     if (!isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
@@ -353,4 +350,4 @@ class TextBasedChannel {
 module.exports = TextBasedChannel;
 
 // Fixes Circular
-const MessageStore = require('../../stores/MessageStore');
+const MessageManager = require('../../managers/MessageManager');

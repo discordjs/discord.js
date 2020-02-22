@@ -54,6 +54,11 @@ class VoiceState extends Base {
      */
     this.sessionID = data.session_id;
     /**
+     * Whether this member is streaming using "Go Live"
+     * @type {boolean}
+     */
+    this.streaming = data.self_stream || false;
+    /**
      * The ID of the voice channel that this member is in
      * @type {?Snowflake}
      */
@@ -67,7 +72,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get member() {
-    return this.guild.members.get(this.id) || null;
+    return this.guild.members.cache.get(this.id) || null;
   }
 
   /**
@@ -76,7 +81,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.get(this.channelID) || null;
+    return this.guild.channels.cache.get(this.channelID) || null;
   }
 
   /**

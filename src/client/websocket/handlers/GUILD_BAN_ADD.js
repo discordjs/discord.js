@@ -3,8 +3,8 @@
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
-  const guild = client.guilds.get(data.guild_id);
-  const user = client.users.get(data.user.id);
+  const guild = client.guilds.cache.get(data.guild_id);
+  const user = client.users.add(data.user);
 
   /**
    * Emitted whenever a member is banned from a guild.
