@@ -556,6 +556,7 @@ declare module 'discord.js' {
 		public readonly splashURL: string;
 		public readonly suppressEveryone: boolean;
 		public readonly systemChannel: GuildChannel;
+		public systemChannelFlags: Readonly<SystemChannelFlags>;
 		public systemChannelID: Snowflake;
 		public vanityURLCode: string;
 		public readonly verified: boolean;
@@ -612,6 +613,7 @@ declare module 'discord.js' {
 		public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
 		public setSplash(splash: Base64Resolvable, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable, reason?: string): Promise<Guild>;
+		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
 		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
 		public sync(): void;
 		public toString(): string;
@@ -1296,6 +1298,11 @@ declare module 'discord.js' {
 		public setBitrate(bitrate: number | 'auto'): void;
 	}
 
+	export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
+		public static FLAGS: Record<SystemChannelFlagsString, number>;
+		public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString>): number;
+	}
+
 	export class Team {
 		constructor(client: Client, data: object);
 		public readonly client: Client;
@@ -1967,6 +1974,7 @@ declare module 'discord.js' {
 		explicitContentFilter?: number;
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
+		systemChannelFlags?: SystemChannelFlagsResolvable;
 		afkTimeout?: number;
 		banner?: Base64Resolvable;
 		icon?: Base64Resolvable;
@@ -2304,6 +2312,10 @@ declare module 'discord.js' {
 	};
 
 	type StringResolvable = string | string[] | any;
+
+	type SystemChannelFlagsString = 'WELCOME_MESSAGE_DISABLED' | 'BOOST_MESSAGE_DISABLED';
+
+	type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
 
 	type UserResolvable = User | Snowflake | Message | Guild | GuildMember;
 

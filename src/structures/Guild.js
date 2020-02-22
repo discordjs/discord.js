@@ -10,6 +10,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
+const SystemChannelFlags = require('../util/SystemChannelFlags');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -184,6 +185,12 @@ class Guild {
      */
     this.defaultMessageNotifications = Constants.DefaultMessageNotifications[data.default_message_notifications] ||
       data.default_message_notifications;
+
+    /**
+     * The value for the guild's system channel flags
+     * @type {Readonly<SystemChannelFlags>}
+     */
+    this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
     /**
      * The type of premium tier:
@@ -891,6 +898,7 @@ class Guild {
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    */
 
   /**
@@ -931,6 +939,9 @@ class Guild {
         Constants.DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
         Number(data.defaultMessageNotifications);
     }
+    if (typeof data.systemChannelFlags !== 'undefined') {
+      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
+    }
     return this.client.rest.methods.updateGuild(this, _data, reason);
   }
 
@@ -963,6 +974,16 @@ class Guild {
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications }, reason);
+  }
+
+  /**
+   * Edits the flags of the default message notifications of the guild.
+   * @param {SystemChannelFlagsResolvable} systemChannelFlags The new flags for the default message notifications
+   * @param {string} [reason] Reason for changing the flags of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setSystemChannelFlags(systemChannelFlags, reason) {
+    return this.edit({ systemChannelFlags }, reason);
   }
 
   /**
