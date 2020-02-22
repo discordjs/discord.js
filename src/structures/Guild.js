@@ -275,6 +275,20 @@ class Guild {
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
 
+    /**
+     * The ID of the rules channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.rulesChannelID = data.rules_channel_id;
+
+    /**
+     * The ID of the public updates channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.publicUpdatesChannelID = data.public_updates_channel_id;
+
     if (data.members) {
       this.members.clear();
       for (const guildUser of data.members) this._addMember(guildUser, false);
@@ -556,6 +570,26 @@ class Guild {
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * Rules channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get rulesChannel() {
+    return this.client.channels.get(this.rulesChannelID) || null;
+  }
+
+  /**
+   * Public updates channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get publicUpdatesChannel() {
+    return this.client.channels.get(this.publicUpdatesChannelID) || null;
   }
 
   /**

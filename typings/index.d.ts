@@ -550,8 +550,12 @@ declare module 'discord.js' {
 		public premiumTier: PremiumTier;
 		public readonly position: number;
 		public presences: Collection<Snowflake, Presence>;
+		public readonly publicUpdatesChannel: TextChannel | null;
+		public publicUpdatesChannelID: Snowflake | null;
 		public region: string;
 		public roles: Collection<Snowflake, Role>;
+		public readonly rulesChannel: TextChannel | null;
+		public rulesChannelID: Snowflake | null;
 		public splash: string;
 		public readonly splashURL: string;
 		public readonly suppressEveryone: boolean;
