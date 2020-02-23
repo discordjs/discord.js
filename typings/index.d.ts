@@ -1051,8 +1051,6 @@ declare module 'discord.js' {
 
 	export class MessageEmbed {
 		constructor(data?: MessageEmbed | MessageEmbedOptions);
-		private _apiTransform(): MessageEmbedOptions;
-
 		public author: { name?: string; url?: string; iconURL?: string; proxyIconURL?: string } | null;
 		public color: number;
 		public readonly createdAt: Date | null;
