@@ -38,7 +38,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 - 100% coverage of the Discord API
 
 ## Installation
-**Node.js 10.2.0 or newer is required.**  
+**Node.js 11.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discordjs/discord.js`  

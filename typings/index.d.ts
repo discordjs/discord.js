@@ -1070,8 +1070,7 @@ declare module 'discord.js' {
 		public type: string;
 		public url: string;
 		public readonly video: { url?: string; proxyURL?: string; height?: number; width?: number } | null;
-		public addBlankField(inline?: boolean): this;
-		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
+		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
 		public setColor(color: ColorResolvable): this;
@@ -1082,10 +1081,11 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public spliceField(index: number, deleteCount: number, name?: StringResolvable, value?: StringResolvable, inline?: boolean): this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[] | EmbedField[][]): this;
 		public toJSON(): object;
 
-		public static checkField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
+		public static normalizeField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
+		public static normalizeFields(...fields: EmbedField[] | EmbedField[][]): Required<EmbedField>[];
 	}
 
 	export class MessageMentions {
