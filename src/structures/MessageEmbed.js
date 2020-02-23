@@ -360,7 +360,7 @@ class MessageEmbed {
   }
 
   /**
-   * Check for valid field input and resolves strings.
+   * Normalizes field input and resolves strings.
    * @param  {...EmbedField|EmbedField[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
