@@ -2182,8 +2182,8 @@ declare module 'discord.js' {
 	}
 
 	interface EmbedField {
-		name: StringResolvable;
-		value: StringResolvable;
+		name: string;
+		value: string;
 		inline?: boolean;
 	}
 
