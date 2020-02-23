@@ -2190,7 +2190,7 @@ declare module 'discord.js' {
 	interface EmbedFieldData {
 		name: StringResolvable;
 		value: StringResolvable;
-		inline?: boolean
+		inline?: boolean;
 	}
 
 	type EmojiIdentifierResolvable = string | EmojiResolvable;
