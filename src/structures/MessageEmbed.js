@@ -345,7 +345,7 @@ class MessageEmbed {
   }
 
   /**
-   * Checks for valid field input and resolves strings
+   * Normalizes field input and resolves strings.
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -360,7 +360,7 @@ class MessageEmbed {
   }
 
   /**
-   * Check for valid field input and resolves strings
+   * Check for valid field input and resolves strings.
    * @param  {...EmbedField|EmbedField[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
