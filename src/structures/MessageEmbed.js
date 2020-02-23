@@ -80,7 +80,7 @@ class MessageEmbed {
      */
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url,
-      proxyURL: data.thumbnail.proxy_url,
+      proxyURL: data.thumbnail.proxyURL || data.thumbnail.proxy_url,
       height: data.thumbnail.height,
       width: data.thumbnail.width,
     } : null;
@@ -99,7 +99,7 @@ class MessageEmbed {
      */
     this.image = data.image ? {
       url: data.image.url,
-      proxyURL: data.image.proxy_url,
+      proxyURL: data.image.proxyURL || data.image.proxy_url,
       height: data.image.height,
       width: data.image.width,
     } : null;
@@ -119,7 +119,7 @@ class MessageEmbed {
      */
     this.video = data.video ? {
       url: data.video.url,
-      proxyURL: data.video.proxy_url,
+      proxyURL: data.video.proxyURL || data.video.proxy_url,
       height: data.video.height,
       width: data.video.width,
     } : null;
@@ -140,7 +140,7 @@ class MessageEmbed {
       name: data.author.name,
       url: data.author.url,
       iconURL: data.author.iconURL || data.author.icon_url,
-      proxyIconURL: data.author.proxyIconUrl || data.author.proxy_icon_url,
+      proxyIconURL: data.author.proxyIconURL || data.author.proxy_icon_url,
     } : null;
 
     /**

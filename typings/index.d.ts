@@ -2442,11 +2442,11 @@ declare module 'discord.js' {
 		color?: ColorResolvable;
 		fields?: EmbedField[];
 		files?: (MessageAttachment | string | FileOptions)[];
-		author?: Omit<MessageEmbedAuthor, 'proxyIconURL'> & { icon_url?: string };
-		thumbnail?: Omit<Partial<MessageEmbedThumbnail>, 'proxyURL'>;
+		author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
+		thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
 		image?: Partial<MessageEmbedImage> & { proxy_url?: string };
-		video?: Omit<MessageEmbedVideo, 'proxyURL'>;
-		footer?: Omit<MessageEmbedFooter, 'proxyIconURL'> & { icon_url?: string };
+		video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
+		footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
 	}
 
 	interface MessageEmbedAuthor {
