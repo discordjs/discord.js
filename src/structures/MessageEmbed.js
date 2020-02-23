@@ -188,7 +188,7 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a fields to the embed (max 25).
+   * Adds fields to the embed (max 25).
    * @param {...EmbedField|EmbedField[]} fields The fields to add
    * @returns {MessageEmbed}
    */
