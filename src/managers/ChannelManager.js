@@ -6,6 +6,7 @@ const { Events } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
+ * @extends {BaseManager}
  */
 class ChannelManager extends BaseManager {
   constructor(client, iterable) {
@@ -14,9 +15,8 @@ class ChannelManager extends BaseManager {
 
   /**
   * The cache of Channels
-  * @property {Collection<Snowflake, Channel>} cache
-  * @memberof ChannelManager
-  * @instance
+  * @type {Collection<Snowflake, Channel>}
+  * @name ChannelManager#cache
   */
 
   add(data, guild, cache = true) {

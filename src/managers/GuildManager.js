@@ -9,6 +9,8 @@ const GuildChannel = require('../structures/GuildChannel');
 const GuildMember = require('../structures/GuildMember');
 const Permissions = require('../util/Permissions');
 const { resolveColor } = require('../util/Util');
+const GuildEmoji = require('../structures/GuildEmoji');
+const Invite = require('../structures/Invite');
 const Role = require('../structures/Role');
 
 /**
@@ -22,18 +24,19 @@ class GuildManager extends BaseManager {
 
   /**
    * The cache of this Manager
-   * @property {Collection<Snowflake, Guild>} cache
-   * @memberof GuildManager
-   * @instance
+   * @type {Collection<Snowflake, Guild>}
+   * @name GuildManager#cache
    */
 
   /**
    * Data that resolves to give a Guild object. This can be:
    * * A Guild object
    * * A GuildChannel object
+   * * A GuildEmoji object
    * * A Role object
    * * A Snowflake
-   * @typedef {Guild|GuildChannel|GuildMember|Role|Snowflake} GuildResolvable
+   * * An Invite object
+   * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake|Invite} GuildResolvable
    */
 
   /**
@@ -86,7 +89,9 @@ class GuildManager extends BaseManager {
   resolve(guild) {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
-      guild instanceof Role) return super.resolve(guild.guild);
+      guild instanceof GuildEmoji ||
+      guild instanceof Role ||
+      (guild instanceof Invite && guild.guild)) return super.resolve(guild.guild);
     return super.resolve(guild);
   }
 
@@ -101,7 +106,9 @@ class GuildManager extends BaseManager {
   resolveID(guild) {
     if (guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
-      guild instanceof Role) return super.resolveID(guild.guild.id);
+      guild instanceof GuildEmoji ||
+      guild instanceof Role ||
+      (guild instanceof Invite && guild.guild)) return super.resolveID(guild.guild.id);
     return super.resolveID(guild);
   }
 

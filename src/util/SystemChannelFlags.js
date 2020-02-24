@@ -8,16 +8,16 @@ const BitField = require('./BitField');
  * and by setting their corresponding flags you are disabling them</info>
  * @extends {BitField}
  */
-class SystemChannelFlags extends BitField {
-  /**
-   * Data that can be resolved to give a sytem channel flag bitfield. This can be:
-   * * A string (see {@link SystemChannelFlags.FLAGS})
-   * * A sytem channel flag
-   * * An instance of SystemChannelFlags
-   * * An Array of SystemChannelFlagsResolvable
-   * @typedef {string|number|SystemChannelFlags|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
-   */
-}
+class SystemChannelFlags extends BitField {}
+
+/**
+ * Data that can be resolved to give a sytem channel flag bitfield. This can be:
+ * * A string (see {@link SystemChannelFlags.FLAGS})
+ * * A sytem channel flag
+ * * An instance of SystemChannelFlags
+ * * An Array of SystemChannelFlagsResolvable
+ * @typedef {string|number|SystemChannelFlags|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
+ */
 
 /**
  * Numeric system channel flags. All available properties:

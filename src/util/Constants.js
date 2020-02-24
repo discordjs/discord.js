@@ -61,8 +61,6 @@ exports.DefaultOptions = {
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
-   * @property {boolean} [compress=false] Whether to compress data sent on the connection
-   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
@@ -319,6 +317,8 @@ exports.PartialTypes = keyMirror([
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
+ * * INVITE_CREATE
+ * * INVITE_DELETE
  * * GUILD_MEMBER_ADD
  * * GUILD_MEMBER_REMOVE
  * * GUILD_MEMBER_UPDATE
@@ -341,8 +341,8 @@ exports.PartialTypes = keyMirror([
  * * MESSAGE_REACTION_ADD
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
+ * * MESSAGE_REACTION_REMOVE_EMOJI
  * * USER_UPDATE
- * * USER_SETTINGS_UPDATE
  * * PRESENCE_UPDATE
  * * TYPING_START
  * * VOICE_STATE_UPDATE
@@ -404,6 +404,8 @@ exports.WSEvents = keyMirror([
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
  * * CHANNEL_FOLLOW_ADD
+ * * GUILD_DISCOVERY_DISQUALIFIED
+ * * GUILD_DISCOVERY_REQUALIFIED
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -420,9 +422,14 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
   'CHANNEL_FOLLOW_ADD',
+  // 13 isn't yet documented
+  null,
+  'GUILD_DISCOVERY_DISQUALIFIED',
+  'GUILD_DISCOVERY_REQUALIFIED',
 ];
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING

@@ -301,7 +301,8 @@ class Message extends Base {
    * @readonly
    */
   get cleanContent() {
-    return Util.cleanContent(this.content, this);
+    // eslint-disable-next-line eqeqeq
+    return this.content != null ? Util.cleanContent(this.content, this) : null;
   }
 
   /**
@@ -482,7 +483,9 @@ class Message extends Base {
    *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete({ timeout = 0, reason } = {}) {
+  delete(options = {}) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    const { timeout = 0, reason } = options;
     if (timeout <= 0) {
       return this.channel.messages.delete(this.id, reason).then(() => this);
     } else {
@@ -527,6 +530,23 @@ class Message extends Base {
   fetchWebhook() {
     if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
+  }
+
+  /**
+   * Suppresses or unsuppresses embeds on a message
+   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds(suppress = true) {
+    const flags = new MessageFlags(this.flags.bitfield);
+
+    if (suppress) {
+      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    } else {
+      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    }
+
+    return this.edit({ flags });
   }
 
   /**

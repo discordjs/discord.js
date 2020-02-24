@@ -67,80 +67,107 @@ class MessageEmbed {
     this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
 
     /**
-     * The thumbnail of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedThumbnail
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
      * @property {number} height Height of this thumbnail
      * @property {number} width Width of this thumbnail
      */
+
+    /**
+     * The thumbnail of this embed (if there is one)
+     * @type {?MessageEmbedThumbnail}
+     */
     this.thumbnail = data.thumbnail ? {
       url: data.thumbnail.url,
-      proxyURL: data.thumbnail.proxy_url,
+      proxyURL: data.thumbnail.proxyURL || data.thumbnail.proxy_url,
       height: data.thumbnail.height,
       width: data.thumbnail.width,
     } : null;
 
     /**
-     * The image of this embed, if there is one
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedImage
      * @property {string} url URL for this image
      * @property {string} proxyURL ProxyURL for this image
      * @property {number} height Height of this image
      * @property {number} width Width of this image
      */
+
+    /**
+     * The image of this embed, if there is one
+     * @type {?MessageEmbedImage}
+     */
     this.image = data.image ? {
       url: data.image.url,
-      proxyURL: data.image.proxy_url,
+      proxyURL: data.image.proxyURL || data.image.proxy_url,
       height: data.image.height,
       width: data.image.width,
     } : null;
 
     /**
-     * The video of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedVideo
      * @property {string} url URL of this video
      * @property {string} proxyURL ProxyURL for this video
      * @property {number} height Height of this video
      * @property {number} width Width of this video
+     */
+
+    /**
+     * The video of this embed (if there is one)
+     * @type {?MessageEmbedVideo}
      * @readonly
      */
     this.video = data.video ? {
       url: data.video.url,
-      proxyURL: data.video.proxy_url,
+      proxyURL: data.video.proxyURL || data.video.proxy_url,
       height: data.video.height,
       width: data.video.width,
     } : null;
 
     /**
-     * The author of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedAuthor
      * @property {string} name The name of this author
      * @property {string} url URL of this author
      * @property {string} iconURL URL of the icon for this author
      * @property {string} proxyIconURL Proxied URL of the icon for this author
      */
+
+    /**
+     * The author of this embed (if there is one)
+     * @type {?MessageEmbedAuthor}
+     */
     this.author = data.author ? {
       name: data.author.name,
       url: data.author.url,
       iconURL: data.author.iconURL || data.author.icon_url,
-      proxyIconURL: data.author.proxyIconUrl || data.author.proxy_icon_url,
+      proxyIconURL: data.author.proxyIconURL || data.author.proxy_icon_url,
     } : null;
 
     /**
-     * The provider of this embed (if there is one)
-     * @type {?Object}
+     * @typedef {Object} MessageEmbedProvider
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
      */
-    this.provider = data.provider;
 
     /**
-     * The footer of this embed
-     * @type {?Object}
+     * The provider of this embed (if there is one)
+     * @type {?MessageEmbedProvider}
+     */
+    this.provider = data.provider ? {
+      name: data.provider.name,
+      url: data.provider.name,
+    } : null;
+
+    /**
+     * @typedef {Object} MessageEmbedFooter
      * @property {string} text The text of this footer
      * @property {string} iconURL URL of the icon for this footer
      * @property {string} proxyIconURL Proxied URL of the icon for this footer
+     */
+
+    /**
+     * The footer of this embed
+     * @type {?MessageEmbedFooter}
      */
     this.footer = data.footer ? {
       text: data.footer.text,
@@ -152,10 +179,7 @@ class MessageEmbed {
      * The files of this embed
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
-    this.files = [];
-    if (data.files) {
-      this.files = data.files;
-    }
+    this.files = data.files || [];
   }
 
   /**
@@ -191,41 +215,24 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * Adds fields to the embed (max 25).
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
    * @returns {MessageEmbed}
    */
-  addField(name, value, inline) {
-    this.fields.push(this.constructor.checkField(name, value, inline));
+  addFields(...fields) {
+    this.fields.push(...this.constructor.normalizeFields(fields));
     return this;
-  }
-
-  /**
-   * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed}
-   */
-  addBlankField(inline) {
-    return this.addField('\u200B', '\u200B', inline);
   }
 
   /**
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {StringResolvable} [name] The name of the field
-   * @param {StringResolvable} [value] The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * @param {...EmbedFieldData|EmbedFieldData[]} [fields] The replacing field objects
    * @returns {MessageEmbed}
    */
-  spliceField(index, deleteCount, name, value, inline) {
-    if (name && value) {
-      this.fields.splice(index, deleteCount, this.constructor.checkField(name, value, inline));
-    } else {
-      this.fields.splice(index, deleteCount);
-    }
+  spliceFields(index, deleteCount, ...fields) {
+    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
     return this;
   }
 
@@ -337,16 +344,11 @@ class MessageEmbed {
     return this;
   }
 
-  toJSON() {
-    return Util.flatten(this, { hexColor: true });
-  }
-
   /**
-   * Transforms the embed object to be processed.
+   * Transforms the embed to a plain object.
    * @returns {Object} The raw data of this embed
-   * @private
    */
-  _apiTransform() {
+  toJSON() {
     return {
       title: this.title,
       type: 'rich',
@@ -370,18 +372,34 @@ class MessageEmbed {
   }
 
   /**
-   * Checks for valid field input and resolves strings
+   * Normalizes field input and resolves strings.
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
    */
-  static checkField(name, value, inline = false) {
+  static normalizeField(name, value, inline = false) {
     name = Util.resolveString(name);
     if (!name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
     if (!value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
+  }
+
+  /**
+    * @typedef {Object} EmbedFieldData
+    * @property {StringResolvable} name The name of this field
+    * @property {StringResolvable} value The value of this field
+    * @property {boolean} [inline] If this field will be displayed inline
+    */
+
+  /**
+   * Normalizes field input and resolves strings.
+   * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
+   * @returns {EmbedField[]}
+   */
+  static normalizeFields(...fields) {
+    return fields.flat(2).map(({ name, value, inline }) => this.normalizeField(name, value, inline));
   }
 }
 

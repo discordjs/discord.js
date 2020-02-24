@@ -19,9 +19,8 @@ class VoiceStateManager extends BaseManager {
 
   /**
    * The cache of this manager
-   * @property {Collection<Snowflake, VoiceState>} cache
-   * @memberof VoiceStateManager
-   * @instance
+   * @type {Collection<Snowflake, VoiceState>}
+   * @name VoiceStateManager#cache
    */
 
   add(data, cache = true) {

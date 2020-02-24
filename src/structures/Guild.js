@@ -42,7 +42,7 @@ class Guild extends Base {
     this.members = new GuildMemberManager(this);
 
     /**
-     * A manager of the members belonging to this guild
+     * A manager of the channels belonging to this guild
      * @type {GuildChannelManager}
      */
     this.channels = new GuildChannelManager(this);
@@ -321,6 +321,20 @@ class Guild extends Base {
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
 
+    /**
+     * The ID of the rules channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.rulesChannelID = data.rules_channel_id;
+
+    /**
+     * The ID of the public updates channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.publicUpdatesChannelID = data.public_updates_channel_id;
+
     if (data.channels) {
       this.channels.cache.clear();
       for (const rawChannel of data.channels) {
@@ -503,6 +517,26 @@ class Guild extends Base {
    */
   get embedChannel() {
     return this.client.channels.cache.get(this.embedChannelID) || null;
+  }
+
+  /**
+   * Rules channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get rulesChannel() {
+    return this.client.channels.cache.get(this.rulesChannelID) || null;
+  }
+
+  /**
+   * Public updates channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get publicUpdatesChannel() {
+    return this.client.channels.cache.get(this.publicUpdatesChannelID) || null;
   }
 
   /**
@@ -871,7 +905,7 @@ class Guild extends Base {
         Number(data.defaultMessageNotifications);
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
-      _data.systemChannelFlags = SystemChannelFlags.resolve(data.systemChannelFlags);
+      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
     }
     return this.client.api.guilds(this.id).patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
