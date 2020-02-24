@@ -1623,7 +1623,6 @@ declare module 'discord.js' {
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
 		public token: string;
-		public readonly client: this;
 	}
 
 	export class WebSocketManager extends EventEmitter {
