@@ -374,13 +374,13 @@ class GuildAuditLogsEntry {
       case Actions.CHANNEL_OVERWRITE_DELETE:
         switch (data.options.type) {
           case 'member':
-            this.extra = guild.members.cache.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id };
+            this.extra = guild.members.cache.get(data.options.id) ||
+              { id: data.options.id, type: 'member' };
             break;
 
           case 'role':
-            this.extra = guild.roles.cache.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id, name: data.options.role_name };
+            this.extra = guild.roles.cache.get(data.options.id) ||
+              { id: data.options.id, name: data.options.role_name, type: 'role' };
             break;
 
           default:
