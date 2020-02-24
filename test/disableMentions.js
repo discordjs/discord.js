@@ -34,8 +34,6 @@ client.on('message', message => {
     const [command, ...args] = message.content.substr(prefix.length).split(' ');
     
     // Clean content and log each character
-    // If message includes a mention and disableMentions option is set, this breaks all mentions
-    // As a test, send `!test1 @here`
     console.log(Util.cleanContent(args.join(' '), message).split(''));
 
     if (command === 'test1')
