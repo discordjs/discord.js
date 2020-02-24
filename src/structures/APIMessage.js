@@ -88,6 +88,13 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
+    const disableMentions = typeof this.options.disableMentions === 'undefined' ?
+        this.target.client.options.disableMentions :
+        this.options.disableMentions;
+    if (disableMentions) {
+      content = (content || '').replace(/@/g, '@\u200b');
+    }
+
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
@@ -111,13 +118,6 @@ class APIMessage {
         }
       } else if (mentionPart) {
         content = `${mentionPart}${content || ''}`;
-      }
-
-      const disableMentions = typeof this.options.disableMentions === 'undefined' ?
-        this.target.client.options.disableMentions :
-        this.options.disableMentions;
-      if (disableMentions) {
-        content = (content || '').replace(/@/g, '@\u200b');
       }
 
       if (isSplit) {
