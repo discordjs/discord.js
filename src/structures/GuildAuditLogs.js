@@ -1,10 +1,11 @@
 'use strict';
 
 const Collection = require('../util/Collection');
+const Integration = require('./Integration');
 const Snowflake = require('../util/Snowflake');
 const Webhook = require('./Webhook');
 const Util = require('../util/Util');
-const PartialTypes = require('../util/Constants');
+const { PartialTypes } = require('../util/Constants');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:
@@ -16,6 +17,7 @@ const PartialTypes = require('../util/Constants');
  * * WEBHOOK
  * * EMOJI
  * * MESSAGE
+ * * INTEGRATION
  * @typedef {string} AuditLogTargetType
  */
 
@@ -34,6 +36,7 @@ const Targets = {
   WEBHOOK: 'WEBHOOK',
   EMOJI: 'EMOJI',
   MESSAGE: 'MESSAGE',
+  INTEGRATION: 'INTEGRATION',
   UNKNOWN: 'UNKNOWN',
 };
 
@@ -142,6 +145,18 @@ class GuildAuditLogs {
     }
 
     /**
+     * Cached integrations
+     * @type {Collection<Snowflake, Integration>}
+     * @private
+     */
+    this.integrations = new Collection();
+    if (data.integrations) {
+      for (const integration of data.integrations) {
+        this.integrations.set(integration.id, new Integration(guild.client, integration, guild));
+      }
+    }
+
+    /**
      * The entries for this guild's audit logs
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
@@ -169,9 +184,10 @@ class GuildAuditLogs {
    * * An emoji
    * * An invite
    * * A webhook
+   * * An integration
    * * An object with an id key if target was deleted
    * * An object where the keys represent either the new value or the old value
-   * @typedef {?Object|Guild|User|Role|GuildEmoji|Invite|Webhook} AuditLogEntryTarget
+   * @typedef {?Object|Guild|User|Role|GuildEmoji|Invite|Webhook|Integration} AuditLogEntryTarget
    */
 
   /**
@@ -188,6 +204,7 @@ class GuildAuditLogs {
     if (target < 60) return Targets.WEBHOOK;
     if (target < 70) return Targets.EMOJI;
     if (target < 80) return Targets.MESSAGE;
+    if (target < 90) return Targets.INTEGRATION;
     return Targets.UNKNOWN;
   }
 
@@ -210,10 +227,13 @@ class GuildAuditLogs {
       Actions.CHANNEL_CREATE,
       Actions.CHANNEL_OVERWRITE_CREATE,
       Actions.MEMBER_BAN_REMOVE,
+      Actions.BOT_ADD,
       Actions.ROLE_CREATE,
       Actions.INVITE_CREATE,
       Actions.WEBHOOK_CREATE,
       Actions.EMOJI_CREATE,
+      Actions.MESSAGE_PIN,
+      Actions.INTEGRATION_CREATE,
     ].includes(action)) return 'CREATE';
 
     if ([
@@ -222,11 +242,15 @@ class GuildAuditLogs {
       Actions.MEMBER_KICK,
       Actions.MEMBER_PRUNE,
       Actions.MEMBER_BAN_ADD,
+      Actions.MEMBER_DISCONNECT,
       Actions.ROLE_DELETE,
       Actions.INVITE_DELETE,
       Actions.WEBHOOK_DELETE,
       Actions.EMOJI_DELETE,
       Actions.MESSAGE_DELETE,
+      Actions.MESSAGE_BULK_DELETE,
+      Actions.MESSAGE_UNPIN,
+      Actions.INTEGRATION_DELETE,
     ].includes(action)) return 'DELETE';
 
     if ([
@@ -235,10 +259,12 @@ class GuildAuditLogs {
       Actions.CHANNEL_OVERWRITE_UPDATE,
       Actions.MEMBER_UPDATE,
       Actions.MEMBER_ROLE_UPDATE,
+      Actions.MEMBER_MOVE,
       Actions.ROLE_UPDATE,
       Actions.INVITE_UPDATE,
       Actions.WEBHOOK_UPDATE,
       Actions.EMOJI_UPDATE,
+      Actions.INTEGRATION_UPDATE,
     ].includes(action)) return 'UPDATE';
 
     return 'ALL';
@@ -312,49 +338,73 @@ class GuildAuditLogsEntry {
      * @type {?Object|Role|GuildMember}
      */
     this.extra = null;
-    if (data.options) {
-      if (data.action_type === Actions.MEMBER_PRUNE) {
+    switch (data.action_type) {
+      case Actions.MEMBER_PRUNE:
         this.extra = {
-          removed: data.options.members_removed,
-          days: data.options.delete_member_days,
+          removed: Number(data.options.members_removed),
+          days: Number(data.options.delete_member_days),
         };
-      } else if (data.action_type === Actions.MESSAGE_DELETE) {
+        break;
+
+      case Actions.MEMBER_MOVE:
+      case Actions.MESSAGE_DELETE:
+      case Actions.MESSAGE_BULK_DELETE:
         this.extra = {
-          count: data.options.count,
-          channel: guild.channels.cache.get(data.options.channel_id),
+          channel: guild.channels.cache.get(data.options.channel_id) || { id: data.options.channel_id },
+          count: Number(data.options.count),
         };
-      } else if (data.action_type === Actions.MESSAGE_BULK_DELETE) {
+        break;
+
+      case Actions.MESSAGE_PIN:
+      case Actions.MESSAGE_UNPIN:
         this.extra = {
-          count: data.options.count,
+          channel: guild.client.channels.cache.get(data.options.channel_id) || { id: data.options.channel_id },
+          messageID: data.options.message_id,
         };
-      } else {
+        break;
+
+      case Actions.MEMBER_DISCONNECT:
+        this.extra = {
+          count: Number(data.options.count),
+        };
+        break;
+
+      case Actions.CHANNEL_OVERWRITE_CREATE:
+      case Actions.CHANNEL_OVERWRITE_UPDATE:
+      case Actions.CHANNEL_OVERWRITE_DELETE:
         switch (data.options.type) {
           case 'member':
-            this.extra = guild.members.cache.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id };
+            this.extra = guild.members.cache.get(data.options.id) ||
+              { id: data.options.id, type: 'member' };
             break;
+
           case 'role':
-            this.extra = guild.roles.cache.get(data.options.id);
-            if (!this.extra) this.extra = { id: data.options.id, name: data.options.role_name };
+            this.extra = guild.roles.cache.get(data.options.id) ||
+              { id: data.options.id, name: data.options.role_name, type: 'role' };
             break;
+
           default:
             break;
         }
-      }
+        break;
+
+      default:
+        break;
     }
 
-
+    /**
+     * The target of this entry
+     * @type {?AuditLogEntryTarget}
+     */
+    this.target = null;
     if (targetType === Targets.UNKNOWN) {
-      /**
-       * The target of this entry
-       * @type {AuditLogEntryTarget}
-       */
       this.target = this.changes.reduce((o, c) => {
         o[c.key] = c.new || c.old;
         return o;
       }, {});
       this.target.id = data.target_id;
-    } else if (targetType === Targets.USER) {
+      // MEMBER_DISCONNECT and similar types do not provide a target_id.
+    } else if (targetType === Targets.USER && data.target_id) {
       this.target = guild.client.options.partials.includes(PartialTypes.USER) ?
         guild.client.users.add({ id: data.target_id }) :
         guild.client.users.cache.get(data.target_id);
@@ -386,8 +436,17 @@ class GuildAuditLogsEntry {
         }
       });
     } else if (targetType === Targets.MESSAGE) {
-      this.target = guild.client.users.cache.get(data.target_id);
-    } else {
+      // Discord sends a channel id for the MESSAGE_BULK_DELETE action type.
+      this.target = data.action_type === Actions.MESSAGE_BULK_DELETE ?
+        guild.channels.cache.get(data.target_id) || { id: data.target_id } :
+        guild.client.users.cache.get(data.target_id);
+    } else if (targetType === Targets.INTEGRATION) {
+      this.target = logs.integrations.get(data.target_id) ||
+        new Integration(guild.client, this.changes.reduce((o, c) => {
+          o[c.key] = c.new || c.old;
+          return o;
+        }, { id: data.target_id }), guild);
+    } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`].cache.get(data.target_id) || { id: data.target_id };
     }
   }
