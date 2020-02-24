@@ -390,7 +390,7 @@ class MessageEmbed {
     * @typedef {Object} EmbedFieldData
     * @property {StringResolvable} name The name of this field
     * @property {StringResolvable} value The value of this field
-    * @property {?boolean} inline If this field will be displayed inline
+    * @property {boolean} [inline] If this field will be displayed inline
     */
 
   /**
