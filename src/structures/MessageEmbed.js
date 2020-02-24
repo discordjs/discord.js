@@ -215,7 +215,7 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a fields to the embed (max 25).
+   * Adds fields to the embed (max 25).
    * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
    * @returns {MessageEmbed}
    */
@@ -372,7 +372,7 @@ class MessageEmbed {
   }
 
   /**
-   * Checks for valid field input and resolves strings
+   * Normalizes field input and resolves strings.
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
@@ -394,7 +394,7 @@ class MessageEmbed {
     */
 
   /**
-   * Check for valid field input and resolves strings
+   * Normalizes field input and resolves strings.
    * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
