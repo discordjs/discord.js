@@ -1051,23 +1051,23 @@ declare module 'discord.js' {
 
 	export class MessageEmbed {
 		constructor(data?: MessageEmbed | MessageEmbedOptions);
-		public author: { name?: string; url?: string; iconURL?: string; proxyIconURL?: string } | null;
+		public author: MessageEmbedAuthor | null;
 		public color: number;
 		public readonly createdAt: Date | null;
 		public description: string;
 		public fields: EmbedField[];
 		public files: (MessageAttachment | string | FileOptions)[];
-		public footer: { text?: string; iconURL?: string; proxyIconURL?: string } | null;
+		public footer: MessageEmbedFooter | null;
 		public readonly hexColor: string | null;
-		public image: { url: string; proxyURL?: string; height?: number; width?: number; } | null;
+		public image: MessageEmbedImage | null;
 		public readonly length: number;
-		public provider: { name: string; url: string; };
-		public thumbnail: { url: string; proxyURL?: string; height?: number; width?: number; } | null;
+		public provider: MessageEmbedProvider | null;
+		public thumbnail: MessageEmbedThumbnail | null;
 		public timestamp: number | null;
 		public title: string;
 		public type: string;
 		public url: string;
-		public readonly video: { url?: string; proxyURL?: string; height?: number; width?: number } | null;
+		public readonly video: MessageEmbedVideo | null;
 		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
@@ -2449,13 +2449,52 @@ declare module 'discord.js' {
 		url?: string;
 		timestamp?: Date | number;
 		color?: ColorResolvable;
-		fields?: { name: string; value: string; inline?: boolean; }[];
+		fields?: EmbedField[];
 		files?: (MessageAttachment | string | FileOptions)[];
-		author?: { name?: string; url?: string; icon_url?: string; iconURL?: string; };
-		thumbnail?: { url?: string; height?: number; width?: number; };
-		image?: { url?: string; proxy_url?: string; proxyURL?: string; height?: number; width?: number; };
-		video?: { url?: string; height?: number; width?: number; };
-		footer?: { text?: string; icon_url?: string; iconURL?: string; };
+		author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
+		thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
+		image?: Partial<MessageEmbedImage> & { proxy_url?: string };
+		video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
+		footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
+	}
+
+	interface MessageEmbedAuthor {
+		name?: string;
+		url?: string;
+		iconURL?: string;
+		proxyIconURL?: string;
+	}
+
+	interface MessageEmbedThumbnail {
+		url: string;
+		proxyURL?: string;
+		height?: number;
+		width?: number;
+	}
+
+	interface MessageEmbedFooter {
+		text?: string;
+		iconURL?: string;
+		proxyIconURL?: string;
+	}
+
+	interface MessageEmbedImage {
+		url: string;
+		proxyURL?: string;
+		height?: number;
+		width?: number;
+	}
+
+	interface MessageEmbedProvider {
+		name: string;
+		url: string;
+	}
+
+	interface MessageEmbedVideo {
+		url?: string;
+		proxyURL?: string;
+		height?: number;
+		width?: number;
 	}
 
 	interface MessageOptions {
