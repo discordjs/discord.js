@@ -5,8 +5,13 @@ const Integration = require('./Integration');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const Webhook = require('./Webhook');
 const VoiceRegion = require('./VoiceRegion');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes, VerificationLevels,
-  ExplicitContentFilterLevels } = require('../util/Constants');
+const {
+  ChannelTypes,
+  DefaultMessageNotifications,
+  PartialTypes,
+  VerificationLevels,
+  ExplicitContentFilterLevels,
+} = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
