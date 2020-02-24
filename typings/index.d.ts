@@ -1928,7 +1928,7 @@ declare module 'discord.js' {
 		| 'STREAMING'
 		| 'LISTENING'
 		| 'WATCHING'
-    | 'CUSTOM_STATUS';
+		| 'CUSTOM_STATUS';
 
 	type MessageFlagsString = 'CROSSPOSTED'
 		| 'IS_CROSSPOST'
