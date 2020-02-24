@@ -534,7 +534,7 @@ class Util {
    * @returns {string}
    */
   static cleanContent(str, message) {
-    return str
+    return Util.removeMentions(str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
@@ -558,8 +558,7 @@ class Util {
         if (message.channel.type === 'dm') return input;
         const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
-      })
-      .replace(/@/g, '@\u200b');
+      }));
   }
 
   /**
