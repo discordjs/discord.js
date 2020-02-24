@@ -85,8 +85,8 @@ class Webhook {
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
-   * should be replaced with plain-text
+   * @property {boolean} [disableMentions=this.client.options.disableMentions] Whether or not mentions
+   * should be replaced with plain-text (this includes: role, user and everyone/here mentions)
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if

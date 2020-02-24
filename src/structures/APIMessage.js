@@ -113,11 +113,11 @@ class APIMessage {
         content = `${mentionPart}${content || ''}`;
       }
 
-      const disableEveryone = typeof this.options.disableEveryone === 'undefined' ?
-        this.target.client.options.disableEveryone :
-        this.options.disableEveryone;
-      if (disableEveryone) {
-        content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1');
+      const disableMentions = typeof this.options.disableMentions === 'undefined' ?
+        this.target.client.options.disableMentions :
+        this.options.disableMentions;
+      if (disableMentions) {
+        content = (content || '').replace(/@/g, '@\u200b');
       }
 
       if (isSplit) {
