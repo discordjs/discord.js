@@ -524,8 +524,7 @@ class Util {
    * @returns {string}
    */
   static removeMentions(str) {
-    return str
-      .replace(/@/g, '@\u200b');
+    return str.replace(/@/g, '@\u200b');
   }
 
   /**
