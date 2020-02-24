@@ -1052,7 +1052,7 @@ declare module 'discord.js' {
 		public readonly hexColor: string | null;
 		public image: MessageEmbedImage | null;
 		public readonly length: number;
-		public provider: MessageEmbedProvider;
+		public provider: MessageEmbedProvider | null;
 		public thumbnail: MessageEmbedThumbnail | null;
 		public timestamp: number | null;
 		public title: string;

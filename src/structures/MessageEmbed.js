@@ -153,7 +153,10 @@ class MessageEmbed {
      * The provider of this embed (if there is one)
      * @type {?MessageEmbedProvider}
      */
-    this.provider = data.provider;
+    this.provider = data.provider ? {
+      name: data.provider.name,
+      url: data.provider.name,
+    } : null;
 
     /**
      * @typedef {Object} MessageEmbedFooter
