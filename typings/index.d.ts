@@ -303,6 +303,13 @@ declare module 'discord.js' {
 		public toString(): string;
 	}
 
+	export interface ActivityOptions {
+		name?: string;
+		url?: string;
+		type?: ActivityType | number;
+		shardID?: number | number[];
+	}
+
 	export class ClientUser extends User {
 		public mfaEnabled: boolean;
 		public verified: boolean;
@@ -1623,7 +1630,6 @@ declare module 'discord.js' {
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
 		public token: string;
-		public readonly client: this;
 	}
 
 	export class WebSocketManager extends EventEmitter {
@@ -1916,13 +1922,6 @@ declare module 'discord.js' {
 		| 'JOIN_REQUEST'
 		| 'SYNC'
 		| 'PLAY';
-
-	interface ActivityOptions {
-		name?: string;
-		url?: string;
-		type?: ActivityType | number;
-		shardID?: number | number[];
-	}
 
 	type ActivityType = 'PLAYING'
 		| 'STREAMING'
