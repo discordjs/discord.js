@@ -92,7 +92,7 @@ class APIMessage {
       this.target.client.options.disableMentions :
       this.options.disableMentions;
     if (disableMentions) {
-      content = (content || '').replace(/@/g, '@\u200b');
+      content = Util.removeMentions(content || '');
     }
 
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
