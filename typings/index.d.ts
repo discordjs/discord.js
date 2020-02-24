@@ -1052,21 +1052,21 @@ declare module 'discord.js' {
 	export class MessageEmbed {
 		constructor(data?: MessageEmbed | MessageEmbedOptions);
 		public author: { name?: string; url?: string; iconURL?: string; proxyIconURL?: string } | null;
-		public color: number;
+		public color?: number;
 		public readonly createdAt: Date | null;
-		public description: string;
+		public description?: string;
 		public fields: EmbedField[];
 		public files: (MessageAttachment | string | FileOptions)[];
 		public footer: { text?: string; iconURL?: string; proxyIconURL?: string } | null;
 		public readonly hexColor: string | null;
 		public image: { url: string; proxyURL?: string; height?: number; width?: number; } | null;
 		public readonly length: number;
-		public provider: { name: string; url: string; };
+		public provider?: { name: string; url: string; };
 		public thumbnail: { url: string; proxyURL?: string; height?: number; width?: number; } | null;
 		public timestamp: number | null;
-		public title: string;
+		public title?: string;
 		public type: string;
-		public url: string;
+		public url?: string;
 		public readonly video: { url?: string; proxyURL?: string; height?: number; width?: number } | null;
 		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
