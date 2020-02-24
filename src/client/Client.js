@@ -286,7 +286,7 @@ class Client extends BaseClient {
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== 'number' || isNaN(lifetime)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
+      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
     }
     if (lifetime <= 0) {
       this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
