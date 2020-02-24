@@ -931,7 +931,7 @@ declare module 'discord.js' {
 
 	export class Invite extends Base {
 		constructor(client: Client, data: object);
-		public channel: GuildChannel;
+		public channel: GuildChannel | PartialGroupDMChannel;
 		public code: string;
 		public readonly deletable: boolean;
 		public readonly createdAt: Date | null;
