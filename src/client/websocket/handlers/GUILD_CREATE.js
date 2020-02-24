@@ -11,7 +11,7 @@ module.exports = async (client, { d: data }, shard) => {
       // If the client was ready before and we had unavailable guilds, fetch them
       if (client.ws.status === Status.READY && client.options.fetchAllMembers) {
         await guild.members.fetch().catch(err =>
-          client.emit(Events.DEBUG, `Failed to fetch all members: ${err}\n${err.stack}`)
+          client.emit(Events.DEBUG, `Failed to fetch all members: ${err}\n${err.stack}`),
         );
       }
     }
@@ -27,7 +27,7 @@ module.exports = async (client, { d: data }, shard) => {
        */
       if (client.options.fetchAllMembers) {
         await guild.members.fetch().catch(err =>
-          client.emit(Events.DEBUG, `Failed to fetch all members: ${err}\n${err.stack}`)
+          client.emit(Events.DEBUG, `Failed to fetch all members: ${err}\n${err.stack}`),
         );
       }
       client.emit(Events.GUILD_CREATE, guild);

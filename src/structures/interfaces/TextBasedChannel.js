@@ -300,7 +300,7 @@ class TextBasedChannel {
       let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
         messageIDs = messageIDs.filter(id =>
-          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000
+          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000,
         );
       }
       if (messageIDs.length === 0) return new Collection();
@@ -336,7 +336,7 @@ class TextBasedChannel {
         'typing',
         'typingCount',
         'createMessageCollector',
-        'awaitMessages'
+        'awaitMessages',
       );
     }
     for (const prop of props) {

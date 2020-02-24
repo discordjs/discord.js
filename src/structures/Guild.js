@@ -616,7 +616,7 @@ class Guild extends Base {
           user: this.client.users.add(ban.user),
         });
         return collection;
-      }, new Collection())
+      }, new Collection()),
     );
   }
 
@@ -634,7 +634,7 @@ class Guild extends Base {
     return this.client.api.guilds(this.id).integrations.get().then(data =>
       data.reduce((collection, integration) =>
         collection.set(integration.id, new Integration(this.client, integration, this)),
-      new Collection())
+      new Collection()),
     );
   }
 
@@ -1086,7 +1086,7 @@ class Guild extends Base {
       this.client.actions.GuildChannelsPositionUpdate.handle({
         guild_id: this.id,
         channels: updatedChannels,
-      }).guild
+      }).guild,
     );
   }
 
@@ -1120,7 +1120,7 @@ class Guild extends Base {
       this.client.actions.GuildRolePositionUpdate.handle({
         guild_id: this.id,
         roles: rolePositions,
-      }).guild
+      }).guild,
     );
   }
 
@@ -1250,7 +1250,7 @@ class Guild extends Base {
   _sortedChannels(channel) {
     const category = channel.type === ChannelTypes.CATEGORY;
     return Util.discordSort(this.channels.cache.filter(c =>
-      c.type === channel.type && (category || c.parent === channel.parent)
+      c.type === channel.type && (category || c.parent === channel.parent),
     ));
   }
 }
