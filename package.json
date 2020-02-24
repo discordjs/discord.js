@@ -78,6 +78,7 @@
     "discord.js-docgen": "discordjs/docgen",
     "dtslint": "^3.0.0",
     "eslint": "^6.8.0",
+    "husky": "^4.2.3",
     "jest": "^25.1.0",
     "json-filter-loader": "^1.0.0",
     "terser-webpack-plugin": "^1.2.2",
@@ -120,5 +121,10 @@
     "src/client/voice/util/Secretbox.js": false,
     "src/client/voice/util/Silence.js": false,
     "src/client/voice/util/VolumeInterface.js": false
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
   }
 }
