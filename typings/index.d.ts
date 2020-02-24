@@ -2334,7 +2334,7 @@ declare module 'discord.js' {
 		defaultMessageNotifications?: DefaultMessageNotifications | number;
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
-		systemChannelFlags?: SystemChannelFlags;
+		systemChannelFlags?: SystemChannelFlagsResolvable;
 		afkTimeout?: number;
 		icon?: Base64Resolvable;
 		owner?: GuildMemberResolvable;
