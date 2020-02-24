@@ -89,8 +89,8 @@ class APIMessage {
     }
 
     const disableMentions = typeof this.options.disableMentions === 'undefined' ?
-        this.target.client.options.disableMentions :
-        this.options.disableMentions;
+      this.target.client.options.disableMentions :
+      this.options.disableMentions;
     if (disableMentions) {
       content = (content || '').replace(/@/g, '@\u200b');
     }
