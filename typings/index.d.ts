@@ -765,6 +765,7 @@ declare module 'discord.js' {
 	export class GuildAuditLogs {
 		constructor(guild: Guild, data: object);
 		private webhooks: Collection<Snowflake, Webhook>;
+		private integrations: Collection<Snowflake, Integration>;
 
 		public entries: Collection<Snowflake, GuildAuditLogsEntry>;
 
@@ -788,7 +789,7 @@ declare module 'discord.js' {
 		public extra: object | Role | GuildMember | null;
 		public id: Snowflake;
 		public reason: string | null;
-		public target: Guild | User | Role | GuildEmoji | Invite | Webhook;
+		public target: Guild | User | Role | GuildEmoji | Invite | Webhook | Integration | null;
 		public targetType: GuildAuditLogsTarget;
 		public toJSON(): object;
 	}
@@ -2258,6 +2259,8 @@ declare module 'discord.js' {
 		WEBHOOK?: string;
 		EMOJI?: string;
 		MESSAGE?: string;
+		INTEGRATION?: string;
+		UNKNOWN?: string;
 	}
 
 	type GuildChannelResolvable = Snowflake | GuildChannel;
