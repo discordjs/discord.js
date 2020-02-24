@@ -1,4 +1,5 @@
 const Discord = require('../src');
+const { Util } = Discord;
 const { token, prefix } = require('./auth');
 
 const client = new Discord.Client({
@@ -28,8 +29,15 @@ const tests = [
 client.on('ready', () => console.log('Ready!'));
 
 client.on('message', message => {
-    const command = message.content.substr(prefix.length);
+    // Check if message starts with prefix
+    if (!message.content.startsWith(prefix)) return;
+    const [command, ...args] = message.content.substr(prefix.length).split(' ');
     
+    // Clean content and log each character
+    // If message includes a mention and disableMentions option is set, this breaks all mentions
+    // As a test, send `!test1 @here`
+    console.log(Util.cleanContent(args.join(' '), message).split(''));
+
     if (command === 'test1')
         message.reply(tests[0]);
     else if (command === 'test2')
