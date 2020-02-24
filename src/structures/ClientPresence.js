@@ -39,7 +39,7 @@ class ClientPresence extends Presence {
         try {
           const a = await this.client.api.oauth2.applications(applicationID).assets.get();
           for (const asset of a) assets.set(asset.name, asset.id);
-        } catch (err) { } // eslint-disable-line no-empty
+        } catch {} // eslint-disable-line no-empty
       }
     }
 
