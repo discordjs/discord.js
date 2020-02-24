@@ -710,8 +710,12 @@ declare module 'discord.js' {
 		public premiumSubscriptionCount: number | null;
 		public premiumTier: PremiumTier;
 		public presences: PresenceManager;
+		public readonly publicUpdatesChannel: TextChannel | null;
+		public publicUpdatesChannelID: Snowflake | null;
 		public region: string;
 		public roles: RoleManager;
+		public readonly rulesChannel: TextChannel | null;
+		public rulesChannelID: Snowflake | null;
 		public readonly shard: WebSocketShard;
 		public shardID: number;
 		public splash: string | null;
@@ -836,6 +840,13 @@ declare module 'discord.js' {
 		public nsfw: boolean;
 	}
 
+	export class PartialGroupDMChannel extends Channel {
+		constructor(client: Client, data: object);
+		public name: string;
+		public icon: string | null;
+		public iconURL(options?: ImageURLOptions): string | null;
+	}
+
 	export class GuildEmoji extends Emoji {
 		constructor(client: Client, data: object, guild: Guild);
 		private _roles: string[];
@@ -920,7 +931,7 @@ declare module 'discord.js' {
 
 	export class Invite extends Base {
 		constructor(client: Client, data: object);
-		public channel: GuildChannel;
+		public channel: GuildChannel | PartialGroupDMChannel;
 		public code: string;
 		public readonly deletable: boolean;
 		public readonly createdAt: Date | null;
@@ -1040,8 +1051,6 @@ declare module 'discord.js' {
 
 	export class MessageEmbed {
 		constructor(data?: MessageEmbed | MessageEmbedOptions);
-		private _apiTransform(): MessageEmbedOptions;
-
 		public author: MessageEmbedAuthor | null;
 		public color: number;
 		public readonly createdAt: Date | null;
@@ -1059,8 +1068,7 @@ declare module 'discord.js' {
 		public type: string;
 		public url: string;
 		public readonly video: MessageEmbedVideo | null;
-		public addBlankField(inline?: boolean): this;
-		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
+		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
 		public setColor(color: ColorResolvable): this;
@@ -1071,10 +1079,11 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public spliceField(index: number, deleteCount: number, name?: StringResolvable, value?: StringResolvable, inline?: boolean): this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[] | EmbedField[][]): this;
 		public toJSON(): object;
 
-		public static checkField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
+		public static normalizeField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
+		public static normalizeFields(...fields: EmbedField[] | EmbedField[][]): Required<EmbedField>[];
 	}
 
 	export class MessageMentions {
@@ -2020,7 +2029,7 @@ declare module 'discord.js' {
 	}
 
 	interface AddGuildMemberOptions {
-		accessToken: String;
+		accessToken: string;
 		nick?: string;
 		roles?: Collection<Snowflake, Role> | RoleResolvable[];
 		mute?: boolean;
@@ -2518,7 +2527,9 @@ declare module 'discord.js' {
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2'
 		| 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
-		| 'CHANNEL_FOLLOW_ADD';
+		| 'CHANNEL_FOLLOW_ADD'
+		| 'GUILD_DISCOVERY_DISQUALIFIED'
+		| 'GUILD_DISCOVERY_REQUALIFIED';
 
 	interface OverwriteData {
 		allow?: PermissionResolvable;
