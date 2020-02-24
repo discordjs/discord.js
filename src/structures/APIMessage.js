@@ -152,7 +152,7 @@ class APIMessage {
     } else if (this.options.embed) {
       embedLikes.push(this.options.embed);
     }
-    const embeds = embedLikes.map(e => new MessageEmbed(e)._apiTransform());
+    const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
     let username;
     let avatarURL;

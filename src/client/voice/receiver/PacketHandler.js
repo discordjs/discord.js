@@ -90,7 +90,7 @@ class PacketHandler extends EventEmitter {
           this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: 0 });
           this.receiver.connection.client.clearTimeout(speakingTimeout);
           this.speakingTimeouts.delete(ssrc);
-        } catch (ex) {
+        } catch {
           // Connection already closed, ignore
         }
       }, DISCORD_SPEAKING_DELAY);
