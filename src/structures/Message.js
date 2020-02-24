@@ -108,7 +108,7 @@ class Message extends Base {
     if (data.attachments) {
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new MessageAttachment(
-          attachment.url, attachment.filename, attachment
+          attachment.url, attachment.filename, attachment,
         ));
       }
     }
@@ -230,7 +230,7 @@ class Message extends Base {
       this.attachments = new Collection();
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new MessageAttachment(
-          attachment.url, attachment.filename, attachment
+          attachment.url, attachment.filename, attachment,
         ));
       }
     } else {
@@ -242,7 +242,7 @@ class Message extends Base {
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels
+      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
@@ -511,7 +511,7 @@ class Message extends Base {
   reply(content, options) {
     return this.channel.send(content instanceof APIMessage ?
       content :
-      APIMessage.transformOptions(content, options, { reply: this.member || this.author })
+      APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
     );
   }
 
