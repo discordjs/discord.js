@@ -42,7 +42,7 @@ class GuildManager extends BaseManager {
   /**
    * Partial data for a Role.
    * @typedef {Object} PartialRoleData
-   * @property {number} [id] The ID for this role, used to set channel overrides,
+   * @property {number} id The ID for this role, used to set channel overrides,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
@@ -55,10 +55,10 @@ class GuildManager extends BaseManager {
   /**
    * Partial overwrite data.
    * @typedef {Object} PartialOverwriteData
-   * @property {number|Snowflake} [id] The Role or User ID for this overwrite
+   * @property {number|Snowflake} id The Role or User ID for this overwrite
    * @property {string} [type] The type of this overwrite
-   * @property {PermissionResolvable} [allow]
-   * @property {PermissionResolvable} [deny]
+   * @property {PermissionResolvable} [allow] The permissions to allow
+   * @property {PermissionResolvable} [deny] The permissions to deny
    */
 
   /**
@@ -67,7 +67,7 @@ class GuildManager extends BaseManager {
    * @property {number} [id] The ID for this channel, used to set its parent,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {number} [parentID] The parent ID for this channel
-   * @property {string} [type] The type of the channel (Only when creating)
+   * @property {string} [type] The type of the channel
    * @property {string} [name] The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -148,15 +148,15 @@ class GuildManager extends BaseManager {
       explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
     }
     for (const channel of channels) {
+      channel.parent_id = channel.parentID;
+      delete channel.parentID;
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
         if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
         if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
       }
       channel.permission_overwrites = channel.permissionOverwrites;
-      channel.parent_id = channel.parentID;
       delete channel.permissionOverwrites;
-      delete channel.parentID;
     }
     for (const role of roles) {
       if (role.color) role.color = resolveColor(role.color);

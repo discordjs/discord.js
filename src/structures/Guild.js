@@ -818,31 +818,6 @@ class Guild extends Base {
   }
 
   /**
-   * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
-   * * ALL
-   * * MENTIONS
-   * @typedef {string} DefaultMessageNotifications
-   */
-
-  /**
-   * The value set for the explicit content filter levels for a guild:
-   * * DISABLED
-   * * MEMBERS_WITHOUT_ROLES
-   * * ALL_MEMBERS
-   * @typedef {string} ExplicitContentFilterLevel
-   */
-
-  /**
-   * The value set for the verification levels for a guild:
-   * * NONE
-   * * LOW
-   * * MEDIUM
-   * * HIGH
-   * * VERY_HIGH
-   * @typedef {string} VerificationLevel
-   */
-
-  /**
    * The data for editing a guild.
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
@@ -896,13 +871,13 @@ class Guild extends Base {
     if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = typeof data.explicitContentFilter === 'number' ?
-        Number(data.explicitContentFilter) :
+        data.explicitContentFilter :
         ExplicitContentFilterLevels.indexOf(data.explicitContentFilter);
     }
     if (typeof data.defaultMessageNotifications !== 'undefined') {
       _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
         DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
-        Number(data.defaultMessageNotifications);
+        data.defaultMessageNotifications;
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);

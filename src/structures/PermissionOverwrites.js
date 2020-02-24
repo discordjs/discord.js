@@ -56,7 +56,7 @@ class PermissionOverwrites {
 
   /**
    * Updates this permissionOverwrites.
-   * @param {PermissionOverwriteOption} options The options for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
    * @example
@@ -99,7 +99,7 @@ class PermissionOverwrites {
    *  'ATTACH_FILES': false,
    * }
    * ```
-   * @typedef {Object} PermissionOverwriteOption
+   * @typedef {Object} PermissionOverwriteOptions
    */
 
   /**
@@ -110,7 +110,7 @@ class PermissionOverwrites {
 
   /**
    * Deletes this Permission Overwrite.
-   * @param {PermissionOverwriteOption} options The options for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {Object} initialPermissions The initial permissions
    * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
    * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions

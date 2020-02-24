@@ -2600,14 +2600,8 @@ declare module 'discord.js' {
 		}[];
 	}
 
-	interface PartialRoleData {
+	interface PartialRoleData extends RoleData {
 		id?: number;
-		name?: string;
-		color?: ColorResolvable;
-		hoist?: boolean;
-		position?: number;
-		permissions?: PermissionResolvable;
-		mentionable?: boolean;
 	}
 
 	type PartialTypes = 'USER'
