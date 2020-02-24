@@ -72,7 +72,7 @@ class GuildManager extends BaseManager {
    * this is a placeholder and will be replaced by the API after consumption
    * @property {number} [parentID] The parent ID for this channel
    * @property {string} [type] The type of the channel
-   * @property {string} [name] The name of the channel
+   * @property {string} name The name of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
