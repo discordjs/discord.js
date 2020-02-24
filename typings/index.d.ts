@@ -1052,9 +1052,9 @@ declare module 'discord.js' {
 	export class MessageEmbed {
 		constructor(data?: MessageEmbed | MessageEmbedOptions);
 		public author: MessageEmbedAuthor | null;
-		public color: number;
+		public color?: number;
 		public readonly createdAt: Date | null;
-		public description: string;
+		public description?: string;
 		public fields: EmbedField[];
 		public files: (MessageAttachment | string | FileOptions)[];
 		public footer: MessageEmbedFooter | null;
@@ -1064,9 +1064,9 @@ declare module 'discord.js' {
 		public provider: MessageEmbedProvider | null;
 		public thumbnail: MessageEmbedThumbnail | null;
 		public timestamp: number | null;
-		public title: string;
+		public title?: string;
 		public type: string;
-		public url: string;
+		public url?: string;
 		public readonly video: MessageEmbedVideo | null;
 		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
