@@ -2,8 +2,12 @@
 
 const BaseManager = require('./BaseManager');
 const DataResolver = require('../util/DataResolver');
-const { Events, VerificationLevels, DefaultMessageNotifications,
-  ExplicitContentFilterLevels } = require('../util/Constants');
+const {
+  Events,
+  VerificationLevels,
+  DefaultMessageNotifications,
+  ExplicitContentFilterLevels,
+} = require('../util/Constants');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildMember = require('../structures/GuildMember');
