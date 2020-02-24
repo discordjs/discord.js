@@ -1,21 +1,32 @@
 'use strict';
 
-const DataStore = require('./DataStore');
 const MessageReaction = require('../structures/MessageReaction');
+const BaseManager = require('./BaseManager');
 
 /**
- * Stores reactions.
- * @extends {DataStore}
+ * Manages API methods for reactions and holds their cache.
+ * @extends {BaseManager}
  */
-class ReactionStore extends DataStore {
+class ReactionManager extends BaseManager {
   constructor(message, iterable) {
     super(message.client, iterable, MessageReaction);
+
+    /**
+     * The message that this manager belongs to
+     * @type {Message}
+     */
     this.message = message;
   }
 
   add(data, cache) {
     return super.add(data, cache, { id: data.emoji.id || data.emoji.name, extras: [this.message] });
   }
+
+  /**
+   * The reaction cache of this manager
+   * @type {Collection<Snowflake, MessageReaction>}
+   * @name ReactionManager#cache
+   */
 
   /**
    * Data that can be resolved to a MessageReaction object. This can be:
@@ -27,7 +38,7 @@ class ReactionStore extends DataStore {
   /**
     * Resolves a MessageReactionResolvable to a MessageReaction object.
     * @method resolve
-    * @memberof ReactionStore
+    * @memberof ReactionManager
     * @instance
     * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?MessageReaction}
@@ -36,7 +47,7 @@ class ReactionStore extends DataStore {
   /**
     * Resolves a MessageReactionResolvable to a MessageReaction ID string.
     * @method resolveID
-    * @memberof ReactionStore
+    * @memberof ReactionManager
     * @instance
     * @param {MessageReactionResolvable} reaction The MessageReaction to resolve
     * @returns {?Snowflake}
@@ -53,18 +64,19 @@ class ReactionStore extends DataStore {
 
   _partial(emoji) {
     const id = emoji.id || emoji.name;
-    const existing = this.get(id);
+    const existing = this.cache.get(id);
     return !existing || existing.partial;
   }
 
   async _fetchReaction(reactionEmoji, cache) {
     const id = reactionEmoji.id || reactionEmoji.name;
-    const existing = this.get(id);
+    const existing = this.cache.get(id);
     if (!this._partial(reactionEmoji)) return existing;
     const data = await this.client.api.channels(this.message.channel.id).messages(this.message.id).get();
+    if (this.message.partial) this.message._patch(data);
     if (!data.reactions || !data.reactions.some(r => (r.emoji.id || r.emoji.name) === id)) {
       reactionEmoji.reaction._patch({ count: 0 });
-      this.message.reactions.remove(id);
+      this.message.reactions.cache.delete(id);
       return existing;
     }
     for (const reaction of data.reactions) {
@@ -74,4 +86,4 @@ class ReactionStore extends DataStore {
   }
 }
 
-module.exports = ReactionStore;
+module.exports = ReactionManager;

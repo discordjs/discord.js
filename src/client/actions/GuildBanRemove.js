@@ -6,7 +6,7 @@ const { Events } = require('../../util/Constants');
 class GuildBanRemove extends Action {
   handle(data) {
     const client = this.client;
-    const guild = client.guilds.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     const user = client.users.add(data.user);
     /**
      * Emitted whenever a member is unbanned from a guild.

@@ -96,11 +96,21 @@ class Channel extends Base {
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
-    if (data.type === ChannelTypes.DM || (data.type !== ChannelTypes.GROUP && !data.guild_id && !guild)) {
-      const DMChannel = Structures.get('DMChannel');
-      channel = new DMChannel(client, data);
+    if (!data.guild_id && !guild) {
+      switch (data.type) {
+        case ChannelTypes.DM: {
+          const DMChannel = Structures.get('DMChannel');
+          channel = new DMChannel(client, data);
+          break;
+        }
+        case ChannelTypes.GROUP: {
+          const PartialGroupDMChannel = require('./PartialGroupDMChannel');
+          channel = new PartialGroupDMChannel(client, data);
+          break;
+        }
+      }
     } else {
-      guild = guild || client.guilds.get(data.guild_id);
+      guild = guild || client.guilds.cache.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
@@ -129,7 +139,7 @@ class Channel extends Base {
             break;
           }
         }
-        if (channel) guild.channels.set(channel.id, channel);
+        if (channel) guild.channels.cache.set(channel.id, channel);
       }
     }
     return channel;

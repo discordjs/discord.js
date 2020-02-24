@@ -483,7 +483,7 @@ class VoiceConnection extends EventEmitter {
   onSpeaking({ user_id, speaking }) {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
-    const user = this.client.users.get(user_id);
+    const user = this.client.users.cache.get(user_id);
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**

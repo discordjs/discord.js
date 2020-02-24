@@ -178,7 +178,8 @@ class WebSocketShard extends EventEmitter {
         this.off(ShardEvents.CLOSE, onClose);
         this.off(ShardEvents.READY, onReady);
         this.off(ShardEvents.RESUMED, onResumed);
-        this.off(ShardEvents.INVALID_SESSION, onInvalid);
+        this.off(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
+        this.off(ShardEvents.DESTROYED, onInvalidOrDestroyed);
       };
 
       const onReady = () => {
@@ -196,7 +197,7 @@ class WebSocketShard extends EventEmitter {
         reject(event);
       };
 
-      const onInvalid = () => {
+      const onInvalidOrDestroyed = () => {
         cleanup();
         // eslint-disable-next-line prefer-promise-reject-errors
         reject();
@@ -205,7 +206,8 @@ class WebSocketShard extends EventEmitter {
       this.once(ShardEvents.READY, onReady);
       this.once(ShardEvents.RESUMED, onResumed);
       this.once(ShardEvents.CLOSE, onClose);
-      this.once(ShardEvents.INVALID_SESSION, onInvalid);
+      this.once(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
+      this.once(ShardEvents.DESTROYED, onInvalidOrDestroyed);
 
       if (this.connection && this.connection.readyState === WebSocket.OPEN) {
         this.debug('An open connection was found, attempting an immediate identify.');
@@ -214,10 +216,9 @@ class WebSocketShard extends EventEmitter {
       }
 
       if (this.connection) {
-        this.debug(`A connection was found. Cleaning up before continuing.
+        this.debug(`A connection object was found. Cleaning up before continuing.
     State: ${CONNECTION_STATE[this.connection.readyState]}`);
-        this._cleanupConnection();
-        this.connection.close(1000);
+        this.destroy({ emit: false });
       }
 
       const wsQuery = { v: client.options.ws.version };
@@ -233,9 +234,9 @@ class WebSocketShard extends EventEmitter {
 
       this.debug(
         `[CONNECT]
-    Gateway: ${gateway}
-    Version: ${client.options.ws.version}
-    Encoding: ${WebSocket.encoding}
+    Gateway    : ${gateway}
+    Version    : ${client.options.ws.version}
+    Encoding   : ${WebSocket.encoding}
     Compression: ${zlib ? 'zlib-stream' : 'none'}`);
 
       this.status = this.status === Status.DISCONNECTED ? Status.RECONNECTING : Status.CONNECTING;
@@ -338,11 +339,13 @@ class WebSocketShard extends EventEmitter {
 
     this.debug(`[CLOSE]
     Event Code: ${event.code}
-    Clean: ${event.wasClean}
-    Reason: ${event.reason || 'No reason received'}`);
+    Clean     : ${event.wasClean}
+    Reason    : ${event.reason || 'No reason received'}`);
 
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
+    // If we still have a connection object, clean up its listeners
+    if (this.connection) this._cleanupConnection();
 
     this.status = Status.DISCONNECTED;
 
@@ -362,7 +365,7 @@ class WebSocketShard extends EventEmitter {
    */
   onPacket(packet) {
     if (!packet) {
-      this.debug(`Received broken packet: ${packet}.`);
+      this.debug(`Received broken packet: '${packet}'.`);
       return;
     }
 
@@ -406,7 +409,7 @@ class WebSocketShard extends EventEmitter {
         this.identify();
         break;
       case OPCodes.RECONNECT:
-        this.connection.close(1001);
+        this.destroy({ closeCode: 4000 });
         break;
       case OPCodes.INVALID_SESSION:
         this.debug(`[INVALID SESSION] Resumable: ${packet.d}.`);
@@ -418,7 +421,7 @@ class WebSocketShard extends EventEmitter {
         // Reset the sequence
         this.sequence = -1;
         // Reset the session ID as it's invalid
-        this.sessionID = null;
+        this.sessionID = undefined;
         // Set the status to reconnecting
         this.status = Status.RECONNECTING;
         // Finally, emit the INVALID_SESSION event
@@ -495,7 +498,7 @@ class WebSocketShard extends EventEmitter {
     this.debug('Setting a HELLO timeout for 20s.');
     this.helloTimeout = this.manager.client.setTimeout(() => {
       this.debug('Did not receive HELLO in time. Destroying and connecting again.');
-      this.destroy(4009);
+      this.destroy({ reset: true, closeCode: 4009 });
     }, 20000);
   }
 
@@ -535,9 +538,9 @@ class WebSocketShard extends EventEmitter {
         `[${tag}] Didn't receive a heartbeat ack last time, assuming zombie connection. Destroying and reconnecting.
     Status          : ${STATUS_KEYS[this.status]}
     Sequence        : ${this.sequence}
-    Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`
-      );
-      this.destroy(4009);
+    Connection State: ${this.connection ? CONNECTION_STATE[this.connection.readyState] : 'No Connection??'}`);
+
+      this.destroy({ closeCode: 4009, reset: true });
       return;
     }
 
@@ -636,8 +639,8 @@ class WebSocketShard extends EventEmitter {
    */
   _send(data) {
     if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
-      this.debug(`Tried to send packet ${JSON.stringify(data)} but no WebSocket is available! Resetting the shard...`);
-      this.destroy(4000);
+      this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
+      this.destroy({ close: 4000 });
       return;
     }
 
@@ -670,35 +673,61 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Destroys this shard and closes its WebSocket connection.
-   * @param {number} [closeCode=1000] The close code to use
-   * @param {boolean} [cleanup=false] If the shard should attempt a reconnect
+   * @param {Object} [options={ closeCode: 1000, reset: false, emit: true, log: true }] Options for destroying the shard
    * @private
    */
-  destroy(closeCode = 1000, cleanup = false) {
-    this.debug(`Destroying with close code ${closeCode}, attempting a reconnect: ${!cleanup}`);
+  destroy({ closeCode = 1000, reset = false, emit = true, log = true } = {}) {
+    if (log) {
+      this.debug(`[DESTROY]
+    Close Code    : ${closeCode}
+    Reset         : ${reset}
+    Emit DESTROYED: ${emit}`);
+    }
 
+    // Step 0: Remove all timers
     this.setHeartbeatTimer(-1);
     this.setHelloTimeout(-1);
 
-    // Close the WebSocket connection, if any
-    if (this.connection && this.connection.readyState === WebSocket.OPEN) {
-      this.connection.close(closeCode);
-    } else if (!cleanup) {
-      /**
-       * Emitted when a shard is destroyed, but no WebSocket connection was present.
-       * @private
-       * @event WebSocketShard#destroyed
-       */
-      this.emit(ShardEvents.DESTROYED);
+    // Step 1: Close the WebSocket connection, if any, otherwise, emit DESTROYED
+    if (this.connection) {
+      // If the connection is currently opened, we will (hopefully) receive close
+      if (this.connection.readyState === WebSocket.OPEN) {
+        this.connection.close(closeCode);
+      } else {
+        // Connection is not OPEN
+        this.debug(`WS State: ${CONNECTION_STATE[this.connection.readyState]}`);
+        // Remove listeners from the connection
+        this._cleanupConnection();
+        // Attempt to close the connection just in case
+        try {
+          this.connection.close(closeCode);
+        } catch {
+          // No-op
+        }
+        // Emit the destroyed event if needed
+        if (emit) this._emitDestroyed();
+      }
+    } else if (emit) {
+      // We requested a destroy, but we had no connection. Emit destroyed
+      this._emitDestroyed();
     }
 
+    // Step 2: Null the connection object
     this.connection = null;
-    // Set the shard status
+
+    // Step 3: Set the shard status to DISCONNECTED
     this.status = Status.DISCONNECTED;
+
+    // Step 4: Cache the old sequence (use to attempt a resume)
     if (this.sequence !== -1) this.closeSequence = this.sequence;
-    // Reset the sequence
-    this.sequence = -1;
-    // Reset the ratelimit data
+
+    // Step 5: Reset the sequence and session ID if requested
+    if (reset) {
+      this.sequence = -1;
+      this.sessionID = undefined;
+    }
+
+    // Step 6: reset the ratelimit data
     this.ratelimit.remaining = this.ratelimit.total;
     this.ratelimit.queue.length = 0;
     if (this.ratelimit.timer) {
@@ -716,6 +745,19 @@ class WebSocketShard extends EventEmitter {
     this.connection.onclose =
     this.connection.onerror =
     this.connection.onmessage = null;
+  }
+
+  /**
+   * Emits the DESTROYED event on the shard
+   * @private
+   */
+  _emitDestroyed() {
+    /**
+     * Emitted when a shard is destroyed, but no WebSocket connection was present.
+     * @private
+     * @event WebSocketShard#destroyed
+     */
+    this.emit(ShardEvents.DESTROYED);
   }
 }
 

@@ -87,7 +87,7 @@
     "webpack-cli": "^3.2.3"
   },
   "engines": {
-    "node": ">=10.2.0"
+    "node": ">=11.0.0"
   },
   "browser": {
     "@discordjs/opus": false,

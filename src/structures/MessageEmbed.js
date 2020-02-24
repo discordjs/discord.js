@@ -152,10 +152,7 @@ class MessageEmbed {
      * The files of this embed
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
-    this.files = [];
-    if (data.files) {
-      this.files = data.files;
-    }
+    this.files = data.files || [];
   }
 
   /**
@@ -191,41 +188,24 @@ class MessageEmbed {
   }
 
   /**
-   * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * Adds a fields to the embed (max 25).
+   * @param {...EmbedField|EmbedField[]} fields The fields to add
    * @returns {MessageEmbed}
    */
-  addField(name, value, inline) {
-    this.fields.push(this.constructor.checkField(name, value, inline));
+  addFields(...fields) {
+    this.fields.push(...this.constructor.normalizeFields(fields));
     return this;
-  }
-
-  /**
-   * Convenience function for `<MessageEmbed>.addField('\u200B', '\u200B', inline)`.
-   * @param {boolean} [inline=false] Set the field to display inline
-   * @returns {MessageEmbed}
-   */
-  addBlankField(inline) {
-    return this.addField('\u200B', '\u200B', inline);
   }
 
   /**
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {StringResolvable} [name] The name of the field
-   * @param {StringResolvable} [value] The value of the field
-   * @param {boolean} [inline=false] Set the field to display inline
+   * @param {...EmbedField|EmbedField[]} [fields] The replacing field objects
    * @returns {MessageEmbed}
    */
-  spliceField(index, deleteCount, name, value, inline) {
-    if (name && value) {
-      this.fields.splice(index, deleteCount, this.constructor.checkField(name, value, inline));
-    } else {
-      this.fields.splice(index, deleteCount);
-    }
+  spliceFields(index, deleteCount, ...fields) {
+    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
     return this;
   }
 
@@ -337,16 +317,11 @@ class MessageEmbed {
     return this;
   }
 
-  toJSON() {
-    return Util.flatten(this, { hexColor: true });
-  }
-
   /**
-   * Transforms the embed object to be processed.
+   * Transforms the embed to a plain object.
    * @returns {Object} The raw data of this embed
-   * @private
    */
-  _apiTransform() {
+  toJSON() {
     return {
       title: this.title,
       type: 'rich',
@@ -376,12 +351,21 @@ class MessageEmbed {
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
    */
-  static checkField(name, value, inline = false) {
+  static normalizeField(name, value, inline = false) {
     name = Util.resolveString(name);
     if (!name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
     if (!value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
+  }
+
+  /**
+   * Check for valid field input and resolves strings
+   * @param  {...EmbedField|EmbedField[]} fields Fields to normalize
+   * @returns {EmbedField[]}
+   */
+  static normalizeFields(...fields) {
+    return fields.flat(2).map(({ name, value, inline }) => this.normalizeField(name, value, inline));
   }
 }
 

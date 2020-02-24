@@ -23,10 +23,10 @@ class GenericAction {
     return data;
   }
 
-  getPayload(data, store, id, partialType, cache) {
-    const existing = store.get(id);
+  getPayload(data, manager, id, partialType, cache) {
+    const existing = manager.cache.get(id);
     if (!existing && this.client.options.partials.includes(partialType)) {
-      return store.add(data, cache);
+      return manager.add(data, cache);
     }
     return existing;
   }
@@ -54,7 +54,7 @@ class GenericAction {
     return this.getPayload({
       emoji: data.emoji,
       count: message.partial ? null : 0,
-      me: user.id === this.client.user.id,
+      me: user ? user.id === this.client.user.id : false,
     }, message.reactions, id, PartialTypes.REACTION);
   }
 

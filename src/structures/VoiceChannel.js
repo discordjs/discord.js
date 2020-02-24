@@ -34,7 +34,7 @@ class VoiceChannel extends GuildChannel {
    */
   get members() {
     const coll = new Collection();
-    for (const state of this.guild.voiceStates.values()) {
+    for (const state of this.guild.voiceStates.cache.values()) {
       if (state.channelID === this.id && state.member) {
         coll.set(state.id, state.member);
       }
@@ -88,7 +88,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get speakable() {
-    return this.permissionsFor(this.client.user).has('SPEAK', false);
+    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.SPEAK, false);
   }
 
   /**

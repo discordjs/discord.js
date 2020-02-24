@@ -71,6 +71,7 @@ const Messages = {
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
+  FETCH_BAN_RESOLVE_ID: 'Couldn\'t resolve the user ID to fetch the ban.',
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
@@ -93,6 +94,9 @@ const Messages = {
   REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
+
+  DELETE_GROUP_DM_CHANNEL: 'Bots don\'t have access to Group DM Channels and cannot delete them',
+  FETCH_GROUP_DM_CHANNEL: 'Bots don\'t have access to Group DM Channels and cannot fetch them',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

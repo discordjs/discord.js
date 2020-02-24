@@ -6,7 +6,7 @@ const { Events } = require('../../util/Constants');
 class GuildIntegrationsUpdate extends Action {
   handle(data) {
     const client = this.client;
-    const guild = client.guilds.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     /**
      * Emitted whenever a guild integration is updated
      * @event Client#guildIntegrationsUpdate
