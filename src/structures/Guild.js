@@ -861,7 +861,7 @@ class Guild extends Base {
     }
     if (data.afkTimeout) _data.afk_timeout = Number(data.afkTimeout);
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
-    if (data.owner) _data.owner_id = this.client.users.resolve(data.owner).id;
+    if (data.owner) _data.owner_id = this.client.users.resolveID(data.owner);
     if (data.splash) _data.splash = data.splash;
     if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
