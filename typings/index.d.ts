@@ -1915,7 +1915,7 @@ declare module 'discord.js' {
 		| 'JOIN_REQUEST'
 		| 'SYNC'
 		| 'PLAY';
-					  
+
 	interface ActivityOptions {
 		name?: string;
 		url?: string;
