@@ -1068,7 +1068,7 @@ declare module 'discord.js' {
 		public type: string;
 		public url?: string;
 		public readonly video: MessageEmbedVideo | null;
-		public addFields(...fields: EmbedField[] | EmbedField[][]): this;
+		public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
 		public setColor(color: ColorResolvable): this;
@@ -1079,11 +1079,11 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[] | EmbedField[][]): this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
 		public toJSON(): object;
 
-		public static normalizeField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedField>;
-		public static normalizeFields(...fields: EmbedField[] | EmbedField[][]): Required<EmbedField>[];
+		public static normalizeField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedFieldData>;
+		public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
 	}
 
 	export class MessageMentions {
@@ -2184,6 +2184,12 @@ declare module 'discord.js' {
 	interface EmbedField {
 		name: string;
 		value: string;
+		inline: boolean;
+	}
+
+	interface EmbedFieldData {
+		name: StringResolvable;
+		value: StringResolvable;
 		inline?: boolean;
 	}
 

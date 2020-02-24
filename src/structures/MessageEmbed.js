@@ -216,7 +216,7 @@ class MessageEmbed {
 
   /**
    * Adds a fields to the embed (max 25).
-   * @param {...EmbedField|EmbedField[]} fields The fields to add
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
    * @returns {MessageEmbed}
    */
   addFields(...fields) {
@@ -228,7 +228,7 @@ class MessageEmbed {
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {...EmbedField|EmbedField[]} [fields] The replacing field objects
+   * @param {...EmbedFieldData|EmbedFieldData[]} [fields] The replacing field objects
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
@@ -387,8 +387,15 @@ class MessageEmbed {
   }
 
   /**
+    * @typedef {Object} EmbedFieldData
+    * @property {StringResolvable} name The name of this field
+    * @property {StringResolvable} value The value of this field
+    * @property {boolean} [inline] If this field will be displayed inline
+    */
+
+  /**
    * Check for valid field input and resolves strings
-   * @param  {...EmbedField|EmbedField[]} fields Fields to normalize
+   * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
   static normalizeFields(...fields) {
