@@ -64,7 +64,7 @@ class Client extends BaseClient {
 
     if (Array.isArray(this.options.shards)) {
       this.options.shards = [...new Set(
-        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0))
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0)),
       )];
     }
 
@@ -199,7 +199,7 @@ class Client extends BaseClient {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.emit(Events.DEBUG,
-      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`
+      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`,
     );
 
     if (this.options.presence) {
@@ -303,7 +303,7 @@ class Client extends BaseClient {
       channels++;
 
       messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
+        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs,
       );
     }
 
