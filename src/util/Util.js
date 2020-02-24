@@ -519,38 +519,52 @@ class Util {
   }
 
   /**
+   * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
+   * @param {string} str The string to sanitize
+   * @returns {string}
+   */
+  static removeMentions(str) {
+    return str
+      .replace(/@/g, '@\u200b');
+  }
+
+  /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
    * @returns {string}
    */
   static cleanContent(str, message) {
-    return str
-      .replace(/@/g, '@\u200b')
-      .replace(/<@!?[0-9]+>/g, input => {
-        const id = input.replace(/<|!|>|@/g, '');
-        if (message.channel.type === 'dm') {
-          const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
-        }
+    if (message.client.options.disableMentions) {
+      return Util.removeMentions(str);
+    } else {
+      return str
+        .replace(/@/g, '@\u200b')
+        .replace(/<@!?[0-9]+>/g, input => {
+          const id = input.replace(/<|!|>|@/g, '');
+          if (message.channel.type === 'dm') {
+            const user = message.client.users.cache.get(id);
+            return user ? `@${user.username}` : input;
+          }
 
-        const member = message.channel.guild.members.cache.get(id);
-        if (member) {
-          return `@${member.displayName}`;
-        } else {
-          const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
-        }
-      })
-      .replace(/<#[0-9]+>/g, input => {
-        const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
-        return channel ? `#${channel.name}` : input;
-      })
-      .replace(/<@&[0-9]+>/g, input => {
-        if (message.channel.type === 'dm') return input;
-        const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
-        return role ? `@${role.name}` : input;
-      });
+          const member = message.channel.guild.members.cache.get(id);
+          if (member) {
+            return `@${member.displayName}`;
+          } else {
+            const user = message.client.users.cache.get(id);
+            return user ? `@${user.username}` : input;
+          }
+        })
+        .replace(/<#[0-9]+>/g, input => {
+          const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
+          return channel ? `#${channel.name}` : input;
+        })
+        .replace(/<@&[0-9]+>/g, input => {
+          if (message.channel.type === 'dm') return input;
+          const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
+          return role ? `@${role.name}` : input;
+        });
+    }
   }
 
   /**

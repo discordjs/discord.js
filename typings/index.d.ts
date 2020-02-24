@@ -1434,6 +1434,7 @@ declare module 'discord.js' {
 		public static basename(path: string, ext?: string): string;
 		public static binaryToID(num: string): Snowflake;
 		public static cleanContent(str: string, message: Message): string;
+		public static removeMentions(str: string): string;
 		public static cloneObject(obj: object): object;
 		public static convertToBuffer(ab: ArrayBuffer | string): Buffer;
 		public static delayFor(ms: number): Promise<void>;
