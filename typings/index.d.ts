@@ -343,6 +343,7 @@ declare module 'discord.js' {
 		public handleCollect(...args: any[]): void;
 		public handleDispose(...args: any[]): void;
 		public stop(reason?: string): void;
+		public resetTimer(options?: { time?: number, idle?: number }): void;
 		public [Symbol.asyncIterator](): AsyncIterableIterator<V>;
 		public toJSON(): object;
 
