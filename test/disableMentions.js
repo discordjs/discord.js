@@ -11,16 +11,16 @@ const client = new Discord.Client({
 const tests = [
     // Test 1
     // See https://github.com/discordapp/discord-api-docs/issues/1189
-    '@\u202eeveryone',
+    '@\u202eeveryone @\u202ehere',
 
     // Test 2
     // See https://github.com/discordapp/discord-api-docs/issues/1241
     // TL;DR: Characters like \u0300 will only be stripped if more than 299 are present
-    '\u0300@'.repeat(150) + '@\u0300everyone',
+    '\u0300@'.repeat(150) + '@\u0300everyone @\u0300here',
 
     // Test 3
-    // Normal @everyone mention
-    '@everyone',
+    // Normal @everyone/@here mention
+    '@everyone @here',
 ];
 
 
