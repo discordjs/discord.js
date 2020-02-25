@@ -559,7 +559,7 @@ class Util {
    * @returns {string}
    */
   static cleanCodeBlockContent(text) {
-    return text.replace('```', '`\u200b``');
+    return text.replace(/```/g, '`\u200b``');
   }
 
   /**
