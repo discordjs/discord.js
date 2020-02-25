@@ -214,7 +214,7 @@ class GuildMemberManager extends BaseManager {
 
   _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.size && (!query && !limit && !presences && !user_ids)) {
+      if (this.guild.memberCount === this.cache.size && (!query && !limit && !presences && !user_ids)) {
         resolve(this.cache);
         return;
       }
