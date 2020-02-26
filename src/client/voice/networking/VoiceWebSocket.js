@@ -232,7 +232,7 @@ class VoiceWebSocket extends EventEmitter {
        * @event VoiceWebSocket#warn
        */
       this.emit('warn', 'A voice heartbeat interval is being overwritten');
-      clearInterval(this.heartbeatInterval);
+      this.client.clearInterval(this.heartbeatInterval);
     }
     this.heartbeatInterval = this.client.setInterval(this.sendHeartbeat.bind(this), interval);
   }
@@ -245,7 +245,7 @@ class VoiceWebSocket extends EventEmitter {
       this.emit('warn', 'Tried to clear a heartbeat interval that does not exist');
       return;
     }
-    clearInterval(this.heartbeatInterval);
+    this.client.clearInterval(this.heartbeatInterval);
     this.heartbeatInterval = null;
   }
 
