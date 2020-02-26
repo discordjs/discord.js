@@ -1077,6 +1077,12 @@ declare module 'discord.js' {
 		public push(request: object): void;
 	}
 
+	interface EmbedField {
+		name: string;
+		value: string;
+		inline?: boolean;
+	}
+
 	export class RichEmbed {
 		constructor(data?: RichEmbedOptions | MessageEmbed);
 		private _apiTransform(): object;
@@ -1108,7 +1114,7 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public static normalizeField(name:StringResolvable, value:StringResolvable, inline?:boolean): EmbedFieldData;
+		public static normalizeField(name:StringResolvable, value:StringResolvable, inline?:boolean): EmbedField;
 	}
 
 	export class RichPresenceAssets {

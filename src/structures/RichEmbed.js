@@ -310,6 +310,13 @@ class RichEmbed {
     };
   }
 
+  /**
+   * Normalizes field input and resolves strings.
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {EmbedField}
+   */
   static normalizeField(name, value, inline = false) {
     name = util.resolveString(name);
     if (!name) throw new RangeError('RichEmbed field names may not be empty.');
