@@ -35,7 +35,7 @@ class VoiceWebSocket extends EventEmitter {
    * @readonly
    */
   get client() {
-    return this.connection.voiceManager.client;
+    return this.connection.client;
   }
 
   shutdown() {
