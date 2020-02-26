@@ -186,6 +186,13 @@ class RichEmbed {
   */
 
   /**
+  * @typedef {Object} EmbedFieldData
+  * @property {StringResolvable} name The name of this field
+  * @property {StringResolvable} value The value of this field
+  * @property {boolean} [inline] If this field will be displayed inline
+  */
+
+  /**
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
