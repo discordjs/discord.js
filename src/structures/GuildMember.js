@@ -292,6 +292,7 @@ class GuildMember {
   get manageable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
+    if (this.client.user.id === this.guild.ownerID) return true;
     return this.guild.me.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 

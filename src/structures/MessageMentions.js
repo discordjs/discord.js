@@ -1,10 +1,11 @@
 const Collection = require('../util/Collection');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
-  constructor(message, users, roles, everyone) {
+  constructor(message, users, roles, everyone, crosspostedChannels) {
     /**
      * Whether `@everyone` or `@here` were mentioned
      * @type {boolean}
@@ -87,6 +88,39 @@ class MessageMentions {
      * @private
      */
     this._channels = null;
+
+    /**
+     * Crossposted channel data.
+     * @typedef {Object} CrosspostedChannel
+     * @property {Snowflake} channelID ID of the mentioned channel
+     * @property {Snowflake} guildID ID of the guild that has the channel
+     * @property {string} type Type of the channel
+     * @property {string} name Name of the channel
+     */
+
+    if (crosspostedChannels) {
+      if (crosspostedChannels instanceof Collection) {
+        /**
+        * A collection of crossposted channels
+        * @type {Collection<Snowflake, CrosspostedChannel>}
+        */
+        this.crosspostedChannels = new Collection(crosspostedChannels);
+      } else {
+        this.crosspostedChannels = new Collection();
+        const channelTypes = Object.keys(ChannelTypes);
+        for (const d of crosspostedChannels) {
+          const type = channelTypes[d.type];
+          this.crosspostedChannels.set(d.id, {
+            channelID: d.id,
+            guildID: d.guild_id,
+            type: type ? type.toLowerCase() : 'unknown',
+            name: d.name,
+          });
+        }
+      }
+    } else {
+      this.crosspostedChannels = new Collection();
+    }
   }
 
   /**
