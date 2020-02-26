@@ -381,6 +381,7 @@ class Util {
    * or one of the following strings:
    * - `DEFAULT`
    * - `WHITE`
+   * - `ALMOST_WHITE`
    * - `AQUA`
    * - `GREEN`
    * - `BLUE`
