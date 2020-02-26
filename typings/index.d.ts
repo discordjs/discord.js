@@ -2271,8 +2271,8 @@ declare module 'discord.js' {
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
 	interface EmbedFieldData {
-		name: string;
-		value: string;
+		name: StringResolvable;
+		value: StringResolvable;
 		inline?: boolean;
 	}
 
