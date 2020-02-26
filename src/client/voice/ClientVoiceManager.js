@@ -98,7 +98,7 @@ class ClientVoiceManager {
       connection.once('authenticated', () => {
         connection.once('ready', () => {
           resolve(connection);
-          connection.removeListener('error', reject);
+          connection.off('error', reject);
         });
         connection.once('disconnect', () => this.connections.delete(channel.guild.id));
       });

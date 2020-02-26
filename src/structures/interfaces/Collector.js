@@ -142,8 +142,8 @@ class Collector extends EventEmitter {
       }
 
       const cleanup = () => {
-        this.removeListener('collect', onCollect);
-        this.removeListener('end', onEnd);
+        this.off('collect', onCollect);
+        this.off('end', onEnd);
       };
 
       const onCollect = item => {
