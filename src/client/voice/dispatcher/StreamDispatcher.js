@@ -66,7 +66,7 @@ class StreamDispatcher extends Writable {
     this._silentPausedTime = 0;
     this.count = 0;
 
-    this.on('finish', () => {
+    this.once('finish', () => {
       this._cleanup();
       this._setSpeaking(0);
     });
