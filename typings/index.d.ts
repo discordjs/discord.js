@@ -1095,7 +1095,7 @@ declare module 'discord.js' {
 		public title?: string;
 		public url?: string;
 		public addBlankField(inline?: boolean): this;
-		public spliceFields(index: number, deleteCount: number, ...fields: EmbedField[]):this;
+		public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[]):this;
 		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
 		public attachFile(file: Attachment | FileOptions | string): this;
 		public attachFiles(file: Array<Attachment | FileOptions | string>): this;
@@ -1108,7 +1108,7 @@ declare module 'discord.js' {
 		public setTimestamp(timestamp?: Date | number): this;
 		public setTitle(title: StringResolvable): this;
 		public setURL(url: string): this;
-		public static checkField(name:string, value:string, inline?:boolean): EmbedField;
+		public static checkField(name:StringResolvable, value:StringResolvable, inline?:boolean): EmbedFieldData;
 	}
 
 	export class RichPresenceAssets {
@@ -2172,7 +2172,7 @@ declare module 'discord.js' {
 
 	interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> { }
 
-	interface EmbedField {
+	interface EmbedFieldData {
 		name: string;
 		value: string;
 		inline?: boolean;

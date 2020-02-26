@@ -189,7 +189,7 @@ class RichEmbed {
    * Removes, replaces, and inserts fields in the embed (max 25).
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of fields to remove
-   * @param {...EmbedField} [fields] The replacing field objects
+   * @param {...EmbedFieldData} [fields] The replacing field objects
    * @returns {RichEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
