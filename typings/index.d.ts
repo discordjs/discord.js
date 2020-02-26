@@ -1080,7 +1080,7 @@ declare module 'discord.js' {
 	interface EmbedField {
 		name: string;
 		value: string;
-		inline?: boolean;
+		inline: boolean;
 	}
 
 	export class RichEmbed {
