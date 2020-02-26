@@ -194,7 +194,7 @@ class RichEmbed {
    */
   spliceFields(index, deleteCount, ...fields) {
     if (fields) {
-      const mapper = ({ name, value, inline }) => this.constructor.checkField(name, value, inline);
+      const mapper = ({ name, value, inline }) => this.constructor.normalizeField(name, value, inline);
       this.fields.splice(index, deleteCount, ...fields.map(mapper));
     } else {
       this.fields.splice(index, deleteCount);
@@ -310,7 +310,7 @@ class RichEmbed {
     };
   }
 
-  static checkField(name, value, inline = false) {
+  static normalizeField(name, value, inline = false) {
     name = util.resolveString(name);
     if (!name) throw new RangeError('RichEmbed field names may not be empty.');
     value = util.resolveString(value);
