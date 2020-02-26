@@ -10,6 +10,7 @@ const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
+const SystemChannelFlags = require('../util/SystemChannelFlags');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -186,6 +187,12 @@ class Guild {
       data.default_message_notifications;
 
     /**
+     * The value for the guild's system channel flags
+     * @type {Readonly<SystemChannelFlags>}
+     */
+    this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
+
+    /**
      * The type of premium tier:
      * * 0: NONE
      * * 1: TIER_1
@@ -267,6 +274,20 @@ class Guild {
     this.id = data.id;
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
+
+    /**
+     * The ID of the rules channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.rulesChannelID = data.rules_channel_id;
+
+    /**
+     * The ID of the public updates channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.publicUpdatesChannelID = data.public_updates_channel_id;
 
     if (data.members) {
       this.members.clear();
@@ -549,6 +570,26 @@ class Guild {
    */
   get defaultRole() {
     return this.roles.get(this.id);
+  }
+
+  /**
+   * Rules channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get rulesChannel() {
+    return this.client.channels.get(this.rulesChannelID) || null;
+  }
+
+  /**
+   * Public updates channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get publicUpdatesChannel() {
+    return this.client.channels.get(this.publicUpdatesChannelID) || null;
   }
 
   /**
@@ -891,6 +932,7 @@ class Guild {
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    */
 
   /**
@@ -931,6 +973,9 @@ class Guild {
         Constants.DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
         Number(data.defaultMessageNotifications);
     }
+    if (typeof data.systemChannelFlags !== 'undefined') {
+      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
+    }
     return this.client.rest.methods.updateGuild(this, _data, reason);
   }
 
@@ -963,6 +1008,16 @@ class Guild {
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications }, reason);
+  }
+
+  /**
+   * Edits the flags of the default message notifications of the guild.
+   * @param {SystemChannelFlagsResolvable} systemChannelFlags The new flags for the default message notifications
+   * @param {string} [reason] Reason for changing the flags of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setSystemChannelFlags(systemChannelFlags, reason) {
+    return this.edit({ systemChannelFlags }, reason);
   }
 
   /**
@@ -1493,10 +1548,13 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = Util.cloneObject(member);
 
+    if (data.premium_since) member.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname ||
+    member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp ||
+    !Util.arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**

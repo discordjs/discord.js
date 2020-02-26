@@ -22,6 +22,8 @@ const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
 const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
+const MessageFlags = require('../../util/MessageFlags');
+
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
@@ -132,8 +134,10 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code, reply } = {}) {
+  updateMessage(message, content, { flags, embed, code, reply } = {}) {
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    if (typeof flags !== 'undefined') flags = MessageFlags.resolve(flags);
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
@@ -151,7 +155,7 @@ class RESTMethods {
     if (embed instanceof RichEmbed) embed = embed._apiTransform();
 
     return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
-      content, embed,
+      content, embed, flags,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 

@@ -369,6 +369,7 @@ exports.Events = {
 };
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
@@ -385,6 +386,17 @@ exports.ActivityTypes = [
   'CUSTOM_STATUS',
 ];
 
+/**
+ * Numeric activity flags. All available properties:
+ * * `INSTANCE`
+ * * `JOIN`
+ * * `SPECTATE`
+ * * `JOIN_REQUEST`
+ * * `SYNC`
+ * * `PLAY`
+ * @typedef {string} ActivityFlag
+ * @see {@link https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags}
+ */
 exports.ActivityFlags = {
   INSTANCE: 1 << 0,
   JOIN: 1 << 1,
@@ -495,6 +507,9 @@ exports.WSEvents = {
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
+ * * CHANNEL_FOLLOW_ADD
+ * * GUILD_DISCOVERY_DISQUALIFIED
+ * * GUILD_DISCOVERY_REQUALIFIED
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -510,6 +525,11 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
+  'CHANNEL_FOLLOW_ADD',
+  // 13 isn't yet documented
+  null,
+  'GUILD_DISCOVERY_DISQUALIFIED',
+  'GUILD_DISCOVERY_REQUALIFIED',
 ];
 
 /**

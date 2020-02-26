@@ -9,13 +9,16 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DiscordAPIError: require('./client/rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
+  MessageFlags: require('./util/MessageFlags'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  SystemChannelFlags: require('./util/SystemChannelFlags'),
   Util: Util,
   util: Util,
   version: require('../package').version,
