@@ -1,7 +1,7 @@
 'use strict';
 
 const secretbox = require('../util/Secretbox');
-const EventEmitter = require('events');
+const { EventEmitter } = require('events');
 
 // The delay between packets when a user is considered to have stopped speaking
 // https://github.com/discordjs/discord.js/issues/3524#issuecomment-540373200
