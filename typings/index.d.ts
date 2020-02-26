@@ -2780,7 +2780,8 @@ declare module 'discord.js' {
 		| 'PRESENCE_UPDATE'
 		| 'TYPING_START'
 		| 'VOICE_STATE_UPDATE'
-		| 'VOICE_SERVER_UPDATE';
+		| 'VOICE_SERVER_UPDATE'
+		| 'WEBHOOKS_UPDATE';
 
 //#endregion
 }
