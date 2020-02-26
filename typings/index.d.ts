@@ -1427,6 +1427,7 @@ declare module 'discord.js' {
 		public static basename(path: string, ext?: string): string;
 		public static binaryToID(num: string): Snowflake;
 		public static cleanContent(str: string, message: Message): string;
+		public static removeMentions(str: string): string;
 		public static cloneObject(obj: object): object;
 		public static convertToBuffer(ab: ArrayBuffer | string): Buffer;
 		public static delayFor(ms: number): Promise<void>;
@@ -2068,7 +2069,7 @@ declare module 'discord.js' {
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
 		fetchAllMembers?: boolean;
-		disableEveryone?: boolean;
+		disableMentions?: boolean;
 		partials?: PartialTypes[];
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
@@ -2464,7 +2465,7 @@ declare module 'discord.js' {
 		nonce?: string;
 		content?: string;
 		embed?: MessageEmbed | MessageEmbedOptions;
-		disableEveryone?: boolean;
+		disableMentions?: boolean;
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
@@ -2693,7 +2694,7 @@ declare module 'discord.js' {
 		tts?: boolean;
 		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
-		disableEveryone?: boolean;
+		disableMentions?: boolean;
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
