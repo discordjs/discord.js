@@ -837,6 +837,7 @@ declare module 'discord.js' {
 		public isMentioned(data: GuildChannel | User | Role | Snowflake): boolean;
 		public pin(): Promise<Message>;
 		public react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
+		public reply(content?: StringResolvable, options?: MessageOptions & { split: false }): Promise<Message>;
 		public reply(content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public reply(options?: MessageOptions): Promise<Message | Message[]>;
 		public suppressEmbeds(suppress?: boolean): Promise<Message>;
@@ -1660,6 +1661,7 @@ declare module 'discord.js' {
 		public delete(reason?: string): Promise<void>;
 		public edit(name?: string, avatar?: BufferResolvable): Promise<Webhook>;
 		public edit(options?: WebhookEditOptions, reason?: string): Promise<Webhook>;
+		public send(content?: StringResolvable, options?: WebhookMessageOptions & { split: false } | RichEmbed | Attachment): Promise<Message>;
 		public send(content?: StringResolvable, options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		public send(options?: WebhookMessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		public sendCode(lang: string, content: StringResolvable, options?: WebhookMessageOptions): Promise<Message | Message[]>;
@@ -1700,6 +1702,7 @@ declare module 'discord.js' {
 	type PartialTextBasedChannelFields = {
 		lastMessage: Message;
 		acknowledge(): Promise<DMChannel | GroupDMChannel | TextChannel>;
+		send(content?: StringResolvable, options?: MessageOptions & { split: false } | RichEmbed | Attachment): Promise<Message>;
 		send(content?: StringResolvable, options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		send(options?: MessageOptions | RichEmbed | Attachment): Promise<Message | Message[]>;
 		sendCode(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
