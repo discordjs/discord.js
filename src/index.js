@@ -23,7 +23,7 @@ module.exports = {
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
-  resolveString: Util.resolvestring,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
