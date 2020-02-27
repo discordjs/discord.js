@@ -959,6 +959,13 @@ declare module 'discord.js' {
 		public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
 	}
 
+	export class Intents extends BitField<IntentsString> {
+		public static FLAGS: Record<IntentsString, number>;
+		public static PRIVILEGED: number;
+		public static ALL: number;
+		public static NON_PRIVILEGED: number;
+		public static resolve(bit?: BitFieldResolvable<IntentsString>): number;
+	}
 	export class Message extends Base {
 		constructor(client: Client, data: object, channel: TextChannel | DMChannel);
 		private _edits: Message[];
@@ -1981,6 +1988,22 @@ declare module 'discord.js' {
 		| 'SOURCE_MESSAGE_DELETED'
 		| 'URGENT';
 
+	type IntentsString = 'GUILDS'
+		| 'GUILD_MEMBERS'
+		| 'GUILDS_BANS'
+		| 'GUILD_EMOJIS'
+		| 'GUILD_INTEGRATIONS'
+		| 'GUILD_WEBHOOKS'
+		| 'GUILD_INVITES'
+		| 'GUILD_VOICE_STATES'
+		| 'GUILD_PRESENCES'
+		| 'GUILD_MESSAGES'
+		| 'GUILD_MESSAGE_REACTIONS'
+		| 'GUILD_MESSAGE_TYPING'
+		| 'DIRECT_MESSAGES'
+		| 'DIRECT_MESSAGE_REACTIONS'
+		| 'DIRECT_MESSAGE_TYPING';
+
 	interface APIErrror {
 		UNKNOWN_ACCOUNT: number;
 		UNKNOWN_APPLICATION: number;
@@ -2703,6 +2726,7 @@ declare module 'discord.js' {
 	interface WebSocketOptions {
 		large_threshold?: number;
 		compress?: boolean;
+		intents?: Intents | number;
 	}
 
 	type WSEventType = 'READY'

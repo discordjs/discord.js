@@ -19,6 +19,7 @@ const { Events, browser, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
 const { Error, TypeError, RangeError } = require('../errors');
+const Intents = require('../util/Intents');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -365,6 +366,12 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
+    if (options.ws && options.ws.intents) {
+      const intents = options.ws.intents;
+      if (typeof intents !== 'number' && !(intents instanceof Intents)) {
+        throw new TypeError('CLIENT_INVALID_OPTION', 'ws.intents', 'a number or Intents');
+      }
+    }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
