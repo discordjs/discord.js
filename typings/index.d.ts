@@ -1990,7 +1990,7 @@ declare module 'discord.js' {
 
 	type IntentsString = 'GUILDS'
 		| 'GUILD_MEMBERS'
-		| 'GUILDS_BANS'
+		| 'GUILD_BANS'
 		| 'GUILD_EMOJIS'
 		| 'GUILD_INTEGRATIONS'
 		| 'GUILD_WEBHOOKS'

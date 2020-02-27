@@ -20,7 +20,7 @@ class Intents extends BitField {}
  * Numeric websocket intents. All available properties:
  * * `GUILDS`
  * * `GUILD_MEMBERS`
- * * `GUILDS_BANS`
+ * * `GUILD_BANS`
  * * `GUILD_EMOJIS`
  * * `GUILD_INTEGRATIONS`
  * * `GUILD_WEBHOOKS`
@@ -39,7 +39,7 @@ class Intents extends BitField {}
 Intents.FLAGS = {
   GUILDS: 1 << 0,
   GUILD_MEMBERS: 1 << 1,
-  GUILDS_BANS: 1 << 2,
+  GUILD_BANS: 1 << 2,
   GUILD_EMOJIS: 1 << 3,
   GUILD_INTEGRATIONS: 1 << 4,
   GUILD_WEBHOOKS: 1 << 5,
