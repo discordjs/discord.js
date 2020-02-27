@@ -57,8 +57,9 @@ Intents.FLAGS = {
 /**
  * Bitfield representing all privileged intents
  * @type {number}
+ * @see {@link https://discordapp.com/developers/docs/topics/gateway#privileged-intents}
  */
-Intents.PRIVILEGED = 258;
+Intents.PRIVILEGED = Intents.FLAGS.GUILD_MEMBERS | Intents.FLAGS.GUILD_PRESENCES;
 
 /**
  * Bitfield representing all intents combined
