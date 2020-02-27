@@ -8,7 +8,6 @@ const path = require('path');
 const Shard = require('./Shard');
 const Util = require('../util/Util');
 
-
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
  * It works by spawning a self-contained {@link ChildProcess} or {@link Worker} for each individual shard, each
