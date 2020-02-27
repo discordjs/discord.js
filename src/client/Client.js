@@ -408,9 +408,6 @@ class Client extends BaseClient {
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
-    if (!Array.isArray(options.disabledEvents)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'disabledEvents', 'an Array');
-    }
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }

@@ -2145,7 +2145,6 @@ declare module 'discord.js' {
 		restSweepInterval?: number;
 		retryLimit?: number;
 		presence?: PresenceData;
-		disabledEvents?: WSEventType[];
 		ws?: WebSocketOptions;
 		http?: HTTPOptions;
 	}
