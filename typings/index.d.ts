@@ -2412,7 +2412,7 @@ declare module 'discord.js' {
 		url?: string;
 		timestamp?: Date | number;
 		color?: ColorResolvable;
-		fields?: EmbedField[];
+		fields?: EmbedFieldData[];
 		files?: (MessageAttachment | string | FileOptions)[];
 		author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string; };
 		thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string; };
