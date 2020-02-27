@@ -366,7 +366,7 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
-    if (options.ws && options.ws.intents) {
+    if (typeof options.ws.intents !== 'undefined') {
       const intents = options.ws.intents;
       if (typeof intents !== 'number' && !(intents instanceof Intents)) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'ws.intents', 'a number or Intents');
