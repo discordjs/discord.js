@@ -2496,10 +2496,10 @@ declare module 'discord.js' {
 	}
 
 	type MessageFlagsString = 'CROSSPOSTED'
-	| 'IS_CROSSPOST'
-	| 'SUPPRESS_EMBEDS'
-	| 'SOURCE_MESSAGE_DELETED'
-	| 'URGENT';
+		| 'IS_CROSSPOST'
+		| 'SUPPRESS_EMBEDS'
+		| 'SOURCE_MESSAGE_DELETED'
+		| 'URGENT';
 
 	interface MessageOptions {
 		tts?: boolean;
