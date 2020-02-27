@@ -1,8 +1,8 @@
 'use strict';
 
+const { browser, Events, OPCodes, ShardEvents, Status, WSEvents } = require('../../util/Constants');
 const { EventEmitter } = require('events');
 const WebSocket = require('../../WebSocket');
-const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
 const STATUS_KEYS = Object.keys(Status);
 const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);

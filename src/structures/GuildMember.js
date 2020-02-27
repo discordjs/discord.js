@@ -1,13 +1,13 @@
 'use strict';
 
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Role = require('./Role');
-const Permissions = require('../util/Permissions');
-const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Base = require('./Base');
-const VoiceState = require('./VoiceState');
-const { Presence } = require('./Presence');
 const { Error } = require('../errors');
+const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const Permissions = require('../util/Permissions');
+const { Presence } = require('./Presence');
+const Role = require('./Role');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const VoiceState = require('./VoiceState');
 
 /**
  * Represents a member of a guild on Discord.

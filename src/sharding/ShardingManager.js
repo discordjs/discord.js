@@ -1,12 +1,13 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
-const { EventEmitter } = require('events');
-const Shard = require('./Shard');
 const Collection = require('../util/Collection');
-const Util = require('../util/Util');
 const { Error, TypeError, RangeError } = require('../errors');
+const { EventEmitter } = require('events');
+const fs = require('fs');
+const path = require('path');
+const Shard = require('./Shard');
+const Util = require('../util/Util');
+
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.

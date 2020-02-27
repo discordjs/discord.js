@@ -1,22 +1,22 @@
 'use strict';
 
+const { browser, Events: { RATE_LIMIT } } = require('../util/Constants');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const Util = require('../util/Util');
-const { Events: { RATE_LIMIT }, browser } = require('../util/Constants');
 
-function parseResponse(res) {
-  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
-  if (browser) return res.blob();
-  return res.buffer();
+function calculateReset(reset, serverDate) {
+  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
 function getAPIOffset(serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
-function calculateReset(reset, serverDate) {
-  return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
+function parseResponse(res) {
+  if (res.headers.get('content-type').startsWith('application/json')) return res.json();
+  if (browser) return res.blob();
+  return res.buffer();
 }
 
 class RequestHandler {

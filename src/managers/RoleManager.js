@@ -1,9 +1,9 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const Role = require('../structures/Role');
-const { resolveColor } = require('../util/Util');
 const Permissions = require('../util/Permissions');
+const { resolveColor } = require('../util/Util');
+const Role = require('../structures/Role');
 
 /**
  * Manages API methods for roles and stores their cache.

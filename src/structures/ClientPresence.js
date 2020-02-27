@@ -1,8 +1,8 @@
 'use strict';
 
-const { Presence } = require('./Presence');
-const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
+const Collection = require('../util/Collection');
+const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
 
 class ClientPresence extends Presence {

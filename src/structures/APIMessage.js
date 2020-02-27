@@ -1,12 +1,12 @@
 'use strict';
 
-const DataResolver = require('../util/DataResolver');
-const MessageEmbed = require('./MessageEmbed');
-const MessageAttachment = require('./MessageAttachment');
 const { browser } = require('../util/Constants');
-const Util = require('../util/Util');
-const { RangeError } = require('../errors');
+const DataResolver = require('../util/DataResolver');
+const MessageAttachment = require('./MessageAttachment');
+const MessageEmbed = require('./MessageEmbed');
 const MessageFlags = require('../util/MessageFlags');
+const { RangeError } = require('../errors');
+const Util = require('../util/Util');
 
 /**
  * Represents a message to be sent to the API.

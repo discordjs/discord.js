@@ -1,9 +1,9 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const Message = require('../structures/Message');
-const LimitedCollection = require('../util/LimitedCollection');
 const Collection = require('../util/Collection');
+const LimitedCollection = require('../util/LimitedCollection');
+const Message = require('../structures/Message');
 
 /**
 * Manages API methods for Messages and holds their cache.

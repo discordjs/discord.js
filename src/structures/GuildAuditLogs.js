@@ -2,10 +2,10 @@
 
 const Collection = require('../util/Collection');
 const Integration = require('./Integration');
-const Snowflake = require('../util/Snowflake');
-const Webhook = require('./Webhook');
-const Util = require('../util/Util');
 const { PartialTypes } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
+const Util = require('../util/Util');
+const Webhook = require('./Webhook');
 
 /**
  * The target type of an entry, e.g. `GUILD`. Here are the available types:

@@ -1,9 +1,9 @@
 'use strict';
 
 const Collection = require('../../util/Collection');
-const VoiceConnection = require('./VoiceConnection');
-const VoiceBroadcast = require('./VoiceBroadcast');
 const { Error } = require('../../errors');
+const VoiceBroadcast = require('./VoiceBroadcast');
+const VoiceConnection = require('./VoiceConnection');
 
 /**
  * Manages voice connections for the client

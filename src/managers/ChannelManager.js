@@ -1,7 +1,7 @@
 'use strict';
 
-const Channel = require('../structures/Channel');
 const BaseManager = require('./BaseManager');
+const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
 /**

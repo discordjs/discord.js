@@ -1,15 +1,13 @@
 'use strict';
 
-const VolumeInterface = require('../util/VolumeInterface');
-const { Writable } = require('stream');
-
 const secretbox = require('../util/Secretbox');
 const Silence = require('../util/Silence');
+const VolumeInterface = require('../util/VolumeInterface');
+const { Writable } = require('stream');
 
 const FRAME_LENGTH = 20;
 const CHANNELS = 2;
 const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
-
 const MAX_NONCE_SIZE = (2 ** 32) - 1;
 const nonce = Buffer.alloc(24);
 

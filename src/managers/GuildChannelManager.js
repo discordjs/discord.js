@@ -1,7 +1,7 @@
 'use strict';
 
-const { ChannelTypes } = require('../util/Constants');
 const BaseManager = require('./BaseManager');
+const { ChannelTypes } = require('../util/Constants');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 

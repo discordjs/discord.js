@@ -2,9 +2,9 @@
 
 require('setimmediate');
 const { EventEmitter } = require('events');
+const { DefaultOptions } = require('../util/Constants');
 const RESTManager = require('../rest/RESTManager');
 const Util = require('../util/Util');
-const { DefaultOptions } = require('../util/Constants');
 
 /**
  * The base class for all clients.

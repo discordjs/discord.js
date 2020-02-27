@@ -1,16 +1,22 @@
 'use strict';
 
-const VoiceWebSocket = require('./networking/VoiceWebSocket');
-const VoiceUDP = require('./networking/VoiceUDPClient');
-const Util = require('../../util/Util');
-const { OPCodes, VoiceOPCodes, VoiceStatus, Events } = require('../../util/Constants');
 const AudioPlayer = require('./player/AudioPlayer');
-const VoiceReceiver = require('./receiver/Receiver');
-const { EventEmitter } = require('events');
 const { Error } = require('../../errors');
+const { EventEmitter } = require('events');
+const { Events, OPCodes, VoiceOPCodes, VoiceStatus } = require('../../util/Constants');
 const PlayInterface = require('./util/PlayInterface');
-const Speaking = require('../../util/Speaking');
 const Silence = require('./util/Silence');
+const Speaking = require('../../util/Speaking');
+const Util = require('../../util/Util');
+const VoiceReceiver = require('./receiver/Receiver');
+const VoiceUDP = require('./networking/VoiceUDPClient');
+const VoiceWebSocket = require('./networking/VoiceWebSocket');
+
+const SUPPORTED_MODES = [
+  'xsalsa20_poly1305_lite',
+  'xsalsa20_poly1305_suffix',
+  'xsalsa20_poly1305',
+];
 
 // Workaround for Discord now requiring silence to be sent before being able to receive audio
 class SingleSilence extends Silence {
@@ -19,12 +25,6 @@ class SingleSilence extends Silence {
     this.push(null);
   }
 }
-
-const SUPPORTED_MODES = [
-  'xsalsa20_poly1305_lite',
-  'xsalsa20_poly1305_suffix',
-  'xsalsa20_poly1305',
-];
 
 /**
  * Represents a connection to a guild's voice server.

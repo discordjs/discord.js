@@ -1,19 +1,19 @@
 'use strict';
 
+const APIMessage = require('./APIMessage');
+const Base = require('./Base');
+const ClientApplication = require('./ClientApplication');
+const Collection = require('../util/Collection');
+const { Error, TypeError } = require('../errors');
 const Mentions = require('./MessageMentions');
 const MessageAttachment = require('./MessageAttachment');
-const Embed = require('./MessageEmbed');
-const ReactionCollector = require('./ReactionCollector');
-const ClientApplication = require('./ClientApplication');
-const Util = require('../util/Util');
-const Collection = require('../util/Collection');
-const ReactionManager = require('../managers/ReactionManager');
+const MessageEmbed = require('./MessageEmbed');
+const MessageFlags = require('../util/MessageFlags');
 const { MessageTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Base = require('./Base');
-const { Error, TypeError } = require('../errors');
-const APIMessage = require('./APIMessage');
-const MessageFlags = require('../util/MessageFlags');
+const ReactionCollector = require('./ReactionCollector');
+const ReactionManager = require('../managers/ReactionManager');
+const Util = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -98,7 +98,7 @@ class Message extends Base {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = (data.embeds || []).map(e => new Embed(e));
+    this.embeds = (data.embeds || []).map(e => new MessageEmbed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -223,7 +223,7 @@ class Message extends Base {
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new MessageEmbed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {

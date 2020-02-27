@@ -1,11 +1,13 @@
 'use strict';
 
 const { Colors, DefaultOptions, Endpoints } = require('./Constants');
-const fetch = require('node-fetch');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
+const fetch = require('node-fetch');
+const { parse } = require('path');
+
+
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
-const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.

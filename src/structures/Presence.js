@@ -1,9 +1,9 @@
 'use strict';
 
-const Util = require('../util/Util');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
 const Emoji = require('./Emoji');
+const Util = require('../util/Util');
 
 /**
  * Activity sent in a message.

@@ -1,12 +1,12 @@
 'use strict';
 
+const Collection = require('../../util/Collection');
 const { EventEmitter } = require('events');
 const { Error: DJSError } = require('../../errors');
-const Collection = require('../../util/Collection');
-const Util = require('../../util/Util');
-const WebSocketShard = require('./WebSocketShard');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
 const PacketHandlers = require('./handlers');
+const Util = require('../../util/Util');
+const WebSocketShard = require('./WebSocketShard');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,

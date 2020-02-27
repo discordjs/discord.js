@@ -1,7 +1,7 @@
 'use strict';
 
-const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 const BasePlayer = require('./BasePlayer');
+const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 
 /**
  * An Audio Player for a Voice Connection.

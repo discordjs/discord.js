@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const Invite = require('../../structures/Invite');
 const { Events } = require('../../util/Constants');
+const Invite = require('../../structures/Invite');
 
 class InviteCreateAction extends Action {
   handle(data) {

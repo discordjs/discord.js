@@ -1,10 +1,10 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const GuildMember = require('../structures/GuildMember');
-const { Events, OPCodes } = require('../util/Constants');
 const Collection = require('../util/Collection');
+const GuildMember = require('../structures/GuildMember');
 const { Error, TypeError } = require('../errors');
+const { Events, OPCodes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

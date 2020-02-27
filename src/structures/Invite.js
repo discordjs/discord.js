@@ -1,8 +1,8 @@
 'use strict';
 
+const Base = require('./Base');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Base = require('./Base');
 
 /**
  * Represents an invitation to a guild channel.

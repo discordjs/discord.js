@@ -1,8 +1,8 @@
 'use strict';
 
-const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
-const { EventEmitter } = require('events');
 const { Error } = require('../../../errors');
+const { EventEmitter } = require('events');
+const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 const WebSocket = require('../../../WebSocket');
 
 /**

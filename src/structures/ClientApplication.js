@@ -1,8 +1,8 @@
 'use strict';
 
-const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const Base = require('./Base');
+const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 const Team = require('./Team');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);

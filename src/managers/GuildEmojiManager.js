@@ -1,10 +1,10 @@
 'use strict';
 
-const Collection = require('../util/Collection');
 const BaseManager = require('./BaseManager');
+const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
 const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
-const DataResolver = require('../util/DataResolver');
 const { TypeError } = require('../errors');
 
 /**

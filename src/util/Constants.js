@@ -1,8 +1,8 @@
 'use strict';
 
-const Package = exports.Package = require('../../package.json');
-const { Error, RangeError } = require('../errors');
 const browser = exports.browser = typeof window !== 'undefined';
+const { Error, RangeError } = require('../errors');
+const Package = exports.Package = require('../../package.json');
 
 /**
  * Options for a client.
@@ -659,7 +659,7 @@ exports.WebhookTypes = [
 ];
 
 function keyMirror(arr) {
-  let tmp = Object.create(null);
+  const tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
   return tmp;
 }
