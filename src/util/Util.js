@@ -404,6 +404,10 @@ class Util {
    * - `DARK_GREY`
    * - `LIGHT_GREY`
    * - `DARK_NAVY`
+   * - `BLURPLE`
+   * - `GREYPLE`
+   * - `DARK_BUT_NOT_BLACK`
+   * - `NOT_QUITE_BLACK`
    * - `RANDOM`
    * @typedef {string|number|number[]} ColorResolvable
    */
