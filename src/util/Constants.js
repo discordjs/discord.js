@@ -61,6 +61,7 @@ exports.DefaultOptions = {
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {Intents|number} [intents] Intents to enable for this connection
    */
   ws: {
     large_threshold: 250,
