@@ -159,7 +159,7 @@ class RichEmbed {
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    this.fields.push(this.constructor.normalizeField({ name, value, inline }));
+    this.fields.push(this.constructor.normalizeField(name, value, inline));
     return this;
   }
 
