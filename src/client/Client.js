@@ -386,7 +386,7 @@ class Client extends BaseClient {
     if (typeof options.fetchAllMembers !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
-    if (options.disableMentions && typeof options.disableMentions !== 'string') {
+    if (typeof options.disableMentions !== 'string') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'disableMentions', 'a string');
     }
     if (!Array.isArray(options.partials)) {
