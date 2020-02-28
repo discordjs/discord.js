@@ -1053,6 +1053,7 @@ declare module 'discord.js' {
 		public type: string;
 		public url?: string;
 		public readonly video: MessageEmbedVideo | null;
+		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
 		public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
@@ -1614,6 +1615,7 @@ declare module 'discord.js' {
 		public avatar: string;
 		public avatarURL(options?: ImageURLOptions): string | null;
 		public channelID: Snowflake;
+		public client: Client;
 		public guildID: Snowflake;
 		public name: string;
 		public owner: User | object | null;
@@ -1623,6 +1625,7 @@ declare module 'discord.js' {
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
 		constructor(id: string, token: string, options?: ClientOptions);
+		public client: this;
 		public token: string;
 	}
 
@@ -1892,7 +1895,6 @@ declare module 'discord.js' {
 	function WebhookMixin<T>(Base?: Constructable<T>): Constructable<T & WebhookFields>;
 
 	interface WebhookFields {
-		readonly client: Client;
 		id: Snowflake;
 		readonly createdAt: Date;
 		readonly createdTimestamp: number;
