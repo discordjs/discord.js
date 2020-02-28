@@ -1,8 +1,8 @@
 'use strict';
 
-const Package = exports.Package = require('../../package.json');
+const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
-const browser = exports.browser = typeof window !== 'undefined';
+const browser = (exports.browser = typeof window !== 'undefined');
 
 /**
  * Options for a client.
@@ -89,8 +89,9 @@ exports.DefaultOptions = {
   },
 };
 
-exports.UserAgent = browser ? null :
-  `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
+exports.UserAgent = browser
+  ? null
+  : `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
@@ -99,12 +100,7 @@ exports.WSCodes = {
   4011: 'SHARDING_REQUIRED',
 };
 
-const AllowedImageFormats = [
-  'webp',
-  'png',
-  'jpg',
-  'gif',
-];
+const AllowedImageFormats = ['webp', 'png', 'jpg', 'gif'];
 
 const AllowedImageSizes = Array.from({ length: 8 }, (e, i) => 2 ** (i + 4));
 
@@ -302,13 +298,7 @@ exports.ShardEvents = {
  * sidebar for more information.</warn>
  * @typedef {string} PartialType
  */
-exports.PartialTypes = keyMirror([
-  'USER',
-  'CHANNEL',
-  'GUILD_MEMBER',
-  'MESSAGE',
-  'REACTION',
-]);
+exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 'REACTION']);
 
 /**
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
@@ -438,13 +428,7 @@ exports.MessageTypes = [
  * * CUSTOM_STATUS
  * @typedef {string} ActivityType
  */
-exports.ActivityTypes = [
-  'PLAYING',
-  'STREAMING',
-  'LISTENING',
-  'WATCHING',
-  'CUSTOM_STATUS',
-];
+exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS'];
 
 exports.ChannelTypes = {
   TEXT: 0,
@@ -463,34 +447,34 @@ exports.ClientApplicationAssetTypes = {
 
 exports.Colors = {
   DEFAULT: 0x000000,
-  WHITE: 0xFFFFFF,
-  AQUA: 0x1ABC9C,
-  GREEN: 0x2ECC71,
-  BLUE: 0x3498DB,
-  YELLOW: 0xFFFF00,
-  PURPLE: 0x9B59B6,
-  LUMINOUS_VIVID_PINK: 0xE91E63,
-  GOLD: 0xF1C40F,
-  ORANGE: 0xE67E22,
-  RED: 0xE74C3C,
-  GREY: 0x95A5A6,
-  NAVY: 0x34495E,
-  DARK_AQUA: 0x11806A,
-  DARK_GREEN: 0x1F8B4C,
+  WHITE: 0xffffff,
+  AQUA: 0x1abc9c,
+  GREEN: 0x2ecc71,
+  BLUE: 0x3498db,
+  YELLOW: 0xffff00,
+  PURPLE: 0x9b59b6,
+  LUMINOUS_VIVID_PINK: 0xe91e63,
+  GOLD: 0xf1c40f,
+  ORANGE: 0xe67e22,
+  RED: 0xe74c3c,
+  GREY: 0x95a5a6,
+  NAVY: 0x34495e,
+  DARK_AQUA: 0x11806a,
+  DARK_GREEN: 0x1f8b4c,
   DARK_BLUE: 0x206694,
-  DARK_PURPLE: 0x71368A,
-  DARK_VIVID_PINK: 0xAD1457,
-  DARK_GOLD: 0xC27C0E,
-  DARK_ORANGE: 0xA84300,
-  DARK_RED: 0x992D22,
-  DARK_GREY: 0x979C9F,
-  DARKER_GREY: 0x7F8C8D,
-  LIGHT_GREY: 0xBCC0C0,
-  DARK_NAVY: 0x2C3E50,
-  BLURPLE: 0x7289DA,
-  GREYPLE: 0x99AAB5,
-  DARK_BUT_NOT_BLACK: 0x2C2F33,
-  NOT_QUITE_BLACK: 0x23272A,
+  DARK_PURPLE: 0x71368a,
+  DARK_VIVID_PINK: 0xad1457,
+  DARK_GOLD: 0xc27c0e,
+  DARK_ORANGE: 0xa84300,
+  DARK_RED: 0x992d22,
+  DARK_GREY: 0x979c9f,
+  DARKER_GREY: 0x7f8c8d,
+  LIGHT_GREY: 0xbcc0c0,
+  DARK_NAVY: 0x2c3e50,
+  BLURPLE: 0x7289da,
+  GREYPLE: 0x99aab5,
+  DARK_BUT_NOT_BLACK: 0x2c2f33,
+  NOT_QUITE_BLACK: 0x23272a,
 };
 
 /**
@@ -502,13 +486,7 @@ exports.Colors = {
  * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
  * @typedef {string} VerificationLevel
  */
-exports.VerificationLevels = [
-  'None',
-  'Low',
-  'Medium',
-  '(╯°□°）╯︵ ┻━┻',
-  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻',
-];
+exports.VerificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:
@@ -627,10 +605,7 @@ exports.APIErrors = {
  * * MENTIONS
  * @typedef {string} DefaultMessageNotifications
  */
-exports.DefaultMessageNotifications = [
-  'ALL',
-  'MENTIONS',
-];
+exports.DefaultMessageNotifications = ['ALL', 'MENTIONS'];
 
 /**
  * The value set for a team members's membership state:

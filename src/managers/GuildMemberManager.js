@@ -1,10 +1,10 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const GuildMember = require('../structures/GuildMember');
-const { Events, OPCodes } = require('../util/Constants');
-const Collection = require('../util/Collection');
 const { Error, TypeError } = require('../errors');
+const GuildMember = require('../structures/GuildMember');
+const Collection = require('../util/Collection');
+const { Events, OPCodes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -136,10 +136,15 @@ class GuildMemberManager extends BaseManager {
    */
   prune({ days = 7, dry = false, count = true, reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api.guilds(this.guild.id).prune[dry ? 'get' : 'post']({ query: {
-      days,
-      compute_prune_count: count,
-    }, reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .prune[dry ? 'get' : 'post']({
+        query: {
+          days,
+          compute_prune_count: count,
+        },
+        reason,
+      })
       .then(data => data.pruned);
   }
 
@@ -162,7 +167,9 @@ class GuildMemberManager extends BaseManager {
     if (options.days) options['delete-message-days'] = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
-    return this.client.api.guilds(this.guild.id).bans[id].put({ query: options })
+    return this.client.api
+      .guilds(this.guild.id)
+      .bans[id].put({ query: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
         const _user = this.client.users.resolve(id);
@@ -188,15 +195,19 @@ class GuildMemberManager extends BaseManager {
   unban(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
-    return this.client.api.guilds(this.guild.id).bans[id].delete({ reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .bans[id].delete({ reason })
       .then(() => this.client.users.resolve(user));
   }
-
 
   _fetchSingle({ user, cache }) {
     const existing = this.cache.get(user);
     if (existing && !existing.partial) return Promise.resolve(existing);
-    return this.client.api.guilds(this.guild.id).members(user).get()
+    return this.client.api
+      .guilds(this.guild.id)
+      .members(user)
+      .get()
       .then(data => this.add(data, cache));
   }
 
@@ -221,9 +232,11 @@ class GuildMemberManager extends BaseManager {
         for (const member of members.values()) {
           if (query || limit) fetchedMembers.set(member.id, member);
         }
-        if (this.guild.memberCount <= this.cache.size ||
+        if (
+          this.guild.memberCount <= this.cache.size ||
           ((query || limit) && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit)) {
+          (limit && fetchedMembers.size >= limit)
+        ) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           resolve(query || limit ? fetchedMembers : this.cache);
         }

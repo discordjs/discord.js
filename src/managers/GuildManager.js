@@ -1,14 +1,14 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const DataResolver = require('../util/DataResolver');
-const { Events } = require('../util/Constants');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
-const GuildMember = require('../structures/GuildMember');
 const GuildEmoji = require('../structures/GuildEmoji');
+const GuildMember = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const Role = require('../structures/Role');
+const { Events } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for Guilds and stores their cache.
@@ -45,11 +45,15 @@ class GuildManager extends BaseManager {
    * @returns {?Guild}
    */
   resolve(guild) {
-    if (guild instanceof GuildChannel ||
+    if (
+      guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)) return super.resolve(guild.guild);
+      (guild instanceof Invite && guild.guild)
+    ) {
+      return super.resolve(guild.guild);
+    }
     return super.resolve(guild);
   }
 
@@ -62,11 +66,15 @@ class GuildManager extends BaseManager {
    * @returns {?Snowflake}
    */
   resolveID(guild) {
-    if (guild instanceof GuildChannel ||
+    if (
+      guild instanceof GuildChannel ||
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)) return super.resolveID(guild.guild.id);
+      (guild instanceof Invite && guild.guild)
+    ) {
+      return super.resolveID(guild.guild.id);
+    }
     return super.resolveID(guild);
   }
 
@@ -82,30 +90,28 @@ class GuildManager extends BaseManager {
   create(name, { region, icon = null } = {}) {
     if (!icon || (typeof icon === 'string' && icon.startsWith('data:'))) {
       return new Promise((resolve, reject) =>
-        this.client.api.guilds.post({ data: { name, region, icon } })
-          .then(data => {
-            if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
+        this.client.api.guilds.post({ data: { name, region, icon } }).then(data => {
+          if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
 
-            const handleGuild = guild => {
-              if (guild.id === data.id) {
-                this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-                this.client.clearTimeout(timeout);
-                resolve(guild);
-              }
-            };
-            this.client.on(Events.GUILD_CREATE, handleGuild);
-
-            const timeout = this.client.setTimeout(() => {
+          const handleGuild = guild => {
+            if (guild.id === data.id) {
               this.client.removeListener(Events.GUILD_CREATE, handleGuild);
-              resolve(this.client.guilds.add(data));
-            }, 10000);
-            return undefined;
-          }, reject),
+              this.client.clearTimeout(timeout);
+              resolve(guild);
+            }
+          };
+          this.client.on(Events.GUILD_CREATE, handleGuild);
+
+          const timeout = this.client.setTimeout(() => {
+            this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+            resolve(this.client.guilds.add(data));
+          }, 10000);
+          return undefined;
+        }, reject),
       );
     }
 
-    return DataResolver.resolveImage(icon)
-      .then(data => this.create(name, { region, icon: data || null }));
+    return DataResolver.resolveImage(icon).then(data => this.create(name, { region, icon: data || null }));
   }
 }
 

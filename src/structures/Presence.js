@@ -1,9 +1,9 @@
 'use strict';
 
-const Util = require('../util/Util');
+const Emoji = require('./Emoji');
 const ActivityFlags = require('../util/ActivityFlags');
 const { ActivityTypes } = require('../util/Constants');
-const Emoji = require('./Emoji');
+const Util = require('../util/Util');
 
 /**
  * Activity sent in a message.
@@ -121,14 +121,15 @@ class Presence {
    * @returns {boolean}
    */
   equals(presence) {
-    return this === presence || (
-      presence &&
-      this.status === presence.status &&
-      this.activities.length === presence.activities.length &&
-      this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
-      this.clientStatus.web === presence.clientStatus.web &&
-      this.clientStatus.mobile === presence.clientStatus.mobile &&
-      this.clientStatus.desktop === presence.clientStatus.desktop
+    return (
+      this === presence ||
+      (presence &&
+        this.status === presence.status &&
+        this.activities.length === presence.activities.length &&
+        this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
+        this.clientStatus.web === presence.clientStatus.web &&
+        this.clientStatus.mobile === presence.clientStatus.mobile &&
+        this.clientStatus.desktop === presence.clientStatus.desktop)
     );
   }
 
@@ -186,10 +187,12 @@ class Activity {
      * @prop {?Date} start When the activity started
      * @prop {?Date} end When the activity will end
      */
-    this.timestamps = data.timestamps ? {
-      start: data.timestamps.start ? new Date(Number(data.timestamps.start)) : null,
-      end: data.timestamps.end ? new Date(Number(data.timestamps.end)) : null,
-    } : null;
+    this.timestamps = data.timestamps
+      ? {
+          start: data.timestamps.start ? new Date(Number(data.timestamps.start)) : null,
+          end: data.timestamps.end ? new Date(Number(data.timestamps.end)) : null,
+        }
+      : null;
 
     /**
      * Party of the activity
@@ -232,11 +235,9 @@ class Activity {
    * @returns {boolean}
    */
   equals(activity) {
-    return this === activity || (
-      activity &&
-      this.name === activity.name &&
-      this.type === activity.type &&
-      this.url === activity.url
+    return (
+      this === activity ||
+      (activity && this.name === activity.name && this.type === activity.type && this.url === activity.url)
     );
   }
 
@@ -303,8 +304,10 @@ class RichPresenceAssets {
    */
   smallImageURL({ format, size } = {}) {
     if (!this.smallImage) return null;
-    return this.activity.presence.client.rest.cdn
-      .AppAsset(this.activity.applicationID, this.smallImage, { format, size });
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.smallImage, {
+      format,
+      size,
+    });
   }
 
   /**
@@ -321,8 +324,10 @@ class RichPresenceAssets {
     } else if (/^twitch:/.test(this.largeImage)) {
       return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
     }
-    return this.activity.presence.client.rest.cdn
-      .AppAsset(this.activity.applicationID, this.largeImage, { format, size });
+    return this.activity.presence.client.rest.cdn.AppAsset(this.activity.applicationID, this.largeImage, {
+      format,
+      size,
+    });
   }
 }
 

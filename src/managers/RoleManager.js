@@ -2,8 +2,8 @@
 
 const BaseManager = require('./BaseManager');
 const Role = require('../structures/Role');
-const { resolveColor } = require('../util/Util');
 const Permissions = require('../util/Permissions');
+const { resolveColor } = require('../util/Util');
 
 /**
  * Manages API methods for roles and stores their cache.
@@ -110,14 +110,17 @@ class RoleManager extends BaseManager {
     if (data.color) data.color = resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.guild.client.api.guilds(this.guild.id).roles.post({ data, reason }).then(r => {
-      const { role } = this.client.actions.GuildRoleCreate.handle({
-        guild_id: this.guild.id,
-        role: r,
+    return this.guild.client.api
+      .guilds(this.guild.id)
+      .roles.post({ data, reason })
+      .then(r => {
+        const { role } = this.client.actions.GuildRoleCreate.handle({
+          guild_id: this.guild.id,
+          role: r,
+        });
+        if (data.position) return role.setPosition(data.position, reason);
+        return role;
       });
-      if (data.position) return role.setPosition(data.position, reason);
-      return role;
-    });
   }
 
   /**
@@ -135,7 +138,7 @@ class RoleManager extends BaseManager {
    * @readonly
    */
   get highest() {
-    return this.cache.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.cache.first());
+    return this.cache.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this.cache.first());
   }
 }
 

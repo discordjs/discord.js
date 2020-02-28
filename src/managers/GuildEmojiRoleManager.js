@@ -1,7 +1,7 @@
 'use strict';
 
-const Collection = require('../util/Collection');
 const { TypeError } = require('../errors');
+const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.
@@ -56,8 +56,7 @@ class GuildEmojiRoleManager {
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
     if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-        'Array or Collection of Roles or Snowflakes', true));
+      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
     }
 
     const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
@@ -75,8 +74,7 @@ class GuildEmojiRoleManager {
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles',
-        'Array or Collection of Roles or Snowflakes', true));
+      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
     }
 
     const newRoles = this._roles.keyArray().filter(role => !roleOrRoles.includes(role));

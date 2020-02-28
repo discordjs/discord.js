@@ -1,12 +1,12 @@
 'use strict';
 
-const DataResolver = require('../util/DataResolver');
-const MessageEmbed = require('./MessageEmbed');
 const MessageAttachment = require('./MessageAttachment');
-const { browser } = require('../util/Constants');
-const Util = require('../util/Util');
+const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
+const { browser } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
+const Util = require('../util/Util');
 
 /**
  * Represents a message to be sent to the API.
@@ -78,7 +78,7 @@ class APIMessage {
    * Makes the content of this message.
    * @returns {?(string|string[])}
    */
-  makeContent() { // eslint-disable-line complexity
+  makeContent() {
     const GuildMember = require('./GuildMember');
 
     let content;
@@ -88,9 +88,10 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
-    const disableMentions = typeof this.options.disableMentions === 'undefined' ?
-      this.target.client.options.disableMentions :
-      this.options.disableMentions;
+    const disableMentions =
+      typeof this.options.disableMentions === 'undefined'
+        ? this.target.client.options.disableMentions
+        : this.options.disableMentions;
     if (disableMentions) {
       content = Util.removeMentions(content || '');
     }
@@ -262,7 +263,8 @@ class APIMessage {
       return 'file.jpg';
     };
 
-    const ownAttachment = typeof fileLike === 'string' ||
+    const ownAttachment =
+      typeof fileLike === 'string' ||
       fileLike instanceof (browser ? ArrayBuffer : Buffer) ||
       typeof fileLike.pipe === 'function';
     if (ownAttachment) {
