@@ -14,11 +14,12 @@ class MessageEmbed {
   setup(data) { // eslint-disable-line complexity
     /**
      * The type of this embed, either:
+     * * `rich` - a rich embed
      * * `image` - an image embed
      * * `video` - a video embed
      * * `gifv` - a gifv embed
+     * * `article` - an article embed
      * * `link` - a link embed
-     * * `rich` - a rich embed
      * @type {string}
      */
     this.type = data.type;
@@ -215,6 +216,17 @@ class MessageEmbed {
   }
 
   /**
+   * Adds a field to the embed (max 25).
+   * @param {StringResolvable} name The name of this field
+   * @param {StringResolvable} value The value of this field
+   * @param {boolean} [inline=false] If this field will be displayed inline
+   * @returns {MessageEmbed}
+   */
+  addField(name, value, inline) {
+    return this.addFields({ name, value, inline });
+  }
+
+  /**
    * Adds fields to the embed (max 25).
    * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
    * @returns {MessageEmbed}
@@ -390,7 +402,7 @@ class MessageEmbed {
     * @typedef {Object} EmbedFieldData
     * @property {StringResolvable} name The name of this field
     * @property {StringResolvable} value The value of this field
-    * @property {boolean} [inline] If this field will be displayed inline
+    * @property {boolean} [inline=false] If this field will be displayed inline
     */
 
   /**
