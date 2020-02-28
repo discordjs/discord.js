@@ -36,6 +36,25 @@ class Util {
   }
 
   /**
+   * Data that can be resolved to give a string. This can be:
+   * * A string
+   * * An array (joined with a new line delimiter to give a string)
+   * * Any value
+   * @typedef {string|Array|*} StringResolvable
+   */
+
+  /**
+   * Resolves a StringResolvable to a string.
+   * @param {StringResolvable} data The string resolvable to resolve
+   * @returns {string}
+   */
+  static resolveString(data) {
+    if (typeof data === 'string') return data;
+    if (Array.isArray(data)) return data.join('\n');
+    return String(data);
+  }
+
+  /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
    * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
