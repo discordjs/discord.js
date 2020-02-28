@@ -230,8 +230,8 @@ class Collector extends EventEmitter {
           // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => {
             const tick = () => {
-              this.off('collect', tick);
-              this.off('end', tick);
+              this.removeListener('collect', tick);
+              this.removeListener('end', tick);
               return resolve();
             };
             this.on('collect', tick);
@@ -240,7 +240,7 @@ class Collector extends EventEmitter {
         }
       }
     } finally {
-      this.off('collect', onCollect);
+      this.removeListener('collect', onCollect);
     }
   }
 
