@@ -215,16 +215,6 @@ class MessageEmbed {
   }
 
   /**
-   * Adds fields to the embed (max 25).
-   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
-   * @returns {MessageEmbed}
-   */
-  addFields(...fields) {
-    this.fields.push(...this.constructor.normalizeFields(fields));
-    return this;
-  }
-
-  /**
    * Adds a field to the embed (max 25).
    * @param {StringResolvable} name The name of this field
    * @param {StringResolvable} value The value of this field
@@ -233,6 +223,16 @@ class MessageEmbed {
    */
   addField(name, value, inline) {
     return this.addFields({ name, value, inline });
+  }
+
+  /**
+   * Adds fields to the embed (max 25).
+   * @param {...EmbedFieldData|EmbedFieldData[]} fields The fields to add
+   * @returns {MessageEmbed}
+   */
+  addFields(...fields) {
+    this.fields.push(...this.constructor.normalizeFields(fields));
+    return this;
   }
 
   /**

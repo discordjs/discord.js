@@ -1053,8 +1053,8 @@ declare module 'discord.js' {
 		public type: string;
 		public url?: string;
 		public readonly video: MessageEmbedVideo | null;
-		public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
 		public addField(name: StringResolvable, value: StringResolvable, inline?: boolean): this;
+		public addFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
 		public attachFiles(file: (MessageAttachment | FileOptions | string)[]): this;
 		public setAuthor(name: StringResolvable, iconURL?: string, url?: string): this;
 		public setColor(color: ColorResolvable): this;
