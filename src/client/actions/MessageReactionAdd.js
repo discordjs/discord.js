@@ -1,7 +1,15 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events, PartialTypes } = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
+const { PartialTypes } = require('../../util/Constants');
+
+/*
+{ user_id: 'id',
+     message_id: 'id',
+     emoji: { name: '�', id: null },
+     channel_id: 'id' } }
+*/
 
 class MessageReactionAdd extends Action {
   handle(data) {

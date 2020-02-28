@@ -1,9 +1,9 @@
 'use strict';
 
-const Permissions = require('../util/Permissions');
 const Role = require('./Role');
-const { TypeError } = require('../errors');
+const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
+const { TypeError } = require('../errors');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.

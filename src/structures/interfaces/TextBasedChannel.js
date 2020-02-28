@@ -1,10 +1,10 @@
 'use strict';
 
-const APIMessage = require('../APIMessage');
-const Collection = require('../../util/Collection');
 const MessageCollector = require('../MessageCollector');
-const { RangeError, TypeError } = require('../../errors');
 const Snowflake = require('../../util/Snowflake');
+const Collection = require('../../util/Collection');
+const { RangeError, TypeError } = require('../../errors');
+const APIMessage = require('../APIMessage');
 
 /**
  * Interface for classes that have text-channel-like features.

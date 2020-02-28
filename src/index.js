@@ -17,21 +17,21 @@ module.exports = {
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
+  LimitedCollection: require('./util/LimitedCollection'),
+  BaseManager: require('./managers/BaseManager'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
-  LimitedCollection: require('./util/LimitedCollection'),
   MessageFlags: require('./util/MessageFlags'),
   Permissions: require('./util/Permissions'),
+  Speaking: require('./util/Speaking'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
-  Speaking: require('./util/Speaking'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
-  Util,
+  Util: Util,
   version: require('../package.json').version,
 
   // Managers
-  BaseManager: require('./managers/BaseManager'),
   ChannelManager: require('./managers/ChannelManager'),
   GuildChannelManager: require('./managers/GuildChannelManager'),
   GuildEmojiManager: require('./managers/GuildEmojiManager'),
@@ -39,9 +39,9 @@ module.exports = {
   GuildMemberManager: require('./managers/GuildMemberManager'),
   GuildMemberRoleManager: require('./managers/GuildMemberRoleManager'),
   GuildManager: require('./managers/GuildManager'),
+  ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),
   PresenceManager: require('./managers/PresenceManager'),
-  ReactionUserManager: require('./managers/ReactionUserManager'),
   RoleManager: require('./managers/RoleManager'),
   UserManager: require('./managers/UserManager'),
 
@@ -54,13 +54,12 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
-  Base: require('./structures/Base'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),
-  ClientPresence: require('./structures/ClientPresence'),
   get ClientUser() {
     // This is a getter so that it properly extends any custom User class
     return require('./structures/ClientUser');
@@ -84,6 +83,7 @@ module.exports = {
   NewsChannel: require('./structures/NewsChannel'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
+  ClientPresence: require('./structures/ClientPresence'),
   ReactionCollector: require('./structures/ReactionCollector'),
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,

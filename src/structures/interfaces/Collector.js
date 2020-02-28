@@ -1,8 +1,8 @@
 'use strict';
 
 const Collection = require('../../util/Collection');
-const { EventEmitter } = require('events');
 const Util = require('../../util/Util');
+const { EventEmitter } = require('events');
 
 /**
  * Filter to be applied to the collector.

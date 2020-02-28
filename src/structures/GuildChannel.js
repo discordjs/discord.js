@@ -1,13 +1,13 @@
 'use strict';
 
 const Channel = require('./Channel');
-const Collection = require('../util/Collection');
-const { Error, TypeError } = require('../errors');
+const Role = require('./Role');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
-const Permissions = require('../util/Permissions');
-const Role = require('./Role');
 const Util = require('../util/Util');
+const Permissions = require('../util/Permissions');
+const Collection = require('../util/Collection');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild channel from any of the following:

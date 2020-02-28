@@ -1,7 +1,7 @@
 'use strict';
 
-const Collection = require('../../../util/Collection');
 const { Events } = require('../../../util/Constants');
+const Collection = require('../../../util/Collection');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);

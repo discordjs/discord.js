@@ -1,8 +1,8 @@
 'use strict';
 
-const Base = require('./Base');
-const Collection = require('../util/Collection');
 const Snowflake = require('../util/Snowflake');
+const Collection = require('../util/Collection');
+const Base = require('./Base');
 const TeamMember = require('./TeamMember');
 
 /**

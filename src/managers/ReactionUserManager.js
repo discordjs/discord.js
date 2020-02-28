@@ -1,7 +1,7 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
 const Collection = require('../util/Collection');
+const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
 
 /**

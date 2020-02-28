@@ -1,7 +1,7 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
 const MessageReaction = require('../structures/MessageReaction');
+const BaseManager = require('./BaseManager');
 
 /**
  * Manages API methods for reactions and holds their cache.

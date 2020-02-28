@@ -1,24 +1,24 @@
 'use strict';
 
-const ActionsManager = require('./actions/ActionsManager');
 const BaseClient = require('./BaseClient');
-const { browser, Events, DefaultOptions } = require('../util/Constants');
-const ChannelManager = require('../managers/ChannelManager');
-const Collection = require('../util/Collection');
-const ClientApplication = require('../structures/ClientApplication');
-const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const DataResolver = require('../util/DataResolver');
-const { Error, RangeError, TypeError } = require('../errors');
-const GuildEmojiManager = require('../managers/GuildEmojiManager');
-const GuildManager = require('../managers/GuildManager');
-const Invite = require('../structures/Invite');
 const Permissions = require('../util/Permissions');
-const ShardClientUtil = require('../sharding/ShardClientUtil');
-const Structures = require('../util/Structures');
-const UserManager = require('../managers/UserManager');
+const ClientVoiceManager = require('./voice/ClientVoiceManager');
+const WebSocketManager = require('./websocket/WebSocketManager');
+const ActionsManager = require('./actions/ActionsManager');
+const Collection = require('../util/Collection');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
-const WebSocketManager = require('./websocket/WebSocketManager');
+const Invite = require('../structures/Invite');
+const ClientApplication = require('../structures/ClientApplication');
+const ShardClientUtil = require('../sharding/ShardClientUtil');
+const UserManager = require('../managers/UserManager');
+const ChannelManager = require('../managers/ChannelManager');
+const GuildManager = require('../managers/GuildManager');
+const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const { Events, browser, DefaultOptions } = require('../util/Constants');
+const DataResolver = require('../util/DataResolver');
+const Structures = require('../util/Structures');
+const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.

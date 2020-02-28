@@ -1,24 +1,24 @@
 'use strict';
 
-const Base = require('./Base');
+const Invite = require('./Invite');
+const Integration = require('./Integration');
+const GuildAuditLogs = require('./GuildAuditLogs');
+const Webhook = require('./Webhook');
+const VoiceRegion = require('./VoiceRegion');
 const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const Collection = require('../util/Collection');
+const Util = require('../util/Util');
 const DataResolver = require('../util/DataResolver');
-const { Error, TypeError } = require('../errors');
-const GuildAuditLogs = require('./GuildAuditLogs');
-const GuildChannelManager = require('../managers/GuildChannelManager');
-const GuildEmojiManager = require('../managers/GuildEmojiManager');
-const GuildMemberManager = require('../managers/GuildMemberManager');
-const Integration = require('./Integration');
-const Invite = require('./Invite');
-const PresenceManager = require('../managers/PresenceManager');
-const RoleManager = require('../managers/RoleManager');
 const Snowflake = require('../util/Snowflake');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
-const Util = require('../util/Util');
-const VoiceRegion = require('./VoiceRegion');
+const GuildMemberManager = require('../managers/GuildMemberManager');
+const RoleManager = require('../managers/RoleManager');
+const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const GuildChannelManager = require('../managers/GuildChannelManager');
+const PresenceManager = require('../managers/PresenceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
-const Webhook = require('./Webhook');
+const Base = require('./Base');
+const { Error, TypeError } = require('../errors');
 
 /**
  * Represents a guild (or a server) on Discord.

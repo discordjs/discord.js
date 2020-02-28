@@ -1,9 +1,9 @@
 'use strict';
 
-const { Error } = require('../../../errors');
-const { EventEmitter } = require('events');
 const udp = require('dgram');
 const { VoiceOPCodes } = require('../../../util/Constants');
+const { EventEmitter } = require('events');
+const { Error } = require('../../../errors');
 
 /**
  * Represents a UDP client for a Voice Connection.

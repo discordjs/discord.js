@@ -1,10 +1,10 @@
 'use strict';
 
-const APIMessage = require('./APIMessage');
-const Channel = require('./Channel');
+const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
-const { WebhookTypes } = require('../util/Constants');
+const Channel = require('./Channel');
+const APIMessage = require('./APIMessage');
 
 /**
  * Represents a webhook.

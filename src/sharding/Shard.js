@@ -1,9 +1,9 @@
 'use strict';
 
-const { Error } = require('../errors');
 const { EventEmitter } = require('events');
 const path = require('path');
 const Util = require('../util/Util');
+const { Error } = require('../errors');
 let childProcess = null;
 let Worker = null;
 

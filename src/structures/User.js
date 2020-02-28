@@ -1,10 +1,10 @@
 'use strict';
 
-const Base = require('./Base');
-const { Error } = require('../errors');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Presence } = require('./Presence');
 const Snowflake = require('../util/Snowflake');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const Base = require('./Base');
+const { Error } = require('../errors');
 
 /**
  * Represents a user on Discord.

@@ -1,10 +1,10 @@
 'use strict';
 
+const Snowflake = require('../util/Snowflake');
+const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const Permissions = require('../util/Permissions');
-const Snowflake = require('../util/Snowflake');
-const Util = require('../util/Util');
 
 /**
  * Represents a role on Discord.

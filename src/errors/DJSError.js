@@ -2,8 +2,8 @@
 
 // Heavily inspired by node's `internal/errors` module
 
-const messages = new Map();
 const kCode = Symbol('code');
+const messages = new Map();
 
 /**
  * Extend an error of some sort into a DiscordjsError.

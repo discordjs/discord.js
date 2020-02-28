@@ -1,7 +1,7 @@
 'use strict';
 
-const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
 const { EventEmitter } = require('events');
+const BroadcastAudioPlayer = require('./player/BroadcastAudioPlayer');
 const { Events } = require('../../util/Constants');
 const PlayInterface = require('./util/PlayInterface');
 

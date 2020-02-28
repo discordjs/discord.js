@@ -1,8 +1,8 @@
 'use strict';
 
 const { EventEmitter } = require('events');
-const prism = require('prism-media');
 const { Readable: ReadableStream } = require('stream');
+const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
 const FFMPEG_ARGUMENTS = [

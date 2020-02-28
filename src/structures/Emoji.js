@@ -1,7 +1,8 @@
 'use strict';
 
-const Base = require('./Base');
 const Snowflake = require('../util/Snowflake');
+const Base = require('./Base');
+
 
 /**
  * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.

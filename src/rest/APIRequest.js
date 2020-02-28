@@ -1,10 +1,10 @@
 'use strict';
 
-const AbortController = require('abort-controller');
-const { browser, UserAgent } = require('../util/Constants');
-const fetch = require('node-fetch');
 const FormData = require('form-data');
 const https = require('https');
+const { browser, UserAgent } = require('../util/Constants');
+const fetch = require('node-fetch');
+const AbortController = require('abort-controller');
 
 if (https.Agent) var agent = new https.Agent({ keepAlive: true });
 

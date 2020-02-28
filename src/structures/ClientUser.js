@@ -1,7 +1,7 @@
 'use strict';
 
-const DataResolver = require('../util/DataResolver');
 const Structures = require('../util/Structures');
+const DataResolver = require('../util/DataResolver');
 
 /**
  * Represents the logged in client's Discord user.

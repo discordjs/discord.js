@@ -1,9 +1,9 @@
 'use strict';
 
-const { Error } = require('../../../errors');
 const { EventEmitter } = require('events');
-const PacketHandler = require('./PacketHandler');
 const prism = require('prism-media');
+const PacketHandler = require('./PacketHandler');
+const { Error } = require('../../../errors');
 
 /**
  * Receives audio packets from a voice connection.

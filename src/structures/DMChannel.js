@@ -1,8 +1,8 @@
 'use strict';
 
 const Channel = require('./Channel');
-const MessageManager = require('../managers/MessageManager');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a direct message channel between two users.

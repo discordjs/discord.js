@@ -1,6 +1,6 @@
 'use strict';
 
-const { Events, Status } = require('../../../util/Constants');
+const { Status, Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }, shard) => {
   const guild = client.guilds.cache.get(data.guild_id);

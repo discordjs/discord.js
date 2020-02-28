@@ -1,11 +1,11 @@
 'use strict';
 
+const GuildChannel = require('./GuildChannel');
+const Webhook = require('./Webhook');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const GuildChannel = require('./GuildChannel');
 const MessageManager = require('../managers/MessageManager');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Webhook = require('./Webhook');
 
 /**
  * Represents a guild text channel on Discord.

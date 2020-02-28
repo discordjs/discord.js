@@ -1,9 +1,9 @@
 'use strict';
 
-const Emoji = require('./Emoji');
-const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 const Permissions = require('../util/Permissions');
+const { Error } = require('../errors');
+const Emoji = require('./Emoji');
 
 /**
  * Represents a custom emoji.
