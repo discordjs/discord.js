@@ -2069,7 +2069,7 @@ declare module 'discord.js' {
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
 		fetchAllMembers?: boolean;
-		disableMentions?: boolean;
+		disableMentions?: 'all' | 'everyone';
 		partials?: PartialTypes[];
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
@@ -2465,7 +2465,7 @@ declare module 'discord.js' {
 		nonce?: string;
 		content?: string;
 		embed?: MessageEmbed | MessageEmbedOptions;
-		disableMentions?: boolean;
+		disableMentions?: 'all' | 'everyone';
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
@@ -2694,7 +2694,7 @@ declare module 'discord.js' {
 		tts?: boolean;
 		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
-		disableMentions?: boolean;
+		disableMentions?: 'all' | 'everyone';
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
