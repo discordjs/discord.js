@@ -785,7 +785,7 @@ declare module 'discord.js' {
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<this>;
-		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string; }): Promise<this>;
+		public overwritePermissions(overwrites: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string): Promise<this>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<this>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean; reason?: string; }): Promise<this>;
