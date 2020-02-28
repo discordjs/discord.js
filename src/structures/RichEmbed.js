@@ -159,13 +159,7 @@ class RichEmbed {
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    name = util.resolveString(name);
-    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
-    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
-    value = util.resolveString(value);
-    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
-    this.fields.push({ name, value, inline });
+    this.fields.push(this.constructor.normalizeField({ name, value, inline }));
     return this;
   }
 
@@ -326,9 +320,11 @@ class RichEmbed {
    */
   static normalizeField(name, value, inline = false) {
     name = util.resolveString(name);
-    if (!name) throw new RangeError('RichEmbed field names may not be empty.');
+    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
     value = util.resolveString(value);
-    if (!value) throw new RangeError('RichEmbed field values may not be empty.');
+    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
+    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
     return { name, value, inline };
   }
 }
