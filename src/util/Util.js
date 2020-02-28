@@ -519,14 +519,22 @@ class Util {
   }
 
   /**
+   * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
+   * @param {string} str The string to sanitize
+   * @returns {string}
+   */
+  static removeMentions(str) {
+    return str.replace(/@/g, '@\u200b');
+  }
+
+  /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
    * @returns {string}
    */
   static cleanContent(str, message) {
-    return str
-      .replace(/@(everyone|here)/g, '@\u200b$1')
+    return Util.removeMentions(str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
@@ -550,7 +558,7 @@ class Util {
         if (message.channel.type === 'dm') return input;
         const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
-      });
+      }));
   }
 
   /**
