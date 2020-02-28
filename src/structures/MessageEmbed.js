@@ -14,11 +14,12 @@ class MessageEmbed {
   setup(data) { // eslint-disable-line complexity
     /**
      * The type of this embed, either:
+     * * `rich` - a rich embed
      * * `image` - an image embed
      * * `video` - a video embed
      * * `gifv` - a gifv embed
+     * * `article` - an article embed
      * * `link` - a link embed
-     * * `rich` - a rich embed
      * @type {string}
      */
     this.type = data.type;
