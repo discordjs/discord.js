@@ -1120,8 +1120,6 @@ declare module 'discord.js' {
 
 	export class RichEmbed {
 		constructor(data?: RichEmbedOptions | MessageEmbed);
-		private _apiTransform(): object;
-
 		public author?: { name: string; url?: string; icon_url?: string; };
 		public color?: number;
 		public description?: string;

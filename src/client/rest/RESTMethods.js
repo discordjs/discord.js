@@ -152,7 +152,7 @@ class RESTMethods {
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
 
-    if (embed instanceof RichEmbed) embed = embed._apiTransform();
+    if (embed instanceof RichEmbed) embed = embed.toJSON();
 
     return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
       content, embed, flags,

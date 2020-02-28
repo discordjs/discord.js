@@ -278,11 +278,10 @@ class RichEmbed {
   }
 
   /**
-   * Transforms the embed object to be processed.
+   * Transforms the embed to a plain object.
    * @returns {Object} The raw data of this embed
-   * @private
    */
-  _apiTransform() {
+  toJSON() {
     return {
       title: this.title,
       type: 'rich',
