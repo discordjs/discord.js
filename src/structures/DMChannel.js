@@ -91,7 +91,6 @@ class DMChannel extends Channel {
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);

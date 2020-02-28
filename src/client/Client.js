@@ -65,7 +65,7 @@ class Client extends BaseClient {
 
     if (Array.isArray(this.options.shards)) {
       this.options.shards = [...new Set(
-        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0))
+        this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0)),
       )];
     }
 
@@ -200,7 +200,7 @@ class Client extends BaseClient {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.emit(Events.DEBUG,
-      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`
+      `Provided token: ${token.split('.').map((val, i) => i > 1 ? val.replace(/./g, '*') : val).join('.')}`,
     );
 
     if (this.options.presence) {
@@ -287,7 +287,7 @@ class Client extends BaseClient {
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== 'number' || isNaN(lifetime)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'Lifetime', 'a number');
+      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
     }
     if (lifetime <= 0) {
       this.emit(Events.DEBUG, 'Didn\'t sweep messages - lifetime is unlimited');
@@ -304,7 +304,7 @@ class Client extends BaseClient {
       channels++;
 
       messages += channel.messages.cache.sweep(
-        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs
+        message => now - (message.editedTimestamp || message.createdTimestamp) > lifetimeMs,
       );
     }
 
@@ -393,8 +393,8 @@ class Client extends BaseClient {
     if (typeof options.fetchAllMembers !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
-    if (typeof options.disableEveryone !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'disableEveryone', 'a boolean');
+    if (typeof options.disableMentions !== 'boolean') {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'disableMentions', 'a boolean');
     }
     if (!Array.isArray(options.partials)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
