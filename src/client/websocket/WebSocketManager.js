@@ -1,6 +1,6 @@
 'use strict';
 
-const { EventEmitter } = require('events');
+const EventEmitter = require('events');
 const { Error: DJSError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
