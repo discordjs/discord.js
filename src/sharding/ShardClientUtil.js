@@ -97,13 +97,13 @@ class ShardClientUtil {
 
       const listener = message => {
         if (!message || message._sFetchProp !== prop) return;
-        parent.off('message', listener);
+        parent.removeListener('message', listener);
         if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
       this.send({ _sFetchProp: prop }).catch(err => {
-        parent.off('message', listener);
+        parent.removeListener('message', listener);
         reject(err);
       });
     });
@@ -126,13 +126,13 @@ class ShardClientUtil {
 
       const listener = message => {
         if (!message || message._sEval !== script) return;
-        parent.off('message', listener);
+        parent.removeListener('message', listener);
         if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
       this.send({ _sEval: script }).catch(err => {
-        parent.off('message', listener);
+        parent.removeListener('message', listener);
         reject(err);
       });
     });
