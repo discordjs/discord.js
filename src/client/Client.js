@@ -367,10 +367,7 @@ class Client extends BaseClient {
    */
   _validateOptions(options = this.options) { // eslint-disable-line complexity
     if (typeof options.ws.intents !== 'undefined') {
-      const intents = options.ws.intents;
-      if (typeof intents !== 'number' && !(intents instanceof Intents)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'ws.intents', 'a number or Intents');
-      }
+      options.ws.intents = Intents.resolve(options.ws.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
