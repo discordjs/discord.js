@@ -1,4 +1,4 @@
-// Type definitions for discord.js 11.5.0
+// Type definitions for discord.js 11.6.0
 // Project: https://github.com/discordjs/discord.js
 // Definitions by:
 //   acdenisSK <acdenissk69@gmail.com> (https://github.com/acdenisSK)
