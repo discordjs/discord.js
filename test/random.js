@@ -5,11 +5,11 @@
 const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
-const Discord = require('../');
+const Discord = require('../src');
 
 console.time('magic');
 
-const client = new Discord.Client({ fetchAllMembers: true, apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: true });
 
 client
   .login(token)
@@ -17,7 +17,7 @@ client
   .catch(console.error);
 
 client.on('ready', () => {
-  console.log(`ready with ${client.users.size} users`);
+  console.log(`ready with ${client.users.cache.size} users`);
   console.timeEnd('magic');
 });
 
@@ -30,7 +30,7 @@ client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.createChannel('hi', 'text').then(console.log);
+        message.channel.guild.channels.create('hi', { type: 'text' }).then(console.log);
       }
     }
 
@@ -44,7 +44,7 @@ client.on('message', message => {
             count++;
             console.log('reached', count, ecount);
           })
-          .catch(m => {
+          .catch(e => {
             console.error(m);
             ecount++;
             console.log('reached', count, ecount);
@@ -140,7 +140,8 @@ client.on('message', message => {
 
     if (message.content === 'makerole') {
       message.guild
-        .createRole()
+				.roles
+				.create()
         .then(role => {
           message.channel.send(`Made role ${role.name}`);
         })
@@ -191,14 +192,15 @@ client.on('message', msg => {
       .join(' ');
     const s = ytdl(chan, { filter: 'audioonly' }, { passes: 3 });
     s.on('error', e => console.log(`e w stream 1 ${e}`));
-    con.playStream(s);
+    con.play(s);
   }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content
       .split(' ')
       .slice(1)
       .join(' ');
-    msg.channel.guild.channels
+		msg.channel.guild.channels
+			.cache
       .get(chan)
       .join()
       .then(conn => {
@@ -227,9 +229,9 @@ client.on('messageReactionRemove', (reaction, user) => {
 client.on('message', m => {
   if (m.content.startsWith('#reactions')) {
     const mID = m.content.split(' ')[1];
-    m.channel.fetchMessage(mID).then(rM => {
-      for (const reaction of rM.reactions.values()) {
-        reaction.fetchUsers().then(users => {
+    m.channel.messages.fetch(mID).then(rM => {
+      for (const reaction of rM.reactions.cache.values()) {
+        reaction.users.fetch().then(users => {
           m.channel.send(
             `The following gave that message ${reaction.emoji}:\n` +
               `${users

@@ -1,4 +1,4 @@
-const Discord = require('../');
+const Discord = require('../src');
 const { token } = require('./auth');
 
 const sharder = new Discord.ShardingManager(`${process.cwd()}/test/shard.js`, { token, respawn: false });
