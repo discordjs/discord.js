@@ -582,7 +582,9 @@ declare module 'discord.js' {
 		};
 		MessageTypes: MessageType[];
 		ActivityTypes: ActivityType[];
+		ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
 		DefaultMessageNotifications: DefaultMessageNotifications[];
+		VerificationLevels: VerificationLevel[];
 		MembershipStates: 'INVITED' | 'ACCEPTED';
 	};
 
@@ -647,7 +649,7 @@ declare module 'discord.js' {
 		public embedChannelID: Snowflake | null;
 		public embedEnabled: boolean;
 		public emojis: GuildEmojiManager;
-		public explicitContentFilter: number;
+		public explicitContentFilter: ExplicitContentFilterLevel;
 		public features: GuildFeatures[];
 		public icon: string | null;
 		public id: Snowflake;
@@ -681,7 +683,7 @@ declare module 'discord.js' {
 		public systemChannelFlags: Readonly<SystemChannelFlags>;
 		public systemChannelID: Snowflake | null;
 		public vanityURLCode: string | null;
-		public verificationLevel: number;
+		public verificationLevel: VerificationLevel;
 		public readonly verified: boolean;
 		public readonly voice: VoiceState | null;
 		public readonly voiceStates: VoiceStateManager;
@@ -713,7 +715,7 @@ declare module 'discord.js' {
 		public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
 		public setDefaultMessageNotifications(defaultMessageNotifications: DefaultMessageNotifications | number, reason?: string): Promise<Guild>;
 		public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
-		public setExplicitContentFilter(explicitContentFilter: number, reason?: string): Promise<Guild>;
+		public setExplicitContentFilter(explicitContentFilter: ExplicitContentFilterLevel, reason?: string): Promise<Guild>;
 		public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setName(name: string, reason?: string): Promise<Guild>;
 		public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
@@ -722,7 +724,7 @@ declare module 'discord.js' {
 		public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
 		public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-		public setVerificationLevel(verificationLevel: number, reason?: string): Promise<Guild>;
+		public setVerificationLevel(verificationLevel: VerificationLevel, reason?: string): Promise<Guild>;
 		public splashURL(options?: ImageURLOptions): string | null;
 		public toJSON(): object;
 		public toString(): string;
@@ -2179,6 +2181,8 @@ declare module 'discord.js' {
 		codeBlockContent?: boolean;
 	}
 
+	type ExplicitContentFilterLevel = 'DISABLED' | 'MEMBERS_WITHOUT_ROLES' | 'ALL_MEMBERS';
+
 	interface Extendable {
 		GuildEmoji: typeof GuildEmoji;
 		DMChannel: typeof DMChannel;
@@ -2303,8 +2307,8 @@ declare module 'discord.js' {
 	interface GuildEditData {
 		name?: string;
 		region?: string;
-		verificationLevel?: number;
-		explicitContentFilter?: number;
+		verificationLevel?: VerificationLevel;
+		explicitContentFilter?: ExplicitContentFilterLevel;
 		defaultMessageNotifications?: DefaultMessageNotifications | number;
 		afkChannel?: ChannelResolvable;
 		systemChannel?: ChannelResolvable;
@@ -2625,15 +2629,35 @@ declare module 'discord.js' {
 		};
 
 	interface PartialChannel extends Partialize<Channel> {}
+
+	interface PartialChannelData {
+		id?: number;
+		name: string;
+		topic?: string;
+		type?: ChannelType;
+		parentID?: number;
+		permissionOverwrites?: {
+			id: number | Snowflake;
+			type?: OverwriteType;
+			allow?: PermissionResolvable;
+			deny?: PermissionResolvable;
+		}[];
+	}
+
 	interface PartialGuildMember extends Partialize<GuildMember> {}
 	interface PartialMessage extends Partialize<Message> {}
-	interface PartialUser extends Partialize<User> {}
+
+	interface PartialRoleData extends RoleData {
+		id?: number;
+	}
 
 	type PartialTypes = 'USER'
 		| 'CHANNEL'
 		| 'GUILD_MEMBER'
 		| 'MESSAGE'
 		| 'REACTION';
+
+	interface PartialUser extends Partialize<User> {}
 
 	type PresenceStatus = ClientPresenceStatus | 'offline';
 
@@ -2719,6 +2743,8 @@ declare module 'discord.js' {
 	type TargetUser = number;
 
 	type UserResolvable = User | Snowflake | Message | GuildMember;
+
+	type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
 	type VoiceStatus = number;
 
