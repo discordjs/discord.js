@@ -21,7 +21,8 @@ const browser = exports.browser = typeof window !== 'undefined';
  * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
- * @property {'none' | 'all' | 'everyone'} [disableMentions='none'] Default value for {@link MessageOptions#disableMentions}
+ * @property {'none' | 'all' | 'everyone'} [disableMentions='none'] Default value
+ * for {@link MessageOptions#disableMentions}
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
  * important usage information, as partials require you to put checks in place when handling data.
