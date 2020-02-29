@@ -1082,7 +1082,7 @@ declare module 'discord.js' {
 		public messages: MessageManager;
 		public nsfw: boolean;
 		public topic: string | null;
-    public type: 'news';
+		public type: 'news';
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string; }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -1310,7 +1310,7 @@ declare module 'discord.js' {
 	export class StoreChannel extends GuildChannel {
 		constructor(guild: Guild, data?: object);
 		public nsfw: boolean;
-    public type: 'store';
+		public type: 'store';
 	}
 
 	class StreamDispatcher extends VolumeMixin(Writable) {
