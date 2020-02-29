@@ -85,7 +85,7 @@ class Webhook {
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not all mentions
+   * @property {'none' | 'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not all mentions
    * or everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
