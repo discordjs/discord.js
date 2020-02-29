@@ -1,9 +1,11 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
 
 /**
  * Represents a guild text channel on Discord.
@@ -11,13 +13,17 @@ const MessageStore = require('../stores/MessageStore');
  * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
+  /**
+   * @param {Guild} guild The guild the text channel is part of
+   * @param {Object} data The data for the text channel
+   */
   constructor(guild, data) {
     super(guild, data);
     /**
-     * A collection containing the messages sent to this channel
-     * @type {MessageStore<Snowflake, Message>}
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
      */
-    this.messages = new MessageStore(this);
+    this.messages = new MessageManager(this);
     this._typing = new Map();
   }
 
@@ -35,7 +41,7 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
+    this.nsfw = data.nsfw;
 
     /**
      * The ID of the last message sent in this channel, if one was sent
@@ -44,7 +50,7 @@ class TextChannel extends GuildChannel {
     this.lastMessageID = data.last_message_id;
 
     /**
-     * The ratelimit per user for this channel
+     * The ratelimit per user for this channel in seconds
      * @type {number}
      */
     this.rateLimitPerUser = data.rate_limit_per_user || 0;
@@ -60,7 +66,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Sets the rate limit per user for this channel.
-   * @param {number} rateLimitPerUser The new ratelimit
+   * @param {number} rateLimitPerUser The new ratelimit in seconds
    * @param {string} [reason] Reason for changing the channel's ratelimits
    * @returns {Promise<TextChannel>}
    */
@@ -115,9 +121,15 @@ class TextChannel extends GuildChannel {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    return this.client.api.channels[this.id].webhooks.post({ data: {
-      name, avatar,
-    }, reason }).then(data => new Webhook(this.client, data));
+    return this.client.api.channels[this.id].webhooks
+      .post({
+        data: {
+          name,
+          avatar,
+        },
+        reason,
+      })
+      .then(data => new Webhook(this.client, data));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
@@ -125,7 +137,6 @@ class TextChannel extends GuildChannel {
   get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  search() {}
   startTyping() {}
   stopTyping() {}
   get typing() {}
@@ -133,8 +144,6 @@ class TextChannel extends GuildChannel {
   createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
-  acknowledge() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

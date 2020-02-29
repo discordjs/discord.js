@@ -1,3 +1,5 @@
+'use strict';
+
 const Util = require('../util/Util');
 
 /**
@@ -77,6 +79,15 @@ class MessageAttachment {
      * @type {?number}
      */
     this.width = typeof data.width !== 'undefined' ? data.width : null;
+  }
+
+  /**
+   * Whether or not this attachment has been marked as a spoiler
+   * @type {boolean}
+   * @readonly
+   */
+  get spoiler() {
+    return Util.basename(this.url).startsWith('SPOILER_');
   }
 
   toJSON() {

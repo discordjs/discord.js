@@ -1,9 +1,11 @@
-const RequestHandler = require('./RequestHandler');
+'use strict';
+
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
+const RequestHandler = require('./RequestHandler');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
 const Collection = require('../util/Collection');
+const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
@@ -25,9 +27,7 @@ class RESTManager {
 
   getAuth() {
     const token = this.client.token || this.client.accessToken;
-    const prefixed = !!this.client.application || this.client.user;
-    if (token && prefixed) return `${this.tokenPrefix} ${token}`;
-    else if (token) return token;
+    if (token) return `${this.tokenPrefix} ${token}`;
     throw new Error('TOKEN_MISSING');
   }
 
@@ -37,12 +37,14 @@ class RESTManager {
 
   push(handler, apiRequest) {
     return new Promise((resolve, reject) => {
-      handler.push({
-        request: apiRequest,
-        resolve,
-        reject,
-        retries: 0,
-      }).catch(reject);
+      handler
+        .push({
+          request: apiRequest,
+          resolve,
+          reject,
+          retries: 0,
+        })
+        .catch(reject);
     });
   }
 

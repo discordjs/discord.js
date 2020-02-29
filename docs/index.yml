@@ -12,6 +12,8 @@
       path: voice.md
     - name: Web builds
       path: web.md
+    - name: Partials
+      path: partials.md
 - name: Examples
   files:
     - name: Ping

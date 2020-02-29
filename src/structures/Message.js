@@ -1,28 +1,36 @@
-const Mentions = require('./MessageMentions');
+'use strict';
+
+const APIMessage = require('./APIMessage');
+const Base = require('./Base');
+const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
-const ClientApplication = require('./ClientApplication');
-const Util = require('../util/Util');
-const Collection = require('../util/Collection');
-const ReactionStore = require('../stores/ReactionStore');
-const { MessageTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
-const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const APIMessage = require('./APIMessage');
+const ReactionManager = require('../managers/ReactionManager');
+const Collection = require('../util/Collection');
+const { MessageTypes } = require('../util/Constants');
+const MessageFlags = require('../util/MessageFlags');
+const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a message on Discord.
  * @extends {Base}
  */
 class Message extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message
+   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|GroupDMChannel}
+     * @type {TextChannel|DMChannel}
      */
     this.channel = channel;
 
@@ -35,7 +43,7 @@ class Message extends Base {
     if (data) this._patch(data);
   }
 
-  _patch(data) { // eslint-disable-line complexity
+  _patch(data) {
     /**
      * The ID of the message
      * @type {Snowflake}
@@ -56,9 +64,9 @@ class Message extends Base {
 
     /**
      * The author of the message
-     * @type {User}
+     * @type {?User}
      */
-    this.author = this.client.users.add(data.author, !data.webhook_id);
+    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
     /**
      * Whether or not this message is pinned
@@ -74,7 +82,9 @@ class Message extends Base {
 
     /**
      * A random number or string used for checking message delivery
-     * @type {string}
+     * <warn>This is only received after the message was sent successfully, and
+     * lost if re-fetched</warn>
+     * @type {?string}
      */
     this.nonce = data.nonce;
 
@@ -82,23 +92,23 @@ class Message extends Base {
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
      */
-    this.system = data.type === 6;
+    this.system = data.type !== 0;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(e));
+    this.embeds = (data.embeds || []).map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) {
-      this.attachments.set(attachment.id, new MessageAttachment(
-        attachment.url, attachment.filename, attachment
-      ));
+    if (data.attachments) {
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+      }
     }
 
     /**
@@ -114,10 +124,10 @@ class Message extends Base {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A collection of reactions to this message, mapped by the reaction ID
-     * @type {ReactionStore<Snowflake, MessageReaction>}
+     * A manager of the reactions belonging to this message
+     * @type {ReactionManager}
      */
-    this.reactions = new ReactionStore(this);
+    this.reactions = new ReactionManager(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
         this.reactions.add(reaction);
@@ -128,7 +138,7 @@ class Message extends Base {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone, data.mention_channels);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -146,16 +156,12 @@ class Message extends Base {
      * Group activity
      * @type {?MessageActivity}
      */
-    this.activity = data.activity ? {
-      partyID: data.activity.party_id,
-      type: data.activity.type,
-    } : null;
-
-    /**
-     * Whether this message is a hit in a search
-     * @type {?boolean}
-     */
-    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
+    this.activity = data.activity
+      ? {
+          partyID: data.activity.party_id,
+          type: data.activity.type,
+        }
+      : null;
 
     /**
      * The previous versions of the message, sorted with the most recent first
@@ -169,6 +175,41 @@ class Message extends Base {
     } else if (data.member && this.guild && this.author) {
       this.guild.members.add(Object.assign(data.member, { user: this.author }));
     }
+
+    /**
+     * Flags that are applied to the message
+     * @type {Readonly<MessageFlags>}
+     */
+    this.flags = new MessageFlags(data.flags).freeze();
+
+    /**
+     * Reference data sent in a crossposted message.
+     * @typedef {Object} MessageReference
+     * @property {string} channelID ID of the channel the message was crossposted from
+     * @property {?string} guildID ID of the guild the message was crossposted from
+     * @property {?string} messageID ID of the message that was crossposted
+     */
+
+    /**
+     * Message reference data
+     * @type {?MessageReference}
+     */
+    this.reference = data.message_reference
+      ? {
+          channelID: data.message_reference.channel_id,
+          guildID: data.message_reference.guild_id,
+          messageID: data.message_reference.message_id,
+        }
+      : null;
+  }
+
+  /**
+   * Whether or not this message is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.content !== 'string' || !this.author;
   }
 
   /**
@@ -180,7 +221,7 @@ class Message extends Base {
     const clone = this._clone();
     this._edits.unshift(clone);
 
-    this.editedTimestamp = new Date(data.edited_timestamp).getTime();
+    if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
@@ -190,9 +231,7 @@ class Message extends Base {
     if ('attachments' in data) {
       this.attachments = new Collection();
       for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new MessageAttachment(
-          attachment.url, attachment.filename, attachment
-        ));
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
       }
     } else {
       this.attachments = new Collection(this.attachments);
@@ -202,8 +241,11 @@ class Message extends Base {
       this,
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
+      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
+      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
     );
+
+    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
   }
 
   /**
@@ -259,7 +301,8 @@ class Message extends Base {
    * @readonly
    */
   get cleanContent() {
-    return Util.cleanContent(this.content, this);
+    // eslint-disable-next-line eqeqeq
+    return this.content != null ? Util.cleanContent(this.content, this) : null;
   }
 
   /**
@@ -334,9 +377,11 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return !this.deleted && (this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)
-    ));
+    return (
+      !this.deleted &&
+      (this.author.id === this.client.user.id ||
+        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+    );
   }
 
   /**
@@ -345,8 +390,10 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return !this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false);
+    return (
+      this.type === 'DEFAULT' &&
+      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
+    );
   }
 
   /**
@@ -359,7 +406,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
-   * @param {StringResolvable|APIMessage} [content=''] The new content for the message
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -369,16 +416,13 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    const { data } = content instanceof APIMessage ?
-      content.resolveData() :
-      APIMessage.create(this, content, options).resolveData();
-    return this.client.api.channels[this.channel.id].messages[this.id]
-      .patch({ data })
-      .then(d => {
-        const clone = this._clone();
-        clone._patch(d);
-        return clone;
-      });
+    const { data } =
+      content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
+    return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
+      const clone = this._clone();
+      clone._patch(d);
+      return clone;
+    });
   }
 
   /**
@@ -386,7 +430,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).put()
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .put()
       .then(() => this);
   }
 
@@ -395,7 +442,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .delete()
       .then(() => this);
   }
 
@@ -410,7 +460,7 @@ class Message extends Base {
    *   .catch(console.error);
    * @example
    * // React to a message with a custom emoji
-   * message.react(message.guild.emojis.get('123456789012345678'))
+   * message.react(message.guild.emojis.cache.get('123456789012345678'))
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -418,14 +468,20 @@ class Message extends Base {
     emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
+    return this.client.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .reactions(emoji, '@me')
       .put()
-      .then(() => this.client.actions.MessageReactionAdd.handle({
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
-        emoji: Util.parseEmoji(emoji),
-      }).reaction);
+      .then(
+        () =>
+          this.client.actions.MessageReactionAdd.handle({
+            user: this.client.user,
+            channel: this.channel,
+            message: this,
+            emoji: Util.parseEmoji(emoji),
+          }).reaction,
+      );
   }
 
   /**
@@ -440,15 +496,11 @@ class Message extends Base {
    *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete({ timeout = 0, reason } = {}) {
+  delete(options = {}) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    const { timeout = 0, reason } = options;
     if (timeout <= 0) {
-      return this.client.api.channels(this.channel.id).messages(this.id)
-        .delete({ reason })
-        .then(() =>
-          this.client.actions.MessageDelete.handle({
-            id: this.id,
-            channel_id: this.channel.id,
-          }).message);
+      return this.channel.messages.delete(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
@@ -470,10 +522,19 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(content instanceof APIMessage ?
-      content :
-      APIMessage.transformOptions(content, options, { reply: this.member || this.author })
+    return this.channel.send(
+      content instanceof APIMessage
+        ? content
+        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
     );
+  }
+
+  /**
+   * Fetch this message.
+   * @returns {Promise<Message>}
+   */
+  fetch() {
+    return this.channel.messages.fetch(this.id, true);
   }
 
   /**
@@ -483,6 +544,23 @@ class Message extends Base {
   fetchWebhook() {
     if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
+  }
+
+  /**
+   * Suppresses or unsuppresses embeds on a message
+   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds(suppress = true) {
+    const flags = new MessageFlags(this.flags.bitfield);
+
+    if (suppress) {
+      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    } else {
+      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    }
+
+    return this.edit({ flags });
   }
 
   /**
@@ -498,16 +576,18 @@ class Message extends Base {
     const embedUpdate = !message.author && !message.attachments;
     if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
-    let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
+    let equal =
+      this.id === message.id &&
+      this.author.id === message.author.id &&
+      this.content === message.content &&
+      this.tts === message.tts &&
+      this.nonce === message.nonce &&
+      this.embeds.length === message.embeds.length &&
+      this.attachments.length === message.attachments.length;
 
     if (equal && rawData) {
-      equal = this.mentions.everyone === message.mentions.everyone &&
+      equal =
+        this.mentions.everyone === message.mentions.everyone &&
         this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
         this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }

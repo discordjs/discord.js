@@ -1,13 +1,20 @@
-const GuildEmojiRoleStore = require('../stores/GuildEmojiRoleStore');
-const Permissions = require('../util/Permissions');
-const { Error } = require('../errors');
+'use strict';
+
 const Emoji = require('./Emoji');
+const { Error } = require('../errors');
+const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a custom emoji.
  * @extends {Emoji}
  */
 class GuildEmoji extends Emoji {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the guild emoji
+   * @param {Guild} guild The guild the guild emoji is part of
+   */
   constructor(client, data, guild) {
     super(client, data);
 
@@ -16,6 +23,12 @@ class GuildEmoji extends Emoji {
      * @type {Guild}
      */
     this.guild = guild;
+
+    /**
+     * The ID of this emoji
+     * @type {Snowflake}
+     * @name GuildEmoji#id
+     */
 
     this._roles = [];
     this._patch(data);
@@ -27,14 +40,23 @@ class GuildEmoji extends Emoji {
     /**
      * Whether or not this emoji requires colons surrounding it
      * @type {boolean}
+     * @name GuildEmoji#requiresColons
      */
     if (typeof data.require_colons !== 'undefined') this.requiresColons = data.require_colons;
 
     /**
      * Whether this emoji is managed by an external service
      * @type {boolean}
+     * @name GuildEmoji#managed
      */
     if (typeof data.managed !== 'undefined') this.managed = data.managed;
+
+    /**
+     * Whether this emoji is available
+     * @type {boolean}
+     * @name GuildEmoji#available
+     */
+    if (typeof data.available !== 'undefined') this.available = data.available;
 
     if (data.roles) this._roles = data.roles;
   }
@@ -51,17 +73,17 @@ class GuildEmoji extends Emoji {
    * @readonly
    */
   get deletable() {
-    return !this.managed &&
-      this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
+    if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
+    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
-   * A collection of roles this emoji is active for (empty if all), mapped by role ID
-   * @type {GuildEmojiRoleStore<Snowflake, Role>}
+   * A manager for roles this emoji is active for.
+   * @type {GuildEmojiRoleManager}
    * @readonly
    */
   get roles() {
-    return new GuildEmojiRoleStore(this);
+    return new GuildEmojiRoleManager(this);
   }
 
   /**
@@ -71,10 +93,16 @@ class GuildEmoji extends Emoji {
   fetchAuthor() {
     if (this.managed) {
       return Promise.reject(new Error('EMOJI_MANAGED'));
-    } else if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-      return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
+    } else {
+      if (!this.guild.me) return Promise.reject(new Error('GUILD_UNCACHED_ME'));
+      if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
+        return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
+      }
     }
-    return this.client.api.guilds(this.guild.id).emojis(this.id).get()
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .get()
       .then(emoji => this.client.users.add(emoji.user));
   }
 
@@ -98,11 +126,16 @@ class GuildEmoji extends Emoji {
    */
   edit(data, reason) {
     const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
-    return this.client.api.guilds(this.guild.id).emojis(this.id)
-      .patch({ data: {
-        name: data.name,
-        roles,
-      }, reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .patch({
+        data: {
+          name: data.name,
+          roles,
+        },
+        reason,
+      })
       .then(newData => {
         const clone = this._clone();
         clone._patch(newData);
@@ -126,7 +159,10 @@ class GuildEmoji extends Emoji {
    * @returns {Promise<GuildEmoji>}
    */
   delete(reason) {
-    return this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .delete({ reason })
       .then(() => this);
   }
 
@@ -142,15 +178,15 @@ class GuildEmoji extends Emoji {
         other.name === this.name &&
         other.managed === this.managed &&
         other.requiresColons === this.requiresColons &&
-        other.roles.size === this.roles.size &&
-        other.roles.every(role => this.roles.has(role.id))
+        other.roles.cache.size === this.roles.cache.size &&
+        other.roles.cache.every(role => this.roles.cache.has(role.id))
       );
     } else {
       return (
         other.id === this.id &&
         other.name === this.name &&
-        other.roles.length === this.roles.size &&
-        other.roles.every(role => this.roles.has(role))
+        other.roles.length === this.roles.cache.size &&
+        other.roles.every(role => this.roles.cache.has(role))
       );
     }
   }

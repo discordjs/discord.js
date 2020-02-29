@@ -1,7 +1,9 @@
-const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
+'use strict';
+
 const EventEmitter = require('events');
-const { Error } = require('../../../errors');
 const WebSocket = require('../../../WebSocket');
+const { Error } = require('../../../errors');
+const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -23,7 +25,6 @@ class VoiceWebSocket extends EventEmitter {
      */
     this.attempts = 0;
 
-    this.connect();
     this.dead = false;
     this.connection.on('closing', this.shutdown.bind(this));
   }
@@ -31,12 +32,14 @@ class VoiceWebSocket extends EventEmitter {
   /**
    * The client of this voice WebSocket
    * @type {Client}
+   * @readonly
    */
   get client() {
-    return this.connection.voiceManager.client;
+    return this.connection.client;
   }
 
   shutdown() {
+    this.emit('debug', `[WS] shutdown requested`);
     this.dead = true;
     this.reset();
   }
@@ -45,6 +48,7 @@ class VoiceWebSocket extends EventEmitter {
    * Resets the current WebSocket.
    */
   reset() {
+    this.emit('debug', `[WS] reset requested`);
     if (this.ws) {
       if (this.ws.readyState !== WebSocket.CLOSED) this.ws.close();
       this.ws = null;
@@ -56,6 +60,7 @@ class VoiceWebSocket extends EventEmitter {
    * Starts connecting to the Voice WebSocket Server.
    */
   connect() {
+    this.emit('debug', `[WS] connect requested`);
     if (this.dead) return;
     if (this.ws) this.reset();
     if (this.attempts >= 5) {
@@ -70,6 +75,7 @@ class VoiceWebSocket extends EventEmitter {
      * @type {WebSocket}
      */
     this.ws = WebSocket.create(`wss://${this.connection.authentication.endpoint}/`, { v: 4 });
+    this.emit('debug', `[WS] connecting, ${this.attempts} attempts, ${this.ws.url}`);
     this.ws.onopen = this.onOpen.bind(this);
     this.ws.onmessage = this.onMessage.bind(this);
     this.ws.onclose = this.onClose.bind(this);
@@ -82,10 +88,12 @@ class VoiceWebSocket extends EventEmitter {
    * @returns {Promise<string>}
    */
   send(data) {
+    this.emit('debug', `[WS] >> ${data}`);
     return new Promise((resolve, reject) => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('WS_NOT_OPEN', data);
       this.ws.send(data, null, error => {
-        if (error) reject(error); else resolve(data);
+        if (error) reject(error);
+        else resolve(data);
       });
     });
   }
@@ -108,6 +116,7 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the WebSocket opens.
    */
   onOpen() {
+    this.emit('debug', `[WS] opened at gateway ${this.connection.authentication.endpoint}`);
     this.sendPacket({
       op: OPCodes.DISPATCH,
       d: {
@@ -128,7 +137,7 @@ class VoiceWebSocket extends EventEmitter {
    */
   onMessage(event) {
     try {
-      return this.onPacket(WebSocket.unpack(event.data));
+      return this.onPacket(WebSocket.unpack(event.data, 'json'));
     } catch (error) {
       return this.onError(error);
     }
@@ -138,6 +147,7 @@ class VoiceWebSocket extends EventEmitter {
    * Called whenever the connection to the WebSocket server is lost.
    */
   onClose() {
+    this.emit('debug', `[WS] closed`);
     if (!this.dead) this.client.setTimeout(this.connect.bind(this), this.attempts * 1000);
   }
 
@@ -146,6 +156,7 @@ class VoiceWebSocket extends EventEmitter {
    * @param {Error} error The error that occurred
    */
   onError(error) {
+    this.emit('debug', `[WS] Error: ${error}`);
     this.emit('error', error);
   }
 
@@ -154,6 +165,7 @@ class VoiceWebSocket extends EventEmitter {
    * @param {Object} packet The received packet
    */
   onPacket(packet) {
+    this.emit('debug', `[WS] << ${JSON.stringify(packet)}`);
     switch (packet.op) {
       case VoiceOPCodes.HELLO:
         this.setHeartbeat(packet.d.heartbeat_interval);
@@ -190,9 +202,9 @@ class VoiceWebSocket extends EventEmitter {
         /**
          * Emitted whenever a speaking packet is received.
          * @param {Object} data
-         * @event VoiceWebSocket#speaking
+         * @event VoiceWebSocket#startSpeaking
          */
-        this.emit('speaking', packet.d);
+        this.emit('startSpeaking', packet.d);
         break;
       default:
         /**
@@ -221,7 +233,7 @@ class VoiceWebSocket extends EventEmitter {
        * @event VoiceWebSocket#warn
        */
       this.emit('warn', 'A voice heartbeat interval is being overwritten');
-      clearInterval(this.heartbeatInterval);
+      this.client.clearInterval(this.heartbeatInterval);
     }
     this.heartbeatInterval = this.client.setInterval(this.sendHeartbeat.bind(this), interval);
   }
@@ -234,7 +246,7 @@ class VoiceWebSocket extends EventEmitter {
       this.emit('warn', 'Tried to clear a heartbeat interval that does not exist');
       return;
     }
-    clearInterval(this.heartbeatInterval);
+    this.client.clearInterval(this.heartbeatInterval);
     this.heartbeatInterval = null;
   }
 

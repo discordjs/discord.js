@@ -1,3 +1,5 @@
+'use strict';
+
 const { RangeError } = require('../errors');
 
 /**
@@ -16,6 +18,15 @@ class BitField {
   }
 
   /**
+   * Checks whether the bitfield has a bit, or any of multiple bits.
+   * @param {BitFieldResolvable} bit Bit(s) to check for
+   * @returns {boolean}
+   */
+  any(bit) {
+    return (this.bitfield & this.constructor.resolve(bit)) !== 0;
+  }
+
+  /**
    * Checks if this bitfield equals another
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
@@ -30,7 +41,7 @@ class BitField {
    * @returns {boolean}
    */
   has(bit) {
-    if (bit instanceof Array) return bit.every(p => this.has(p));
+    if (Array.isArray(bit)) return bit.every(p => this.has(p));
     bit = this.constructor.resolve(bit);
     return (this.bitfield & bit) === bit;
   }
@@ -42,7 +53,7 @@ class BitField {
    * @returns {string[]}
    */
   missing(bits, ...hasParams) {
-    if (!(bits instanceof Array)) bits = new this.constructor(bits).toArray(false);
+    if (!Array.isArray(bits)) bits = new this.constructor(bits).toArray(false);
     return bits.filter(p => !this.has(p, ...hasParams));
   }
 
@@ -92,7 +103,7 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, ...hasParams);
+    for (const [flag, bit] of Object.entries(this.constructor.FLAGS)) serialized[flag] = this.has(bit, ...hasParams);
     return serialized;
   }
 
@@ -134,8 +145,8 @@ class BitField {
   static resolve(bit = 0) {
     if (typeof bit === 'number' && bit >= 0) return bit;
     if (bit instanceof BitField) return bit.bitfield;
-    if (bit instanceof Array) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (typeof bit === 'string') return this.FLAGS[bit];
+    if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
+    if (typeof bit === 'string' && typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
     throw new RangeError('BITFIELD_INVALID');
   }
 }

@@ -1,19 +1,26 @@
-const VoiceWebSocket = require('./networking/VoiceWebSocket');
+'use strict';
+
+const EventEmitter = require('events');
 const VoiceUDP = require('./networking/VoiceUDPClient');
-const Util = require('../../util/Util');
-const { OPCodes, VoiceOPCodes, VoiceStatus, Events } = require('../../util/Constants');
+const VoiceWebSocket = require('./networking/VoiceWebSocket');
 const AudioPlayer = require('./player/AudioPlayer');
 const VoiceReceiver = require('./receiver/Receiver');
-const EventEmitter = require('events');
-const { Error } = require('../../errors');
 const PlayInterface = require('./util/PlayInterface');
+const Silence = require('./util/Silence');
+const { Error } = require('../../errors');
+const { OPCodes, VoiceOPCodes, VoiceStatus, Events } = require('../../util/Constants');
 const Speaking = require('../../util/Speaking');
+const Util = require('../../util/Util');
 
-const SUPPORTED_MODES = [
-  'xsalsa20_poly1305_lite',
-  'xsalsa20_poly1305_suffix',
-  'xsalsa20_poly1305',
-];
+// Workaround for Discord now requiring silence to be sent before being able to receive audio
+class SingleSilence extends Silence {
+  _read() {
+    super._read();
+    this.push(null);
+  }
+}
+
+const SUPPORTED_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
 
 /**
  * Represents a connection to a guild's voice server.
@@ -113,14 +120,13 @@ class VoiceConnection extends EventEmitter {
      * The voice receiver of this connection
      * @type {VoiceReceiver}
      */
-    this.receiver = null;
-
-    this.authenticate();
+    this.receiver = new VoiceReceiver(this);
   }
 
   /**
    * The client that instantiated this connection
    * @type {Client}
+   * @readonly
    */
   get client() {
     return this.voiceManager.client;
@@ -144,35 +150,54 @@ class VoiceConnection extends EventEmitter {
     if (this.speaking.equals(value)) return;
     if (this.status !== VoiceStatus.CONNECTED) return;
     this.speaking = new Speaking(value).freeze();
-    this.sockets.ws.sendPacket({
-      op: VoiceOPCodes.SPEAKING,
-      d: {
-        speaking: this.speaking.bitfield,
-        delay: 0,
-        ssrc: this.authentication.ssrc,
-      },
-    }).catch(e => {
-      this.emit('debug', e);
-    });
+    this.sockets.ws
+      .sendPacket({
+        op: VoiceOPCodes.SPEAKING,
+        d: {
+          speaking: this.speaking.bitfield,
+          delay: 0,
+          ssrc: this.authentication.ssrc,
+        },
+      })
+      .catch(e => {
+        this.emit('debug', e);
+      });
+  }
+
+  /**
+   * The voice state of this connection
+   * @type {VoiceState}
+   */
+  get voice() {
+    return this.channel.guild.voice;
   }
 
   /**
    * Sends a request to the main gateway to join a voice channel.
    * @param {Object} [options] The options to provide
+   * @returns {Promise<Shard>}
    * @private
    */
   sendVoiceStateUpdate(options = {}) {
-    options = Util.mergeDefault({
-      guild_id: this.channel.guild.id,
-      channel_id: this.channel.id,
-      self_mute: false,
-      self_deaf: false,
-    }, options);
+    options = Util.mergeDefault(
+      {
+        guild_id: this.channel.guild.id,
+        channel_id: this.channel.id,
+        self_mute: this.voice ? this.voice.selfMute : false,
+        self_deaf: this.voice ? this.voice.selfDeaf : false,
+      },
+      options,
+    );
 
-    this.client.ws.send({
-      op: OPCodes.VOICE_STATE_UPDATE,
-      d: options,
-    });
+    this.emit('debug', `Sending voice state update: ${JSON.stringify(options)}`);
+
+    return this.channel.guild.shard.send(
+      {
+        op: OPCodes.VOICE_STATE_UPDATE,
+        d: options,
+      },
+      true,
+    );
   }
 
   /**
@@ -183,6 +208,7 @@ class VoiceConnection extends EventEmitter {
    * @returns {void}
    */
   setTokenAndEndpoint(token, endpoint) {
+    this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);
     if (!endpoint) {
       // Signifies awaiting endpoint stage
       return;
@@ -194,6 +220,7 @@ class VoiceConnection extends EventEmitter {
     }
 
     endpoint = endpoint.match(/([^:]*)/)[0];
+    this.emit('debug', `Endpoint resolved as ${endpoint}`);
 
     if (!endpoint) {
       this.authenticateFailed('VOICE_INVALID_ENDPOINT');
@@ -215,6 +242,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   setSessionID(sessionID) {
+    this.emit('debug', `Setting sessionID ${sessionID} (stored as "${this.authentication.sessionID}")`);
     if (!sessionID) {
       this.authenticateFailed('VOICE_SESSION_ABSENT');
       return;
@@ -240,7 +268,7 @@ class VoiceConnection extends EventEmitter {
    */
   checkAuthenticated() {
     const { token, endpoint, sessionID } = this.authentication;
-
+    this.emit('debug', `Authenticated with sessionID ${sessionID}`);
     if (token && endpoint && sessionID) {
       this.status = VoiceStatus.CONNECTING;
       /**
@@ -258,7 +286,8 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   authenticateFailed(reason) {
-    clearTimeout(this.connectTimeout);
+    this.client.clearTimeout(this.connectTimeout);
+    this.emit('debug', `Authenticate failed - ${reason}`);
     if (this.status === VoiceStatus.AUTHENTICATING) {
       /**
        * Emitted when we fail to initiate a voice connection.
@@ -293,8 +322,7 @@ class VoiceConnection extends EventEmitter {
    */
   authenticate() {
     this.sendVoiceStateUpdate();
-    this.connectTimeout = this.client.setTimeout(
-      () => this.authenticateFailed('VOICE_CONNECTION_TIMEOUT'), 15000);
+    this.connectTimeout = this.client.setTimeout(() => this.authenticateFailed('VOICE_CONNECTION_TIMEOUT'), 15000);
   }
 
   /**
@@ -308,6 +336,7 @@ class VoiceConnection extends EventEmitter {
     this.authentication.endpoint = endpoint;
     this.speaking = new Speaking().freeze();
     this.status = VoiceStatus.RECONNECTING;
+    this.emit('debug', `Reconnecting to ${endpoint}`);
     /**
      * Emitted when the voice connection is reconnecting (typically after a region change).
      * @event VoiceConnection#reconnecting
@@ -321,7 +350,8 @@ class VoiceConnection extends EventEmitter {
    */
   disconnect() {
     this.emit('closing');
-    clearTimeout(this.connectTimeout);
+    this.emit('debug', 'disconnect() triggered');
+    this.client.clearTimeout(this.connectTimeout);
     const conn = this.voiceManager.connections.get(this.channel.guild.id);
     if (conn === this) this.voiceManager.connections.delete(this.channel.guild.id);
     this.sendVoiceStateUpdate({
@@ -344,7 +374,6 @@ class VoiceConnection extends EventEmitter {
     this.emit('disconnect');
   }
 
-
   /**
    * Cleans up after disconnect.
    * @private
@@ -354,11 +383,14 @@ class VoiceConnection extends EventEmitter {
     this.speaking = new Speaking().freeze();
     const { ws, udp } = this.sockets;
 
+    this.emit('debug', 'Connection clean up');
+
     if (ws) {
       ws.removeAllListeners('error');
       ws.removeAllListeners('ready');
       ws.removeAllListeners('sessionDescription');
       ws.removeAllListeners('speaking');
+      ws.shutdown();
     }
 
     if (udp) udp.removeAllListeners('error');
@@ -372,6 +404,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   connect() {
+    this.emit('debug', `Connect triggered`);
     if (this.status !== VoiceStatus.RECONNECTING) {
       if (this.sockets.ws) throw new Error('WS_CONNECTION_EXISTS');
       if (this.sockets.udp) throw new Error('UDP_CONNECTION_EXISTS');
@@ -385,11 +418,15 @@ class VoiceConnection extends EventEmitter {
 
     const { ws, udp } = this.sockets;
 
+    ws.on('debug', msg => this.emit('debug', msg));
+    udp.on('debug', msg => this.emit('debug', msg));
     ws.on('error', err => this.emit('error', err));
     udp.on('error', err => this.emit('error', err));
     ws.on('ready', this.onReady.bind(this));
     ws.on('sessionDescription', this.onSessionDescription.bind(this));
-    ws.on('speaking', this.onSpeaking.bind(this));
+    ws.on('startSpeaking', this.onStartSpeaking.bind(this));
+
+    this.sockets.ws.connect();
   }
 
   /**
@@ -398,7 +435,7 @@ class VoiceConnection extends EventEmitter {
    * @private
    */
   onReady(data) {
-    this.authentication = data;
+    Object.assign(this.authentication, data);
     for (let mode of data.modes) {
       if (SUPPORTED_MODES.includes(mode)) {
         this.authentication.mode = mode;
@@ -417,14 +454,27 @@ class VoiceConnection extends EventEmitter {
   onSessionDescription(data) {
     Object.assign(this.authentication, data);
     this.status = VoiceStatus.CONNECTED;
-    clearTimeout(this.connectTimeout);
-    this.receiver = new VoiceReceiver(this);
-    /**
-     * Emitted once the connection is ready, when a promise to join a voice channel resolves,
-     * the connection will already be ready.
-     * @event VoiceConnection#ready
-     */
-    this.emit('ready');
+    const ready = () => {
+      this.client.clearTimeout(this.connectTimeout);
+      this.emit('debug', `Ready with authentication details: ${JSON.stringify(this.authentication)}`);
+      /**
+       * Emitted once the connection is ready, when a promise to join a voice channel resolves,
+       * the connection will already be ready.
+       * @event VoiceConnection#ready
+       */
+      this.emit('ready');
+    };
+    if (this.dispatcher) {
+      ready();
+    } else {
+      // This serves to provide support for voice receive, sending audio is required to receive it.
+      const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
+      dispatcher.once('finish', ready);
+    }
+  }
+
+  onStartSpeaking({ user_id, ssrc, speaking }) {
+    this.ssrcMap.set(+ssrc, { userID: user_id, speaking: speaking });
   }
 
   /**
@@ -432,11 +482,10 @@ class VoiceConnection extends EventEmitter {
    * @param {Object} data The received data
    * @private
    */
-  onSpeaking({ user_id, ssrc, speaking }) {
+  onSpeaking({ user_id, speaking }) {
     speaking = new Speaking(speaking).freeze();
     const guild = this.channel.guild;
-    const user = this.client.users.get(user_id);
-    this.ssrcMap.set(+ssrc, user_id);
+    const user = this.client.users.cache.get(user_id);
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
     /**

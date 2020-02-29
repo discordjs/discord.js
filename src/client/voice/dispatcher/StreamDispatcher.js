@@ -1,14 +1,15 @@
-const VolumeInterface = require('../util/VolumeInterface');
-const { Writable } = require('stream');
+'use strict';
 
+const { Writable } = require('stream');
 const secretbox = require('../util/Secretbox');
 const Silence = require('../util/Silence');
+const VolumeInterface = require('../util/VolumeInterface');
 
 const FRAME_LENGTH = 20;
 const CHANNELS = 2;
 const TIMESTAMP_INC = (48000 / 100) * CHANNELS;
 
-const MAX_NONCE_SIZE = (2 ** 32) - 1;
+const MAX_NONCE_SIZE = 2 ** 32 - 1;
 const nonce = Buffer.alloc(24);
 
 /**
@@ -29,11 +30,8 @@ const nonce = Buffer.alloc(24);
  * @extends {WritableStream}
  */
 class StreamDispatcher extends Writable {
-  constructor(
-    player,
-    { seek = 0, volume = 1, passes = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {},
-    streams) {
-    const streamOptions = { seek, volume, passes, fec, plp, bitrate, highWaterMark };
+  constructor(player, { seek = 0, volume = 1, fec, plp, bitrate = 96, highWaterMark = 12 } = {}, streams) {
+    const streamOptions = { seek, volume, fec, plp, bitrate, highWaterMark };
     super(streamOptions);
     /**
      * The Audio Player that controls this dispatcher
@@ -65,15 +63,14 @@ class StreamDispatcher extends Writable {
     this.count = 0;
 
     this.on('finish', () => {
-      // Still emitting end for backwards compatibility, probably remove it in the future!
-      this.emit('end');
+      this._cleanup();
       this._setSpeaking(0);
     });
 
-    if (typeof volume !== 'undefined') this.setVolume(volume);
+    this.setVolume(volume);
+    this.setBitrate(bitrate);
     if (typeof fec !== 'undefined') this.setFEC(fec);
     if (typeof plp !== 'undefined') this.setPLP(plp);
-    if (typeof bitrate !== 'undefined') this.setBitrate(bitrate);
 
     const streamError = (type, err) => {
       /**
@@ -112,12 +109,16 @@ class StreamDispatcher extends Writable {
   }
 
   _destroy(err, cb) {
+    this._cleanup();
+    super._destroy(err, cb);
+  }
+
+  _cleanup() {
     if (this.player.dispatcher === this) this.player.dispatcher = null;
     const { streams } = this;
-    if (streams.broadcast) streams.broadcast.dispatchers.delete(this);
-    if (streams.opus) streams.opus.unpipe(this);
+    if (streams.broadcast) streams.broadcast.delete(this);
+    if (streams.opus) streams.opus.destroy();
     if (streams.ffmpeg) streams.ffmpeg.destroy();
-    super._destroy(err, cb);
   }
 
   /**
@@ -139,12 +140,16 @@ class StreamDispatcher extends Writable {
   /**
    * Whether or not playback is paused
    * @type {boolean}
+   * @readonly
    */
-  get paused() { return Boolean(this.pausedSince); }
+  get paused() {
+    return Boolean(this.pausedSince);
+  }
 
   /**
-   * Total time that this dispatcher has been paused
+   * Total time that this dispatcher has been paused in milliseconds
    * @type {number}
+   * @readonly
    */
   get pausedTime() {
     return this._silentPausedTime + this._pausedTime + (this.paused ? Date.now() - this.pausedSince : 0);
@@ -170,6 +175,7 @@ class StreamDispatcher extends Writable {
   /**
    * The time (in milliseconds) that the dispatcher has actually been playing audio for
    * @type {number}
+   * @readonly
    */
   get streamTime() {
     return this.count * FRAME_LENGTH;
@@ -178,6 +184,7 @@ class StreamDispatcher extends Writable {
   /**
    * The time (in milliseconds) that the dispatcher has been playing audio for, taking into account skips and pauses
    * @type {number}
+   * @readonly
    */
   get totalStreamTime() {
     return Date.now() - this.startTime;
@@ -224,7 +231,7 @@ class StreamDispatcher extends Writable {
       done();
     };
     if (!this.streams.broadcast) {
-      const next = FRAME_LENGTH + (this.count * FRAME_LENGTH) - (Date.now() - this.startTime - this._pausedTime);
+      const next = FRAME_LENGTH + this.count * FRAME_LENGTH - (Date.now() - this.startTime - this._pausedTime);
       setTimeout(() => {
         if ((!this.pausedSince || this._silence) && this._writeCallback) this._writeCallback();
       }, next);
@@ -252,10 +259,7 @@ class StreamDispatcher extends Writable {
       this._nonce++;
       if (this._nonce > MAX_NONCE_SIZE) this._nonce = 0;
       this._nonceBuffer.writeUInt32BE(this._nonce, 0);
-      return [
-        secretbox.methods.close(buffer, this._nonceBuffer, secret_key),
-        this._nonceBuffer.slice(0, 4),
-      ];
+      return [secretbox.methods.close(buffer, this._nonceBuffer, secret_key), this._nonceBuffer.slice(0, 4)];
     } else if (mode === 'xsalsa20_poly1305_suffix') {
       const random = secretbox.methods.random(24);
       return [secretbox.methods.close(buffer, random, secret_key), random];
@@ -278,24 +282,20 @@ class StreamDispatcher extends Writable {
   }
 
   _sendPacket(packet) {
-    let repeats = this.streamOptions.passes;
     /**
      * Emitted whenever the dispatcher has debug information.
      * @event StreamDispatcher#debug
      * @param {string} info The debug info
      */
     this._setSpeaking(1);
-    while (repeats--) {
-      if (!this.player.voiceConnection.sockets.udp) {
-        this.emit('debug', 'Failed to send a packet - no UDP socket');
-        return;
-      }
-      this.player.voiceConnection.sockets.udp.send(packet)
-        .catch(e => {
-          this._setSpeaking(0);
-          this.emit('debug', `Failed to send a packet - ${e}`);
-        });
+    if (!this.player.voiceConnection.sockets.udp) {
+      this.emit('debug', 'Failed to send a packet - no UDP socket');
+      return;
     }
+    this.player.voiceConnection.sockets.udp.send(packet).catch(e => {
+      this._setSpeaking(0);
+      this.emit('debug', `Failed to send a packet - ${e}`);
+    });
   }
 
   _setSpeaking(value) {
@@ -310,13 +310,18 @@ class StreamDispatcher extends Writable {
     this.emit('speaking', value);
   }
 
-  get volumeEditable() { return Boolean(this.streams.volume); }
+  get volumeEditable() {
+    return Boolean(this.streams.volume);
+  }
 
   /**
    * Whether or not the Opus bitrate of this stream is editable
    * @type {boolean}
+   * @readonly
    */
-  get bitrateEditable() { return this.streams.opus && this.streams.opus.setBitrate; }
+  get bitrateEditable() {
+    return this.streams.opus && this.streams.opus.setBitrate;
+  }
 
   // Volume
   get volume() {

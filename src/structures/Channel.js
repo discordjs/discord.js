@@ -1,6 +1,8 @@
-const Snowflake = require('../util/Snowflake');
+'use strict';
+
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents any channel on Discord.
@@ -14,10 +16,11 @@ class Channel extends Base {
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
-     * * `group` - a Group DM channel
      * * `text` - a guild text channel
      * * `voice` - a guild voice channel
      * * `category` - a guild category channel
+     * * `news` - a guild news channel
+     * * `store` - a guild store channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
@@ -79,20 +82,38 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.client.api.channels(this.id).delete().then(() => this);
+    return this.client.api
+      .channels(this.id)
+      .delete()
+      .then(() => this);
+  }
+
+  /**
+   * Fetches this channel.
+   * @returns {Promise<Channel>}
+   */
+  fetch() {
+    return this.client.channels.fetch(this.id, true);
   }
 
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
-    if (data.type === ChannelTypes.DM) {
-      const DMChannel = Structures.get('DMChannel');
-      channel = new DMChannel(client, data);
-    } else if (data.type === ChannelTypes.GROUP) {
-      const GroupDMChannel = Structures.get('GroupDMChannel');
-      channel = new GroupDMChannel(client, data);
+    if (!data.guild_id && !guild) {
+      switch (data.type) {
+        case ChannelTypes.DM: {
+          const DMChannel = Structures.get('DMChannel');
+          channel = new DMChannel(client, data);
+          break;
+        }
+        case ChannelTypes.GROUP: {
+          const PartialGroupDMChannel = require('./PartialGroupDMChannel');
+          channel = new PartialGroupDMChannel(client, data);
+          break;
+        }
+      }
     } else {
-      guild = guild || client.guilds.get(data.guild_id);
+      guild = guild || client.guilds.cache.get(data.guild_id);
       if (guild) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
@@ -110,12 +131,18 @@ class Channel extends Base {
             channel = new CategoryChannel(guild, data);
             break;
           }
-          default: {
-            const GuildChannel = Structures.get('GuildChannel');
-            channel = new GuildChannel(guild, data);
+          case ChannelTypes.NEWS: {
+            const NewsChannel = Structures.get('NewsChannel');
+            channel = new NewsChannel(guild, data);
+            break;
+          }
+          case ChannelTypes.STORE: {
+            const StoreChannel = Structures.get('StoreChannel');
+            channel = new StoreChannel(guild, data);
+            break;
           }
         }
-        guild.channels.set(channel.id, channel);
+        if (channel) guild.channels.cache.set(channel.id, channel);
       }
     }
     return channel;

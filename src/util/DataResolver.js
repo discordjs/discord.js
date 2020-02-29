@@ -1,9 +1,11 @@
-const path = require('path');
+'use strict';
+
 const fs = require('fs');
+const path = require('path');
 const fetch = require('node-fetch');
-const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -60,7 +62,7 @@ class DataResolver {
    * @returns {?string}
    */
   static resolveBase64(data) {
-    if (data instanceof Buffer) return `data:image/jpg;base64,${data.toString('base64')}`;
+    if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
     return data;
   }
 
@@ -83,18 +85,18 @@ class DataResolver {
    * @returns {Promise<Buffer>}
    */
   static resolveFile(resource) {
-    if (!browser && resource instanceof Buffer) return Promise.resolve(resource);
+    if (!browser && Buffer.isBuffer(resource)) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return fetch(resource).then(res => browser ? res.blob() : res.buffer());
+        return fetch(resource).then(res => (browser ? res.blob() : res.buffer()));
       } else if (!browser) {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
-            if (!stats || !stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
+            if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
             fs.readFile(file, (err2, data) => {
               if (err2) reject(err2);
               else resolve(data);

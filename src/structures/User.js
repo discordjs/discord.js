@@ -1,8 +1,10 @@
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { Presence } = require('./Presence');
-const Snowflake = require('../util/Snowflake');
+'use strict';
+
 const Base = require('./Base');
+const { Presence } = require('./Presence');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a user on Discord.
@@ -10,6 +12,10 @@ const { Error } = require('../errors');
  * @extends {Base}
  */
 class User extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the user
+   */
   constructor(client, data) {
     super(client);
 
@@ -51,6 +57,15 @@ class User extends Base {
      */
     if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
+    if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
+
+    /**
+     * Whether the user is an Official Discord System user (part of the urgent message system)
+     * @type {?boolean}
+     * @name User#system
+     */
+    if (typeof data.system !== 'undefined') this.system = Boolean(data.system);
+
     /**
      * The locale of the user's client (ISO 639-1)
      * @type {?string}
@@ -69,6 +84,15 @@ class User extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+  }
+
+  /**
+   * Whether this User is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.username !== 'string';
   }
 
   /**
@@ -95,8 +119,8 @@ class User extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.client.channels.get(this.lastMessageChannelID);
-    return (channel && channel.messages.get(this.lastMessageID)) || null;
+    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
+    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
   }
 
   /**
@@ -105,8 +129,8 @@ class User extends Base {
    * @readonly
    */
   get presence() {
-    for (const guild of this.client.guilds.values()) {
-      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+    for (const guild of this.client.guilds.cache.values()) {
+      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
     }
     return new Presence(this.client, { user: { id: this.id } });
   }
@@ -116,9 +140,9 @@ class User extends Base {
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  avatarURL({ format, size } = {}) {
+  avatarURL({ format, size, dynamic } = {}) {
     if (!this.avatar) return null;
-    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
   }
 
   /**
@@ -185,29 +209,33 @@ class User extends Base {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
+    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
   }
 
   /**
    * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
-  createDM() {
-    if (this.dmChannel) return Promise.resolve(this.dmChannel);
-    return this.client.api.users(this.client.user.id).channels.post({ data: {
-      recipient_id: this.id,
-    } })
-      .then(data => this.client.actions.ChannelCreate.handle(data).channel);
+  async createDM() {
+    const { dmChannel } = this;
+    if (dmChannel && !dmChannel.partial) return dmChannel;
+    const data = await this.client.api.users(this.client.user.id).channels.post({
+      data: {
+        recipient_id: this.id,
+      },
+    });
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
-    if (!this.dmChannel) return Promise.reject(new Error('USER_NO_DMCHANNEL'));
-    return this.client.api.channels(this.dmChannel.id).delete()
-      .then(data => this.client.actions.ChannelDelete.handle(data).channel);
+  async deleteDM() {
+    const { dmChannel } = this;
+    if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
+    const data = await this.client.api.channels(dmChannel.id).delete();
+    return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
   /**
@@ -217,13 +245,22 @@ class User extends Base {
    * @returns {boolean}
    */
   equals(user) {
-    let equal = user &&
+    let equal =
+      user &&
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
       this.avatar === user.avatar;
 
     return equal;
+  }
+
+  /**
+   * Fetches this user.
+   * @returns {Promise<User>}
+   */
+  fetch() {
+    return this.client.users.fetch(this.id, true);
   }
 
   /**
@@ -238,13 +275,16 @@ class User extends Base {
   }
 
   toJSON(...props) {
-    const json = super.toJSON({
-      createdTimestamp: true,
-      defaultAvatarURL: true,
-      tag: true,
-      lastMessage: false,
-      lastMessageID: false,
-    }, ...props);
+    const json = super.toJSON(
+      {
+        createdTimestamp: true,
+        defaultAvatarURL: true,
+        tag: true,
+        lastMessage: false,
+        lastMessageID: false,
+      },
+      ...props,
+    );
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
     return json;

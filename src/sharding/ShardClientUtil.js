@@ -1,29 +1,69 @@
-const Util = require('../util/Util');
+'use strict';
+
 const { Events } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
- * Helper class for sharded clients spawned as a child process, such as from a {@link ShardingManager}.
+ * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
  * Utilises IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
   /**
    * @param {Client} client Client of the current shard
+   * @param {ShardingManagerMode} mode Mode the shard was spawned with
    */
-  constructor(client) {
+  constructor(client, mode) {
+    /**
+     * Client for the shard
+     * @type {Client}
+     */
     this.client = client;
-    process.on('message', this._handleMessage.bind(this));
-    client.on('ready', () => { process.send({ _ready: true }); });
-    client.on('disconnect', () => { process.send({ _disconnect: true }); });
-    client.on('reconnecting', () => { process.send({ _reconnecting: true }); });
+
+    /**
+     * Mode the shard was spawned with
+     * @type {ShardingManagerMode}
+     */
+    this.mode = mode;
+
+    /**
+     * Message port for the master process (only when {@link ShardClientUtil#mode} is `worker`)
+     * @type {?MessagePort}
+     */
+    this.parentPort = null;
+
+    if (mode === 'process') {
+      process.on('message', this._handleMessage.bind(this));
+      client.on('ready', () => {
+        process.send({ _ready: true });
+      });
+      client.on('disconnect', () => {
+        process.send({ _disconnect: true });
+      });
+      client.on('reconnecting', () => {
+        process.send({ _reconnecting: true });
+      });
+    } else if (mode === 'worker') {
+      this.parentPort = require('worker_threads').parentPort;
+      this.parentPort.on('message', this._handleMessage.bind(this));
+      client.on('ready', () => {
+        this.parentPort.postMessage({ _ready: true });
+      });
+      client.on('disconnect', () => {
+        this.parentPort.postMessage({ _disconnect: true });
+      });
+      client.on('reconnecting', () => {
+        this.parentPort.postMessage({ _reconnecting: true });
+      });
+    }
   }
 
   /**
-   * ID of this shard
-   * @type {number}
+   * Array of shard IDs of this client
+   * @type {number[]}
    * @readonly
    */
-  get id() {
-    return this.client.options.shardId;
+  get ids() {
+    return this.client.options.shards;
   }
 
   /**
@@ -42,9 +82,15 @@ class ShardClientUtil {
    */
   send(message) {
     return new Promise((resolve, reject) => {
-      process.send(message, err => {
-        if (err) reject(err); else resolve();
-      });
+      if (this.mode === 'process') {
+        process.send(message, err => {
+          if (err) reject(err);
+          else resolve();
+        });
+      } else if (this.mode === 'worker') {
+        this.parentPort.postMessage(message);
+        resolve();
+      }
     });
   }
 
@@ -53,22 +99,25 @@ class ShardClientUtil {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array<*>>}
    * @example
-   * client.shard.fetchClientValues('guilds.size')
+   * client.shard.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
    */
   fetchClientValues(prop) {
     return new Promise((resolve, reject) => {
+      const parent = this.parentPort || process;
+
       const listener = message => {
         if (!message || message._sFetchProp !== prop) return;
-        process.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
+        parent.removeListener('message', listener);
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
-      process.on('message', listener);
+      parent.on('message', listener);
 
       this.send({ _sFetchProp: prop }).catch(err => {
-        process.removeListener('message', listener);
+        parent.removeListener('message', listener);
         reject(err);
       });
     });
@@ -79,23 +128,26 @@ class ShardClientUtil {
    * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    * @example
-   * client.shard.broadcastEval('this.guilds.size')
+   * client.shard.broadcastEval('this.guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
    */
   broadcastEval(script) {
     return new Promise((resolve, reject) => {
+      const parent = this.parentPort || process;
       script = typeof script === 'function' ? `(${script})(this)` : script;
+
       const listener = message => {
         if (!message || message._sEval !== script) return;
-        process.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
+        parent.removeListener('message', listener);
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
-      process.on('message', listener);
+      parent.on('message', listener);
 
       this.send({ _sEval: script }).catch(err => {
-        process.removeListener('message', listener);
+        parent.removeListener('message', listener);
         reject(err);
       });
     });
@@ -104,14 +156,15 @@ class ShardClientUtil {
   /**
    * Requests a respawn of all shards.
    * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
-   * @param {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
+   * @param {number} [respawnDelay=500] How long to wait between killing a shard's process/worker and restarting it
    * (in milliseconds)
-   * @param {boolean} [waitForReady=true] Whether to wait for a shard to become ready before continuing to another
+   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait for a shard to become ready before
+   * continuing to another. (-1 or Infinity for no wait)
    * @returns {Promise<void>} Resolves upon the message being sent
    * @see {@link ShardingManager#respawnAll}
    */
-  respawnAll(shardDelay = 5000, respawnDelay = 500, waitForReady = true) {
-    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, waitForReady } });
+  respawnAll(shardDelay = 5000, respawnDelay = 500, spawnTimeout = 30000) {
+    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, spawnTimeout } });
   }
 
   /**
@@ -144,6 +197,11 @@ class ShardClientUtil {
   _respond(type, message) {
     this.send(message).catch(err => {
       err.message = `Error when sending ${type} response to master process: ${err.message}`;
+      /**
+       * Emitted when the client encounters an error.
+       * @event Client#error
+       * @param {Error} error The error encountered
+       */
       this.client.emit(Events.ERROR, err);
     });
   }
@@ -151,14 +209,17 @@ class ShardClientUtil {
   /**
    * Creates/gets the singleton of this class.
    * @param {Client} client The client to use
+   * @param {ShardingManagerMode} mode Mode the shard was spawned with
    * @returns {ShardClientUtil}
    */
-  static singleton(client) {
+  static singleton(client, mode) {
     if (!this._singleton) {
-      this._singleton = new this(client);
+      this._singleton = new this(client, mode);
     } else {
-      client.emit(Events.WARN,
-        'Multiple clients created in child process; only the first will handle sharding helpers.');
+      client.emit(
+        Events.WARN,
+        'Multiple clients created in child process/worker; only the first will handle sharding helpers.',
+      );
     }
     return this._singleton;
   }

@@ -1,5 +1,7 @@
-const Webhook = require('../structures/Webhook');
+'use strict';
+
 const BaseClient = require('./BaseClient');
+const Webhook = require('../structures/Webhook');
 
 /**
  * The webhook client.

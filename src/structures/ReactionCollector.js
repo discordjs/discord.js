@@ -1,3 +1,5 @@
+'use strict';
+
 const Collector = require('./interfaces/Collector');
 const Collection = require('../util/Collection');
 const { Events } = require('../util/Constants');
@@ -11,6 +13,8 @@ const { Events } = require('../util/Constants');
 
 /**
  * Collects reactions on messages.
+ * Will automatically stop if the message (`'messageDelete'`),
+ * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
@@ -41,17 +45,26 @@ class ReactionCollector extends Collector {
     this.total = 0;
 
     this.empty = this.empty.bind(this);
+    this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
+    this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
+    this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
-    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
+    this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+    this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
       this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
-      this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+      this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
+      if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
 
     this.on('collect', (reaction, user) => {
@@ -61,7 +74,7 @@ class ReactionCollector extends Collector {
 
     this.on('remove', (reaction, user) => {
       this.total--;
-      if (!this.collected.some(r => r.users.has(user.id))) this.users.delete(user.id);
+      if (!this.collected.some(r => r.users.cache.has(user.id))) this.users.delete(user.id);
     });
   }
 
@@ -105,8 +118,7 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was removed
      * @param {User} user The user that removed the reaction
      */
-    if (this.collected.has(ReactionCollector.key(reaction)) &&
-        this.users.has(user.id)) {
+    if (this.collected.has(ReactionCollector.key(reaction)) && this.users.has(user.id)) {
       this.emit('remove', reaction, user);
     }
     return reaction.count ? null : ReactionCollector.key(reaction);
@@ -127,6 +139,42 @@ class ReactionCollector extends Collector {
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
     return null;
+  }
+
+  /**
+   * Handles checking if the message has been deleted, and if so, stops the collector with the reason 'messageDelete'.
+   * @private
+   * @param {Message} message The message that was deleted
+   * @returns {void}
+   */
+  _handleMessageDeletion(message) {
+    if (message.id === this.message.id) {
+      this.stop('messageDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   * @private
+   * @param {GuildChannel} channel The channel that was deleted
+   * @returns {void}
+   */
+  _handleChannelDeletion(channel) {
+    if (channel.id === this.message.channel.id) {
+      this.stop('channelDelete');
+    }
+  }
+
+  /**
+   * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   * @private
+   * @param {Guild} guild The guild that was deleted
+   * @returns {void}
+   */
+  _handleGuildDeletion(guild) {
+    if (this.message.guild && guild.id === this.message.guild.id) {
+      this.stop('guildDelete');
+    }
   }
 
   /**

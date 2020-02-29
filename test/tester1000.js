@@ -1,16 +1,21 @@
-const Discord = require('../src');
+'use strict';
+
 const { token, prefix, owner } = require('./auth.js');
+const Discord = require('../src');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  shardCount: 2,
+});
 
 client.on('debug', log);
 client.on('ready', () => {
   log('READY', client.user.tag, client.user.id);
 });
 client.on('rateLimit', log);
+client.on('error', console.error);
 
 const commands = {
   eval: message => {
@@ -32,7 +37,10 @@ const commands = {
 client.on('message', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  message.content = message.content.replace(prefix, '').trim().split(' ');
+  message.content = message.content
+    .replace(prefix, '')
+    .trim()
+    .split(' ');
   const command = message.content.shift();
   message.content = message.content.join(' ');
 

@@ -1,3 +1,5 @@
+'use strict';
+
 const { Readable } = require('stream');
 const prism = require('prism-media');
 const { Error } = require('../../../errors');
@@ -9,7 +11,6 @@ const { Error } = require('../../../errors');
  * @property {number} [seek=0] The time to seek to, will be ignored when playing `ogg/opus` or `webm/opus` streams
  * @property {number|boolean} [volume=1] The volume to play at. Set this to false to disable volume transforms for
  * this stream to improve performance.
- * @property {number} [passes=1] How many times to send the voice packet to reduce packet loss
  * @property {number} [plp] Expected packet loss percentage
  * @property {boolean} [fec] Enabled forward error correction
  * @property {number|string} [bitrate=96] The bitrate (quality) of the audio in kbps.
@@ -73,10 +74,10 @@ class PlayInterface {
         return this.player.playOpusStream(resource, options);
       } else if (type === 'ogg/opus') {
         if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-        return this.player.playOpusStream(resource.pipe(new prism.OggOpusDemuxer()), options);
+        return this.player.playOpusStream(resource.pipe(new prism.opus.OggDemuxer()), options);
       } else if (type === 'webm/opus') {
         if (!(resource instanceof Readable)) throw new Error('VOICE_PRISM_DEMUXERS_NEED_STREAM');
-        return this.player.playOpusStream(resource.pipe(new prism.WebmOpusDemuxer()), options);
+        return this.player.playOpusStream(resource.pipe(new prism.opus.WebmDemuxer()), options);
       }
     }
     throw new Error('VOICE_PLAY_INTERFACE_BAD_TYPE');
@@ -84,12 +85,12 @@ class PlayInterface {
 
   static applyToClass(structure) {
     for (const prop of ['play']) {
-      Object.defineProperty(structure.prototype, prop,
-        Object.getOwnPropertyDescriptor(PlayInterface.prototype, prop));
+      Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(PlayInterface.prototype, prop));
     }
   }
 }
 
 module.exports = PlayInterface;
 
+// eslint-disable-next-line import/order
 const Broadcast = require('../VoiceBroadcast');

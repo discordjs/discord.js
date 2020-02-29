@@ -1,9 +1,11 @@
-const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+'use strict';
+
+const { parse } = require('path');
 const fetch = require('node-fetch');
+const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
-const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -22,7 +24,12 @@ class Util {
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
 
-    props = Object.assign(...Object.keys(obj).filter(k => !k.startsWith('_')).map(k => ({ [k]: true })), ...props);
+    props = Object.assign(
+      ...Object.keys(obj)
+        .filter(k => !k.startsWith('_'))
+        .map(k => ({ [k]: true })),
+      ...props,
+    );
 
     const out = {};
 
@@ -34,8 +41,10 @@ class Util {
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
-      // If it's a collection, make the array of keys
+      // If it's a Collection, make the array of keys
       if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      // If the valueOf is a Collection, use its array of keys
+      else if (valueOf instanceof require('./Collection')) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
@@ -49,14 +58,15 @@ class Util {
 
   /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {string} text Content to split
+   * @param {StringResolvable} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
-   * @returns {string|string[]}
+   * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-    if (text.length <= maxLength) return text;
+    text = Util.resolveString(text);
+    if (text.length <= maxLength) return [text];
     const splitText = text.split(char);
-    if (splitText.length === 1) throw new RangeError('SPLIT_MAX_LEN');
+    if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
     let msg = '';
     for (const chunk of splitText) {
@@ -72,14 +82,153 @@ class Util {
   /**
    * Escapes any Discord-flavour markdown in a string.
    * @param {string} text Content to escape
-   * @param {boolean} [onlyCodeBlock=false] Whether to only escape codeblocks (takes priority)
-   * @param {boolean} [onlyInlineCode=false] Whether to only escape inline code
+   * @param {Object} [options={}] What types of markdown to escape
+   * @param {boolean} [options.codeBlock=true] Whether to escape code blocks or not
+   * @param {boolean} [options.inlineCode=true] Whether to escape inline code or not
+   * @param {boolean} [options.bold=true] Whether to escape bolds or not
+   * @param {boolean} [options.italic=true] Whether to escape italics or not
+   * @param {boolean} [options.underline=true] Whether to escape underlines or not
+   * @param {boolean} [options.strikethrough=true] Whether to escape strikethroughs or not
+   * @param {boolean} [options.spoiler=true] Whether to escape spoilers or not
+   * @param {boolean} [options.codeBlockContent=true] Whether to escape text inside code blocks or not
+   * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
    * @returns {string}
    */
-  static escapeMarkdown(text, onlyCodeBlock = false, onlyInlineCode = false) {
-    if (onlyCodeBlock) return text.replace(/```/g, '`\u200b``');
-    if (onlyInlineCode) return text.replace(/\\(`|\\)/g, '$1').replace(/(`|\\)/g, '\\$1');
-    return text.replace(/\\(\*|_|`|~|\\)/g, '$1').replace(/(\*|_|`|~|\\)/g, '\\$1');
+  static escapeMarkdown(
+    text,
+    {
+      codeBlock = true,
+      inlineCode = true,
+      bold = true,
+      italic = true,
+      underline = true,
+      strikethrough = true,
+      spoiler = true,
+      codeBlockContent = true,
+      inlineCodeContent = true,
+    } = {},
+  ) {
+    if (!codeBlockContent) {
+      return text
+        .split('```')
+        .map((subString, index, array) => {
+          if (index % 2 && index !== array.length - 1) return subString;
+          return Util.escapeMarkdown(subString, {
+            inlineCode,
+            bold,
+            italic,
+            underline,
+            strikethrough,
+            spoiler,
+            inlineCodeContent,
+          });
+        })
+        .join(codeBlock ? '\\`\\`\\`' : '```');
+    }
+    if (!inlineCodeContent) {
+      return text
+        .split(/(?<=^|[^`])`(?=[^`]|$)/g)
+        .map((subString, index, array) => {
+          if (index % 2 && index !== array.length - 1) return subString;
+          return Util.escapeMarkdown(subString, {
+            codeBlock,
+            bold,
+            italic,
+            underline,
+            strikethrough,
+            spoiler,
+          });
+        })
+        .join(inlineCode ? '\\`' : '`');
+    }
+    if (inlineCode) text = Util.escapeInlineCode(text);
+    if (codeBlock) text = Util.escapeCodeBlock(text);
+    if (italic) text = Util.escapeItalic(text);
+    if (bold) text = Util.escapeBold(text);
+    if (underline) text = Util.escapeUnderline(text);
+    if (strikethrough) text = Util.escapeStrikethrough(text);
+    if (spoiler) text = Util.escapeSpoiler(text);
+    return text;
+  }
+
+  /**
+   * Escapes code block markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeCodeBlock(text) {
+    return text.replace(/```/g, '\\`\\`\\`');
+  }
+
+  /**
+   * Escapes inline code markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeInlineCode(text) {
+    return text.replace(/(?<=^|[^`])`(?=[^`]|$)/g, '\\`');
+  }
+
+  /**
+   * Escapes italic markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeItalic(text) {
+    let i = 0;
+    text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
+      if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
+      return `\\*${match}`;
+    });
+    i = 0;
+    return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
+      if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
+      return `\\_${match}`;
+    });
+  }
+
+  /**
+   * Escapes bold markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeBold(text) {
+    let i = 0;
+    return text.replace(/\*\*(\*)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
+      return '\\*\\*';
+    });
+  }
+
+  /**
+   * Escapes underline markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeUnderline(text) {
+    let i = 0;
+    return text.replace(/__(_)?/g, (_, match) => {
+      if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
+      return '\\_\\_';
+    });
+  }
+
+  /**
+   * Escapes strikethrough markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeStrikethrough(text) {
+    return text.replace(/~~/g, '\\~\\~');
+  }
+
+  /**
+   * Escapes spoiler markdown in a string.
+   * @param {string} text Content to escape
+   * @returns {string}
+   */
+  static escapeSpoiler(text) {
+    return text.replace(/\|\|/g, '\\|\\|');
   }
 
   /**
@@ -93,10 +242,12 @@ class Util {
     return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
-    }).then(res => {
-      if (res.ok) return res.json();
-      throw res;
-    }).then(data => data.shards * (1000 / guildsPerShard));
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+        throw res;
+      })
+      .then(data => data.shards * (1000 / guildsPerShard));
   }
 
   /**
@@ -111,9 +262,9 @@ class Util {
   static parseEmoji(text) {
     if (text.includes('%')) text = decodeURIComponent(text);
     if (!text.includes(':')) return { animated: false, name: text, id: null };
-    const m = text.match(/<?(a)?:?(\w{2,32}):(\d{17,19})>?/);
+    const m = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
     if (!m) return null;
-    return { animated: Boolean(m[1]), name: m[2], id: m[3] };
+    return { animated: Boolean(m[1]), name: m[2], id: m[3] || null };
   }
 
   /**
@@ -234,7 +385,7 @@ class Util {
    */
   static resolveString(data) {
     if (typeof data === 'string') return data;
-    if (data instanceof Array) return data.join('\n');
+    if (Array.isArray(data)) return data.join('\n');
     return String(data);
   }
 
@@ -249,6 +400,7 @@ class Util {
    * - `AQUA`
    * - `GREEN`
    * - `BLUE`
+   * - `YELLOW`
    * - `PURPLE`
    * - `LUMINOUS_VIVID_PINK`
    * - `GOLD`
@@ -279,14 +431,14 @@ class Util {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'DEFAULT') return 0;
       color = Colors[color] || parseInt(color.replace('#', ''), 16);
-    } else if (color instanceof Array) {
+    } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
-    if (color < 0 || color > 0xFFFFFF) throw new RangeError('COLOR_RANGE');
+    if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
     else if (color && isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
@@ -298,10 +450,11 @@ class Util {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.sort((a, b) =>
-      a.rawPosition - b.rawPosition ||
-      parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
+    return collection.sorted(
+      (a, b) =>
+        a.rawPosition - b.rawPosition ||
+        parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
+        parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
     );
   }
 
@@ -370,7 +523,11 @@ class Util {
       const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
 
       dec = (low % 10).toString() + dec;
-      num = Math.floor(high / 10).toString(2) + Math.floor(low / 10).toString(2).padStart(32, '0');
+      num =
+        Math.floor(high / 10).toString(2) +
+        Math.floor(low / 10)
+          .toString(2)
+          .padStart(32, '0');
     }
 
     num = parseInt(num, 2);
@@ -383,38 +540,69 @@ class Util {
   }
 
   /**
+   * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
+   * @param {string} str The string to sanitize
+   * @returns {string}
+   */
+  static removeMentions(str) {
+    return str.replace(/@/g, '@\u200b');
+  }
+
+  /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
    * @returns {string}
    */
   static cleanContent(str, message) {
-    return str
-      .replace(/@(everyone|here)/g, '@\u200b$1')
+    if (message.client.options.disableMentions === 'everyone') {
+      str = str.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
+        if (target.match(/^[&!]?\d+$/)) {
+          return `@${target}`;
+        } else {
+          return `@\u200b${target}`;
+        }
+      });
+    }
+    str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (message.channel.type === 'dm' || message.channel.type === 'group') {
-          const user = message.client.users.get(id);
+        if (message.channel.type === 'dm') {
+          const user = message.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
 
-        const member = message.channel.guild.members.get(id);
+        const member = message.channel.guild.members.cache.get(id);
         if (member) {
           return `@${member.displayName}`;
         } else {
-          const user = message.client.users.get(id);
+          const user = message.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
-        const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
+        const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (message.channel.type === 'dm' || message.channel.type === 'group') return input;
-        const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        if (message.channel.type === 'dm') return input;
+        const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
+    if (message.client.options.disableMentions === 'all') {
+      return Util.removeMentions(str);
+    } else {
+      return str;
+    }
+  }
+
+  /**
+   * The content to put in a codeblock with all codeblock fences replaced by the equivalent backticks.
+   * @param {string} text The string to be converted
+   * @returns {string}
+   */
+  static cleanCodeBlockContent(text) {
+    return text.replace(/```/g, '`\u200b``');
   }
 
   /**
@@ -427,34 +615,6 @@ class Util {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
-  }
-
-  /**
-   * Adds methods from collections and maps onto the provided store
-   * @param {DataStore} store The store to mixin
-   * @param {string[]} ignored The properties to ignore
-   * @private
-   */
-  /* eslint-disable func-names */
-  static mixin(store, ignored) {
-    const Collection = require('./Collection');
-    Object.getOwnPropertyNames(Collection.prototype)
-      .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
-        if (ignored.includes(prop)) return;
-        if (prop === 'size') {
-          Object.defineProperty(store.prototype, prop, {
-            get: function() {
-              return this._filtered[prop];
-            },
-          });
-          return;
-        }
-        const func = Collection.prototype[prop];
-        if (prop === 'constructor' || typeof func !== 'function') return;
-        store.prototype[prop] = function(...args) {
-          return func.apply(this._filtered, args);
-        };
-      });
   }
 }
 

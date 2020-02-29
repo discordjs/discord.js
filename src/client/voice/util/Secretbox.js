@@ -1,3 +1,5 @@
+'use strict';
+
 const libs = {
   sodium: sodium => ({
     open: sodium.api.crypto_secretbox_open_easy,
@@ -25,6 +27,6 @@ exports.methods = {};
       if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready; // eslint-disable-line no-await-in-loop
       exports.methods = libs[libName](lib);
       break;
-    } catch (err) {} // eslint-disable-line no-empty
+    } catch {} // eslint-disable-line no-empty
   }
 })();

@@ -1,6 +1,7 @@
-const Snowflake = require('../util/Snowflake');
-const Base = require('./Base');
+'use strict';
 
+const Base = require('./Base');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
@@ -80,7 +81,7 @@ class Emoji extends Base {
    * @returns {string}
    * @example
    * // Send a custom emoji from a guild:
-   * const emoji = guild.emojis.first();
+   * const emoji = guild.emojis.cache.first();
    * msg.reply(`Hello! ${emoji}`);
    * @example
    * // Send the emoji used in a reaction to the channel the reaction is part of
