@@ -140,8 +140,8 @@ client.on('message', message => {
 
     if (message.content === 'makerole') {
       message.guild
-				.roles
-				.create()
+        .roles
+        .create()
         .then(role => {
           message.channel.send(`Made role ${role.name}`);
         })
@@ -199,8 +199,8 @@ client.on('message', msg => {
       .split(' ')
       .slice(1)
       .join(' ');
-		msg.channel.guild.channels
-			.cache
+    msg.channel.guild.channels
+      .cache
       .get(chan)
       .join()
       .then(conn => {
