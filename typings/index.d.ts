@@ -1,12 +1,12 @@
 declare enum ChannelType {
-  text,
-  dm,
-  voice,
-  group,
-  category,
-  news,
-  store,
-  unknown,
+  text = 0,
+  dm = 1,
+  voice = 2,
+  group = 3,
+  category = 4,
+  news = 5,
+  store = 6,
+  unknown = 7,
 }
 
 declare module 'discord.js' {
