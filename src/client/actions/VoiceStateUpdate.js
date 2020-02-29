@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const { Events } = require('../../util/Constants');
 const VoiceState = require('../../structures/VoiceState');
+const { Events } = require('../../util/Constants');
 
 class VoiceStateUpdate extends Action {
   handle(data) {
@@ -10,9 +10,9 @@ class VoiceStateUpdate extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
       // Update the state
-      const oldState = guild.voiceStates.cache.has(data.user_id) ?
-        guild.voiceStates.cache.get(data.user_id)._clone() :
-        new VoiceState(guild, { user_id: data.user_id });
+      const oldState = guild.voiceStates.cache.has(data.user_id)
+        ? guild.voiceStates.cache.get(data.user_id)._clone()
+        : new VoiceState(guild, { user_id: data.user_id });
 
       const newState = guild.voiceStates.add(data);
 
@@ -40,6 +40,5 @@ class VoiceStateUpdate extends Action {
     }
   }
 }
-
 
 module.exports = VoiceStateUpdate;

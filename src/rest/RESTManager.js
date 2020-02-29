@@ -1,11 +1,11 @@
 'use strict';
 
-const RequestHandler = require('./RequestHandler');
 const APIRequest = require('./APIRequest');
 const routeBuilder = require('./APIRouter');
+const RequestHandler = require('./RequestHandler');
 const { Error } = require('../errors');
-const { Endpoints } = require('../util/Constants');
 const Collection = require('../util/Collection');
+const { Endpoints } = require('../util/Constants');
 
 class RESTManager {
   constructor(client, tokenPrefix = 'Bot') {
@@ -37,12 +37,14 @@ class RESTManager {
 
   push(handler, apiRequest) {
     return new Promise((resolve, reject) => {
-      handler.push({
-        request: apiRequest,
-        resolve,
-        reject,
-        retries: 0,
-      }).catch(reject);
+      handler
+        .push({
+          request: apiRequest,
+          resolve,
+          reject,
+          retries: 0,
+        })
+        .catch(reject);
     });
   }
 

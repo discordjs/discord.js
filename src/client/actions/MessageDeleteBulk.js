@@ -13,10 +13,14 @@ class MessageDeleteBulkAction extends Action {
       const ids = data.ids;
       const messages = new Collection();
       for (const id of ids) {
-        const message = this.getMessage({
-          id,
-          guild_id: data.guild_id,
-        }, channel, false);
+        const message = this.getMessage(
+          {
+            id,
+            guild_id: data.guild_id,
+          },
+          channel,
+          false,
+        );
         if (message) {
           message.deleted = true;
           messages.set(message.id, message);
@@ -35,6 +39,5 @@ class MessageDeleteBulkAction extends Action {
     return {};
   }
 }
-
 
 module.exports = MessageDeleteBulkAction;

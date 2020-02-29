@@ -3,8 +3,12 @@
 const noop = () => {}; // eslint-disable-line no-empty-function
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
 const reflectors = [
-  'toString', 'valueOf', 'inspect', 'constructor',
-  Symbol.toPrimitive, Symbol.for('nodejs.util.inspect.custom'),
+  'toString',
+  'valueOf',
+  'inspect',
+  'constructor',
+  Symbol.toPrimitive,
+  Symbol.for('nodejs.util.inspect.custom'),
 ];
 
 function buildRoute(manager) {
@@ -22,10 +26,18 @@ function buildRoute(manager) {
           // All other parts of the route should be considered as part of the bucket identifier
           else routeBucket.push(route[i]);
         }
-        return options => manager.request(name, route.join('/'), Object.assign({
-          versioned: manager.versioned,
-          route: routeBucket.join('/'),
-        }, options));
+        return options =>
+          manager.request(
+            name,
+            route.join('/'),
+            Object.assign(
+              {
+                versioned: manager.versioned,
+                route: routeBucket.join('/'),
+              },
+              options,
+            ),
+          );
       }
       route.push(name);
       return new Proxy(noop, handler);

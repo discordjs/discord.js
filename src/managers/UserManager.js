@@ -1,9 +1,9 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const User = require('../structures/User');
 const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
+const User = require('../structures/User');
 
 /**
  * Manages API methods for users and stores their cache.

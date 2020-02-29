@@ -41,5 +41,4 @@ class MessageReactionRemove extends Action {
   }
 }
 
-
 module.exports = MessageReactionRemove;

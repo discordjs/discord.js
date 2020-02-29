@@ -30,5 +30,4 @@ class GuildUpdateAction extends Action {
   }
 }
 
-
 module.exports = GuildUpdateAction;

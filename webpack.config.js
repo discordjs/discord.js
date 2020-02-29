@@ -1,8 +1,8 @@
 'use strict';
 
 const path = require('path');
-const webpack = require('webpack');
 const TerserJSPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack');
 const version = require('./package.json').version;
 
 const prod = process.env.NODE_ENV === 'production';
@@ -59,7 +59,5 @@ module.exports = {
       }),
     ],
   },
-  plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
-  ],
+  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 };

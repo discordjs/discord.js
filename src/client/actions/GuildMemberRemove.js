@@ -27,5 +27,4 @@ class GuildMemberRemoveAction extends Action {
   }
 }
 
-
 module.exports = GuildMemberRemoveAction;

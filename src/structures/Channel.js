@@ -1,8 +1,8 @@
 'use strict';
 
-const Snowflake = require('../util/Snowflake');
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents any channel on Discord.
@@ -82,7 +82,10 @@ class Channel extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.client.api.channels(this.id).delete().then(() => this);
+    return this.client.api
+      .channels(this.id)
+      .delete()
+      .then(() => this);
   }
 
   /**

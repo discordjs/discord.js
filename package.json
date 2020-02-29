@@ -8,9 +8,10 @@
     "test": "npm run lint && npm run docs:test && npm run lint:typings",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml",
-    "lint": "eslint src *.js",
-    "lint:fix": "eslint --fix src",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
+    "prettier": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf src/**/*.js typings/**/*.ts",
     "build:browser": "webpack",
     "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
@@ -80,9 +81,14 @@
     "discord.js-docgen": "discordjs/docgen",
     "dtslint": "^3.0.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.2.3",
     "jest": "^25.1.0",
     "json-filter-loader": "^1.0.0",
+    "lint-staged": "^10.0.8",
+    "prettier": "^1.19.1",
     "terser-webpack-plugin": "^1.2.2",
     "tslint": "^6.0.0",
     "typescript": "^3.8.2",
@@ -126,9 +132,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test",
+      "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "*.ts": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf"
   },
   "commitlint": {
     "extends": ["@commitlint/config-angular"],
