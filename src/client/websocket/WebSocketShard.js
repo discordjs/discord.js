@@ -175,11 +175,11 @@ class WebSocketShard extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       const cleanup = () => {
-        this.removeListener(ShardEvents.CLOSE, onClose);
-        this.removeListener(ShardEvents.READY, onReady);
-        this.removeListener(ShardEvents.RESUMED, onResumed);
-        this.removeListener(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
-        this.removeListener(ShardEvents.DESTROYED, onInvalidOrDestroyed);
+        this.off(ShardEvents.CLOSE, onClose);
+        this.off(ShardEvents.READY, onReady);
+        this.off(ShardEvents.RESUMED, onResumed);
+        this.off(ShardEvents.INVALID_SESSION, onInvalidOrDestroyed);
+        this.off(ShardEvents.DESTROYED, onInvalidOrDestroyed);
       };
 
       const onReady = () => {

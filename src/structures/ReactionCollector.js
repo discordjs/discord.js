@@ -58,12 +58,12 @@ class ReactionCollector extends Collector {
     this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
 
     this.once('end', () => {
-      this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
-      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
-      this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
-      this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
-      this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
+      this.client.off(Events.MESSAGE_REACTION_ADD, this.handleCollect);
+      this.client.off(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
+      this.client.off(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
+      this.client.off(Events.MESSAGE_DELETE, this._handleMessageDeletion);
+      this.client.off(Events.CHANNEL_DELETE, this._handleChannelDeletion);
+      this.client.off(Events.GUILD_DELETE, this._handleGuildDeletion);
       if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
     });
 

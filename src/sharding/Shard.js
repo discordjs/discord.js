@@ -173,10 +173,10 @@ class Shard extends EventEmitter {
    */
   kill() {
     if (this.process) {
-      this.process.removeListener('exit', this._exitListener);
+      this.process.off('exit', this._exitListener);
       this.process.kill();
     } else {
-      this.worker.removeListener('exit', this._exitListener);
+      this.worker.off('exit', this._exitListener);
       this.worker.terminate();
     }
 
@@ -232,14 +232,14 @@ class Shard extends EventEmitter {
 
       const listener = message => {
         if (!message || message._fetchProp !== prop) return;
-        child.removeListener('message', listener);
+        child.off('message', listener);
         this._fetches.delete(prop);
         resolve(message._result);
       };
       child.on('message', listener);
 
       this.send({ _fetchProp: prop }).catch(err => {
-        child.removeListener('message', listener);
+        child.off('message', listener);
         this._fetches.delete(prop);
         reject(err);
       });
@@ -262,7 +262,7 @@ class Shard extends EventEmitter {
 
       const listener = message => {
         if (!message || message._eval !== script) return;
-        child.removeListener('message', listener);
+        child.off('message', listener);
         this._evals.delete(script);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
@@ -271,7 +271,7 @@ class Shard extends EventEmitter {
 
       const _eval = typeof script === 'function' ? `(${script})(this)` : script;
       this.send({ _eval }).catch(err => {
-        child.removeListener('message', listener);
+        child.off('message', listener);
         this._evals.delete(script);
         reject(err);
       });
