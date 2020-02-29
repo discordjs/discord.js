@@ -60,7 +60,8 @@ class PlayInterface {
    * @returns {StreamDispatcher}
    */
   play(resource, options = {}) {
-    if (resource instanceof Broadcast) {
+    const VoiceBroadcast = require('../VoiceBroadcast');
+    if (resource instanceof VoiceBroadcast) {
       if (!this.player.playBroadcast) throw new Error('VOICE_PLAY_INTERFACE_NO_BROADCAST');
       return this.player.playBroadcast(resource, options);
     }
@@ -91,6 +92,3 @@ class PlayInterface {
 }
 
 module.exports = PlayInterface;
-
-// eslint-disable-next-line import/order
-const Broadcast = require('../VoiceBroadcast');
