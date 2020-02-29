@@ -4,15 +4,15 @@ Voice in discord.js can be used for many things, such as music bots, recording o
 In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `VoiceConnection`, where you can start streaming and receiving audio.
 
 To get started, make sure you have:
-* FFmpeg - `npm install ffmpeg-binaries`
+* FFmpeg - `npm install ffmpeg-static`
 * an opus encoder, choose one from below:
-  * `npm install node-opus` (better performance)
+  * `npm install @discordjs/opus` (better performance)
   * `npm install opusscript`
 * a good network connection
 
-The preferred opus engine is node-opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose node-opus.
-Using opusscript is only recommended for development environments where node-opus is tough to get working.
-For production bots, using node-opus should be considered a necessity, especially if they're going to be running on multiple servers.
+The preferred opus engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
+Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
+For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
 
 ## Joining a voice channel
 The example below reacts to a message and joins the sender's voice channel, catching any errors. This is important
@@ -70,12 +70,9 @@ We can also pass in options when we first play the stream:
 
 ```js
 const dispatcher = connection.play('/home/discord/audio.mp3', {
-  volume: 0.5,
-  passes: 3
+  volume: 0.5
 });
 ```
-
-These are just a subset of the options available (consult documentation for a full list). Most users may be interested in the `passes` option, however. As audio is sent over UDP, there is a chance packets may not arrive. Increasing the number of passes, e.g. to `3` gives you a better chance that your packets reach your recipients, at the cost of triple the bandwidth. We recommend not going over 5 passes.
 
 ### What can I play?
 
@@ -114,7 +111,7 @@ Make sure to consult the documentation for a full list of what you can play - th
 A voice broadcast is very useful for "radio" bots, that play the same audio across multiple channels. It means audio is only transcoded once, and is much better on performance.
 
 ```js
-const broadcast = client.createVoiceBroadcast();
+const broadcast = client.voice.createBroadcast();
 
 broadcast.on('subscribe', dispatcher => {
   console.log('New broadcast subscriber!');

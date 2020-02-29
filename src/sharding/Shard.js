@@ -55,7 +55,7 @@ class Shard extends EventEmitter {
     this.env = Object.assign({}, process.env, {
       SHARDING_MANAGER: true,
       SHARDS: this.id,
-      TOTAL_SHARD_COUNT: this.manager.totalShards,
+      SHARD_COUNT: this.manager.totalShards,
       DISCORD_TOKEN: this.manager.token,
     });
 
@@ -294,7 +294,7 @@ class Shard extends EventEmitter {
       if (message._sFetchProp) {
         this.manager.fetchClientValues(message._sFetchProp).then(
           results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
-          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) })
+          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) }),
         );
         return;
       }
@@ -303,7 +303,7 @@ class Shard extends EventEmitter {
       if (message._sEval) {
         this.manager.broadcastEval(message._sEval).then(
           results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) })
+          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) }),
         );
         return;
       }
@@ -319,7 +319,7 @@ class Shard extends EventEmitter {
     }
 
     /**
-     * Emitted upon recieving a message from the child process/worker.
+     * Emitted upon receiving a message from the child process/worker.
      * @event Shard#message
      * @param {*} message Message that was received
      */

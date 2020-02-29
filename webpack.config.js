@@ -49,12 +49,13 @@ module.exports = {
   optimization: {
     minimizer: [
       new TerserJSPlugin({
+        cache: false,
         terserOptions: {
           mangle: { keep_classnames: true },
           compress: { keep_classnames: true },
+          keep_classnames: true,
           output: { comments: false },
         },
-        parallel: true,
       }),
     ],
   },

@@ -1,26 +1,62 @@
 'use strict';
 
 const { ChannelTypes } = require('../util/Constants');
-const DataStore = require('./DataStore');
+const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 
 /**
- * Stores guild channels.
- * @extends {DataStore}
+ * Manages API methods for GuildChannels and stores their cache.
+ * @extends {BaseManager}
  */
-class GuildChannelStore extends DataStore {
+class GuildChannelManager extends BaseManager {
   constructor(guild, iterable) {
     super(guild.client, iterable, GuildChannel);
+
+    /**
+     * The guild this Manager belongs to
+     * @type {Guild}
+     */
     this.guild = guild;
   }
 
+  /**
+   * The cache of this Manager
+   * @type {Collection<Snowflake, GuildChannel>}
+   * @name GuildChannelManager#cache
+   */
+
   add(channel) {
-    const existing = this.get(channel.id);
+    const existing = this.cache.get(channel.id);
     if (existing) return existing;
-    this.set(channel.id, channel);
+    this.cache.set(channel.id, channel);
     return channel;
   }
+
+  /**
+   * Data that can be resolved to give a Guild Channel object. This can be:
+   * * A GuildChannel object
+   * * A Snowflake
+   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a Channel object.
+   * @method resolve
+   * @memberof GuildChannelManager
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Channel}
+   */
+
+  /**
+   * Resolves a GuildChannelResolvable to a channel ID string.
+   * @method resolveID
+   * @memberof GuildChannelManager
+   * @instance
+   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
+   * @returns {?Snowflake}
+   */
 
   /**
    * Creates a new channel in the guild.
@@ -77,7 +113,7 @@ class GuildChannelStore extends DataStore {
       data: {
         name,
         topic,
-        type: type ? ChannelTypes[type.toUpperCase()] : 'text',
+        type: type ? ChannelTypes[type.toUpperCase()] : ChannelTypes.TEXT,
         nsfw,
         bitrate,
         user_limit: userLimit,
@@ -90,31 +126,6 @@ class GuildChannelStore extends DataStore {
     });
     return this.client.actions.ChannelCreate.handle(data).channel;
   }
-
-  /**
-   * Data that can be resolved to give a Guild Channel object. This can be:
-   * * A GuildChannel object
-   * * A Snowflake
-   * @typedef {GuildChannel|Snowflake} GuildChannelResolvable
-   */
-
-  /**
-   * Resolves a GuildChannelResolvable to a Channel object.
-   * @method resolve
-   * @memberof GuildChannelStore
-   * @instance
-   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?Channel}
-   */
-
-  /**
-   * Resolves a GuildChannelResolvable to a channel ID string.
-   * @method resolveID
-   * @memberof GuildChannelStore
-   * @instance
-   * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?Snowflake}
-   */
 }
 
-module.exports = GuildChannelStore;
+module.exports = GuildChannelManager;

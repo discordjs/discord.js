@@ -3,7 +3,7 @@
 const GuildEmoji = require('./GuildEmoji');
 const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');
-const ReactionUserStore = require('../stores/ReactionUserStore');
+const ReactionUserManager = require('../managers/ReactionUserManager');
 
 /**
  * Represents a reaction to a message.
@@ -15,6 +15,13 @@ class MessageReaction {
    * @param {Message} message The message the reaction refers to
    */
   constructor(client, data, message) {
+    /**
+     * The client that instantiated this message reaction
+     * @name MessageReaction#client
+     * @type {Client}
+     * @readonly
+     */
+    Object.defineProperty(this, 'client', { value: client });
     /**
      * The message that this reaction refers to
      * @type {Message}
@@ -28,18 +35,33 @@ class MessageReaction {
     this.me = data.me;
 
     /**
-     * The number of people that have given the same reaction
-     * @type {number}
+     * A manager of the users that have given this reaction
+     * @type {ReactionUserManager}
      */
-    this.count = data.count || 0;
-
-    /**
-     * The users that have given this reaction, mapped by their ID
-     * @type {ReactionUserStore<Snowflake, User>}
-     */
-    this.users = new ReactionUserStore(client, undefined, this);
+    this.users = new ReactionUserManager(client, undefined, this);
 
     this._emoji = new ReactionEmoji(this, data.emoji);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
+     * The number of people that have given the same reaction
+     * @type {?number}
+     */
+    // eslint-disable-next-line eqeqeq
+    if (this.count == undefined) this.count = data.count;
+  }
+
+  /**
+   * Removes all users from this reaction.
+   * @returns {Promise<MessageReaction>}
+   */
+  async remove() {
+    await this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions(this._emoji.identifier)
+      .delete();
+    return this;
   }
 
   /**
@@ -53,7 +75,7 @@ class MessageReaction {
     if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
-      const emojis = this.message.client.emojis;
+      const emojis = this.message.client.emojis.cache;
       if (emojis.has(this._emoji.id)) {
         const emoji = emojis.get(this._emoji.id);
         this._emoji = emoji;
@@ -63,23 +85,41 @@ class MessageReaction {
     return this._emoji;
   }
 
+  /**
+   * Whether or not this reaction is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.count === null;
+  }
+
+  /**
+   * Fetch this reaction.
+   * @returns {Promise<MessageReaction>}
+   */
+  fetch() {
+    return this.message.reactions._fetchReaction(this.emoji, true);
+  }
 
   toJSON() {
     return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });
   }
 
   _add(user) {
-    this.users.set(user.id, user);
+    if (this.partial) return;
+    this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
     if (!this.me) this.me = user.id === this.message.client.user.id;
   }
 
   _remove(user) {
-    this.users.delete(user.id);
+    if (this.partial) return;
+    this.users.cache.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
     if (user.id === this.message.client.user.id) this.me = false;
-    if (this.count <= 0 && this.users.size === 0) {
-      this.message.reactions.remove(this.emoji.id || this.emoji.name);
+    if (this.count <= 0 && this.users.cache.size === 0) {
+      this.message.reactions.cache.delete(this.emoji.id || this.emoji.name);
     }
   }
 }

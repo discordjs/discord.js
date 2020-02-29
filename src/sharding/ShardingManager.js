@@ -73,7 +73,7 @@ class ShardingManager extends EventEmitter {
       if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
       if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
         !Number.isInteger(shardID) || shardID < 0)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of postive integers.');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of positive integers.');
       }
     }
 
@@ -229,13 +229,13 @@ class ShardingManager extends EventEmitter {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<Array<*>>}
    * @example
-   * manager.fetchClientValues('guilds.size')
+   * manager.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
   fetchClientValues(prop) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
-    if (this.shards.size !== this.totalShards) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
+    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
     const promises = [];
     for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
     return Promise.all(promises);

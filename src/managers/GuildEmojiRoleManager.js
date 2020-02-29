@@ -1,18 +1,28 @@
 'use strict';
 
 const Collection = require('../util/Collection');
-const Util = require('../util/Util');
 const { TypeError } = require('../errors');
 
 /**
- * Stores emoji roles
- * @extends {Collection}
+ * Manages API methods for roles belonging to emojis and stores their cache.
  */
-class GuildEmojiRoleStore extends Collection {
+class GuildEmojiRoleManager {
   constructor(emoji) {
-    super();
+    /**
+     * The emoji belonging to this manager
+     * @type {GuildEmoji}
+     */
     this.emoji = emoji;
+    /**
+     * The guild belonging to this manager
+     * @type {Guild}
+     */
     this.guild = emoji.guild;
+    /**
+     * The client belonging to this manager
+     * @type {Client}
+     * @readonly
+     */
     Object.defineProperty(this, 'client', { value: emoji.client });
   }
 
@@ -22,8 +32,17 @@ class GuildEmojiRoleStore extends Collection {
    * @private
    * @readonly
    */
-  get _filtered() {
-    return this.guild.roles.filter(role => this.emoji._roles.includes(role.id));
+  get _roles() {
+    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
+  }
+
+  /**
+   * The cache of roles belonging to this emoji
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get cache() {
+    return this._roles;
   }
 
   /**
@@ -41,7 +60,7 @@ class GuildEmojiRoleStore extends Collection {
         'Array or Collection of Roles or Snowflakes', true));
     }
 
-    const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
+    const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
     return this.set(newRoles);
   }
 
@@ -60,7 +79,7 @@ class GuildEmojiRoleStore extends Collection {
         'Array or Collection of Roles or Snowflakes', true));
     }
 
-    const newRoles = this.keyArray().filter(role => !roleOrRoles.includes(role));
+    const newRoles = this._roles.keyArray().filter(role => !roleOrRoles.includes(role));
     return this.set(newRoles);
   }
 
@@ -85,28 +104,18 @@ class GuildEmojiRoleStore extends Collection {
 
   clone() {
     const clone = new this.constructor(this.emoji);
-    clone._patch(this.keyArray().slice());
+    clone._patch(this._roles.keyArray().slice());
     return clone;
   }
 
   /**
-   * Patches the roles for this store
+   * Patches the roles for this manager's cache
    * @param {Snowflake[]} roles The new roles
    * @private
    */
   _patch(roles) {
     this.emoji._roles = roles;
   }
-
-  *[Symbol.iterator]() {
-    yield* this._filtered.entries();
-  }
-
-  valueOf() {
-    return this._filtered;
-  }
 }
 
-Util.mixin(GuildEmojiRoleStore, ['set']);
-
-module.exports = GuildEmojiRoleStore;
+module.exports = GuildEmojiRoleManager;

@@ -3,6 +3,7 @@
 const Snowflake = require('../util/Snowflake');
 const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const Base = require('./Base');
+const Team = require('./Team');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
 
@@ -67,9 +68,13 @@ class ClientApplication extends Base {
 
     /**
      * The owner of this OAuth application
-     * @type {?User}
+     * @type {?User|Team}
      */
-    this.owner = data.owner ? this.client.users.add(data.owner) : null;
+    this.owner = data.team ?
+      new Team(this.client, data.team) :
+      data.owner ?
+        this.client.users.add(data.owner) :
+        null;
   }
 
   /**

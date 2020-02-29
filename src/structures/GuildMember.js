@@ -3,7 +3,7 @@
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Role = require('./Role');
 const Permissions = require('../util/Permissions');
-const GuildMemberRoleStore = require('../stores/GuildMemberRoleStore');
+const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const { Presence } = require('./Presence');
@@ -39,7 +39,6 @@ class GuildMember extends Base {
     /**
      * The timestamp the member joined the guild at
      * @type {?number}
-     * @name GuildMember#joinedTimestamp
      */
     this.joinedTimestamp = null;
 
@@ -54,6 +53,12 @@ class GuildMember extends Base {
      * @type {?Snowflake}
      */
     this.lastMessageChannelID = null;
+
+    /**
+     * The timestamp of when the member used their Nitro boost on the guild, if it was used
+     * @type {?number}
+     */
+    this.premiumSinceTimestamp = null;
 
     /**
      * Whether the member has been removed from the guild
@@ -74,6 +79,7 @@ class GuildMember extends Base {
     if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
 
     if (data.user) this.user = this.guild.client.users.add(data.user);
     if (data.roles) this._roles = data.roles;
@@ -95,12 +101,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * A collection of roles that are applied to this member, mapped by the role ID
-   * @type {GuildMemberRoleStore<Snowflake, Role>}
+   * A manager for the roles belonging to this member
+   * @type {GuildMemberRoleManager}
    * @readonly
    */
   get roles() {
-    return new GuildMemberRoleStore(this);
+    return new GuildMemberRoleManager(this);
   }
 
   /**
@@ -109,8 +115,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get lastMessage() {
-    const channel = this.guild.channels.get(this.lastMessageChannelID);
-    return (channel && channel.messages.get(this.lastMessageID)) || null;
+    const channel = this.guild.channels.cache.get(this.lastMessageChannelID);
+    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
   }
 
   /**
@@ -119,7 +125,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get voice() {
-    return this.guild.voiceStates.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
+    return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
 
   /**
@@ -132,12 +138,21 @@ class GuildMember extends Base {
   }
 
   /**
+   * The time of when the member used their Nitro boost on the guild, if it was used
+   * @type {?Date}
+   * @readonly
+   */
+  get premiumSince() {
+    return this.premiumSinceTimestamp ? new Date(this.premiumSinceTimestamp) : null;
+  }
+
+  /**
    * The presence of this guild member
    * @type {Presence}
    * @readonly
    */
   get presence() {
-    return this.guild.presences.get(this.id) || new Presence(this.client, {
+    return this.guild.presences.cache.get(this.id) || new Presence(this.client, {
       user: {
         id: this.id,
       },
@@ -190,7 +205,7 @@ class GuildMember extends Base {
    */
   get permissions() {
     if (this.user.id === this.guild.ownerID) return new Permissions(Permissions.ALL).freeze();
-    return new Permissions(this.roles.map(role => role.permissions)).freeze();
+    return new Permissions(this.roles.cache.map(role => role.permissions)).freeze();
   }
 
   /**
@@ -201,6 +216,7 @@ class GuildMember extends Base {
   get manageable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
+    if (this.client.user.id === this.guild.ownerID) return true;
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
     return this.guild.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
@@ -245,7 +261,7 @@ class GuildMember extends Base {
    */
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.some(r => r.permissions.has(permission, checkAdmin));
+    return this.roles.cache.some(r => r.permissions.has(permission, checkAdmin));
   }
 
   /**

@@ -5,7 +5,7 @@ const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const MessageStore = require('../stores/MessageStore');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a guild text channel on Discord.
@@ -20,10 +20,10 @@ class TextChannel extends GuildChannel {
   constructor(guild, data) {
     super(guild, data);
     /**
-     * A collection containing the messages sent to this channel
-     * @type {MessageStore<Snowflake, Message>}
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
      */
-    this.messages = new MessageStore(this);
+    this.messages = new MessageManager(this);
     this._typing = new Map();
   }
 
@@ -41,7 +41,7 @@ class TextChannel extends GuildChannel {
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = data.nsfw || /^nsfw(-|$)/.test(this.name);
+    this.nsfw = data.nsfw;
 
     /**
      * The ID of the last message sent in this channel, if one was sent
@@ -138,7 +138,6 @@ class TextChannel extends GuildChannel {
   createMessageCollector() {}
   awaitMessages() {}
   bulkDelete() {}
-  acknowledge() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

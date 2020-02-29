@@ -1,18 +1,28 @@
 'use strict';
 
 const Collection = require('../util/Collection');
-const DataStore = require('./DataStore');
+const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
 
 /**
- * A data store to store User models who reacted to a MessageReaction.
- * @extends {DataStore}
+ * Manages API methods for users who reacted to a reaction and stores their cache.
+ * @extends {BaseManager}
  */
-class ReactionUserStore extends DataStore {
+class ReactionUserManager extends BaseManager {
   constructor(client, iterable, reaction) {
-    super(client, iterable, require('../structures/User'));
+    super(client, iterable, { name: 'User' });
+    /**
+     * The reaction that this manager belongs to
+     * @type {MessageReaction}
+     */
     this.reaction = reaction;
   }
+
+  /**
+   * The cache of this manager
+   * @type {Collection<Snowflake, User>}
+   * @name ReactionUserManager#cache
+   */
 
   /**
    * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
@@ -30,7 +40,7 @@ class ReactionUserStore extends DataStore {
     const users = new Collection();
     for (const rawUser of data) {
       const user = this.client.users.add(rawUser);
-      this.set(user.id, user);
+      this.cache.set(user.id, user);
       users.set(user.id, user);
     }
     return users;
@@ -48,15 +58,8 @@ class ReactionUserStore extends DataStore {
     return message.client.api.channels[message.channel.id].messages[message.id]
       .reactions[this.reaction.emoji.identifier][userID === message.client.user.id ? '@me' : userID]
       .delete()
-      .then(() =>
-        message.client.actions.MessageReactionRemove.handle({
-          user_id: userID,
-          message_id: message.id,
-          emoji: this.reaction.emoji,
-          channel_id: message.channel.id,
-        }).reaction
-      );
+      .then(() => this.reaction);
   }
 }
 
-module.exports = ReactionUserStore;
+module.exports = ReactionUserManager;

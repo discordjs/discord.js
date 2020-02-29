@@ -1,10 +1,13 @@
 'use strict';
 
 const { browser } = require('./util/Constants');
+
+let erlpack;
+
 try {
-  var erlpack = require('erlpack');
+  erlpack = require('erlpack');
   if (!erlpack.pack) erlpack = null;
-} catch (err) {} // eslint-disable-line no-empty
+} catch {} // eslint-disable-line no-empty
 
 let TextDecoder;
 
@@ -13,11 +16,7 @@ if (browser) {
   exports.WebSocket = window.WebSocket; // eslint-disable-line no-undef
 } else {
   TextDecoder = require('util').TextDecoder;
-  try {
-    exports.WebSocket = require('@discordjs/uws');
-  } catch (err) {
-    exports.WebSocket = require('ws');
-  }
+  exports.WebSocket = require('ws');
 }
 
 const ab = new TextDecoder();

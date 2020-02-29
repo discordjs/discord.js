@@ -1,17 +1,22 @@
 'use strict';
 
 const Collection = require('../util/Collection');
-const Util = require('../util/Util');
 const { TypeError } = require('../errors');
 
 /**
- * Stores member roles
- * @extends {Collection}
+ * Manages API methods for roles of a GuildMember and stores their cache.
  */
-class GuildMemberRoleStore extends Collection {
+class GuildMemberRoleManager {
   constructor(member) {
-    super();
+    /**
+     * The GuildMember this manager belongs to
+     * @type {GuildMember}
+     */
     this.member = member;
+    /**
+     * The Guild this manager belongs to
+     * @type {Guild}
+     */
     this.guild = member.guild;
     Object.defineProperty(this, 'client', { value: member.client });
   }
@@ -22,9 +27,18 @@ class GuildMemberRoleStore extends Collection {
    * @private
    * @readonly
    */
-  get _filtered() {
-    const everyone = this.guild.defaultRole;
-    return this.guild.roles.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
+  get _roles() {
+    const everyone = this.guild.roles.everyone;
+    return this.guild.roles.cache.filter(role => this.member._roles.includes(role.id)).set(everyone.id, everyone);
+  }
+
+  /**
+   * The roles of this member
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get cache() {
+    return this._roles;
   }
 
   /**
@@ -33,7 +47,7 @@ class GuildMemberRoleStore extends Collection {
    * @readonly
    */
   get hoist() {
-    const hoistedRoles = this._filtered.filter(role => role.hoist);
+    const hoistedRoles = this._roles.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
     return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
@@ -44,7 +58,7 @@ class GuildMemberRoleStore extends Collection {
    * @readonly
    */
   get color() {
-    const coloredRoles = this._filtered.filter(role => role.color);
+    const coloredRoles = this._roles.filter(role => role.color);
     if (!coloredRoles.size) return null;
     return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
   }
@@ -55,7 +69,7 @@ class GuildMemberRoleStore extends Collection {
    * @readonly
    */
   get highest() {
-    return this._filtered.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this.first());
+    return this._roles.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this._roles.first());
   }
 
   /**
@@ -72,7 +86,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
 
-      const newRoles = [...new Set(roleOrRoles.concat(...this.values()))];
+      const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
@@ -84,7 +98,7 @@ class GuildMemberRoleStore extends Collection {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
 
       const clone = this.member._clone();
-      clone._roles = [...this.keys(), roleOrRoles.id];
+      clone._roles = [...this._roles.keys(), roleOrRoles.id];
       return clone;
     }
   }
@@ -103,7 +117,7 @@ class GuildMemberRoleStore extends Collection {
           'Array or Collection of Roles or Snowflakes', true);
       }
 
-      const newRoles = this.filter(role => !roleOrRoles.includes(role));
+      const newRoles = this._roles.filter(role => !roleOrRoles.includes(role));
       return this.set(newRoles, reason);
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
@@ -115,7 +129,7 @@ class GuildMemberRoleStore extends Collection {
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
 
       const clone = this.member._clone();
-      const newRoles = this.filter(role => role.id !== roleOrRoles.id);
+      const newRoles = this._roles.filter(role => role.id !== roleOrRoles.id);
       clone._roles = [...newRoles.keys()];
       return clone;
     }
@@ -134,7 +148,7 @@ class GuildMemberRoleStore extends Collection {
    * @example
    * // Remove all the roles from a member
    * guildMember.roles.set([])
-   *   .then(member => console.log(`Member roles is now of ${member.roles.size} size`))
+   *   .then(member => console.log(`Member roles is now of ${member.roles.cache.size} size`))
    *   .catch(console.error);
    */
   set(roles, reason) {
@@ -143,19 +157,9 @@ class GuildMemberRoleStore extends Collection {
 
   clone() {
     const clone = new this.constructor(this.member);
-    clone.member._roles = [...this.keyArray()];
+    clone.member._roles = [...this._roles.keyArray()];
     return clone;
-  }
-
-  *[Symbol.iterator]() {
-    yield* this._filtered.entries();
-  }
-
-  valueOf() {
-    return this._filtered;
   }
 }
 
-Util.mixin(GuildMemberRoleStore, ['set']);
-
-module.exports = GuildMemberRoleStore;
+module.exports = GuildMemberRoleManager;

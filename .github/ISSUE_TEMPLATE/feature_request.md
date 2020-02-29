@@ -1,6 +1,9 @@
 ---
 name: Feature request
 about: Request a feature for the core discord.js library
+title: ''
+labels: 'type: enhancement'
+assignees: ''
 
 ---
 
