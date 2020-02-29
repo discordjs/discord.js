@@ -72,8 +72,10 @@ class GuildMemberManager extends BaseManager {
   /**
    * Options used to fetch multiple members from a guild.
    * @typedef {Object} FetchMembersOptions
-   * @property {string} [query=''] Limit fetch to members with similar usernames
+   * @property {UserResolvable|UserResolvable[]} user The user(s) to fetch
+   * @property {?string} query Limit fetch to members with similar usernames
    * @property {number} [limit=0] Maximum number of members to request
+   * @property {boolean} [withPresences=false] Whether or not to include the presences
    */
 
   /**
@@ -98,6 +100,11 @@ class GuildMemberManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    * @example
+   * // Fetch by an array of users including their presences
+   * guild.members.fetch({ user: ['66564597481480192', '191615925336670208'], withPresences: true })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
    * // Fetch by query
    * guild.members.fetch({ query: 'hydra', limit: 1 })
    *   .then(console.log)
@@ -108,8 +115,13 @@ class GuildMemberManager extends BaseManager {
     const user = this.client.users.resolveID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
-      options.user = this.client.users.resolveID(options.user);
-      if (options.user) return this._fetchSingle(options);
+      if (Array.isArray(options.user)) {
+        options.user = options.user.map(u => this.client.users.resolveID(u));
+        return this._fetchMany(options);
+      } else {
+        options.user = this.client.users.resolveID(options.user);
+      }
+      if (!options.limit && !options.withPresences) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
   }
@@ -200,32 +212,38 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ query = '', limit = 0 } = {}) {
+  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && !query && !limit) {
+      if (this.guild.memberCount === this.cache.size && (!query && !limit && !presences && !user_ids)) {
         resolve(this.cache);
         return;
       }
+      if (!query && !user_ids) query = '';
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
           guild_id: this.guild.id,
+          presences,
+          user_ids,
           query,
           limit,
         },
       });
       const fetchedMembers = new Collection();
+      const option = query || limit || presences || user_ids;
       const handler = (members, guild) => {
         if (guild.id !== this.guild.id) return;
         timeout.refresh();
         for (const member of members.values()) {
-          if (query || limit) fetchedMembers.set(member.id, member);
+          if (option) fetchedMembers.set(member.id, member);
         }
         if (this.guild.memberCount <= this.cache.size ||
-          ((query || limit) && members.size < 1000) ||
+          (option && members.size < 1000) ||
           (limit && fetchedMembers.size >= limit)) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
-          resolve(query || limit ? fetchedMembers : this.cache);
+          let fetched = option ? fetchedMembers : this.cache;
+          if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
+          resolve(fetched);
         }
       };
       const timeout = this.guild.client.setTimeout(() => {

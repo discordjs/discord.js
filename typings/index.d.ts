@@ -1784,7 +1784,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public guild: Guild;
 		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
-		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
+		public fetch(options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable })): Promise<GuildMember>;
 		public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
 		public prune(options: GuildPruneMembersOptions & { dry?: false; count: false; }): Promise<null>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
@@ -2207,8 +2207,10 @@ declare module 'discord.js' {
 	}
 
 	interface FetchMembersOptions {
+		user?: UserResolvable | UserResolvable[];
 		query?: string;
 		limit?: number;
+		withPresences?: boolean;
 	}
 
 	interface FileOptions {
