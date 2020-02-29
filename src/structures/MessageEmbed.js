@@ -63,7 +63,7 @@ class MessageEmbed {
 
     /**
      * The fields of this embed
-     * @type {EmbedFieldData[]}
+     * @type {EmbedField[]}
      */
     this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
 
