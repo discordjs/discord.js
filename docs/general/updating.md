@@ -1,3 +1,7 @@
+# Version 11.6.0
+v11.6.0 backports new features from the in-development v12, and fixes bugs in the v11.5.x releases.
+See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.6.0) for a full list of changes, including information about deprecations.
+
 # Version 11.5.0
 v11.5.0 backports new features from the in-development v12, and fixes bugs in the v11.4.x releases.
 See [the changelog](https://github.com/discordjs/discord.js/releases/tag/11.5.0) for a full list of changes, including information about deprecations.
