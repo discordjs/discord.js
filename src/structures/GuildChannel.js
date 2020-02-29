@@ -204,12 +204,9 @@ class GuildChannel extends Channel {
    */
   overwritePermissions(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(new TypeError(
-        'INVALID_TYPE',
-        'overwrites',
-        'Array or Collection of Permission Overwrites',
-        true,
-      ));
+      return Promise.reject(
+        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
+      );
     }
     return this.edit({ permissionOverwrites: overwrites, reason }).then(() => this);
   }

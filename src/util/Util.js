@@ -556,7 +556,7 @@ class Util {
    */
   static cleanContent(str, message) {
     if (message.client.options.disableMentions === 'everyone') {
-      str = str.replace(/@([^<>@ ]*)/gsmu, (match, target) => {
+      str = str.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
         if (target.match(/^[&!]?\d+$/)) {
           return `@${target}`;
         } else {
@@ -564,21 +564,22 @@ class Util {
         }
       });
     }
-    str = str.replace(/<@!?[0-9]+>/g, input => {
-      const id = input.replace(/<|!|>|@/g, '');
-      if (message.channel.type === 'dm') {
-        const user = message.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
-      }
+    str = str
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        if (message.channel.type === 'dm') {
+          const user = message.client.users.cache.get(id);
+          return user ? `@${user.username}` : input;
+        }
 
-      const member = message.channel.guild.members.cache.get(id);
-      if (member) {
-        return `@${member.displayName}`;
-      } else {
-        const user = message.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
-      }
-    })
+        const member = message.channel.guild.members.cache.get(id);
+        if (member) {
+          return `@${member.displayName}`;
+        } else {
+          const user = message.client.users.cache.get(id);
+          return user ? `@${user.username}` : input;
+        }
+      })
       .replace(/<#[0-9]+>/g, input => {
         const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return channel ? `#${channel.name}` : input;

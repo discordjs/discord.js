@@ -225,7 +225,7 @@ class GuildMemberManager extends BaseManager {
 
   _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && (!query && !limit && !presences && !user_ids)) {
+      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
         resolve(this.cache);
         return;
       }
@@ -248,9 +248,11 @@ class GuildMemberManager extends BaseManager {
         for (const member of members.values()) {
           if (option) fetchedMembers.set(member.id, member);
         }
-        if (this.guild.memberCount <= this.cache.size ||
+        if (
+          this.guild.memberCount <= this.cache.size ||
           (option && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit)) {
+          (limit && fetchedMembers.size >= limit)
+        ) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           let fetched = option ? fetchedMembers : this.cache;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();

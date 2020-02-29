@@ -88,13 +88,14 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
-    const disableMentions = typeof this.options.disableMentions === 'undefined' ?
-      this.target.client.options.disableMentions :
-      this.options.disableMentions;
+    const disableMentions =
+      typeof this.options.disableMentions === 'undefined'
+        ? this.target.client.options.disableMentions
+        : this.options.disableMentions;
     if (disableMentions === 'all') {
       content = Util.removeMentions(content || '');
     } else if (disableMentions === 'everyone') {
-      content = (content || '').replace(/@([^<>@ ]*)/gsmu, (match, target) => {
+      content = (content || '').replace(/@([^<>@ ]*)/gmsu, (match, target) => {
         if (target.match(/^[&!]?\d+$/)) {
           return `@${target}`;
         } else {
