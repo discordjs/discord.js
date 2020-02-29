@@ -27,5 +27,4 @@ class GuildRoleDeleteAction extends Action {
   }
 }
 
-
 module.exports = GuildRoleDeleteAction;

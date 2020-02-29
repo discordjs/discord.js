@@ -14,4 +14,3 @@ module.exports = (client, packet) => {
     client.emit(Events.CHANNEL_UPDATE, old, updated);
   }
 };
-

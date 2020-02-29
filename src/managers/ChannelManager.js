@@ -1,7 +1,7 @@
 'use strict';
 
-const Channel = require('../structures/Channel');
 const BaseManager = require('./BaseManager');
+const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
 /**
@@ -14,10 +14,10 @@ class ChannelManager extends BaseManager {
   }
 
   /**
-  * The cache of Channels
-  * @type {Collection<Snowflake, Channel>}
-  * @name ChannelManager#cache
-  */
+   * The cache of Channels
+   * @type {Collection<Snowflake, Channel>}
+   * @name ChannelManager#cache
+   */
 
   add(data, guild, cache = true) {
     const existing = this.cache.get(data.id);

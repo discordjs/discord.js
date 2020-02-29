@@ -1,9 +1,9 @@
 'use strict';
 
 const Role = require('./Role');
+const { TypeError } = require('../errors');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
-const { TypeError } = require('../errors');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -56,7 +56,7 @@ class PermissionOverwrites {
 
   /**
    * Updates this permissionOverwrites.
-   * @param {PermissionOverwriteOption} options The options for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
    * @example
@@ -70,8 +70,12 @@ class PermissionOverwrites {
   update(options, reason) {
     const { allow, deny } = this.constructor.resolveOverwriteOptions(options, this);
 
-    return this.channel.client.api.channels(this.channel.id).permissions[this.id]
-      .put({ data: { id: this.id, type: this.type, allow: allow.bitfield, deny: deny.bitfield }, reason })
+    return this.channel.client.api
+      .channels(this.channel.id)
+      .permissions[this.id].put({
+        data: { id: this.id, type: this.type, allow: allow.bitfield, deny: deny.bitfield },
+        reason,
+      })
       .then(() => this);
   }
 
@@ -81,9 +85,7 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   delete(reason) {
-    return this.channel.client.api.channels[this.channel.id].permissions[this.id]
-      .delete({ reason })
-      .then(() => this);
+    return this.channel.client.api.channels[this.channel.id].permissions[this.id].delete({ reason }).then(() => this);
   }
 
   toJSON() {
@@ -99,7 +101,7 @@ class PermissionOverwrites {
    *  'ATTACH_FILES': false,
    * }
    * ```
-   * @typedef {Object} PermissionOverwriteOption
+   * @typedef {Object} PermissionOverwriteOptions
    */
 
   /**
@@ -110,7 +112,7 @@ class PermissionOverwrites {
 
   /**
    * Deletes this Permission Overwrite.
-   * @param {PermissionOverwriteOption} options The options for the update
+   * @param {PermissionOverwriteOptions} options The options for the update
    * @param {Object} initialPermissions The initial permissions
    * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
    * @param {PermissionResolvable} initialPermissions.deny Initial denied permissions
@@ -168,10 +170,7 @@ class PermissionOverwrites {
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();
     if (typeof overwrite.id === 'string' && ['role', 'member'].includes(overwrite.type)) {
-      return { ...overwrite,
-        allow: Permissions.resolve(overwrite.allow),
-        deny: Permissions.resolve(overwrite.deny),
-      };
+      return { ...overwrite, allow: Permissions.resolve(overwrite.allow), deny: Permissions.resolve(overwrite.deny) };
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);

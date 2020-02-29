@@ -1,7 +1,7 @@
 'use strict';
 
-const { Presence } = require('../structures/Presence');
 const BaseManager = require('./BaseManager');
+const { Presence } = require('../structures/Presence');
 
 /**
  * Manages API methods for Presences and holds their cache.
@@ -13,10 +13,10 @@ class PresenceManager extends BaseManager {
   }
 
   /**
-  * The cache of Presences
-  * @type {Collection<Snowflake, Presence>}
-  * @name PresenceManager#cache
-  */
+   * The cache of Presences
+   * @type {Collection<Snowflake, Presence>}
+   * @name PresenceManager#cache
+   */
 
   add(data, cache) {
     const existing = this.cache.get(data.user.id);
@@ -32,10 +32,10 @@ class PresenceManager extends BaseManager {
    */
 
   /**
-    * Resolves a PresenceResolvable to a Presence object.
-    * @param {PresenceResolvable} presence The presence resolvable to resolve
-    * @returns {?Presence}
-    */
+   * Resolves a PresenceResolvable to a Presence object.
+   * @param {PresenceResolvable} presence The presence resolvable to resolve
+   * @returns {?Presence}
+   */
   resolve(presence) {
     const presenceResolvable = super.resolve(presence);
     if (presenceResolvable) return presenceResolvable;
@@ -44,10 +44,10 @@ class PresenceManager extends BaseManager {
   }
 
   /**
-    * Resolves a PresenceResolvable to a Presence ID string.
-    * @param {PresenceResolvable} presence The presence resolvable to resolve
-    * @returns {?Snowflake}
-    */
+   * Resolves a PresenceResolvable to a Presence ID string.
+   * @param {PresenceResolvable} presence The presence resolvable to resolve
+   * @returns {?Snowflake}
+   */
   resolveID(presence) {
     const presenceResolvable = super.resolveID(presence);
     if (presenceResolvable) return presenceResolvable;

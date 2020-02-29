@@ -1,10 +1,11 @@
 'use strict';
 
+/* eslint-disable import/order */
 const MessageCollector = require('../MessageCollector');
+const APIMessage = require('../APIMessage');
 const Snowflake = require('../../util/Snowflake');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
-const APIMessage = require('../APIMessage');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -57,8 +58,8 @@ class TextBasedChannel {
    * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {boolean} [disableMentions=this.client.options.disableMentions] Whether or not a zero width space
-   * should be placed after every @ character to prevent unexpected mentions
+   * @property {'none' | 'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not
+   * all mentionsor everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -144,7 +145,8 @@ class TextBasedChannel {
     }
 
     const { data, files } = await apiMessage.resolveFiles();
-    return this.client.api.channels[this.id].messages.post({ data, files })
+    return this.client.api.channels[this.id].messages
+      .post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
   }
 
@@ -299,23 +301,36 @@ class TextBasedChannel {
     if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
-        messageIDs = messageIDs.filter(id =>
-          Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000,
-        );
+        messageIDs = messageIDs.filter(id => Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000);
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
-        const message = this.client.actions.MessageDelete.getMessage({
-          message_id: messageIDs[0],
-        }, this);
+        await this.client.api
+          .channels(this.id)
+          .messages(messageIDs[0])
+          .delete();
+        const message = this.client.actions.MessageDelete.getMessage(
+          {
+            message_id: messageIDs[0],
+          },
+          this,
+        );
         return message ? new Collection([[message.id, message]]) : new Collection();
       }
-      await this.client.api.channels[this.id].messages['bulk-delete']
-        .post({ data: { messages: messageIDs } });
-      return messageIDs.reduce((col, id) => col.set(id, this.client.actions.MessageDeleteBulk.getMessage({
-        message_id: id,
-      }, this)), new Collection());
+      await this.client.api.channels[this.id].messages['bulk-delete'].post({ data: { messages: messageIDs } });
+      return messageIDs.reduce(
+        (col, id) =>
+          col.set(
+            id,
+            this.client.actions.MessageDeleteBulk.getMessage(
+              {
+                message_id: id,
+              },
+              this,
+            ),
+          ),
+        new Collection(),
+      );
     }
     if (!isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
@@ -341,8 +356,11 @@ class TextBasedChannel {
     }
     for (const prop of props) {
       if (ignore.includes(prop)) continue;
-      Object.defineProperty(structure.prototype, prop,
-        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop));
+      Object.defineProperty(
+        structure.prototype,
+        prop,
+        Object.getOwnPropertyDescriptor(TextBasedChannel.prototype, prop),
+      );
     }
   }
 }

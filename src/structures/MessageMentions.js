@@ -1,9 +1,9 @@
 'use strict';
 
-const Collection = require('../util/Collection');
-const Util = require('../util/Util');
 const GuildMember = require('./GuildMember');
+const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * Keeps track of mentions in a {@link Message}.
