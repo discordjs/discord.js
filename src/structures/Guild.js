@@ -6,12 +6,12 @@ const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
-const GuildChannelManager = require('../src/managers/GuildChannelManager');
-const GuildEmojiManager = require('../src/managers/GuildEmojiManager');
-const GuildMemberManager = require('../src/managers/GuildMemberManager');
-const PresenceManager = require('../src/managers/PresenceManager');
-const RoleManager = require('../src/managers/RoleManager');
-const VoiceStateManager = require('../src/managers/VoiceStateManager');
+const GuildChannelManager = require('../managers/GuildChannelManager');
+const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const GuildMemberManager = require('../managers/GuildMemberManager');
+const PresenceManager = require('../managers/PresenceManager');
+const RoleManager = require('../managers/RoleManager');
+const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
   ChannelTypes,
