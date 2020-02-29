@@ -1,9 +1,9 @@
 'use strict';
 
 const GuildEmoji = require('./GuildEmoji');
-const Util = require('../util/Util');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
+const Util = require('../util/Util');
 
 /**
  * Represents a reaction to a message.
@@ -59,7 +59,10 @@ class MessageReaction {
    * @returns {Promise<MessageReaction>}
    */
   async remove() {
-    await this.client.api.channels(this.message.channel.id).messages(this.message.id).reactions(this._emoji.identifier)
+    await this.client.api
+      .channels(this.message.channel.id)
+      .messages(this.message.id)
+      .reactions(this._emoji.identifier)
       .delete();
     return this;
   }

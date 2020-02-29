@@ -85,12 +85,12 @@ class PlayInterface {
 
   static applyToClass(structure) {
     for (const prop of ['play']) {
-      Object.defineProperty(structure.prototype, prop,
-        Object.getOwnPropertyDescriptor(PlayInterface.prototype, prop));
+      Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(PlayInterface.prototype, prop));
     }
   }
 }
 
 module.exports = PlayInterface;
 
+// eslint-disable-next-line import/order
 const Broadcast = require('../VoiceBroadcast');

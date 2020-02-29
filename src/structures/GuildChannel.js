@@ -1,13 +1,13 @@
 'use strict';
 
 const Channel = require('./Channel');
-const Role = require('./Role');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
-const Util = require('../util/Util');
-const Permissions = require('../util/Permissions');
-const Collection = require('../util/Collection');
+const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
+const Collection = require('../util/Collection');
+const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a guild channel from any of the following:
@@ -85,9 +85,11 @@ class GuildChannel extends Channel {
     if (this.permissionOverwrites.size !== this.parent.permissionOverwrites.size) return false;
     return this.permissionOverwrites.every((value, key) => {
       const testVal = this.parent.permissionOverwrites.get(key);
-      return testVal !== undefined &&
+      return (
+        testVal !== undefined &&
         testVal.deny.bitfield === value.deny.bitfield &&
-        testVal.allow.bitfield === value.allow.bitfield;
+        testVal.allow.bitfield === value.allow.bitfield
+      );
     });
   }
 
@@ -202,12 +204,9 @@ class GuildChannel extends Channel {
    */
   overwritePermissions(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(new TypeError(
-        'INVALID_TYPE',
-        'overwrites',
-        'Array or Collection of Permission Overwrites',
-        true,
-      ));
+      return Promise.reject(
+        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
+      );
     }
     return this.edit({ permissionOverwrites: overwrites, reason }).then(() => this);
   }
@@ -256,8 +255,12 @@ class GuildChannel extends Channel {
     const type = userOrRole instanceof Role ? 'role' : 'member';
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
-    return this.client.api.channels(this.id).permissions[userOrRole.id]
-      .put({ data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield }, reason })
+    return this.client.api
+      .channels(this.id)
+      .permissions[userOrRole.id].put({
+        data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield },
+        reason,
+      })
       .then(() => this);
   }
 
@@ -316,18 +319,23 @@ class GuildChannel extends Channel {
    */
   async edit(data, reason) {
     if (typeof data.position !== 'undefined') {
-      await Util.setPosition(this, data.position, false,
-        this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
-        .then(updatedChannels => {
-          this.client.actions.GuildChannelsPositionUpdate.handle({
-            guild_id: this.guild.id,
-            channels: updatedChannels,
-          });
+      await Util.setPosition(
+        this,
+        data.position,
+        false,
+        this.guild._sortedChannels(this),
+        this.client.api.guilds(this.guild.id).channels,
+        reason,
+      ).then(updatedChannels => {
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.guild.id,
+          channels: updatedChannels,
         });
+      });
     }
 
-    const permission_overwrites = data.permissionOverwrites &&
-      data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    const permission_overwrites =
+      data.permissionOverwrites && data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {
@@ -378,11 +386,14 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setParent(channel, { lockPermissions = true, reason } = {}) {
-    return this.edit({
-      // eslint-disable-next-line no-prototype-builtins
-      parentID: channel !== null ? channel.hasOwnProperty('id') ? channel.id : channel : null,
-      lockPermissions,
-    }, reason);
+    return this.edit(
+      {
+        // eslint-disable-next-line no-prototype-builtins
+        parentID: channel !== null ? (channel.hasOwnProperty('id') ? channel.id : channel) : null,
+        lockPermissions,
+      },
+      reason,
+    );
   }
 
   /**
@@ -414,15 +425,20 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   setPosition(position, { relative, reason } = {}) {
-    return Util.setPosition(this, position, relative,
-      this.guild._sortedChannels(this), this.client.api.guilds(this.guild.id).channels, reason)
-      .then(updatedChannels => {
-        this.client.actions.GuildChannelsPositionUpdate.handle({
-          guild_id: this.guild.id,
-          channels: updatedChannels,
-        });
-        return this;
+    return Util.setPosition(
+      this,
+      position,
+      relative,
+      this.guild._sortedChannels(this),
+      this.client.api.guilds(this.guild.id).channels,
+      reason,
+    ).then(updatedChannels => {
+      this.client.actions.GuildChannelsPositionUpdate.handle({
+        guild_id: this.guild.id,
+        channels: updatedChannels,
       });
+      return this;
+    });
   }
 
   /**
@@ -442,9 +458,17 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
-    return this.client.api.channels(this.id).invites.post({ data: {
-      temporary, max_age: maxAge, max_uses: maxUses, unique,
-    }, reason })
+    return this.client.api
+      .channels(this.id)
+      .invites.post({
+        data: {
+          temporary,
+          max_age: maxAge,
+          max_uses: maxUses,
+          unique,
+        },
+        reason,
+      })
       .then(invite => new Invite(this.client, invite));
   }
 
@@ -481,18 +505,21 @@ class GuildChannel extends Channel {
    * @returns {Promise<GuildChannel>}
    */
   clone(options = {}) {
-    Util.mergeDefault({
-      name: this.name,
-      permissionOverwrites: this.permissionOverwrites,
-      topic: this.topic,
-      type: this.type,
-      nsfw: this.nsfw,
-      parent: this.parent,
-      bitrate: this.bitrate,
-      userLimit: this.userLimit,
-      rateLimitPerUser: this.rateLimitPerUser,
-      reason: null,
-    }, options);
+    Util.mergeDefault(
+      {
+        name: this.name,
+        permissionOverwrites: this.permissionOverwrites,
+        topic: this.topic,
+        type: this.type,
+        nsfw: this.nsfw,
+        parent: this.parent,
+        bitrate: this.bitrate,
+        userLimit: this.userLimit,
+        rateLimitPerUser: this.rateLimitPerUser,
+        reason: null,
+      },
+      options,
+    );
     return this.guild.channels.create(options.name, options);
   }
   /* eslint-enable max-len */
@@ -504,7 +531,8 @@ class GuildChannel extends Channel {
    * @returns {boolean}
    */
   equals(channel) {
-    let equal = channel &&
+    let equal =
+      channel &&
       this.id === channel.id &&
       this.type === channel.type &&
       this.topic === channel.topic &&
@@ -565,7 +593,10 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   delete(reason) {
-    return this.client.api.channels(this.id).delete({ reason }).then(() => this);
+    return this.client.api
+      .channels(this.id)
+      .delete({ reason })
+      .then(() => this);
   }
 }
 

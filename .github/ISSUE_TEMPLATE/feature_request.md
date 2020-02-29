@@ -1,12 +1,11 @@
 ---
+
 name: Feature request
 about: Request a feature for the core discord.js library
 title: ''
 labels: 'type: enhancement'
 assignees: ''
-
 ---
-
 <!--
 If you need help with discord.js installation or usage, please go to the discord.js Discord server instead:
   https://discord.gg/bRCvFy9

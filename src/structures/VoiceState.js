@@ -1,8 +1,8 @@
 'use strict';
 
 const Base = require('./Base');
-const { browser } = require('../util/Constants');
 const { Error, TypeError } = require('../errors');
+const { browser } = require('../util/Constants');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -119,9 +119,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get speaking() {
-    return this.channel && this.channel.connection ?
-      Boolean(this.channel.connection._speaking.get(this.id)) :
-      null;
+    return this.channel && this.channel.connection ? Boolean(this.channel.connection._speaking.get(this.id)) : null;
   }
 
   /**
@@ -161,9 +159,9 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   setChannel(channel, reason) {
-    return this.member ?
-      this.member.edit({ channel }, reason) :
-      Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+    return this.member
+      ? this.member.edit({ channel }, reason)
+      : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
   /**

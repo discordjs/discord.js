@@ -1,9 +1,9 @@
 'use strict';
 
+const Emoji = require('./Emoji');
+const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 const Permissions = require('../util/Permissions');
-const { Error } = require('../errors');
-const Emoji = require('./Emoji');
 
 /**
  * Represents a custom emoji.
@@ -74,8 +74,7 @@ class GuildEmoji extends Emoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed &&
-      this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
@@ -100,7 +99,10 @@ class GuildEmoji extends Emoji {
         return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
       }
     }
-    return this.client.api.guilds(this.guild.id).emojis(this.id).get()
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .get()
       .then(emoji => this.client.users.add(emoji.user));
   }
 
@@ -124,11 +126,16 @@ class GuildEmoji extends Emoji {
    */
   edit(data, reason) {
     const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
-    return this.client.api.guilds(this.guild.id).emojis(this.id)
-      .patch({ data: {
-        name: data.name,
-        roles,
-      }, reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .patch({
+        data: {
+          name: data.name,
+          roles,
+        },
+        reason,
+      })
       .then(newData => {
         const clone = this._clone();
         clone._patch(newData);
@@ -152,7 +159,10 @@ class GuildEmoji extends Emoji {
    * @returns {Promise<GuildEmoji>}
    */
   delete(reason) {
-    return this.client.api.guilds(this.guild.id).emojis(this.id).delete({ reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .emojis(this.id)
+      .delete({ reason })
       .then(() => this);
   }
 

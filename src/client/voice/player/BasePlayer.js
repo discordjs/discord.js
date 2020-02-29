@@ -1,17 +1,11 @@
 'use strict';
 
-const EventEmitter = require('events').EventEmitter;
+const EventEmitter = require('events');
 const { Readable: ReadableStream } = require('stream');
 const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
-const FFMPEG_ARGUMENTS = [
-  '-analyzeduration', '0',
-  '-loglevel', '0',
-  '-f', 's16le',
-  '-ar', '48000',
-  '-ac', '2',
-];
+const FFMPEG_ARGUMENTS = ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'];
 
 /**
  * An Audio Player for a Voice Connection.
@@ -61,7 +55,7 @@ class BasePlayer extends EventEmitter {
 
   playPCMStream(stream, options, streams = {}) {
     this.destroyDispatcher();
-    const opus = streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 });
+    const opus = (streams.opus = new prism.opus.Encoder({ channels: 2, rate: 48000, frameSize: 960 }));
     if (options && options.volume === false) {
       stream.pipe(opus);
       return this.playOpusStream(opus, options, streams);
@@ -90,7 +84,7 @@ class BasePlayer extends EventEmitter {
 
   createDispatcher(options, streams, broadcast) {
     this.destroyDispatcher();
-    const dispatcher = this.dispatcher = new StreamDispatcher(this, options, streams, broadcast);
+    const dispatcher = (this.dispatcher = new StreamDispatcher(this, options, streams, broadcast));
     return dispatcher;
   }
 }

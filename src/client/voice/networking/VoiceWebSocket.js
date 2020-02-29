@@ -1,9 +1,9 @@
 'use strict';
 
-const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 const EventEmitter = require('events');
-const { Error } = require('../../../errors');
 const WebSocket = require('../../../WebSocket');
+const { Error } = require('../../../errors');
+const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -92,7 +92,8 @@ class VoiceWebSocket extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('WS_NOT_OPEN', data);
       this.ws.send(data, null, error => {
-        if (error) reject(error); else resolve(data);
+        if (error) reject(error);
+        else resolve(data);
       });
     });
   }

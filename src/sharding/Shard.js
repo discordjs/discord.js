@@ -2,8 +2,8 @@
 
 const EventEmitter = require('events');
 const path = require('path');
-const Util = require('../util/Util');
 const { Error } = require('../errors');
+const Util = require('../util/Util');
 let childProcess = null;
 let Worker = null;
 
@@ -111,9 +111,11 @@ class Shard extends EventEmitter {
     if (this.worker) throw new Error('SHARDING_WORKER_EXISTS', this.id);
 
     if (this.manager.mode === 'process') {
-      this.process = childProcess.fork(path.resolve(this.manager.file), this.args, {
-        env: this.env, execArgv: this.execArgv,
-      })
+      this.process = childProcess
+        .fork(path.resolve(this.manager.file), this.args, {
+          env: this.env,
+          execArgv: this.execArgv,
+        })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);
     } else if (this.manager.mode === 'worker') {
@@ -203,7 +205,8 @@ class Shard extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (this.process) {
         this.process.send(message, err => {
-          if (err) reject(err); else resolve(this);
+          if (err) reject(err);
+          else resolve(this);
         });
       } else {
         this.worker.postMessage(message);
@@ -261,7 +264,8 @@ class Shard extends EventEmitter {
         if (!message || message._eval !== script) return;
         child.removeListener('message', listener);
         this._evals.delete(script);
-        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
       child.on('message', listener);
 

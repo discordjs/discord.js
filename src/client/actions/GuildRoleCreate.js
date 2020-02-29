@@ -22,5 +22,4 @@ class GuildRoleCreate extends Action {
   }
 }
 
-
 module.exports = GuildRoleCreate;

@@ -1,11 +1,11 @@
 'use strict';
 
-const { Colors, DefaultOptions, Endpoints } = require('./Constants');
+const { parse } = require('path');
 const fetch = require('node-fetch');
+const { Colors, DefaultOptions, Endpoints } = require('./Constants');
 const { Error: DiscordError, RangeError, TypeError } = require('../errors');
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = d => typeof d === 'object' && d !== null;
-const { parse } = require('path');
 
 /**
  * Contains various general-purpose utility methods. These functions are also available on the base `Discord` object.
@@ -24,7 +24,12 @@ class Util {
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
 
-    props = Object.assign(...Object.keys(obj).filter(k => !k.startsWith('_')).map(k => ({ [k]: true })), ...props);
+    props = Object.assign(
+      ...Object.keys(obj)
+        .filter(k => !k.startsWith('_'))
+        .map(k => ({ [k]: true })),
+      ...props,
+    );
 
     const out = {};
 
@@ -89,43 +94,52 @@ class Util {
    * @param {boolean} [options.inlineCodeContent=true] Whether to escape text inside inline code or not
    * @returns {string}
    */
-  static escapeMarkdown(text, {
-    codeBlock = true,
-    inlineCode = true,
-    bold = true,
-    italic = true,
-    underline = true,
-    strikethrough = true,
-    spoiler = true,
-    codeBlockContent = true,
-    inlineCodeContent = true,
-  } = {}) {
+  static escapeMarkdown(
+    text,
+    {
+      codeBlock = true,
+      inlineCode = true,
+      bold = true,
+      italic = true,
+      underline = true,
+      strikethrough = true,
+      spoiler = true,
+      codeBlockContent = true,
+      inlineCodeContent = true,
+    } = {},
+  ) {
     if (!codeBlockContent) {
-      return text.split('```').map((subString, index, array) => {
-        if ((index % 2) && index !== array.length - 1) return subString;
-        return Util.escapeMarkdown(subString, {
-          inlineCode,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-          inlineCodeContent,
-        });
-      }).join(codeBlock ? '\\`\\`\\`' : '```');
+      return text
+        .split('```')
+        .map((subString, index, array) => {
+          if (index % 2 && index !== array.length - 1) return subString;
+          return Util.escapeMarkdown(subString, {
+            inlineCode,
+            bold,
+            italic,
+            underline,
+            strikethrough,
+            spoiler,
+            inlineCodeContent,
+          });
+        })
+        .join(codeBlock ? '\\`\\`\\`' : '```');
     }
     if (!inlineCodeContent) {
-      return text.split(/(?<=^|[^`])`(?=[^`]|$)/g).map((subString, index, array) => {
-        if ((index % 2) && index !== array.length - 1) return subString;
-        return Util.escapeMarkdown(subString, {
-          codeBlock,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-        });
-      }).join(inlineCode ? '\\`' : '`');
+      return text
+        .split(/(?<=^|[^`])`(?=[^`]|$)/g)
+        .map((subString, index, array) => {
+          if (index % 2 && index !== array.length - 1) return subString;
+          return Util.escapeMarkdown(subString, {
+            codeBlock,
+            bold,
+            italic,
+            underline,
+            strikethrough,
+            spoiler,
+          });
+        })
+        .join(inlineCode ? '\\`' : '`');
     }
     if (inlineCode) text = Util.escapeInlineCode(text);
     if (codeBlock) text = Util.escapeCodeBlock(text);
@@ -228,10 +242,12 @@ class Util {
     return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
       headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
-    }).then(res => {
-      if (res.ok) return res.json();
-      throw res;
-    }).then(data => data.shards * (1000 / guildsPerShard));
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+        throw res;
+      })
+      .then(data => data.shards * (1000 / guildsPerShard));
   }
 
   /**
@@ -415,14 +431,14 @@ class Util {
    */
   static resolveColor(color) {
     if (typeof color === 'string') {
-      if (color === 'RANDOM') return Math.floor(Math.random() * (0xFFFFFF + 1));
+      if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'DEFAULT') return 0;
       color = Colors[color] || parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
 
-    if (color < 0 || color > 0xFFFFFF) throw new RangeError('COLOR_RANGE');
+    if (color < 0 || color > 0xffffff) throw new RangeError('COLOR_RANGE');
     else if (color && isNaN(color)) throw new TypeError('COLOR_CONVERT');
 
     return color;
@@ -434,10 +450,11 @@ class Util {
    * @returns {Collection}
    */
   static discordSort(collection) {
-    return collection.sorted((a, b) =>
-      a.rawPosition - b.rawPosition ||
-      parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
+    return collection.sorted(
+      (a, b) =>
+        a.rawPosition - b.rawPosition ||
+        parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
+        parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
     );
   }
 
@@ -506,7 +523,11 @@ class Util {
       const low = parseInt((high % 10).toString(2) + num.slice(-32), 2);
 
       dec = (low % 10).toString() + dec;
-      num = Math.floor(high / 10).toString(2) + Math.floor(low / 10).toString(2).padStart(32, '0');
+      num =
+        Math.floor(high / 10).toString(2) +
+        Math.floor(low / 10)
+          .toString(2)
+          .padStart(32, '0');
     }
 
     num = parseInt(num, 2);
@@ -535,7 +556,7 @@ class Util {
    */
   static cleanContent(str, message) {
     if (message.client.options.disableMentions === 'everyone') {
-      str = str.replace(/@([^<>@ ]*)/gsmu, (match, target) => {
+      str = str.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
         if (target.match(/^[&!]?\d+$/)) {
           return `@${target}`;
         } else {
@@ -543,21 +564,22 @@ class Util {
         }
       });
     }
-    str = str.replace(/<@!?[0-9]+>/g, input => {
-      const id = input.replace(/<|!|>|@/g, '');
-      if (message.channel.type === 'dm') {
-        const user = message.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
-      }
+    str = str
+      .replace(/<@!?[0-9]+>/g, input => {
+        const id = input.replace(/<|!|>|@/g, '');
+        if (message.channel.type === 'dm') {
+          const user = message.client.users.cache.get(id);
+          return user ? `@${user.username}` : input;
+        }
 
-      const member = message.channel.guild.members.cache.get(id);
-      if (member) {
-        return `@${member.displayName}`;
-      } else {
-        const user = message.client.users.cache.get(id);
-        return user ? `@${user.username}` : input;
-      }
-    })
+        const member = message.channel.guild.members.cache.get(id);
+        if (member) {
+          return `@${member.displayName}`;
+        } else {
+          const user = message.client.users.cache.get(id);
+          return user ? `@${user.username}` : input;
+        }
+      })
       .replace(/<#[0-9]+>/g, input => {
         const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return channel ? `#${channel.name}` : input;

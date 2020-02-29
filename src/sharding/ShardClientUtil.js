@@ -1,7 +1,7 @@
 'use strict';
 
-const Util = require('../util/Util');
 const { Events } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
@@ -33,15 +33,27 @@ class ShardClientUtil {
 
     if (mode === 'process') {
       process.on('message', this._handleMessage.bind(this));
-      client.on('ready', () => { process.send({ _ready: true }); });
-      client.on('disconnect', () => { process.send({ _disconnect: true }); });
-      client.on('reconnecting', () => { process.send({ _reconnecting: true }); });
+      client.on('ready', () => {
+        process.send({ _ready: true });
+      });
+      client.on('disconnect', () => {
+        process.send({ _disconnect: true });
+      });
+      client.on('reconnecting', () => {
+        process.send({ _reconnecting: true });
+      });
     } else if (mode === 'worker') {
       this.parentPort = require('worker_threads').parentPort;
       this.parentPort.on('message', this._handleMessage.bind(this));
-      client.on('ready', () => { this.parentPort.postMessage({ _ready: true }); });
-      client.on('disconnect', () => { this.parentPort.postMessage({ _disconnect: true }); });
-      client.on('reconnecting', () => { this.parentPort.postMessage({ _reconnecting: true }); });
+      client.on('ready', () => {
+        this.parentPort.postMessage({ _ready: true });
+      });
+      client.on('disconnect', () => {
+        this.parentPort.postMessage({ _disconnect: true });
+      });
+      client.on('reconnecting', () => {
+        this.parentPort.postMessage({ _reconnecting: true });
+      });
     }
   }
 
@@ -72,7 +84,8 @@ class ShardClientUtil {
     return new Promise((resolve, reject) => {
       if (this.mode === 'process') {
         process.send(message, err => {
-          if (err) reject(err); else resolve();
+          if (err) reject(err);
+          else resolve();
         });
       } else if (this.mode === 'worker') {
         this.parentPort.postMessage(message);
@@ -98,7 +111,8 @@ class ShardClientUtil {
       const listener = message => {
         if (!message || message._sFetchProp !== prop) return;
         parent.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
@@ -127,7 +141,8 @@ class ShardClientUtil {
       const listener = message => {
         if (!message || message._sEval !== script) return;
         parent.removeListener('message', listener);
-        if (!message._error) resolve(message._result); else reject(Util.makeError(message._error));
+        if (!message._error) resolve(message._result);
+        else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
@@ -201,8 +216,10 @@ class ShardClientUtil {
     if (!this._singleton) {
       this._singleton = new this(client, mode);
     } else {
-      client.emit(Events.WARN,
-        'Multiple clients created in child process/worker; only the first will handle sharding helpers.');
+      client.emit(
+        Events.WARN,
+        'Multiple clients created in child process/worker; only the first will handle sharding helpers.',
+      );
     }
     return this._singleton;
   }
