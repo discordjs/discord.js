@@ -68,8 +68,6 @@ class StreamDispatcher extends Writable {
 
     this.on('finish', () => {
       this._cleanup();
-      // Still emitting end for backwards compatibility, probably remove it in the future!
-      this.emit('end');
       this._setSpeaking(0);
     });
 
