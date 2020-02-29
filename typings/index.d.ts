@@ -980,6 +980,14 @@ declare module 'discord.js' {
     public sync(): Promise<Integration>;
   }
 
+  export class Intents extends BitField<IntentsString> {
+    public static FLAGS: Record<IntentsString, number>;
+    public static PRIVILEGED: number;
+    public static ALL: number;
+    public static NON_PRIVILEGED: number;
+    public static resolve(bit?: BitFieldResolvable<IntentsString>): number;
+  }
+
   export class Invite extends Base {
     constructor(client: Client, data: object);
     public channel: GuildChannel | PartialGroupDMChannel;
@@ -2518,8 +2526,8 @@ declare module 'discord.js' {
     permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
     type?: Exclude<
-        keyof typeof ChannelType | ChannelType,
-        'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
+      keyof typeof ChannelType | ChannelType,
+      'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
     >;
     nsfw?: boolean;
     parent?: ChannelResolvable;
@@ -3002,7 +3010,7 @@ declare module 'discord.js' {
   interface WebSocketOptions {
     large_threshold?: number;
     compress?: boolean;
-    intents?: Intents | number;
+    intents?: BitFieldResolvable<IntentsString> | number;
   }
 
   type WSEventType =
