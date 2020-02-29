@@ -88,6 +88,13 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
+    const disableMentions = typeof this.options.disableMentions === 'undefined' ?
+      this.target.client.options.disableMentions :
+      this.options.disableMentions;
+    if (disableMentions) {
+      content = Util.removeMentions(content || '');
+    }
+
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
@@ -111,13 +118,6 @@ class APIMessage {
         }
       } else if (mentionPart) {
         content = `${mentionPart}${content || ''}`;
-      }
-
-      const disableEveryone = typeof this.options.disableEveryone === 'undefined' ?
-        this.target.client.options.disableEveryone :
-        this.options.disableEveryone;
-      if (disableEveryone) {
-        content = (content || '').replace(/@(everyone|here)/g, '@\u200b$1');
       }
 
       if (isSplit) {
@@ -152,7 +152,7 @@ class APIMessage {
     } else if (this.options.embed) {
       embedLikes.push(this.options.embed);
     }
-    const embeds = embedLikes.map(e => new MessageEmbed(e)._apiTransform());
+    const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
     let username;
     let avatarURL;

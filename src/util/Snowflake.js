@@ -36,7 +36,7 @@ class SnowflakeUtil {
     if (timestamp instanceof Date) timestamp = timestamp.getTime();
     if (typeof timestamp !== 'number' || isNaN(timestamp)) {
       throw new TypeError(
-        `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`
+        `"timestamp" argument must be a number (received ${isNaN(timestamp) ? 'NaN' : typeof timestamp})`,
       );
     }
     if (INCREMENT >= 4095) INCREMENT = 0;
