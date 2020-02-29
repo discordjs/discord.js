@@ -137,7 +137,8 @@
     }
   },
   "lint-staged": {
-    "*.js": "eslint --fix"
+    "*.js": "eslint --fix",
+    "*.ts": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf"
   },
   "commitlint": {
     "extends": ["@commitlint/config-angular"],
