@@ -8,16 +8,16 @@ class ChannelUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
-    let channel = client.channels.get(data.id);
+    let channel = client.channels.cache.get(data.id);
     if (channel) {
       const old = channel._update(data);
 
       if (ChannelTypes[channel.type.toUpperCase()] !== data.type) {
         const newChannel = Channel.create(this.client, data, channel.guild);
-        for (const [id, message] of channel.messages) newChannel.messages.set(id, message);
+        for (const [id, message] of channel.messages.cache) newChannel.messages.cache.set(id, message);
         newChannel._typing = new Map(channel._typing);
         channel = newChannel;
-        this.client.channels.set(channel.id, channel);
+        this.client.channels.cache.set(channel.id, channel);
       }
 
       return {

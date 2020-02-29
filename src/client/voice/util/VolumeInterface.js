@@ -106,7 +106,7 @@ exports.applyToClass = function applyToClass(structure) {
     Object.defineProperty(
       structure.prototype,
       prop,
-      Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop)
+      Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop),
     );
   }
 };

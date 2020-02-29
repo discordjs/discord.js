@@ -21,7 +21,7 @@ const browser = exports.browser = typeof window !== 'undefined';
  * the message cache lifetime (in seconds, 0 for never)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
- * @property {boolean} [disableEveryone=false] Default value for {@link MessageOptions#disableEveryone}
+ * @property {boolean} [disableMentions=false] Default value for {@link MessageOptions#disableMentions}
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
  * important usage information, as partials require you to put checks in place when handling data.
@@ -47,7 +47,7 @@ exports.DefaultOptions = {
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
   fetchAllMembers: false,
-  disableEveryone: false,
+  disableMentions: false,
   partials: [],
   restWsBridgeTimeout: 5000,
   disabledEvents: [],
@@ -62,8 +62,6 @@ exports.DefaultOptions = {
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild where offline users will no longer be sent
    * in the guild member list, between 50 and 250
-   * @property {boolean} [compress=false] Whether to compress data sent on the connection
-   * (defaults to `false` for browsers)
    */
   ws: {
     large_threshold: 250,
@@ -263,6 +261,7 @@ exports.Events = {
   MESSAGE_REACTION_ADD: 'messageReactionAdd',
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
+  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
@@ -319,6 +318,8 @@ exports.PartialTypes = keyMirror([
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
+ * * INVITE_CREATE
+ * * INVITE_DELETE
  * * GUILD_MEMBER_ADD
  * * GUILD_MEMBER_REMOVE
  * * GUILD_MEMBER_UPDATE
@@ -341,8 +342,8 @@ exports.PartialTypes = keyMirror([
  * * MESSAGE_REACTION_ADD
  * * MESSAGE_REACTION_REMOVE
  * * MESSAGE_REACTION_REMOVE_ALL
+ * * MESSAGE_REACTION_REMOVE_EMOJI
  * * USER_UPDATE
- * * USER_SETTINGS_UPDATE
  * * PRESENCE_UPDATE
  * * TYPING_START
  * * VOICE_STATE_UPDATE
@@ -380,6 +381,7 @@ exports.WSEvents = keyMirror([
   'MESSAGE_REACTION_ADD',
   'MESSAGE_REACTION_REMOVE',
   'MESSAGE_REACTION_REMOVE_ALL',
+  'MESSAGE_REACTION_REMOVE_EMOJI',
   'USER_UPDATE',
   'PRESENCE_UPDATE',
   'TYPING_START',
@@ -403,6 +405,8 @@ exports.WSEvents = keyMirror([
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
  * * CHANNEL_FOLLOW_ADD
+ * * GUILD_DISCOVERY_DISQUALIFIED
+ * * GUILD_DISCOVERY_REQUALIFIED
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -419,9 +423,14 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
   'CHANNEL_FOLLOW_ADD',
+  // 13 isn't yet documented
+  null,
+  'GUILD_DISCOVERY_DISQUALIFIED',
+  'GUILD_DISCOVERY_REQUALIFIED',
 ];
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING

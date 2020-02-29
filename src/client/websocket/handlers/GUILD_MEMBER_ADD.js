@@ -3,7 +3,7 @@
 const { Events, Status } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }, shard) => {
-  const guild = client.guilds.get(data.guild_id);
+  const guild = client.guilds.cache.get(data.guild_id);
   if (guild) {
     guild.memberCount++;
     const member = guild.members.add(data);

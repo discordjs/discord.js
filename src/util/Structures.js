@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Allows for the extension of built-in Discord.js structures that are instantiated by {@link DataStore DataStores}.
+ * Allows for the extension of built-in Discord.js structures that are instantiated by {@link BaseManager Managers}.
  */
 class Structures {
   constructor() {
@@ -45,7 +45,7 @@ class Structures {
     if (typeof extender !== 'function') {
       const received = `(received ${typeof extender})`;
       throw new TypeError(
-        `"extender" argument must be a function that returns the extended structure class/prototype ${received}.`
+        `"extender" argument must be a function that returns the extended structure class/prototype ${received}.`,
       );
     }
 
@@ -60,7 +60,7 @@ class Structures {
       const received = `${extended.name || 'unnamed'}${prototype.name ? ` extends ${prototype.name}` : ''}`;
       throw new Error(
         'The class/prototype returned from the extender function must extend the existing structure class/prototype' +
-        ` (received function ${received}; expected extension of ${structures[structure].name}).`
+        ` (received function ${received}; expected extension of ${structures[structure].name}).`,
       );
     }
 

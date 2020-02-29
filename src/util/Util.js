@@ -36,8 +36,10 @@ class Util {
       const elemIsObj = isObject(element);
       const valueOf = elemIsObj && typeof element.valueOf === 'function' ? element.valueOf() : null;
 
-      // If it's a collection, make the array of keys
+      // If it's a Collection, make the array of keys
       if (element instanceof require('./Collection')) out[newProp] = Array.from(element.keys());
+      // If the valueOf is a Collection, use its array of keys
+      else if (valueOf instanceof require('./Collection')) out[newProp] = Array.from(valueOf.keys());
       // If it's an array, flatten each element
       else if (Array.isArray(element)) out[newProp] = element.map(e => Util.flatten(e));
       // If it's an object with a primitive `valueOf`, use that value
@@ -435,7 +437,7 @@ class Util {
     return collection.sorted((a, b) =>
       a.rawPosition - b.rawPosition ||
       parseInt(b.id.slice(0, -10)) - parseInt(a.id.slice(0, -10)) ||
-      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10))
+      parseInt(b.id.slice(10)) - parseInt(a.id.slice(10)),
     );
   }
 
@@ -517,38 +519,46 @@ class Util {
   }
 
   /**
+   * Breaks user, role and everyone/here mentions by adding a zero width space after every @ character
+   * @param {string} str The string to sanitize
+   * @returns {string}
+   */
+  static removeMentions(str) {
+    return str.replace(/@/g, '@\u200b');
+  }
+
+  /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
    * @returns {string}
    */
   static cleanContent(str, message) {
-    return str
-      .replace(/@(everyone|here)/g, '@\u200b$1')
+    return Util.removeMentions(str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
-          const user = message.client.users.get(id);
+          const user = message.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
 
-        const member = message.channel.guild.members.get(id);
+        const member = message.channel.guild.members.cache.get(id);
         if (member) {
           return `@${member.displayName}`;
         } else {
-          const user = message.client.users.get(id);
+          const user = message.client.users.cache.get(id);
           return user ? `@${user.username}` : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
-        const channel = message.client.channels.get(input.replace(/<|#|>/g, ''));
+        const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
         return channel ? `#${channel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
         if (message.channel.type === 'dm') return input;
-        const role = message.guild.roles.get(input.replace(/<|@|>|&/g, ''));
+        const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
-      });
+      }));
   }
 
   /**
@@ -557,7 +567,7 @@ class Util {
    * @returns {string}
    */
   static cleanCodeBlockContent(text) {
-    return text.replace('```', '`\u200b``');
+    return text.replace(/```/g, '`\u200b``');
   }
 
   /**
@@ -570,34 +580,6 @@ class Util {
     return new Promise(resolve => {
       setTimeout(resolve, ms);
     });
-  }
-
-  /**
-   * Adds methods from collections and maps onto the provided store
-   * @param {DataStore} store The store to mixin
-   * @param {string[]} ignored The properties to ignore
-   * @private
-   */
-  /* eslint-disable func-names */
-  static mixin(store, ignored) {
-    const Collection = require('./Collection');
-    Object.getOwnPropertyNames(Collection.prototype)
-      .concat(Object.getOwnPropertyNames(Map.prototype)).forEach(prop => {
-        if (ignored.includes(prop)) return;
-        if (prop === 'size') {
-          Object.defineProperty(store.prototype, prop, {
-            get: function() {
-              return this._filtered[prop];
-            },
-          });
-          return;
-        }
-        const func = Collection.prototype[prop];
-        if (prop === 'constructor' || typeof func !== 'function') return;
-        store.prototype[prop] = function(...args) {
-          return func.apply(this._filtered, args);
-        };
-      });
   }
 }
 

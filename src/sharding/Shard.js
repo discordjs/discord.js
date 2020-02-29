@@ -294,7 +294,7 @@ class Shard extends EventEmitter {
       if (message._sFetchProp) {
         this.manager.fetchClientValues(message._sFetchProp).then(
           results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
-          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) })
+          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) }),
         );
         return;
       }
@@ -303,7 +303,7 @@ class Shard extends EventEmitter {
       if (message._sEval) {
         this.manager.broadcastEval(message._sEval).then(
           results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) })
+          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) }),
         );
         return;
       }

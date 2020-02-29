@@ -189,6 +189,23 @@ class Collector extends EventEmitter {
   }
 
   /**
+   * Resets the collectors timeout and idle timer.
+   * @param {Object} [options] Options
+   * @param {number} [options.time] How long to run the collector for in milliseconds
+   * @param {number} [options.idle] How long to stop the collector after inactivity in milliseconds
+   */
+  resetTimer({ time, idle } = {}) {
+    if (this._timeout) {
+      this.client.clearTimeout(this._timeout);
+      this._timeout = this.client.setTimeout(() => this.stop('time'), time || this.options.time);
+    }
+    if (this._idletimeout) {
+      this.client.clearTimeout(this._idletimeout);
+      this._idletimeout = this.client.setTimeout(() => this.stop('idle'), idle || this.options.idle);
+    }
+  }
+
+  /**
    * Checks whether the collector should end, and if so, ends it.
    */
   checkEnd() {
@@ -213,8 +230,8 @@ class Collector extends EventEmitter {
           // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => {
             const tick = () => {
-              this.off('collect', tick);
-              this.off('end', tick);
+              this.removeListener('collect', tick);
+              this.removeListener('end', tick);
               return resolve();
             };
             this.on('collect', tick);
@@ -223,7 +240,7 @@ class Collector extends EventEmitter {
         }
       }
     } finally {
-      this.off('collect', onCollect);
+      this.removeListener('collect', onCollect);
     }
   }
 

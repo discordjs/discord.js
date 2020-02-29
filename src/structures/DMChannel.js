@@ -2,7 +2,7 @@
 
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const MessageStore = require('../stores/MessageStore');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a direct message channel between two users.
@@ -19,10 +19,10 @@ class DMChannel extends Channel {
     // Override the channel type so partials have a known type
     this.type = 'dm';
     /**
-     * A collection containing the messages sent to this channel
-     * @type {MessageStore<Snowflake, Message>}
+     * A manager of the messages belonging to this channel
+     * @type {MessageManager}
      */
-    this.messages = new MessageStore(this);
+    this.messages = new MessageManager(this);
     this._typing = new Map();
   }
 
@@ -91,7 +91,6 @@ class DMChannel extends Channel {
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);

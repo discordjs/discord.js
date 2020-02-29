@@ -4,14 +4,14 @@ const Action = require('./Action');
 
 class GuildEmojisUpdateAction extends Action {
   handle(data) {
-    const guild = this.client.guilds.get(data.guild_id);
+    const guild = this.client.guilds.cache.get(data.guild_id);
     if (!guild || !guild.emojis) return;
 
-    const deletions = new Map(guild.emojis);
+    const deletions = new Map(guild.emojis.cache);
 
     for (const emoji of data.emojis) {
       // Determine type of emoji event
-      const cachedEmoji = guild.emojis.get(emoji.id);
+      const cachedEmoji = guild.emojis.cache.get(emoji.id);
       if (cachedEmoji) {
         deletions.delete(emoji.id);
         if (!cachedEmoji.equals(emoji)) {

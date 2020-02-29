@@ -70,7 +70,7 @@ class Webhook {
        * The owner of the webhook
        * @type {?User|Object}
        */
-      this.owner = this.client.users ? this.client.users.get(data.user.id) : data.user;
+      this.owner = this.client.users ? this.client.users.cache.get(data.user.id) : data.user;
     } else {
       this.owner = null;
     }
@@ -85,8 +85,8 @@ class Webhook {
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {boolean} [disableEveryone=this.client.options.disableEveryone] Whether or not @everyone and @here
-   * should be replaced with plain-text
+   * @property {boolean} [disableMentions=this.client.options.disableMentions] Whether or not a zero width space
+   * should be placed after every @ character to prevent unexpected mentions
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -154,7 +154,7 @@ class Webhook {
       query: { wait: true },
       auth: false,
     }).then(d => {
-      const channel = this.client.channels ? this.client.channels.get(d.channel_id) : undefined;
+      const channel = this.client.channels ? this.client.channels.cache.get(d.channel_id) : undefined;
       if (!channel) return d;
       return channel.messages.add(d, false);
     });
