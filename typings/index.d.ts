@@ -553,7 +553,6 @@ declare module 'discord.js' {
       DARK_BUT_NOT_BLACK: 0x2c2f33;
       NOT_QUITE_BLACK: 0x23272a;
     };
-    VerificationLevels: ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
     Status: {
       READY: 0;
       CONNECTING: 1;
