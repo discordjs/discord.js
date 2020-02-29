@@ -1082,7 +1082,7 @@ declare module 'discord.js' {
 		public messages: MessageManager;
 		public nsfw: boolean;
 		public topic: string | null;
-    public type: ChannelType.NEWS;
+		public type: ChannelType.NEWS;
 		public createWebhook(name: string, options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string; }): Promise<Webhook>;
 		public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
 		public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -2135,7 +2135,7 @@ declare module 'discord.js' {
 	interface CrosspostedChannel {
 		channelID: Snowflake;
 		guildID: Snowflake;
-    type: ChannelType;
+		type: ChannelType;
 		name: string;
 	}
 
