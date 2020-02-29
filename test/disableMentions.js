@@ -6,7 +6,7 @@ const client = new Discord.Client({
     // To see a difference, comment out disableMentions and run the same tests using disableEveryone
     // You will notice that all messages will mention @everyone
     //disableEveryone: true
-    disableMentions: true
+    disableMentions: 'everyone'
 });
 
 const tests = [
