@@ -1,4 +1,5 @@
 const { ActivityFlags, Endpoints } = require('../util/Constants');
+const ReactionEmoji = require('./ReactionEmoji');
 
 /**
  * The status of this presence:
@@ -22,19 +23,42 @@ const { ActivityFlags, Endpoints } = require('../util/Constants');
  */
 class Presence {
   constructor(data = {}, client) {
+    /**
+     * The client that instantiated this
+     * @name Presence#client
+     * @type {Client}
+     * @readonly
+     */
     Object.defineProperty(this, 'client', { value: client });
 
+    this.update(data);
+  }
+
+  update(data) {
     /**
      * The status of this presence:
      * @type {PresenceStatus}
      */
-    this.status = data.status || 'offline';
+    this.status = data.status || this.status || 'offline';
 
     /**
      * The game that the user is playing
      * @type {?Game}
+     * @deprecated
      */
     this.game = data.game ? new Game(data.game, this) : null;
+
+    if (data.activities) {
+      /**
+       * The activities of this presence
+       * @type {Game[]}
+       */
+      this.activities = data.activities.map(activity => new Game(activity, this));
+    } else if (data.activity || data.game) {
+      this.activities = [new Game(data.activity || data.game, this)];
+    } else {
+      this.activities = [];
+    }
 
     /**
      * The devices this presence is on
@@ -43,12 +67,6 @@ class Presence {
      * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
      * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
      */
-    this.clientStatus = data.client_status || null;
-  }
-
-  update(data) {
-    this.status = data.status || this.status;
-    this.game = data.game ? new Game(data.game, this) : null;
     this.clientStatus = data.client_status || null;
   }
 
@@ -61,7 +79,8 @@ class Presence {
     return this === presence || (
       presence &&
       this.status === presence.status &&
-      (this.game ? this.game.equals(presence.game) : !presence.game) &&
+      this.activities.length === presence.activities.length &&
+      this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
       this.clientStatus.web === presence.clientStatus.web &&
       this.clientStatus.mobile === presence.clientStatus.mobile &&
       this.clientStatus.desktop === presence.clientStatus.desktop
@@ -141,10 +160,42 @@ class Game {
      */
     this.assets = data.assets ? new RichPresenceAssets(this, data.assets) : null;
 
+    if (data.emoji) {
+      /**
+       * Emoji for a custom activity
+       * <warn>There is no `reaction` property for this emoji.</warn>
+       * @type {?ReactionEmoji}
+       */
+      this.emoji = new ReactionEmoji({ message: { client: this.presence.client } }, data.emoji);
+      this.emoji.reaction = null;
+    } else {
+      this.emoji = null;
+    }
+
+
+    /**
+     * Creation date of the activity
+     * @type {number}
+     */
+    this.createdTimestamp = new Date(data.created_at).getTime();
+
     this.syncID = data.sync_id;
     this._flags = data.flags;
   }
 
+  /**
+   * The time the activity was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Flags that describe the activity
+   * @type {ActivityFlags[]}
+   */
   get flags() {
     const flags = [];
     for (const [name, flag] of Object.entries(ActivityFlags)) {
@@ -237,6 +288,8 @@ class RichPresenceAssets {
     if (!this.largeImage) return null;
     if (/^spotify:/.test(this.largeImage)) {
       return `https://i.scdn.co/image/${this.largeImage.slice(8)}`;
+    } else if (/^twitch:/.test(this.largeImage)) {
+      return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${this.largeImage.slice(7)}.png`;
     }
     return Endpoints.CDN(this.game.presence.client.options.http.cdn)
       .AppAsset(this.game.applicationID, this.largeImage);

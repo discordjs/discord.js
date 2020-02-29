@@ -1,5 +1,6 @@
 const Attachment = require('./Attachment');
 const MessageEmbed = require('./MessageEmbed');
+const util = require('../util/Util');
 let ClientDataResolver;
 
 /**
@@ -87,7 +88,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setTitle(title) {
-    title = resolveString(title);
+    title = util.resolveString(title);
     if (title.length > 256) throw new RangeError('RichEmbed titles may not exceed 256 characters.');
     this.title = title;
     return this;
@@ -99,7 +100,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setDescription(description) {
-    description = resolveString(description);
+    description = util.resolveString(description);
     if (description.length > 2048) throw new RangeError('RichEmbed descriptions may not exceed 2048 characters.');
     this.description = description;
     return this;
@@ -134,7 +135,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setAuthor(name, icon, url) {
-    this.author = { name: resolveString(name), icon_url: icon, url };
+    this.author = { name: util.resolveString(name), icon_url: icon, url };
     return this;
   }
 
@@ -158,13 +159,7 @@ class RichEmbed {
    */
   addField(name, value, inline = false) {
     if (this.fields.length >= 25) throw new RangeError('RichEmbeds may not exceed 25 fields.');
-    name = resolveString(name);
-    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
-    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
-    value = resolveString(value);
-    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
-    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
-    this.fields.push({ name, value, inline });
+    this.fields.push(this.constructor.normalizeField(name, value, inline));
     return this;
   }
 
@@ -175,6 +170,37 @@ class RichEmbed {
    */
   addBlankField(inline = false) {
     return this.addField('\u200B', '\u200B', inline);
+  }
+
+  /**
+  * @typedef {Object} EmbedField
+  * @property {string} name The name of this field
+  * @property {string} value The value of this field
+  * @property {boolean} inline If this field will be displayed inline
+  */
+
+  /**
+  * @typedef {Object} EmbedFieldData
+  * @property {StringResolvable} name The name of this field
+  * @property {StringResolvable} value The value of this field
+  * @property {boolean} [inline=false] If this field will be displayed inline
+  */
+
+  /**
+   * Removes, replaces, and inserts fields in the embed (max 25).
+   * @param {number} index The index to start at
+   * @param {number} deleteCount The number of fields to remove
+   * @param {...EmbedFieldData} [fields] The replacing field objects
+   * @returns {RichEmbed}
+   */
+  spliceFields(index, deleteCount, ...fields) {
+    if (fields) {
+      const mapper = ({ name, value, inline }) => this.constructor.normalizeField(name, value, inline);
+      this.fields.splice(index, deleteCount, ...fields.map(mapper));
+    } else {
+      this.fields.splice(index, deleteCount);
+    }
+    return this;
   }
 
   /**
@@ -204,7 +230,7 @@ class RichEmbed {
    * @returns {RichEmbed} This embed
    */
   setFooter(text, icon) {
-    text = resolveString(text);
+    text = util.resolveString(text);
     if (text.length > 2048) throw new RangeError('RichEmbed footer text may not exceed 2048 characters.');
     this.footer = { text, icon_url: icon };
     return this;
@@ -252,11 +278,10 @@ class RichEmbed {
   }
 
   /**
-   * Transforms the embed object to be processed.
+   * Transforms the embed to a plain object.
    * @returns {Object} The raw data of this embed
-   * @private
    */
-  _apiTransform() {
+  toJSON() {
     return {
       title: this.title,
       type: 'rich',
@@ -284,12 +309,23 @@ class RichEmbed {
       } : null,
     };
   }
+
+  /**
+   * Normalizes field input and resolves strings.
+   * @param {StringResolvable} name The name of the field
+   * @param {StringResolvable} value The value of the field
+   * @param {boolean} [inline=false] Set the field to display inline
+   * @returns {EmbedField}
+   */
+  static normalizeField(name, value, inline = false) {
+    name = util.resolveString(name);
+    if (name.length > 256) throw new RangeError('RichEmbed field names may not exceed 256 characters.');
+    if (!/\S/.test(name)) throw new RangeError('RichEmbed field names may not be empty.');
+    value = util.resolveString(value);
+    if (value.length > 1024) throw new RangeError('RichEmbed field values may not exceed 1024 characters.');
+    if (!/\S/.test(value)) throw new RangeError('RichEmbed field values may not be empty.');
+    return { name, value, inline };
+  }
 }
 
 module.exports = RichEmbed;
-
-function resolveString(data) {
-  if (typeof data === 'string') return data;
-  if (data instanceof Array) return data.join('\n');
-  return String(data);
-}

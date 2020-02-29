@@ -8,6 +8,7 @@ class ActionsManager {
     this.register(require('./MessageUpdate'));
     this.register(require('./MessageReactionAdd'));
     this.register(require('./MessageReactionRemove'));
+    this.register(require('./MessageReactionRemoveEmoji'));
     this.register(require('./MessageReactionRemoveAll'));
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
@@ -20,6 +21,8 @@ class ActionsManager {
     this.register(require('./GuildRoleCreate'));
     this.register(require('./GuildRoleDelete'));
     this.register(require('./GuildRoleUpdate'));
+    this.register(require('./InviteCreate'));
+    this.register(require('./InviteDelete'));
     this.register(require('./UserGet'));
     this.register(require('./UserUpdate'));
     this.register(require('./UserNoteUpdate'));

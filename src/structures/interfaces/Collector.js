@@ -13,6 +13,7 @@ const EventEmitter = require('events').EventEmitter;
  * Options to be applied to the collector.
  * @typedef {Object} CollectorOptions
  * @property {number} [time] How long to run the collector for
+ * @property {number} [idle] How long to stop the collector after inactivity in milliseconds
  */
 
 /**
@@ -63,6 +64,13 @@ class Collector extends EventEmitter {
     this._timeout = null;
 
     /**
+     * Timeout for cleanup due to inactivity
+     * @type {?Timeout}
+     * @private
+     */
+    this._idletimeout = null;
+
+    /**
      * Call this to handle an event as a collectable element
      * Accepts any event data as parameters
      * @type {Function}
@@ -71,6 +79,7 @@ class Collector extends EventEmitter {
     this.listener = this._handle.bind(this);
     this.removeListener = this._handleRemove.bind(this);
     if (options.time) this._timeout = this.client.setTimeout(() => this.stop('time'), options.time);
+    if (options.idle) this._idletimeout = this.client.setTimeout(() => this.stop('idle'), options.idle);
   }
 
   /**
@@ -80,17 +89,22 @@ class Collector extends EventEmitter {
    */
   _handle(...args) {
     const collect = this.handle(...args);
-    if (!collect || !this.filter(...args, this.collected)) return;
+    if (collect && this.filter(...args, this.collected)) {
+      this.collected.set(collect.key, collect.value);
 
-    this.collected.set(collect.key, collect.value);
+      /**
+       * Emitted whenever an element is collected.
+       * @event Collector#collect
+       * @param {*} element The element that got collected
+       * @param {Collector} collector The collector
+       */
+      this.emit('collect', collect.value, this);
 
-    /**
-     * Emitted whenever an element is collected.
-     * @event Collector#collect
-     * @param {*} element The element that got collected
-     * @param {Collector} collector The collector
-     */
-    this.emit('collect', collect.value, this);
+      if (this._idletimeout) {
+        this.client.clearTimeout(this._idletimeout);
+        this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
+      }
+    }
 
     const post = this.postCheck(...args);
     if (post) this.stop(post);
@@ -166,7 +180,14 @@ class Collector extends EventEmitter {
   stop(reason = 'user') {
     if (this.ended) return;
 
-    if (this._timeout) this.client.clearTimeout(this._timeout);
+    if (this._timeout) {
+      this.client.clearTimeout(this._timeout);
+      this._timeout = null;
+    }
+    if (this._idletimeout) {
+      this.client.clearTimeout(this._idletimeout);
+      this._idletimeout = null;
+    }
     this.ended = true;
     this.cleanup();
 

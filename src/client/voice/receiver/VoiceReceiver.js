@@ -43,7 +43,7 @@ class VoiceReceiver extends EventEmitter {
 
     this._listener = msg => {
       const ssrc = +msg.readUInt32BE(8).toString(10);
-      const user = this.voiceConnection.ssrcMap.get(ssrc);
+      const user = connection.client.users.get(connection.ssrcMap.get(ssrc));
       if (!user) {
         if (!this.queues.has(ssrc)) this.queues.set(ssrc, []);
         this.queues.get(ssrc).push(msg);
@@ -112,6 +112,7 @@ class VoiceReceiver extends EventEmitter {
     }
     if (opusEncoder) {
       opusEncoder.destroy();
+      this.opusEncoders.delete(user.id);
     }
   }
 
@@ -132,7 +133,7 @@ class VoiceReceiver extends EventEmitter {
 
   /**
    * Creates a readable stream for a user that provides PCM data while the user is speaking. When the user
-   * stops speaking, the stream is destroyed. The stream is 32-bit signed stereo PCM at 48KHz.
+   * stops speaking, the stream is destroyed. The stream is 16-bit signed stereo PCM at 48KHz.
    * @param {UserResolvable} user The user to create the stream for
    * @returns {ReadableStream}
    */
@@ -174,9 +175,9 @@ class VoiceReceiver extends EventEmitter {
         }
         offset += 1 + (0b1111 & (byte >> 4));
       }
-      while (data[offset] === 0) {
-        offset++;
-      }
+      // Skip over undocumented Discord byte
+      offset++;
+
       data = data.slice(offset);
     }
 

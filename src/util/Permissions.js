@@ -1,33 +1,31 @@
-const Constants = require('../util/Constants');
+const BitField = require('./BitField');
 const util = require('util');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
  * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
  * that override their default permissions.
+ * @extends {BitField}
  */
-class Permissions {
+class Permissions extends BitField {
   /**
    * @param {GuildMember} [member] Member the permissions are for **(deprecated)**
    * @param {number|PermissionResolvable} permissions Permissions or bitfield to read from
    */
   constructor(member, permissions) {
-    permissions = typeof member === 'object' && !(member instanceof Array) ? permissions : member;
+    super(typeof member === 'object' && !(member instanceof Array) ? permissions : member);
 
-    /**
+    Object.defineProperty(this, '_member', {
+      writable: true,
+      value: typeof member === 'object' && !(member instanceof Array) ? member : null,
+    });
+  }
+
+  /**
      * Member the permissions are for
      * @type {GuildMember}
      * @deprecated
      */
-    this._member = typeof member === 'object' ? member : null;
-
-    /**
-     * Bitfield of the packed permissions
-     * @type {number}
-     */
-    this.bitfield = typeof permissions === 'number' ? permissions : this.constructor.resolve(permissions);
-  }
-
   get member() {
     return this._member;
   }
@@ -52,71 +50,23 @@ class Permissions {
   }
 
   /**
+   * Checks whether the bitfield has a permission, or any of multiple permissions.
+   * @param {PermissionResolvable} permission Permission(s) to check for
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
+   * @returns {boolean}
+   */
+  any(permission, checkAdmin = true) {
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.any(permission);
+  }
+
+  /**
    * Checks whether the bitfield has a permission, or multiple permissions.
    * @param {PermissionResolvable} permission Permission(s) to check for
    * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {
-    if (permission instanceof Array) return permission.every(p => this.has(p, checkAdmin));
-    permission = this.constructor.resolve(permission);
-    if (checkAdmin && (this.bitfield & this.constructor.FLAGS.ADMINISTRATOR) > 0) return true;
-    return (this.bitfield & permission) === permission;
-  }
-
-  /**
-   * Gets all given permissions that are missing from the bitfield.
-   * @param {PermissionResolvable} permissions Permissions to check for
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {PermissionResolvable}
-   */
-  missing(permissions, checkAdmin = true) {
-    if (!(permissions instanceof Array)) permissions = [permissions];
-    return permissions.filter(p => !this.has(p, checkAdmin));
-  }
-
-  /**
-   * Adds permissions to this one, creating a new instance to represent the new bitfield.
-   * @param {...PermissionResolvable} permissions Permissions to add
-   * @returns {Permissions}
-   */
-  add(...permissions) {
-    let total = 0;
-    for (let p = permissions.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(permissions[p]);
-      total |= perm;
-    }
-    if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
-    this.bitfield |= total;
-    return this;
-  }
-
-  /**
-   * Removes permissions to this one, creating a new instance to represent the new bitfield.
-   * @param {...PermissionResolvable} permissions Permissions to remove
-   * @returns {Permissions}
-   */
-  remove(...permissions) {
-    let total = 0;
-    for (let p = permissions.length - 1; p >= 0; p--) {
-      const perm = this.constructor.resolve(permissions[p]);
-      total |= perm;
-    }
-    if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
-    this.bitfield &= ~total;
-    return this;
-  }
-
-  /**
-   * Gets an object mapping permission name (like `VIEW_CHANNEL`) to a {@link boolean} indicating whether the
-   * permission is available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {Object}
-   */
-  serialize(checkAdmin = true) {
-    const serialized = {};
-    for (const perm in this.constructor.FLAGS) serialized[perm] = this.has(perm, checkAdmin);
-    return serialized;
+    return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
   }
 
   /**
@@ -154,48 +104,14 @@ class Permissions {
   missingPermissions(permissions, explicit = false) {
     return this.missing(permissions, !explicit);
   }
-
-  /**
-   * Gets an {@link Array} of permission names (such as `VIEW_CHANNEL`) based on the permissions available.
-   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
-   * @returns {string[]}
-   */
-  toArray(checkAdmin = true) {
-    return Object.keys(this.constructor.FLAGS).filter(perm => this.has(perm, checkAdmin));
-  }
-
-  /**
-   * Freezes these permissions, making them immutable.
-   * @returns {Permissions} These permissions
-   */
-  freeze() {
-    return Object.freeze(this);
-  }
-
-  valueOf() {
-    return this.bitfield;
-  }
-
-  /**
-   * Data that can be resolved to give a permission number. This can be:
-   * * A string (see {@link Permissions.FLAGS})
-   * * A permission number
-   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
-   */
-
-  /**
-   * Resolves permissions to their numeric form.
-   * @param {PermissionResolvable} permission - Permission(s) to resolve
-   * @returns {number}
-   */
-  static resolve(permission) {
-    if (permission instanceof Array) return permission.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    if (permission instanceof Permissions) return permission.bitfield;
-    if (typeof permission === 'string') permission = this.FLAGS[permission];
-    if (typeof permission !== 'number' || permission < 0) throw new RangeError(Constants.Errors.NOT_A_PERMISSION);
-    return permission;
-  }
 }
+
+/**
+ * Data that can be resolved to give a permission number. This can be:
+ * * A string (see {@link Permissions.FLAGS})
+ * * A permission number
+ * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
+ */
 
 /**
  * Numeric permission flags. All available properties:
@@ -208,6 +124,7 @@ class Permissions {
  * - `ADD_REACTIONS` (add new reactions to messages)
  * - `VIEW_AUDIT_LOG`
  * - `PRIORITY_SPEAKER`
+ * - `STREAM`
  * - `VIEW_CHANNEL`
  * - `READ_MESSAGES` **(deprecated)**
  * - `SEND_MESSAGES`
@@ -244,6 +161,7 @@ Permissions.FLAGS = {
   ADD_REACTIONS: 1 << 6,
   VIEW_AUDIT_LOG: 1 << 7,
   PRIORITY_SPEAKER: 1 << 8,
+  STREAM: 1 << 9,
 
   VIEW_CHANNEL: 1 << 10,
   READ_MESSAGES: 1 << 10,
@@ -282,7 +200,7 @@ Permissions.ALL = Object.keys(Permissions.FLAGS).reduce((all, p) => all | Permis
  * Bitfield representing the default permissions for users
  * @type {number}
  */
-Permissions.DEFAULT = 104324097;
+Permissions.DEFAULT = 104324673;
 
 /**
  * @class EvaluatedPermissions
@@ -297,9 +215,19 @@ Permissions.prototype.hasPermissions = util.deprecate(Permissions.prototype.hasP
   'EvaluatedPermissions#hasPermissions is deprecated, use Permissions#has instead');
 Permissions.prototype.missingPermissions = util.deprecate(Permissions.prototype.missingPermissions,
   'EvaluatedPermissions#missingPermissions is deprecated, use Permissions#missing instead');
+Object.defineProperty(Permissions.prototype, 'raw', {
+  get: util
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'raw').get,
+      'EvaluatedPermissions#raw is deprecated use Permissions#bitfield instead'),
+  set: util.deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'raw').set,
+    'EvaluatedPermissions#raw is deprecated use Permissions#bitfield instead'),
+});
 Object.defineProperty(Permissions.prototype, 'member', {
   get: util
     .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').get,
+      'EvaluatedPermissions#member is deprecated'),
+  set: util
+    .deprecate(Object.getOwnPropertyDescriptor(Permissions.prototype, 'member').set,
       'EvaluatedPermissions#member is deprecated'),
 });
 

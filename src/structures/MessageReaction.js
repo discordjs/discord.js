@@ -31,7 +31,7 @@ class MessageReaction {
      */
     this.users = new Collection();
 
-    this._emoji = new ReactionEmoji(this, emoji.name, emoji.id);
+    this._emoji = new ReactionEmoji(this, emoji);
   }
 
   /**
@@ -66,6 +66,17 @@ class MessageReaction {
     if (!userID) return Promise.reject(new Error('Couldn\'t resolve the user ID to remove from the reaction.'));
     return message.client.rest.methods.removeMessageReaction(
       message, this.emoji.identifier, userID
+    );
+  }
+
+  /**
+   * Removes this reaction from the message
+   * @returns {Promise<MessageReaction>}
+   */
+  removeAll() {
+    const message = this.message;
+    return message.client.rest.methods.removeMessageReactionEmoji(
+      message, this.emoji.identifier
     );
   }
 

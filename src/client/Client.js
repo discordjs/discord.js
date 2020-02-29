@@ -268,7 +268,7 @@ class Client extends EventEmitter {
    * <info>Both bot and regular user accounts are supported, but it is highly recommended to use a bot account whenever
    * possible. User accounts are subject to harsher ratelimits and other restrictions that don't apply to bot accounts.
    * Bot accounts also have access to many features that user accounts cannot utilise. Automating a user account is
-   * considered a violation of the ToS.</info>
+   * considered a violation of Discord's ToS.</info>
    * @param {string} token Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -349,7 +349,7 @@ class Client extends EventEmitter {
 
   /**
    * Obtains the available voice regions from Discord.
-   * @returns {Collection<string, VoiceRegion>}
+   * @returns {Promise<Collection<string, VoiceRegion>>}
    * @example
    * client.fetchVoiceRegions()
    *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
@@ -418,7 +418,7 @@ class Client extends EventEmitter {
    *   .catch(console.error);
    */
   generateInvite(permissions) {
-    permissions = typeof permissions === 'undefined' ? 0 : Permissions.resolve(permissions);
+    permissions = Permissions.resolve(permissions);
     return this.fetchApplication().then(application =>
       `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );

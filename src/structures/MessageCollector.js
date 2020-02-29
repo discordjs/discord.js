@@ -33,12 +33,9 @@ class MessageCollector extends Collector {
      */
     this.received = 0;
 
-    this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
     this.client.on('message', this.listener);
 
-    // For backwards compatibility (remove in v12)
-    if (this.options.max) this.options.maxProcessed = this.options.max;
-    if (this.options.maxMatches) this.options.max = this.options.maxMatches;
     this._reEmitter = message => {
       /**
        * Emitted when the collector receives a message.
@@ -81,8 +78,8 @@ class MessageCollector extends Collector {
    */
   postCheck() {
     // Consider changing the end reasons for v12
-    if (this.options.maxMatches && this.collected.size >= this.options.max) return 'matchesLimit';
-    if (this.options.max && this.received >= this.options.maxProcessed) return 'limit';
+    if (this.options.maxMatches && this.collected.size >= this.options.maxMatches) return 'matchesLimit';
+    if (this.options.max && this.received >= this.options.max) return 'limit';
     return null;
   }
 
@@ -95,7 +92,7 @@ class MessageCollector extends Collector {
     this.client.removeListener('message', this.listener);
     // This doesn't have a purpose for MessageCollector.
     this.client.removeListener('remove', this.removeListener);
-    this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
   }
 }
 

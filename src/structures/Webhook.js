@@ -3,6 +3,8 @@ const path = require('path');
 const Util = require('../util/Util');
 const Attachment = require('./Attachment');
 const RichEmbed = require('./RichEmbed');
+const Constants = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a webhook.
@@ -36,9 +38,9 @@ class Webhook extends EventEmitter {
     /**
      * The token for the webhook
      * @name Webhook#token
-     * @type {string}
+     * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', { value: data.token || null, writable: true, configurable: true });
 
     /**
      * The avatar for the webhook
@@ -51,6 +53,12 @@ class Webhook extends EventEmitter {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    /**
+     * The type of the webhook
+     * @type {WebhookTypes}
+     */
+    this.type = Constants.WebhookTypes[data.type];
 
     /**
      * The guild the webhook belongs to
@@ -73,6 +81,44 @@ class Webhook extends EventEmitter {
     } else {
       this.owner = null;
     }
+  }
+
+  /**
+   * The timestamp the webhook was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return Snowflake.deconstruct(this.id).timestamp;
+  }
+
+  /**
+   * The time the webhook was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the webhook user's avatar
+   * @type {?stirng}
+   * @readonly
+   */
+  get avatarURL() {
+    if (!this.avatar) return null;
+    return Constants.Endpoints.CDN(this.client.options.http.cdn).Avatar(this.id, this.avatar);
+  }
+
+  /**
+   * The url of this webhook
+   * @type {string}
+   * @readonly
+   */
+  get url() {
+    const API = `${this.client.options.http.host}/api/v${this.client.options.http.version}`;
+    return API + Constants.Endpoints.Webhook(this.id, this.token);
   }
 
   /**
@@ -181,7 +227,7 @@ class Webhook extends EventEmitter {
       else options.files = files;
     }
 
-    if (options.embeds) options.embeds = options.embeds.map(e => new RichEmbed(e)._apiTransform());
+    if (options.embeds) options.embeds = options.embeds.map(e => new RichEmbed(e).toJSON());
 
     if (options.files) {
       for (let i = 0; i < options.files.length; i++) {
@@ -277,18 +323,45 @@ class Webhook extends EventEmitter {
   }
 
   /**
+   * Options provided to edit a webhook.
+   * @property {string} [name] The new name for the webhook
+   * @property {BufferResolvable} [avatar] The new avatar for the webhook
+   * @property {ChannelResolvable} [channel] The new channel for the webhook
+   * @typedef {Object} WebhookEditOptions
+   */
+
+  /**
    * Edit the webhook.
-   * @param {string} name The new name for the webhook
-   * @param {BufferResolvable} [avatar] The new avatar for the webhook
+   * @param {string|WebhookEditOptions} nameOrOptions The new name for the webhook **(deprecated, use options)**
+   * Alternatively options for the webhook, overriding the avatar parameter.
+   * @param {BufferResolvable|string} [avatarOrReason] The new avatar for the webhook **(deprecated, use options)**
+   * Alternatively a reason to edit, if using options as first parameter.
    * @returns {Promise<Webhook>}
    */
-  edit(name = this.name, avatar) {
-    if (avatar) {
-      return this.client.resolver.resolveImage(avatar).then(data =>
-        this.client.rest.methods.editWebhook(this, name, data)
-      );
+  edit(nameOrOptions = this.name, avatarOrReason) {
+    if (typeof nameOrOptions !== 'object') {
+      process.emitWarning('Webhook#edit: Use options object instead of separate parameters.');
+      nameOrOptions = {
+        name: nameOrOptions,
+        avatar: avatarOrReason,
+      };
+      // Parameter was an avatar here; Clear the now reason parameter
+      avatarOrReason = undefined;
     }
-    return this.client.rest.methods.editWebhook(this, name);
+
+    if (nameOrOptions.channel) {
+      nameOrOptions.channel_id = this.client.resolver.resolveChannelID(nameOrOptions.channel);
+      nameOrOptions.channel = undefined;
+    }
+
+    if (nameOrOptions.avatar) {
+      return this.client.resolver.resolveImage(nameOrOptions.avatar).then(data => {
+        nameOrOptions.avatar = data;
+        return this.client.rest.methods.editWebhook(this, nameOrOptions, avatarOrReason);
+      });
+    }
+
+    return this.client.rest.methods.editWebhook(this, nameOrOptions, avatarOrReason);
   }
 
   /**

@@ -164,6 +164,7 @@ const Endpoints = exports.Endpoints = {
           nickname: `${base}/members/@me/nick`,
         };
       },
+      Integration: id => `${base}/integrations/${id}`,
     };
   },
   channels: '/channels',
@@ -264,11 +265,11 @@ exports.Status = {
 
 /**
  * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED
- * * CONNECTING
- * * AUTHENTICATING
- * * RECONNECTING
- * * DISCONNECTED
+ * * CONNECTED: 0
+ * * CONNECTING: 1
+ * * AUTHENTICATING: 2
+ * * RECONNECTING: 3
+ * * DISCONNECTED: 4
  * @typedef {number} VoiceStatus
  */
 exports.VoiceStatus = {
@@ -337,6 +338,8 @@ exports.Events = {
   GUILD_EMOJI_UPDATE: 'emojiUpdate',
   GUILD_BAN_ADD: 'guildBanAdd',
   GUILD_BAN_REMOVE: 'guildBanRemove',
+  INVITE_CREATE: 'inviteCreate',
+  INVITE_DELETE: 'inviteDelete',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
@@ -347,6 +350,7 @@ exports.Events = {
   MESSAGE_BULK_DELETE: 'messageDeleteBulk',
   MESSAGE_REACTION_ADD: 'messageReactionAdd',
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
+  MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   USER_UPDATE: 'userUpdate',
   USER_NOTE_UPDATE: 'userNoteUpdate',
@@ -365,11 +369,13 @@ exports.Events = {
 };
 
 /**
+ * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
  * * STREAMING
  * * LISTENING
  * * WATCHING
+ * * CUSTOM_STATUS
  * @typedef {string} ActivityType
  */
 exports.ActivityTypes = [
@@ -377,8 +383,20 @@ exports.ActivityTypes = [
   'STREAMING',
   'LISTENING',
   'WATCHING',
+  'CUSTOM_STATUS',
 ];
 
+/**
+ * Numeric activity flags. All available properties:
+ * * `INSTANCE`
+ * * `JOIN`
+ * * `SPECTATE`
+ * * `JOIN_REQUEST`
+ * * `SYNC`
+ * * `PLAY`
+ * @typedef {string} ActivityFlag
+ * @see {@link https://discordapp.com/developers/docs/topics/gateway#activity-object-activity-flags}
+ */
 exports.ActivityFlags = {
   INSTANCE: 1 << 0,
   JOIN: 1 << 1,
@@ -416,6 +434,7 @@ exports.ActivityFlags = {
  * * MESSAGE_DELETE_BULK
  * * MESSAGE_REACTION_ADD
  * * MESSAGE_REACTION_REMOVE
+ * * MESSAGE_REACTION_REMOVE_EMOJI
  * * MESSAGE_REACTION_REMOVE_ALL
  * * USER_UPDATE
  * * USER_NOTE_UPDATE
@@ -447,6 +466,8 @@ exports.WSEvents = {
   GUILD_BAN_ADD: 'GUILD_BAN_ADD',
   GUILD_BAN_REMOVE: 'GUILD_BAN_REMOVE',
   GUILD_EMOJIS_UPDATE: 'GUILD_EMOJIS_UPDATE',
+  INVITE_CREATE: 'INVITE_CREATE',
+  INVITE_DELETE: 'INVITE_DELETE',
   CHANNEL_CREATE: 'CHANNEL_CREATE',
   CHANNEL_DELETE: 'CHANNEL_DELETE',
   CHANNEL_UPDATE: 'CHANNEL_UPDATE',
@@ -457,6 +478,7 @@ exports.WSEvents = {
   MESSAGE_DELETE_BULK: 'MESSAGE_DELETE_BULK',
   MESSAGE_REACTION_ADD: 'MESSAGE_REACTION_ADD',
   MESSAGE_REACTION_REMOVE: 'MESSAGE_REACTION_REMOVE',
+  MESSAGE_REACTION_RMEOVE_EMOJI: 'MESSAGE_REACTION_REMOVE_EMOJI',
   MESSAGE_REACTION_REMOVE_ALL: 'MESSAGE_REACTION_REMOVE_ALL',
   USER_UPDATE: 'USER_UPDATE',
   USER_NOTE_UPDATE: 'USER_NOTE_UPDATE',
@@ -485,6 +507,9 @@ exports.WSEvents = {
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
  * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
+ * * CHANNEL_FOLLOW_ADD
+ * * GUILD_DISCOVERY_DISQUALIFIED
+ * * GUILD_DISCOVERY_REQUALIFIED
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -500,6 +525,11 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
+  'CHANNEL_FOLLOW_ADD',
+  // 13 isn't yet documented
+  null,
+  'GUILD_DISCOVERY_DISQUALIFIED',
+  'GUILD_DISCOVERY_REQUALIFIED',
 ];
 
 /**
@@ -748,6 +778,23 @@ exports.Colors = {
 };
 
 /**
+ * The value set for the verification levels for a guild:
+ * * None
+ * * Low
+ * * Medium
+ * * (╯°□°）╯︵ ┻━┻
+ * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
+ * @typedef {string} VerificationLevel
+ */
+exports.VerificationLevels = [
+  'None',
+  'Low',
+  'Medium',
+  '(╯°□°）╯︵ ┻━┻',
+  '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻',
+];
+
+/**
  * An error encountered while performing an API request. Here are the potential errors:
  * * UNKNOWN_ACCOUNT
  * * UNKNOWN_APPLICATION
@@ -771,7 +818,10 @@ exports.Colors = {
  * * MAXIMUM_PINS
  * * MAXIMUM_ROLES
  * * MAXIMUM_REACTIONS
+ * * MAXIMUM_CHANNELS
+ * * MAXIMUM_INVITES
  * * UNAUTHORIZED
+ * * USER_BANNED
  * * MISSING_ACCESS
  * * INVALID_ACCOUNT_TYPE
  * * CANNOT_EXECUTE_ON_DM
@@ -791,9 +841,13 @@ exports.Colors = {
  * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
  * * INVALID_OR_TAKEN_INVITE_CODE
  * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
+ * * INVALID_OAUTH_TOKEN
  * * BULK_DELETE_MESSAGE_TOO_OLD
- * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT
+ * * INVALID_FORM_BODY
+ * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
+ * * INVALID_API_VERSION
  * * REACTION_BLOCKED
+ * * RESOURCE_OVERLOADED
  * @typedef {string} APIError
  */
 exports.APIErrors = {
@@ -819,7 +873,10 @@ exports.APIErrors = {
   MAXIMUM_PINS: 30003,
   MAXIMUM_ROLES: 30005,
   MAXIMUM_REACTIONS: 30010,
+  MAXIMUM_CHANNELS: 30013,
+  MAXIMUM_INVITES: 30016,
   UNAUTHORIZED: 40001,
+  USER_BANNED: 40007,
   MISSING_ACCESS: 50001,
   INVALID_ACCOUNT_TYPE: 50002,
   CANNOT_EXECUTE_ON_DM: 50003,
@@ -839,9 +896,13 @@ exports.APIErrors = {
   CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL: 50019,
   INVALID_OR_TAKEN_INVITE_CODE: 50020,
   CANNOT_EXECUTE_ON_SYSTEM_MESSAGE: 50021,
+  INVALID_OAUTH_TOKEN: 50025,
   BULK_DELETE_MESSAGE_TOO_OLD: 50034,
-  INVITE_ACCEPTED_TO_GUILD_NOT_CONTANING_BOT: 50036,
+  INVALID_FORM_BODY: 50035,
+  INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
+  INVALID_API_VERSION: 50041,
   REACTION_BLOCKED: 90001,
+  RESOURCE_OVERLOADED: 130000,
 };
 
 /**
@@ -866,4 +927,17 @@ exports.MembershipStates = [
   null,
   'INVITED',
   'ACCEPTED',
+];
+
+/**
+ * The value set for a webhook's type:
+ * * Incoming
+ * * Channel Follower
+ * @typedef {string} WebhookTypes
+ */
+exports.WebhookTypes = [
+  // They start at 1
+  null,
+  'Incoming',
+  'Channel Follower',
 ];

@@ -8,6 +8,7 @@ const Util = require('../util/Util');
 const Collection = require('../util/Collection');
 const Constants = require('../util/Constants');
 const Permissions = require('../util/Permissions');
+const MessageFlags = require('../util/MessageFlags');
 let GuildMember;
 
 /**
@@ -64,13 +65,6 @@ class Message {
     this.author = this.client.dataManager.newUser(data.author, !data.webhook_id);
 
     /**
-     * Represents the author of the message as a guild member
-     * Only available if the message comes from a guild where the author is still a member
-     * @type {?GuildMember}
-     */
-    this.member = this.guild ? this.guild.member(this.author) || null : null;
-
-    /**
      * Whether or not this message is pinned
      * @type {boolean}
      */
@@ -84,7 +78,9 @@ class Message {
 
     /**
      * A random number or string used for checking message delivery
-     * @type {string}
+     * <warn>This is only received after the message was sent successfully, and
+     * lost if re-fetched</warn>
+     * @type {?string}
      */
     this.nonce = data.nonce;
 
@@ -92,7 +88,7 @@ class Message {
      * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
      * @type {boolean}
      */
-    this.system = data.type === 6;
+    this.system = data.type !== 0;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
@@ -135,7 +131,7 @@ class Message {
      * All valid mentions that the message contains
      * @type {MessageMentions}
      */
-    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone);
+    this.mentions = new Mentions(this, data.mentions, data.mention_roles, data.mention_everyone, data.mention_channels);
 
     /**
      * ID of the webhook that sent the message, if applicable
@@ -150,11 +146,46 @@ class Message {
     this.hit = typeof data.hit === 'boolean' ? data.hit : null;
 
     /**
+     * Flags that are applied to the message
+     * @type {Readonly<MessageFlags>}
+     */
+    this.flags = new MessageFlags(data.flags).freeze();
+
+    /**
+     * Reference data sent in a crossposted message.
+     * @typedef {Object} MessageReference
+     * @property {string} channelID ID of the channel the message was crossposted from
+     * @property {?string} guildID ID of the guild the message was crossposted from
+     * @property {?string} messageID ID of the message that was crossposted
+     */
+
+    /**
+     * Message reference data
+     * @type {?MessageReference}
+     */
+    this.reference = data.message_reference ? {
+      channelID: data.message_reference.channel_id,
+      guildID: data.message_reference.guild_id,
+      messageID: data.message_reference.message_id,
+    } : null;
+
+    /**
      * The previous versions of the message, sorted with the most recent first
      * @type {Message[]}
      * @private
      */
     this._edits = [];
+
+    if (data.member && this.guild && this.author && !this.guild.members.has(this.author.id)) {
+      this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
+    }
+
+    /**
+     * Represents the author of the message as a guild member
+     * Only available if the message comes from a guild where the author is still a member
+     * @type {?GuildMember}
+     */
+    this.member = this.guild ? this.guild.member(this.author) || null : null;
   }
 
   /**
@@ -184,8 +215,11 @@ class Message {
       this,
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
-      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone
+      'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
+      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels
     );
+
+    this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
   }
 
   /**
@@ -381,6 +415,7 @@ class Message {
    * @typedef {Object} MessageEditOptions
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
+   * @property {MessageFlagsResolvable} [flags] Message flags to apply
    */
 
   /**
@@ -526,6 +561,23 @@ class Message {
   }
 
   /**
+   * Suppresses or unsuppresses embeds on a message
+   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
+   * @returns {Promise<Message>}
+   */
+  suppressEmbeds(suppress = true) {
+    const flags = new MessageFlags(this.flags.bitfield);
+
+    if (suppress) {
+      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    } else {
+      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+    }
+
+    return this.edit(undefined, { flags });
+  }
+
+  /**
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
@@ -539,12 +591,12 @@ class Message {
     if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
     let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
+      this.author.id === message.author.id &&
+      this.content === message.content &&
+      this.tts === message.tts &&
+      this.nonce === message.nonce &&
+      this.embeds.length === message.embeds.length &&
+      this.attachments.length === message.attachments.length;
 
     if (equal && rawData) {
       equal = this.mentions.everyone === message.mentions.everyone &&
@@ -587,6 +639,10 @@ class Message {
     const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
     if (this.reactions.has(emojiID)) {
       const reaction = this.reactions.get(emojiID);
+      if (!user) {
+        this.reactions.delete(emojiID);
+        return reaction;
+      }
       if (reaction.users.has(user.id)) {
         reaction.users.delete(user.id);
         reaction.count--;

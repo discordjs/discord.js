@@ -1,10 +1,11 @@
 const Collection = require('../util/Collection');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Keeps track of mentions in a {@link Message}.
  */
 class MessageMentions {
-  constructor(message, users, roles, everyone) {
+  constructor(message, users, roles, everyone, crosspostedChannels) {
     /**
      * Whether `@everyone` or `@here` were mentioned
      * @type {boolean}
@@ -15,6 +16,7 @@ class MessageMentions {
       if (users instanceof Collection) {
         /**
          * Any users that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</info>
          * @type {Collection<Snowflake, User>}
          */
         this.users = new Collection(users);
@@ -24,6 +26,9 @@ class MessageMentions {
           let user = message.client.users.get(mention.id);
           if (!user) user = message.client.dataManager.newUser(mention);
           this.users.set(user.id, user);
+          if (mention.member && message.guild && !message.guild.members.has(mention.id)) {
+            message.guild._addMember(Object.assign(mention.member, { user }), false);
+          }
         }
       }
     } else {
@@ -34,6 +39,7 @@ class MessageMentions {
       if (roles instanceof Collection) {
         /**
          * Any roles that were mentioned
+         * <info>Order as received from the API, not as they appear in the message content</
          * @type {Collection<Snowflake, Role>}
          */
         this.roles = new Collection(roles);
@@ -82,10 +88,44 @@ class MessageMentions {
      * @private
      */
     this._channels = null;
+
+    /**
+     * Crossposted channel data.
+     * @typedef {Object} CrosspostedChannel
+     * @property {Snowflake} channelID ID of the mentioned channel
+     * @property {Snowflake} guildID ID of the guild that has the channel
+     * @property {string} type Type of the channel
+     * @property {string} name Name of the channel
+     */
+
+    if (crosspostedChannels) {
+      if (crosspostedChannels instanceof Collection) {
+        /**
+        * A collection of crossposted channels
+        * @type {Collection<Snowflake, CrosspostedChannel>}
+        */
+        this.crosspostedChannels = new Collection(crosspostedChannels);
+      } else {
+        this.crosspostedChannels = new Collection();
+        const channelTypes = Object.keys(ChannelTypes);
+        for (const d of crosspostedChannels) {
+          const type = channelTypes[d.type];
+          this.crosspostedChannels.set(d.id, {
+            channelID: d.id,
+            guildID: d.guild_id,
+            type: type ? type.toLowerCase() : 'unknown',
+            name: d.name,
+          });
+        }
+      }
+    } else {
+      this.crosspostedChannels = new Collection();
+    }
   }
 
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
+   * <info>Order as received from the API, not as they appear in the message content</
    * @type {?Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -102,6 +142,7 @@ class MessageMentions {
 
   /**
    * Any channels that were mentioned
+   * <info>Order as they appear first in the message content</info>
    * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */

@@ -91,6 +91,12 @@ class GuildMember {
     this.selfDeaf = data.self_deaf;
 
     /**
+     * Whether this member is streaming using "Go Live"
+     * @type {boolean}
+     */
+    this.selfStream = data.self_stream || false;
+
+    /**
      * The voice session ID of this member, if any
      * @type {?Snowflake}
      */
@@ -286,6 +292,7 @@ class GuildMember {
   get manageable() {
     if (this.user.id === this.guild.ownerID) return false;
     if (this.user.id === this.client.user.id) return false;
+    if (this.client.user.id === this.guild.ownerID) return true;
     return this.guild.me.highestRole.comparePositionTo(this.highestRole) > 0;
   }
 

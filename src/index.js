@@ -9,13 +9,16 @@ module.exports = {
   WebhookClient: require('./client/WebhookClient'),
 
   // Utilities
+  BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DiscordAPIError: require('./client/rest/DiscordAPIError'),
   EvaluatedPermissions: require('./util/Permissions'),
+  MessageFlags: require('./util/MessageFlags'),
   Permissions: require('./util/Permissions'),
   Snowflake: require('./util/Snowflake'),
   SnowflakeUtil: require('./util/Snowflake'),
+  SystemChannelFlags: require('./util/SystemChannelFlags'),
   Util: Util,
   util: Util,
   version: require('../package').version,
@@ -23,6 +26,7 @@ module.exports = {
   // Shortcuts to Util methods
   escapeMarkdown: Util.escapeMarkdown,
   fetchRecommendedShards: Util.fetchRecommendedShards,
+  resolveString: Util.resolveString,
   splitMessage: Util.splitMessage,
 
   // Structures
@@ -40,6 +44,7 @@ module.exports = {
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
   GuildChannel: require('./structures/GuildChannel'),
   GuildMember: require('./structures/GuildMember'),
+  Integration: require('./structures/Integration'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
   MessageAttachment: require('./structures/MessageAttachment'),

@@ -1,15 +1,15 @@
 const OpusEngine = require('./BaseOpusEngine');
 
-class NodeOpusEngine extends OpusEngine {
+class DiscordJsOpusEngine extends OpusEngine {
   constructor(player) {
     super(player);
-    const opus = require('node-opus');
+    const opus = require('@discordjs/opus');
     this.encoder = new opus.OpusEncoder(this.samplingRate, this.channels);
     super.init();
   }
 
   setBitrate(bitrate) {
-    this.encoder.applyEncoderCTL(this.ctl.BITRATE, Math.min(128, Math.max(16, bitrate)) * 1000);
+    this.encoder.setBitrate(Math.min(128, Math.max(16, bitrate)) * 1000);
   }
 
   setFEC(enabled) {
@@ -31,4 +31,4 @@ class NodeOpusEngine extends OpusEngine {
   }
 }
 
-module.exports = NodeOpusEngine;
+module.exports = DiscordJsOpusEngine;

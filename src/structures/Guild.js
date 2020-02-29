@@ -5,10 +5,12 @@ const Role = require('./Role');
 const Emoji = require('./Emoji');
 const Presence = require('./Presence').Presence;
 const GuildMember = require('./GuildMember');
+const Integration = require('./Integration');
 const Constants = require('../util/Constants');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
 const Snowflake = require('../util/Snowflake');
+const SystemChannelFlags = require('../util/SystemChannelFlags');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -185,6 +187,12 @@ class Guild {
       data.default_message_notifications;
 
     /**
+     * The value for the guild's system channel flags
+     * @type {Readonly<SystemChannelFlags>}
+     */
+    this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
+
+    /**
      * The type of premium tier:
      * * 0: NONE
      * * 1: TIER_1
@@ -267,6 +275,20 @@ class Guild {
     this.available = !data.unavailable;
     this.features = data.features || this.features || [];
 
+    /**
+     * The ID of the rules channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.rulesChannelID = data.rules_channel_id;
+
+    /**
+     * The ID of the public updates channel for the guild
+     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * @type {?Snowflake}
+     */
+    this.publicUpdatesChannelID = data.public_updates_channel_id;
+
     if (data.members) {
       this.members.clear();
       for (const guildUser of data.members) this._addMember(guildUser, false);
@@ -310,6 +332,7 @@ class Guild {
           member.serverDeaf = voiceState.deaf;
           member.selfMute = voiceState.self_mute;
           member.selfDeaf = voiceState.self_deaf;
+          member.selfStream = voiceState.self_stream || false;
           member.voiceSessionID = voiceState.session_id;
           member.voiceChannelID = voiceState.channel_id;
           voiceChannel.members.set(member.user.id, member);
@@ -550,6 +573,26 @@ class Guild {
   }
 
   /**
+   * Rules channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get rulesChannel() {
+    return this.client.channels.get(this.rulesChannelID) || null;
+  }
+
+  /**
+   * Public updates channel for this guild
+   * <info>This is only available on guilds with the `PUBLIC` feature</info>
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get publicUpdatesChannel() {
+    return this.client.channels.get(this.publicUpdatesChannelID) || null;
+  }
+
+  /**
    * The client user as a GuildMember of this guild
    * @type {?GuildMember}
    * @readonly
@@ -631,6 +674,42 @@ class Guild {
         for (const ban of bans.values()) users.set(ban.user.id, ban.user);
         return users;
       });
+  }
+
+  /**
+   * Fetches a collection of integrations to this guild.
+   * Resolves with a collection mapping integrations by their ids.
+   * @returns {Promise<Collection<string, Integration>>}
+   * @example
+   * // Fetch integrations
+   * guild.fetchIntegrations()
+   *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
+   *   .catch(console.error);
+   */
+  fetchIntegrations() {
+    return this.client.rest.methods.getIntegrations(this).then(data =>
+      data.reduce((collection, integration) =>
+        collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection())
+    );
+  }
+
+  /**
+   * The data for creating an integration.
+   * @typedef {Object} IntegrationData
+   * @property {string} id The integration id
+   * @property {string} type The integration type
+   */
+
+  /**
+   * Creates an integration by attaching an integration object
+   * @param {IntegrationData} data The data for thes integration
+   * @param {string} reason Reason for creating the integration
+   * @returns {Promise<Guild>}
+   */
+  createIntegration(data, reason) {
+    return this.client.rest.methods.createIntegration(this, data, reason)
+      .then(() => this);
   }
 
   /**
@@ -850,8 +929,10 @@ class Guild {
    * @property {ChannelResolvable} [systemChannel] The system channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
+   * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
    * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    */
 
   /**
@@ -883,6 +964,7 @@ class Guild {
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.resolver.resolveUser(data.owner).id;
     if (typeof data.splash !== 'undefined') _data.splash = data.splash;
+    if (typeof data.banner !== 'undefined') _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter = Number(data.explicitContentFilter);
     }
@@ -891,7 +973,20 @@ class Guild {
         Constants.DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
         Number(data.defaultMessageNotifications);
     }
+    if (typeof data.systemChannelFlags !== 'undefined') {
+      _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
+    }
     return this.client.rest.methods.updateGuild(this, _data, reason);
+  }
+
+  /**
+   * Sets a new guild banner.
+   * @param {BufferResolvable|Base64Resolvable} banner The new banner of the guild
+   * @param {string} [reason] Reason for changing the guild's banner
+   * @returns {Guild}
+   */
+  setBanner(banner, reason) {
+    return this.client.resolver.resolveImage(banner).then(data => this.edit({ banner: data }, reason));
   }
 
   /**
@@ -913,6 +1008,16 @@ class Guild {
    */
   setDefaultMessageNotifications(defaultMessageNotifications, reason) {
     return this.edit({ defaultMessageNotifications }, reason);
+  }
+
+  /**
+   * Edits the flags of the default message notifications of the guild.
+   * @param {SystemChannelFlagsResolvable} systemChannelFlags The new flags for the default message notifications
+   * @param {string} [reason] Reason for changing the flags of the default message notifications
+   * @returns {Promise<Guild>}
+   */
+  setSystemChannelFlags(systemChannelFlags, reason) {
+    return this.edit({ systemChannelFlags }, reason);
   }
 
   /**
@@ -1418,6 +1523,7 @@ class Guild {
       member.serverDeaf = voiceState.deaf;
       member.selfMute = voiceState.self_mute;
       member.selfDeaf = voiceState.self_deaf;
+      member.selfStream = voiceState.self_stream || false;
       member.voiceSessionID = voiceState.session_id;
       member.voiceChannelID = voiceState.channel_id;
       if (this.client.channels.has(voiceState.channel_id)) {
@@ -1442,10 +1548,13 @@ class Guild {
   _updateMember(member, data) {
     const oldMember = Util.cloneObject(member);
 
+    if (data.premium_since) member.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if (data.roles) member._roles = data.roles;
     if (typeof data.nick !== 'undefined') member.nickname = data.nick;
 
-    const notSame = member.nickname !== oldMember.nickname || !Util.arraysEqual(member._roles, oldMember._roles);
+    const notSame = member.nickname !== oldMember.nickname ||
+    member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp ||
+    !Util.arraysEqual(member._roles, oldMember._roles);
 
     if (this.client.ws.connection.status === Constants.Status.READY && notSame) {
       /**

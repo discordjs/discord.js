@@ -22,6 +22,8 @@ const Guild = require('../../structures/Guild');
 const VoiceRegion = require('../../structures/VoiceRegion');
 const GuildAuditLogs = require('../../structures/GuildAuditLogs');
 
+const MessageFlags = require('../../util/MessageFlags');
+
 class RESTMethods {
   constructor(restManager) {
     this.rest = restManager;
@@ -132,8 +134,10 @@ class RESTMethods {
     });
   }
 
-  updateMessage(message, content, { embed, code, reply } = {}) {
+  updateMessage(message, content, { flags, embed, code, reply } = {}) {
     if (typeof content !== 'undefined') content = this.client.resolver.resolveString(content);
+
+    if (typeof flags !== 'undefined') flags = MessageFlags.resolve(flags);
 
     // Wrap everything in a code block
     if (typeof code !== 'undefined' && (typeof code !== 'boolean' || code === true)) {
@@ -148,10 +152,10 @@ class RESTMethods {
       content = `${mention}${content ? `, ${content}` : ''}`;
     }
 
-    if (embed instanceof RichEmbed) embed = embed._apiTransform();
+    if (embed instanceof RichEmbed) embed = embed.toJSON();
 
     return this.rest.makeRequest('patch', Endpoints.Message(message), true, {
-      content, embed,
+      content, embed, flags,
     }).then(data => this.client.actions.MessageUpdate.handle(data).updated);
   }
 
@@ -238,7 +242,7 @@ class RESTMethods {
       include_nsfw: options.nsfw,
     };
 
-    for (const key in options) if (options[key] === undefined) delete options[key];
+    for (const key of Object.keys(options)) if (options[key] === undefined) delete options[key];
     const queryString = (querystring.stringify(options).match(/[^=&?]+=[^=&?]+/g) || []).join('&');
 
     let endpoint;
@@ -276,7 +280,7 @@ class RESTMethods {
     return this.rest.makeRequest('post', Endpoints.Guild(guild).channels, true, {
       name,
       topic,
-      type: type ? Constants.ChannelTypes[type.toUpperCase()] : 'text',
+      type: type ? Constants.ChannelTypes[type.toUpperCase()] : Constants.ChannelTypes.TEXT,
       nsfw,
       bitrate,
       user_limit: userLimit,
@@ -522,7 +526,7 @@ class RESTMethods {
       data.channel_id = null;
       data.channel = undefined;
     }
-    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+    if (data.roles) data.roles = [...new Set(data.roles.map(role => role instanceof Role ? role.id : role))];
 
     let endpoint = Endpoints.Member(member);
     // Fix your endpoints, discord ;-;
@@ -801,13 +805,23 @@ class RESTMethods {
       .then(data => new Webhook(this.client, data));
   }
 
-  editWebhook(webhook, name, avatar) {
-    return this.rest.makeRequest('patch', Endpoints.Webhook(webhook.id, webhook.token), false, {
-      name,
-      avatar,
-    }).then(data => {
+  editWebhook(webhook, options, reason) {
+    let endpoint;
+    let auth;
+
+    // Changing the channel of a webhook or specifying a reason requires a bot token
+    if (options.channel_id || reason) {
+      endpoint = Endpoints.Webhook(webhook.id);
+      auth = true;
+    } else {
+      endpoint = Endpoints.Webhook(webhook.id, webhook.token);
+      auth = false;
+    }
+
+    return this.rest.makeRequest('patch', endpoint, auth, options, undefined, reason).then(data => {
       webhook.name = data.name;
       webhook.avatar = data.avatar;
+      webhook.channelID = data.channel_id;
       return webhook;
     });
   }
@@ -935,6 +949,17 @@ class RESTMethods {
     );
   }
 
+  removeMessageReactionEmoji(message, emoji) {
+    const endpoint = Endpoints.Message(message).Reaction(emoji);
+    return this.rest.makeRequest('delete', endpoint, true).then(() =>
+      this.client.actions.MessageReactionRemoveEmoji.handle({
+        message_id: message.id,
+        emoji: Util.parseEmoji(emoji),
+        channel_id: message.channel.id,
+      }).reaction
+    );
+  }
+
   removeMessageReactions(message) {
     return this.rest.makeRequest('delete', Endpoints.Message(message).reactions, true)
       .then(() => message);
@@ -987,6 +1012,55 @@ class RESTMethods {
 
   patchClientUserGuildSettings(guildID, data) {
     return this.rest.makeRequest('patch', Constants.Endpoints.User('@me').Guild(guildID).settings, true, data);
+  }
+
+  getIntegrations(guild) {
+    return this.rest.makeRequest(
+      'get',
+      Constants.Endpoints.Guild(guild.id).integrations,
+      true
+    );
+  }
+
+  createIntegration(guild, data, reason) {
+    return this.rest.makeRequest(
+      'post',
+      Constants.Endpoints.Guild(guild.id).integrations,
+      true,
+      data,
+      undefined,
+      reason
+    );
+  }
+
+  syncIntegration(integration) {
+    return this.rest.makeRequest(
+      'post',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true
+    );
+  }
+
+  editIntegration(integration, data, reason) {
+    return this.rest.makeRequest(
+      'patch',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true,
+      data,
+      undefined,
+      reason
+    );
+  }
+
+  deleteIntegration(integration, reason) {
+    return this.rest.makeRequest(
+      'delete',
+      Constants.Endpoints.Guild(integration.guild.id).Integration(integration.id),
+      true,
+      undefined,
+      undefined,
+      reason
+    );
   }
 }
 
