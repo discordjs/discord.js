@@ -2518,10 +2518,10 @@ declare module 'discord.js' {
   interface GuildCreateChannelOptions {
     permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
-		type?: Exclude<
-			keyof typeof ChannelType | ChannelType,
-			'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
-		>;
+    type?: Exclude<
+        keyof typeof ChannelType | ChannelType,
+        'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
+    >;
     nsfw?: boolean;
     parent?: ChannelResolvable;
     bitrate?: number;
