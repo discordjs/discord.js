@@ -17,9 +17,9 @@ const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
 const { Events, browser, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
+const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
-const Intents = require('../util/Intents');
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
