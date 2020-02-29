@@ -65,7 +65,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
+    this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
