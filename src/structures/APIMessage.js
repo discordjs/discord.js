@@ -88,12 +88,19 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
-    const disableMentions =
-      typeof this.options.disableMentions === 'undefined'
-        ? this.target.client.options.disableMentions
-        : this.options.disableMentions;
-    if (disableMentions) {
+    const disableMentions = typeof this.options.disableMentions === 'undefined' ?
+      this.target.client.options.disableMentions :
+      this.options.disableMentions;
+    if (disableMentions === 'all') {
       content = Util.removeMentions(content || '');
+    } else if (disableMentions === 'everyone') {
+      content = (content || '').replace(/@([^<>@ ]*)/gsmu, (match, target) => {
+        if (target.match(/^[&!]?\d+$/)) {
+          return `@${target}`;
+        } else {
+          return `@\u200b${target}`;
+        }
+      });
     }
 
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;

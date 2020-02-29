@@ -190,24 +190,28 @@ class GuildChannel extends Channel {
 
   /**
    * Replaces the permission overwrites in this channel.
-   * @param {Object} [options] Options
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [options.permissionOverwrites]
+   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} overwrites
    * Permission overwrites the channel gets updated with
-   * @param {string} [options.reason] Reason for updating the channel overwrites
+   * @param {string} [reason] Reason for updating the channel overwrites
    * @returns {Promise<GuildChannel>}
    * @example
-   * channel.overwritePermissions({
-   * permissionOverwrites: [
+   * channel.overwritePermissions([
    *   {
    *      id: message.author.id,
    *      deny: ['VIEW_CHANNEL'],
    *   },
-   * ],
-   *   reason: 'Needed to change permissions'
-   * });
+   * ], 'Needed to change permissions');
    */
-  overwritePermissions(options = {}) {
-    return this.edit(options).then(() => this);
+  overwritePermissions(overwrites, reason) {
+    if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
+      return Promise.reject(new TypeError(
+        'INVALID_TYPE',
+        'overwrites',
+        'Array or Collection of Permission Overwrites',
+        true,
+      ));
+    }
+    return this.edit({ permissionOverwrites: overwrites, reason }).then(() => this);
   }
 
   /**

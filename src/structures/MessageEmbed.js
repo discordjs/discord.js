@@ -65,7 +65,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
+    this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
@@ -429,7 +429,13 @@ class MessageEmbed {
    * @returns {EmbedField[]}
    */
   static normalizeFields(...fields) {
-    return fields.flat(2).map(({ name, value, inline }) => this.normalizeField(name, value, inline));
+    return fields.flat(2).map(field =>
+      this.normalizeField(
+        field && field.name,
+        field && field.value,
+        field && typeof field.inline === 'boolean' ? field.inline : false,
+      ),
+    );
   }
 }
 

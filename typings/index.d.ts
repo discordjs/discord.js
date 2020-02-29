@@ -787,7 +787,7 @@ declare module 'discord.js' {
 		public equals(channel: GuildChannel): boolean;
 		public fetchInvites(): Promise<Collection<string, Invite>>;
 		public lockPermissions(): Promise<this>;
-		public overwritePermissions(options?: { permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string; }): Promise<this>;
+		public overwritePermissions(overwrites: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>, reason?: string): Promise<this>;
 		public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
 		public setName(name: string, reason?: string): Promise<this>;
 		public setParent(channel: GuildChannel | Snowflake, options?: { lockPermissions?: boolean; reason?: string; }): Promise<this>;
@@ -1784,7 +1784,7 @@ declare module 'discord.js' {
 		constructor(guild: Guild, iterable?: Iterable<any>);
 		public guild: Guild;
 		public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
-		public fetch(options: UserResolvable | FetchMemberOptions): Promise<GuildMember>;
+		public fetch(options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable })): Promise<GuildMember>;
 		public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
 		public prune(options: GuildPruneMembersOptions & { dry?: false; count: false; }): Promise<null>;
 		public prune(options?: GuildPruneMembersOptions): Promise<number>;
@@ -2062,7 +2062,7 @@ declare module 'discord.js' {
 		messageCacheLifetime?: number;
 		messageSweepInterval?: number;
 		fetchAllMembers?: boolean;
-		disableMentions?: boolean;
+		disableMentions?: 'none' | 'all' | 'everyone';
 		partials?: PartialTypes[];
 		restWsBridgeTimeout?: number;
 		restTimeOffset?: number;
@@ -2207,8 +2207,10 @@ declare module 'discord.js' {
 	}
 
 	interface FetchMembersOptions {
+		user?: UserResolvable | UserResolvable[];
 		query?: string;
 		limit?: number;
+		withPresences?: boolean;
 	}
 
 	interface FileOptions {
@@ -2467,7 +2469,7 @@ declare module 'discord.js' {
 		url?: string;
 		timestamp?: Date | number;
 		color?: ColorResolvable;
-		fields?: EmbedField[];
+		fields?: EmbedFieldData[];
 		files?: (MessageAttachment | string | FileOptions)[];
 		author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string; };
 		thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string; };
@@ -2512,7 +2514,7 @@ declare module 'discord.js' {
 		nonce?: string;
 		content?: string;
 		embed?: MessageEmbed | MessageEmbedOptions;
-		disableMentions?: boolean;
+		disableMentions?: 'none' | 'all' | 'everyone';
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;
@@ -2761,7 +2763,7 @@ declare module 'discord.js' {
 		tts?: boolean;
 		nonce?: string;
 		embeds?: (MessageEmbed | object)[];
-		disableMentions?: boolean;
+		disableMentions?: 'none' | 'all' | 'everyone';
 		files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
 		code?: string | boolean;
 		split?: boolean | SplitOptions;

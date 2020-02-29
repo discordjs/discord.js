@@ -5,10 +5,10 @@ const Discord = require('../src');
 const { Util } = Discord;
 
 const client = new Discord.Client({
-  // To see a difference, comment out disableMentions and run the same tests using disableEveryone
-  // You will notice that all messages will mention @everyone
-  // disableEveryone: true
-  disableMentions: true,
+    // To see a difference, comment out disableMentions and run the same tests using disableEveryone
+    // You will notice that all messages will mention @everyone
+    //disableEveryone: true
+    disableMentions: 'everyone'
 });
 
 const tests = [
