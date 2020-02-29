@@ -11,7 +11,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
-    "prettier": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf src/**/*.js",
+    "prettier": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf src/**/*.js typings/**/*.ts",
     "build:browser": "webpack",
     "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
   },
