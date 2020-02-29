@@ -484,11 +484,7 @@ exports.Colors = {
  * * ALL_MEMBERS
  * @typedef {string} ExplicitContentFilterLevel
  */
-exports.ExplicitContentFilterLevels = [
-  'DISABLED',
-  'MEMBERS_WITHOUT_ROLES',
-  'ALL_MEMBERS',
-];
+exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS'];
 
 /**
  * The value set for the verification levels for a guild:
@@ -499,13 +495,7 @@ exports.ExplicitContentFilterLevels = [
  * * VERY_HIGH
  * @typedef {string} VerificationLevel
  */
-exports.VerificationLevels = [
-  'NONE',
-  'LOW',
-  'MEDIUM',
-  'HIGH',
-  'VERY_HIGH',
-];
+exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:

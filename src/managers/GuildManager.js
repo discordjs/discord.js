@@ -1,24 +1,21 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const DataResolver = require('../util/DataResolver');
+const Guild = require('../structures/Guild');
+const GuildChannel = require('../structures/GuildChannel');
+const GuildEmoji = require('../structures/GuildEmoji');
+const GuildMember = require('../structures/GuildMember');
+const Invite = require('../structures/Invite');
+const Role = require('../structures/Role');
 const {
   Events,
   VerificationLevels,
   DefaultMessageNotifications,
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
-const Guild = require('../structures/Guild');
-const GuildChannel = require('../structures/GuildChannel');
-const GuildMember = require('../structures/GuildMember');
+const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
 const { resolveColor } = require('../util/Util');
-const GuildEmoji = require('../structures/GuildEmoji');
-const GuildMember = require('../structures/GuildMember');
-const Invite = require('../structures/Invite');
-const Role = require('../structures/Role');
-const { Events } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for Guilds and stores their cache.
@@ -143,15 +140,18 @@ class GuildManager extends BaseManager {
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
-  async create(name, {
-    channels = [],
-    defaultMessageNotifications,
-    explicitContentFilter,
-    icon = null,
-    region,
-    roles = [],
-    verificationLevel,
-  } = {}) {
+  async create(
+    name,
+    {
+      channels = [],
+      defaultMessageNotifications,
+      explicitContentFilter,
+      icon = null,
+      region,
+      roles = [],
+      verificationLevel,
+    } = {},
+  ) {
     icon = await DataResolver.resolveImage(icon);
     if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
       verificationLevel = VerificationLevels.indexOf(verificationLevel);
@@ -178,16 +178,19 @@ class GuildManager extends BaseManager {
       if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
     }
     return new Promise((resolve, reject) =>
-      this.client.api.guilds.post({ data: {
-        name,
-        region,
-        icon,
-        verification_level: verificationLevel,
-        default_message_notifications: defaultMessageNotifications,
-        explicit_content_filter: explicitContentFilter,
-        channels,
-        roles,
-      } })
+      this.client.api.guilds
+        .post({
+          data: {
+            name,
+            region,
+            icon,
+            verification_level: verificationLevel,
+            default_message_notifications: defaultMessageNotifications,
+            explicit_content_filter: explicitContentFilter,
+            channels,
+            roles,
+          },
+        })
         .then(data => {
           if (this.client.guilds.cache.has(data.id)) return resolve(this.client.guilds.cache.get(data.id));
 

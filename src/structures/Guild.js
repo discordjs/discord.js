@@ -5,6 +5,14 @@ const GuildAuditLogs = require('./GuildAuditLogs');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
+const Webhook = require('./Webhook');
+const GuildChannelManager = require('../src/managers/GuildChannelManager');
+const GuildEmojiManager = require('../src/managers/GuildEmojiManager');
+const GuildMemberManager = require('../src/managers/GuildMemberManager');
+const PresenceManager = require('../src/managers/PresenceManager');
+const RoleManager = require('../src/managers/RoleManager');
+const VoiceStateManager = require('../src/managers/VoiceStateManager');
+const Collection = require('../util/Collection');
 const {
   ChannelTypes,
   DefaultMessageNotifications,
@@ -12,8 +20,6 @@ const {
   VerificationLevels,
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
-const Collection = require('../util/Collection');
-const { ChannelTypes, DefaultMessageNotifications, PartialTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Snowflake = require('../util/Snowflake');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
@@ -892,9 +898,10 @@ class Guild extends Base {
     if (data.name) _data.name = data.name;
     if (data.region) _data.region = data.region;
     if (typeof data.verificationLevel !== 'undefined') {
-      _data.verification_level = typeof data.verificationLevel === 'number' ?
-        Number(data.verificationLevel) :
-        ExplicitContentFilterLevels.indexOf(data.verificationLevel);
+      _data.verification_level =
+        typeof data.verificationLevel === 'number'
+          ? Number(data.verificationLevel)
+          : ExplicitContentFilterLevels.indexOf(data.verificationLevel);
     }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
@@ -908,14 +915,16 @@ class Guild extends Base {
     if (data.splash) _data.splash = data.splash;
     if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
-      _data.explicit_content_filter = typeof data.explicitContentFilter === 'number' ?
-        data.explicitContentFilter :
-        ExplicitContentFilterLevels.indexOf(data.explicitContentFilter);
+      _data.explicit_content_filter =
+        typeof data.explicitContentFilter === 'number'
+          ? data.explicitContentFilter
+          : ExplicitContentFilterLevels.indexOf(data.explicitContentFilter);
     }
     if (typeof data.defaultMessageNotifications !== 'undefined') {
-      _data.default_message_notifications = typeof data.defaultMessageNotifications === 'string' ?
-        DefaultMessageNotifications.indexOf(data.defaultMessageNotifications) :
-        data.defaultMessageNotifications;
+      _data.default_message_notifications =
+        typeof data.defaultMessageNotifications === 'string'
+          ? DefaultMessageNotifications.indexOf(data.defaultMessageNotifications)
+          : data.defaultMessageNotifications;
     }
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
