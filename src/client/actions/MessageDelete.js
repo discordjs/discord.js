@@ -26,5 +26,4 @@ class MessageDeleteAction extends Action {
   }
 }
 
-
 module.exports = MessageDeleteAction;

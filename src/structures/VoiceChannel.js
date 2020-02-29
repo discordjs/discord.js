@@ -1,10 +1,10 @@
 'use strict';
 
 const GuildChannel = require('./GuildChannel');
+const { Error } = require('../errors');
+const Collection = require('../util/Collection');
 const { browser } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Collection = require('../util/Collection');
-const { Error } = require('../errors');
 
 /**
  * Represents a guild voice channel on Discord.

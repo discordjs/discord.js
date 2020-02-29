@@ -1,7 +1,7 @@
 'use strict';
 
-const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 const BasePlayer = require('./BasePlayer');
+const BroadcastDispatcher = require('../dispatcher/BroadcastDispatcher');
 
 /**
  * An Audio Player for a Voice Connection.
@@ -20,7 +20,7 @@ class AudioPlayer extends BasePlayer {
 
   createDispatcher(options, streams) {
     this.destroyDispatcher();
-    const dispatcher = this.dispatcher = new BroadcastDispatcher(this, options, streams);
+    const dispatcher = (this.dispatcher = new BroadcastDispatcher(this, options, streams));
     return dispatcher;
   }
 }

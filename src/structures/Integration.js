@@ -98,7 +98,10 @@ class Integration extends Base {
    */
   sync() {
     this.syncing = true;
-    return this.client.api.guilds(this.guild.id).integrations(this.id).post()
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .post()
       .then(() => {
         this.syncing = false;
         this.syncedAt = Date.now();
@@ -129,7 +132,10 @@ class Integration extends Base {
       data.expireGracePeriod = null;
     }
     // The option enable_emoticons is only available for Twitch at this moment
-    return this.client.api.guilds(this.guild.id).integrations(this.id).patch({ data, reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .patch({ data, reason })
       .then(() => {
         this._patch(data);
         return this;
@@ -142,7 +148,10 @@ class Integration extends Base {
    * @param {string} [reason] Reason for deleting this integration
    */
   delete(reason) {
-    return this.client.api.guilds(this.guild.id).integrations(this.id).delete({ reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .delete({ reason })
       .then(() => this);
   }
 

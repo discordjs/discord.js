@@ -1,10 +1,10 @@
 'use strict';
 
-const Snowflake = require('../util/Snowflake');
-const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
+const Permissions = require('../util/Permissions');
+const Snowflake = require('../util/Snowflake');
+const Util = require('../util/Util');
 
 /**
  * Represents a role on Discord.
@@ -180,25 +180,31 @@ class Role extends Base {
     if (typeof data.permissions !== 'undefined') data.permissions = Permissions.resolve(data.permissions);
     else data.permissions = this.permissions.bitfield;
     if (typeof data.position !== 'undefined') {
-      await Util.setPosition(this, data.position, false, this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles, reason)
-        .then(updatedRoles => {
-          this.client.actions.GuildRolesPositionUpdate.handle({
-            guild_id: this.guild.id,
-            roles: updatedRoles,
-          });
+      await Util.setPosition(
+        this,
+        data.position,
+        false,
+        this.guild._sortedRoles(),
+        this.client.api.guilds(this.guild.id).roles,
+        reason,
+      ).then(updatedRoles => {
+        this.client.actions.GuildRolesPositionUpdate.handle({
+          guild_id: this.guild.id,
+          roles: updatedRoles,
         });
+      });
     }
-    return this.client.api.guilds[this.guild.id].roles[this.id].patch({
-      data: {
-        name: data.name || this.name,
-        color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
-        hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-        permissions: data.permissions,
-        mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
-      },
-      reason,
-    })
+    return this.client.api.guilds[this.guild.id].roles[this.id]
+      .patch({
+        data: {
+          name: data.name || this.name,
+          color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
+          hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
+          permissions: data.permissions,
+          mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
+        },
+        reason,
+      })
       .then(role => {
         const clone = this._clone();
         clone._patch(role);
@@ -312,15 +318,20 @@ class Role extends Base {
    *   .catch(console.error);
    */
   setPosition(position, { relative, reason } = {}) {
-    return Util.setPosition(this, position, relative,
-      this.guild._sortedRoles(), this.client.api.guilds(this.guild.id).roles, reason)
-      .then(updatedRoles => {
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.guild.id,
-          roles: updatedRoles,
-        });
-        return this;
+    return Util.setPosition(
+      this,
+      position,
+      relative,
+      this.guild._sortedRoles(),
+      this.client.api.guilds(this.guild.id).roles,
+      reason,
+    ).then(updatedRoles => {
+      this.client.actions.GuildRolesPositionUpdate.handle({
+        guild_id: this.guild.id,
+        roles: updatedRoles,
       });
+      return this;
+    });
   }
 
   /**
@@ -334,11 +345,10 @@ class Role extends Base {
    *   .catch(console.error);
    */
   delete(reason) {
-    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason })
-      .then(() => {
-        this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
-        return this;
-      });
+    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason }).then(() => {
+      this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
+      return this;
+    });
   }
 
   /**
@@ -349,14 +359,16 @@ class Role extends Base {
    * @returns {boolean}
    */
   equals(role) {
-    return role &&
+    return (
+      role &&
       this.id === role.id &&
       this.name === role.name &&
       this.color === role.color &&
       this.hoist === role.hoist &&
       this.position === role.position &&
       this.permissions.bitfield === role.permissions.bitfield &&
-      this.managed === role.managed;
+      this.managed === role.managed
+    );
   }
 
   /**

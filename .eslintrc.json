@@ -1,5 +1,6 @@
 {
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "plugins": ["import"],
   "parserOptions": {
     "ecmaVersion": 2019
   },
@@ -7,42 +8,58 @@
     "es6": true,
     "node": true
   },
-  "overrides": [
-    { "files": ["*.browser.js"], "env": { "browser": true } }
-  ],
+  "overrides": [{ "files": ["*.browser.js"], "env": { "browser": true } }],
   "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", "index", "sibling", "parent"],
+        "alphabetize": {
+          "order": "asc"
+        }
+      }
+    ],
+    "prettier/prettier": [
+      2,
+      {
+        "printWidth": 120,
+        "singleQuote": true,
+        "quoteProps": "as-needed",
+        "trailingComma": "all",
+        "endOfLine": "lf"
+      }
+    ],
     "strict": ["error", "global"],
     "no-await-in-loop": "warn",
     "no-compare-neg-zero": "error",
-    "no-extra-parens": ["warn", "all", {
-      "nestedBinaryExpressions": false
-    }],
     "no-template-curly-in-string": "error",
     "no-unsafe-negation": "error",
-    "valid-jsdoc": ["error", {
-      "requireReturn": false,
-      "requireReturnDescription": false,
-      "prefer": {
-        "return": "returns",
-        "arg": "param"
-      },
-      "preferType": {
-        "String": "string",
-        "Number": "number",
-        "Boolean": "boolean",
-        "Symbol": "symbol",
-        "object": "Object",
-        "function": "Function",
-        "array": "Array",
-        "date": "Date",
-        "error": "Error",
-        "null": "void"
+    "valid-jsdoc": [
+      "error",
+      {
+        "requireReturn": false,
+        "requireReturnDescription": false,
+        "prefer": {
+          "return": "returns",
+          "arg": "param"
+        },
+        "preferType": {
+          "String": "string",
+          "Number": "number",
+          "Boolean": "boolean",
+          "Symbol": "symbol",
+          "object": "Object",
+          "function": "Function",
+          "array": "Array",
+          "date": "Date",
+          "error": "Error",
+          "null": "void"
+        }
       }
-    }],
+    ],
 
     "accessor-pairs": "warn",
     "array-callback-return": "error",
-    "complexity": "warn",
     "consistent-return": "error",
     "curly": ["error", "multi-line", "consistent"],
     "dot-location": ["error", "property"],
@@ -100,7 +117,6 @@
     "func-names": "error",
     "func-name-matching": "error",
     "func-style": ["error", "declaration", { "allowArrowFunctions": true }],
-    "indent": ["error", 2, { "SwitchCase": 1 }],
     "key-spacing": "error",
     "keyword-spacing": "error",
     "max-depth": "error",
@@ -112,7 +128,6 @@
     "no-array-constructor": "error",
     "no-inline-comments": "error",
     "no-lonely-if": "error",
-    "no-mixed-operators": "error",
     "no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1, "maxBOF": 0 }],
     "no-new-object": "error",
     "no-spaced-func": "error",
@@ -122,18 +137,20 @@
     "nonblock-statement-body-position": "error",
     "object-curly-spacing": ["error", "always"],
     "operator-assignment": "error",
-    "operator-linebreak": ["error", "after"],
     "padded-blocks": ["error", "never"],
     "quote-props": ["error", "as-needed"],
     "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
     "semi-spacing": "error",
     "semi": "error",
     "space-before-blocks": "error",
-    "space-before-function-paren": ["error", {
-      "anonymous": "never",
-      "named": "never",
-      "asyncArrow": "always"
-    }],
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
     "space-in-parens": "error",
     "space-infix-ops": "error",
     "space-unary-ops": "error",

@@ -1,7 +1,7 @@
 'use strict';
 
-const Collection = require('../util/Collection');
 const { TypeError } = require('../errors');
+const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
@@ -49,7 +49,7 @@ class GuildMemberRoleManager {
   get hoist() {
     const hoistedRoles = this._roles.filter(role => role.hoist);
     if (!hoistedRoles.size) return null;
-    return hoistedRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+    return hoistedRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
@@ -60,7 +60,7 @@ class GuildMemberRoleManager {
   get color() {
     const coloredRoles = this._roles.filter(role => role.color);
     if (!coloredRoles.size) return null;
-    return coloredRoles.reduce((prev, role) => !prev || role.comparePositionTo(prev) > 0 ? role : prev);
+    return coloredRoles.reduce((prev, role) => (!prev || role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
@@ -69,7 +69,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get highest() {
-    return this._roles.reduce((prev, role) => role.comparePositionTo(prev) > 0 ? role : prev, this._roles.first());
+    return this._roles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev), this._roles.first());
   }
 
   /**
@@ -82,8 +82,7 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        throw new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true);
+        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
@@ -91,8 +90,7 @@ class GuildMemberRoleManager {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        throw new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true);
+        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
@@ -113,8 +111,7 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
       if (roleOrRoles.includes(null)) {
-        throw new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true);
+        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
       }
 
       const newRoles = this._roles.filter(role => !roleOrRoles.includes(role));
@@ -122,8 +119,7 @@ class GuildMemberRoleManager {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        throw new TypeError('INVALID_TYPE', 'roles',
-          'Array or Collection of Roles or Snowflakes', true);
+        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].delete({ reason });
