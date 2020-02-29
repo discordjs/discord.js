@@ -16,5 +16,4 @@ class WebhooksUpdate extends Action {
   }
 }
 
-
 module.exports = WebhooksUpdate;

@@ -1,15 +1,13 @@
 'use strict';
 
-const Discord = require('../src');
-
-const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-
-const client = new Discord.Client();
-
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const fetch = require('node-fetch');
+const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
+const Discord = require('../src');
+
+const client = new Discord.Client();
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());
@@ -39,10 +37,11 @@ const tests = [
 
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
   (m, hook) => hook.send({ files: [{ attachment: linkA }] }),
-  (m, hook) => hook.send({
-    embeds: [{ description: 'a' }],
-    files: [{ attachment: linkA, name: 'xyz.png' }],
-  }),
+  (m, hook) =>
+    hook.send({
+      embeds: [{ description: 'a' }],
+      files: [{ attachment: linkA, name: 'xyz.png' }],
+    }),
 
   (m, hook) => hook.send('x', embed().setDescription('a')),
   (m, hook) => hook.send(embed().setDescription('a')),
@@ -67,53 +66,57 @@ const tests = [
   (m, hook) => hook.send(['x', 'y'], [attach(linkA), attach(linkB)]),
 
   (m, hook) => hook.send([embed().setDescription('a'), attach(linkB)]),
-  (m, hook) => hook.send({
-    embeds: [embed().setImage('attachment://two.png')],
-    files: [attach(linkB, 'two.png')],
-  }),
-  (m, hook) => hook.send({
-    embeds: [
-      embed()
-        .setImage('attachment://two.png')
-        .attachFiles([attach(linkB, 'two.png')]),
-    ],
-  }),
-  async (m, hook) => hook.send(['x', 'y', 'z'], {
-    code: 'js',
-    embeds: [
-      embed()
-        .setImage('attachment://two.png')
-        .attachFiles([attach(linkB, 'two.png')]),
-    ],
-    files: [{ attachment: await buffer(linkA) }],
-  }),
+  (m, hook) =>
+    hook.send({
+      embeds: [embed().setImage('attachment://two.png')],
+      files: [attach(linkB, 'two.png')],
+    }),
+  (m, hook) =>
+    hook.send({
+      embeds: [
+        embed()
+          .setImage('attachment://two.png')
+          .attachFiles([attach(linkB, 'two.png')]),
+      ],
+    }),
+  async (m, hook) =>
+    hook.send(['x', 'y', 'z'], {
+      code: 'js',
+      embeds: [
+        embed()
+          .setImage('attachment://two.png')
+          .attachFiles([attach(linkB, 'two.png')]),
+      ],
+      files: [{ attachment: await buffer(linkA) }],
+    }),
 
   (m, hook) => hook.send('x', attach(fileA)),
   (m, hook) => hook.send({ files: [fileA] }),
   (m, hook) => hook.send(attach(fileA)),
   async (m, hook) => hook.send({ files: [await read(fileA)] }),
-  async (m, hook) => hook.send(fill('x'), {
-    reply: m.author,
-    code: 'js',
-    split: true,
-    embeds: [embed().setImage('attachment://zero.png')],
-    files: [attach(await buffer(linkA), 'zero.png')],
-  }),
+  async (m, hook) =>
+    hook.send(fill('x'), {
+      reply: m.author,
+      code: 'js',
+      split: true,
+      embeds: [embed().setImage('attachment://zero.png')],
+      files: [attach(await buffer(linkA), 'zero.png')],
+    }),
 
   (m, hook) => hook.send('x', attach(readStream(fileA))),
   (m, hook) => hook.send({ files: [readStream(fileA)] }),
   (m, hook) => hook.send({ files: [{ attachment: readStream(fileA) }] }),
-  async (m, hook) => hook.send(fill('xyz '), {
-    reply: m.author,
-    code: 'js',
-    split: { char: ' ', prepend: 'hello! ', append: '!!!' },
-    embeds: [embed().setImage('attachment://zero.png')],
-    files: [linkB, attach(await buffer(linkA), 'zero.png'), readStream(fileA)],
-  }),
+  async (m, hook) =>
+    hook.send(fill('xyz '), {
+      reply: m.author,
+      code: 'js',
+      split: { char: ' ', prepend: 'hello! ', append: '!!!' },
+      embeds: [embed().setImage('attachment://zero.png')],
+      files: [linkB, attach(await buffer(linkA), 'zero.png'), readStream(fileA)],
+    }),
 
   (m, hook) => hook.send('Done!'),
 ];
-
 
 client.on('message', async message => {
   if (message.author.id !== owner) return;

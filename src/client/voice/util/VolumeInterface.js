@@ -94,19 +94,10 @@ class VolumeInterface extends EventEmitter {
   }
 }
 
-const props = [
-  'volumeDecibels',
-  'volumeLogarithmic',
-  'setVolumeDecibels',
-  'setVolumeLogarithmic',
-];
+const props = ['volumeDecibels', 'volumeLogarithmic', 'setVolumeDecibels', 'setVolumeLogarithmic'];
 
 exports.applyToClass = function applyToClass(structure) {
   for (const prop of props) {
-    Object.defineProperty(
-      structure.prototype,
-      prop,
-      Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop),
-    );
+    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop));
   }
 };

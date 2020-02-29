@@ -1,8 +1,8 @@
 'use strict';
 
-const Collection = require('../util/Collection');
 const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
+const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.
@@ -34,9 +34,9 @@ class ReactionUserManager extends BaseManager {
    */
   async fetch({ limit = 100, after, before } = {}) {
     const message = this.reaction.message;
-    const data = await this.client.api.channels[message.channel.id].messages[message.id]
-      .reactions[this.reaction.emoji.identifier]
-      .get({ query: { limit, before, after } });
+    const data = await this.client.api.channels[message.channel.id].messages[message.id].reactions[
+      this.reaction.emoji.identifier
+    ].get({ query: { limit, before, after } });
     const users = new Collection();
     for (const rawUser of data) {
       const user = this.client.users.add(rawUser);
@@ -55,8 +55,9 @@ class ReactionUserManager extends BaseManager {
     const message = this.reaction.message;
     const userID = message.client.users.resolveID(user);
     if (!userID) return Promise.reject(new Error('REACTION_RESOLVE_USER'));
-    return message.client.api.channels[message.channel.id].messages[message.id]
-      .reactions[this.reaction.emoji.identifier][userID === message.client.user.id ? '@me' : userID]
+    return message.client.api.channels[message.channel.id].messages[message.id].reactions[
+      this.reaction.emoji.identifier
+    ][userID === message.client.user.id ? '@me' : userID]
       .delete()
       .then(() => this.reaction);
   }

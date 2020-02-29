@@ -1,9 +1,9 @@
 'use strict';
 
-const Collection = require('../../util/Collection');
-const VoiceConnection = require('./VoiceConnection');
 const VoiceBroadcast = require('./VoiceBroadcast');
+const VoiceConnection = require('./VoiceConnection');
 const { Error } = require('../../errors');
+const Collection = require('../../util/Collection');
 
 /**
  * Manages voice connections for the client
@@ -83,7 +83,8 @@ class ClientVoiceManager {
       } else {
         connection = new VoiceConnection(this, channel);
         connection.on('debug', msg =>
-          this.client.emit('debug', `[VOICE (${channel.guild.id}:${connection.status})]: ${msg}`));
+          this.client.emit('debug', `[VOICE (${channel.guild.id}:${connection.status})]: ${msg}`),
+        );
         connection.authenticate();
         this.connections.set(channel.guild.id, connection);
       }

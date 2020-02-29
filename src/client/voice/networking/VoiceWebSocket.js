@@ -1,9 +1,9 @@
 'use strict';
 
-const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 const EventEmitter = require('events');
-const { Error } = require('../../../errors');
 const WebSocket = require('../../../WebSocket');
+const { Error } = require('../../../errors');
+const { OPCodes, VoiceOPCodes } = require('../../../util/Constants');
 
 /**
  * Represents a Voice Connection's WebSocket.
@@ -35,7 +35,7 @@ class VoiceWebSocket extends EventEmitter {
    * @readonly
    */
   get client() {
-    return this.connection.voiceManager.client;
+    return this.connection.client;
   }
 
   shutdown() {
@@ -92,7 +92,8 @@ class VoiceWebSocket extends EventEmitter {
     return new Promise((resolve, reject) => {
       if (!this.ws || this.ws.readyState !== WebSocket.OPEN) throw new Error('WS_NOT_OPEN', data);
       this.ws.send(data, null, error => {
-        if (error) reject(error); else resolve(data);
+        if (error) reject(error);
+        else resolve(data);
       });
     });
   }
@@ -232,7 +233,7 @@ class VoiceWebSocket extends EventEmitter {
        * @event VoiceWebSocket#warn
        */
       this.emit('warn', 'A voice heartbeat interval is being overwritten');
-      clearInterval(this.heartbeatInterval);
+      this.client.clearInterval(this.heartbeatInterval);
     }
     this.heartbeatInterval = this.client.setInterval(this.sendHeartbeat.bind(this), interval);
   }
@@ -245,7 +246,7 @@ class VoiceWebSocket extends EventEmitter {
       this.emit('warn', 'Tried to clear a heartbeat interval that does not exist');
       return;
     }
-    clearInterval(this.heartbeatInterval);
+    this.client.clearInterval(this.heartbeatInterval);
     this.heartbeatInterval = null;
   }
 
