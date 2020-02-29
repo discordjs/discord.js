@@ -478,15 +478,34 @@ exports.Colors = {
 };
 
 /**
+ * The value set for the explicit content filter levels for a guild:
+ * * DISABLED
+ * * MEMBERS_WITHOUT_ROLES
+ * * ALL_MEMBERS
+ * @typedef {string} ExplicitContentFilterLevel
+ */
+exports.ExplicitContentFilterLevels = [
+  'DISABLED',
+  'MEMBERS_WITHOUT_ROLES',
+  'ALL_MEMBERS',
+];
+
+/**
  * The value set for the verification levels for a guild:
- * * None
- * * Low
- * * Medium
- * * (╯°□°）╯︵ ┻━┻
- * * ┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻
+ * * NONE
+ * * LOW
+ * * MEDIUM
+ * * HIGH
+ * * VERY_HIGH
  * @typedef {string} VerificationLevel
  */
-exports.VerificationLevels = ['None', 'Low', 'Medium', '(╯°□°）╯︵ ┻━┻', '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'];
+exports.VerificationLevels = [
+  'NONE',
+  'LOW',
+  'MEDIUM',
+  'HIGH',
+  'VERY_HIGH',
+];
 
 /**
  * An error encountered while performing an API request. Here are the potential errors:
