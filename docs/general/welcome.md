@@ -21,9 +21,6 @@
 
 Welcome to the discord.js v12 documentation.
 
-v12 is still very much a work-in-progress, as we're aiming to make it the best it can possibly be before releasing.
-Only use it if you are fond of living life on the bleeding edge.
-
 ## About
 
 discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
@@ -36,7 +33,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 11.0.0 or newer is required.**  
+**Node.js 12.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
 Without voice support: `npm install discordjs/discord.js`  

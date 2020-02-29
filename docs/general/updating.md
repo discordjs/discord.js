@@ -1,3 +1,7 @@
+# Version 12.0.0
+
+TBD
+
 # Version 11.1.0
 
 v11.1.0 features improved voice and gateway stability, as well as support for new features such as audit logs and searching for messages.
