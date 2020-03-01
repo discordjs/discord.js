@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Send a message using a webhook
  */

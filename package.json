@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "12.0.0-dev",
+  "version": "12.0.0",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -141,7 +141,9 @@
     "*.ts": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf"
   },
   "commitlint": {
-    "extends": ["@commitlint/config-angular"],
+    "extends": [
+      "@commitlint/config-angular"
+    ],
     "rules": {
       "type-enum": [
         2,

@@ -37,10 +37,6 @@ const browser = (exports.browser = typeof window !== 'undefined');
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {PresenceData} [presence] Presence data to use upon login
- * @property {WSEventType[]} [disabledEvents] An array of disabled websocket events. Events in this array will not be
- * processed, potentially resulting in performance improvements for larger bots. Only disable events you are
- * 100% certain you don't need, as many are important, but not obviously so. The safest one to disable with the
- * most impact is typically `TYPING_START`.
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
@@ -60,7 +56,6 @@ exports.DefaultOptions = {
    */
   replyPrefixer: null,
   restWsBridgeTimeout: 5000,
-  disabledEvents: [],
   restRequestTimeout: 15000,
   retryLimit: 1,
   restTimeOffset: 500,
@@ -71,6 +66,7 @@ exports.DefaultOptions = {
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {IntentsResolvable} [intents] Intents to enable for this connection
    */
   ws: {
     large_threshold: 250,
@@ -108,6 +104,8 @@ exports.WSCodes = {
   4004: 'TOKEN_INVALID',
   4010: 'SHARDING_INVALID',
   4011: 'SHARDING_REQUIRED',
+  4013: 'INVALID_INTENTS',
+  4014: 'DISALLOWED_INTENTS',
 };
 
 const AllowedImageFormats = ['webp', 'png', 'jpg', 'gif'];

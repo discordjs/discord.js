@@ -382,7 +382,7 @@ class WebSocketManager extends EventEmitter {
       });
     }
 
-    if (packet && !this.client.options.disabledEvents.includes(packet.t) && PacketHandlers[packet.t]) {
+    if (packet && PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
 
