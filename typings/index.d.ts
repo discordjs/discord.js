@@ -1914,11 +1914,6 @@ declare module 'discord.js' {
     public toJSON(): object;
   }
 
-  export class LimitedCollection<K, V> extends Collection<K, V> {
-    public constructor(maxSize: number, iterable: Iterable<any>);
-    public maxSize: number;
-  }
-
   //#endregion
 
   //#region Managers
@@ -2016,7 +2011,7 @@ declare module 'discord.js' {
   export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
     constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
     public channel: TextBasedChannelFields;
-    public cache: LimitedCollection<Snowflake, Message>;
+    public cache: Collection<Snowflake, Message>;
     public fetch(message: Snowflake, cache?: boolean): Promise<Message>;
     public fetch(options?: ChannelLogsQueryOptions, cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
