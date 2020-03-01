@@ -1,3 +1,5 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
 
 /**
@@ -5,13 +7,8 @@ const GuildChannel = require('./GuildChannel');
  * @extends {GuildChannel}
  */
 class StoreChannel extends GuildChannel {
-  constructor(guild, data) {
-    super(guild, data);
-    this.type = 'store';
-  }
-
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * If the guild considers this channel NSFW

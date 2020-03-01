@@ -1,5 +1,8 @@
+'use strict';
+
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
+const { PartialTypes } = require('../../util/Constants');
 
 /*
 { user_id: 'id',
@@ -10,28 +13,38 @@ const Constants = require('../../util/Constants');
 
 class MessageReactionAdd extends Action {
   handle(data) {
-    const user = this.client.users.get(data.user_id);
-    if (!user) return false;
-    // Verify channel
-    const channel = this.client.channels.get(data.channel_id);
-    if (!channel || channel.type === 'voice') return false;
-    // Verify message
-    const message = channel.messages.get(data.message_id);
-    if (!message) return false;
     if (!data.emoji) return false;
+
+    const user = this.getUser(data);
+    if (!user) return false;
+
+    // Verify channel
+    const channel = this.getChannel(data);
+    if (!channel || channel.type === 'voice') return false;
+
+    // Verify message
+    const message = this.getMessage(data, channel);
+    if (!message) return false;
+
     // Verify reaction
-    const reaction = message._addReaction(data.emoji, user);
-    if (reaction) this.client.emit(Constants.Events.MESSAGE_REACTION_ADD, reaction, user);
+    if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
+    const reaction = message.reactions.add({
+      emoji: data.emoji,
+      count: message.partial ? null : 0,
+      me: user.id === this.client.user.id,
+    });
+    if (!reaction) return false;
+    reaction._add(user);
+    /**
+     * Emitted whenever a reaction is added to a cached message.
+     * @event Client#messageReactionAdd
+     * @param {MessageReaction} messageReaction The reaction object
+     * @param {User} user The user that applied the guild or reaction emoji
+     */
+    this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, user);
 
     return { message, reaction, user };
   }
 }
-
-/**
- * Emitted whenever a reaction is added to a cached message.
- * @event Client#messageReactionAdd
- * @param {MessageReaction} messageReaction The reaction object
- * @param {User} user The user that applied the emoji or reaction emoji
- */
 
 module.exports = MessageReactionAdd;

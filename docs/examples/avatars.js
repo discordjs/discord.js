@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Send a user a link to their avatar
  */
@@ -21,7 +23,7 @@ client.on('message', message => {
   // If the message is "what is my avatar"
   if (message.content === 'what is my avatar') {
     // Send the user's avatar URL
-    message.reply(message.author.avatarURL);
+    message.reply(message.author.displayAvatarURL());
   }
 });
 

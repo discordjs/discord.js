@@ -1,32 +1,26 @@
-const PartialGuild = require('./PartialGuild');
-const PartialGuildChannel = require('./PartialGuildChannel');
-const Constants = require('../util/Constants');
+'use strict';
+
+const Base = require('./Base');
+const { Endpoints } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents an invitation to a guild channel.
- * <warn>The only guaranteed properties are `code`, `url`, `guild`, and `channel`.
- * Other properties can be missing.</warn>
+ * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
+ * @extends {Base}
  */
-class Invite {
+class Invite extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the invite
-     * @name Invite#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
-    this.setup(data);
+    super(client);
+    this._patch(data);
   }
 
-  setup(data) {
+  _patch(data) {
     /**
-     * The guild the invite is for. If this guild is already known, this will be a guild object. If the guild is
-     * unknown, this will be a PartialGuild object
-     * @type {Guild|PartialGuild}
+     * The guild the invite is for
+     * @type {?Guild}
      */
-    this.guild = this.client.guilds.get(data.guild.id) || new PartialGuild(this.client, data.guild);
+    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
 
     /**
      * The code for this invite
@@ -36,99 +30,118 @@ class Invite {
 
     /**
      * The approximate number of online members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.presenceCount = data.approximate_presence_count;
+    this.presenceCount = 'approximate_presence_count' in data ? data.approximate_presence_count : null;
 
     /**
      * The approximate total number of members of the guild this invite is for
-     * @type {number}
+     * @type {?number}
      */
-    this.memberCount = data.approximate_member_count;
-
-    /**
-     * The number of text channels the guild this invite goes to has
-     * @type {number}
-     */
-    this.textChannelCount = data.guild.text_channel_count;
-
-    /**
-     * The number of voice channels the guild this invite goes to has
-     * @type {number}
-     */
-    this.voiceChannelCount = data.guild.voice_channel_count;
+    this.memberCount = 'approximate_member_count' in data ? data.approximate_member_count : null;
 
     /**
      * Whether or not this invite is temporary
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.temporary = data.temporary;
+    this.temporary = 'temporary' in data ? data.temporary : null;
 
     /**
-     * The maximum age of the invite, in seconds
+     * The maximum age of the invite, in seconds, 0 if never expires
      * @type {?number}
      */
-    this.maxAge = data.max_age;
+    this.maxAge = 'max_age' in data ? data.max_age : null;
 
     /**
      * How many times this invite has been used
-     * @type {number}
+     * @type {?number}
      */
-    this.uses = data.uses;
+    this.uses = 'uses' in data ? data.uses : null;
 
     /**
      * The maximum uses of this invite
-     * @type {number}
+     * @type {?number}
      */
-    this.maxUses = data.max_uses;
-
-    if (data.inviter) {
-      /**
-       * The user who created this invite
-       * @type {?User}
-       */
-      this.inviter = this.client.dataManager.newUser(data.inviter);
-    }
+    this.maxUses = 'max_uses' in data ? data.max_uses : null;
 
     /**
-     * The channel the invite is for. If this channel is already known, this will be a GuildChannel object.
-     * If the channel is unknown, this will be a PartialGuildChannel object.
-     * @type {GuildChannel|PartialGuildChannel}
+     * The user who created this invite
+     * @type {?User}
      */
-    this.channel = this.client.channels.get(data.channel.id) || new PartialGuildChannel(this.client, data.channel);
+    this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
+
+    /**
+     * The target user for this invite
+     * @type {?User}
+     */
+    this.targetUser = data.target_user ? this.client.users.add(data.target_user) : null;
+
+    /**
+     * The type of the target user:
+     * * 1: STREAM
+     * @typedef {number} TargetUser
+     */
+
+    /**
+     * The target user type
+     * @type {?TargetUser}
+     */
+    this.targetUserType = typeof data.target_user_type === 'number' ? data.target_user_type : null;
+
+    /**
+     * The channel the invite is for
+     * @type {Channel}
+     */
+    this.channel = this.client.channels.add(data.channel, this.guild, false);
 
     /**
      * The timestamp the invite was created at
-     * @type {number}
+     * @type {?number}
      */
-    this.createdTimestamp = new Date(data.created_at).getTime();
+    this.createdTimestamp = 'created_at' in data ? new Date(data.created_at).getTime() : null;
   }
 
   /**
-   * The time the invite was created
-   * @type {Date}
+   * The time the invite was created at
+   * @type {?Date}
    * @readonly
    */
   get createdAt() {
-    return new Date(this.createdTimestamp);
+    return this.createdTimestamp ? new Date(this.createdTimestamp) : null;
+  }
+
+  /**
+   * Whether the invite is deletable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get deletable() {
+    const guild = this.guild;
+    if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
+    if (!guild.me) throw new Error('GUILD_UNCACHED_ME');
+    return (
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) ||
+      guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
+    );
   }
 
   /**
    * The timestamp the invite will expire at
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get expiresTimestamp() {
-    return this.createdTimestamp + (this.maxAge * 1000);
+    return this.createdTimestamp && this.maxAge ? this.createdTimestamp + this.maxAge * 1000 : null;
   }
 
   /**
-   * The time the invite will expire
-   * @type {Date}
+   * The time the invite will expire at
+   * @type {?Date}
    * @readonly
    */
   get expiresAt() {
-    return new Date(this.expiresTimestamp);
+    const { expiresTimestamp } = this;
+    return expiresTimestamp ? new Date(expiresTimestamp) : null;
   }
 
   /**
@@ -137,7 +150,7 @@ class Invite {
    * @readonly
    */
   get url() {
-    return Constants.Endpoints.inviteLink(this.code);
+    return Endpoints.invite(this.client.options.http.invite, this.code);
   }
 
   /**
@@ -146,7 +159,7 @@ class Invite {
    * @returns {Promise<Invite>}
    */
   delete(reason) {
-    return this.client.rest.methods.deleteInvite(this, reason);
+    return this.client.api.invites[this.code].delete({ reason }).then(() => this);
   }
 
   /**
@@ -158,6 +171,23 @@ class Invite {
    */
   toString() {
     return this.url;
+  }
+
+  toJSON() {
+    return super.toJSON({
+      url: true,
+      expiresTimestamp: true,
+      presenceCount: false,
+      memberCount: false,
+      uses: false,
+      channel: 'channelID',
+      inviter: 'inviterID',
+      guild: 'guildID',
+    });
+  }
+
+  valueOf() {
+    return this.code;
   }
 }
 

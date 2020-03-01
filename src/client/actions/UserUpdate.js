@@ -1,25 +1,26 @@
+'use strict';
+
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
-const Util = require('../../util/Util');
+const { Events } = require('../../util/Constants');
 
 class UserUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
-    if (client.user) {
-      if (client.user.equals(data)) {
-        return {
-          old: client.user,
-          updated: client.user,
-        };
-      }
+    const newUser = client.users.cache.get(data.id);
+    const oldUser = newUser._update(data);
 
-      const oldUser = Util.cloneObject(client.user);
-      client.user.patch(data);
-      client.emit(Constants.Events.USER_UPDATE, oldUser, client.user);
+    if (!oldUser.equals(newUser)) {
+      /**
+       * Emitted whenever a user's details (e.g. username) are changed.
+       * @event Client#userUpdate
+       * @param {User} oldUser The user before the update
+       * @param {User} newUser The user after the update
+       */
+      client.emit(Events.USER_UPDATE, oldUser, newUser);
       return {
         old: oldUser,
-        updated: client.user,
+        updated: newUser,
       };
     }
 

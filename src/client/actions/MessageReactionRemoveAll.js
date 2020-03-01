@@ -1,16 +1,20 @@
+'use strict';
+
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events } = require('../../util/Constants');
 
 class MessageReactionRemoveAll extends Action {
   handle(data) {
-    const channel = this.client.channels.get(data.channel_id);
+    // Verify channel
+    const channel = this.getChannel(data);
     if (!channel || channel.type === 'voice') return false;
 
-    const message = channel.messages.get(data.message_id);
+    // Verify message
+    const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    message._clearReactions();
-    this.client.emit(Constants.Events.MESSAGE_REACTION_REMOVE_ALL, message);
+    message.reactions.cache.clear();
+    this.client.emit(Events.MESSAGE_REACTION_REMOVE_ALL, message);
 
     return { message };
   }

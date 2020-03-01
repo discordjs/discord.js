@@ -1,3 +1,7 @@
+'use strict';
+
+const { RangeError } = require('../errors');
+
 /**
  * Data structure that makes it easy to interact with a bitfield.
  */
@@ -99,9 +103,7 @@ class BitField {
    */
   serialize(...hasParams) {
     const serialized = {};
-    for (const flag of Object.keys(this.constructor.FLAGS)) {
-      serialized[flag] = this.has(this.constructor.FLAGS[flag], ...hasParams);
-    }
+    for (const [flag, bit] of Object.entries(this.constructor.FLAGS)) serialized[flag] = this.has(bit, ...hasParams);
     return serialized;
   }
 
@@ -145,7 +147,7 @@ class BitField {
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
     if (typeof bit === 'string' && typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
-    throw new RangeError('Invalid bitfield flag or number.');
+    throw new RangeError('BITFIELD_INVALID');
   }
 }
 

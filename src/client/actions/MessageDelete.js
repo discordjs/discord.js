@@ -1,34 +1,28 @@
+'use strict';
+
 const Action = require('./Action');
+const { Events } = require('../../util/Constants');
 
 class MessageDeleteAction extends Action {
-  constructor(client) {
-    super(client);
-    this.deleted = new Map();
-  }
-
   handle(data) {
     const client = this.client;
-    const channel = client.channels.get(data.channel_id);
+    const channel = this.getChannel(data);
     let message;
-
     if (channel) {
-      message = channel.messages.get(data.id);
+      message = this.getMessage(data, channel);
       if (message) {
-        channel.messages.delete(message.id);
-        this.deleted.set(channel.id + message.id, message);
-        this.scheduleForDeletion(channel.id, message.id);
-      } else {
-        message = this.deleted.get(channel.id + data.id) || null;
+        channel.messages.cache.delete(message.id);
+        message.deleted = true;
+        /**
+         * Emitted whenever a message is deleted.
+         * @event Client#messageDelete
+         * @param {Message} message The deleted message
+         */
+        client.emit(Events.MESSAGE_DELETE, message);
       }
-      if (message) message.deleted = true;
     }
 
     return { message };
-  }
-
-  scheduleForDeletion(channelID, messageID) {
-    this.client.setTimeout(() => this.deleted.delete(channelID + messageID),
-      this.client.options.restWsBridgeTimeout);
   }
 }
 

@@ -1,27 +1,24 @@
+'use strict';
+
+const Base = require('./Base');
+const { Presence } = require('./Presence');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Constants = require('../util/Constants');
-const Presence = require('./Presence').Presence;
+const { Error } = require('../errors');
 const Snowflake = require('../util/Snowflake');
-const util = require('util');
 
 /**
  * Represents a user on Discord.
  * @implements {TextBasedChannel}
+ * @extends {Base}
  */
-class User {
+class User extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the user
+   */
   constructor(client, data) {
-    /**
-     * The client that created the instance of the user
-     * @name User#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
-    if (data) this.setup(data);
-  }
-
-  setup(data) {
     /**
      * The ID of the user
      * @type {Snowflake}
@@ -29,35 +26,52 @@ class User {
     this.id = data.id;
 
     /**
+     * Whether or not the user is a bot
+     * @type {boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
+
+    this._patch(data);
+  }
+
+  _patch(data) {
+    /**
      * The username of the user
      * @type {string}
+     * @name User#username
      */
-    this.username = data.username;
+    if (data.username) this.username = data.username;
 
     /**
      * A discriminator based on username for the user
      * @type {string}
+     * @name User#discriminator
      */
-    this.discriminator = data.discriminator;
+    if (data.discriminator) this.discriminator = data.discriminator;
 
     /**
      * The ID of the user's avatar
-     * @type {string}
+     * @type {?string}
+     * @name User#avatar
      */
-    this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
+
+    if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     */
-    this.bot = Boolean(data.bot);
-
-    /**
-     * Whether this is an Official Discord System user (part of the urgent message system)
+     * Whether the user is an Official Discord System user (part of the urgent message system)
      * @type {?boolean}
      * @name User#system
      */
     if (typeof data.system !== 'undefined') this.system = Boolean(data.system);
+
+    /**
+     * The locale of the user's client (ISO 639-1)
+     * @type {?string}
+     * @name User#locale
+     */
+    if (data.locale) this.locale = data.locale;
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -66,17 +80,19 @@ class User {
     this.lastMessageID = null;
 
     /**
-     * The Message object of the last message sent by the user, if one was sent
-     * @type {?Message}
+     * The ID of the channel for the last message sent by the user, if one was sent
+     * @type {?Snowflake}
      */
-    this.lastMessage = null;
+    this.lastMessageChannelID = null;
   }
 
-  patch(data) {
-    for (const prop of ['id', 'username', 'discriminator', 'avatar', 'bot']) {
-      if (typeof data[prop] !== 'undefined') this[prop] = data[prop];
-    }
-    if (data.token) this.client.token = data.token;
+  /**
+   * Whether this User is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.username !== 'string';
   }
 
   /**
@@ -89,7 +105,7 @@ class User {
   }
 
   /**
-   * The time the user was created
+   * The time the user was created at
    * @type {Date}
    * @readonly
    */
@@ -98,26 +114,35 @@ class User {
   }
 
   /**
+   * The Message object of the last message sent by the user, if one was sent
+   * @type {?Message}
+   * @readonly
+   */
+  get lastMessage() {
+    const channel = this.client.channels.cache.get(this.lastMessageChannelID);
+    return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
+  }
+
+  /**
    * The presence of this user
    * @type {Presence}
    * @readonly
    */
   get presence() {
-    if (this.client.presences.has(this.id)) return this.client.presences.get(this.id);
-    for (const guild of this.client.guilds.values()) {
-      if (guild.presences.has(this.id)) return guild.presences.get(this.id);
+    for (const guild of this.client.guilds.cache.values()) {
+      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
     }
-    return new Presence(undefined, this.client);
+    return new Presence(this.client, { user: { id: this.id } });
   }
 
   /**
-   * A link to the user's avatar
-   * @type {?string}
-   * @readonly
+   * A link to the user's avatar.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
    */
-  get avatarURL() {
+  avatarURL({ format, size, dynamic } = {}) {
     if (!this.avatar) return null;
-    return Constants.Endpoints.User(this).Avatar(this.client.options.http.cdn, this.avatar);
+    return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
   }
 
   /**
@@ -126,18 +151,17 @@ class User {
    * @readonly
    */
   get defaultAvatarURL() {
-    const avatars = Object.keys(Constants.DefaultAvatars);
-    const avatar = avatars[this.discriminator % avatars.length];
-    return Constants.Endpoints.CDN(this.client.options.http.host).Asset(`${Constants.DefaultAvatars[avatar]}.png`);
+    return this.client.rest.cdn.DefaultAvatar(this.discriminator % 5);
   }
 
   /**
-   * A link to the user's avatar if they have one. Otherwise a link to their default avatar will be returned
-   * @type {string}
-   * @readonly
+   * A link to the user's avatar if they have one.
+   * Otherwise a link to their default avatar will be returned.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {string}
    */
-  get displayAvatarURL() {
-    return this.avatarURL || this.defaultAvatarURL;
+  displayAvatarURL(options) {
+    return this.avatarURL(options) || this.defaultAvatarURL;
   }
 
   /**
@@ -150,43 +174,32 @@ class User {
   }
 
   /**
-   * The note that is set for the user
-   * <warn>This is only available when using a user account.</warn>
-   * @type {?string}
-   * @readonly
-   * @deprecated
-   */
-  get note() {
-    return this.client.user.notes.get(this.id) || null;
-  }
-
-  /**
-   * Check whether the user is typing in a channel.
+   * Checks whether the user is typing in a channel.
    * @param {ChannelResolvable} channel The channel to check in
    * @returns {boolean}
    */
   typingIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id);
   }
 
   /**
-   * Get the time that the user started typing.
+   * Gets the time that the user started typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {?Date}
    */
   typingSinceIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? new Date(channel._typing.get(this.id).since) : null;
   }
 
   /**
-   * Get the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
+   * Gets the amount of time the user has been typing in a channel for (in milliseconds), or -1 if they're not typing.
    * @param {ChannelResolvable} channel The channel to get the time in
    * @returns {number}
    */
   typingDurationIn(channel) {
-    channel = this.client.resolver.resolveChannel(channel);
+    channel = this.client.channels.resolve(channel);
     return channel._typing.has(this.id) ? channel._typing.get(this.id).elapsedTime : -1;
   }
 
@@ -196,84 +209,33 @@ class User {
    * @readonly
    */
   get dmChannel() {
-    return this.client.channels.find(c => c.type === 'dm' && c.recipient.id === this.id);
+    return this.client.channels.cache.find(c => c.type === 'dm' && c.recipient.id === this.id) || null;
   }
 
   /**
    * Creates a DM channel between the client and the user.
    * @returns {Promise<DMChannel>}
    */
-  createDM() {
-    return this.client.rest.methods.createDM(this);
+  async createDM() {
+    const { dmChannel } = this;
+    if (dmChannel && !dmChannel.partial) return dmChannel;
+    const data = await this.client.api.users(this.client.user.id).channels.post({
+      data: {
+        recipient_id: this.id,
+      },
+    });
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
-    return this.client.rest.methods.deleteChannel(this);
-  }
-
-  /**
-   * Sends a friend request to the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   * @deprecated
-   */
-  addFriend() {
-    return this.client.rest.methods.addFriend(this);
-  }
-
-  /**
-   * Removes the user from your friends.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   * @deprecated
-   */
-  removeFriend() {
-    return this.client.rest.methods.removeFriend(this);
-  }
-
-  /**
-   * Blocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   * @deprecated
-   */
-  block() {
-    return this.client.rest.methods.blockUser(this);
-  }
-
-  /**
-   * Unblocks the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<User>}
-   * @deprecated
-   */
-  unblock() {
-    return this.client.rest.methods.unblockUser(this);
-  }
-
-  /**
-   * Get the profile of the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @returns {Promise<UserProfile>}
-   * @deprecated
-   */
-  fetchProfile() {
-    return this.client.rest.methods.fetchUserProfile(this);
-  }
-
-  /**
-   * Sets a note for the user.
-   * <warn>This is only available when using a user account.</warn>
-   * @param {string} note The note to set for the user
-   * @returns {Promise<User>}
-   * @deprecated
-   */
-  setNote(note) {
-    return this.client.rest.methods.setNote(this, note);
+  async deleteDM() {
+    const { dmChannel } = this;
+    if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
+    const data = await this.client.api.channels(dmChannel.id).delete();
+    return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
   /**
@@ -283,54 +245,56 @@ class User {
    * @returns {boolean}
    */
   equals(user) {
-    let equal = user &&
+    let equal =
+      user &&
       this.id === user.id &&
       this.username === user.username &&
       this.discriminator === user.discriminator &&
-      this.avatar === user.avatar &&
-      this.bot === Boolean(user.bot);
+      this.avatar === user.avatar;
 
     return equal;
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the user's mention instead of the User object.
+   * Fetches this user.
+   * @returns {Promise<User>}
+   */
+  fetch() {
+    return this.client.users.fetch(this.id, true);
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
-   * // logs: Hello from <@123456789>!
+   * // Logs: Hello from <@123456789012345678>!
    * console.log(`Hello from ${user}!`);
    */
   toString() {
     return `<@${this.id}>`;
   }
 
+  toJSON(...props) {
+    const json = super.toJSON(
+      {
+        createdTimestamp: true,
+        defaultAvatarURL: true,
+        tag: true,
+        lastMessage: false,
+        lastMessageID: false,
+      },
+      ...props,
+    );
+    json.avatarURL = this.avatarURL();
+    json.displayAvatarURL = this.displayAvatarURL();
+    return json;
+  }
+
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendCode() {}
 }
 
 TextBasedChannel.applyToClass(User);
-
-User.prototype.block =
-  util.deprecate(User.prototype.block, 'User#block: userbot methods will be removed');
-
-User.prototype.unblock =
-  util.deprecate(User.prototype.unblock, 'User#unblock: userbot methods will be removed');
-
-User.prototype.addFriend =
-  util.deprecate(User.prototype.addFriend, 'User#addFriend: userbot methods will be removed');
-
-User.prototype.removeFriend =
-  util.deprecate(User.prototype.removeFriend, 'User#removeFriend: userbot methods will be removed');
-
-User.prototype.setNote =
-  util.deprecate(User.prototype.setNote, 'User#setNote, userbot methods will be removed');
-
-User.prototype.fetchProfile =
-  util.deprecate(User.prototype.fetchProfile, 'User#fetchProfile: userbot methods will be removed');
 
 module.exports = User;

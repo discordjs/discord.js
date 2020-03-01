@@ -1,3 +1,7 @@
+'use strict';
+
+const Base = require('./Base');
+
 /**
  * The information account for an integration
  * @typedef {Object} IntegrationAccount
@@ -8,15 +12,9 @@
 /**
  *  Represents a guild integration.
  */
-class Integration {
+class Integration extends Base {
   constructor(client, data, guild) {
-    /**
-     * The client that created this integration
-     * @name Integration#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+    super(client);
 
     /**
      * The guild this integration belongs to
@@ -35,6 +33,7 @@ class Integration {
      * @type {string}
      */
     this.name = data.name;
+
     /**
      * The integration type (twitch, youtube, etc)
      * @type {string}
@@ -57,13 +56,13 @@ class Integration {
      * The role that this integration uses for subscribers
      * @type {Role}
      */
-    this.role = this.guild.roles.get(data.role_id);
+    this.role = this.guild.roles.cache.get(data.role_id);
 
     /**
      * The user for this integration
      * @type {User}
      */
-    this.user = this.client.dataManager.newUser(data.user);
+    this.user = this.client.users.add(data.user);
 
     /**
      * The account integration information
@@ -94,12 +93,15 @@ class Integration {
   }
 
   /**
-   * Syncs this integration
+   * Sync this integration
    * @returns {Promise<Integration>}
    */
   sync() {
     this.syncing = true;
-    return this.client.rest.methods.syncIntegration(this)
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .post()
       .then(() => {
         this.syncing = false;
         this.syncedAt = Date.now();
@@ -123,14 +125,17 @@ class Integration {
   edit(data, reason) {
     if ('expireBehavior' in data) {
       data.expire_behavior = data.expireBehavior;
-      data.expireBehavior = undefined;
+      data.expireBehavior = null;
     }
     if ('expireGracePeriod' in data) {
       data.expire_grace_period = data.expireGracePeriod;
-      data.expireGracePeriod = undefined;
+      data.expireGracePeriod = null;
     }
     // The option enable_emoticons is only available for Twitch at this moment
-    return this.client.rest.methods.editIntegration(this, data, reason)
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .patch({ data, reason })
       .then(() => {
         this._patch(data);
         return this;
@@ -143,8 +148,19 @@ class Integration {
    * @param {string} [reason] Reason for deleting this integration
    */
   delete(reason) {
-    return this.client.rest.methods.deleteIntegration(this, reason)
+    return this.client.api
+      .guilds(this.guild.id)
+      .integrations(this.id)
+      .delete({ reason })
       .then(() => this);
+  }
+
+  toJSON() {
+    return super.toJSON({
+      role: 'roleID',
+      guild: 'guildID',
+      user: 'userID',
+    });
   }
 }
 

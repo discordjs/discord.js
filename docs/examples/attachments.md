@@ -6,11 +6,11 @@ In here you'll see a few examples showing how you can send an attachment using d
 
 There are a few ways you can do this, but we'll show you the easiest.
 
-The following examples use [Attachment](/#/docs/main/stable/class/Attachment).
+The following examples use [MessageAttachment](/#/docs/main/master/class/MessageAttachment).
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, Attachment } = require('discord.js');
+const { Client, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client();
@@ -24,13 +24,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using Attachment
-		const attachment = new Attachment('https://i.imgur.com/w3duR07.png');
-		// Send the attachment in the message channel
-		message.channel.send(attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
+    // Send the attachment in the message channel
+    message.channel.send(attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -41,11 +41,11 @@ And here is the result:
 
 ![Image showing the result](/static/attachment-example1.png)
 
-But what if you want to send an attachment with a message content? Fear not, for it is easy to do that too! We'll recommend reading [the TextChannel's "send" function documentation](/#/docs/main/stable/class/TextChannel?scrollTo=send) to see what other options are available.
+But what if you want to send an attachment with a message content? Fear not, for it is easy to do that too! We'll recommend reading [the TextChannel's "send" function documentation](/#/docs/main/master/class/TextChannel?scrollTo=send) to see what other options are available.
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, Attachment } = require('discord.js');
+const { Client, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client();
@@ -59,13 +59,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using Attachment
-		const attachment = new Attachment('https://i.imgur.com/w3duR07.png');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author},`, attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author},`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -78,11 +78,11 @@ And here's the result of this one:
 
 ## Sending a local file or buffer
 
-Sending a local file isn't hard either! We'll be using [Attachment](/#/docs/main/stable/class/Attachment) for these examples too.
+Sending a local file isn't hard either! We'll be using [MessageAttachment](/#/docs/main/master/class/MessageAttachment) for these examples too.
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, Attachment } = require('discord.js');
+const { Client, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
 const client = new Client();
@@ -96,13 +96,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using Attachment
-		const attachment = new Attachment('./rip.png');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author},`, attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('./rip.png');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author},`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -120,7 +120,7 @@ You can use any buffer you want, and send it. Just make sure to overwrite the fi
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, Attachment } = require('discord.js');
+const { Client, MessageAttachment } = require('discord.js');
 
 // Import the native fs module
 const fs = require('fs');
@@ -137,21 +137,21 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!memes'
-	if (message.content === '!memes') {
-		// Get the buffer from the 'memes.txt', assuming that the file exists
-		const buffer = fs.readFileSync('./memes.txt');
+  // If the message is '!memes'
+  if (message.content === '!memes') {
+    // Get the buffer from the 'memes.txt', assuming that the file exists
+    const buffer = fs.readFileSync('./memes.txt');
 
-		/**
-		 * Create the attachment using Attachment,
-		 * overwritting the default file name to 'memes.txt'
-		 * Read more about it over at
-		 * http://discord.js.org/#/docs/main/stable/class/Attachment
-		 */
-		const attachment = new Attachment(buffer, 'memes.txt');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author}, here are your memes!`, attachment);
-	}
+    /**
+     * Create the attachment using MessageAttachment,
+     * overwritting the default file name to 'memes.txt'
+     * Read more about it over at
+     * http://discord.js.org/#/docs/main/master/class/MessageAttachment
+     */
+    const attachment = new MessageAttachment(buffer, 'memes.txt');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author}, here are your memes!`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me

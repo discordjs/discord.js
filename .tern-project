@@ -1,12 +1,8 @@
 {
   "ecmaVersion": 7,
   "libs": [],
-  "loadEagerly": [
-    "./src/*.js"
-  ],
-  "dontLoad": [
-    "node_modules/**"
-  ],
+  "loadEagerly": ["./src/*.js"],
+  "dontLoad": ["node_modules/**"],
   "plugins": {
     "es_modules": {},
     "node": {},
@@ -15,7 +11,7 @@
       "strong": true
     },
     "webpack": {
-      "configPath": "./webpack.config.js",
+      "configPath": "./webpack.config.js"
     }
   }
 }

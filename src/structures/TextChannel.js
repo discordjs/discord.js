@@ -1,6 +1,11 @@
+'use strict';
+
 const GuildChannel = require('./GuildChannel');
+const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 const Collection = require('../util/Collection');
+const DataResolver = require('../util/DataResolver');
 
 /**
  * Represents a guild text channel on Discord.
@@ -8,19 +13,22 @@ const Collection = require('../util/Collection');
  * @implements {TextBasedChannel}
  */
 class TextChannel extends GuildChannel {
+  /**
+   * @param {Guild} guild The guild the text channel is part of
+   * @param {Object} data The data for the text channel
+   */
   constructor(guild, data) {
     super(guild, data);
-    this.type = 'text';
     /**
-     * A collection containing the messages sent to this channel
-     * @type {Collection<Snowflake, Message>}
+     * A manager of the messages sent to this channel
+     * @type {MessageManager}
      */
-    this.messages = new Collection();
+    this.messages = new MessageManager(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
     /**
      * The topic of the text channel
@@ -29,11 +37,11 @@ class TextChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * If the Discord considers this channel NSFW
+     * If the guild considers this channel NSFW
      * @type {boolean}
      * @readonly
      */
-    this.nsfw = Boolean(data.nsfw);
+    this.nsfw = data.nsfw;
 
     /**
      * The ID of the last message sent in this channel, if one was sent
@@ -42,44 +50,28 @@ class TextChannel extends GuildChannel {
     this.lastMessageID = data.last_message_id;
 
     /**
+     * The ratelimit per user for this channel in seconds
+     * @type {number}
+     */
+    this.rateLimitPerUser = data.rate_limit_per_user || 0;
+
+    /**
      * The timestamp when the last pinned message was pinned, if there was one
      * @type {?number}
      */
     this.lastPinTimestamp = data.last_pin_timestamp ? new Date(data.last_pin_timestamp).getTime() : null;
 
-    /**
-     * The ratelimit per user for this channel in seconds
-     * @type {number}
-     */
-    this.rateLimitPerUser = data.rate_limit_per_user || 0;
+    if (data.messages) for (const message of data.messages) this.messages.add(message);
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
+   * Sets the rate limit per user for this channel.
+   * @param {number} rateLimitPerUser The new ratelimit in seconds
+   * @param {string} [reason] Reason for changing the channel's ratelimits
+   * @returns {Promise<TextChannel>}
    */
-  get members() {
-    const members = new Collection();
-    for (const member of this.guild.members.values()) {
-      if (this.permissionsFor(member).has('READ_MESSAGES')) {
-        members.set(member.id, member);
-      }
-    }
-    return members;
-  }
-
-  /**
-   * Fetch all webhooks for the channel.
-   * @returns {Promise<Collection<Snowflake, Webhook>>}
-   * @example
-   * // Fetch webhooks
-   * channel.fetchWebhooks()
-   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
-   *   .catch(console.error);
-   */
-  fetchWebhooks() {
-    return this.client.rest.methods.getChannelWebhooks(this);
+  setRateLimitPerUser(rateLimitPerUser, reason) {
+    return this.edit({ rateLimitPerUser }, reason);
   }
 
   /**
@@ -93,60 +85,65 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Create a webhook for the channel.
-   * @param {string} name The name of the webhook
-   * @param {BufferResolvable|Base64Resolvable} [avatar] The avatar for the webhook
-   * @param {string} [reason] Reason for creating this webhook
-   * @returns {Promise<Webhook>} webhook The created webhook
+   * Fetches all webhooks for the channel.
+   * @returns {Promise<Collection<Snowflake, Webhook>>}
    * @example
-   * channel.createWebhook('Snek', 'https://i.imgur.com/mI8XcpG.jpg')
-   *   .then(webhook => console.log(`Created webhook ${webhook}`))
-   *   .catch(console.error)
+   * // Fetch webhooks
+   * channel.fetchWebhooks()
+   *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
+   *   .catch(console.error);
    */
-  createWebhook(name, avatar, reason) {
-    if (typeof avatar === 'string' && avatar.startsWith('data:')) {
-      return this.client.rest.methods.createWebhook(this, name, avatar, reason);
-    } else {
-      return this.client.resolver.resolveImage(avatar).then(data =>
-        this.client.rest.methods.createWebhook(this, name, data, reason)
-      );
-    }
+  fetchWebhooks() {
+    return this.client.api.channels[this.id].webhooks.get().then(data => {
+      const hooks = new Collection();
+      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
+      return hooks;
+    });
   }
 
   /**
-   * Sets the rate limit per user for this channel.
-   * @param {number} rateLimitPerUser The new ratelimit in seconds
-   * @param {string} [reason] Reason for changing the channel's ratelimits
-   * @returns {Promise<TextChannel>}
+   * Creates a webhook for the channel.
+   * @param {string} name The name of the webhook
+   * @param {Object} [options] Options for creating the webhook
+   * @param {BufferResolvable|Base64Resolvable} [options.avatar] Avatar for the webhook
+   * @param {string} [options.reason] Reason for creating the webhook
+   * @returns {Promise<Webhook>} webhook The created webhook
+   * @example
+   * // Create a webhook for the current channel
+   * channel.createWebhook('Snek', {
+   *   avatar: 'https://i.imgur.com/mI8XcpG.jpg',
+   *   reason: 'Needed a cool new Webhook'
+   * })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  setRateLimitPerUser(rateLimitPerUser, reason) {
-    return this.edit({ rateLimitPerUser }, reason);
+  async createWebhook(name, { avatar, reason } = {}) {
+    if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
+      avatar = await DataResolver.resolveImage(avatar);
+    }
+    return this.client.api.channels[this.id].webhooks
+      .post({
+        data: {
+          name,
+          avatar,
+        },
+        reason,
+      })
+      .then(data => new Webhook(this.client, data));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   get lastMessage() {}
   get lastPinAt() {}
-  send() { }
-  sendMessage() { }
-  sendEmbed() { }
-  sendFile() { }
-  sendFiles() { }
-  sendCode() { }
-  fetchMessage() { }
-  fetchMessages() { }
-  fetchPinnedMessages() { }
-  search() { }
-  startTyping() { }
-  stopTyping() { }
-  get typing() { }
-  get typingCount() { }
-  createCollector() { }
-  createMessageCollector() { }
-  awaitMessages() { }
-  bulkDelete() { }
-  acknowledge() { }
-  _cacheMessage() { }
+  send() {}
+  startTyping() {}
+  stopTyping() {}
+  get typing() {}
+  get typingCount() {}
+  createMessageCollector() {}
+  awaitMessages() {}
+  bulkDelete() {}
 }
 
 TextBasedChannel.applyToClass(TextChannel, true);

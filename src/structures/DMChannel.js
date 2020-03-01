@@ -1,6 +1,8 @@
+'use strict';
+
 const Channel = require('./Channel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Collection = require('../util/Collection');
+const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a direct message channel between two users.
@@ -8,21 +10,32 @@ const Collection = require('../util/Collection');
  * @implements {TextBasedChannel}
  */
 class DMChannel extends Channel {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the DM channel
+   */
   constructor(client, data) {
     super(client, data);
+    // Override the channel type so partials have a known type
     this.type = 'dm';
-    this.messages = new Collection();
+    /**
+     * A manager of the messages belonging to this channel
+     * @type {MessageManager}
+     */
+    this.messages = new MessageManager(this);
     this._typing = new Map();
   }
 
-  setup(data) {
-    super.setup(data);
+  _patch(data) {
+    super._patch(data);
 
-    /**
-     * The recipient on the other end of the DM
-     * @type {User}
-     */
-    this.recipient = this.client.dataManager.newUser(data.recipients[0]);
+    if (data.recipients) {
+      /**
+       * The recipient on the other end of the DM
+       * @type {User}
+       */
+      this.recipient = this.client.users.add(data.recipients[0]);
+    }
 
     /**
      * The ID of the last message in the channel, if one was sent
@@ -38,9 +51,29 @@ class DMChannel extends Channel {
   }
 
   /**
-   * When concatenated with a string, this automatically concatenates the recipient's mention instead of the
-   * DM channel object.
+   * Whether this DMChannel is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.lastMessageID === 'undefined';
+  }
+
+  /**
+   * Fetch this DMChannel.
+   * @returns {Promise<DMChannel>}
+   */
+  fetch() {
+    return this.recipient.createDM();
+  }
+
+  /**
+   * When concatenated with a string, this automatically returns the recipient's mention instead of the
+   * DMChannel object.
    * @returns {string}
+   * @example
+   * // Logs: Hello from <@123456789012345678>!
+   * console.log(`Hello from ${channel}!`);
    */
   toString() {
     return this.recipient.toString();
@@ -48,27 +81,16 @@ class DMChannel extends Channel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
+  get lastMessage() {}
   get lastPinAt() {}
   send() {}
-  sendMessage() {}
-  sendEmbed() {}
-  sendFile() {}
-  sendFiles() {}
-  sendCode() {}
-  fetchMessage() {}
-  fetchMessages() {}
-  fetchPinnedMessages() {}
-  search() {}
   startTyping() {}
   stopTyping() {}
   get typing() {}
   get typingCount() {}
-  createCollector() {}
   createMessageCollector() {}
   awaitMessages() {}
   // Doesn't work on DM channels; bulkDelete() {}
-  acknowledge() {}
-  _cacheMessage() {}
 }
 
 TextBasedChannel.applyToClass(DMChannel, true, ['bulkDelete']);

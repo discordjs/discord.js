@@ -1,21 +1,17 @@
-const Snowflake = require('../util/Snowflake');
-const Collection = require('../util/Collection');
+'use strict';
+
+const Base = require('./Base');
 const TeamMember = require('./TeamMember');
-const Constants = require('../util/Constants');
+const Collection = require('../util/Collection');
+const Snowflake = require('../util/Snowflake');
 
 /**
  * Represents a Client OAuth2 Application Team.
+ * @extends {Base}
  */
-class Team {
+class Team extends Base {
   constructor(client, data) {
-    /**
-     * The client that instantiated the team
-     * @name Team#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
-
+    super(client);
     this._patch(data);
   }
 
@@ -51,13 +47,13 @@ class Team {
     this.members = new Collection();
 
     for (const memberData of data.members) {
-      const member = new TeamMember(this.client, this, memberData);
+      const member = new TeamMember(this, memberData);
       this.members.set(member.id, member);
     }
   }
 
   /**
-   * The owner of the team
+   * The owner of this team
    * @type {?TeamMember}
    * @readonly
    */
@@ -85,12 +81,12 @@ class Team {
 
   /**
    * A link to the teams's icon.
-   * @type {?string}
-   * @readonly
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string} URL to the icon
    */
-  get iconURL() {
+  iconURL({ format, size } = {}) {
     if (!this.icon) return null;
-    return Constants.Endpoints.CDN(this.client.options.http.cdn).TeamIcon(this.id, this.icon);
+    return this.client.rest.cdn.TeamIcon(this.id, this.icon, { format, size });
   }
 
   /**
@@ -103,6 +99,10 @@ class Team {
    */
   toString() {
     return this.name;
+  }
+
+  toJSON() {
+    return super.toJSON({ createdTimestamp: true });
   }
 }
 

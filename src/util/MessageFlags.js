@@ -1,3 +1,5 @@
+'use strict';
+
 const BitField = require('./BitField');
 
 /**
@@ -5,15 +7,6 @@ const BitField = require('./BitField');
  * @extends {BitField}
  */
 class MessageFlags extends BitField {}
-
-/**
- * Data that can be resolved to give a permission number. This can be:
- * * A string (see {@link MessageFlags.FLAGS})
- * * A message flag
- * * An instance of MessageFlags
- * * An array of MessageFlagsResolvable
- * @typedef {string|number|MessageFlags|MessageFlagsResolvable[]} MessageFlagsResolvable
- */
 
 /**
  * Numeric message flags. All available properties:

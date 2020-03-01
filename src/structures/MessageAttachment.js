@@ -1,28 +1,49 @@
-const { basename } = require('path');
+'use strict';
+
+const Util = require('../util/Util');
 
 /**
  * Represents an attachment in a message.
  */
 class MessageAttachment {
-  constructor(message, data) {
+  /**
+   * @param {BufferResolvable|Stream} attachment The file
+   * @param {string} [name=null] The name of the file, if any
+   * @param {Object} [data] Extra data
+   */
+  constructor(attachment, name = null, data) {
+    this.attachment = attachment;
     /**
-     * The client that instantiated this MessageAttachment
-     * @name MessageAttachment#client
-     * @type {Client}
-     * @readonly
+     * The name of this attachment
+     * @type {?string}
      */
-    Object.defineProperty(this, 'client', { value: message.client });
-
-    /**
-     * The message this attachment is part of
-     * @type {Message}
-     */
-    this.message = message;
-
-    this.setup(data);
+    this.name = name;
+    if (data) this._patch(data);
   }
 
-  setup(data) {
+  /**
+   * Sets the file of this attachment.
+   * @param {BufferResolvable|Stream} attachment The file
+   * @param {string} [name=null] The name of the file, if any
+   * @returns {MessageAttachment} This attachment
+   */
+  setFile(attachment, name = null) {
+    this.attachment = attachment;
+    this.name = name;
+    return this;
+  }
+
+  /**
+   * Sets the name of this attachment.
+   * @param {string} name The name of the file
+   * @returns {MessageAttachment} This attachment
+   */
+  setName(name) {
+    this.name = name;
+    return this;
+  }
+
+  _patch(data) {
     /**
      * The ID of this attachment
      * @type {Snowflake}
@@ -30,16 +51,10 @@ class MessageAttachment {
     this.id = data.id;
 
     /**
-     * The file name of this attachment
-     * @type {string}
-     */
-    this.filename = data.filename;
-
-    /**
      * The size of this attachment in bytes
      * @type {number}
      */
-    this.filesize = data.size;
+    this.size = data.size;
 
     /**
      * The URL to this attachment
@@ -54,16 +69,16 @@ class MessageAttachment {
     this.proxyURL = data.proxy_url;
 
     /**
-     * The height of this attachment (if an image)
+     * The height of this attachment (if an image or video)
      * @type {?number}
      */
-    this.height = data.height;
+    this.height = typeof data.height !== 'undefined' ? data.height : null;
 
     /**
-     * The width of this attachment (if an image)
+     * The width of this attachment (if an image or video)
      * @type {?number}
      */
-    this.width = data.width;
+    this.width = typeof data.width !== 'undefined' ? data.width : null;
   }
 
   /**
@@ -72,7 +87,11 @@ class MessageAttachment {
    * @readonly
    */
   get spoiler() {
-    return basename(this.url).startsWith('SPOILER_');
+    return Util.basename(this.url).startsWith('SPOILER_');
+  }
+
+  toJSON() {
+    return Util.flatten(this);
   }
 }
 

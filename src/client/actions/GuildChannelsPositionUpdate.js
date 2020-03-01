@@ -1,14 +1,16 @@
+'use strict';
+
 const Action = require('./Action');
 
 class GuildChannelsPositionUpdate extends Action {
   handle(data) {
     const client = this.client;
 
-    const guild = client.guilds.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
       for (const partialChannel of data.channels) {
-        const channel = guild.channels.get(partialChannel.id);
-        if (channel) channel.position = partialChannel.position;
+        const channel = guild.channels.cache.get(partialChannel.id);
+        if (channel) channel.rawPosition = partialChannel.position;
       }
     }
 

@@ -1,41 +1,30 @@
+'use strict';
+
 const Action = require('./Action');
-const Constants = require('../../util/Constants');
+const { Events, Status } = require('../../util/Constants');
 
 class GuildMemberRemoveAction extends Action {
-  constructor(client) {
-    super(client);
-    this.deleted = new Map();
-  }
-
-  handle(data) {
+  handle(data, shard) {
     const client = this.client;
-    const guild = client.guilds.get(data.guild_id);
+    const guild = client.guilds.cache.get(data.guild_id);
     let member = null;
     if (guild) {
-      member = guild.members.get(data.user.id);
+      member = this.getMember(data, guild);
       guild.memberCount--;
       if (member) {
-        guild._removeMember(member);
-        this.deleted.set(guild.id + data.user.id, member);
-        if (client.status === Constants.Status.READY) client.emit(Constants.Events.GUILD_MEMBER_REMOVE, member);
-        this.scheduleForDeletion(guild.id, data.user.id);
-      } else {
-        member = this.deleted.get(guild.id + data.user.id) || null;
+        member.deleted = true;
+        guild.members.cache.delete(member.id);
+        /**
+         * Emitted whenever a member leaves a guild, or is kicked.
+         * @event Client#guildMemberRemove
+         * @param {GuildMember} member The member that has left/been kicked from the guild
+         */
+        if (shard.status === Status.READY) client.emit(Events.GUILD_MEMBER_REMOVE, member);
       }
-      if (member) member.deleted = true;
+      guild.voiceStates.cache.delete(data.user.id);
     }
     return { guild, member };
   }
-
-  scheduleForDeletion(guildID, userID) {
-    this.client.setTimeout(() => this.deleted.delete(guildID + userID), this.client.options.restWsBridgeTimeout);
-  }
 }
-
-/**
- * Emitted whenever a member leaves a guild, or is kicked.
- * @event Client#guildMemberRemove
- * @param {GuildMember} member The member that has left/been kicked from the guild
- */
 
 module.exports = GuildMemberRemoveAction;

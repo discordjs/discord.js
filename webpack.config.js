@@ -1,62 +1,63 @@
-/*
-  ONLY RUN BUILDS WITH `npm run webpack`!
-  DO NOT USE NORMAL WEBPACK! IT WILL NOT WORK!
-*/
+'use strict';
 
+const path = require('path');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
-const createVariants = require('parallel-webpack').createVariants;
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const version = require('./package.json').version;
 
-const createConfig = options => {
-  const plugins = [
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        __DISCORD_WEBPACK__: '"true"',
-      },
-      'process.emitWarning': (any, ...more) => console.warn(any, more),
-    }),
-  ];
+const prod = process.env.NODE_ENV === 'production';
 
-  const filename = `./webpack/discord${process.env.VERSIONED === 'false' ? '' : '.' + version}${options.mode === 'production' ? '.min' : ''}.js`; // eslint-disable-line
+// eslint-disable-next-line max-len
+const filename = `discord${process.env.VERSIONED ? `.${version}` : ''}${prod ? '.min' : ''}.js`;
 
-  return {
-    entry: './browser.js',
-    mode: options.mode,
-    output: {
-      path: __dirname,
-      filename,
-    },
-    module: {
-      rules: [
-        { test: /\.md$/, loader: 'ignore-loader' },
-      ],
-    },
-    node: {
-      fs: 'empty',
-      dns: 'mock',
-      tls: 'mock',
-      child_process: 'empty',
-      dgram: 'empty',
-      zlib: 'empty',
-      __dirname: true,
-      process: true,
-    },
-    optimization: {
-      minimizer: [
-        new UglifyJSPlugin({
-          uglifyOptions: {
-            mangle: { keep_classnames: true },
-            compress: { keep_classnames: true },
-            output: { comments: false },
+module.exports = {
+  entry: './src/index.js',
+  mode: prod ? 'production' : 'development',
+  output: {
+    path: path.resolve('./webpack'),
+    filename,
+    library: 'Discord',
+    libraryTarget: 'umd',
+  },
+  module: {
+    rules: [
+      { test: /\.md$/, loader: 'ignore-loader' },
+      {
+        test: require.resolve('./package.json'),
+        type: 'javascript/auto',
+        use: {
+          loader: 'json-filter-loader',
+          options: {
+            used: ['version', 'homepage'],
           },
-        }),
-      ],
-    },
-    plugins,
-  };
+        },
+      },
+    ],
+  },
+  node: {
+    fs: 'empty',
+    dns: 'mock',
+    tls: 'mock',
+    child_process: 'empty',
+    dgram: 'empty',
+    __dirname: true,
+    process: true,
+    path: 'empty',
+    Buffer: false,
+    zlib: 'empty',
+  },
+  optimization: {
+    minimizer: [
+      new TerserJSPlugin({
+        cache: false,
+        terserOptions: {
+          mangle: { keep_classnames: true },
+          compress: { keep_classnames: true },
+          keep_classnames: true,
+          output: { comments: false },
+        },
+      }),
+    ],
+  },
+  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 };
-
-module.exports = createVariants({}, { mode: ['development', 'production'] }, createConfig);

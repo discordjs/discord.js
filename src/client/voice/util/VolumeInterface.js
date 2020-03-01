@@ -1,3 +1,5 @@
+'use strict';
+
 const EventEmitter = require('events');
 
 /**
@@ -11,30 +13,39 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * The current volume of the broadcast
+   * Whether or not the volume of this stream is editable
+   * @type {boolean}
    * @readonly
+   */
+  get volumeEditable() {
+    return true;
+  }
+
+  /**
+   * The current volume of the stream
    * @type {number}
+   * @readonly
    */
   get volume() {
     return this._volume;
   }
 
   /**
-   * The current volume of the broadcast in decibels
-   * @readonly
+   * The current volume of the stream in decibels
    * @type {number}
+   * @readonly
    */
   get volumeDecibels() {
-    return Math.log10(this._volume) * 20;
+    return Math.log10(this.volume) * 20;
   }
 
   /**
-   * The current volume of the broadcast from a logarithmic scale
-   * @readonly
+   * The current volume of the stream from a logarithmic scale
    * @type {number}
+   * @readonly
    */
   get volumeLogarithmic() {
-    return Math.pow(this._volume, 1 / 1.660964);
+    return Math.pow(this.volume, 1 / 1.660964);
   }
 
   applyVolume(buffer, volume) {
@@ -67,7 +78,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * Set the volume in decibels.
+   * Sets the volume in decibels.
    * @param {number} db The decibels
    */
   setVolumeDecibels(db) {
@@ -75,7 +86,7 @@ class VolumeInterface extends EventEmitter {
   }
 
   /**
-   * Set the volume so that a perceived value of 0.5 is half the perceived volume etc.
+   * Sets the volume so that a perceived value of 0.5 is half the perceived volume etc.
    * @param {number} value The value for the volume
    */
   setVolumeLogarithmic(value) {
@@ -83,4 +94,10 @@ class VolumeInterface extends EventEmitter {
   }
 }
 
-module.exports = VolumeInterface;
+const props = ['volumeDecibels', 'volumeLogarithmic', 'setVolumeDecibels', 'setVolumeLogarithmic'];
+
+exports.applyToClass = function applyToClass(structure) {
+  for (const prop of props) {
+    Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(VolumeInterface.prototype, prop));
+  }
+};

@@ -1,32 +1,36 @@
-const Mentions = require('./MessageMentions');
-const Attachment = require('./MessageAttachment');
+'use strict';
+
+const APIMessage = require('./APIMessage');
+const Base = require('./Base');
+const ClientApplication = require('./ClientApplication');
+const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
-const RichEmbed = require('./RichEmbed');
-const MessageReaction = require('./MessageReaction');
+const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
-const Util = require('../util/Util');
+const { Error, TypeError } = require('../errors');
+const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
-const Constants = require('../util/Constants');
-const Permissions = require('../util/Permissions');
+const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
-let GuildMember;
+const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a message on Discord.
+ * @extends {Base}
  */
-class Message {
-  constructor(channel, data, client) {
-    /**
-     * The client that instantiated the Message
-     * @name Message#client
-     * @type {Client}
-     * @readonly
-     */
-    Object.defineProperty(this, 'client', { value: client });
+class Message extends Base {
+  /**
+   * @param {Client} client The instantiating client
+   * @param {Object} data The data for the message
+   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   */
+  constructor(client, data, channel) {
+    super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel|GroupDMChannel}
+     * @type {TextChannel|DMChannel}
      */
     this.channel = channel;
 
@@ -36,10 +40,10 @@ class Message {
      */
     this.deleted = false;
 
-    if (data) this.setup(data);
+    if (data) this._patch(data);
   }
 
-  setup(data) { // eslint-disable-line complexity
+  _patch(data) {
     /**
      * The ID of the message
      * @type {Snowflake}
@@ -50,7 +54,7 @@ class Message {
      * The type of the message
      * @type {MessageType}
      */
-    this.type = Constants.MessageTypes[data.type];
+    this.type = MessageTypes[data.type];
 
     /**
      * The content of the message
@@ -60,9 +64,9 @@ class Message {
 
     /**
      * The author of the message
-     * @type {User}
+     * @type {?User}
      */
-    this.author = this.client.dataManager.newUser(data.author, !data.webhook_id);
+    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
 
     /**
      * Whether or not this message is pinned
@@ -94,14 +98,18 @@ class Message {
      * A list of embeds in the message - e.g. YouTube Player
      * @type {MessageEmbed[]}
      */
-    this.embeds = data.embeds.map(e => new Embed(this, e));
+    this.embeds = (data.embeds || []).map(e => new Embed(e));
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
      */
     this.attachments = new Collection();
-    for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+    if (data.attachments) {
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+      }
+    }
 
     /**
      * The timestamp the message was sent at
@@ -116,14 +124,13 @@ class Message {
     this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
-     * A collection of reactions to this message, mapped by the reaction ID
-     * @type {Collection<Snowflake, MessageReaction>}
+     * A manager of the reactions belonging to this message
+     * @type {ReactionManager}
      */
-    this.reactions = new Collection();
+    this.reactions = new ReactionManager(this);
     if (data.reactions && data.reactions.length > 0) {
       for (const reaction of data.reactions) {
-        const id = reaction.emoji.id ? `${reaction.emoji.name}:${reaction.emoji.id}` : reaction.emoji.name;
-        this.reactions.set(id, new MessageReaction(this, reaction.emoji, reaction.count, reaction.me));
+        this.reactions.add(reaction);
       }
     }
 
@@ -140,10 +147,34 @@ class Message {
     this.webhookID = data.webhook_id || null;
 
     /**
-     * Whether this message is a hit in a search
-     * @type {?boolean}
+     * Supplemental application information for group activities
+     * @type {?ClientApplication}
      */
-    this.hit = typeof data.hit === 'boolean' ? data.hit : null;
+    this.application = data.application ? new ClientApplication(this.client, data.application) : null;
+
+    /**
+     * Group activity
+     * @type {?MessageActivity}
+     */
+    this.activity = data.activity
+      ? {
+          partyID: data.activity.party_id,
+          type: data.activity.type,
+        }
+      : null;
+
+    /**
+     * The previous versions of the message, sorted with the most recent first
+     * @type {Message[]}
+     * @private
+     */
+    this._edits = [];
+
+    if (this.member && data.member) {
+      this.member._patch(data.member);
+    } else if (data.member && this.guild && this.author) {
+      this.guild.members.add(Object.assign(data.member, { user: this.author }));
+    }
 
     /**
      * Flags that are applied to the message
@@ -163,29 +194,22 @@ class Message {
      * Message reference data
      * @type {?MessageReference}
      */
-    this.reference = data.message_reference ? {
-      channelID: data.message_reference.channel_id,
-      guildID: data.message_reference.guild_id,
-      messageID: data.message_reference.message_id,
-    } : null;
+    this.reference = data.message_reference
+      ? {
+          channelID: data.message_reference.channel_id,
+          guildID: data.message_reference.guild_id,
+          messageID: data.message_reference.message_id,
+        }
+      : null;
+  }
 
-    /**
-     * The previous versions of the message, sorted with the most recent first
-     * @type {Message[]}
-     * @private
-     */
-    this._edits = [];
-
-    if (data.member && this.guild && this.author && !this.guild.members.has(this.author.id)) {
-      this.guild._addMember(Object.assign(data.member, { user: this.author }), false);
-    }
-
-    /**
-     * Represents the author of the message as a guild member
-     * Only available if the message comes from a guild where the author is still a member
-     * @type {?GuildMember}
-     */
-    this.member = this.guild ? this.guild.member(this.author) || null : null;
+  /**
+   * Whether or not this message is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.content !== 'string' || !this.author;
   }
 
   /**
@@ -194,19 +218,21 @@ class Message {
    * @private
    */
   patch(data) {
-    const clone = Util.cloneObject(this);
+    const clone = this._clone();
     this._edits.unshift(clone);
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
     if ('pinned' in data) this.pinned = data.pinned;
     if ('tts' in data) this.tts = data.tts;
-    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(this, e));
+    if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e));
     else this.embeds = this.embeds.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
-      for (const attachment of data.attachments) this.attachments.set(attachment.id, new Attachment(this, attachment));
+      for (const attachment of data.attachments) {
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+      }
     } else {
       this.attachments = new Collection(this.attachments);
     }
@@ -216,14 +242,24 @@ class Message {
       'mentions' in data ? data.mentions : this.mentions.users,
       'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
-      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels
+      'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
   }
 
   /**
-   * The time the message was sent
+   * Represents the author of the message as a guild member.
+   * Only available if the message comes from a guild where the author is still a member
+   * @type {?GuildMember}
+   * @readonly
+   */
+  get member() {
+    return this.guild ? this.guild.member(this.author) || null : null;
+  }
+
+  /**
+   * The time the message was sent at
    * @type {Date}
    * @readonly
    */
@@ -250,7 +286,7 @@ class Message {
   }
 
   /**
-   * The url to jump to the message
+   * The url to jump to this message
    * @type {string}
    * @readonly
    */
@@ -265,35 +301,8 @@ class Message {
    * @readonly
    */
   get cleanContent() {
-    return this.content
-      .replace(/@(everyone|here)/g, '@\u200b$1')
-      .replace(/<@!?[0-9]+>/g, input => {
-        const id = input.replace(/<|!|>|@/g, '');
-        if (this.channel.type === 'dm' || this.channel.type === 'group') {
-          return this.client.users.has(id) ? `@${this.client.users.get(id).username}` : input;
-        }
-
-        const member = this.channel.guild.members.get(id);
-        if (member) {
-          if (member.nickname) return `@${member.nickname}`;
-          return `@${member.user.username}`;
-        } else {
-          const user = this.client.users.get(id);
-          if (user) return `@${user.username}`;
-          return input;
-        }
-      })
-      .replace(/<#[0-9]+>/g, input => {
-        const channel = this.client.channels.get(input.replace(/<|#|>/g, ''));
-        if (channel) return `#${channel.name}`;
-        return input;
-      })
-      .replace(/<@&[0-9]+>/g, input => {
-        if (this.channel.type === 'dm' || this.channel.type === 'group') return input;
-        const role = this.guild.roles.get(input.replace(/<|@|>|&/g, ''));
-        if (role) return `@${role.name}`;
-        return input;
-      });
+    // eslint-disable-next-line eqeqeq
+    return this.content != null ? Util.cleanContent(this.content, this) : null;
   }
 
   /**
@@ -303,7 +312,7 @@ class Message {
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
-   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+   * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID';
    * const collector = message.createReactionCollector(filter, { time: 15000 });
    * collector.on('collect', r => console.log(`Collected ${r.emoji.name}`));
    * collector.on('end', collected => console.log(`Collected ${collected.size} items`));
@@ -319,7 +328,7 @@ class Message {
    */
 
   /**
-   * Similar to createMessageCollector but in promise form.
+   * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
@@ -368,9 +377,11 @@ class Message {
    * @readonly
    */
   get deletable() {
-    return !this.deleted && (this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
-    ));
+    return (
+      !this.deleted &&
+      (this.author.id === this.client.user.id ||
+        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+    );
   }
 
   /**
@@ -379,76 +390,39 @@ class Message {
    * @readonly
    */
   get pinnable() {
-    return this.type === 'DEFAULT' && (!this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES));
-  }
-
-  /**
-   * Whether or not a user, channel or role is mentioned in this message.
-   * @param {GuildChannel|User|Role|string} data Either a guild channel, user or a role object, or a string representing
-   * the ID of any of these
-   * @returns {boolean}
-   */
-  isMentioned(data) {
-    data = data && data.id ? data.id : data;
-    return this.mentions.users.has(data) || this.mentions.channels.has(data) || this.mentions.roles.has(data);
-  }
-
-  /**
-   * Whether or not a guild member is mentioned in this message. Takes into account
-   * user mentions, role mentions, and @everyone/@here mentions.
-   * @param {GuildMember|User} member The member/user to check for a mention of
-   * @returns {boolean}
-   */
-  isMemberMentioned(member) {
-    // Lazy-loading is used here to get around a circular dependency that breaks things
-    if (!GuildMember) GuildMember = require('./GuildMember');
-    if (this.mentions.everyone) return true;
-    if (this.mentions.users.has(member.id)) return true;
-    if (member instanceof GuildMember && member.roles.some(r => this.mentions.roles.has(r.id))) return true;
-    return false;
+    return (
+      this.type === 'DEFAULT' &&
+      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
+    );
   }
 
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
+   * @property {string} [content] Content to be edited
    * @property {Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
-   * @property {MessageFlagsResolvable} [flags] Message flags to apply
    */
 
   /**
-   * Edit the content of the message.
-   * @param {StringResolvable} [content] The new content for the message
-   * @param {MessageEditOptions|RichEmbed} [options] The options to provide
+   * Edits the content of the message.
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
+   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
    * message.edit('This is my new content!')
-   *   .then(msg => console.log(`New message content: ${msg}`))
+   *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
   edit(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    if (options instanceof RichEmbed) options = { embed: options };
-    return this.client.rest.methods.updateMessage(this, content, options);
-  }
-
-  /**
-   * Edit the content of the message, with a code block.
-   * @param {string} lang The language for the code block
-   * @param {StringResolvable} content The new content for the message
-   * @returns {Promise<Message>}
-   * @deprecated
-   */
-  editCode(lang, content) {
-    content = Util.escapeMarkdown(this.client.resolver.resolveString(content), true);
-    return this.edit(`\`\`\`${lang || ''}\n${content}\n\`\`\``);
+    const { data } =
+      content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
+    return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
+      const clone = this._clone();
+      clone._patch(d);
+      return clone;
+    });
   }
 
   /**
@@ -456,7 +430,11 @@ class Message {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.rest.methods.pinMessage(this);
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .put()
+      .then(() => this);
   }
 
   /**
@@ -464,12 +442,16 @@ class Message {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.rest.methods.unpinMessage(this);
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .delete()
+      .then(() => this);
   }
 
   /**
-   * Add a reaction to the message.
-   * @param {string|Emoji|ReactionEmoji} emoji The emoji to react with
+   * Adds a reaction to the message.
+   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    * @example
    * // React to a message with a unicode emoji
@@ -478,28 +460,35 @@ class Message {
    *   .catch(console.error);
    * @example
    * // React to a message with a custom emoji
-   * message.react(message.guild.emojis.get('123456789012345678'))
+   * message.react(message.guild.emojis.cache.get('123456789012345678'))
    *   .then(console.log)
    *   .catch(console.error);
    */
   react(emoji) {
-    emoji = this.client.resolver.resolveEmojiIdentifier(emoji);
-    if (!emoji) throw new TypeError('Emoji must be a string or Emoji/ReactionEmoji');
+    emoji = this.client.emojis.resolveIdentifier(emoji);
+    if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.rest.methods.addMessageReaction(this, emoji);
-  }
-
-  /**
-   * Remove all reactions from a message.
-   * @returns {Promise<Message>}
-   */
-  clearReactions() {
-    return this.client.rest.methods.removeMessageReactions(this);
+    return this.client.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .reactions(emoji, '@me')
+      .put()
+      .then(
+        () =>
+          this.client.actions.MessageReactionAdd.handle({
+            user: this.client.user,
+            channel: this.channel,
+            message: this,
+            emoji: Util.parseEmoji(emoji),
+          }).reaction,
+      );
   }
 
   /**
    * Deletes the message.
-   * @param {number} [timeout=0] How long to wait to delete the message in milliseconds
+   * @param {Object} [options] Options
+   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
+   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
@@ -507,47 +496,45 @@ class Message {
    *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete(timeout = 0) {
+  delete(options = {}) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    const { timeout = 0, reason } = options;
     if (timeout <= 0) {
-      return this.client.rest.methods.deleteMessage(this);
+      return this.channel.messages.delete(this.id, reason).then(() => this);
     } else {
       return new Promise(resolve => {
         this.client.setTimeout(() => {
-          resolve(this.delete());
+          resolve(this.delete({ reason }));
         }, timeout);
       });
     }
   }
 
   /**
-   * Reply to the message.
-   * @param {StringResolvable} [content] The content for the message
-   * @param {MessageOptions} [options] The options to provide
+   * Replies to the message.
+   * @param {StringResolvable|APIMessage} [content=''] The content for the message
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
    * @returns {Promise<Message|Message[]>}
    * @example
    * // Reply to a message
    * message.reply('Hey, I\'m a reply!')
-   *   .then(sent => console.log(`Sent a reply to ${sent.author.username}`))
+   *   .then(() => console.log(`Sent a reply to ${message.author.username}`))
    *   .catch(console.error);
    */
   reply(content, options) {
-    if (!options && typeof content === 'object' && !(content instanceof Array)) {
-      options = content;
-      content = '';
-    } else if (!options) {
-      options = {};
-    }
-    return this.channel.send(content, Object.assign(options, { reply: this.member || this.author }));
+    return this.channel.send(
+      content instanceof APIMessage
+        ? content
+        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+    );
   }
 
   /**
-   * Marks the message as read.
-   * <warn>This is only available when using a user account.</warn>
+   * Fetch this message.
    * @returns {Promise<Message>}
-   * @deprecated
    */
-  acknowledge() {
-    return this.client.rest.methods.ackMessage(this);
+  fetch() {
+    return this.channel.messages.fetch(this.id, true);
   }
 
   /**
@@ -555,7 +542,7 @@ class Message {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('The message was not sent by a webhook.'));
+    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
 
@@ -573,7 +560,7 @@ class Message {
       flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
     }
 
-    return this.edit(undefined, { flags });
+    return this.edit({ flags });
   }
 
   /**
@@ -589,7 +576,8 @@ class Message {
     const embedUpdate = !message.author && !message.attachments;
     if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
-    let equal = this.id === message.id &&
+    let equal =
+      this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
       this.tts === message.tts &&
@@ -598,7 +586,8 @@ class Message {
       this.attachments.length === message.attachments.length;
 
     if (equal && rawData) {
-      equal = this.mentions.everyone === message.mentions.everyone &&
+      equal =
+        this.mentions.everyone === message.mentions.everyone &&
         this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
         this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }
@@ -617,44 +606,16 @@ class Message {
     return this.content;
   }
 
-  _addReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
-    let reaction;
-    if (this.reactions.has(emojiID)) {
-      reaction = this.reactions.get(emojiID);
-      if (!reaction.me) reaction.me = user.id === this.client.user.id;
-    } else {
-      reaction = new MessageReaction(this, emoji, 0, user.id === this.client.user.id);
-      this.reactions.set(emojiID, reaction);
-    }
-    if (!reaction.users.has(user.id)) {
-      reaction.users.set(user.id, user);
-      reaction.count++;
-    }
-    return reaction;
-  }
-
-  _removeReaction(emoji, user) {
-    const emojiID = emoji.id ? `${emoji.name}:${emoji.id}` : emoji.name;
-    if (this.reactions.has(emojiID)) {
-      const reaction = this.reactions.get(emojiID);
-      if (!user) {
-        this.reactions.delete(emojiID);
-        return reaction;
-      }
-      if (reaction.users.has(user.id)) {
-        reaction.users.delete(user.id);
-        reaction.count--;
-        if (user.id === this.client.user.id) reaction.me = false;
-        if (reaction.count <= 0) this.reactions.delete(emojiID);
-        return reaction;
-      }
-    }
-    return null;
-  }
-
-  _clearReactions() {
-    this.reactions.clear();
+  toJSON() {
+    return super.toJSON({
+      channel: 'channelID',
+      author: 'authorID',
+      application: 'applicationID',
+      guild: 'guildID',
+      cleanContent: true,
+      member: false,
+      reactions: false,
+    });
   }
 }
 
