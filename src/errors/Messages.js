@@ -17,6 +17,8 @@ const Messages = {
 
   SHARDING_INVALID: 'Invalid shard settings were provided.',
   SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
+  INVALID_INTENTS: 'There is an invalid intent for websocket intents.',
+  DISALLOWED_INTENTS: 'You included an intent on your websocket intents which you do not have privilege on.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
