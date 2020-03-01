@@ -212,7 +212,8 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether this member is manageable in terms of role hierarchy by the client user
+   * Whether the client user is above this user in the hierarchy, according to role position and guild ownership.
+   * This is a prerequisite for many moderative actions.
    * @type {boolean}
    * @readonly
    */
