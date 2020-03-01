@@ -17,7 +17,6 @@ module.exports = {
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
   DataResolver: require('./util/DataResolver'),
-  LimitedCollection: require('./util/LimitedCollection'),
   BaseManager: require('./managers/BaseManager'),
   DiscordAPIError: require('./rest/DiscordAPIError'),
   HTTPError: require('./rest/HTTPError'),
