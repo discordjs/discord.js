@@ -45,7 +45,7 @@ client.on('message', message => {
             console.log('reached', count, ecount);
           })
           .catch(e => {
-            console.error(m);
+            console.error(e);
             ecount++;
             console.log('reached', count, ecount);
           });
@@ -95,11 +95,11 @@ client.on('message', message => {
 
     if (message.content === 'stats') {
       let m = '';
-      m += `I am aware of ${message.guild.channels.size} channels\n`;
-      m += `I am aware of ${message.guild.members.size} members\n`;
-      m += `I am aware of ${client.channels.size} channels overall\n`;
-      m += `I am aware of ${client.guilds.size} guilds overall\n`;
-      m += `I am aware of ${client.users.size} users overall\n`;
+      m += `I am aware of ${message.guild.channels.cache.size} channels\n`;
+      m += `I am aware of ${message.guild.members.cache.size} members\n`;
+      m += `I am aware of ${client.channels.cache.size} channels overall\n`;
+      m += `I am aware of ${client.guilds.cache.size} guilds overall\n`;
+      m += `I am aware of ${client.users.cache.size} users overall\n`;
       message.channel
         .send(m)
         .then(msg => msg.edit('nah'))
@@ -116,7 +116,7 @@ client.on('message', message => {
 
     if (message.content.startsWith('kick')) {
       message.guild
-        .member(message.mentions[0])
+        .member(message.mentions.users.first())
         .kick()
         .then(member => {
           console.log(member);
@@ -151,7 +151,7 @@ client.on('message', message => {
 });
 
 function nameLoop(user) {
-  // User.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
+  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
 }
 
 function chanLoop(channel) {
