@@ -901,7 +901,7 @@ class Guild extends Base {
       _data.verification_level =
         typeof data.verificationLevel === 'number'
           ? Number(data.verificationLevel)
-          : ExplicitContentFilterLevels.indexOf(data.verificationLevel);
+          : VerificationLevels.indexOf(data.verificationLevel);
     }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
