@@ -46,7 +46,7 @@ class GuildManager extends BaseManager {
   /**
    * Partial data for a Role.
    * @typedef {Object} PartialRoleData
-   * @property {number} id The ID for this role, used to set channel overrides,
+   * @property {number} [id] The ID for this role, used to set channel overrides,
    * this is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
