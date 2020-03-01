@@ -20,7 +20,9 @@ class Base {
     return Object.assign(Object.create(this), this);
   }
 
-  _patch(data) { return data; }
+  _patch(data) {
+    return data;
+  }
 
   _update(data) {
     const clone = this._clone();

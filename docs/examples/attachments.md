@@ -24,13 +24,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using MessageAttachment
-		const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
-		// Send the attachment in the message channel
-		message.channel.send(attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
+    // Send the attachment in the message channel
+    message.channel.send(attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -59,13 +59,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using MessageAttachment
-		const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author},`, attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('https://i.imgur.com/w3duR07.png');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author},`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -96,13 +96,13 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!rip'
-	if (message.content === '!rip') {
-		// Create the attachment using MessageAttachment
-		const attachment = new MessageAttachment('./rip.png');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author},`, attachment);
-	}
+  // If the message is '!rip'
+  if (message.content === '!rip') {
+    // Create the attachment using MessageAttachment
+    const attachment = new MessageAttachment('./rip.png');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author},`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me
@@ -137,21 +137,21 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	// If the message is '!memes'
-	if (message.content === '!memes') {
-		// Get the buffer from the 'memes.txt', assuming that the file exists
-		const buffer = fs.readFileSync('./memes.txt');
+  // If the message is '!memes'
+  if (message.content === '!memes') {
+    // Get the buffer from the 'memes.txt', assuming that the file exists
+    const buffer = fs.readFileSync('./memes.txt');
 
-		/**
-		 * Create the attachment using MessageAttachment,
-		 * overwritting the default file name to 'memes.txt'
-		 * Read more about it over at
-		 * http://discord.js.org/#/docs/main/master/class/MessageAttachment
-		 */
-		const attachment = new MessageAttachment(buffer, 'memes.txt');
-		// Send the attachment in the message channel with a content
-		message.channel.send(`${message.author}, here are your memes!`, attachment);
-	}
+    /**
+     * Create the attachment using MessageAttachment,
+     * overwritting the default file name to 'memes.txt'
+     * Read more about it over at
+     * http://discord.js.org/#/docs/main/master/class/MessageAttachment
+     */
+    const attachment = new MessageAttachment(buffer, 'memes.txt');
+    // Send the attachment in the message channel with a content
+    message.channel.send(`${message.author}, here are your memes!`, attachment);
+  }
 });
 
 // Log our bot in using the token from https://discordapp.com/developers/applications/me

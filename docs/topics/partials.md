@@ -36,7 +36,7 @@ client.on('messageDelete', message => {
   if (!message.partial) {
     console.log(`It had content: "${message.content}"`);
   }
-})
+});
 
 // You can also try to upgrade partials to full instances:
 client.on('messageReactionAdd', async (reaction, user) => {

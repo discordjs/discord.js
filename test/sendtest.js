@@ -1,10 +1,11 @@
-const Discord = require('../src');
-const { owner, token } = require('./auth.js');
+'use strict';
 
-const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
+const fetch = require('node-fetch');
+const { owner, token } = require('./auth.js');
+const Discord = require('../src');
 
 const client = new Discord.Client();
 
@@ -37,10 +38,11 @@ const tests = [
   m => m.channel.send('x', { embed: { description: 'a' } }),
   m => m.channel.send({ embed: { description: 'a' } }),
   m => m.channel.send({ files: [{ attachment: linkA }] }),
-  m => m.channel.send({
-    embed: { description: 'a' },
-    files: [{ attachment: linkA, name: 'xyz.png' }],
-  }),
+  m =>
+    m.channel.send({
+      embed: { description: 'a' },
+      files: [{ attachment: linkA, name: 'xyz.png' }],
+    }),
 
   m => m.channel.send('x', embed().setDescription('a')),
   m => m.channel.send(embed().setDescription('a')),
@@ -71,45 +73,50 @@ const tests = [
   m => m.channel.send(['x', 'y'], [attach(linkA), attach(linkB)]),
 
   m => m.channel.send([embed().setDescription('a'), attach(linkB)]),
-  m => m.channel.send({
-    embed: embed().setImage('attachment://two.png'),
-    files: [attach(linkB, 'two.png')],
-  }),
-  m => m.channel.send({
-    embed: embed()
-      .setImage('attachment://two.png')
-      .attachFiles([attach(linkB, 'two.png')]),
-  }),
-  async m => m.channel.send(['x', 'y', 'z'], {
-    code: 'js',
-    embed: embed()
-      .setImage('attachment://two.png')
-      .attachFiles([attach(linkB, 'two.png')]),
-    files: [{ attachment: await buffer(linkA) }],
-  }),
+  m =>
+    m.channel.send({
+      embed: embed().setImage('attachment://two.png'),
+      files: [attach(linkB, 'two.png')],
+    }),
+  m =>
+    m.channel.send({
+      embed: embed()
+        .setImage('attachment://two.png')
+        .attachFiles([attach(linkB, 'two.png')]),
+    }),
+  async m =>
+    m.channel.send(['x', 'y', 'z'], {
+      code: 'js',
+      embed: embed()
+        .setImage('attachment://two.png')
+        .attachFiles([attach(linkB, 'two.png')]),
+      files: [{ attachment: await buffer(linkA) }],
+    }),
 
   m => m.channel.send('x', attach(fileA)),
   m => m.channel.send({ files: [fileA] }),
   m => m.channel.send(attach(fileA)),
   async m => m.channel.send({ files: [await read(fileA)] }),
-  async m => m.channel.send(fill('x'), {
-    reply: m.author,
-    code: 'js',
-    split: true,
-    embed: embed().setImage('attachment://zero.png'),
-    files: [attach(await buffer(linkA), 'zero.png')],
-  }),
+  async m =>
+    m.channel.send(fill('x'), {
+      reply: m.author,
+      code: 'js',
+      split: true,
+      embed: embed().setImage('attachment://zero.png'),
+      files: [attach(await buffer(linkA), 'zero.png')],
+    }),
 
   m => m.channel.send('x', attach(readStream(fileA))),
   m => m.channel.send({ files: [readStream(fileA)] }),
   m => m.channel.send({ files: [{ attachment: readStream(fileA) }] }),
-  async m => m.channel.send(fill('xyz '), {
-    reply: m.author,
-    code: 'js',
-    split: { char: ' ', prepend: 'hello! ', append: '!!!' },
-    embed: embed().setImage('attachment://zero.png'),
-    files: [linkB, attach(await buffer(linkA), 'zero.png'), readStream(fileA)],
-  }),
+  async m =>
+    m.channel.send(fill('xyz '), {
+      reply: m.author,
+      code: 'js',
+      split: { char: ' ', prepend: 'hello! ', append: '!!!' },
+      embed: embed().setImage('attachment://zero.png'),
+      files: [linkB, attach(await buffer(linkA), 'zero.png'), readStream(fileA)],
+    }),
 
   m => m.channel.send('Done!'),
 ];

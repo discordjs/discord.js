@@ -3,9 +3,9 @@
 const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const MessageManager = require('../managers/MessageManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a guild text channel on Discord.
@@ -121,9 +121,15 @@ class TextChannel extends GuildChannel {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    return this.client.api.channels[this.id].webhooks.post({ data: {
-      name, avatar,
-    }, reason }).then(data => new Webhook(this.client, data));
+    return this.client.api.channels[this.id].webhooks
+      .post({
+        data: {
+          name,
+          avatar,
+        },
+        reason,
+      })
+      .then(data => new Webhook(this.client, data));
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

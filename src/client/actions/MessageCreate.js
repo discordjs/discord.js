@@ -36,5 +36,4 @@ class MessageCreateAction extends Action {
   }
 }
 
-
 module.exports = MessageCreateAction;

@@ -1,9 +1,9 @@
 'use strict';
 
-const { ChannelTypes } = require('../util/Constants');
 const BaseManager = require('./BaseManager');
 const GuildChannel = require('../structures/GuildChannel');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const { ChannelTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for GuildChannels and stores their cache.

@@ -17,6 +17,8 @@ const Messages = {
 
   SHARDING_INVALID: 'Invalid shard settings were provided.',
   SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
+  INVALID_INTENTS: 'Invalid intent provided for WebSocket intents.',
+  DISALLOWED_INTENTS: 'Privileged intent provided is not enabled or whitelisted.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
@@ -36,7 +38,7 @@ const Messages = {
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
 
   VOICE_INVALID_HEARTBEAT: 'Tried to set voice heartbeat but no valid interval was specified.',
-  VOICE_USER_MISSING: 'Couldn\'t resolve the user to create stream.',
+  VOICE_USER_MISSING: "Couldn't resolve the user to create stream.",
   VOICE_JOIN_CHANNEL: (full = false) =>
     `You do not have permission to join this voice channel${full ? '; it is full.' : '.'}`,
   VOICE_CONNECTION_TIMEOUT: 'Connection not established within 15 seconds.',
@@ -71,7 +73,7 @@ const Messages = {
   SPLIT_MAX_LEN: 'Chunk exceeds the max length and contains no split characters.',
 
   BAN_RESOLVE_ID: (ban = false) => `Couldn't resolve the user ID to ${ban ? 'ban' : 'unban'}.`,
-  FETCH_BAN_RESOLVE_ID: 'Couldn\'t resolve the user ID to fetch the ban.',
+  FETCH_BAN_RESOLVE_ID: "Couldn't resolve the user ID to fetch the ban.",
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
@@ -79,7 +81,7 @@ const Messages = {
   GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
   GUILD_OWNED: 'Guild is owned by the client.',
-  GUILD_MEMBERS_TIMEOUT: 'Members didn\'t arrive in time.',
+  GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
@@ -88,15 +90,15 @@ const Messages = {
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  MISSING_MANAGE_EMOJIS_PERMISSION:
-    guild => `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
+  MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
+    `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
 
-  REACTION_RESOLVE_USER: 'Couldn\'t resolve the user ID to remove from the reaction.',
+  REACTION_RESOLVE_USER: "Couldn't resolve the user ID to remove from the reaction.",
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 
-  DELETE_GROUP_DM_CHANNEL: 'Bots don\'t have access to Group DM Channels and cannot delete them',
-  FETCH_GROUP_DM_CHANNEL: 'Bots don\'t have access to Group DM Channels and cannot fetch them',
+  DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
+  FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
