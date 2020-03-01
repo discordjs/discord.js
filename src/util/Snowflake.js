@@ -41,7 +41,9 @@ class SnowflakeUtil {
     }
     if (INCREMENT >= 4095) INCREMENT = 0;
     // eslint-disable-next-line max-len
-    const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++).toString(2).padStart(12, '0')}`;
+    const BINARY = `${(timestamp - EPOCH).toString(2).padStart(42, '0')}0000100000${(INCREMENT++)
+      .toString(2)
+      .padStart(12, '0')}`;
     return Util.binaryToID(BINARY);
   }
 
@@ -62,7 +64,9 @@ class SnowflakeUtil {
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */
   static deconstruct(snowflake) {
-    const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');
+    const BINARY = Util.idToBinary(snowflake)
+      .toString(2)
+      .padStart(64, '0');
     const res = {
       timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
       workerID: parseInt(BINARY.substring(42, 47), 2),
@@ -71,7 +75,9 @@ class SnowflakeUtil {
       binary: BINARY,
     };
     Object.defineProperty(res, 'date', {
-      get: function get() { return new Date(this.timestamp); },
+      get: function get() {
+        return new Date(this.timestamp);
+      },
       enumerable: true,
     });
     return res;

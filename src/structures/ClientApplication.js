@@ -1,9 +1,9 @@
 'use strict';
 
-const Snowflake = require('../util/Snowflake');
-const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
 const Base = require('./Base');
 const Team = require('./Team');
+const { ClientApplicationAssetTypes, Endpoints } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
 
@@ -70,11 +70,7 @@ class ClientApplication extends Base {
      * The owner of this OAuth application
      * @type {?User|Team}
      */
-    this.owner = data.team ?
-      new Team(this.client, data.team) :
-      data.owner ?
-        this.client.users.add(data.owner) :
-        null;
+    this.owner = data.team ? new Team(this.client, data.team) : data.owner ? this.client.users.add(data.owner) : null;
   }
 
   /**
@@ -112,9 +108,7 @@ class ClientApplication extends Base {
    */
   coverImage({ format, size } = {}) {
     if (!this.cover) return null;
-    return Endpoints
-      .CDN(this.client.options.http.cdn)
-      .AppIcon(this.id, this.cover, { format, size });
+    return Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.cover, { format, size });
   }
 
   /**
@@ -130,12 +124,16 @@ class ClientApplication extends Base {
    * @returns {Promise<Array<ClientAsset>>}
    */
   fetchAssets() {
-    return this.client.api.oauth2.applications(this.id).assets.get()
-      .then(assets => assets.map(a => ({
-        id: a.id,
-        name: a.name,
-        type: AssetTypes[a.type - 1],
-      })));
+    return this.client.api.oauth2
+      .applications(this.id)
+      .assets.get()
+      .then(assets =>
+        assets.map(a => ({
+          id: a.id,
+          name: a.name,
+          type: AssetTypes[a.type - 1],
+        })),
+      );
   }
 
   /**

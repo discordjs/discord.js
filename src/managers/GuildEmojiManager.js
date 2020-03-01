@@ -1,11 +1,11 @@
 'use strict';
 
-const Collection = require('../util/Collection');
 const BaseManager = require('./BaseManager');
+const { TypeError } = require('../errors');
 const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
+const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const { TypeError } = require('../errors');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
@@ -22,10 +22,10 @@ class GuildEmojiManager extends BaseManager {
   }
 
   /**
-  * The cache of GuildEmojis
-  * @type {Collection<Snowflake, GuildEmoji>}
-  * @name GuildEmojiManager#cache
-  */
+   * The cache of GuildEmojis
+   * @type {Collection<Snowflake, GuildEmoji>}
+   * @name GuildEmojiManager#cache
+   */
 
   add(data, cache) {
     return super.add(data, cache, { extras: [this.guild] });
@@ -58,14 +58,17 @@ class GuildEmojiManager extends BaseManager {
         for (let role of roles instanceof Collection ? roles.values() : roles) {
           role = this.guild.roles.resolve(role);
           if (!role) {
-            return Promise.reject(new TypeError('INVALID_TYPE', 'options.roles',
-              'Array or Collection of Roles or Snowflakes', true));
+            return Promise.reject(
+              new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
+            );
           }
           data.roles.push(role.id);
         }
       }
 
-      return this.client.api.guilds(this.guild.id).emojis.post({ data, reason })
+      return this.client.api
+        .guilds(this.guild.id)
+        .emojis.post({ data, reason })
         .then(emoji => this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji);
     }
 

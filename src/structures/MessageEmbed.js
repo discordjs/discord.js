@@ -1,7 +1,7 @@
 'use strict';
 
-const Util = require('../util/Util');
 const { RangeError } = require('../errors');
+const Util = require('../util/Util');
 
 /**
  * Represents an embed in a message (image/video preview, rich embed, etc.)
@@ -11,7 +11,7 @@ class MessageEmbed {
     this.setup(data);
   }
 
-  setup(data) { // eslint-disable-line complexity
+  setup(data) {
     /**
      * The type of this embed, either:
      * * `rich` - a rich embed
@@ -65,7 +65,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? data.fields.map(Util.cloneObject) : [];
+    this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
@@ -79,12 +79,14 @@ class MessageEmbed {
      * The thumbnail of this embed (if there is one)
      * @type {?MessageEmbedThumbnail}
      */
-    this.thumbnail = data.thumbnail ? {
-      url: data.thumbnail.url,
-      proxyURL: data.thumbnail.proxyURL || data.thumbnail.proxy_url,
-      height: data.thumbnail.height,
-      width: data.thumbnail.width,
-    } : null;
+    this.thumbnail = data.thumbnail
+      ? {
+          url: data.thumbnail.url,
+          proxyURL: data.thumbnail.proxyURL || data.thumbnail.proxy_url,
+          height: data.thumbnail.height,
+          width: data.thumbnail.width,
+        }
+      : null;
 
     /**
      * @typedef {Object} MessageEmbedImage
@@ -98,12 +100,14 @@ class MessageEmbed {
      * The image of this embed, if there is one
      * @type {?MessageEmbedImage}
      */
-    this.image = data.image ? {
-      url: data.image.url,
-      proxyURL: data.image.proxyURL || data.image.proxy_url,
-      height: data.image.height,
-      width: data.image.width,
-    } : null;
+    this.image = data.image
+      ? {
+          url: data.image.url,
+          proxyURL: data.image.proxyURL || data.image.proxy_url,
+          height: data.image.height,
+          width: data.image.width,
+        }
+      : null;
 
     /**
      * @typedef {Object} MessageEmbedVideo
@@ -118,12 +122,14 @@ class MessageEmbed {
      * @type {?MessageEmbedVideo}
      * @readonly
      */
-    this.video = data.video ? {
-      url: data.video.url,
-      proxyURL: data.video.proxyURL || data.video.proxy_url,
-      height: data.video.height,
-      width: data.video.width,
-    } : null;
+    this.video = data.video
+      ? {
+          url: data.video.url,
+          proxyURL: data.video.proxyURL || data.video.proxy_url,
+          height: data.video.height,
+          width: data.video.width,
+        }
+      : null;
 
     /**
      * @typedef {Object} MessageEmbedAuthor
@@ -137,12 +143,14 @@ class MessageEmbed {
      * The author of this embed (if there is one)
      * @type {?MessageEmbedAuthor}
      */
-    this.author = data.author ? {
-      name: data.author.name,
-      url: data.author.url,
-      iconURL: data.author.iconURL || data.author.icon_url,
-      proxyIconURL: data.author.proxyIconURL || data.author.proxy_icon_url,
-    } : null;
+    this.author = data.author
+      ? {
+          name: data.author.name,
+          url: data.author.url,
+          iconURL: data.author.iconURL || data.author.icon_url,
+          proxyIconURL: data.author.proxyIconURL || data.author.proxy_icon_url,
+        }
+      : null;
 
     /**
      * @typedef {Object} MessageEmbedProvider
@@ -154,10 +162,12 @@ class MessageEmbed {
      * The provider of this embed (if there is one)
      * @type {?MessageEmbedProvider}
      */
-    this.provider = data.provider ? {
-      name: data.provider.name,
-      url: data.provider.name,
-    } : null;
+    this.provider = data.provider
+      ? {
+          name: data.provider.name,
+          url: data.provider.name,
+        }
+      : null;
 
     /**
      * @typedef {Object} MessageEmbedFooter
@@ -170,11 +180,13 @@ class MessageEmbed {
      * The footer of this embed
      * @type {?MessageEmbedFooter}
      */
-    this.footer = data.footer ? {
-      text: data.footer.text,
-      iconURL: data.footer.iconURL || data.footer.icon_url,
-      proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
-    } : null;
+    this.footer = data.footer
+      ? {
+          text: data.footer.text,
+          iconURL: data.footer.iconURL || data.footer.icon_url,
+          proxyIconURL: data.footer.proxyIconURL || data.footer.proxy_icon_url,
+        }
+      : null;
 
     /**
      * The files of this embed
@@ -210,9 +222,11 @@ class MessageEmbed {
     return (
       (this.title ? this.title.length : 0) +
       (this.description ? this.description.length : 0) +
-      (this.fields.length >= 1 ? this.fields.reduce((prev, curr) =>
-        prev + curr.name.length + curr.value.length, 0) : 0) +
-      (this.footer ? this.footer.text.length : 0));
+      (this.fields.length >= 1
+        ? this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0)
+        : 0) +
+      (this.footer ? this.footer.text.length : 0)
+    );
   }
 
   /**
@@ -371,15 +385,19 @@ class MessageEmbed {
       fields: this.fields,
       thumbnail: this.thumbnail,
       image: this.image,
-      author: this.author ? {
-        name: this.author.name,
-        url: this.author.url,
-        icon_url: this.author.iconURL,
-      } : null,
-      footer: this.footer ? {
-        text: this.footer.text,
-        icon_url: this.footer.iconURL,
-      } : null,
+      author: this.author
+        ? {
+            name: this.author.name,
+            url: this.author.url,
+            icon_url: this.author.iconURL,
+          }
+        : null,
+      footer: this.footer
+        ? {
+            text: this.footer.text,
+            icon_url: this.footer.iconURL,
+          }
+        : null,
     };
   }
 
@@ -399,11 +417,11 @@ class MessageEmbed {
   }
 
   /**
-    * @typedef {Object} EmbedFieldData
-    * @property {StringResolvable} name The name of this field
-    * @property {StringResolvable} value The value of this field
-    * @property {boolean} [inline=false] If this field will be displayed inline
-    */
+   * @typedef {Object} EmbedFieldData
+   * @property {StringResolvable} name The name of this field
+   * @property {StringResolvable} value The value of this field
+   * @property {boolean} [inline] If this field will be displayed inline
+   */
 
   /**
    * Normalizes field input and resolves strings.
@@ -411,7 +429,15 @@ class MessageEmbed {
    * @returns {EmbedField[]}
    */
   static normalizeFields(...fields) {
-    return fields.flat(2).map(({ name, value, inline }) => this.normalizeField(name, value, inline));
+    return fields
+      .flat(2)
+      .map(field =>
+        this.normalizeField(
+          field && field.name,
+          field && field.value,
+          field && typeof field.inline === 'boolean' ? field.inline : false,
+        ),
+      );
   }
 }
 

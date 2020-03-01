@@ -1,12 +1,12 @@
 'use strict';
 
 const EventEmitter = require('events');
+const WebSocketShard = require('./WebSocketShard');
+const PacketHandlers = require('./handlers');
 const { Error: DJSError } = require('../../errors');
 const Collection = require('../../util/Collection');
-const Util = require('../../util/Util');
-const WebSocketShard = require('./WebSocketShard');
 const { Events, ShardEvents, Status, WSCodes, WSEvents } = require('../../util/Constants');
-const PacketHandlers = require('./handlers');
+const Util = require('../../util/Util');
 
 const BeforeReadyWhitelist = [
   WSEvents.READY,
@@ -18,7 +18,9 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes)
+  .slice(1)
+  .map(Number);
 const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
@@ -380,7 +382,7 @@ class WebSocketManager extends EventEmitter {
       });
     }
 
-    if (packet && !this.client.options.disabledEvents.includes(packet.t) && PacketHandlers[packet.t]) {
+    if (packet && PacketHandlers[packet.t]) {
       PacketHandlers[packet.t](this.client, packet, shard);
     }
 

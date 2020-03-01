@@ -1,19 +1,19 @@
 'use strict';
 
-const Mentions = require('./MessageMentions');
+const APIMessage = require('./APIMessage');
+const Base = require('./Base');
+const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
+const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
-const ClientApplication = require('./ClientApplication');
-const Util = require('../util/Util');
-const Collection = require('../util/Collection');
-const ReactionManager = require('../managers/ReactionManager');
-const { MessageTypes } = require('../util/Constants');
-const Permissions = require('../util/Permissions');
-const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const APIMessage = require('./APIMessage');
+const ReactionManager = require('../managers/ReactionManager');
+const Collection = require('../util/Collection');
+const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
+const Permissions = require('../util/Permissions');
+const Util = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -43,7 +43,7 @@ class Message extends Base {
     if (data) this._patch(data);
   }
 
-  _patch(data) { // eslint-disable-line complexity
+  _patch(data) {
     /**
      * The ID of the message
      * @type {Snowflake}
@@ -107,9 +107,7 @@ class Message extends Base {
     this.attachments = new Collection();
     if (data.attachments) {
       for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new MessageAttachment(
-          attachment.url, attachment.filename, attachment,
-        ));
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
       }
     }
 
@@ -158,10 +156,12 @@ class Message extends Base {
      * Group activity
      * @type {?MessageActivity}
      */
-    this.activity = data.activity ? {
-      partyID: data.activity.party_id,
-      type: data.activity.type,
-    } : null;
+    this.activity = data.activity
+      ? {
+          partyID: data.activity.party_id,
+          type: data.activity.type,
+        }
+      : null;
 
     /**
      * The previous versions of the message, sorted with the most recent first
@@ -194,11 +194,13 @@ class Message extends Base {
      * Message reference data
      * @type {?MessageReference}
      */
-    this.reference = data.message_reference ? {
-      channelID: data.message_reference.channel_id,
-      guildID: data.message_reference.guild_id,
-      messageID: data.message_reference.message_id,
-    } : null;
+    this.reference = data.message_reference
+      ? {
+          channelID: data.message_reference.channel_id,
+          guildID: data.message_reference.guild_id,
+          messageID: data.message_reference.message_id,
+        }
+      : null;
   }
 
   /**
@@ -229,9 +231,7 @@ class Message extends Base {
     if ('attachments' in data) {
       this.attachments = new Collection();
       for (const attachment of data.attachments) {
-        this.attachments.set(attachment.id, new MessageAttachment(
-          attachment.url, attachment.filename, attachment,
-        ));
+        this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
       }
     } else {
       this.attachments = new Collection(this.attachments);
@@ -377,9 +377,11 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return !this.deleted && (this.author.id === this.client.user.id || (this.guild &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)
-    ));
+    return (
+      !this.deleted &&
+      (this.author.id === this.client.user.id ||
+        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+    );
   }
 
   /**
@@ -388,8 +390,10 @@ class Message extends Base {
    * @readonly
    */
   get pinnable() {
-    return this.type === 'DEFAULT' && (!this.guild ||
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false));
+    return (
+      this.type === 'DEFAULT' &&
+      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
+    );
   }
 
   /**
@@ -412,16 +416,13 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    const { data } = content instanceof APIMessage ?
-      content.resolveData() :
-      APIMessage.create(this, content, options).resolveData();
-    return this.client.api.channels[this.channel.id].messages[this.id]
-      .patch({ data })
-      .then(d => {
-        const clone = this._clone();
-        clone._patch(d);
-        return clone;
-      });
+    const { data } =
+      content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
+    return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
+      const clone = this._clone();
+      clone._patch(d);
+      return clone;
+    });
   }
 
   /**
@@ -429,7 +430,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   pin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).put()
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .put()
       .then(() => this);
   }
 
@@ -438,7 +442,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   unpin() {
-    return this.client.api.channels(this.channel.id).pins(this.id).delete()
+    return this.client.api
+      .channels(this.channel.id)
+      .pins(this.id)
+      .delete()
       .then(() => this);
   }
 
@@ -461,14 +468,20 @@ class Message extends Base {
     emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api.channels(this.channel.id).messages(this.id).reactions(emoji, '@me')
+    return this.client.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .reactions(emoji, '@me')
       .put()
-      .then(() => this.client.actions.MessageReactionAdd.handle({
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
-        emoji: Util.parseEmoji(emoji),
-      }).reaction);
+      .then(
+        () =>
+          this.client.actions.MessageReactionAdd.handle({
+            user: this.client.user,
+            channel: this.channel,
+            message: this,
+            emoji: Util.parseEmoji(emoji),
+          }).reaction,
+      );
   }
 
   /**
@@ -509,9 +522,10 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(content instanceof APIMessage ?
-      content :
-      APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+    return this.channel.send(
+      content instanceof APIMessage
+        ? content
+        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
     );
   }
 
@@ -562,16 +576,18 @@ class Message extends Base {
     const embedUpdate = !message.author && !message.attachments;
     if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
 
-    let equal = this.id === message.id &&
-        this.author.id === message.author.id &&
-        this.content === message.content &&
-        this.tts === message.tts &&
-        this.nonce === message.nonce &&
-        this.embeds.length === message.embeds.length &&
-        this.attachments.length === message.attachments.length;
+    let equal =
+      this.id === message.id &&
+      this.author.id === message.author.id &&
+      this.content === message.content &&
+      this.tts === message.tts &&
+      this.nonce === message.nonce &&
+      this.embeds.length === message.embeds.length &&
+      this.attachments.length === message.attachments.length;
 
     if (equal && rawData) {
-      equal = this.mentions.everyone === message.mentions.everyone &&
+      equal =
+        this.mentions.everyone === message.mentions.everyone &&
         this.createdTimestamp === new Date(rawData.timestamp).getTime() &&
         this.editedTimestamp === new Date(rawData.edited_timestamp).getTime();
     }

@@ -1,11 +1,11 @@
 'use strict';
 
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const fetch = require('node-fetch');
-const Util = require('../util/Util');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
+const Util = require('../util/Util');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -90,7 +90,7 @@ class DataResolver {
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return fetch(resource).then(res => browser ? res.blob() : res.buffer());
+        return fetch(resource).then(res => (browser ? res.blob() : res.buffer()));
       } else if (!browser) {
         return new Promise((resolve, reject) => {
           const file = browser ? resource : path.resolve(resource);

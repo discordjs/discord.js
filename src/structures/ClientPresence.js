@@ -1,9 +1,9 @@
 'use strict';
 
 const { Presence } = require('./Presence');
+const { TypeError } = require('../errors');
 const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
-const { TypeError } = require('../errors');
 
 class ClientPresence extends Presence {
   /**
@@ -29,7 +29,7 @@ class ClientPresence extends Presence {
     return this;
   }
 
-  async _parse({ status, since, afk, activity }) { // eslint-disable-line complexity
+  async _parse({ status, since, afk, activity }) {
     const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
     let assets = new Collection();
     if (activity) {
@@ -47,24 +47,28 @@ class ClientPresence extends Presence {
       afk: afk != null ? afk : false, // eslint-disable-line eqeqeq
       since: since != null ? since : null, // eslint-disable-line eqeqeq
       status: status || this.status,
-      game: activity ? {
-        type: activity.type,
-        name: activity.name,
-        url: activity.url,
-        details: activity.details || undefined,
-        state: activity.state || undefined,
-        assets: activity.assets ? {
-          large_text: activity.assets.largeText || undefined,
-          small_text: activity.assets.smallText || undefined,
-          large_image: assets.get(activity.assets.largeImage) || activity.assets.largeImage,
-          small_image: assets.get(activity.assets.smallImage) || activity.assets.smallImage,
-        } : undefined,
-        timestamps: activity.timestamps || undefined,
-        party: activity.party || undefined,
-        application_id: applicationID || undefined,
-        secrets: activity.secrets || undefined,
-        instance: activity.instance || undefined,
-      } : null,
+      game: activity
+        ? {
+            type: activity.type,
+            name: activity.name,
+            url: activity.url,
+            details: activity.details || undefined,
+            state: activity.state || undefined,
+            assets: activity.assets
+              ? {
+                  large_text: activity.assets.largeText || undefined,
+                  small_text: activity.assets.smallText || undefined,
+                  large_image: assets.get(activity.assets.largeImage) || activity.assets.largeImage,
+                  small_image: assets.get(activity.assets.smallImage) || activity.assets.smallImage,
+                }
+              : undefined,
+            timestamps: activity.timestamps || undefined,
+            party: activity.party || undefined,
+            application_id: applicationID || undefined,
+            secrets: activity.secrets || undefined,
+            instance: activity.instance || undefined,
+          }
+        : null,
     };
 
     if ((status || afk || since) && !activity) {
@@ -72,8 +76,8 @@ class ClientPresence extends Presence {
     }
 
     if (packet.game) {
-      packet.game.type = typeof packet.game.type === 'number' ?
-        packet.game.type : ActivityTypes.indexOf(packet.game.type);
+      packet.game.type =
+        typeof packet.game.type === 'number' ? packet.game.type : ActivityTypes.indexOf(packet.game.type);
     }
 
     return packet;

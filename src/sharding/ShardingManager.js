@@ -1,12 +1,12 @@
 'use strict';
 
-const path = require('path');
-const fs = require('fs');
 const EventEmitter = require('events');
+const fs = require('fs');
+const path = require('path');
 const Shard = require('./Shard');
+const { Error, TypeError, RangeError } = require('../errors');
 const Collection = require('../util/Collection');
 const Util = require('../util/Util');
-const { Error, TypeError, RangeError } = require('../errors');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -41,14 +41,17 @@ class ShardingManager extends EventEmitter {
    */
   constructor(file, options = {}) {
     super();
-    options = Util.mergeDefault({
-      totalShards: 'auto',
-      mode: 'process',
-      respawn: true,
-      shardArgs: [],
-      execArgv: [],
-      token: process.env.DISCORD_TOKEN,
-    }, options);
+    options = Util.mergeDefault(
+      {
+        totalShards: 'auto',
+        mode: 'process',
+        respawn: true,
+        shardArgs: [],
+        execArgv: [],
+        token: process.env.DISCORD_TOKEN,
+      },
+      options,
+    );
 
     /**
      * Path to the shard script file
@@ -71,8 +74,11 @@ class ShardingManager extends EventEmitter {
       }
       this.shardList = [...new Set(this.shardList)];
       if (this.shardList.length < 1) throw new RangeError('CLIENT_INVALID_OPTION', 'shardList', 'at least 1 ID.');
-      if (this.shardList.some(shardID => typeof shardID !== 'number' || isNaN(shardID) ||
-        !Number.isInteger(shardID) || shardID < 0)) {
+      if (
+        this.shardList.some(
+          shardID => typeof shardID !== 'number' || isNaN(shardID) || !Number.isInteger(shardID) || shardID < 0,
+        )
+      ) {
         throw new TypeError('CLIENT_INVALID_OPTION', 'shardList', 'an array of positive integers.');
       }
     }
@@ -186,8 +192,11 @@ class ShardingManager extends EventEmitter {
     }
 
     if (this.shardList.some(shardID => shardID >= amount)) {
-      throw new RangeError('CLIENT_INVALID_OPTION', 'Amount of shards',
-        'bigger than the highest shardID in the shardList option.');
+      throw new RangeError(
+        'CLIENT_INVALID_OPTION',
+        'Amount of shards',
+        'bigger than the highest shardID in the shardList option.',
+      );
     }
 
     // Spawn the shards

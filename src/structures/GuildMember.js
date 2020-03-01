@@ -1,13 +1,13 @@
 'use strict';
 
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const Role = require('./Role');
-const Permissions = require('../util/Permissions');
-const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Base = require('./Base');
-const VoiceState = require('./VoiceState');
 const { Presence } = require('./Presence');
+const Role = require('./Role');
+const VoiceState = require('./VoiceState');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
+const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a member of a guild on Discord.
@@ -152,12 +152,15 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.guild.presences.cache.get(this.id) || new Presence(this.client, {
-      user: {
-        id: this.id,
-      },
-      guild: this.guild,
-    });
+    return (
+      this.guild.presences.cache.get(this.id) ||
+      new Presence(this.client, {
+        user: {
+          id: this.id,
+        },
+        guild: this.guild,
+      })
+    );
   }
 
   /**
@@ -209,7 +212,8 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether this member is manageable in terms of role hierarchy by the client user
+   * Whether the client user is above this user in the hierarchy, according to role position and guild ownership.
+   * This is a prerequisite for many moderative actions.
    * @type {boolean}
    * @readonly
    */
@@ -293,7 +297,7 @@ class GuildMember extends Base {
       data.channel_id = null;
       data.channel = undefined;
     }
-    if (data.roles) data.roles = data.roles.map(role => role instanceof Role ? role.id : role);
+    if (data.roles) data.roles = data.roles.map(role => (role instanceof Role ? role.id : role));
     let endpoint = this.client.api.guilds(this.guild.id);
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
@@ -342,7 +346,10 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.api.guilds(this.guild.id).members(this.user.id).delete({ reason })
+    return this.client.api
+      .guilds(this.guild.id)
+      .members(this.user.id)
+      .delete({ reason })
       .then(() => this);
   }
 
