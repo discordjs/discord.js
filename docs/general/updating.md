@@ -1,6 +1,8 @@
 # Version 12.0.0
 
-TBD
+v12.0.0 contains many new and improved features, optimisations, and bug fixes.
+See [the changelog](https://github.com/discordjs/discord.js/releases/tag/12.0.0) for a full list of changes.
+You can also visit [the guide](https://discordjs.guide/additional-info/changes-in-v12.html) for help with updating your v11 code to v12.
 
 # Version 11.1.0
 
