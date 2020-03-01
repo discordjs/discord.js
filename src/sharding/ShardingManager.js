@@ -155,6 +155,8 @@ class ShardingManager extends EventEmitter {
      * Emitted upon creating a shard.
      * @event ShardingManager#shardCreate
      * @param {Shard} shard Shard that was created
+     * @example
+     * manager.createShard(3).spawn();
      */
     this.emit('shardCreate', shard);
     return shard;
