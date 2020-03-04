@@ -73,7 +73,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? this.normalizeFields(data.fields) : [];
+    this.fields = data.fields ? this.constructor._normalizeFields(this.skipValidation, data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
@@ -260,7 +260,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addFields(...fields) {
-    this.fields.push(...this.normalizeFields(fields));
+    this.fields.push(...this.constructor._normalizeFields(this.skipValidation, fields));
     return this;
   }
 
@@ -272,7 +272,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
-    this.fields.splice(index, deleteCount, ...this.normalizeFields(...fields));
+    this.fields.splice(index, deleteCount, ...this.constructor._normalizeFields(this.skipValidation, ...fields));
     return this;
   }
 
@@ -420,13 +420,14 @@ class MessageEmbed {
    * @param {StringResolvable} name The name of the field
    * @param {StringResolvable} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
+   * @param {boolean} [skipValidation=false] Skips the validation of the name and value
    * @returns {EmbedField}
    */
-  normalizeField(name, value, inline = false) {
+  static normalizeField(name, value, inline = false, skipValidation = false) {
     name = Util.resolveString(name);
-    if (!this.skipValidation && !name) throw new RangeError('EMBED_FIELD_NAME');
+    if (!skipValidation && !name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!this.skipValidation && !value) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!skipValidation && !value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
   }
 
@@ -439,10 +440,11 @@ class MessageEmbed {
 
   /**
    * Normalizes field input and resolves strings.
+   * @param {boolean} skipValidation Skips the validation of the name and value in fields
    * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
-  normalizeFields(...fields) {
+  static _normalizeFields(skipValidation, ...fields) {
     return fields
       .flat(2)
       .map(field =>
@@ -450,8 +452,18 @@ class MessageEmbed {
           field && field.name,
           field && field.value,
           field && typeof field.inline === 'boolean' ? field.inline : false,
+          skipValidation,
         ),
       );
+  }
+
+  /**
+   * Normalizes field input and resolves strings.
+   * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
+   * @returns {EmbedField[]}
+   */
+  static normalizeFields(...fields) {
+    return this._normalizeFields(false, ...fields);
   }
 }
 
