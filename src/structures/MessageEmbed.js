@@ -7,18 +7,10 @@ const Util = require('../util/Util');
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
-  /**
-   * @param {Object} [data={}] The data to build the embed from
-   * @param {boolean} [skipValidation=false] A flag to skip field validations
-   */
   constructor(data = {}, skipValidation = false) {
     this.setup(data, skipValidation);
   }
 
-  /**
-   * @param {Object} data The data to build the embed from
-   * @param {boolean} skipValidation A flag to skip field validations
-   */
   setup(data, skipValidation) {
     /**
      * The type of this embed, either:

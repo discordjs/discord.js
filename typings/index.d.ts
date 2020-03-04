@@ -1120,7 +1120,7 @@ declare module 'discord.js' {
   }
 
   export class MessageEmbed {
-    constructor(data?: MessageEmbed | MessageEmbedOptions, skipValidation?: boolean);
+    constructor(data?: MessageEmbed | MessageEmbedOptions);
     public author: MessageEmbedAuthor | null;
     public color?: number;
     public readonly createdAt: Date | null;
