@@ -196,7 +196,7 @@ class MessageEmbed {
   }
 
   /**
-   * The date this embed was created at
+   * The date displayed on thia embed
    * @type {?Date}
    * @readonly
    */
