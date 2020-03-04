@@ -7,11 +7,19 @@ const Util = require('../util/Util');
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
-  constructor(data = {}) {
-    this.setup(data);
+  /**
+   * @param {Object} data The data to build the embed from
+   * @param {boolean} skipValidation A flag to skip field validations
+   */
+  constructor(data = {}, skipValidation = false) {
+    this.setup(data, skipValidation);
   }
 
-  setup(data) {
+  /**
+   * @param {Object} data The data to build the embed from
+   * @param {boolean} skipValidation A flag to skip field validations
+   */
+  setup(data, skipValidation) {
     /**
      * The type of this embed, either:
      * * `rich` - a rich embed
@@ -65,7 +73,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
+    this.fields = data.fields ? this.normalizeFields(data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
@@ -193,6 +201,12 @@ class MessageEmbed {
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
     this.files = data.files || [];
+
+    /**
+     * If this embed should skip validation of its data
+     * @type {boolean}
+     */
+    this.skipValidation = skipValidation;
   }
 
   /**
@@ -246,7 +260,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addFields(...fields) {
-    this.fields.push(...this.constructor.normalizeFields(fields));
+    this.fields.push(...this.normalizeFields(fields));
     return this;
   }
 
@@ -258,7 +272,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
-    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
+    this.fields.splice(index, deleteCount, ...this.normalizeFields(...fields));
     return this;
   }
 
@@ -408,11 +422,11 @@ class MessageEmbed {
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
    */
-  static normalizeField(name, value, inline = false) {
+  normalizeField(name, value, inline = false) {
     name = Util.resolveString(name);
-    if (!name) throw new RangeError('EMBED_FIELD_NAME');
+    if (!this.skipValidation && !name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!value) throw new RangeError('EMBED_FIELD_VALUE');
+    if (!this.skipValidation && !value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
   }
 
@@ -428,7 +442,7 @@ class MessageEmbed {
    * @param  {...EmbedFieldData|EmbedFieldData[]} fields Fields to normalize
    * @returns {EmbedField[]}
    */
-  static normalizeFields(...fields) {
+  normalizeFields(...fields) {
     return fields
       .flat(2)
       .map(field =>

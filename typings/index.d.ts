@@ -1152,13 +1152,8 @@ declare module 'discord.js' {
     public setURL(url: string): this;
     public spliceFields(index: number, deleteCount: number, ...fields: EmbedFieldData[] | EmbedFieldData[][]): this;
     public toJSON(): object;
-
-    public static normalizeField(
-      name: StringResolvable,
-      value: StringResolvable,
-      inline?: boolean,
-    ): Required<EmbedFieldData>;
-    public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
+    public normalizeField(name: StringResolvable, value: StringResolvable, inline?: boolean): Required<EmbedFieldData>;
+    public normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
   }
 
   export class MessageFlags extends BitField<MessageFlagsString> {
