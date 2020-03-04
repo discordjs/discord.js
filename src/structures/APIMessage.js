@@ -176,6 +176,23 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     }
 
+    let mentionUserIds;
+    let mentionRoleIds;
+    if (this.options.allowedMentions) {
+      if (this.options.allowedMentions.users) {
+        mentionUserIds = this.options.allowedMentions.users.map(u => this.target.client.users.resolveID(u));
+      }
+      if (this.options.allowedMentions.roles) {
+        mentionRoleIds = this.options.allowedMentions.roles.map(r => this.target.client.roles.resolveID(r));
+      }
+    }
+
+    const allowedMentions = {
+      parse: this.options.allowedMentions.parse,
+      users: mentionUserIds,
+      roles: mentionRoleIds,
+    };
+
     this.data = {
       content,
       tts,
@@ -184,7 +201,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: this.options.allowedMentions,
+      allowed_mentions: allowedMentions,
       flags,
     };
     return this;
