@@ -58,6 +58,7 @@ class TextBasedChannel {
    * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {'none' | 'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not
    * all mentions or everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
