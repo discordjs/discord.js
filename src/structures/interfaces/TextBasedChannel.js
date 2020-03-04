@@ -69,6 +69,14 @@ class TextBasedChannel {
    */
 
   /**
+   * Options provided to control parsing of mentions by Discord
+   * @typedef {Object} MessageMentionOptions
+   * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
+   * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
+   * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
+   */
+
+  /**
    * @typedef {Object} FileOptions
    * @property {BufferResolvable} attachment File to attach
    * @property {string} [name='file.jpg'] Filename of the attachment
