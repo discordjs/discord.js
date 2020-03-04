@@ -2743,9 +2743,9 @@ declare module 'discord.js' {
   type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT';
 
   interface MessageMentionOptions {
-    parse: MessageMentionTypes[];
-    roles: Snowflake[];
-    users: Snowflake[];
+    parse?: MessageMentionTypes[];
+    roles?: Snowflake[];
+    users?: Snowflake[];
   }
 
   type MessageMentionTypes = 'roles' | 'users' | 'everyone';
