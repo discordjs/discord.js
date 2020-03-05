@@ -65,7 +65,7 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? this.constructor._normalizeFields(this.skipValidation, data.fields) : [];
+    this.fields = data.fields ? this.constructor._normalizeFields(skipValidation, data.fields) : [];
 
     /**
      * @typedef {Object} MessageEmbedThumbnail
@@ -193,12 +193,6 @@ class MessageEmbed {
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
     this.files = data.files || [];
-
-    /**
-     * If this embed should skip validation of its data
-     * @type {boolean}
-     */
-    this.skipValidation = skipValidation;
   }
 
   /**
