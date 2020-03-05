@@ -24,3 +24,6 @@ webpack.config.js
 test/
 tsconfig.json
 tslint.json
+.huskyrc.json
+.lintstagedrc.json
+.commitlintrc.json

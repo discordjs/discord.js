@@ -129,44 +129,5 @@
     "src/client/voice/util/Secretbox.js": false,
     "src/client/voice/util/Silence.js": false,
     "src/client/voice/util/VolumeInterface.js": false
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.ts": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf"
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-angular"
-    ],
-    "rules": {
-      "scope-case": [
-        2,
-        "always",
-        "pascal-case"
-      ],
-      "type-enum": [
-        2,
-        "always",
-        [
-          "chore",
-          "build",
-          "ci",
-          "docs",
-          "feat",
-          "fix",
-          "perf",
-          "refactor",
-          "revert",
-          "style",
-          "test"
-        ]
-      ]
-    }
   }
 }
