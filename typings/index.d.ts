@@ -1157,12 +1157,7 @@ declare module 'discord.js' {
         name: StringResolvable,
         value: StringResolvable,
         inline?: boolean,
-        skipValidation?: boolean
     ): Required<EmbedFieldData>;
-    public static _normalizeFields(
-        skipValidation: boolean,
-        ...fields: EmbedFieldData[] | EmbedFieldData[][]
-    ): Required<EmbedFieldData>[];
     public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
   }
 
