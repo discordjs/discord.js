@@ -145,8 +145,8 @@ class ShardingManager extends EventEmitter {
   /**
    * Creates a single shard.
    * <warn>Using this method is usually not necessary if you use the spawn method.</warn>
-   * @param {number} [id=this.shards.size] ID of the shard to create -
-   * **This is usually not necessary to manually specify.**
+   * @param {number} [id=this.shards.size] ID of the shard to create
+   * <info>This is usually not necessary to manually specify.</info>
    * @returns {Shard} Note that the created shard needs to be explicitly spawned using its spawn method.
    */
   createShard(id = this.shards.size) {
