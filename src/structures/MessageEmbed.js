@@ -257,7 +257,7 @@ class MessageEmbed {
    */
   addFields(...fields) {
     const preparedFields = this.skipValiation
-      ? fields.map(Util.cloneObject)
+      ? fields.flat(2).map(Util.cloneObject)
       : this.constructor.normalizeFields(...fields);
     this.fields.push(...preparedFields);
     return this;
@@ -272,7 +272,7 @@ class MessageEmbed {
    */
   spliceFields(index, deleteCount, ...fields) {
     const preparedFields = this.skipValiation
-      ? fields.map(Util.cloneObject)
+      ? fields.flat(2).map(Util.cloneObject)
       : this.constructor.normalizeFields(...fields);
     this.fields.splice(index, deleteCount, ...preparedFields);
     return this;
