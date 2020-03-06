@@ -9,6 +9,13 @@ const BitField = require('./BitField');
 class MessageFlags extends BitField {}
 
 /**
+ * @name MessageFlags
+ * @kind constructor
+ * @memberof MessageFlags
+ * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+ */
+
+/**
  * Numeric message flags. All available properties:
  * * `CROSSPOSTED`
  * * `IS_CROSSPOST`

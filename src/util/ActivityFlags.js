@@ -9,6 +9,13 @@ const BitField = require('./BitField');
 class ActivityFlags extends BitField {}
 
 /**
+ * @name ActivityFlags
+ * @kind constructor
+ * @memberof ActivityFlags
+ * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+ */
+
+/**
  * Numeric activity flags. All available properties:
  * * `INSTANCE`
  * * `JOIN`

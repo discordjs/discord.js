@@ -10,6 +10,13 @@ const BitField = require('./BitField');
  */
 class Permissions extends BitField {
   /**
+   * @name Permissions
+   * @kind constructor
+   * @memberof Permissions
+   * @param {PermissionResolvable} [bits=0] Bit(s) to read from
+   */
+
+  /**
    * Data that can be resolved to give a permission number. This can be:
    * * A string (see {@link Permissions.FLAGS})
    * * A permission number
