@@ -1154,9 +1154,9 @@ declare module 'discord.js' {
     public toJSON(): object;
 
     public static normalizeField(
-        name: StringResolvable,
-        value: StringResolvable,
-        inline?: boolean,
+      name: StringResolvable,
+      value: StringResolvable,
+      inline?: boolean,
     ): Required<EmbedFieldData>;
     public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
   }
