@@ -8,6 +8,13 @@ const BitField = require('./BitField');
 class Intents extends BitField {}
 
 /**
+ * @name Intents
+ * @kind constructor
+ * @memberof Intents
+ * @param {IntentsResolvable} [bits=0] Bit(s) to read from
+ */
+
+/**
  * Data that can be resolved to give a permission number. This can be:
  * * A string (see {@link Intents.FLAGS})
  * * An intents flag
