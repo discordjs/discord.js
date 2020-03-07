@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "12.0.0",
+  "version": "12.0.1",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -145,6 +145,11 @@
       "@commitlint/config-angular"
     ],
     "rules": {
+      "scope-case": [
+        2,
+        "always",
+        "pascal-case"
+      ],
       "type-enum": [
         2,
         "always",

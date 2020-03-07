@@ -10,6 +10,13 @@ const BitField = require('./BitField');
 class Speaking extends BitField {}
 
 /**
+ * @name Speaking
+ * @kind constructor
+ * @memberof Speaking
+ * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+ */
+
+/**
  * Numeric speaking flags. All available properties:
  * * `SPEAKING`
  * * `SOUNDSHARE`
