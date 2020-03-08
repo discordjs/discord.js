@@ -2280,6 +2280,7 @@ declare module 'discord.js' {
 
   type ChannelTypes = DMChannel | CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
   type GuildChannelTypes = CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
+  type TextBasedChannelTypes = DMChannel | NewsChannel | TextChannel;
 
   type ChannelResolvable = Channel | Snowflake;
 
