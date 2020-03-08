@@ -2744,8 +2744,8 @@ declare module 'discord.js' {
 
   interface MessageMentionOptions {
     parse?: MessageMentionTypes[];
-    roles?: UserResolvable[];
-    users?: RoleResolvable[];
+    roles?: RoleResolvable[];
+    users?: UserResolvable[];
   }
 
   type MessageMentionTypes = 'roles' | 'users' | 'everyone';
