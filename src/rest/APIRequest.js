@@ -39,7 +39,7 @@ class APIRequest {
     if (this.options.headers) headers = Object.assign(headers, this.options.headers);
 
     let body;
-    if (this.options.files) {
+    if (this.options.files && this.options.files.length) {
       body = new FormData();
       for (const file of this.options.files) if (file && file.file) body.append(file.name, file.file, file.name);
       if (typeof this.options.data !== 'undefined') body.append('payload_json', JSON.stringify(this.options.data));
