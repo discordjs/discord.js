@@ -468,7 +468,7 @@ class VoiceConnection extends EventEmitter {
       ready();
     } else {
       // This serves to provide support for voice receive, sending audio is required to receive it.
-      const dispatcher = this.play(new SingleSilence(), { type: 'opus' });
+      const dispatcher = this.play(new SingleSilence(), { type: 'opus', volume: false });
       dispatcher.once('finish', ready);
     }
   }
