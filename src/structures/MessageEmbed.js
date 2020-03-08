@@ -196,13 +196,6 @@ class MessageEmbed {
      * @type {Array<FileOptions|string|MessageAttachment>}
      */
     this.files = data.files || [];
-
-    /**
-     * If this embed should skip validation of fields
-     * @type {boolean}
-     * @private
-     */
-    this.skipValiation = skipValidation;
   }
 
   /**
@@ -256,10 +249,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addFields(...fields) {
-    const preparedFields = this.skipValiation
-      ? fields.flat(2).map(Util.cloneObject)
-      : this.constructor.normalizeFields(...fields);
-    this.fields.push(...preparedFields);
+    this.fields.push(...this.constructor.normalizeFields(fields));
     return this;
   }
 
@@ -271,10 +261,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
-    const preparedFields = this.skipValiation
-      ? fields.flat(2).map(Util.cloneObject)
-      : this.constructor.normalizeFields(...fields);
-    this.fields.splice(index, deleteCount, ...preparedFields);
+    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
     return this;
   }
 
