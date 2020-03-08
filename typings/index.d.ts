@@ -1471,6 +1471,7 @@ declare module 'discord.js' {
   export class StoreChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public nsfw: boolean;
+    public type: 'store';
   }
 
   class StreamDispatcher extends VolumeMixin(Writable) {
@@ -2276,6 +2277,9 @@ declare module 'discord.js' {
     channel: ChannelResolvable;
     position: number;
   }
+
+  type ChannelTypes = DMChannel | CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
+  type GuildChannelTypes = CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
 
   type ChannelResolvable = Channel | Snowflake;
 
