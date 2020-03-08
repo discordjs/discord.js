@@ -99,6 +99,14 @@ class Collector extends EventEmitter {
        */
       this.emit('collect', collect.value, this);
 
+      /**
+       * Emitted whenever an element is collected.
+       * @event Collector#fullCollect
+       * @param {...*} args The arguments emitted by the listener
+       * @private
+       */
+      this.emit('fullCollect', ...args, this);
+
       if (this._idletimeout) {
         this.client.clearTimeout(this._idletimeout);
         this._idletimeout = this.client.setTimeout(() => this.stop('idle'), this.options.idle);
