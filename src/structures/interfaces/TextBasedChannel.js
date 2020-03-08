@@ -77,6 +77,11 @@ class TextBasedChannel {
    */
 
   /**
+   * Types of mentions to enable in MessageMentionOptions
+   * @typedef {'role' | 'users' | 'everyone'} MessageMentionTypes
+   */
+
+  /**
    * @typedef {Object} FileOptions
    * @property {BufferResolvable} attachment File to attach
    * @property {string} [name='file.jpg'] Filename of the attachment
