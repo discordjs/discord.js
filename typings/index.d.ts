@@ -132,7 +132,7 @@ declare module 'discord.js' {
   }
 
   export class CategoryChannel extends GuildChannel {
-    public readonly children: Collection<Snowflake, GuildChannelTypes>;
+    public readonly children: Collection<Snowflake, Exclude<GuildChannelTypes, CategoryChannel>>;
     public type: 'category';
   }
 
