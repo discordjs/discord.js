@@ -133,6 +133,7 @@ declare module 'discord.js' {
 
   export class CategoryChannel extends GuildChannel {
     public readonly children: Collection<Snowflake, Exclude<GuildChannelTypes, CategoryChannel>>;
+    public readonly partial: false;
     public type: 'category';
   }
 
@@ -142,6 +143,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public deleted: boolean;
     public id: Snowflake;
+    public readonly partial: false;
     public type: keyof typeof ChannelType;
     public delete(reason?: string): Promise<ChannelTypes>;
     public fetch(): Promise<ChannelTypes>;
@@ -870,6 +872,7 @@ declare module 'discord.js' {
     public name: string;
     public readonly parent: CategoryChannel | null;
     public parentID: Snowflake | null;
+    public readonly partial: false;
     public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
     public readonly permissionsLocked: boolean | null;
     public readonly position: number;
@@ -1119,7 +1122,7 @@ declare module 'discord.js' {
 
   export class MessageCollector extends Collector<Snowflake, Message> {
     constructor(channel: TextBasedChannelTypes, filter: CollectorFilter, options?: MessageCollectorOptions);
-    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
     private _handleGuildDeletion(guild: Guild): void;
 
     public channel: TextBasedChannelTypes;
@@ -1293,7 +1296,7 @@ declare module 'discord.js' {
 
   export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
     constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
-    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
 
@@ -1483,6 +1486,7 @@ declare module 'discord.js' {
   export class StoreChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public nsfw: boolean;
+    public readonly partial: false;
     public type: 'store';
   }
 
@@ -1678,6 +1682,7 @@ declare module 'discord.js' {
     public readonly editable: boolean;
     public readonly full: boolean;
     public readonly joinable: boolean;
+    public readonly partial: false;
     public readonly speakable: boolean;
     public type: 'voice';
     public userLimit: number;
@@ -2882,7 +2887,7 @@ declare module 'discord.js' {
     [K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
   };
 
-  interface PartialChannel extends Partialize<Channel> {}
+  interface PartialChannel extends Partialize<ChannelTypes> {}
 
   interface PartialChannelData {
     id?: number;
