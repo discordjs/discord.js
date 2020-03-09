@@ -1250,7 +1250,7 @@ declare module 'discord.js' {
   }
 
   export class PermissionOverwrites {
-    constructor(guildChannel: GuildChannel, data?: object);
+    constructor(guildChannel: GuildChannelTypes, data?: object);
     public allow: Readonly<Permissions>;
     public readonly channel: GuildChannelTypes;
     public deny: Readonly<Permissions>;
