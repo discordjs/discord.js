@@ -133,7 +133,6 @@ declare module 'discord.js' {
 
   export class CategoryChannel extends GuildChannel {
     public readonly children: Collection<Snowflake, Exclude<GuildChannelTypes, CategoryChannel>>;
-    public readonly partial: false;
     public type: 'category';
   }
 
@@ -143,7 +142,6 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public deleted: boolean;
     public id: Snowflake;
-    public readonly partial: false;
     public type: keyof typeof ChannelType;
     public delete(reason?: string): Promise<ChannelTypes>;
     public fetch(): Promise<ChannelTypes>;
@@ -871,8 +869,8 @@ declare module 'discord.js' {
     public readonly members: Collection<Snowflake, GuildMember>;
     public name: string;
     public readonly parent: CategoryChannel | null;
-    public parentID: Snowflake | null;
     public readonly partial: false;
+    public parentID: Snowflake | null;
     public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
     public readonly permissionsLocked: boolean | null;
     public readonly position: number;
@@ -1486,7 +1484,6 @@ declare module 'discord.js' {
   export class StoreChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public nsfw: boolean;
-    public readonly partial: false;
     public type: 'store';
   }
 
@@ -1682,7 +1679,6 @@ declare module 'discord.js' {
     public readonly editable: boolean;
     public readonly full: boolean;
     public readonly joinable: boolean;
-    public readonly partial: false;
     public readonly speakable: boolean;
     public type: 'voice';
     public userLimit: number;

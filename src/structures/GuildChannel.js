@@ -577,6 +577,15 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Whether this GuildChannel is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return false;
+  }
+
+  /**
    * Whether the channel is viewable by the client user
    * @type {boolean}
    * @readonly
