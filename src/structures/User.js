@@ -45,7 +45,7 @@ class User extends Base {
 
     /**
      * A discriminator based on username for the user
-     * @type {string}
+     * @type {?string}
      * @name User#discriminator
      */
     if (data.discriminator) this.discriminator = data.discriminator;
