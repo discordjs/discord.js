@@ -2879,8 +2879,8 @@ declare module 'discord.js' {
 
   interface PartialDMChannel extends Partialize<DMChannel> {
     lastMessage: null;
-		lastMessageID: undefined;
-		recipient: User | PartialUser;
+    lastMessageID: undefined;
+    recipient: User | PartialUser;
     type: 'dm';
   }
 
@@ -2912,8 +2912,8 @@ declare module 'discord.js' {
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Partialize<User> {
-		discriminator: undefined;
-		username: undefined;
+    discriminator: undefined;
+    username: undefined;
   }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
