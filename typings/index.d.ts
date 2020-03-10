@@ -915,7 +915,7 @@ declare module 'discord.js' {
     public setName(name: string, reason?: string): Promise<GuildEmoji>;
   }
 
-  export class GuildMember extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null; }) {
+  export class GuildMember extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null }) {
     constructor(client: Client, data: object, guild: Guild);
     public readonly bannable: boolean;
     public deleted: boolean;
@@ -1571,7 +1571,7 @@ declare module 'discord.js' {
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
-  export class User extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null; }) {
+  export class User extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null }) {
     constructor(client: Client, data: object);
     public avatar: string | null;
     public bot: boolean;
@@ -2106,7 +2106,7 @@ declare module 'discord.js' {
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
-		lastPinTimestamp: number | null;
+    lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     typing: boolean;
     typingCount: number;
@@ -2861,8 +2861,8 @@ declare module 'discord.js' {
   type Partialize<T> = {
     readonly client: Client;
     readonly createdAt: Date;
-		readonly createdTimestamp: number;
-		deleted: boolean;
+    readonly createdTimestamp: number;
+    deleted: boolean;
     id: string;
     partial: true;
     fetch(): Promise<T>;
@@ -2873,19 +2873,19 @@ declare module 'discord.js' {
       'createdTimestamp' |
       'id' |
       'partial' |
-			'fetch'>
+      'fetch'>
       // tslint:disable-next-line:ban-types
     ]: T[K] extends Function ? T[K] : T[K] | null;
-	};
+  };
 
   interface PartialDMChannel extends Partialize<DMChannel> {
     lastMessage: null;
-		lastMessageID: undefined;
-		messages: MessageManager;
+    lastMessageID: undefined;
+    messages: MessageManager;
     recipient: User | PartialUser;
-		type: 'dm';
-		readonly typing: boolean;
-		readonly typingCount: number;
+    type: 'dm';
+    readonly typing: boolean;
+    readonly typingCount: number;
 
   }
 
@@ -2901,43 +2901,43 @@ declare module 'discord.js' {
       allow?: PermissionResolvable;
       deny?: PermissionResolvable;
     }[];
-	}
+  }
 
   interface PartialGuildMember extends Partialize<GuildMember> {
-		readonly bannable: boolean;
-		readonly displayColor: number;
+    readonly bannable: boolean;
+    readonly displayColor: number;
     readonly displayHexColor: string;
-		readonly displayName: string;
-		guild: Guild;
+    readonly displayName: string;
+    guild: Guild;
     joinedAt: null;
-		joinedTimestamp: null;
-		readonly kickable: boolean;
-		readonly permissions: GuildMember['permissions'];
-		readonly roles: GuildMember['roles'];
-	}
+    joinedTimestamp: null;
+    readonly kickable: boolean;
+    readonly permissions: GuildMember['permissions'];
+    readonly roles: GuildMember['roles'];
+  }
 
   interface PartialMessage extends Partialize<Message> {
-		attachments: Message['attachments'];
-		channel: Message['channel'];
-		readonly deletable: boolean;
-		readonly editable: boolean;
-		mentions: Message['mentions'];
-		readonly pinnable: boolean;
-		reactions: Message['reactions'];
-		system: boolean;
-		readonly url: string;
-	}
+    attachments: Message['attachments'];
+    channel: Message['channel'];
+    readonly deletable: boolean;
+    readonly editable: boolean;
+    mentions: Message['mentions'];
+    readonly pinnable: boolean;
+    reactions: Message['reactions'];
+    system: boolean;
+    readonly url: string;
+  }
 
   interface PartialRoleData extends RoleData {
     id?: number;
   }
 
-	type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
+  type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Partialize<User> {
     discriminator: undefined;
-		username: undefined;
-		readonly tag: null;
+    username: undefined;
+    readonly tag: null;
   }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
