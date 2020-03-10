@@ -2886,7 +2886,6 @@ declare module 'discord.js' {
     type: 'dm';
     readonly typing: boolean;
     readonly typingCount: number;
-
   }
 
   interface PartialChannelData {
