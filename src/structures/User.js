@@ -42,7 +42,6 @@ class User extends Base {
      * @name User#username
      */
     if (data.username) this.username = data.username;
-    else if (typeof this.username === 'undefined') this.username = null;
 
     /**
      * A discriminator based on username for the user
@@ -50,7 +49,6 @@ class User extends Base {
      * @name User#discriminator
      */
     if (data.discriminator) this.discriminator = data.discriminator;
-    else if (typeof this.discriminator === 'undefined') this.discriminator = null;
 
     /**
      * The ID of the user's avatar

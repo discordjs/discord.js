@@ -2912,8 +2912,8 @@ declare module 'discord.js' {
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Partialize<User> {
-		discriminator: null;
-		username: null;
+		discriminator: undefined;
+		username: undefined;
   }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';

@@ -35,8 +35,6 @@ class DMChannel extends Channel {
        * @type {?User}
        */
       this.recipient = this.client.users.add(data.recipients[0]);
-    } else if (typeof this.recipient === 'undefined') {
-      this.recipient = null;
     }
 
     /**
