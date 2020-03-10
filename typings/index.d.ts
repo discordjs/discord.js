@@ -2879,7 +2879,8 @@ declare module 'discord.js' {
 
   interface PartialDMChannel extends Partialize<DMChannel> {
     lastMessage: null;
-    lastMessageID: undefined;
+		lastMessageID: undefined;
+		recipient: User | PartialUser;
     type: 'dm';
   }
 
