@@ -49,17 +49,17 @@ class User extends Base {
      * @type {string}
      * @name User#discriminator
      */
-		if (data.discriminator) this.discriminator = data.discriminator;
-		else if (typeof this.discriminator === 'undefined') this.discriminator = null;
+    if (data.discriminator) this.discriminator = data.discriminator;
+    else if (typeof this.discriminator === 'undefined') this.discriminator = null;
 
     /**
      * The ID of the user's avatar
      * @type {?string}
      * @name User#avatar
      */
-		if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
+    if (typeof data.avatar !== 'undefined') this.avatar = data.avatar;
 
-		if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
+    if (typeof data.bot !== 'undefined') this.bot = Boolean(data.bot);
 
     /**
      * Whether the user is an Official Discord System user (part of the urgent message system)

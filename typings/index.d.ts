@@ -177,7 +177,7 @@ declare module 'discord.js' {
     public toJSON(): object;
 
     public on(event: 'channelCreate', listener: (channel: Channel) => void): this;
-		public on(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
+    public on(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
     public on(event: 'channelPinsUpdate', listener: (channel: Channel | PartialDMChannel, time: Date) => void): this;
     public on(
       event: 'channelUpdate',
@@ -252,8 +252,8 @@ declare module 'discord.js' {
     public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
     public on(event: string, listener: (...args: any[]) => void): this;
 
-		public once(event: 'channelCreate', listener: (channel: Channel) => void): this;
-		public once(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
+    public once(event: 'channelCreate', listener: (channel: Channel) => void): this;
+    public once(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
     public once(event: 'channelPinsUpdate', listener: (channel: Channel | PartialDMChannel, time: Date) => void): this;
     public once(
       event: 'channelUpdate',
@@ -2860,28 +2860,28 @@ declare module 'discord.js' {
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
   type Partialize<T> = {
-		readonly client: Client;
-		readonly createdAt: Date;
-		readonly createdTimestamp: number;
+    readonly client: Client;
+    readonly createdAt: Date;
+    readonly createdTimestamp: number;
     id: string;
     partial: true;
-		fetch(): Promise<T>;
+    fetch(): Promise<T>;
   } & {
-		[K in keyof Omit<T,
-			'client' |
-			'createdAt' |
-			'createdTimestamp' |
-			'id' |
-			'partial' |
-			'fetch'>
-		]: T[K] extends Function ? T[K] : T[K] | null;
+    [K in keyof Omit<T,
+      'client' |
+      'createdAt' |
+      'createdTimestamp' |
+      'id' |
+      'partial' |
+      'fetch'>
+    ]: T[K] extends Function ? T[K] : T[K] | null;
   };
 
   interface PartialDMChannel extends Partialize<DMChannel> {
-		lastMessage: null;
-		lastMessageID: undefined;
-		type: 'dm';
-	}
+    lastMessage: null;
+    lastMessageID: undefined;
+    type: 'dm';
+  }
 
   interface PartialChannelData {
     id?: number;
@@ -2898,11 +2898,11 @@ declare module 'discord.js' {
   }
 
   interface PartialGuildMember extends Partialize<GuildMember> {
-		joinedAt: null;
-		joinedTimestamp: null;
-	}
+    joinedAt: null;
+    joinedTimestamp: null;
+  }
 
-	interface PartialMessage extends Partialize<Message> {}
+  interface PartialMessage extends Partialize<Message> {}
 
   interface PartialRoleData extends RoleData {
     id?: number;
@@ -2911,9 +2911,9 @@ declare module 'discord.js' {
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
   interface PartialUser extends Partialize<User> {
-		username: null;
-		discriminator: null;
-	}
+    username: null;
+    discriminator: null;
+  }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
 
