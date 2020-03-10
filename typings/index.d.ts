@@ -176,11 +176,12 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel | PartialChannel) => void): this;
-    public on(event: 'channelPinsUpdate', listener: (channel: Channel | PartialChannel, time: Date) => void): this;
+    public on(event: 'channelCreate', listener: (channel: Channel) => void): this;
+		public on(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
+    public on(event: 'channelPinsUpdate', listener: (channel: Channel | PartialDMChannel, time: Date) => void): this;
     public on(
       event: 'channelUpdate',
-      listener: (oldChannel: Channel | PartialChannel, newChannel: Channel | PartialChannel) => void,
+      listener: (oldChannel: Channel, newChannel: Channel) => void,
     ): this;
     public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
     public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
@@ -240,7 +241,7 @@ declare module 'discord.js' {
     public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public on(
       event: 'typingStart' | 'typingStop',
-      listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
+      listener: (channel: Channel | PartialDMChannel, user: User | PartialUser) => void,
     ): this;
     public on(event: 'userUpdate', listener: (oldUser: User | PartialUser, newUser: User | PartialUser) => void): this;
     public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
@@ -251,11 +252,12 @@ declare module 'discord.js' {
     public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
     public on(event: string, listener: (...args: any[]) => void): this;
 
-    public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel | PartialChannel) => void): this;
-    public once(event: 'channelPinsUpdate', listener: (channel: Channel | PartialChannel, time: Date) => void): this;
+		public once(event: 'channelCreate', listener: (channel: Channel) => void): this;
+		public once(event: 'channelDelete', listener: (channel: Channel | PartialDMChannel) => void): this;
+    public once(event: 'channelPinsUpdate', listener: (channel: Channel | PartialDMChannel, time: Date) => void): this;
     public once(
       event: 'channelUpdate',
-      listener: (oldChannel: Channel | PartialChannel, newChannel: Channel | PartialChannel) => void,
+      listener: (oldChannel: Channel, newChannel: Channel) => void,
     ): this;
     public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
     public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
@@ -313,7 +315,7 @@ declare module 'discord.js' {
     public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public once(
       event: 'typingStart' | 'typingStop',
-      listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
+      listener: (channel: Channel | PartialDMChannel, user: User | PartialUser) => void,
     ): this;
     public once(
       event: 'userUpdate',
@@ -1021,7 +1023,7 @@ declare module 'discord.js' {
     public application: ClientApplication | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
-    public channel: TextChannel | DMChannel;
+    public channel: TextChannel | DMChannel | NewsChannel;
     public readonly cleanContent: string;
     public content: string;
     public readonly createdAt: Date;
@@ -2858,14 +2860,28 @@ declare module 'discord.js' {
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
   type Partialize<T> = {
+		readonly client: Client;
+		readonly createdAt: Date;
+		readonly createdTimestamp: number;
     id: string;
     partial: true;
-    fetch(): Promise<T>;
+		fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
+		[K in keyof Omit<T,
+			'client' |
+			'createdAt' |
+			'createdTimestamp' |
+			'id' |
+			'partial' |
+			'fetch'>
+		]: T[K] extends Function ? T[K] : T[K] | null;
   };
 
-  interface PartialChannel extends Partialize<Channel> {}
+  interface PartialDMChannel extends Partialize<DMChannel> {
+		lastMessage: null;
+		lastMessageID: undefined;
+		type: 'dm';
+	}
 
   interface PartialChannelData {
     id?: number;
@@ -2881,8 +2897,12 @@ declare module 'discord.js' {
     }[];
   }
 
-  interface PartialGuildMember extends Partialize<GuildMember> {}
-  interface PartialMessage extends Partialize<Message> {}
+  interface PartialGuildMember extends Partialize<GuildMember> {
+		joinedAt: null;
+		joinedTimestamp: null;
+	}
+
+	interface PartialMessage extends Partialize<Message> {}
 
   interface PartialRoleData extends RoleData {
     id?: number;
@@ -2890,7 +2910,10 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User> {}
+  interface PartialUser extends Partialize<User> {
+		username: null;
+		discriminator: null;
+	}
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
 
