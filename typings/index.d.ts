@@ -2822,6 +2822,7 @@ declare module 'discord.js' {
     | 'READ_MESSAGE_HISTORY'
     | 'MENTION_EVERYONE'
     | 'USE_EXTERNAL_EMOJIS'
+    | 'VIEW_GUILD_INSIGHTS'
     | 'CONNECT'
     | 'SPEAK'
     | 'MUTE_MEMBERS'
