@@ -2085,16 +2085,16 @@ declare module 'discord.js' {
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     send(
-      options: 
+      options:
       MessageOptions & { split?: false } |
       MessageAdditions |
       APIMessage,
-    ): Promise<Message>
+    ): Promise<Message>;
     send(
       options:
       MessageOptions & { split: true | SplitOptions; content: StringResolvable } |
       APIMessage,
-    ): Promise<Message[]>
+    ): Promise<Message[]>;
     send(
       content: StringResolvable,
       options?: (MessageOptions & { split?: false }) | MessageAdditions,
