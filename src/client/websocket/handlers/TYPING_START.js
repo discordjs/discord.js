@@ -27,7 +27,7 @@ module.exports = (client, { d: data }) => {
        * @param {Channel} channel The channel the user started typing in
        * @param {User} user The user that started typing
        */
-      client.emit(Events.TYPING_START);
+      client.emit(Events.TYPING_START, channel, user);
     }
   }
 };
@@ -55,6 +55,12 @@ class TypingData {
 
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
+    /**
+     * Emitted whenever a user stops typing in a channel.
+     * @event Client#typingStop
+     * @param {Channel} channel The channel the user was typing in.
+     * @param {User} user The user that was typing.
+     */
     channel.client.emit(Events.TYPING_STOP, channel, user, channel._typing.get(user.id));
     channel._typing.delete(user.id);
   }, 10000);
