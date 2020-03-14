@@ -2100,6 +2100,7 @@ declare module 'discord.js' {
     readonly lastPinAt: Date;
     send(
       options:
+      MessageOptions |
       MessageOptions & { split?: false } |
       MessageAdditions |
       APIMessage,
@@ -2111,7 +2112,7 @@ declare module 'discord.js' {
     ): Promise<Message[]>;
     send(
       content: StringResolvable,
-      options?: (MessageOptions & { split?: false }) | MessageAdditions,
+      options?: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     send(
       content: StringResolvable,
