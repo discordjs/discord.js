@@ -915,7 +915,7 @@ declare module 'discord.js' {
     public setName(name: string, reason?: string): Promise<GuildEmoji>;
   }
 
-  export class GuildMember extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null }) {
+  export class GuildMember extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: object, guild: Guild);
     public readonly bannable: boolean;
     public deleted: boolean;
@@ -926,7 +926,8 @@ declare module 'discord.js' {
     public readonly id: Snowflake;
     public readonly joinedAt: Date | null;
     public joinedTimestamp: number | null;
-    public readonly kickable: boolean;
+		public readonly kickable: boolean;
+		public lastMessageID: Snowflake | null;
     public readonly manageable: boolean;
     public nickname: string | null;
     public readonly partial: false;
@@ -1571,7 +1572,7 @@ declare module 'discord.js' {
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
-  export class User extends (PartialTextBasedChannel(Base) & { lastMessageChannelID: Snowflake | null }) {
+  export class User extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: object);
     public avatar: string | null;
     public bot: boolean;
@@ -1580,7 +1581,8 @@ declare module 'discord.js' {
     public discriminator: string;
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
-    public id: Snowflake;
+		public id: Snowflake;
+		public lastMessageID: Snowflake | null;
     public locale: string;
     public readonly partial: false;
     public readonly presence: Presence;
