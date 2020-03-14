@@ -132,7 +132,7 @@ declare module 'discord.js' {
   }
 
   export class CategoryChannel extends GuildChannel {
-    public readonly children: Collection<Snowflake, GuildChannel>;
+    public readonly children: Collection<Snowflake, Exclude<GuildChannelTypes, CategoryChannel>>;
     public type: 'category';
   }
 
@@ -143,8 +143,8 @@ declare module 'discord.js' {
     public deleted: boolean;
     public id: Snowflake;
     public type: keyof typeof ChannelType;
-    public delete(reason?: string): Promise<Channel>;
-    public fetch(): Promise<Channel>;
+    public delete(reason?: string): Promise<ChannelTypes>;
+    public fetch(): Promise<ChannelTypes>;
     public toString(): string;
   }
 
@@ -176,11 +176,17 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel | PartialChannel) => void): this;
-    public on(event: 'channelPinsUpdate', listener: (channel: Channel | PartialChannel, time: Date) => void): this;
+    public on(
+      event: 'channelCreate' | 'channelDelete',
+      listener: (channel: ChannelTypes | PartialChannel) => void,
+    ): this;
+    public on(
+      event: 'channelPinsUpdate',
+      listener: (channel: TextBasedChannelTypes | PartialChannel, time: Date) => void,
+    ): this;
     public on(
       event: 'channelUpdate',
-      listener: (oldChannel: Channel | PartialChannel, newChannel: Channel | PartialChannel) => void,
+      listener: (oldChannel: ChannelTypes | PartialChannel, newChannel: ChannelTypes | PartialChannel) => void,
     ): this;
     public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
     public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
@@ -240,7 +246,7 @@ declare module 'discord.js' {
     public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public on(
       event: 'typingStart',
-      listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
+      listener: (channel: TextBasedChannelTypes | PartialChannel, user: User | PartialUser) => void,
     ): this;
     public on(event: 'userUpdate', listener: (oldUser: User | PartialUser, newUser: User | PartialUser) => void): this;
     public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
@@ -251,11 +257,17 @@ declare module 'discord.js' {
     public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
     public on(event: string, listener: (...args: any[]) => void): this;
 
-    public once(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel | PartialChannel) => void): this;
-    public once(event: 'channelPinsUpdate', listener: (channel: Channel | PartialChannel, time: Date) => void): this;
+    public once(
+      event: 'channelCreate' | 'channelDelete',
+      listener: (channel: ChannelTypes | PartialChannel) => void,
+    ): this;
+    public once(
+      event: 'channelPinsUpdate',
+      listener: (channel: TextBasedChannelTypes | PartialChannel, time: Date) => void,
+    ): this;
     public once(
       event: 'channelUpdate',
-      listener: (oldChannel: Channel | PartialChannel, newChannel: Channel | PartialChannel) => void,
+      listener: (oldChannel: ChannelTypes | PartialChannel, newChannel: ChannelTypes | PartialChannel) => void,
     ): this;
     public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
     public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
@@ -313,7 +325,7 @@ declare module 'discord.js' {
     public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public once(
       event: 'typingStart',
-      listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
+      listener: (channel: TextBasedChannelTypes | PartialChannel, user: User | PartialUser) => void,
     ): this;
     public once(
       event: 'userUpdate',
@@ -710,7 +722,7 @@ declare module 'discord.js' {
   export class Guild extends Base {
     constructor(client: Client, data: object);
     private _sortedRoles(): Collection<Snowflake, Role>;
-    private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
+    private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannelTypes>;
     private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
     public readonly afkChannel: VoiceChannel | null;
@@ -725,7 +737,7 @@ declare module 'discord.js' {
     public defaultMessageNotifications: DefaultMessageNotifications | number;
     public deleted: boolean;
     public description: string | null;
-    public embedChannel: GuildChannel | null;
+    public embedChannel: GuildChannelTypes | null;
     public embedChannelID: Snowflake | null;
     public embedEnabled: boolean;
     public emojis: GuildEmojiManager;
@@ -857,6 +869,7 @@ declare module 'discord.js' {
     public readonly members: Collection<Snowflake, GuildMember>;
     public name: string;
     public readonly parent: CategoryChannel | null;
+    public readonly partial: false;
     public parentID: Snowflake | null;
     public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
     public readonly permissionsLocked: boolean | null;
@@ -882,7 +895,7 @@ declare module 'discord.js' {
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(
-      channel: GuildChannel | Snowflake,
+      channel: CategoryChannel | Snowflake,
       options?: { lockPermissions?: boolean; reason?: string },
     ): Promise<this>;
     public setPosition(position: number, options?: { relative?: boolean; reason?: string }): Promise<this>;
@@ -989,7 +1002,7 @@ declare module 'discord.js' {
 
   export class Invite extends Base {
     constructor(client: Client, data: object);
-    public channel: GuildChannel | PartialGroupDMChannel;
+    public channel: GuildChannelTypes | PartialGroupDMChannel;
     public code: string;
     public readonly deletable: boolean;
     public readonly createdAt: Date | null;
@@ -1106,11 +1119,11 @@ declare module 'discord.js' {
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
-    constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
-    private _handleChannelDeletion(channel: GuildChannel): void;
+    constructor(channel: TextBasedChannelTypes, filter: CollectorFilter, options?: MessageCollectorOptions);
+    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public channel: Channel;
+    public channel: TextBasedChannelTypes;
     public options: MessageCollectorOptions;
     public received: number;
 
@@ -1173,7 +1186,7 @@ declare module 'discord.js' {
       roles: Snowflake[] | Collection<Snowflake, Role>,
       everyone: boolean,
     );
-    private _channels: Collection<Snowflake, GuildChannel> | null;
+    private _channels: Collection<Snowflake, GuildChannelTypes> | null;
     private readonly _content: Message;
     private _members: Collection<Snowflake, GuildMember> | null;
 
@@ -1182,7 +1195,7 @@ declare module 'discord.js' {
     public everyone: boolean;
     public readonly guild: Guild;
     public has(
-      data: User | GuildMember | Role | GuildChannel,
+      data: User | GuildMember | Role | GuildChannelTypes,
       options?: {
         ignoreDirect?: boolean;
         ignoreRoles?: boolean;
@@ -1238,9 +1251,9 @@ declare module 'discord.js' {
   }
 
   export class PermissionOverwrites {
-    constructor(guildChannel: GuildChannel, data?: object);
+    constructor(guildChannel: GuildChannelTypes, data?: object);
     public allow: Readonly<Permissions>;
-    public readonly channel: GuildChannel;
+    public readonly channel: GuildChannelTypes;
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
@@ -1281,7 +1294,7 @@ declare module 'discord.js' {
 
   export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
     constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
-    private _handleChannelDeletion(channel: GuildChannel): void;
+    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
 
@@ -1471,6 +1484,7 @@ declare module 'discord.js' {
   export class StoreChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public nsfw: boolean;
+    public type: 'store';
   }
 
   class StreamDispatcher extends VolumeMixin(Writable) {
@@ -1918,9 +1932,9 @@ declare module 'discord.js' {
 
   //#region Managers
 
-  export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
+  export class ChannelManager extends BaseManager<Snowflake, ChannelTypes, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean): Promise<Channel>;
+    public fetch(id: Snowflake, cache?: boolean): Promise<ChannelTypes>;
   }
 
   export abstract class BaseManager<K, Holds, R> {
@@ -1935,7 +1949,7 @@ declare module 'discord.js' {
     public resolveID(resolvable: R): K | null;
   }
 
-  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
+  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannelTypes, GuildChannelResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
@@ -2275,6 +2289,10 @@ declare module 'discord.js' {
     channel: ChannelResolvable;
     position: number;
   }
+
+  type ChannelTypes = DMChannel | CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
+  type GuildChannelTypes = CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
+  type TextBasedChannelTypes = DMChannel | NewsChannel | TextChannel;
 
   type ChannelResolvable = Channel | Snowflake;
 
@@ -2864,7 +2882,7 @@ declare module 'discord.js' {
     [K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
   };
 
-  interface PartialChannel extends Partialize<Channel> {}
+  interface PartialChannel extends Partialize<ChannelTypes> {}
 
   interface PartialChannelData {
     id?: number;
