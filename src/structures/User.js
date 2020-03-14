@@ -166,7 +166,7 @@ class User extends Base {
 
   /**
    * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get tag() {
