@@ -239,7 +239,7 @@ declare module 'discord.js' {
     public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
     public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public on(
-      event: 'typingStart' | 'typingStop',
+      event: 'typingStart',
       listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
     ): this;
     public on(event: 'userUpdate', listener: (oldUser: User | PartialUser, newUser: User | PartialUser) => void): this;
@@ -312,7 +312,7 @@ declare module 'discord.js' {
     public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
     public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
     public once(
-      event: 'typingStart' | 'typingStop',
+      event: 'typingStart',
       listener: (channel: Channel | PartialChannel, user: User | PartialUser) => void,
     ): this;
     public once(
