@@ -19,7 +19,7 @@ module.exports = (client, { d: data }) => {
       typing.lastTimestamp = timestamp;
       typing.resetTimeout(tooLate(channel, user));
     } else {
-      channel._typing.set(user.id, new TypingData(client, timestamp, timestamp, tooLate(channel, user)));
+      channel._typing.set(user.id, new TypingData(client, timestamp, tooLate(channel, user)));
 
       /**
        * Emitted whenever a user starts typing in a channel.
@@ -33,14 +33,12 @@ module.exports = (client, { d: data }) => {
 };
 
 class TypingData {
-  constructor(client, since, lastTimestamp, _timeout) {
-    this.client = client;
-
-    this.since = since;
-
-    this.lastTimestamp = lastTimestamp;
+  constructor(client, since, _timeout) {
+    this.since = this.lastTimestamp = since;
 
     this._timeout = _timeout;
+
+    Object.defineProperty(this, 'client', { value: client });
   }
 
   resetTimeout(_timeout) {
