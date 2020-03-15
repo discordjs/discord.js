@@ -2146,7 +2146,7 @@ declare module 'discord.js' {
     emojiCreate: [GuildEmoji];
     emojiDelete: [GuildEmoji];
     emojiUpdate: [GuildEmoji, GuildEmoji];
-    error: [error];
+    error: [Error];
     guildBanAdd: [Guild, User | PartialUser];
     guildBanRemove: [Guild, User | PartialUser];
     guildCreate: [Guild];
