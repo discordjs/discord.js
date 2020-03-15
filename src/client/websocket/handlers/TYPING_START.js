@@ -27,12 +27,20 @@ module.exports = (client, { d: data }) => {
        * @param {Channel} channel The channel the user started typing in
        * @param {User} user The user that started typing
        */
-      client.emit(Events.TYPING_START, channel, user);
+      client.emit(Events.TYPING_START, channel, user, channel._typing.get(user.id));
     }
   }
 };
 
+/**
+ * Instance which keeps track of how long a user has been typing for.
+ */
 class TypingData {
+  /**
+   * @param {Client} client - The client keeping track of this data
+   * @param {Date} since - The timestamp ever since the user started typing
+   * @param {NodeJS.Timeout} _timeout - The timeout to configure
+   */
   constructor(client, since, _timeout) {
     this.since = this.lastTimestamp = since;
 
