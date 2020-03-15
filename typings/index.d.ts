@@ -82,6 +82,15 @@ declare module 'discord.js' {
     public split(): APIMessage[];
   }
 
+  class TypingData {
+    public readonly client: Client;
+    public since: Date;
+    public lastTimestamp: Date;
+    private _timeout: NodeJS.Timeout;
+    public resetTimeout(_timeout: NodeJS.Timeout): void;
+    public readonly elapsedTime: number;
+  }
+
   export class Base {
     constructor(client: Client);
     public readonly client: Client;
@@ -691,6 +700,7 @@ declare module 'discord.js' {
     public recipient: User;
     public readonly partial: false;
     public type: 'dm';
+    private _typing: Map<string, TypingData>;
     public fetch(): Promise<DMChannel>;
   }
 
@@ -1223,6 +1233,7 @@ declare module 'discord.js' {
     public nsfw: boolean;
     public topic: string | null;
     public type: 'news';
+    private _typing: Map<string, TypingData>;
     public createWebhook(
       name: string,
       options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
@@ -1561,6 +1572,7 @@ declare module 'discord.js' {
     public type: 'text';
     public rateLimitPerUser: number;
     public topic: string | null;
+    private _typing: Map<string, TypingData>;
     public createWebhook(
       name: string,
       options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
