@@ -2172,8 +2172,8 @@ declare module 'discord.js' {
     messageUpdate: [Message | PartialMessage, Message | PartialMessage];
     presenceUpdate: [Presence | undefined, Presence];
     rateLimit: [RateLimitData];
-    ready: [() => void];
-    invalidated: [() => void];
+    ready: [];
+    invalidated: [];
     roleCreate: [Role];
     roleDelete: [Role];
     roleUpdate: [Role, Role];
