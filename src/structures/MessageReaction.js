@@ -101,12 +101,34 @@ class MessageReaction {
    * Fetch this reaction.
    * @returns {Promise<MessageReaction>}
    */
-  fetch() {
-    return this.message.reactions._fetchReaction(this.emoji, true);
+  async fetch() {
+    const emojiID = this.emoji.id || this.emoji.name;
+    const reactionManager = this.message.reactions;
+    if (!this.partial) return this;
+    const data = await this.client.api
+      .channels(this.message.channel.id)
+      .messages(this.message.id)
+      .get();
+    if (this.message.partial) this.message._patch(data);
+    // The reactions field won't be present when the message doesn't have any reactions
+    if (!data.reactions || !data.reactions.some(r => (r.emoji.id || r.emoji.name) === emojiID)) {
+      this._patch({ count: 0 });
+      reactionManager.cache.delete(emojiID);
+      return this;
+    }
+    data.reactions
+      .filter(({ emoji: { id, name } }) => this._isPartial(id || name))
+      .forEach(reaction => reactionManager.add(reaction));
+    return this;
   }
 
   toJSON() {
     return Util.flatten(this, { emoji: 'emojiID', message: 'messageID' });
+  }
+
+  _isPartial(emojiID) {
+    const existing = this.message.reactions.cache.get(emojiID);
+    return !existing || existing.partial;
   }
 
   _add(user) {
