@@ -48,7 +48,7 @@ class RequestHandler {
   }
 
   get limited() {
-    return (this.manager.globalTimeout || this.remaining <= 0) && Date.now() < this.reset;
+    return Boolean(this.manager.globalTimeout) || (this.remaining <= 0 && Date.now() < this.reset);
   }
 
   get _inactive() {
