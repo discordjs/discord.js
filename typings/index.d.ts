@@ -176,9 +176,9 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on<K extends string>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
 
-    public once<K extends string>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
   }
 
   export class ClientApplication extends Base {
@@ -2186,7 +2186,6 @@ declare module 'discord.js' {
     shardReady: [number];
     shardReconnecting: [number];
     shardResume: [number, number];
-    [k: string]: any[];
   }
 
   interface ClientOptions {
