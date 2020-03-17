@@ -2099,16 +2099,10 @@ declare module 'discord.js' {
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     send(
-      options:
-      MessageOptions |
-      MessageOptions & { split?: false } |
-      MessageAdditions |
-      APIMessage,
+      options: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage,
     ): Promise<Message>;
     send(
-      options:
-      MessageOptions & { split: true | SplitOptions; content: StringResolvable } |
-      APIMessage,
+      options: (MessageOptions & { split: true | SplitOptions; content: StringResolvable }) | APIMessage,
     ): Promise<Message[]>;
     send(
       content: StringResolvable,
@@ -2118,7 +2112,7 @@ declare module 'discord.js' {
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
-    private _typing: Map<string, TypingData>;
+    _typing: Map<string, TypingData>;
     typing: boolean;
     typingCount: number;
     awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
