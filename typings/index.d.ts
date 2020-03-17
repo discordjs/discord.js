@@ -1504,7 +1504,7 @@ declare module 'discord.js' {
     public pause(silence?: boolean): void;
     public resume(): void;
 
-    public on(event: 'close' | 'drain' | 'end' | 'finish' | 'start', listener: () => void): this;
+    public on(event: 'close' | 'drain' | 'finish' | 'start', listener: () => void): this;
     public on(event: 'debug', listener: (info: string) => void): this;
     public on(event: 'error', listener: (err: Error) => void): this;
     public on(event: 'pipe' | 'unpipe', listener: (src: Readable) => void): this;
@@ -1512,7 +1512,7 @@ declare module 'discord.js' {
     public on(event: 'volumeChange', listener: (oldVolume: number, newVolume: number) => void): this;
     public on(event: string, listener: (...args: any[]) => void): this;
 
-    public once(event: 'close' | 'drain' | 'end' | 'finish' | 'start', listener: () => void): this;
+    public once(event: 'close' | 'drain' | 'finish' | 'start', listener: () => void): this;
     public once(event: 'debug', listener: (info: string) => void): this;
     public once(event: 'error', listener: (err: Error) => void): this;
     public once(event: 'pipe' | 'unpipe', listener: (src: Readable) => void): this;
