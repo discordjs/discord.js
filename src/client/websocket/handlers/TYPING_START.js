@@ -6,7 +6,6 @@ module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const user = client.users.cache.get(data.user_id);
   const timestamp = new Date(data.timestamp * 1000);
-  let timeout;
 
   if (channel && user) {
     if (channel.type === 'voice') {
@@ -18,13 +17,19 @@ module.exports = (client, { d: data }) => {
       const typing = channel._typing.get(user.id);
 
       typing.lastTimestamp = timestamp;
-      typing.elapsedTime = getElapsedTime(typing.lastTimestamp, typing.since);
-      resetTimeout(client, tooLate(channel, user), timeout);
+      typing.elapsedTime = Date.now() - typing.since;
+      client.clearTimeout(typing.timeout);
+      typing.timeout = tooLate(channel, user);
     } else {
-      let since = new Date();
-      let lastTimestamp = new Date();
-      resetTimeout(client, tooLate(channel, user), timeout);
-      channel._typing.set(user.id, { user, since, lastTimestamp, elapsedTime: getElapsedTime(lastTimestamp, since) });
+      const since = new Date();
+      const lastTimestamp = new Date();
+      channel._typing.set(user.id, {
+        user,
+        since,
+        lastTimestamp,
+        elapsedTime: Date.now() - since,
+        timeout: tooLate(channel, user),
+      });
 
       /**
        * Emitted whenever a user starts typing in a channel.
@@ -37,18 +42,8 @@ module.exports = (client, { d: data }) => {
   }
 };
 
-function getElapsedTime(since) {
-  return Date.now() - since;
-}
-
-function resetTimeout(client, _timeout, timeout) {
-  client.clearTimeout(timeout);
-  timeout = _timeout;
-}
-
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
-    channel._typing.get(user.id).elapsedTime = getElapsedTime(channel._typing.get(user.id).since) - 3000;
     channel._typing.delete(user.id);
   }, 10000);
 }
