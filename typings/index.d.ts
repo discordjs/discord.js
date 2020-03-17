@@ -176,168 +176,9 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on(
-      event: 'channelCreate' | 'channelDelete',
-      listener: (channel: ChannelTypes | PartialChannel) => void,
-    ): this;
-    public on(
-      event: 'channelPinsUpdate',
-      listener: (channel: TextBasedChannelTypes | PartialChannel, time: Date) => void,
-    ): this;
-    public on(
-      event: 'channelUpdate',
-      listener: (oldChannel: ChannelTypes | PartialChannel, newChannel: ChannelTypes | PartialChannel) => void,
-    ): this;
-    public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
-    public on(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
-    public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
-    public on(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
-    public on(event: 'error', listener: (error: Error) => void): this;
-    public on(
-      event: 'guildBanAdd' | 'guildBanRemove',
-      listener: (guild: Guild, user: User | PartialUser) => void,
-    ): this;
-    public on(
-      event: 'guildCreate' | 'guildDelete' | 'guildUnavailable' | 'guildIntegrationsUpdate',
-      listener: (guild: Guild) => void,
-    ): this;
-    public on(
-      event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove',
-      listener: (member: GuildMember | PartialGuildMember) => void,
-    ): this;
-    public on(
-      event: 'guildMembersChunk',
-      listener: (members: Collection<Snowflake, GuildMember | PartialGuildMember>, guild: Guild) => void,
-    ): this;
-    public on(
-      event: 'guildMemberSpeaking',
-      listener: (member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>) => void,
-    ): this;
-    public on(
-      event: 'guildMemberUpdate',
-      listener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember | PartialGuildMember) => void,
-    ): this;
-    public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
-    public on(event: 'inviteCreate' | 'inviteDelete', listener: (invite: Invite) => void): this;
-    public on(
-      event: 'message' | 'messageDelete' | 'messageReactionRemoveAll',
-      listener: (message: Message | PartialMessage) => void,
-    ): this;
-    public on(event: 'messageReactionRemoveEmoji', listener: (reaction: MessageReaction) => void): this;
-    public on(
-      event: 'messageDeleteBulk',
-      listener: (messages: Collection<Snowflake, Message | PartialMessage>) => void,
-    ): this;
-    public on(
-      event: 'messageReactionAdd' | 'messageReactionRemove',
-      listener: (messageReaction: MessageReaction, user: User | PartialUser) => void,
-    ): this;
-    public on(
-      event: 'messageUpdate',
-      listener: (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => void,
-    ): this;
-    public on(
-      event: 'presenceUpdate',
-      listener: (oldPresence: Presence | undefined, newPresence: Presence) => void,
-    ): this;
-    public on(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
-    public on(event: 'ready' | 'invalidated', listener: () => void): this;
-    public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
-    public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-    public on(
-      event: 'typingStart',
-      listener: (channel: TextBasedChannelTypes | PartialChannel, user: User | PartialUser) => void,
-    ): this;
-    public on(event: 'userUpdate', listener: (oldUser: User | PartialUser, newUser: User | PartialUser) => void): this;
-    public on(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
-    public on(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
-    public on(event: 'shardDisconnect', listener: (event: CloseEvent, id: number) => void): this;
-    public on(event: 'shardError', listener: (error: Error, id: number) => void): this;
-    public on(event: 'shardReady' | 'shardReconnecting', listener: (id: number) => void): this;
-    public on(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
-    public on(event: string, listener: (...args: any[]) => void): this;
+    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
 
-    public once(
-      event: 'channelCreate' | 'channelDelete',
-      listener: (channel: ChannelTypes | PartialChannel) => void,
-    ): this;
-    public once(
-      event: 'channelPinsUpdate',
-      listener: (channel: TextBasedChannelTypes | PartialChannel, time: Date) => void,
-    ): this;
-    public once(
-      event: 'channelUpdate',
-      listener: (oldChannel: ChannelTypes | PartialChannel, newChannel: ChannelTypes | PartialChannel) => void,
-    ): this;
-    public once(event: 'debug' | 'warn', listener: (info: string) => void): this;
-    public once(event: 'disconnect', listener: (event: any, shardID: number) => void): this;
-    public once(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: GuildEmoji) => void): this;
-    public once(event: 'emojiUpdate', listener: (oldEmoji: GuildEmoji, newEmoji: GuildEmoji) => void): this;
-    public once(event: 'error', listener: (error: Error) => void): this;
-    public once(
-      event: 'guildBanAdd' | 'guildBanRemove',
-      listener: (guild: Guild, user: User | PartialUser) => void,
-    ): this;
-    public once(
-      event: 'guildCreate' | 'guildDelete' | 'guildUnavailable' | 'guildIntegrationsUpdate',
-      listener: (guild: Guild) => void,
-    ): this;
-    public once(
-      event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove',
-      listener: (member: GuildMember | PartialGuildMember) => void,
-    ): this;
-    public once(
-      event: 'guildMembersChunk',
-      listener: (members: Collection<Snowflake, GuildMember | PartialGuildMember>, guild: Guild) => void,
-    ): this;
-    public once(
-      event: 'guildMemberSpeaking',
-      listener: (member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>) => void,
-    ): this;
-    public once(
-      event: 'guildMemberUpdate',
-      listener: (oldMember: GuildMember | PartialGuildMember, newMember: GuildMember | PartialGuildMember) => void,
-    ): this;
-    public once(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
-    public once(
-      event: 'message' | 'messageDelete' | 'messageReactionRemoveAll',
-      listener: (message: Message | PartialMessage) => void,
-    ): this;
-    public once(
-      event: 'messageDeleteBulk',
-      listener: (messages: Collection<Snowflake, Message | PartialMessage>) => void,
-    ): this;
-    public once(
-      event: 'messageReactionAdd' | 'messageReactionRemove',
-      listener: (messageReaction: MessageReaction, user: User | PartialUser) => void,
-    ): this;
-    public once(
-      event: 'messageUpdate',
-      listener: (oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage) => void,
-    ): this;
-    public once(
-      event: 'presenceUpdate',
-      listener: (oldPresence: Presence | undefined, newPresence: Presence) => void,
-    ): this;
-    public once(event: 'rateLimit', listener: (rateLimitData: RateLimitData) => void): this;
-    public once(event: 'ready' | 'invalidated', listener: () => void): this;
-    public once(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
-    public once(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-    public once(
-      event: 'typingStart',
-      listener: (channel: TextBasedChannelTypes | PartialChannel, user: User | PartialUser) => void,
-    ): this;
-    public once(
-      event: 'userUpdate',
-      listener: (oldUser: User | PartialUser, newUser: User | PartialUser) => void,
-    ): this;
-    public once(event: 'voiceStateUpdate', listener: (oldState: VoiceState, newState: VoiceState) => void): this;
-    public once(event: 'webhookUpdate', listener: (channel: TextChannel) => void): this;
-    public once(event: 'shardDisconnect', listener: (event: CloseEvent, id: number) => void): this;
-    public once(event: 'shardError', listener: (error: Error, id: number) => void): this;
-    public once(event: 'shardReady' | 'shardReconnecting', listener: (id: number) => void): this;
-    public once(event: 'shardResume', listener: (id: number, replayed: number) => void): this;
-    public once(event: string, listener: (...args: any[]) => void): this;
+    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
   }
 
   export class ClientApplication extends Base {
@@ -2099,25 +1940,16 @@ declare module 'discord.js' {
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     send(
-      options:
-      MessageOptions |
-      MessageOptions & { split?: false } |
-      MessageAdditions |
-      APIMessage,
+      options: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage,
     ): Promise<Message>;
     send(
-      options:
-      MessageOptions & { split: true | SplitOptions; content: StringResolvable } |
-      APIMessage,
+      options: (MessageOptions & { split: true | SplitOptions; content: StringResolvable }) | APIMessage,
     ): Promise<Message[]>;
     send(
       content: StringResolvable,
       options?: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
-    send(
-      content: StringResolvable,
-      options?: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
+    send(content: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2301,6 +2133,59 @@ declare module 'discord.js' {
     name: string;
     id: Snowflake;
     type: 'BIG' | 'SMALL';
+  }
+
+  interface ClientEvents {
+    channelCreate: [ChannelTypes, PartialChannel];
+    channelDelete: [ChannelTypes, PartialChannel];
+    channelPinsUpdate: [TextBasedChannelTypes | PartialChannel, Date];
+    channelUpdate: [ChannelTypes | PartialChannel, ChannelTypes | PartialChannel];
+    debug: [string];
+    warn: [string];
+    disconnect: [any, number];
+    emojiCreate: [GuildEmoji];
+    emojiDelete: [GuildEmoji];
+    emojiUpdate: [GuildEmoji, GuildEmoji];
+    error: [Error];
+    guildBanAdd: [Guild, User | PartialUser];
+    guildBanRemove: [Guild, User | PartialUser];
+    guildCreate: [Guild];
+    guildDelete: [Guild];
+    guildUnavailable: [Guild];
+    guildIntegrationsUpdate: [Guild];
+    guildMemberAdd: [GuildMember | PartialGuildMember];
+    guildMemberAvailable: [GuildMember | PartialGuildMember];
+    guildMemberRemove: [GuildMember | PartialGuildMember];
+    guildMembersChunk: [Collection<Snowflake, GuildMember | PartialGuildMember>, Guild];
+    guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
+    guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember | PartialGuildMember];
+    guildUpdate: [Guild, Guild];
+    inviteCreate: [Invite];
+    inviteDelete: [Invite];
+    message: [Message | PartialMessage];
+    messageDelete: [Message | PartialMessage];
+    messageReactionRemoveAll: [Message | PartialMessage];
+    messageReactionRemoveEmoji: [MessageReaction];
+    messageDeleteBulk: [Collection<Snowflake, Message | PartialMessage>];
+    messageReactionAdd: [MessageReaction, User | PartialUser];
+    messageReactionRemove: [MessageReaction, User | PartialUser];
+    messageUpdate: [Message | PartialMessage, Message | PartialMessage];
+    presenceUpdate: [Presence | undefined, Presence];
+    rateLimit: [RateLimitData];
+    ready: [];
+    invalidated: [];
+    roleCreate: [Role];
+    roleDelete: [Role];
+    roleUpdate: [Role, Role];
+    typingStart: [TextBasedChannelTypes | PartialChannel, User | PartialUser];
+    userUpdate: [User | PartialUser, User | PartialUser];
+    voiceStateUpdate: [VoiceState, VoiceState];
+    webhookUpdate: [TextChannel];
+    shardDisconnect: [CloseEvent, number];
+    shardError: [Error, number];
+    shardReady: [number];
+    shardReconnecting: [number];
+    shardResume: [number, number];
   }
 
   interface ClientOptions {
