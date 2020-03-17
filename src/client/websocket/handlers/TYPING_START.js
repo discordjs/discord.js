@@ -1,6 +1,7 @@
 'use strict';
 
 const { Events } = require('../../../util/Constants');
+let timeout = setTimeout(() => null, 10000);
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
@@ -17,9 +18,13 @@ module.exports = (client, { d: data }) => {
       const typing = channel._typing.get(user.id);
 
       typing.lastTimestamp = timestamp;
-      typing.resetTimeout(tooLate(channel, user));
+      typing.elapsedTime = getElapsedTime(typing.lastTimestamp, typing.since);
+      resetTimeout(client, tooLate(channel, user));
     } else {
-      channel._typing.set(user.id, new TypingData(client, timestamp, tooLate(channel, user)));
+      let since = new Date();
+      let lastTimestamp = new Date();
+      resetTimeout(client, tooLate(channel, user));
+      channel._typing.set(user.id, { user, since, lastTimestamp, elapsedTime: getElapsedTime(lastTimestamp, since) });
 
       /**
        * Emitted whenever a user starts typing in a channel.
@@ -32,35 +37,18 @@ module.exports = (client, { d: data }) => {
   }
 };
 
-/**
- * Instance which keeps track of how long a user has been typing for.
- */
-class TypingData {
-  /**
-   * @param {Client} client - The client keeping track of this data
-   * @param {Date} since - The timestamp ever since the user started typing
-   * @param {NodeJS.Timeout} _timeout - The timeout to configure
-   */
-  constructor(client, since, _timeout) {
-    this.since = this.lastTimestamp = since;
+function getElapsedTime(since) {
+  return Date.now() - since;
+}
 
-    this._timeout = _timeout;
-
-    Object.defineProperty(this, 'client', { value: client });
-  }
-
-  resetTimeout(_timeout) {
-    this.client.clearTimeout(this._timeout);
-    this._timeout = _timeout;
-  }
-
-  get elapsedTime() {
-    return Date.now() - this.since - 3000;
-  }
+function resetTimeout(client, _timeout) {
+  client.clearTimeout(timeout);
+  timeout = _timeout;
 }
 
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
+    channel._typing.get(user.id).elapsedTime = getElapsedTime(channel._typing.get(user.id).since) - 3000;
     channel._typing.delete(user.id);
   }, 10000);
 }
