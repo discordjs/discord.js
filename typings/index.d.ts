@@ -81,6 +81,7 @@ declare module 'discord.js' {
     public resolveFiles(): Promise<this>;
     public split(): APIMessage[];
   }
+
   export class Base {
     constructor(client: Client);
     public readonly client: Client;
