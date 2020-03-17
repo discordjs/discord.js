@@ -263,6 +263,7 @@ exports.Events = {
   VOICE_BROADCAST_SUBSCRIBE: 'subscribe',
   VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe',
   TYPING_START: 'typingStart',
+  TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
   ERROR: 'error',
   WARN: 'warn',
