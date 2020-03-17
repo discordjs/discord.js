@@ -7,11 +7,11 @@ const Util = require('../util/Util');
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
-  constructor(data = {}) {
-    this.setup(data);
+  constructor(data = {}, skipValidation = false) {
+    this.setup(data, skipValidation);
   }
 
-  setup(data) {
+  setup(data, skipValidation) {
     /**
      * The type of this embed, either:
      * * `rich` - a rich embed
@@ -65,7 +65,10 @@ class MessageEmbed {
      * The fields of this embed
      * @type {EmbedField[]}
      */
-    this.fields = data.fields ? this.constructor.normalizeFields(data.fields) : [];
+    this.fields = [];
+    if (data.fields) {
+      this.fields = skipValidation ? data.fields.map(Util.cloneObject) : this.constructor.normalizeFields(data.fields);
+    }
 
     /**
      * @typedef {Object} MessageEmbedThumbnail

@@ -51,7 +51,7 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
-   * Resolves a GuildMemberResolvable to an member ID string.
+   * Resolves a GuildMemberResolvable to a member ID string.
    * @param {GuildMemberResolvable} member The user that is part of the guild
    * @returns {?Snowflake}
    */

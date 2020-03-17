@@ -5,11 +5,11 @@
 const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
-const Discord = require('../');
+const Discord = require('../src');
 
 console.time('magic');
 
-const client = new Discord.Client({ fetchAllMembers: true, apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: true });
 
 client
   .login(token)
@@ -17,7 +17,7 @@ client
   .catch(console.error);
 
 client.on('ready', () => {
-  console.log(`ready with ${client.users.size} users`);
+  console.log(`ready with ${client.users.cache.size} users`);
   console.timeEnd('magic');
 });
 
@@ -30,7 +30,7 @@ client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
       if (message.channel.guild) {
-        message.channel.guild.createChannel('hi', 'text').then(console.log);
+        message.channel.guild.channels.create('hi', { type: 'text' }).then(console.log);
       }
     }
 
@@ -44,8 +44,8 @@ client.on('message', message => {
             count++;
             console.log('reached', count, ecount);
           })
-          .catch(m => {
-            console.error(m);
+          .catch(e => {
+            console.error(e);
             ecount++;
             console.log('reached', count, ecount);
           });
@@ -95,11 +95,11 @@ client.on('message', message => {
 
     if (message.content === 'stats') {
       let m = '';
-      m += `I am aware of ${message.guild.channels.size} channels\n`;
-      m += `I am aware of ${message.guild.members.size} members\n`;
-      m += `I am aware of ${client.channels.size} channels overall\n`;
-      m += `I am aware of ${client.guilds.size} guilds overall\n`;
-      m += `I am aware of ${client.users.size} users overall\n`;
+      m += `I am aware of ${message.guild.channels.cache.size} channels\n`;
+      m += `I am aware of ${message.guild.members.cache.size} members\n`;
+      m += `I am aware of ${client.channels.cache.size} channels overall\n`;
+      m += `I am aware of ${client.guilds.cache.size} guilds overall\n`;
+      m += `I am aware of ${client.users.cache.size} users overall\n`;
       message.channel
         .send(m)
         .then(msg => msg.edit('nah'))
@@ -116,7 +116,7 @@ client.on('message', message => {
 
     if (message.content.startsWith('kick')) {
       message.guild
-        .member(message.mentions[0])
+        .member(message.mentions.users.first())
         .kick()
         .then(member => {
           console.log(member);
@@ -140,7 +140,8 @@ client.on('message', message => {
 
     if (message.content === 'makerole') {
       message.guild
-        .createRole()
+        .roles
+        .create()
         .then(role => {
           message.channel.send(`Made role ${role.name}`);
         })
@@ -150,7 +151,7 @@ client.on('message', message => {
 });
 
 function nameLoop(user) {
-  // User.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
+  // user.setUsername(user.username + 'a').then(nameLoop).catch(console.error);
 }
 
 function chanLoop(channel) {
@@ -191,7 +192,7 @@ client.on('message', msg => {
       .join(' ');
     const s = ytdl(chan, { filter: 'audioonly' }, { passes: 3 });
     s.on('error', e => console.log(`e w stream 1 ${e}`));
-    con.playStream(s);
+    con.play(s);
   }
   if (msg.content.startsWith('/join')) {
     const chan = msg.content
@@ -199,6 +200,7 @@ client.on('message', msg => {
       .slice(1)
       .join(' ');
     msg.channel.guild.channels
+      .cache
       .get(chan)
       .join()
       .then(conn => {
@@ -227,9 +229,9 @@ client.on('messageReactionRemove', (reaction, user) => {
 client.on('message', m => {
   if (m.content.startsWith('#reactions')) {
     const mID = m.content.split(' ')[1];
-    m.channel.fetchMessage(mID).then(rM => {
-      for (const reaction of rM.reactions.values()) {
-        reaction.fetchUsers().then(users => {
+    m.channel.messages.fetch(mID).then(rM => {
+      for (const reaction of rM.reactions.cache.values()) {
+        reaction.users.fetch().then(users => {
           m.channel.send(
             `The following gave that message ${reaction.emoji}:\n` +
               `${users
