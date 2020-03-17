@@ -81,17 +81,6 @@ declare module 'discord.js' {
     public resolveFiles(): Promise<this>;
     public split(): APIMessage[];
   }
-
-  class TypingData {
-    private _timeout: NodeJS.Timeout;
-
-    public readonly client: Client;
-    public readonly elapsedTime: number;
-    public lastTimestamp: Date;
-    public since: Date;
-    public resetTimeout(_timeout: NodeJS.Timeout): void;
-  }
-
   export class Base {
     constructor(client: Client);
     public readonly client: Client;
@@ -2973,6 +2962,13 @@ declare module 'discord.js' {
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
 
   type TargetUser = number;
+
+  interface TypingData {
+    user: User;
+    since: Date;
+    lastTimestamp: Date;
+    elapsedTime: number;
+  }
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
