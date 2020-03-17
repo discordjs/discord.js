@@ -100,17 +100,12 @@ class Channel extends Base {
     const Structures = require('../util/Structures');
     let channel;
     if (!data.guild_id && !guild) {
-      switch (data.type) {
-        case ChannelTypes.DM: {
-          const DMChannel = Structures.get('DMChannel');
-          channel = new DMChannel(client, data);
-          break;
-        }
-        case ChannelTypes.GROUP: {
-          const PartialGroupDMChannel = require('./PartialGroupDMChannel');
-          channel = new PartialGroupDMChannel(client, data);
-          break;
-        }
+      if ((data.recipients && data.type !== ChannelTypes.GROUP) || data.type === ChannelTypes.DM) {
+        const DMChannel = Structures.get('DMChannel');
+        channel = new DMChannel(client, data);
+      } else if (data.type === ChannelTypes.GROUP) {
+        const PartialGroupDMChannel = require('./PartialGroupDMChannel');
+        channel = new PartialGroupDMChannel(client, data);
       }
     } else {
       guild = guild || client.guilds.cache.get(data.guild_id);

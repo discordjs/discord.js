@@ -51,7 +51,7 @@ class PlayInterface {
    * connection.play(ytdl('https://www.youtube.com/watch?v=ZlAU_w7-Xp8', { quality: 'highestaudio' }));
    * @example
    * // Play a voice broadcast
-   * const broadcast = client.createVoiceBroadcast();
+   * const broadcast = client.voice.createBroadcast();
    * broadcast.play('/home/hydrabolt/audio.mp3');
    * connection.play(broadcast);
    * @example
