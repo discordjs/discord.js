@@ -38,14 +38,14 @@ class User extends Base {
   _patch(data) {
     /**
      * The username of the user
-     * @type {string}
+     * @type {?string}
      * @name User#username
      */
     if (data.username) this.username = data.username;
 
     /**
      * A discriminator based on username for the user
-     * @type {string}
+     * @type {?string}
      * @name User#discriminator
      */
     if (data.discriminator) this.discriminator = data.discriminator;
@@ -166,11 +166,11 @@ class User extends Base {
 
   /**
    * The Discord "tag" (e.g. `hydrabolt#0001`) for this user
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get tag() {
-    return `${this.username}#${this.discriminator}`;
+    return typeof this.username === 'string' ? `${this.username}#${this.discriminator}` : null;
   }
 
   /**
