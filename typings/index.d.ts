@@ -927,8 +927,8 @@ declare module 'discord.js' {
     public readonly id: Snowflake;
     public readonly joinedAt: Date | null;
     public joinedTimestamp: number | null;
-		public readonly kickable: boolean;
-		public lastMessageID: Snowflake | null;
+    public readonly kickable: boolean;
+    public lastMessageChannelID: Snowflake | null;
     public readonly manageable: boolean;
     public nickname: string | null;
     public readonly partial: false;
@@ -1583,8 +1583,8 @@ declare module 'discord.js' {
     public discriminator: string;
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
-		public id: Snowflake;
-		public lastMessageID: Snowflake | null;
+    public id: Snowflake;
+    public lastMessageID: Snowflake | null;
     public locale: string;
     public readonly partial: false;
     public readonly presence: Presence;
