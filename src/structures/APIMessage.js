@@ -176,8 +176,6 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     }
 
-    const allowed_mentions = this.resolveAllowedMentions();
-
     this.data = {
       content,
       tts,
@@ -186,7 +184,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions,
+      allowed_mentions: this.options.allowedMentions,
       flags,
     };
     return this;
@@ -220,26 +218,6 @@ class APIMessage {
 
     this.files = await Promise.all(fileLikes.map(f => this.constructor.resolveFile(f)));
     return this;
-  }
-
-  /**
-   * Resolves the allowed_mentions options
-   * @returns {?Object}
-   */
-  resolveAllowedMentions() {
-    if (!this.options.allowedMentions) return null;
-
-    let allowed_mentions = {
-      parse: this.options.allowedMentions.parse,
-    };
-    if (this.options.allowedMentions.users) {
-      allowed_mentions.users = this.options.allowedMentions.users;
-    }
-    if (this.options.allowedMentions.roles) {
-      allowed_mentions.roles = this.options.allowedMentions.roles;
-    }
-
-    return this.allowed_mentions;
   }
 
   /**
