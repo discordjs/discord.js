@@ -779,6 +779,7 @@ declare module 'discord.js' {
     public readonly joinedAt: Date | null;
     public joinedTimestamp: number | null;
     public readonly kickable: boolean;
+    public lastMessageChannelID: Snowflake | null;
     public readonly manageable: boolean;
     public nickname: string | null;
     public readonly partial: false;
@@ -786,7 +787,7 @@ declare module 'discord.js' {
     public readonly premiumSince: Date | null;
     public premiumSinceTimestamp: number | null;
     public readonly presence: Presence;
-    public roles: GuildMemberRoleManager;
+    public readonly roles: GuildMemberRoleManager;
     public user: User;
     public readonly voice: VoiceState;
     public ban(options?: BanOptions): Promise<GuildMember>;
@@ -875,7 +876,7 @@ declare module 'discord.js' {
     public application: ClientApplication | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
-    public channel: TextChannel | DMChannel;
+    public channel: TextChannel | DMChannel | NewsChannel;
     public readonly cleanContent: string;
     public content: string;
     public readonly createdAt: Date;
@@ -1434,6 +1435,7 @@ declare module 'discord.js' {
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
     public id: Snowflake;
+    public lastMessageID: Snowflake | null;
     public locale: string;
     public readonly partial: false;
     public readonly presence: Presence;
@@ -1935,10 +1937,7 @@ declare module 'discord.js' {
 
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
-    lastMessageChannelID: Snowflake | null;
     readonly lastMessage: Message | null;
-    lastPinTimestamp: number | null;
-    readonly lastPinAt: Date;
     send(
       options: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage,
     ): Promise<Message>;
@@ -1953,6 +1952,8 @@ declare module 'discord.js' {
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
+    lastPinTimestamp: number | null;
+    readonly lastPinAt: Date;
     typing: boolean;
     typingCount: number;
     awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
@@ -2136,10 +2137,10 @@ declare module 'discord.js' {
   }
 
   interface ClientEvents {
-    channelCreate: [ChannelTypes, PartialChannel];
-    channelDelete: [ChannelTypes, PartialChannel];
-    channelPinsUpdate: [TextBasedChannelTypes | PartialChannel, Date];
-    channelUpdate: [ChannelTypes | PartialChannel, ChannelTypes | PartialChannel];
+    channelCreate: [ChannelTypes];
+    channelDelete: [ChannelTypes | PartialDMChannel];
+    channelPinsUpdate: [TextBasedChannelTypes | PartialDMChannel, Date];
+    channelUpdate: [ChannelTypes, ChannelTypes];
     debug: [string];
     warn: [string];
     disconnect: [any, number];
@@ -2177,7 +2178,7 @@ declare module 'discord.js' {
     roleCreate: [Role];
     roleDelete: [Role];
     roleUpdate: [Role, Role];
-    typingStart: [TextBasedChannelTypes | PartialChannel, User | PartialUser];
+    typingStart: [TextBasedChannelTypes | PartialDMChannel, User | PartialUser];
     userUpdate: [User | PartialUser, User | PartialUser];
     voiceStateUpdate: [VoiceState, VoiceState];
     webhookUpdate: [TextChannel];
@@ -2761,14 +2762,34 @@ declare module 'discord.js' {
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
   type Partialize<T> = {
+    readonly client: Client;
+    readonly createdAt: Date;
+    readonly createdTimestamp: number;
+    deleted: boolean;
     id: string;
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<T, 'id' | 'partial'>]: T[K] | null;
+    [K in keyof Omit<T,
+      'client' |
+      'createdAt' |
+      'createdTimestamp' |
+      'id' |
+      'partial' |
+      'fetch'>
+      // tslint:disable-next-line:ban-types
+    ]: T[K] extends Function ? T[K] : T[K] | null;
   };
 
-  interface PartialChannel extends Partialize<ChannelTypes> {}
+  interface PartialDMChannel extends Partialize<DMChannel> {
+    lastMessage: null;
+    lastMessageID: undefined;
+    messages: MessageManager;
+    recipient: User | PartialUser;
+    type: 'dm';
+    readonly typing: boolean;
+    readonly typingCount: number;
+  }
 
   interface PartialChannelData {
     id?: number;
@@ -2784,8 +2805,30 @@ declare module 'discord.js' {
     }[];
   }
 
-  interface PartialGuildMember extends Partialize<GuildMember> {}
-  interface PartialMessage extends Partialize<Message> {}
+  interface PartialGuildMember extends Partialize<GuildMember> {
+    readonly bannable: boolean;
+    readonly displayColor: number;
+    readonly displayHexColor: string;
+    readonly displayName: string;
+    guild: Guild;
+    joinedAt: null;
+    joinedTimestamp: null;
+    readonly kickable: boolean;
+    readonly permissions: GuildMember['permissions'];
+    readonly roles: GuildMember['roles'];
+  }
+
+  interface PartialMessage extends Partialize<Message> {
+    attachments: Message['attachments'];
+    channel: Message['channel'];
+    readonly deletable: boolean;
+    readonly editable: boolean;
+    mentions: Message['mentions'];
+    readonly pinnable: boolean;
+    reactions: Message['reactions'];
+    system: boolean;
+    readonly url: string;
+  }
 
   interface PartialRoleData extends RoleData {
     id?: number;
@@ -2793,7 +2836,11 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User> {}
+  interface PartialUser extends Partialize<User> {
+    discriminator: undefined;
+    username: undefined;
+    readonly tag: null;
+  }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
 
