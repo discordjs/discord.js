@@ -2097,7 +2097,6 @@ declare module 'discord.js' {
     readonly lastMessage: Message | null;
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
-    send(options: (MessageOptions & { split?: false }) | MessageAdditions | APIMessage): Promise<Message>;
     send(
       options:
       MessageOptions |
