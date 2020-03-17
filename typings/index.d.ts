@@ -2761,7 +2761,7 @@ declare module 'discord.js' {
 
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
-  type Partialize<T> = {
+  type Partialize<T, O extends string> = {
     readonly client: Client;
     readonly createdAt: Date;
     readonly createdTimestamp: number;
@@ -2776,12 +2776,20 @@ declare module 'discord.js' {
       'createdTimestamp' |
       'id' |
       'partial' |
-      'fetch'>
+      'fetch' | O>
       // tslint:disable-next-line:ban-types
     ]: T[K] extends Function ? T[K] : T[K] | null;
   };
 
-  interface PartialDMChannel extends Partialize<DMChannel> {
+  interface PartialDMChannel extends Partialize<DMChannel,
+    'lastMessage' |
+    'lastMessageID' |
+    'messages' |
+    'recipient' |
+    'type' |
+    'typing' |
+    'typingCount'
+  > {
     lastMessage: null;
     lastMessageID: undefined;
     messages: MessageManager;
@@ -2805,7 +2813,16 @@ declare module 'discord.js' {
     }[];
   }
 
-  interface PartialGuildMember extends Partialize<GuildMember> {
+  interface PartialGuildMember extends Partialize<GuildMember,
+    'bannable' |
+    'displayColor' |
+    'displayHexColor' |
+    'displayName' |
+    'guild' |
+    'kickable' |
+    'permissions' |
+    'roles'
+  > {
     readonly bannable: boolean;
     readonly displayColor: number;
     readonly displayHexColor: string;
@@ -2818,7 +2835,16 @@ declare module 'discord.js' {
     readonly roles: GuildMember['roles'];
   }
 
-  interface PartialMessage extends Partialize<Message> {
+  interface PartialMessage extends Partialize<Message,
+    'attachments' |
+    'channel' |
+    'deletable' |
+    'editable' |
+    'mentions' |
+    'pinnable' |
+    'system' |
+    'url'
+  > {
     attachments: Message['attachments'];
     channel: Message['channel'];
     readonly deletable: boolean;
@@ -2836,7 +2862,7 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User> {
+  interface PartialUser extends Partialize<User, 'discriminator' | 'username' | 'tag'> {
     discriminator: undefined;
     username: undefined;
     readonly tag: null;
