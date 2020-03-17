@@ -1,12 +1,12 @@
 'use strict';
 
 const { Events } = require('../../../util/Constants');
-let timeout = setTimeout(() => null, 10000);
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const user = client.users.cache.get(data.user_id);
   const timestamp = new Date(data.timestamp * 1000);
+  let timeout;
 
   if (channel && user) {
     if (channel.type === 'voice') {
@@ -19,11 +19,11 @@ module.exports = (client, { d: data }) => {
 
       typing.lastTimestamp = timestamp;
       typing.elapsedTime = getElapsedTime(typing.lastTimestamp, typing.since);
-      resetTimeout(client, tooLate(channel, user));
+      resetTimeout(client, tooLate(channel, user), timeout);
     } else {
       let since = new Date();
       let lastTimestamp = new Date();
-      resetTimeout(client, tooLate(channel, user));
+      resetTimeout(client, tooLate(channel, user), timeout);
       channel._typing.set(user.id, { user, since, lastTimestamp, elapsedTime: getElapsedTime(lastTimestamp, since) });
 
       /**
@@ -32,7 +32,7 @@ module.exports = (client, { d: data }) => {
        * @param {Channel} channel The channel the user started typing in
        * @param {User} user The user that started typing
        */
-      client.emit(Events.TYPING_START, channel, user, channel._typing.get(user.id));
+      client.emit(Events.TYPING_START, channel, user);
     }
   }
 };
@@ -41,7 +41,7 @@ function getElapsedTime(since) {
   return Date.now() - since;
 }
 
-function resetTimeout(client, _timeout) {
+function resetTimeout(client, _timeout, timeout) {
   client.clearTimeout(timeout);
   timeout = _timeout;
 }
