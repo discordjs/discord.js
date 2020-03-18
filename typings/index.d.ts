@@ -2926,7 +2926,7 @@ declare module 'discord.js' {
   type TargetUser = number;
 
   interface TypingData {
-    user: User;
+    user: User | PartialUser;
     since: Date;
     lastTimestamp: Date;
     elapsedTime: number;
