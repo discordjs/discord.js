@@ -6,21 +6,22 @@ const prism = require('prism-media');
 const StreamDispatcher = require('../dispatcher/StreamDispatcher');
 
 const FFMPEG_ARGUMENTS = {
-  DEFAULT: [
-    '-analyzeduration', '0',
-    '-loglevel', '0',
-    '-f', 's16le',
-    '-ar', '48000',
-    '-ac', '2',
-  ],
+  DEFAULT: ['-analyzeduration', '0', '-loglevel', '0', '-f', 's16le', '-ar', '48000', '-ac', '2'],
   OGGOPUS: bitrate => [
-    '-analyzeduration', '0',
-    '-loglevel', '0',
-    '-acodec', 'libopus',
-    '-b:a', `${bitrate}K`,
-    '-f', 'opus',
-    '-ar', '48000',
-    '-ac', '2',
+    '-analyzeduration',
+    '0',
+    '-loglevel',
+    '0',
+    '-acodec',
+    'libopus',
+    '-b:a',
+    `${bitrate}K`,
+    '-f',
+    'opus',
+    '-ar',
+    '48000',
+    '-ac',
+    '2',
   ],
 };
 
