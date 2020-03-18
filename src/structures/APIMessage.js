@@ -111,9 +111,11 @@ class APIMessage {
     let replyPrefix = '';
     if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
       const id = this.target.client.users.resolveID(this.options.reply);
-      replyPrefix = this.options.replyPrefixer ? this.options.replyPrefixer(this.options.reply) :
-        this.target.client.options.replyPrefixer ? this.target.client.options.replyPrefixer(this.options.reply) :
-          `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
+      replyPrefix = this.options.replyPrefixer
+        ? this.options.replyPrefixer(this.options.reply)
+        : this.target.client.options.replyPrefixer
+          ? this.target.client.options.replyPrefixer(this.options.reply)
+          : `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
       if (isSplit) splitOptions.prepend = `${replyPrefix}${splitOptions.prepend || ''}`;
     }
 
