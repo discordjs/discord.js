@@ -8,7 +8,7 @@
 const Discord = require('discord.js');
 /*
  * Create a new webhook
- * Your webhook's id and token can be found at the URL or in the response body
+ * The webhook's id and token can be found in the URL or in the response body
  * https://discordapp.com/api/webhooks/12345678910/T0kEn0fw3Bh00K
  *                                     ^^^^^^^^^^  ^^^^^^^^^^^^ 
  *                                   Webhook's ID   Webhook's Token
