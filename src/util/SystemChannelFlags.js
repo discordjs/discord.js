@@ -11,6 +11,13 @@ const BitField = require('./BitField');
 class SystemChannelFlags extends BitField {}
 
 /**
+ * @name SystemChannelFlags
+ * @kind constructor
+ * @memberof SystemChannelFlags
+ * @param {SystemChannelFlagsResolvable} [bits=0] Bit(s) to read from
+ */
+
+/**
  * Data that can be resolved to give a sytem channel flag bitfield. This can be:
  * * A string (see {@link SystemChannelFlags.FLAGS})
  * * A sytem channel flag

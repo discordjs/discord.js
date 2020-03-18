@@ -14,10 +14,10 @@ Update to Node.js 12.0.0 or newer.
 
 ## How do I install FFMPEG?
 
-- **npm:** `npm install ffmpeg-binaries`
+- **npm:** `npm install ffmpeg-static`
 - **Ubuntu 16.04:** `sudo apt install ffmpeg`
 - **Ubuntu 14.04:** `sudo apt-get install libav-tools`
-- **Windows:** `npm install ffmpeg-binaries` or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
+- **Windows:** `npm install ffmpeg-static` or see the [FFMPEG section of AoDude's guide](https://github.com/bdistin/OhGodMusicBot/blob/master/README.md#download-ffmpeg).
 
 ## How do I set up @discordjs/opus?
 

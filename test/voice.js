@@ -3,9 +3,9 @@
 
 const ytdl = require('ytdl-core');
 const auth = require('./auth.js');
-const Discord = require('../');
+const Discord = require('../src');
 
-const client = new Discord.Client({ fetchAllMembers: false, partials: [], apiRequestMethod: 'sequential' });
+const client = new Discord.Client({ fetchAllMembers: false, partials: [] });
 
 client
   .login(auth.token)
@@ -37,7 +37,7 @@ client.on('message', m => {
   if (!m.guild) return;
   if (m.author.id !== '66564597481480192') return;
   if (m.content.startsWith('/join')) {
-    const channel = m.guild.channels.get(m.content.split(' ')[1]) || m.member.voice.channel;
+    const channel = m.guild.channels.cache.get(m.content.split(' ')[1]) || m.member.voice.channel;
     if (channel && channel.type === 'voice') {
       channel.join().then(conn => {
         conn.receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));

@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "12.0.0",
+  "version": "12.0.2",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -13,7 +13,7 @@
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf src/**/*.js typings/**/*.ts",
     "build:browser": "webpack",
-    "prepublishOnly": "npm run test && NODE_ENV=production npm run build:browser"
+    "prepublishOnly": "npm run test && cross-env NODE_ENV=production npm run build:browser"
   },
   "repository": {
     "type": "git",
@@ -78,6 +78,7 @@
     "@commitlint/config-angular": "^8.3.4",
     "@types/node": "^10.12.24",
     "@types/ws": "^7.2.1",
+    "cross-env": "^7.0.2",
     "discord.js-docgen": "discordjs/docgen",
     "dtslint": "^3.0.0",
     "eslint": "^6.8.0",
@@ -145,6 +146,11 @@
       "@commitlint/config-angular"
     ],
     "rules": {
+      "scope-case": [
+        2,
+        "always",
+        "pascal-case"
+      ],
       "type-enum": [
         2,
         "always",

@@ -901,7 +901,7 @@ class Guild extends Base {
       _data.verification_level =
         typeof data.verificationLevel === 'number'
           ? Number(data.verificationLevel)
-          : ExplicitContentFilterLevels.indexOf(data.verificationLevel);
+          : VerificationLevels.indexOf(data.verificationLevel);
     }
     if (typeof data.afkChannel !== 'undefined') {
       _data.afk_channel_id = this.client.channels.resolveID(data.afkChannel);
@@ -1169,7 +1169,7 @@ class Guild extends Base {
   setRolePositions(rolePositions) {
     // Make sure rolePositions are prepared for API
     rolePositions = rolePositions.map(o => ({
-      id: o.role,
+      id: this.roles.resolveID(o.role),
       position: o.position,
     }));
 
@@ -1181,7 +1181,7 @@ class Guild extends Base {
       })
       .then(
         () =>
-          this.client.actions.GuildRolePositionUpdate.handle({
+          this.client.actions.GuildRolesPositionUpdate.handle({
             guild_id: this.id,
             roles: rolePositions,
           }).guild,

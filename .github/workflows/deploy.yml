@@ -5,6 +5,8 @@ on:
       - '*'
       - '!webpack'
       - '!docs'
+    tags:
+      - '*'
 jobs:
   docs:
     name: Documentation
