@@ -72,8 +72,8 @@ class TextBasedChannel {
    * Options provided to control parsing of mentions by Discord
    * @typedef {Object} MessageMentionOptions
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
-   * @property {UserResolvable[]} [users] Snowflakes of Users to be parsed as mentions
-   * @property {RoleResolvable[]} [roles] Snowflakes of Roles to be parsed as mentions
+   * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
+   * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
    */
 
   /**
