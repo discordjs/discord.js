@@ -2771,15 +2771,11 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<T,
-      'client' |
-      'createdAt' |
-      'createdTimestamp' |
-      'id' |
-      'partial' |
-      'fetch'>
-      // tslint:disable-next-line:ban-types
-    ]: T[K] extends Function ? T[K] : T[K] | null;
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch'
+    >]: // tslint:disable-next-line:ban-types
+    T[K] extends Function ? T[K] : T[K] | null;
   };
 
   interface PartialDMChannel extends Partialize<DMChannel> {
@@ -2930,6 +2926,7 @@ declare module 'discord.js' {
     since: Date;
     lastTimestamp: Date;
     elapsedTime: number;
+    timeout: NodeJS.Timeout;
   }
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
