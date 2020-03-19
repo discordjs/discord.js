@@ -296,7 +296,8 @@ declare module 'discord.js' {
         AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
-        Splash: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        Splash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        DisplaySplash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
       };
     };
@@ -812,7 +813,7 @@ declare module 'discord.js' {
     public approximateMemberCount: number;
     public approximatePresenceCount: number;
     public description?: string;
-    public emojis: GuildEmojiManager;
+    public emojis: GuildPreviewEmoji[];
     public features: GuildFeatures;
     public id: string;
     public name: string;
@@ -823,7 +824,6 @@ declare module 'discord.js' {
     public fetch(): Promise<GuildPreview>;
     public toJSON(): object;
     public toString(): string;
-    private _patch(data: object);
   }
   export class HTTPError extends Error {
     constructor(message: string, name: string, code: number, method: string, path: string);
@@ -2515,6 +2515,16 @@ declare module 'discord.js' {
 
   type GuildResolvable = Guild | GuildChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
 
+  interface GuildPreviewEmoji {
+    name: string;
+    roles: Role[];
+    id: string;
+    require_colons: boolean;
+    managed: boolean;
+    animated: boolean;
+    available: boolean;
+  }
+
   interface GuildPruneMembersOptions {
     count?: boolean;
     days?: number;
@@ -2792,8 +2802,7 @@ declare module 'discord.js' {
     [K in keyof Omit<
       T,
       'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | O
-    >]: // tslint:disable-next-line:ban-types
-    T[K] extends Function ? T[K] : T[K] | null;
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-next-line:ban-types
   };
 
   interface PartialDMChannel
