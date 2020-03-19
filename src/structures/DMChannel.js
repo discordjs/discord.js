@@ -78,7 +78,7 @@ class DMChannel extends Channel {
   toString() {
     return this.recipient.toString();
   }
-  
+
   /**
    * Callback for handling a DM error
    *
@@ -91,7 +91,7 @@ class DMChannel extends Channel {
    * Generally used for confirmation messages and unimportant notes.
    * @param {StringResolvable|APIMessage} [content=''] The content to send
    * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
-   * @param {onError} [onError] The callback to call if an error occures
+   * @param {onError} [onError] The callback to call if an error occurs
    * @returns {Promise<Message|Message[]|undefined>}
    * @example
    * // Send a basic message
@@ -103,13 +103,14 @@ class DMChannel extends Channel {
    *  console.log(err); // Will print the error if there is any
    * });
    */
-  safeSend(content, options, onError) {
+  async safeSend(content, options, onError) {
     try {
-      return this.send(content, options);
-    } catch(err) {
+      return await this.send(content, options);
+    } catch (err) {
       if (typeof onError === 'function') {
         onError(err);
       }
+      return undefined;
     }
   }
 

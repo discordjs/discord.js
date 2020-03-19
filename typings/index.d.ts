@@ -544,6 +544,7 @@ declare module 'discord.js' {
     public readonly partial: false;
     public type: 'dm';
     public fetch(): Promise<DMChannel>;
+    public safeSend(): Promise<Message | undefined>;
   }
 
   export class Emoji extends Base {
@@ -2780,26 +2781,17 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<T,
-      'client' |
-      'createdAt' |
-      'createdTimestamp' |
-      'id' |
-      'partial' |
-      'fetch' | O>
-      // tslint:disable-next-line:ban-types
-    ]: T[K] extends Function ? T[K] : T[K] | null;
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | O
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-next-line:ban-types
   };
 
-  interface PartialDMChannel extends Partialize<DMChannel,
-    'lastMessage' |
-    'lastMessageID' |
-    'messages' |
-    'recipient' |
-    'type' |
-    'typing' |
-    'typingCount'
-  > {
+  interface PartialDMChannel
+    extends Partialize<
+      DMChannel,
+      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+    > {
     lastMessage: null;
     lastMessageID: undefined;
     messages: MessageManager;
@@ -2823,16 +2815,11 @@ declare module 'discord.js' {
     }[];
   }
 
-  interface PartialGuildMember extends Partialize<GuildMember,
-    'bannable' |
-    'displayColor' |
-    'displayHexColor' |
-    'displayName' |
-    'guild' |
-    'kickable' |
-    'permissions' |
-    'roles'
-  > {
+  interface PartialGuildMember
+    extends Partialize<
+      GuildMember,
+      'bannable' | 'displayColor' | 'displayHexColor' | 'displayName' | 'guild' | 'kickable' | 'permissions' | 'roles'
+    > {
     readonly bannable: boolean;
     readonly displayColor: number;
     readonly displayHexColor: string;
@@ -2845,16 +2832,11 @@ declare module 'discord.js' {
     readonly roles: GuildMember['roles'];
   }
 
-  interface PartialMessage extends Partialize<Message,
-    'attachments' |
-    'channel' |
-    'deletable' |
-    'editable' |
-    'mentions' |
-    'pinnable' |
-    'system' |
-    'url'
-  > {
+  interface PartialMessage
+    extends Partialize<
+      Message,
+      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'system' | 'url'
+    > {
     attachments: Message['attachments'];
     channel: Message['channel'];
     readonly deletable: boolean;
