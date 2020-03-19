@@ -78,6 +78,40 @@ class DMChannel extends Channel {
   toString() {
     return this.recipient.toString();
   }
+  
+  /**
+   * Callback for handling a DM error
+   *
+   * @callback onError
+   * @param {Error} error - The error that gets caught
+   */
+
+  /**
+   * Send a message safely to a user, without worrying about using catch if the user disabled DMs.
+   * Generally used for confirmation messages and unimportant notes.
+   * @param {StringResolvable|APIMessage} [content=''] The content to send
+   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {onError} [onError] The callback to call if an error occures
+   * @returns {Promise<Message|Message[]|undefined>}
+   * @example
+   * // Send a basic message
+   * user.send('hello!');
+   * // Will not error if user has disabled DMs
+   * @example
+   * // Send a basic message and catch the error
+   * user.send('hello!', (err) => {
+   *  console.log(err); // Will print the error if there is any
+   * });
+   */
+  safeSend(content, options, onError) {
+    try {
+      return this.send(content, options);
+    } catch(err) {
+      if (typeof onError === 'function') {
+        onError(err);
+      }
+    }
+  }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
