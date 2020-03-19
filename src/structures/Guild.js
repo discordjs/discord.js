@@ -718,7 +718,7 @@ class Guild extends Base {
     return this.client.api
       .guilds(this.id)
       .preview.get()
-      .then(data => new GuildPreview(data));
+      .then(data => new GuildPreview(this.client, data));
   }
 
   /**
