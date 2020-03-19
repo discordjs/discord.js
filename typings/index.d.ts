@@ -2646,12 +2646,21 @@ declare module 'discord.js' {
 
   type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT';
 
+  interface MessageMentionOptions {
+    parse?: MessageMentionTypes[];
+    roles?: Snowflake[];
+    users?: Snowflake[];
+  }
+
+  type MessageMentionTypes = 'roles' | 'users' | 'everyone';
+
   interface MessageOptions {
     tts?: boolean;
     nonce?: string;
     content?: string;
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
+    allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
@@ -2971,6 +2980,7 @@ declare module 'discord.js' {
     nonce?: string;
     embeds?: (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
+    allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
