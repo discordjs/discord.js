@@ -340,11 +340,12 @@ class Client extends BaseClient {
   }
 
   /**
-   * Tries to fetch the specified guild, if the provided guild isn't public, returns null
-   * @param {Snowflake} id ID of the public guild
+   * Tries to fetch the specified guild, if available to the "preview" endpoint.
+   * @param {GuildResolvable} guild The GuildResolvable to resolve
    * @returns {Promise<GuildPreview>}
    */
-  fetchGuildPreview(id) {
+  fetchGuildPreview(guild) {
+    const id = this.guilds.resolveID(guild);
     return this.api
       .guilds(id, 'preview')
       .get()
