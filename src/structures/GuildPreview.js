@@ -1,10 +1,10 @@
 'use strict';
 
 const Base = require('./Base');
-const GuildEmojiManager = require('../managers/GuildEmojiManager');
 
 /**
- * Represents the data about the guild any bot can preivew, connected to the specified public guild
+ * Represents the data about the guild any bot can preview, connected to the specified public guild.
+ * @extends {Base}
  */
 class GuildPreview extends Base {
   constructor(client, data) {
@@ -15,7 +15,7 @@ class GuildPreview extends Base {
   }
 
   /**
-   * Builds the public guild with the provided data
+   * Builds the public guild with the provided data.
    * @param {*} data The raw data of the public guild
    * @private
    */
@@ -74,23 +74,11 @@ class GuildPreview extends Base {
      */
     this.description = data.description;
 
-    if (!this.emojis) {
-      /**
-       * A manager of the emojis belonging to this public guild
-       * @type {GuildEmojiManager}
-       */
-      this.emojis = new GuildEmojiManager(this);
-      if (data.emojis) for (const emoji of data.emojis) this.emojis.add(emoji);
-    } else if (data.emojis) {
-      this.client.actions.GuildemojisUpdate.handle({
-        guild_id: this.id,
-        emojis: data.emojis,
-      });
-    }
+    if (!this.emojis) this.emojis = data.emojis;
   }
 
   /**
-   * The URL to this public guild's splash
+   * The URL to this public guild's splash.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -100,17 +88,17 @@ class GuildPreview extends Base {
   }
 
   /**
-   * The URL to this public guild's discovery splash
+   * The URL to this public guild's discovery splash.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   discoverySplashURL({ format, size } = {}) {
     if (!this.discoverySplash) return null;
-    return this.client.rest.cdn.Splash(this.id, this.discoverySplash, format, size, 'discovery');
+    return this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
   }
 
   /**
-   * The URL to this public guild's icon
+   * The URL to this public guild's icon.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -125,8 +113,8 @@ class GuildPreview extends Base {
    */
   fetch() {
     return this.client.api
-      .guilds(this.id, 'preview')
-      .get()
+      .guilds(this.id)
+      .preview.get()
       .then(data => {
         this._patch(data);
         return this;
