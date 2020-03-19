@@ -637,6 +637,7 @@ declare module 'discord.js' {
     public fetchEmbed(): Promise<GuildEmbedData>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchPreview(): Promise<GuildPreview>;
     public fetchVanityCode(): Promise<string>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
