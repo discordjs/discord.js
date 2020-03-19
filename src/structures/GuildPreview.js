@@ -51,23 +51,6 @@ class GuildPreview extends Base {
     this.discoverySplash = data.discovery_splash;
 
     /**
-     * An array of enabled guild features, here are the possible values:
-     * * ANIMATED_ICON
-     * * BANNER
-     * * COMMERCE
-     * * DISCOVERABLE
-     * * FEATURABLE
-     * * INVITE_SPLASH
-     * * PUBLIC
-     * * NEWS
-     * * PARTNERED
-     * * VANITY_URL
-     * * VERIFIED
-     * * VIP_REGIONS
-     * @typedef {string} Features
-     */
-
-    /**
      * An array of enabled guild features
      * @type {Features[]}
      */
