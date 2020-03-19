@@ -544,7 +544,20 @@ declare module 'discord.js' {
     public readonly partial: false;
     public type: 'dm';
     public fetch(): Promise<DMChannel>;
-    public safeSend(): Promise<Message | undefined>;
+    public safeSend(
+      options: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions | APIMessage,
+    ): Promise<Message>;
+    public safeSend(
+      options: (MessageOptions & { split: true | SplitOptions; content: StringResolvable }) | APIMessage,
+    ): Promise<Message[]>;
+    public safeSend(
+      content: StringResolvable,
+      options?: MessageOptions | (MessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<Message>;
+    public safeSend(
+      content: StringResolvable,
+      options?: MessageOptions & { split: true | SplitOptions },
+    ): Promise<Message[]>;
   }
 
   export class Emoji extends Base {
