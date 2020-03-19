@@ -11,7 +11,7 @@ const Discord = require('discord.js');
  * The webhook's id and token can be found in the URL or when you request that URL, it can be found in the response body too.
  * https://discordapp.com/api/webhooks/12345678910/T0kEn0fw3Bh00K
  *                                     ^^^^^^^^^^  ^^^^^^^^^^^^ 
- *                                   Webhook's ID   Webhook's Token
+ *                                   Webhooks ID   Webhooks Token
  */
 const hook = new Discord.WebhookClient('webhook id', 'webhook token');
 
