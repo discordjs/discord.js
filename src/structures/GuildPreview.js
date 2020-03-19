@@ -136,6 +136,7 @@ class GuildPreview extends Base {
     const json = super.toJSON();
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
+    return json;
   }
 }
 
