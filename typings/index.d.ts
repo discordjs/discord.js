@@ -168,6 +168,7 @@ declare module 'discord.js' {
     public ws: WebSocketManager;
     public destroy(): void;
     public fetchApplication(): Promise<ClientApplication>;
+    public fetchGuildPreview(id: Snowflake): Promise<GuildPreview | null>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
@@ -805,6 +806,25 @@ declare module 'discord.js' {
     public toJSON(): object;
     public toString(): string;
     public valueOf(): string;
+  }
+
+  export class GuildPreview extends Base {
+    constructor(client: Client, data: object);
+    public approximateMemberCount: number;
+    public approximatePresenceCount: number;
+    public description?: string;
+    public emojis: GuildEmojiManager;
+    public features: GuildFeatures;
+    public id: string;
+    public name: string;
+
+    public discoverySplashURL(options?: ImageURLOptions): string | null;
+    public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
+    public splashURL(options?: ImageURLOptions): string | null;
+    public fetch(): Promise<GuildPreview>;
+    public toJSON(): object;
+    public toString(): string;
+    private _patch(data: object);
   }
 
   export class HTTPError extends Error {
@@ -2774,8 +2794,7 @@ declare module 'discord.js' {
     [K in keyof Omit<
       T,
       'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch'
-    >]: // tslint:disable-next-line:ban-types
-    T[K] extends Function ? T[K] : T[K] | null;
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-next-line:ban-types
   };
 
   interface PartialDMChannel extends Partialize<DMChannel> {
