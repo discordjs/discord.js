@@ -11,6 +11,7 @@ const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const ClientApplication = require('../structures/ClientApplication');
+const GuildPreview = require('../structures/GuildPreview');
 const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
@@ -336,6 +337,19 @@ class Client extends BaseClient {
       .applications('@me')
       .get()
       .then(app => new ClientApplication(this, app));
+  }
+
+  /**
+   * Tries to fetch the specified guild, if the provided guild isn't public, returns null
+   * @param {Snowflake} id ID of the guild
+   * @returns {?Promise<GuildPreview>}
+   */
+  fetchGuildPreview(id) {
+    return this.api
+      .guilds(id, 'preview')
+      .get()
+      .then(data => new GuildPreview(this, data))
+      .catch(() => null);
   }
 
   /**
