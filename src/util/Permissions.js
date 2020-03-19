@@ -67,6 +67,7 @@ class Permissions extends BitField {
  * * `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
  * * `MENTION_EVERYONE`
  * * `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
+ * * `VIEW_GUILD_INSIGHTS`
  * * `CONNECT` (connect to a voice channel)
  * * `SPEAK` (speak in a voice channel)
  * * `MUTE_MEMBERS` (mute members across all voice channels)
@@ -101,14 +102,13 @@ Permissions.FLAGS = {
   READ_MESSAGE_HISTORY: 1 << 16,
   MENTION_EVERYONE: 1 << 17,
   USE_EXTERNAL_EMOJIS: 1 << 18,
-
+  VIEW_GUILD_INSIGHTS: 1 << 19,
   CONNECT: 1 << 20,
   SPEAK: 1 << 21,
   MUTE_MEMBERS: 1 << 22,
   DEAFEN_MEMBERS: 1 << 23,
   MOVE_MEMBERS: 1 << 24,
   USE_VAD: 1 << 25,
-
   CHANGE_NICKNAME: 1 << 26,
   MANAGE_NICKNAMES: 1 << 27,
   MANAGE_ROLES: 1 << 28,
