@@ -340,15 +340,16 @@ class Client extends BaseClient {
   }
 
   /**
-   * Tries to fetch the specified guild, if available to the "preview" endpoint.
-   * @param {GuildResolvable} guild The GuildResolvable to resolve
+   * Obtains a guild preview from Discord, only available for public guilds.
+   * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
   fetchGuildPreview(guild) {
     const id = this.guilds.resolveID(guild);
+    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     return this.api
-      .guilds(id, 'preview')
-      .get()
+      .guilds(id)
+      .preview.get()
       .then(data => new GuildPreview(this, data));
   }
 
