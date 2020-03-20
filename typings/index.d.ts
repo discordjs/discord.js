@@ -297,7 +297,7 @@ declare module 'discord.js' {
         AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         Splash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
-        DisplaySplash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        DiscoverySplash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
       };
     };
