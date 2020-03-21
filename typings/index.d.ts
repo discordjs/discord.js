@@ -89,15 +89,8 @@ declare module 'discord.js' {
     public valueOf(): string;
   }
 
-  export class BaseEmoji {
+  export class BaseEmoji extends Emoji {
     constructor(client: Client, data: object);
-    public animated: boolean;
-    public available: boolean;
-    public guild: Guild;
-    public id: Snowflake;
-    public name: string;
-    public managed: boolean;
-    public requireColons: boolean;
   }
 
   export class BaseClient extends EventEmitter {
@@ -838,15 +831,8 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
-  class GuildPreviewEmoji extends BaseEmoji {
+  export class GuildPreviewEmoji extends BaseEmoji {
     constructor(client: Client, data: object, guild: GuildPreview);
-    public animated: boolean;
-    public available: boolean;
-    public id: Snowflake;
-    public guild: Guild;
-    public name: string;
-    public managed: boolean;
-    public requireColons: boolean;
   }
 
   export class HTTPError extends Error {
