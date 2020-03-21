@@ -184,6 +184,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
+      allowed_mentions: this.options.allowedMentions,
       flags,
     };
     return this;

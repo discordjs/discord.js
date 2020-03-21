@@ -301,7 +301,7 @@ class Guild extends Base {
      * @type {?number}
      * @name Guild#maximumPresences
      */
-    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 5000;
+    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
 
     /**
      * The vanity URL code of the guild, if any

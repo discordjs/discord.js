@@ -1994,6 +1994,7 @@ declare module 'discord.js' {
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
+    _typing: Map<string, TypingData>;
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     typing: boolean;
@@ -2688,12 +2689,21 @@ declare module 'discord.js' {
 
   type MessageFlagsString = 'CROSSPOSTED' | 'IS_CROSSPOST' | 'SUPPRESS_EMBEDS' | 'SOURCE_MESSAGE_DELETED' | 'URGENT';
 
+  interface MessageMentionOptions {
+    parse?: MessageMentionTypes[];
+    roles?: Snowflake[];
+    users?: Snowflake[];
+  }
+
+  type MessageMentionTypes = 'roles' | 'users' | 'everyone';
+
   interface MessageOptions {
     tts?: boolean;
     nonce?: string;
     content?: string;
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
+    allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
@@ -2975,6 +2985,14 @@ declare module 'discord.js' {
 
   type TargetUser = number;
 
+  interface TypingData {
+    user: User | PartialUser;
+    since: Date;
+    lastTimestamp: Date;
+    elapsedTime: number;
+    timeout: NodeJS.Timeout;
+  }
+
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
@@ -2995,6 +3013,7 @@ declare module 'discord.js' {
     nonce?: string;
     embeds?: (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
+    allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
