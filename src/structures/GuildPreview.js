@@ -78,7 +78,7 @@ class GuildPreview extends Base {
 
     if (!this.emojis) {
       this.emojis = new Set();
-      for (let emoji of data.emojis) {
+      for (const emoji of data.emojis) {
         this.emojis.add(new GuildPreviewEmoji(this.client, emoji, this));
       }
     }
