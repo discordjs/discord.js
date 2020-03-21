@@ -1952,6 +1952,7 @@ declare module 'discord.js' {
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
+    _typing: Map<string, TypingData>;
     lastPinTimestamp: number | null;
     readonly lastPinAt: Date;
     typing: boolean;
@@ -2780,15 +2781,11 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<T,
-      'client' |
-      'createdAt' |
-      'createdTimestamp' |
-      'id' |
-      'partial' |
-      'fetch' | O>
-      // tslint:disable-next-line:ban-types
-    ]: T[K] extends Function ? T[K] : T[K] | null;
+    [K in keyof Omit<
+      T,
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch'
+    >]: // tslint:disable-next-line:ban-types
+    T[K] extends Function ? T[K] : T[K] | null;
   };
 
   interface PartialDMChannel extends Partialize<DMChannel,
@@ -2959,6 +2956,14 @@ declare module 'discord.js' {
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
 
   type TargetUser = number;
+
+  interface TypingData {
+    user: User | PartialUser;
+    since: Date;
+    lastTimestamp: Date;
+    elapsedTime: number;
+    timeout: NodeJS.Timeout;
+  }
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
