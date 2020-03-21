@@ -735,7 +735,7 @@ declare module 'discord.js' {
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(
-      channel: GuildChannel | Snowflake,
+      channel: CategoryChannel | Snowflake,
       options?: { lockPermissions?: boolean; reason?: string },
     ): Promise<this>;
     public setPosition(position: number, options?: { relative?: boolean; reason?: string }): Promise<this>;
