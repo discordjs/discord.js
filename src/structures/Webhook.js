@@ -84,6 +84,7 @@ class Webhook {
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
+   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {'none' | 'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not
    * all mentions or everyone/here mentions should be sanitized to prevent unexpected mentions
