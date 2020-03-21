@@ -1,6 +1,6 @@
 'use strict';
 
-const Emoji = require('./Emoji');
+const BaseEmoji = require('./BaseEmoji');
 const { Error } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 const Permissions = require('../util/Permissions');
@@ -9,7 +9,7 @@ const Permissions = require('../util/Permissions');
  * Represents a custom emoji.
  * @extends {Emoji}
  */
-class GuildEmoji extends Emoji {
+class GuildEmoji extends BaseEmoji {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the guild emoji
