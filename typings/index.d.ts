@@ -2779,7 +2779,7 @@ declare module 'discord.js' {
     [K in keyof Omit<
       T,
       'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch'
-    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-next-line:ban-types
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
   };
 
   interface PartialDMChannel
