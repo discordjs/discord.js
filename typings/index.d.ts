@@ -89,6 +89,17 @@ declare module 'discord.js' {
     public valueOf(): string;
   }
 
+  export class BaseEmoji {
+    constructor(client: Client, data: object);
+    public animated: boolean;
+    public available: boolean;
+    public guild: Guild;
+    public id: Snowflake;
+    public name: string;
+    public managed: boolean;
+    public requireColons: boolean;
+  }
+
   export class BaseClient extends EventEmitter {
     constructor(options?: ClientOptions);
     private _timeouts: Set<NodeJS.Timer>;
@@ -750,7 +761,7 @@ declare module 'discord.js' {
     ): Promise<this>;
   }
 
-  export class GuildEmoji extends Emoji {
+  export class GuildEmoji extends BaseEmoji {
     constructor(client: Client, data: object, guild: Guild);
     private _roles: string[];
 
@@ -814,7 +825,7 @@ declare module 'discord.js' {
     public approximateMemberCount: number;
     public approximatePresenceCount: number;
     public description?: string;
-    public emojis: GuildPreviewEmoji[];
+    public emojis: Set<GuildPreviewEmoji>;
     public features: GuildFeatures;
     public id: string;
     public name: string;
@@ -826,6 +837,18 @@ declare module 'discord.js' {
     public toJSON(): object;
     public toString(): string;
   }
+
+  class GuildPreviewEmoji extends BaseEmoji {
+    constructor(client: Client, data: object, guild: GuildPreview);
+    public animated: boolean;
+    public available: boolean;
+    public id: Snowflake;
+    public guild: Guild;
+    public name: string;
+    public managed: boolean;
+    public requireColons: boolean;
+  }
+
   export class HTTPError extends Error {
     constructor(message: string, name: string, code: number, method: string, path: string);
     public code: number;
@@ -2515,16 +2538,6 @@ declare module 'discord.js' {
   type GuildMemberResolvable = GuildMember | UserResolvable;
 
   type GuildResolvable = Guild | GuildChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
-
-  interface GuildPreviewEmoji {
-    name: string;
-    roles: Role[];
-    id: string;
-    require_colons: boolean;
-    managed: boolean;
-    animated: boolean;
-    available: boolean;
-  }
 
   interface GuildPruneMembersOptions {
     count?: boolean;
