@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const GuildPreviewEmoji = require('./GuildPreviewEmoji');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified public guild.
@@ -11,6 +12,7 @@ class GuildPreview extends Base {
     super(client);
 
     if (!data) return;
+
     this._patch(data);
   }
 
@@ -74,7 +76,12 @@ class GuildPreview extends Base {
      */
     this.description = data.description;
 
-    if (!this.emojis) this.emojis = data.emojis;
+    if (!this.emojis) {
+      this.emojis = new Set();
+      for (let emoji of data.emojis) {
+        this.emojis.add(new GuildPreviewEmoji(this.client, emoji, this));
+      }
+    }
   }
 
   /**
