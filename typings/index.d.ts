@@ -89,10 +89,6 @@ declare module 'discord.js' {
     public valueOf(): string;
   }
 
-  export class BaseEmoji extends Emoji {
-    constructor(client: Client, data: object);
-  }
-
   export class BaseClient extends EventEmitter {
     constructor(options?: ClientOptions);
     private _timeouts: Set<NodeJS.Timer>;
@@ -110,6 +106,10 @@ declare module 'discord.js' {
     public setTimeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timer;
     public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
+  }
+
+  export class BaseEmoji extends Emoji {
+    constructor(client: Client, data: object);
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
