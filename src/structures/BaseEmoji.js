@@ -29,11 +29,6 @@ class BaseEmoji extends Emoji {
 
     this._patch(data);
   }
-
-  _clone() {
-    const clone = super._clone();
-    return clone;
-  }
 }
 
 module.exports = BaseEmoji;
