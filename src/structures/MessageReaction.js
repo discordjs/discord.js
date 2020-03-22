@@ -49,6 +49,7 @@ class MessageReaction {
     /**
      * The number of people that have given the same reaction
      * @type {?number}
+     * @name MessageReaction#count
      */
     // eslint-disable-next-line eqeqeq
     if (this.count == undefined) this.count = data.count;
