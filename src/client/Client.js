@@ -218,7 +218,7 @@ class Client extends BaseClient {
 
     try {
       await this.ws.connect();
-      return this.token;
+      return this;
     } catch (error) {
       this.destroy();
       throw error;
