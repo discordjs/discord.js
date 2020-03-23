@@ -2783,7 +2783,7 @@ declare module 'discord.js' {
   } & {
     [K in keyof Omit<
       T,
-      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch'
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | O
     >]: // tslint:disable-next-line:ban-types
     T[K] extends Function ? T[K] : T[K] | null;
   };
