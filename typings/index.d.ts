@@ -2192,7 +2192,7 @@ declare module 'discord.js' {
     guildUpdate: [Guild, Guild];
     inviteCreate: [Invite];
     inviteDelete: [Invite];
-    message: [Message | PartialMessage];
+    message: [Message];
     messageDelete: [Message | PartialMessage];
     messageReactionRemoveAll: [Message | PartialMessage];
     messageReactionRemoveEmoji: [MessageReaction];
@@ -2812,8 +2812,7 @@ declare module 'discord.js' {
     [K in keyof Omit<
       T,
       'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | O
-      // tslint:disable-next-line:ban-types
-    >]: T[K] extends Function ? T[K] : T[K] | null;
+    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
   };
 
   interface PartialDMChannel
