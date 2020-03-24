@@ -57,6 +57,7 @@ module.exports = {
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
+  BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
   CategoryChannel: require('./structures/CategoryChannel'),
   Channel: require('./structures/Channel'),
   ClientApplication: require('./structures/ClientApplication'),

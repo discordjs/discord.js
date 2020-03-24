@@ -1,21 +1,25 @@
 'use strict';
 
-const BaseEmoji = require('./BaseEmoji');
+const BaseGuildEmoji = require('./BaseGuildEmoji');
 
 /**
- * Represents an instance of an emoji belonging to a guild obtained through Discord's preview endpoint.
- * @extends {BaseEmoji}
+ * Represents an instance of an emoji belonging to a public guild obtained through Discord's preview endpoint.
+ * @extends {BaseGuildEmoji}
  */
-class GuildPreviewEmoji extends BaseEmoji {
+class GuildPreviewEmoji extends BaseGuildEmoji {
   /**
-   * @param {Client} client The instantiating client
-   * @param {Object} data The data for the emoji
-   * @param {Guild} guild The guild the emoji is a part of
+   * The public guild this emoji is part of
+   * @type {GuildPreview}
+   * @name GuildPreviewEmoji#guild
    */
-  constructor(client, data, guild) {
-    super(client, data, guild);
 
-    this._patch(data);
+  /**
+   * Set of roles this emoji is active for
+   * @type {Set<Snowflake>}
+   * @readonly
+   */
+  get roles() {
+    return new Set(this._roles);
   }
 }
 

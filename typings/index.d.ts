@@ -108,8 +108,17 @@ declare module 'discord.js' {
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
   }
 
-  export class BaseEmoji extends Emoji {
-    constructor(client: Client, data: object);
+  export class BaseGuildEmoji extends Emoji {
+    constructor(client: Client, data: object, guild: Guild);
+    private _roles: string[];
+
+    public available: boolean;
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public guild: Guild | GuildPreview;
+    public id: Snowflake;
+    public managed: boolean;
+    public requiresColons: boolean;
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
@@ -754,17 +763,10 @@ declare module 'discord.js' {
     ): Promise<this>;
   }
 
-  export class GuildEmoji extends BaseEmoji {
-    constructor(client: Client, data: object, guild: Guild);
-    private _roles: string[];
-
-    public available: boolean;
+  export class GuildEmoji extends BaseGuildEmoji {
     public readonly deletable: boolean;
     public guild: Guild;
-    public id: Snowflake;
-    public managed: boolean;
-    public requiresColons: boolean;
-    public roles: GuildEmojiRoleManager;
+    public readonly roles: GuildEmojiRoleManager;
     public readonly url: string;
     public delete(reason?: string): Promise<GuildEmoji>;
     public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
@@ -831,8 +833,10 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
-  export class GuildPreviewEmoji extends BaseEmoji {
+  export class GuildPreviewEmoji extends BaseGuildEmoji {
     constructor(client: Client, data: object, guild: GuildPreview);
+    public guild: GuildPreview;
+    public readonly roles: Set<Snowflake>;
   }
 
   export class HTTPError extends Error {
