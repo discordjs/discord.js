@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const GuildPreviewEmoji = require('./GuildPreviewEmoji');
+const Collection = require('../util/Collection');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified public guild.
@@ -77,9 +78,13 @@ class GuildPreview extends Base {
     this.description = data.description;
 
     if (!this.emojis) {
-      this.emojis = new Set();
+      /**
+       * Collection of emojis belonging to this public guild
+       * @type {Collection<Snowflake, GuildPreviewEmoji>}
+       */
+      this.emojis = new Collection();
       for (const emoji of data.emojis) {
-        this.emojis.add(new GuildPreviewEmoji(this.client, emoji, this));
+        this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
       }
     }
   }

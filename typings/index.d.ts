@@ -818,7 +818,7 @@ declare module 'discord.js' {
     public approximateMemberCount: number;
     public approximatePresenceCount: number;
     public description?: string;
-    public emojis: Set<GuildPreviewEmoji>;
+    public emojis: Collection<Snowflake, GuildPreviewEmoji>;
     public features: GuildFeatures;
     public id: string;
     public name: string;
