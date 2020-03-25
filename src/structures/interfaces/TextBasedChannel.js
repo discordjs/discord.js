@@ -78,7 +78,7 @@ class TextBasedChannel {
 
   /**
    * Types of mentions to enable in MessageMentionOptions. It can be one of the following strings:
-   * - `role`
+   * - `roles`
    * - `users`
    * - `everyone`
    * @typedef {string} MessageMentionTypes
