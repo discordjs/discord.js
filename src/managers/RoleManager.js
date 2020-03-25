@@ -129,7 +129,7 @@ class RoleManager extends BaseManager {
    * @readonly
    */
   get everyone() {
-    return this.cache.get(this.guild.id) || null;
+    return this.cache.get(this.guild.id);
   }
 
   /**
