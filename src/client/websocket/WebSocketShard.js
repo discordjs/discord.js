@@ -429,7 +429,7 @@ class WebSocketShard extends EventEmitter {
         this.ackHeartbeat();
         break;
       case OPCodes.HEARTBEAT:
-        this.sendHeartbeat('HeartbeatRequest');
+        this.sendHeartbeat('HeartbeatRequest', true);
         break;
       default:
         this.manager.handlePacket(packet, this);

@@ -49,6 +49,7 @@ class MessageReaction {
     /**
      * The number of people that have given the same reaction
      * @type {?number}
+     * @name MessageReaction#count
      */
     // eslint-disable-next-line eqeqeq
     if (this.count == undefined) this.count = data.count;
@@ -101,8 +102,12 @@ class MessageReaction {
    * Fetch this reaction.
    * @returns {Promise<MessageReaction>}
    */
-  fetch() {
-    return this.message.reactions._fetchReaction(this.emoji, true);
+  async fetch() {
+    const message = await this.message.fetch();
+    const existing = message.reactions.cache.get(this.emoji.id || this.emoji.name);
+    // The reaction won't get set when it has been completely removed
+    this._patch(existing || { count: 0 });
+    return this;
   }
 
   toJSON() {
