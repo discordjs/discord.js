@@ -18,5 +18,6 @@ deploy/deploy_key.pub
 # Miscellaneous
 .tmp/
 .vscode/
+.idea/
 docs/docs.json
 webpack/
