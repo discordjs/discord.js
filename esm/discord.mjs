@@ -1,5 +1,3 @@
-'use strict';
-
 import Discord from '../src/index.js';
 
 export default Discord;
