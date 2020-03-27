@@ -59,8 +59,8 @@ class TextBasedChannel {
    * @property {MessageEmbed|Object} [embed] An embed for the message
    * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {'none' | 'all' | 'everyone'} [disableMentions=this.client.options.disableMentions] Whether or not
-   * all mentions or everyone/here mentions should be sanitized to prevent unexpected mentions
+   * @property {DisableMentionType} [disableMentions=this.client.options.disableMentions] Whether or not all mentions or
+   * everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
@@ -77,8 +77,19 @@ class TextBasedChannel {
    */
 
   /**
-   * Types of mentions to enable in MessageMentionOptions
-   * @typedef {'role' | 'users' | 'everyone'} MessageMentionTypes
+   * Types of mentions to enable in MessageMentionOptions.
+   * - `roles`
+   * - `users`
+   * - `everyone`
+   * @typedef {string} MessageMentionTypes
+   */
+
+  /**
+   * The type of mentions to disable.
+   * - `none`
+   * - `all`
+   * - `everyone`
+   * @typedef {string} DisableMentionType
    */
 
   /**
