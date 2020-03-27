@@ -821,10 +821,13 @@ declare module 'discord.js' {
     public approximateMemberCount: number;
     public approximatePresenceCount: number;
     public description?: string;
+    public discoverySplash: string | null;
     public emojis: Collection<Snowflake, GuildPreviewEmoji>;
     public features: GuildFeatures;
+    public icon: string | null;
     public id: string;
     public name: string;
+    public splash: string | null;
     public discoverySplashURL(options?: ImageURLOptions): string | null;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public splashURL(options?: ImageURLOptions): string | null;
