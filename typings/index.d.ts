@@ -145,7 +145,7 @@ declare module 'discord.js' {
   }
 
   export class CategoryChannel extends GuildChannel {
-    public readonly children: Collection<Snowflake, Exclude<GuildChannelTypes, CategoryChannel>>;
+    public readonly children: Collection<Snowflake, GuildChannel>;
     public type: 'category';
   }
 
@@ -156,8 +156,8 @@ declare module 'discord.js' {
     public deleted: boolean;
     public id: Snowflake;
     public type: keyof typeof ChannelType;
-    public delete(reason?: string): Promise<ChannelTypes>;
-    public fetch(): Promise<ChannelTypes>;
+    public delete(reason?: string): Promise<this>;
+    public fetch(): Promise<this>;
     public toString(): string;
   }
 
@@ -558,7 +558,7 @@ declare module 'discord.js' {
     public recipient: User;
     public readonly partial: false;
     public type: 'dm';
-    public fetch(): Promise<DMChannel>;
+    public fetch(): Promise<this>;
   }
 
   export class Emoji extends Base {
@@ -578,7 +578,7 @@ declare module 'discord.js' {
   export class Guild extends Base {
     constructor(client: Client, data: object);
     private _sortedRoles(): Collection<Snowflake, Role>;
-    private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannelTypes>;
+    private _sortedChannels(channel: Channel): Collection<Snowflake, GuildChannel>;
     private _memberSpeakUpdate(user: Snowflake, speaking: boolean): void;
 
     public readonly afkChannel: VoiceChannel | null;
@@ -593,7 +593,7 @@ declare module 'discord.js' {
     public defaultMessageNotifications: DefaultMessageNotifications | number;
     public deleted: boolean;
     public description: string | null;
-    public embedChannel: GuildChannelTypes | null;
+    public embedChannel: GuildChannel | null;
     public embedChannelID: Snowflake | null;
     public embedEnabled: boolean;
     public emojis: GuildEmojiManager;
@@ -726,7 +726,6 @@ declare module 'discord.js' {
     public readonly members: Collection<Snowflake, GuildMember>;
     public name: string;
     public readonly parent: CategoryChannel | null;
-    public readonly partial: false;
     public parentID: Snowflake | null;
     public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
     public readonly permissionsLocked: boolean | null;
@@ -879,7 +878,7 @@ declare module 'discord.js' {
 
   export class Invite extends Base {
     constructor(client: Client, data: object);
-    public channel: GuildChannelTypes | PartialGroupDMChannel;
+    public channel: GuildChannel | PartialGroupDMChannel;
     public code: string;
     public readonly deletable: boolean;
     public readonly createdAt: Date | null;
@@ -996,11 +995,11 @@ declare module 'discord.js' {
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
-    constructor(channel: TextBasedChannelTypes, filter: CollectorFilter, options?: MessageCollectorOptions);
-    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
+    constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+    private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
-    public channel: TextBasedChannelTypes;
+    public channel: Channel;
     public options: MessageCollectorOptions;
     public received: number;
 
@@ -1063,7 +1062,7 @@ declare module 'discord.js' {
       roles: Snowflake[] | Collection<Snowflake, Role>,
       everyone: boolean,
     );
-    private _channels: Collection<Snowflake, GuildChannelTypes> | null;
+    private _channels: Collection<Snowflake, GuildChannel> | null;
     private readonly _content: Message;
     private _members: Collection<Snowflake, GuildMember> | null;
 
@@ -1072,7 +1071,7 @@ declare module 'discord.js' {
     public everyone: boolean;
     public readonly guild: Guild;
     public has(
-      data: User | GuildMember | Role | GuildChannelTypes,
+      data: User | GuildMember | Role | GuildChannel,
       options?: {
         ignoreDirect?: boolean;
         ignoreRoles?: boolean;
@@ -1128,9 +1127,9 @@ declare module 'discord.js' {
   }
 
   export class PermissionOverwrites {
-    constructor(guildChannel: GuildChannelTypes, data?: object);
+    constructor(guildChannel: GuildChannel, data?: object);
     public allow: Readonly<Permissions>;
-    public readonly channel: GuildChannelTypes;
+    public readonly channel: GuildChannel;
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
@@ -1171,7 +1170,7 @@ declare module 'discord.js' {
 
   export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
     constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
-    private _handleChannelDeletion(channel: TextBasedChannelTypes): void;
+    private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
 
@@ -1810,9 +1809,9 @@ declare module 'discord.js' {
 
   //#region Managers
 
-  export class ChannelManager extends BaseManager<Snowflake, ChannelTypes, ChannelResolvable> {
+  export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean): Promise<ChannelTypes>;
+    public fetch(id: Snowflake, cache?: boolean): Promise<Channel>;
   }
 
   export abstract class BaseManager<K, Holds, R> {
@@ -1827,7 +1826,7 @@ declare module 'discord.js' {
     public resolveID(resolvable: R): K | null;
   }
 
-  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannelTypes, GuildChannelResolvable> {
+  export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
@@ -2159,10 +2158,6 @@ declare module 'discord.js' {
     channel: ChannelResolvable;
     position: number;
   }
-
-  type ChannelTypes = DMChannel | CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
-  type GuildChannelTypes = CategoryChannel | NewsChannel | StoreChannel | TextChannel | VoiceChannel;
-  type TextBasedChannelTypes = DMChannel | NewsChannel | TextChannel;
 
   type ChannelResolvable = Channel | Snowflake;
 
