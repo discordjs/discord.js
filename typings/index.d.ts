@@ -108,6 +108,19 @@ declare module 'discord.js' {
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
   }
 
+  export class BaseGuildEmoji extends Emoji {
+    constructor(client: Client, data: object, guild: Guild);
+    private _roles: string[];
+
+    public available: boolean;
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public guild: Guild | GuildPreview;
+    public id: Snowflake;
+    public managed: boolean;
+    public requiresColons: boolean;
+  }
+
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
     public broadcast: VoiceBroadcast;
   }
@@ -168,6 +181,7 @@ declare module 'discord.js' {
     public ws: WebSocketManager;
     public destroy(): void;
     public fetchApplication(): Promise<ClientApplication>;
+    public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
@@ -296,7 +310,8 @@ declare module 'discord.js' {
         AppIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         AppAsset: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         GDMIcon: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
-        Splash: (userID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        Splash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
+        DiscoverySplash: (guildID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
         TeamIcon: (teamID: string | number, hash: string, format: AllowedImageFormat, size: number) => string;
       };
     };
@@ -636,6 +651,7 @@ declare module 'discord.js' {
     public fetchEmbed(): Promise<GuildEmbedData>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchPreview(): Promise<GuildPreview>;
     public fetchVanityCode(): Promise<string>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
@@ -748,17 +764,10 @@ declare module 'discord.js' {
     ): Promise<this>;
   }
 
-  export class GuildEmoji extends Emoji {
-    constructor(client: Client, data: object, guild: Guild);
-    private _roles: string[];
-
-    public available: boolean;
+  export class GuildEmoji extends BaseGuildEmoji {
     public readonly deletable: boolean;
     public guild: Guild;
-    public id: Snowflake;
-    public managed: boolean;
-    public requiresColons: boolean;
-    public roles: GuildEmojiRoleManager;
+    public readonly roles: GuildEmojiRoleManager;
     public readonly url: string;
     public delete(reason?: string): Promise<GuildEmoji>;
     public edit(data: GuildEmojiEditData, reason?: string): Promise<GuildEmoji>;
@@ -805,6 +814,32 @@ declare module 'discord.js' {
     public toJSON(): object;
     public toString(): string;
     public valueOf(): string;
+  }
+
+  export class GuildPreview extends Base {
+    constructor(client: Client, data: object);
+    public approximateMemberCount: number;
+    public approximatePresenceCount: number;
+    public description?: string;
+    public discoverySplash: string | null;
+    public emojis: Collection<Snowflake, GuildPreviewEmoji>;
+    public features: GuildFeatures;
+    public icon: string | null;
+    public id: string;
+    public name: string;
+    public splash: string | null;
+    public discoverySplashURL(options?: ImageURLOptions): string | null;
+    public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
+    public splashURL(options?: ImageURLOptions): string | null;
+    public fetch(): Promise<GuildPreview>;
+    public toJSON(): object;
+    public toString(): string;
+  }
+
+  export class GuildPreviewEmoji extends BaseGuildEmoji {
+    constructor(client: Client, data: object, guild: GuildPreview);
+    public guild: GuildPreview;
+    public readonly roles: Set<Snowflake>;
   }
 
   export class HTTPError extends Error {

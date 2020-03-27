@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
+const GuildPreview = require('./GuildPreview');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
@@ -707,6 +708,17 @@ class Guild extends Base {
         }
         return invites;
       });
+  }
+
+  /**
+   * Obtains a guild preview for this guild from Discord, only available for public guilds.
+   * @returns {Promise<GuildPreview>}
+   */
+  fetchPreview() {
+    return this.client.api
+      .guilds(this.id)
+      .preview.get()
+      .then(data => new GuildPreview(this.client, data));
   }
 
   /**

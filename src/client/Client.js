@@ -11,6 +11,7 @@ const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const ClientApplication = require('../structures/ClientApplication');
+const GuildPreview = require('../structures/GuildPreview');
 const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
@@ -336,6 +337,20 @@ class Client extends BaseClient {
       .applications('@me')
       .get()
       .then(app => new ClientApplication(this, app));
+  }
+
+  /**
+   * Obtains a guild preview from Discord, only available for public guilds.
+   * @param {GuildResolvable} guild The guild to fetch the preview for
+   * @returns {Promise<GuildPreview>}
+   */
+  fetchGuildPreview(guild) {
+    const id = this.guilds.resolveID(guild);
+    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
+    return this.api
+      .guilds(id)
+      .preview.get()
+      .then(data => new GuildPreview(this, data));
   }
 
   /**
