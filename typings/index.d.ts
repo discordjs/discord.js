@@ -181,6 +181,7 @@ declare module 'discord.js' {
     public ws: WebSocketManager;
     public destroy(): void;
     public fetchApplication(): Promise<ClientApplication>;
+    public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
@@ -824,7 +825,6 @@ declare module 'discord.js' {
     public features: GuildFeatures;
     public id: string;
     public name: string;
-
     public discoverySplashURL(options?: ImageURLOptions): string | null;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public splashURL(options?: ImageURLOptions): string | null;
