@@ -2168,10 +2168,10 @@ declare module 'discord.js' {
   }
 
   interface ClientEvents {
-    channelCreate: [ChannelTypes];
-    channelDelete: [ChannelTypes | PartialDMChannel];
-    channelPinsUpdate: [TextBasedChannelTypes | PartialDMChannel, Date];
-    channelUpdate: [ChannelTypes, ChannelTypes];
+    channelCreate: [Channel];
+    channelDelete: [Channel | PartialDMChannel];
+    channelPinsUpdate: [Channel | PartialDMChannel, Date];
+    channelUpdate: [Channel, Channel];
     debug: [string];
     warn: [string];
     disconnect: [any, number];
@@ -2209,7 +2209,7 @@ declare module 'discord.js' {
     roleCreate: [Role];
     roleDelete: [Role];
     roleUpdate: [Role, Role];
-    typingStart: [TextBasedChannelTypes | PartialDMChannel, User | PartialUser];
+    typingStart: [Channel | PartialDMChannel, User | PartialUser];
     userUpdate: [User | PartialUser, User | PartialUser];
     voiceStateUpdate: [VoiceState, VoiceState];
     webhookUpdate: [TextChannel];
