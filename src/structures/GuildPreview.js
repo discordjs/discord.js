@@ -83,9 +83,11 @@ class GuildPreview extends Base {
        * @type {Collection<Snowflake, GuildPreviewEmoji>}
        */
       this.emojis = new Collection();
-      for (const emoji of data.emojis) {
-        this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
-      }
+    } else {
+      this.emojis.clear();
+    }
+    for (const emoji of data.emojis) {
+      this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
   }
 
