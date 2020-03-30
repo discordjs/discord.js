@@ -2218,6 +2218,7 @@ declare module 'discord.js' {
     shardReady: [number];
     shardReconnecting: [number];
     shardResume: [number, number];
+    [event: string | symbol]: any[];
   }
 
   interface ClientOptions {
