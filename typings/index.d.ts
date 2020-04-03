@@ -2510,12 +2510,14 @@ declare module 'discord.js' {
     | 'DISCOVERABLE'
     | 'FEATURABLE'
     | 'INVITE_SPLASH'
-    | 'PUBLIC'
     | 'NEWS'
     | 'PARTNERED'
+    | 'PUBLIC'
+    | 'PUBLIC_DISABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
-    | 'VIP_REGIONS';
+    | 'VIP_REGIONS'
+    | 'WELCOME_SCREEN_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string;
