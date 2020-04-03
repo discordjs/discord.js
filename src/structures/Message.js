@@ -240,7 +240,7 @@ class Message extends Base {
     this.mentions = new Mentions(
       this,
       'mentions' in data ? data.mentions : this.mentions.users,
-      'mentions_roles' in data ? data.mentions_roles : this.mentions.roles,
+      'mention_roles' in data ? data.mention_roles : this.mentions.roles,
       'mention_everyone' in data ? data.mention_everyone : this.mentions.everyone,
       'mention_channels' in data ? data.mention_channels : this.mentions.crosspostedChannels,
     );
