@@ -139,7 +139,7 @@ class ShardClientUtil {
       script = typeof script === 'function' ? `(${script})(this)` : script;
 
       const listener = message => {
-        if (!message || (message._eval != script && script != `(${script})(this)`)) return;
+        if (!message || (message._eval !== script && script !== `(${script})(this)`)) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
