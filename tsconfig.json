@@ -5,11 +5,17 @@
     "declaration": false,
     "removeComments": false,
     "alwaysStrict": true,
-    "pretty": true,
+    "pretty": false,
     "module": "commonjs",
     "target": "es2019",
-    "lib": ["esnext", "esnext.array", "esnext.asynciterable", "esnext.intl", "esnext.symbol"],
+    "lib": [
+      "esnext",
+      "esnext.array",
+      "esnext.asynciterable",
+      "esnext.intl",
+      "esnext.symbol"
+    ],
     "sourceMap": false,
-    "skipLibCheck": true
+    "skipDefaultLibCheck": true
   }
 }

@@ -19,4 +19,5 @@ deploy/deploy_key.pub
 .tmp/
 .vscode/
 docs/docs.json
+typings/index.js
 webpack/
