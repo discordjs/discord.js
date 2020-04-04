@@ -261,7 +261,7 @@ class Shard extends EventEmitter {
       const child = this.process || this.worker;
 
       const listener = message => {
-        if (!message || message._eval !== script) return;
+        if (!message || (message._eval != script && script != `(${script})(this)`)) return;
         child.removeListener('message', listener);
         this._evals.delete(script);
         if (!message._error) resolve(message._result);

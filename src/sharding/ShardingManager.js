@@ -225,7 +225,7 @@ class ShardingManager extends EventEmitter {
 
   /**
    * Evaluates a script on all shards, in the context of the {@link Client}s.
-   * @param {string} script JavaScript to run on each shard
+   * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script) {
