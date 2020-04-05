@@ -15,13 +15,17 @@ class APIRequest {
   }
 
   getRoute(url) {
-    let route = url.split('?')[0];
-    if (route.includes('/channels/') || route.includes('/guilds/')) {
-      const startInd = route.includes('/channels/') ? route.indexOf('/channels/') : route.indexOf('/guilds/');
-      const majorID = route.substring(startInd).split('/')[2];
-      route = route.replace(/(\d{8,})/g, ':id').replace(':id', majorID);
+    const route = url.split('?')[0].split('/');
+    const routeBucket = [];
+    for (let i = 0; i < route.length; i++) {
+      // Reactions routes and sub-routes all share the same bucket
+      if (route[i - 1] === 'reactions') break;
+      // Literal IDs should only be taken account if they are the Major ID (the Channel/Guild ID)
+      if (/\d{16,19}/g.test(route[i]) && !/channels|guilds/.test(route[i - 1])) routeBucket.push(':id');
+      // All other parts of the route should be considered as part of the bucket identifier
+      else routeBucket.push(route[i]);
     }
-    return route;
+    return routeBucket.join('/');
   }
 
   getAuth() {
