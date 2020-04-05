@@ -15,7 +15,7 @@ class APIRequest {
   }
 
   getRoute(url) {
-    let route = url.split('?')[0].split('/');
+    const route = url.split('?')[0].split('/');
     const routeBucket = [];
     for (let i = 0; i < route.length; i++) {
       // Reactions routes and sub-routes all share the same bucket
