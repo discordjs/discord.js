@@ -626,6 +626,7 @@ declare module 'discord.js' {
 		public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
 		public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string>;
 		public static resolveInviteCode(data: InviteResolvable): string;
+		public static resolveWebhookURL(data: string): [string, string] | null;
 	}
 
 	export class DiscordAPIError extends Error {
@@ -1650,7 +1651,8 @@ declare module 'discord.js' {
 	}
 
 	export class WebhookClient extends WebhookMixin(BaseClient) {
-		constructor(id: string, token: string, options?: ClientOptions);
+		constructor(options: WebhookClientOptions & { id: string; token: string });
+		constructor(options: WebhookClientOptions & { url: string });
 		public token: string;
 	}
 
@@ -2733,6 +2735,12 @@ declare module 'discord.js' {
 		guildID: Snowflake;
 		type: keyof typeof ChannelType;
 		name: string;
+	}
+
+	interface WebhookClientOptions extends ClientOptions {
+		id?: string;
+		token?: string;
+		url?: string;
 	}
 
 //#endregion

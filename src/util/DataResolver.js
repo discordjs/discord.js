@@ -36,6 +36,18 @@ class DataResolver {
   }
 
   /**
+   * Resolves a Discord webhook URL into an id and token tuple
+   * @param {string} data The webhookURL to resolve
+   * @returns {?Array<string>}
+   */
+  static resolveWebhookURL(data) {
+    const webhookRegex = /discordapp\.com\/api\/webhooks\/([0-9]+)\/([a-zA-Z0-9_-]+)/i;
+    const match = webhookRegex.exec(data);
+    if (match && match[1] && match[2]) return [match[1], match[2]];
+    return null;
+  }
+
+  /**
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
    * @returns {Promise<?string>}
