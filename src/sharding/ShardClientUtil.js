@@ -76,7 +76,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Sends a message to the master process.
+   * Sends a message to the master process, see {@link Shard#message}.
    * @param {*} message Message to send
    * @returns {Promise<void>}
    */
