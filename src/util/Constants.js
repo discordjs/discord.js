@@ -98,7 +98,7 @@ exports.WSCodes = {
   4014: 'DISALLOWED_INTENTS',
 };
 
-const AllowedImageFormats = ['webp', 'png', 'jpg', 'gif'];
+const AllowedImageFormats = ['webp', 'png', 'jpg', 'jpeg', 'gif'];
 
 const AllowedImageSizes = Array.from({ length: 9 }, (e, i) => 2 ** (i + 4));
 
