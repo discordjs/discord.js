@@ -1366,14 +1366,14 @@ declare module 'discord.js' {
 
   class StreamDispatcher extends VolumeMixin(Writable) {
     constructor(player: object, options?: StreamOptions, streams?: object);
-    public player: object;
-    public pausedSince: number;
+    public readonly bitrateEditable: boolean;
     public broadcast: VoiceBroadcast | null;
     public readonly paused: boolean;
-    public readonly pausedTime: boolean | null;
+    public pausedSince: number | null;
+    public readonly pausedTime: number;
+    public player: object;
     public readonly streamTime: number;
     public readonly totalStreamTime: number;
-    public readonly bitrateEditable: boolean;
 
     public setBitrate(value: number | 'auto'): boolean;
     public setPLP(value: number): boolean;
