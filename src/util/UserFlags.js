@@ -2,7 +2,7 @@
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with an {@link User#flags} bitfield.
+ * Data structure that makes it easy to interact with a {@link User#flags} bitfield.
  * @extends {BitField}
  */
 class UserFlags extends BitField {
