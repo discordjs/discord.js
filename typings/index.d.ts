@@ -2992,7 +2992,7 @@ declare module 'discord.js' {
     | 'HYPESQUAD_EVENTS'
     | 'BUGHUNTER_LEVEL1'
     | 'HOUSE_BRAVERY'
-    | 'HOUSE_BRILLANCE'
+    | 'HOUSE_BRILLIANCE'
     | 'HOUSE_BALANCE'
     | 'EARLY_SUPPORTER'
     | 'TEAM_USER'
