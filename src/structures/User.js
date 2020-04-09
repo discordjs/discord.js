@@ -76,9 +76,9 @@ class User extends Base {
 
     /**
      * The flags for this user
-     * @type {UserFlags}
+     * @type {?UserFlags}
      */
-    this.flags = new UserFlags(data.public_flags);
+    if (typeof data.public_flags !== 'undefined') this.flags = new UserFlags(data.public_flags);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -266,16 +266,11 @@ class User extends Base {
    * Fetches this user's flags.
    * @returns {Promise<UserFlags>}
    */
-  fetchFlags() {
-    if (this.flags.fetched) return this.flags;
-    return this.client.api
-      .users(this.id)
-      .get()
-      .then(data => {
-        this._patch(data);
-        this.flags.fetched = true;
-        return this.flags;
-      });
+  async fetchFlags() {
+    if (this.flags) return this.flags;
+    const data = await this.client.api.users(this.id).get();
+    this._patch(data);
+    return this.flags;
   }
 
   /**

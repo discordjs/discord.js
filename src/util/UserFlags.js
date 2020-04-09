@@ -5,17 +5,7 @@ const BitField = require('./BitField');
  * Data structure that makes it easy to interact with a {@link User#flags} bitfield.
  * @extends {BitField}
  */
-class UserFlags extends BitField {
-  constructor(bits) {
-    super(bits);
-
-    /**
-     * Whether the flags have been fetched
-     * @type {boolean}
-     */
-    this.fetched = typeof bits !== 'undefined';
-  }
-}
+class UserFlags extends BitField {}
 
 /**
  * @name UserFlags
@@ -37,6 +27,8 @@ class UserFlags extends BitField {
  * * `TEAM_USER`
  * * `SYSTEM`
  * * `BUGHUNTER_LEVEL2`
+ * * `VERIFIED_BOT`
+ * * `VERIFIED_DEVELOPER`
  * @type {Object}
  * @see {@link https://discordapp.com/developers/docs/resources/user#user-object-user-flags}
  */
