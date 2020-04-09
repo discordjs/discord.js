@@ -75,7 +75,7 @@ class User extends Base {
     if (data.locale) this.locale = data.locale;
 
     /**
-     * Flags for that user
+     * The flags for this user
      * @type {UserFlags}
      */
     this.flags = new UserFlags(data.public_flags);
