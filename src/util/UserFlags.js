@@ -13,7 +13,7 @@ class UserFlags extends BitField {
      * Whether the flags have been fetched
      * @type {boolean}
      */
-    this.fetched = !(typeof bits === 'undefined');
+    this.fetched = typeof bits !== 'undefined';
   }
 }
 
