@@ -1375,11 +1375,11 @@ declare module 'discord.js' {
     public readonly streamTime: number;
     public readonly totalStreamTime: number;
 
-    public setBitrate(value: number | 'auto'): boolean;
-    public setPLP(value: number): boolean;
-    public setFEC(enabled: boolean): boolean;
     public pause(silence?: boolean): void;
     public resume(): void;
+    public setBitrate(value: number | 'auto'): boolean;
+    public setFEC(enabled: boolean): boolean;
+    public setPLP(value: number): boolean;
 
     public on(event: 'close' | 'drain' | 'finish' | 'start', listener: () => void): this;
     public on(event: 'debug', listener: (info: string) => void): this;
