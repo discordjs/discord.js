@@ -1469,6 +1469,7 @@ declare module 'discord.js' {
     public discriminator: string;
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
+    public flags: Readonly<UserFlags>;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
     public locale: string;
@@ -1487,6 +1488,11 @@ declare module 'discord.js' {
     public typingDurationIn(channel: ChannelResolvable): number;
     public typingIn(channel: ChannelResolvable): boolean;
     public typingSinceIn(channel: ChannelResolvable): Date;
+  }
+
+  export class UserFlags extends BitField<UserFlagsString> {
+    public static FLAGS: Record<UserFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<UserFlagsString>): number;
   }
 
   export class Util {
@@ -2979,6 +2985,19 @@ declare module 'discord.js' {
     elapsedTime: number;
     timeout: NodeJS.Timeout;
   }
+
+  type UserFlagsString =
+    | 'DISCORD_EMPLOYEE'
+    | 'DISCORD_PARTNER'
+    | 'HYPESQUAD_EVENTS'
+    | 'BUGHUNTER_LEVEL1'
+    | 'HOUSE_BRAVERY'
+    | 'HOUSE_BRILLANCE'
+    | 'HOUSE_BALANCE'
+    | 'EARLY_SUPPORTER'
+    | 'TEAM_USER'
+    | 'SYSTEM'
+    | 'BUGHUNTER_LEVEL2';
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
