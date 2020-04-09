@@ -52,6 +52,8 @@ UserFlags.FLAGS = {
   TEAM_USER: 1 << 10,
   SYSTEM: 1 << 12,
   BUGHUNTER_LEVEL2: 1 << 14,
+  VERIFIED_BOT: 1 << 16,
+  VERIFIED_DEVELOPER: 1 << 17,
 };
 
 module.exports = UserFlags;
