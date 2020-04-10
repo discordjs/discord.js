@@ -339,7 +339,7 @@ class GuildChannel extends Channel {
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {
-        name: (data.name || this.name).trim(),
+        name: (data.name.toString() || this.name).trim(),
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
