@@ -407,6 +407,7 @@ class WebSocketShard extends EventEmitter {
         this.identify();
         break;
       case OPCodes.RECONNECT:
+        this.debug('[RECONNECT] Discord asked us to reconnect');
         this.destroy({ closeCode: 4000 });
         break;
       case OPCodes.INVALID_SESSION:
