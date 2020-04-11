@@ -1335,7 +1335,13 @@ class Guild extends Base {
   _sortedChannels(channel) {
     const category = channel.type === ChannelTypes.CATEGORY;
     return Util.discordSort(
-      this.channels.cache.filter(c => c.type === channel.type && (category || c.parent === channel.parent)),
+      this.channels.cache.filter(
+        c =>
+          (['text', 'news', 'store'].includes(channel.type)
+            ? ['text', 'news', 'store'].includes(c.type)
+            : c.type === channel.type) &&
+          (category || c.parent === channel.parent),
+      ),
     );
   }
 }
