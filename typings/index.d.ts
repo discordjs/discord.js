@@ -1944,7 +1944,6 @@ declare module 'discord.js' {
     public cacheType: Collection<K, Holds>;
     public readonly client: Client;
     public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
-    public remove(key: K): void;
     public resolve(resolvable: R): Holds | null;
     public resolveID(resolvable: R): K | null;
   }
