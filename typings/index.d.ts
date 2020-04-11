@@ -2613,6 +2613,7 @@ declare module 'discord.js' {
     embed?: MessageEmbedOptions | null;
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString>;
+    allowedMentions?: MessageMentionOptions;
   }
 
   interface MessageEmbedAuthor {
