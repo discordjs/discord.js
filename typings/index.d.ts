@@ -2990,14 +2990,14 @@ declare module 'discord.js' {
     | 'DISCORD_EMPLOYEE'
     | 'DISCORD_PARTNER'
     | 'HYPESQUAD_EVENTS'
-    | 'BUGHUNTER_LEVEL1'
+    | 'BUGHUNTER_LEVEL_1'
     | 'HOUSE_BRAVERY'
     | 'HOUSE_BRILLIANCE'
     | 'HOUSE_BALANCE'
     | 'EARLY_SUPPORTER'
     | 'TEAM_USER'
     | 'SYSTEM'
-    | 'BUGHUNTER_LEVEL2'
+    | 'BUGHUNTER_LEVEL_2'
     | 'VERIFIED_BOT'
     | 'VERIFIED_DEVELOPER';
 
