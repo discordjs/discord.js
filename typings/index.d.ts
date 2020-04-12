@@ -538,6 +538,7 @@ declare module 'discord.js' {
   export class DataResolver {
     public static resolveBase64(data: Base64Resolvable): string;
     public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer | Stream>;
+    public static resolveFileAsBuffer(resource: BufferResolvable | Stream): Promise<Buffer>;
     public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string>;
     public static resolveInviteCode(data: InviteResolvable): string;
   }
