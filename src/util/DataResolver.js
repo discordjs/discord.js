@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const stream = require('stream');
 const fetch = require('node-fetch');
 const { Error: DiscordError, TypeError } = require('../errors');
 const { browser } = require('../util/Constants');
@@ -80,38 +81,28 @@ class DataResolver {
    */
 
   /**
-   * Resolves a BufferResolvable to a Buffer.
+   * Resolves a BufferResolvable to a Buffer or a Stream.
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
-   * @returns {Promise<Buffer>}
+   * @returns {Promise<Buffer|Stream>}
    */
   static resolveFile(resource) {
     if (!browser && Buffer.isBuffer(resource)) return Promise.resolve(resource);
     if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
+    if (resource instanceof stream.Readable) return resource;
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return fetch(resource).then(res => (browser ? res.blob() : res.buffer()));
+        return fetch(resource).then(res => (browser ? res.blob() : res.body));
       } else if (!browser) {
         return new Promise((resolve, reject) => {
-          const file = browser ? resource : path.resolve(resource);
+          const file = path.resolve(resource);
           fs.stat(file, (err, stats) => {
             if (err) return reject(err);
             if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
-            fs.readFile(file, (err2, data) => {
-              if (err2) reject(err2);
-              else resolve(data);
-            });
-            return null;
+            return resolve(fs.createReadStream(file));
           });
         });
       }
-    } else if (typeof resource.pipe === 'function') {
-      return new Promise((resolve, reject) => {
-        const buffers = [];
-        resource.once('error', reject);
-        resource.on('data', data => buffers.push(data));
-        resource.once('end', () => resolve(Buffer.concat(buffers)));
-      });
     }
 
     return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
