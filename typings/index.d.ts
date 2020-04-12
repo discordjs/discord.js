@@ -269,7 +269,7 @@ declare module 'discord.js' {
     public once(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
   }
 
-  type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'gif';
+  type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
 
   export const Constants: {
     Package: {
@@ -2542,12 +2542,10 @@ declare module 'discord.js' {
     invite?: string;
   }
 
-  type ImageExt = 'webp' | 'png' | 'jpg' | 'gif';
-
-  type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048;
+  type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
 
   interface ImageURLOptions {
-    format?: ImageExt;
+    format?: AllowedImageFormat;
     size?: ImageSize;
   }
 
