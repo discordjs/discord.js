@@ -822,7 +822,7 @@ declare module 'discord.js' {
     public description?: string;
     public discoverySplash: string | null;
     public emojis: Collection<Snowflake, GuildPreviewEmoji>;
-    public features: GuildFeatures;
+    public features: GuildFeatures[];
     public icon: string | null;
     public id: string;
     public name: string;
