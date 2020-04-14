@@ -85,14 +85,15 @@ class DataResolver {
    * @param {BufferResolvable|Stream} resource The buffer or stream resolvable to resolve
    * @returns {Promise<Buffer|Stream>}
    */
-  static resolveFile(resource) {
-    if (!browser && Buffer.isBuffer(resource)) return Promise.resolve(resource);
-    if (browser && resource instanceof ArrayBuffer) return Promise.resolve(Util.convertToBuffer(resource));
+  static async resolveFile(resource) {
+    if (!browser && Buffer.isBuffer(resource)) return resource;
+    if (browser && resource instanceof ArrayBuffer) return Util.convertToBuffer(resource);
     if (resource instanceof stream.Readable) return resource;
 
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
-        return fetch(resource).then(res => (browser ? res.blob() : res.body));
+        const res = await fetch(resource);
+        return browser ? res.blob() : res.body;
       } else if (!browser) {
         return new Promise((resolve, reject) => {
           const file = path.resolve(resource);
@@ -105,7 +106,7 @@ class DataResolver {
       }
     }
 
-    return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
+    throw new TypeError('REQ_RESOURCE_TYPE');
   }
 
   /**
