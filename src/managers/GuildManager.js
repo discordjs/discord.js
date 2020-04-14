@@ -125,6 +125,25 @@ class GuildManager extends BaseManager {
   }
 
   /**
+   * Obtains a channel from Discord, or the channel cache if it's already available.
+   * @param {Snowflake} id ID of the guild
+   * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+   * @returns {Promise<Guild>}
+   * @example
+   * // Fetch a Guild by its id
+   * client.guilds.fetch('681090066512347146')
+   *    .then(guild => console.log(guild.name))
+   *    .catch(console.error);
+   * 
+  */
+ async fetch(id, cache = true) {
+  const existing = this.client.guilds.cache.get(id);
+  if (existing && !existing.partial) return existing;
+  const data = await this.client.api.guilds(id).get();
+  return this.client.guilds.add(data, cache);
+ }
+ 
+  /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
