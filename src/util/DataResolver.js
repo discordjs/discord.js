@@ -118,12 +118,9 @@ class DataResolver {
     const file = await this.resolveFile(resource);
     if (Buffer.isBuffer(file)) return file;
 
-    return new Promise((resolve, reject) => {
-      const buffers = [];
-      file.once('error', reject);
-      file.on('data', data => buffers.push(data));
-      file.once('end', () => resolve(Buffer.concat(buffers)));
-    });
+    const buffers = [];
+    for await (const data of file) buffers.push(data);
+    return Buffer.concat(buffers);
   }
 }
 
