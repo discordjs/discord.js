@@ -2753,7 +2753,7 @@ declare module 'discord.js' {
     | 'ADD_REACTIONS'
     | 'VIEW_AUDIT_LOG'
     | 'PRIORITY_SPEAKER'
-    | 'STREAM'
+    | 'VIDEO'
     | 'VIEW_CHANNEL'
     | 'SEND_MESSAGES'
     | 'SEND_TTS_MESSAGES'
