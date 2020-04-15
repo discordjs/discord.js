@@ -189,7 +189,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions,
+      allowed_mentions: allowedMentions,
       flags,
     };
     return this;
