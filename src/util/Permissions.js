@@ -58,6 +58,7 @@ class Permissions extends BitField {
  * * `VIEW_AUDIT_LOG`
  * * `PRIORITY_SPEAKER`
  * * `VIDEO` (allows go live and video calls)
+ * * `STREAM` (deprecated, use `VIDEO` instead)
  * * `VIEW_CHANNEL`
  * * `SEND_MESSAGES`
  * * `SEND_TTS_MESSAGES`
@@ -93,6 +94,7 @@ Permissions.FLAGS = {
   VIEW_AUDIT_LOG: 1 << 7,
   PRIORITY_SPEAKER: 1 << 8,
   VIDEO: 1 << 9,
+  STREAM: 1 << 9,
   VIEW_CHANNEL: 1 << 10,
   SEND_MESSAGES: 1 << 11,
   SEND_TTS_MESSAGES: 1 << 12,
