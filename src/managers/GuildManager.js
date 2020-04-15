@@ -225,7 +225,7 @@ class GuildManager extends BaseManager {
    */
   async fetch(id, cache = true) {
     const existing = this.cache.get(id);
-    if (existing && !existing.partial) return existing;
+    if (existing) return existing;
 
     const data = await this.client.api.guilds(id).get();
     return this.add(data, null, cache);
