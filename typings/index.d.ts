@@ -2754,6 +2754,7 @@ declare module 'discord.js' {
     | 'VIEW_AUDIT_LOG'
     | 'PRIORITY_SPEAKER'
     | 'VIDEO'
+    | 'STREAM'
     | 'VIEW_CHANNEL'
     | 'SEND_MESSAGES'
     | 'SEND_TTS_MESSAGES'
