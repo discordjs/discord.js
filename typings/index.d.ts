@@ -193,6 +193,8 @@ declare module 'discord.js' {
     public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
 
     public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+
+    public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
   }
 
   export class ClientApplication extends Base {
