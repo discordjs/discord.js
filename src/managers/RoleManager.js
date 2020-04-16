@@ -125,11 +125,11 @@ class RoleManager extends BaseManager {
 
   /**
    * The `@everyone` role of the guild
-   * @type {?Role}
+   * @type {Role}
    * @readonly
    */
   get everyone() {
-    return this.cache.get(this.guild.id) || null;
+    return this.cache.get(this.guild.id);
   }
 
   /**
