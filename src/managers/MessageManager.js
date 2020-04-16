@@ -115,6 +115,7 @@ class MessageManager extends BaseManager {
    * Deletes a message, even if it's not cached.
    * @param {MessageResolvable} message The message to delete
    * @param {string} [reason] Reason for deleting this message, if it does not belong to the client user
+   * @returns {Promise<void>}
    */
   async delete(message, reason) {
     message = this.resolveID(message);
