@@ -76,6 +76,7 @@ class GuildMemberManager extends BaseManager {
    * @property {?string} query Limit fetch to members with similar usernames
    * @property {number} [limit=0] Maximum number of members to request
    * @property {boolean} [withPresences=false] Whether or not to include the presences
+   * @property {number} [time=120e3] Timeout for receipt of members
    */
 
   /**
@@ -223,7 +224,7 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query } = {}) {
+  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3 } = {}) {
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
         resolve(this.cache);
@@ -262,7 +263,7 @@ class GuildMemberManager extends BaseManager {
       const timeout = this.guild.client.setTimeout(() => {
         this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
-      }, 120e3);
+      }, time);
       this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
     });
   }
