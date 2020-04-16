@@ -176,7 +176,7 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     }
 
-    const allowed_mentions =
+    const allowedMentions =
       typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
@@ -189,7 +189,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions,
+      allowed_mentions: allowedMentions,
       flags,
     };
     return this;
