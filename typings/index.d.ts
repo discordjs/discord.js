@@ -209,7 +209,7 @@ declare module 'discord.js' {
     public owner: User | Team | null;
     public rpcOrigins: string[];
     public coverImage(options?: ImageURLOptions): string;
-    public fetchAssets(): Promise<ClientApplicationAsset>;
+    public fetchAssets(): Promise<ClientApplicationAsset[]>;
     public iconURL(options?: ImageURLOptions): string;
     public toJSON(): object;
     public toString(): string;
