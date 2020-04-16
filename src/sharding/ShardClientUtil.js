@@ -76,9 +76,10 @@ class ShardClientUtil {
   }
 
   /**
-   * Sends a message to the master process, see {@link Shard#message}.
+   * Sends a message to the master process.
    * @param {*} message Message to send
    * @returns {Promise<void>}
+   * @emits Shard#message
    */
   send(message) {
     return new Promise((resolve, reject) => {
