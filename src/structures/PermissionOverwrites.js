@@ -111,7 +111,7 @@ class PermissionOverwrites {
    */
 
   /**
-   * Deletes this Permission Overwrite.
+   * Resolves bitfield permissions overwrites from an object.
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {Object} initialPermissions The initial permissions
    * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
