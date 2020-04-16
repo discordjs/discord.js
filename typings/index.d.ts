@@ -1904,7 +1904,7 @@ declare module 'discord.js' {
 
   export class RoleManager extends BaseManager<Snowflake, Role, RoleResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
-    public readonly everyone: Role | null;
+    public readonly everyone: Role;
     public readonly highest: Role;
     public guild: Guild;
 
