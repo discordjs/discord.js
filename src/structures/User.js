@@ -5,6 +5,7 @@ const { Presence } = require('./Presence');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const Snowflake = require('../util/Snowflake');
+const UserFlags = require('../util/UserFlags');
 
 /**
  * Represents a user on Discord.
@@ -72,6 +73,12 @@ class User extends Base {
      * @name User#locale
      */
     if (data.locale) this.locale = data.locale;
+
+    /**
+     * The flags for this user
+     * @type {?UserFlags}
+     */
+    if (typeof data.public_flags !== 'undefined') this.flags = new UserFlags(data.public_flags);
 
     /**
      * The ID of the last message sent by the user, if one was sent
@@ -253,6 +260,17 @@ class User extends Base {
       this.avatar === user.avatar;
 
     return equal;
+  }
+
+  /**
+   * Fetches this user's flags.
+   * @returns {Promise<UserFlags>}
+   */
+  async fetchFlags() {
+    if (this.flags) return this.flags;
+    const data = await this.client.api.users(this.id).get();
+    this._patch(data);
+    return this.flags;
   }
 
   /**
