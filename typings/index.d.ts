@@ -11,10 +11,10 @@ declare enum ChannelType {
 
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
-  import { EventEmitter } from 'events';
-  import { Stream, Readable, Writable } from 'stream';
   import { ChildProcess } from 'child_process';
+  import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
+  import { Readable, Stream, Writable } from 'stream';
   import * as WebSocket from 'ws';
 
   export const version: string;
@@ -539,7 +539,8 @@ declare module 'discord.js' {
 
   export class DataResolver {
     public static resolveBase64(data: Base64Resolvable): string;
-    public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer>;
+    public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer | Stream>;
+    public static resolveFileAsBuffer(resource: BufferResolvable | Stream): Promise<Buffer>;
     public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string>;
     public static resolveInviteCode(data: InviteResolvable): string;
   }

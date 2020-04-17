@@ -1,8 +1,8 @@
 'use strict';
 
 const https = require('https');
+const FormData = require('@discordjs/form-data');
 const AbortController = require('abort-controller');
-const FormData = require('form-data');
 const fetch = require('node-fetch');
 const { browser, UserAgent } = require('../util/Constants');
 

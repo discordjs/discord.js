@@ -48,8 +48,8 @@
   "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "@discordjs/collection": "^0.1.5",
+    "@discordjs/form-data": "^3.0.1",
     "abort-controller": "^3.0.0",
-    "form-data": "^3.0.0",
     "node-fetch": "^2.6.0",
     "prism-media": "^1.2.0",
     "setimmediate": "^1.0.5",
