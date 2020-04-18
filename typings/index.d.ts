@@ -2221,7 +2221,7 @@ declare module 'discord.js' {
     webhookUpdate: [TextChannel];
     shardDisconnect: [CloseEvent, number];
     shardError: [Error, number];
-    shardReady: [number];
+    shardReady: [number, Set<Snowflake> | undefined];
     shardReconnecting: [number];
     shardResume: [number, number];
   }
