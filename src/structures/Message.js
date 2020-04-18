@@ -493,8 +493,8 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
-   * message.delete()
-   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
+   * message.delete({ timeout: 5000 })
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
    *   .catch(console.error);
    */
   delete(options = {}) {
