@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -743,15 +744,13 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchVanityCode() {
-    return require('util').deprecate(() => {
-      if (!this.features.includes('VANITY_URL')) {
-        return Promise.reject(new Error('VANITY_URL'));
-      }
-      return this.client.api
-        .guilds(this.id, 'vanity-url')
-        .get()
-        .then(res => res.code);
-    }, 'fetchVanityCode() is deprecated. Use fetchVanityData() instead.');
+    if (!this.features.includes('VANITY_URL')) {
+      return Promise.reject(new Error('VANITY_URL'));
+    }
+    return this.client.api
+      .guilds(this.id, 'vanity-url')
+      .get()
+      .then(res => res.code);
   }
 
   /**
@@ -1383,5 +1382,10 @@ class Guild extends Base {
     );
   }
 }
+
+Guild.prototype.fetchVanityCode = deprecate(
+  Guild.prototype.fetchVanityCode,
+  'Guild#fetchVanityCode: Use fetchVanityData() instead',
+);
 
 module.exports = Guild;
