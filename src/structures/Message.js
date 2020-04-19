@@ -427,6 +427,26 @@ class Message extends Base {
   }
 
   /**
+   * Crossposts the message.
+   * @returns {Promise<Message>}
+   * @example
+   * // Crosspost a message
+   * if (message.channel.type === 'news') {
+   *    message.crosspost()
+   *      .then(msg => console.log('Crossposted message`))
+   *      .catch(console.error);
+   * }
+   */
+  async crosspost() {
+    await this.client.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .crosspost()
+      .post();
+    return this;
+  }
+
+  /**
    * Pins this message to the channel's pinned messages.
    * @returns {Promise<Message>}
    */
