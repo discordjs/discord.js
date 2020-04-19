@@ -754,16 +754,16 @@ class Guild extends Base {
   }
 
   /**
-   * An object containing information about a guild's vanity url.
-   * @typedef {Object} VanityData
-   * @property {?string} code Vanity URL invite code, not the full url
-   * @property {?number} uses How many times this invite has been used
+   * An object containing information about a guild's vanity invite.
+   * @typedef {Object} Vanity
+   * @property {?string} code Vanity invite code
+   * @property {?number} uses How many times this invite has been used, must be fetched at least once
    */
 
   /**
    * Fetches the vanity url invite object to this guild.
    * Resolves with an object containing the vanity url invite code and the use count
-   * @returns {Promise<VanityData>}
+   * @returns {Promise<Vanity>}
    * @example
    * // Fetch invite data
    * guild.fetchVanityData()
