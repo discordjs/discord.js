@@ -952,6 +952,7 @@ declare module 'discord.js' {
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
     public fetch(): Promise<Message>;
+    public crosspost(): Promise<Message>;
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
