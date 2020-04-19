@@ -1120,7 +1120,6 @@ declare module 'discord.js' {
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-    public crosspost(): Promise<Message>;
   }
 
   export class PartialGroupDMChannel extends Channel {
