@@ -747,6 +747,28 @@ class Guild extends Base {
   }
 
   /**
+   * Fetches the vanity url invite object to this guild.
+   * Resolves with an object containing the vanity url invite code, not the full url and the use count.
+   * @returns {Promise<{ code: ?string, uses: ?number }>}
+   * @example
+   * // Fetch invite data
+   * guild.fetchVanityData()
+   *   .then(res => {
+   *     console.log(`Vanity URL: https://discord.gg/${res.code}`);
+   *   })
+   *   .catch(console.error);
+   */
+  fetchVanityData() {
+    if (!this.features.includes('VANITY_URL')) {
+      return Promise.reject(new Error('VANITY_URL'));
+    }
+    return this.client.api
+      .guilds(this.id, 'vanity-url')
+      .get()
+      .then(res => res);
+  }
+
+  /**
    * Fetches all webhooks for the guild.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    * @example
