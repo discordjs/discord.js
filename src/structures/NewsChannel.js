@@ -13,6 +13,19 @@ class NewsChannel extends TextChannel {
     // News channels don't have a rate limit per user, remove it
     this.rateLimitPerUser = undefined;
   }
+
+  /**
+   * Crossposts a Message in this channel.
+   * @param {Message} message The message to crosspost.
+   * @returns {Promise<Message>}
+   */
+  crosspost(message) {
+    return this.client.api
+      .channels(this.id)
+      .messages(message.id)
+      .crosspost()
+      .post();
+  }
 }
 
 module.exports = NewsChannel;
