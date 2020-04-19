@@ -727,6 +727,7 @@ class Guild extends Base {
    * Fetches the vanity url invite code to this guild.
    * Resolves with a string matching the vanity url invite code, not the full url.
    * @returns {Promise<string>}
+   * @deprecated
    * @example
    * // Fetch invites
    * guild.fetchVanityCode()
