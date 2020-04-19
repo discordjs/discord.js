@@ -764,8 +764,7 @@ class Guild extends Base {
     }
     return this.client.api
       .guilds(this.id, 'vanity-url')
-      .get()
-      .then(res => res);
+      .get();
   }
 
   /**
