@@ -754,7 +754,7 @@ class Guild extends Base {
   }
 
   /**
-   * An object containing information about a guild member's ban.
+   * An object containing information about a guild's vanity url.
    * @typedef {Object} VanityData
    * @property {?string} code Vanity URL invite code, not the full url
    * @property {?number} uses How many times this invite has been used
