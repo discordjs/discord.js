@@ -737,13 +737,15 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchVanityCode() {
-    if (!this.features.includes('VANITY_URL')) {
-      return Promise.reject(new Error('VANITY_URL'));
-    }
-    return this.client.api
-      .guilds(this.id, 'vanity-url')
-      .get()
-      .then(res => res.code);
+    return require('util').deprecate(() => {
+      if (!this.features.includes('VANITY_URL')) {
+        return Promise.reject(new Error('VANITY_URL'));
+      }
+      return this.client.api
+        .guilds(this.id, 'vanity-url')
+        .get()
+        .then(res => res.code);
+    }, 'fetchVanityCode() is deprecated. Use fetchVanityData() instead.');
   }
 
   /**
