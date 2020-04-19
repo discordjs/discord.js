@@ -312,6 +312,12 @@ class Guild extends Base {
     this.vanityURLCode = data.vanity_url_code;
 
     /**
+     * The use count of the vanity URL code of the guild, if any
+     * @type {?number}
+     */
+    this.vanityURLUses = null;
+
+    /**
      * The description of the guild, if any
      * @type {?string}
      */
@@ -749,9 +755,16 @@ class Guild extends Base {
   }
 
   /**
+   * An object containing information about a guild member's ban.
+   * @typedef {Object} VanityData
+   * @property {?string} code Vanity URL invite code, not the full url
+   * @property {?number} uses How many times this invite has been used
+   */
+
+  /**
    * Fetches the vanity url invite object to this guild.
-   * Resolves with an object containing the vanity url invite code, not the full url and the use count.
-   * @returns {Promise<{ code: ?string, uses: ?number }>}
+   * Resolves with an object containing the vanity url invite code and the use count
+   * @returns {Promise<VanityData>}
    * @example
    * // Fetch invite data
    * guild.fetchVanityData()
@@ -764,7 +777,10 @@ class Guild extends Base {
     if (!this.features.includes('VANITY_URL')) {
       return Promise.reject(new Error('VANITY_URL'));
     }
-    return this.client.api.guilds(this.id, 'vanity-url').get();
+    const data = this.client.api.guilds(this.id, 'vanity-url').get();
+    this.vanityURLUses = data.uses;
+
+    return data;
   }
 
   /**
