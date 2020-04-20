@@ -432,9 +432,9 @@ class Message extends Base {
    * @example
    * // Crosspost a message
    * if (message.channel.type === 'news') {
-   *    message.crosspost()
-   *      .then(msg => console.log('Crossposted message`))
-   *      .catch(console.error);
+   *   message.crosspost()
+   *     .then(msg => console.log('Crossposted message`))
+   *     .catch(console.error);
    * }
    */
   async crosspost() {
