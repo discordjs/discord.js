@@ -306,6 +306,26 @@ class Guild extends Base {
     if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
 
     /**
+     * The approximate amount of members the guild has
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#approximateMemberCount
+     */
+    if (typeof data.approximate_member_count !== 'undefined') {
+      this.approximateMemberCount = data.approximate_member_count || null;
+    }
+
+    /**
+     * The approximate amount of presences the guild has
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#approximatePresenceCount
+     */
+    if (typeof data.approximate_presence_count !== 'undefined') {
+      this.approximatePresenceCount = data.approximate_presence_count || null;
+    }
+
+    /**
      * The vanity URL code of the guild, if any
      * @type {?string}
      */
@@ -585,12 +605,13 @@ class Guild extends Base {
 
   /**
    * Fetches this guild.
+   * @param {boolean} [withCounts=false] Wether or not to fetch the approximate member and presence count
    * @returns {Promise<Guild>}
    */
-  fetch() {
+  fetch(withCounts = false) {
     return this.client.api
       .guilds(this.id)
-      .get()
+      .get({ query: { with_counts: withCounts } })
       .then(data => {
         this._patch(data);
         return this;
