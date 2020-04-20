@@ -441,8 +441,7 @@ class Message extends Base {
     await this.client.api
       .channels(this.channel.id)
       .messages(this.id)
-      .crosspost()
-      .post();
+      .crosspost.post();
     return this;
   }
 
