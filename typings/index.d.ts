@@ -1973,10 +1973,10 @@ declare module 'discord.js' {
 
   type Constructable<T> = new (...args: any[]) => T;
   function PartialTextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & PartialTextBasedChannelFields>;
-  function TextBasedChannel<T, Ignore extends keyof TextBasedChannelFields = never>(
+  function TextBasedChannel<T, I extends keyof TextBasedChannelFields = never>(
     Base?: Constructable<T>,
-    ignore?: Ignore[],
-  ): Constructable<T & Omit<TextBasedChannelFields, Ignore>>;
+    ignore?: I[],
+  ): Constructable<T & Omit<TextBasedChannelFields, I>>;
 
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
