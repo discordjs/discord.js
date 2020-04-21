@@ -555,7 +555,7 @@ declare module 'discord.js' {
     public httpStatus: number;
   }
 
-  export class DMChannel extends TextBasedChannel(Channel) {
+  export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
     constructor(client: Client, data?: object);
     public messages: MessageManager;
     public recipient: User;
@@ -1973,7 +1973,10 @@ declare module 'discord.js' {
 
   type Constructable<T> = new (...args: any[]) => T;
   function PartialTextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & PartialTextBasedChannelFields>;
-  function TextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & TextBasedChannelFields>;
+  function TextBasedChannel<T, Ignore extends keyof TextBasedChannelFields = never>(
+    Base?: Constructable<T>,
+    ignore?: Ignore[],
+  ): Constructable<T & Omit<TextBasedChannelFields, Ignore>>;
 
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
