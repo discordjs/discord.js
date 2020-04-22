@@ -588,8 +588,8 @@ declare module 'discord.js' {
     public afkChannelID: Snowflake | null;
     public afkTimeout: number;
     public applicationID: Snowflake | null;
-    public approximateMemberCount: number | null;
-    public approximatePresenceCount: number | null;
+    public approximateMemberCount?: number;
+    public approximatePresenceCount?: number;
     public available: boolean;
     public banner: string | null;
     public channels: GuildChannelManager;
