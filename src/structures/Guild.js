@@ -312,7 +312,7 @@ class Guild extends Base {
      * @name Guild#approximateMemberCount
      */
     if (typeof data.approximate_member_count !== 'undefined') {
-      this.approximateMemberCount = data.approximate_member_count || null;
+      this.approximateMemberCount = data.approximate_member_count;
     }
 
     /**
@@ -322,7 +322,7 @@ class Guild extends Base {
      * @name Guild#approximatePresenceCount
      */
     if (typeof data.approximate_presence_count !== 'undefined') {
-      this.approximatePresenceCount = data.approximate_presence_count || null;
+      this.approximatePresenceCount = data.approximate_presence_count;
     }
 
     /**
