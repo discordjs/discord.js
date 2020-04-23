@@ -1239,7 +1239,7 @@ class Guild extends Base {
   /**
    * Edits the guild's embed.
    * @deprecated
-   * @param {GuildWidget} embed The embed for the guild
+   * @param {GuildWidgetData} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
    */
