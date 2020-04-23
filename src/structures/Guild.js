@@ -757,7 +757,7 @@ class Guild extends Base {
    * An object containing information about a guild's vanity invite.
    * @typedef {Object} Vanity
    * @property {?string} code Vanity invite code
-   * @property {?number} uses How many times this invite has been used, must be fetched at least once
+   * @property {?number} uses How many times this invite has been used
    */
 
   /**
@@ -768,7 +768,7 @@ class Guild extends Base {
    * // Fetch invite data
    * guild.fetchVanityData()
    *   .then(res => {
-   *     console.log(`Vanity URL: https://discord.gg/${res.code}`);
+   *     console.log(`Vanity URL: https://discord.gg/${res.code} with ${res.uses} uses`);
    *   })
    *   .catch(console.error);
    */
