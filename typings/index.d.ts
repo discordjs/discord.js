@@ -651,13 +651,14 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
-    public fetchEmbed(): Promise<GuildEmbedData>;
+    public fetchEmbed(): Promise<GuildWidget>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchVanityCode(): Promise<string>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+    public fetchWidget(): Promise<GuildWidget>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public leave(): Promise<Guild>;
     public member(user: UserResolvable): GuildMember | null;
@@ -669,7 +670,7 @@ declare module 'discord.js' {
       defaultMessageNotifications: DefaultMessageNotifications | number,
       reason?: string,
     ): Promise<Guild>;
-    public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
+    public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
     public setExplicitContentFilter(explicitContentFilter: ExplicitContentFilterLevel, reason?: string): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setName(name: string, reason?: string): Promise<Guild>;
@@ -680,6 +681,7 @@ declare module 'discord.js' {
     public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
     public setVerificationLevel(verificationLevel: VerificationLevel, reason?: string): Promise<Guild>;
+    public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
     public splashURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
     public toString(): string;
@@ -2479,6 +2481,11 @@ declare module 'discord.js' {
     name?: string;
   }
 
+  interface GuildWidget {
+    enabled: boolean;
+    channel: GuildChannel | null;
+  }
+
   interface GuildEditData {
     name?: string;
     region?: string;
@@ -2495,9 +2502,9 @@ declare module 'discord.js' {
     banner?: Base64Resolvable;
   }
 
-  interface GuildEmbedData {
+  interface GuildWidgetData {
     enabled: boolean;
-    channel: GuildChannelResolvable | null;
+    channel?: GuildChannelResolvable;
   }
 
   interface GuildEmojiCreateOptions {

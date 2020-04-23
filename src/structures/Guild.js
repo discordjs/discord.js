@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -203,6 +204,7 @@ class Guild extends Base {
 
     /**
      * Whether embedded images are enabled on this guild
+     * @deprecated
      * @type {boolean}
      */
     this.embedEnabled = data.embed_enabled;
@@ -247,6 +249,7 @@ class Guild extends Base {
 
     /**
      * The embed channel ID, if enabled
+     * @deprecated
      * @type {?string}
      * @name Guild#embedChannelID
      */
@@ -524,6 +527,7 @@ class Guild extends Base {
 
   /**
    * Embed channel for this guild
+   * @deprecated
    * @type {?TextChannel}
    * @readonly
    */
@@ -784,15 +788,23 @@ class Guild extends Base {
   }
 
   /**
-   * The Guild Embed object
-   * @typedef {Object} GuildEmbedData
-   * @property {boolean} enabled Whether the embed is enabled
-   * @property {?GuildChannel} channel The embed channel
+   * Data for the Guild Widget object
+   * @typedef {Object} GuildWidget
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannel} channel The widget channel
+   */
+
+  /**
+   * The Guild Widget object
+   * @typedef {Object} GuildWidgetData
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannelResolvable} channel The widget channel
    */
 
   /**
    * Fetches the guild embed.
-   * @returns {Promise<GuildEmbedData>}
+   * @returns {Promise<GuildWidget>}
+   * @deprecated
    * @example
    * // Fetches the guild embed
    * guild.fetchEmbed()
@@ -803,6 +815,25 @@ class Guild extends Base {
     return this.client.api
       .guilds(this.id)
       .embed.get()
+      .then(data => ({
+        enabled: data.enabled,
+        channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
+      }));
+  }
+
+  /**
+   * Fetches the guild widget.
+   * @returns {Promise<GuildWidget>}
+   * @example
+   * // Fetches the guild widget
+   * guild.fetchWidget()
+   *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchWidget() {
+    return this.client.api
+      .guilds(this.id)
+      .widget.get()
       .then(data => ({
         enabled: data.enabled,
         channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -1207,7 +1238,8 @@ class Guild extends Base {
 
   /**
    * Edits the guild's embed.
-   * @param {GuildEmbedData} embed The embed for the guild
+   * @deprecated
+   * @param {GuildWidget} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
    */
@@ -1218,6 +1250,25 @@ class Guild extends Base {
         data: {
           enabled: embed.enabled,
           channel_id: this.channels.resolveID(embed.channel),
+        },
+        reason,
+      })
+      .then(() => this);
+  }
+
+  /**
+   * Edits the guild's widget.
+   * @param {GuildWidgetData} widget The widget for the guild
+   * @param {string} [reason] Reason for changing the guild's widget
+   * @returns {Promise<Guild>}
+   */
+  setWidget(widget, reason) {
+    return this.client.api
+      .guilds(this.id)
+      .widget.patch({
+        data: {
+          enabled: widget.enabled,
+          channel_id: this.channels.resolveID(widget.channel),
         },
         reason,
       })
@@ -1348,5 +1399,9 @@ class Guild extends Base {
     );
   }
 }
+
+Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
+
+Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
 
 module.exports = Guild;
