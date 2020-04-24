@@ -306,7 +306,7 @@ class Guild extends Base {
     if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
 
     /**
-     * The vanity URL code of the guild, if any
+     * The vanity URL code of the guild, if any. This only includes the invite code; not the entire URL
      * @type {?string}
      */
     this.vanityURLCode = data.vanity_url_code;
