@@ -1590,7 +1590,6 @@ declare module 'discord.js' {
     private reconnect(token: string, endpoint: string): void;
     private sendVoiceStateUpdate(options: object): Promise<Shard>;
     private setSessionID(sessionID: string): void;
-    private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
     private setTokenAndEndpoint(token: string, endpoint: string): void;
     private updateChannel(channel: VoiceChannel): void;
 
@@ -1605,6 +1604,7 @@ declare module 'discord.js' {
     public voiceManager: ClientVoiceManager;
     public disconnect(): void;
     public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
+    public setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 
     public on(event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting', listener: () => void): this;
     public on(event: 'debug', listener: (message: string) => void): this;
