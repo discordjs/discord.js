@@ -774,7 +774,7 @@ class Guild extends Base {
    */
   async fetchVanityData() {
     if (!this.features.includes('VANITY_URL')) {
-      return Promise.reject(new Error('VANITY_URL'));
+      throw new Error('VANITY_URL');
     }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();
     this.vanityURLUses = data.uses;
