@@ -605,13 +605,12 @@ class Guild extends Base {
 
   /**
    * Fetches this guild.
-   * @param {boolean} [withCounts=false] Wether or not to fetch the approximate member and presence count
    * @returns {Promise<Guild>}
    */
-  fetch(withCounts = false) {
+  fetch() {
     return this.client.api
       .guilds(this.id)
-      .get({ query: { with_counts: withCounts } })
+      .get({ query: { with_counts: true } })
       .then(data => {
         this._patch(data);
         return this;
