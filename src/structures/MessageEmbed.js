@@ -324,7 +324,7 @@ class MessageEmbed {
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
-    this.footer = { text, iconURL };
+    this.footer = { text, iconURL, proxyIconURL: undefined };
     return this;
   }
 
