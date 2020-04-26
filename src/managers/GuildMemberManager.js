@@ -248,8 +248,8 @@ class GuildMemberManager extends BaseManager {
       const option = query || limit || presences || user_ids;
       let i = 0;
       const handler = (members, _, chunk) => {
-        if (chunk.nonce !== nonce) return;
         timeout.refresh();
+        if (chunk.nonce !== nonce) return;
         i++;
         for (const member of members.values()) {
           if (option) fetchedMembers.set(member.id, member);
