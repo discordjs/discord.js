@@ -77,6 +77,7 @@ class GuildMemberManager extends BaseManager {
    * @property {number} [limit=0] Maximum number of members to request
    * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
+   * @property {?string} nonce Nonce for this request (default to guild ID)
    */
 
   /**
@@ -224,7 +225,7 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3 } = {}) {
+  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3, nonce } = {}) {
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
         resolve(this.cache);
@@ -238,21 +239,25 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
+          nonce: nonce || this.guild.id,
           limit,
         },
       });
       const fetchedMembers = new Collection();
       const option = query || limit || presences || user_ids;
-      const handler = (members, guild) => {
-        if (guild.id !== this.guild.id) return;
+      let i = 0;
+      const handler = (members, _, chunk) => {
+        if (chunk.nonce !== nonce) return;
         timeout.refresh();
+        i++;
         for (const member of members.values()) {
           if (option) fetchedMembers.set(member.id, member);
         }
         if (
           this.guild.memberCount <= this.cache.size ||
           (option && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit)
+          (limit && fetchedMembers.size >= limit) ||
+          i === chunk.count - 1
         ) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           let fetched = option ? fetchedMembers : this.cache;

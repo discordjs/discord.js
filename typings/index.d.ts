@@ -2391,6 +2391,7 @@ declare module 'discord.js' {
     limit?: number;
     withPresences?: boolean;
     time?: number;
+    nonce?: string;
   }
 
   interface FileOptions {
