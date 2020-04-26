@@ -258,7 +258,7 @@ class GuildMemberManager extends BaseManager {
           this.guild.memberCount <= this.cache.size ||
           (option && members.size < 1000) ||
           (limit && fetchedMembers.size >= limit) ||
-          i === chunk.count - 1
+          i === chunk.count
         ) {
           this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
           let fetched = option ? fetchedMembers : this.cache;
