@@ -232,6 +232,7 @@ class GuildMemberManager extends BaseManager {
         return;
       }
       if (!query && !user_ids) query = '';
+      if (!nonce) nonce = this.guild.id;
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -239,7 +240,7 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
-          nonce: nonce || this.guild.id,
+          nonce,
           limit,
         },
       });
