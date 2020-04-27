@@ -77,6 +77,7 @@ class User extends Base {
     /**
      * The flags for this user
      * @type {?UserFlags}
+     * @name User#flags
      */
     if (typeof data.public_flags !== 'undefined') this.flags = new UserFlags(data.public_flags);
 

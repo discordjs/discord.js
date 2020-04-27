@@ -306,6 +306,26 @@ class Guild extends Base {
     if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
 
     /**
+     * The approximate amount of members the guild has
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#approximateMemberCount
+     */
+    if (typeof data.approximate_member_count !== 'undefined') {
+      this.approximateMemberCount = data.approximate_member_count;
+    }
+
+    /**
+     * The approximate amount of presences the guild has
+     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+     * @type {?number}
+     * @name Guild#approximatePresenceCount
+     */
+    if (typeof data.approximate_presence_count !== 'undefined') {
+      this.approximatePresenceCount = data.approximate_presence_count;
+    }
+
+    /**
      * The vanity URL code of the guild, if any. This only includes the invite code; not the entire URL
      * @type {?string}
      */
@@ -465,7 +485,10 @@ class Guild extends Base {
    * @readonly
    */
   get nameAcronym() {
-    return this.name.replace(/\w+/g, name => name[0]).replace(/\s/g, '');
+    return this.name
+      .replace(/'s /g, ' ')
+      .replace(/\w+/g, e => e[0])
+      .replace(/\s/g, '');
   }
 
   /**
@@ -590,7 +613,7 @@ class Guild extends Base {
   fetch() {
     return this.client.api
       .guilds(this.id)
-      .get()
+      .get({ query: { with_counts: true } })
       .then(data => {
         this._patch(data);
         return this;
