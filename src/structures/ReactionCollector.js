@@ -103,7 +103,7 @@ class ReactionCollector extends Collector {
    */
   dispose(reaction, user) {
     /**
-     * Emitted whenever a reaction is disposed of.
+     * Emitted whenever a reaction is disposed of. Only emitted when the `dispose` option is set to true.
      * @event ReactionCollector#dispose
      * @param {MessageReaction} reaction The reaction that was disposed of
      * @param {User} user The user that removed the reaction
