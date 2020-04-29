@@ -113,7 +113,7 @@ class ReactionCollector extends Collector {
     /**
      * Emitted whenever a reaction is removed from a message. Will emit on all reaction removals,
      * as opposed to {@link Collector#dispose} which will only be emitted when the entire reaction
-     * is removed.
+     * is removed. Only emitted when the `dispose` option is set to true.
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      * @param {User} user The user that removed the reaction
