@@ -134,7 +134,7 @@ class GuildMemberManager extends BaseManager {
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {boolean} [options.count=true] Whether or not to return the number of users that have been kicked.
-   * @param {Snowflake[]} [options.roles=[]] Array of roles to bypass the "...and no roles" constraint when pruning
+   * @param {RoleResolvable[]} [options.roles=[]] Array of roles to bypass the "...and no roles" constraint when pruning
    * @param {string} [options.reason] Reason for this prune
    * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
