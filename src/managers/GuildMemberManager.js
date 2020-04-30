@@ -134,6 +134,7 @@ class GuildMemberManager extends BaseManager {
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {boolean} [options.count=true] Whether or not to return the number of users that have been kicked.
+   * @param {Snowflake[]} [options.roles=[]] Array of roles to bypass the "...and no roles" constraint when pruning
    * @param {string} [options.reason] Reason for this prune
    * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
@@ -146,8 +147,13 @@ class GuildMemberManager extends BaseManager {
    * guild.members.prune({ days: 1, reason: 'too many people!' })
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
+   * @example
+   * // Include members with a specified role
+   * guild.members.prune({ days: 7, roles: ['657259391652855808'] })
+   *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
+   *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count = true, reason } = {}) {
+  prune({ days = 7, dry = false, count = true, roles = [], reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
     return this.client.api
       .guilds(this.guild.id)
@@ -155,6 +161,7 @@ class GuildMemberManager extends BaseManager {
         query: {
           days,
           compute_prune_count: count,
+          include_roles: roles,
         },
         reason,
       })
