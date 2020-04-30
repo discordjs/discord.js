@@ -155,14 +155,20 @@ class GuildMemberManager extends BaseManager {
    */
   prune({ days = 7, dry = false, count = true, roles = [], reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
+
+    const query = new URLSearchParams();
+    query.set('days', days);
+    query.set('compute_prune_count', count);
+
+    for (const role of roles) {
+      const resolvedRole = this.guild.roles.resolveID(role);
+      if (resolvedRole) query.append('include_roles', role);
+    }
+
     return this.client.api
       .guilds(this.guild.id)
       .prune[dry ? 'get' : 'post']({
-        query: {
-          days,
-          compute_prune_count: count,
-          include_roles: roles,
-        },
+        query,
         reason,
       })
       .then(data => data.pruned);
