@@ -86,6 +86,11 @@ class PacketHandler extends EventEmitter {
 
     let speakingTimeout = this.speakingTimeouts.get(ssrc);
     if (typeof speakingTimeout === 'undefined') {
+      // Ensure at least the speaking bit is set.
+      // As the object is by reference, it's only needed once per client re-connect.
+      if (userStat.speaking === 0) {
+        userStat.speaking = 1;
+      }
       this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: userStat.speaking });
       speakingTimeout = this.receiver.connection.client.setTimeout(() => {
         try {
