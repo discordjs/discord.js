@@ -18,7 +18,6 @@ class APIRequest {
 
     let queryString = '';
     if (options.query) {
-      // Support for the query as params, such as in GuildMemberManager#prune
       let query = (options.query instanceof URLSearchParams ? [...options.query] : Object.entries(options.query))
         // Filter out undefined query options
         .filter(([, value]) => ![null, 'null', 'undefined'].includes(value) && typeof value !== 'undefined');
