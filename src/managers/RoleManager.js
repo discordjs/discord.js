@@ -32,7 +32,7 @@ class RoleManager extends BaseManager {
   /**
    * Obtains one or more roles from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] ID or IDs of the role(s)
-   * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
+   * @param {boolean} [cache=true] Whether to cache the new roles objects if they weren't cached already
    * @returns {Promise<Role|RoleManager>}
    * @example
    * // Fetch all roles from the guild
