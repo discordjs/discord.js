@@ -111,7 +111,8 @@ class ReactionCollector extends Collector {
     if (reaction.message.id !== this.message.id) return null;
 
     /**
-     * Emitted whenever a reaction is removed from a message and the `dispose` option is set to true. Will emit on all reaction removals,
+     * Emitted whenever a reaction is removed from a message and the `dispose` option is set to true. 
+     * Emits on all reaction removal.
      * as opposed to {@link Collector#dispose} which will only be emitted when the entire reaction
      * is removed.
      * @event ReactionCollector#remove
