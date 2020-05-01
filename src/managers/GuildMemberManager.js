@@ -225,14 +225,20 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3, nonce } = {}) {
+  _fetchMany({
+    limit = 0,
+    withPresences: presences = false,
+    user: user_ids,
+    query,
+    time = 120e3,
+    nonce = this.guild.id,
+  } = {}) {
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
         resolve(this.cache);
         return;
       }
       if (!query && !user_ids) query = '';
-      if (!nonce) nonce = this.guild.id;
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -240,7 +246,7 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
-          nonce,
+          nonce: nonce.substring(0, 32),
           limit,
         },
       });
