@@ -239,7 +239,7 @@ class GuildMemberManager extends BaseManager {
         return;
       }
       if (!query && !user_ids) query = '';
-      if (nonce.length > 32) throw new RangeError('FETCH_NONCE_LENGTH', 32);
+      if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
