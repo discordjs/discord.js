@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { Error, TypeError } = require('../errors');
+const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
@@ -231,7 +231,7 @@ class GuildMemberManager extends BaseManager {
     user: user_ids,
     query,
     time = 120e3,
-    nonce = this.guild.id,
+    nonce = Date.now().toString(16),
   } = {}) {
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
@@ -239,6 +239,7 @@ class GuildMemberManager extends BaseManager {
         return;
       }
       if (!query && !user_ids) query = '';
+      if (nonce.length > 32) throw new RangeError('FETCH_NONCE_LENGTH', 32);
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -246,7 +247,7 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
-          nonce: nonce.substring(0, 32),
+          nonce,
           limit,
         },
       });
