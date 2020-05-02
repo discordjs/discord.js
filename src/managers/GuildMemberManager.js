@@ -77,7 +77,7 @@ class GuildMemberManager extends BaseManager {
    * @property {number} [limit=0] Maximum number of members to request
    * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
-   * @property {?string} nonce Nonce for this request (default to guild ID)
+   * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
    */
 
   /**
