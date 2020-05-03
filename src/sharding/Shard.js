@@ -138,6 +138,7 @@ class Shard extends EventEmitter {
         this.off('ready', onReady);
         this.off('disconnect', onDisconnect);
         this.off('death', onDeath);
+        this.off('parentDeath', onParentDeath);
       };
 
       const onReady = () => {
@@ -155,6 +156,11 @@ class Shard extends EventEmitter {
         reject(new Error('SHARDING_READY_DIED', this.id));
       };
 
+      const onParentDeath = () => {
+        cleanup();
+        reject(new Error('SHARDING_READY_PARENT_DIED', this.id));
+      };
+
       const onTimeout = () => {
         cleanup();
         reject(new Error('SHARDING_READY_TIMEOUT', this.id));
@@ -164,6 +170,7 @@ class Shard extends EventEmitter {
       this.once('ready', onReady);
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
+      this.once('parentDeath', onParentDeath);
     });
     return this.process || this.worker;
   }
@@ -378,6 +385,21 @@ class Shard extends EventEmitter {
 
     if (respawn) this.spawn().catch(err => this.emit('error', err));
   }
+
+  /**
+   * Handles the disconnect event from the parent process.
+   * @param {*} message Message received
+   * @private
+   */
+  _handleDisconnect(message) {
+    if (message) {
+      // Checks if the process is not connected to the parent process, and that the PID is 1.
+      if (!this.process.connected && this.process.pid === 1) {
+        this.emit('parentDeath', this.process || this.worker);
+        this.kill();
+      }
+    }
+  };
 }
 
 module.exports = Shard;
