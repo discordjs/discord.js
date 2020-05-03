@@ -1886,6 +1886,7 @@ declare module 'discord.js' {
     public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
     public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
     public prune(options?: GuildPruneMembersOptions): Promise<number>;
+    public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
     public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
@@ -2549,6 +2550,12 @@ declare module 'discord.js' {
     days?: number;
     dry?: boolean;
     reason?: string;
+  }
+
+  interface GuildSearchMembersOptions {
+    query: string;
+    limit?: number;
+    cache?: boolean;
   }
 
   interface HTTPOptions {

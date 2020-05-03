@@ -128,6 +128,23 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
+   * Search for members in the guild based on a query
+   * @param {Object} options Search options
+   * @property {string} options.query Members whose usernames or nicknames that start with
+   * @property {number} [options.limit=1] Maximum number of members to search
+   * @property {boolean} [options.cache=true] Whether or not to cache the fetched member(s)
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
+   */
+  search({ query, limit = 1, cache = true } = {}) {
+    return this.client.api
+      .guilds(this.guild.id)
+      .members.search.get({ query: { query, limit } })
+      .then(members =>
+        members.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection()),
+      );
+  }
+
+  /**
    * Prunes members from the guild based on how long they have been inactive.
    * <info>It's recommended to set options.count to `false` for large guilds.</info>
    * @param {Object} [options] Prune options
