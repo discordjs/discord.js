@@ -128,7 +128,7 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
-   * Search for members in the guild based on a query
+   * Search for members in the guild based on a query.
    * @param {Object} options Search options
    * @property {string} options.query Members whose usernames or nicknames that start with
    * @property {number} [options.limit=1] Maximum number of members to search
