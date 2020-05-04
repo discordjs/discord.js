@@ -81,7 +81,7 @@ exports.DefaultOptions = {
   http: {
     version: 7,
     api: 'https://discord.com/api',
-    cdn: 'https://cdn.discord.com',
+    cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
   },
 };
