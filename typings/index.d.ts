@@ -190,11 +190,14 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on<K extends keyof ClientEvents, S extends K | string>(event: S, listener: (...args: S extends K ? ClientEvents[K] : any[]) => void): this;
+    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public on<S extends string>(event: Exclude<S, keyof ClientEvents>, listener: (...args: any[]) => void): this;
 
-    public once<K extends keyof ClientEvents, S extends K | string>(event: S, listener: (...args: S extends K ? ClientEvents[K] : any[]) => void): this;
+    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public once<S extends string>(event: Exclude<S, keyof ClientEvents>, listener: (...args: any[]) => void): this;
 
-    public emit<K extends keyof ClientEvents, S extends K | string>(event: S, ...args: S extends K ? ClientEvents[K] : any[]): boolean;
+    public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+    public emit<S extends string>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
   }
 
   export class ClientApplication extends Base {
