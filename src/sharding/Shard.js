@@ -118,7 +118,7 @@ class Shard extends EventEmitter {
         })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener)
-        .on('disconnect', this._handleDisconnect({ parentProcessDeath: true }));
+        .on('disconnect', this._handleDisconnect.bind({ parentProcessDisconnect: true }));
     } else if (this.manager.mode === 'worker') {
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
@@ -402,7 +402,7 @@ class Shard extends EventEmitter {
      */
     if (message) {
       // Checks if the process is not connected to the parent process, and that the PID is 1.
-      if (message.parentProcessDeath && this.process && !this.process.connected && this.process.pid === 1) {
+      if (message.parentProcessDisconnect && this.process && !this.process.connected && this.process.pid === 1) {
         this.emit('parentDeath', this.process);
         // This will kill the child process/worker, as there is no parent process.
         this.kill();
