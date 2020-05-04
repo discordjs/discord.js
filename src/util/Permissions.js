@@ -80,7 +80,7 @@ class Permissions extends BitField {
  * * `MANAGE_WEBHOOKS`
  * * `MANAGE_EMOJIS`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/topics/permissions}
+ * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
 Permissions.FLAGS = {
   CREATE_INSTANT_INVITE: 1 << 0,

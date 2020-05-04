@@ -85,7 +85,7 @@ class Webhook {
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {DisableMentionType} [disableMentions=this.client.options.disableMentions] Whether or not all mentions or
    * everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|string[]} [files] Files to send with the message
@@ -107,7 +107,7 @@ class Webhook {
    * @example
    * // Send a remote file
    * webhook.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://cdn.discord.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
    * })
    *   .then(console.log)
    *   .catch(console.error);
