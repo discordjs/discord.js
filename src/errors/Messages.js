@@ -99,6 +99,8 @@ const Messages = {
 
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
+
+  MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

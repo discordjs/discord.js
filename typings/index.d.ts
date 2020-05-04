@@ -2200,7 +2200,11 @@ declare module 'discord.js' {
     guildMemberAdd: [GuildMember | PartialGuildMember];
     guildMemberAvailable: [GuildMember | PartialGuildMember];
     guildMemberRemove: [GuildMember | PartialGuildMember];
-    guildMembersChunk: [Collection<Snowflake, GuildMember | PartialGuildMember>, Guild];
+    guildMembersChunk: [
+      Collection<Snowflake, GuildMember | PartialGuildMember>,
+      Guild,
+      { count: number; index: number; nonce: string | undefined },
+    ];
     guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
     guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember | PartialGuildMember];
     guildUpdate: [Guild, Guild];
@@ -2390,6 +2394,7 @@ declare module 'discord.js' {
     limit?: number;
     withPresences?: boolean;
     time?: number;
+    nonce?: string;
   }
 
   interface FileOptions {
