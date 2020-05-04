@@ -402,7 +402,7 @@ class Shard extends EventEmitter {
      */
     if (message) {
       // Checks if the process is not connected to the parent process, and that the PID is 1.
-      if (message.parentProcessDisconnect && this.process && !this.process.connected && this.process.pid === 1) {
+      if (message.parentProcessDisconnect && this.process && this.process.ppid === 1) {
         this.emit('parentDeath', this.process);
         // This will kill the child process/worker, as there is no parent process.
         this.kill();
