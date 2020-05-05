@@ -496,6 +496,11 @@ class Message extends Base {
    * message.delete({ timeout: 5000 })
    *   .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
    *   .catch(console.error);
+   * @example
+   * // Delete a message after a short delay
+   * message.delete({ timeout: 5000 })
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username} after a delay`))
+   *   .catch(console.error)
    */
   delete(options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
