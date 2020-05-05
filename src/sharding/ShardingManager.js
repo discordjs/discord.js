@@ -38,6 +38,7 @@ class ShardingManager extends EventEmitter {
    * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
    * (only available when using the `process` mode)
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
+   * @param {number} [options.timeout] Timeout for worker threads that have disconnected before closing
    */
   constructor(file, options = {}) {
     super();
@@ -130,6 +131,12 @@ class ShardingManager extends EventEmitter {
      * @type {?string}
      */
     this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
+
+    /**
+     * Timeout before worker threads are closed due to a disconnect from the parent thread (in milliseconds).
+     * @type {number}
+     */
+    this.timeout = options.timeout ? options.timeout : 30000;
 
     /**
      * A collection of shards that this manager has spawned

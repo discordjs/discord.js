@@ -97,6 +97,14 @@ class Shard extends EventEmitter {
      * @private
      */
     this._exitListener = this._handleExit.bind(this, undefined);
+
+    /**
+     * Timeout for worker threads (if {@link ShardingManager#mode} is `worker`)
+     * @type {?number}
+     * @private
+     */
+
+    this.timeout = manager.timeout;
   }
 
   /**
@@ -123,6 +131,14 @@ class Shard extends EventEmitter {
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);
+
+      const parentPort = require('worker_threads').parentPort;
+      this.parentPort = parentPort;
+      setInterval(() => {
+        if (!parentPort) {
+          this._handleDisconnect({ _parentThreadDisconnect: true });
+        }
+      }, this.timeout);
     }
 
     /**
@@ -401,11 +417,20 @@ class Shard extends EventEmitter {
      * You can listen to this event if you wish.
      */
     if (message) {
-      // Checks if the process is not connected to the parent process, and that the PID is 1.
-      if (message.parentProcessDisconnect && this.process && this.process.ppid === 1) {
-        this.emit('parentDeath', this.process);
-        // This will kill the child process/worker, as there is no parent process.
-        this.kill();
+      if (this.process) {
+        // Checks if the process is not connected to the parent process, and that the PID is 1.
+        if (message.parentProcessDisconnect && this.process.ppid === 1) {
+          this.emit('parentDeath', this.process);
+          // This will kill the child process/worker, as there is no parent process.
+          this.kill();
+        }
+      }
+
+      if (this.worker) {
+        if (message._parentThreadDisconnect && !this.parentPort) {
+          this.emit('parentDeath', this.worker);
+          this.kill();
+        }
       }
     }
   }
