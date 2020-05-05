@@ -198,6 +198,12 @@ declare module 'discord.js' {
 
     public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
     public emit<S extends string>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
+
+    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public off<S extends string>(event: Exclude<S, keyof ClientEvents>, listener: (...args: any[]) => void): this;
+
+    public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
+    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
   }
 
   export class ClientApplication extends Base {
