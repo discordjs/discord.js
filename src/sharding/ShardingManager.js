@@ -20,7 +20,7 @@ const Util = require('../util/Util');
 class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
-   * "worker" to use [Worker threads][Worker threads](https://nodejs.org/api/worker_threads.html).
+   * "worker" to use [Worker threads](https://nodejs.org/api/worker_threads.html).
    * @typedef {Object} ShardingManagerMode
    */
 
