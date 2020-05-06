@@ -76,6 +76,12 @@ class Shard extends EventEmitter {
      * @type {?Worker}
      */
     this.worker = null;
+    
+    /**
+     * Parent port of the worker threads (if {@link ShardingManager#mode} is `worker`)
+     * @type (?number)
+     */
+    this.parentPort = null;
 
     /**
      * Ongoing promises for calls to {@link Shard#eval}, mapped by the `script` they were called with
