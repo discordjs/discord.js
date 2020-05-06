@@ -136,7 +136,7 @@ class Shard extends EventEmitter {
       this.parentPort = parentPort;
       setInterval(() => {
         if (!parentPort) {
-          this._handleDisconnect({ _parentThreadDisconnect: true });
+          this._handleDisconnect({ parentThreadDisconnect: true });
         }
       }, this.timeout);
     }
@@ -427,7 +427,7 @@ class Shard extends EventEmitter {
       }
 
       if (this.worker) {
-        if (message._parentThreadDisconnect && !this.parentPort) {
+        if (message.parentThreadDisconnect && !this.parentPort) {
           this.emit('parentDeath', this.worker);
           this.kill();
         }
