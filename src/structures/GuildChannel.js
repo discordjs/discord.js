@@ -41,7 +41,7 @@ class GuildChannel extends Channel {
      * The ID of the category parent of this channel
      * @type {?Snowflake}
      */
-    this.parentID = data.parent_id;
+    this.categoryID = data.parent_id;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -279,7 +279,7 @@ class GuildChannel extends Channel {
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */
-  lockPermissions() {
+  syncPermissions() {
     if (!this.parent) return Promise.reject(new TypeError('Could not find a parent to this guild channel.'));
     const permissionOverwrites = this.parent.permissionOverwrites.map(overwrite => ({
       deny: overwrite.deny,
@@ -333,7 +333,7 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *   .catch(console.error);
    */
-  setName(name, reason) {
+  rename(name, reason) {
     return this.edit({ name }, reason);
   }
 
@@ -348,7 +348,7 @@ class GuildChannel extends Channel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, relative) {
+  move(position, relative) {
     return this.guild.setChannelPosition(this, position, relative).then(() => this);
   }
 
@@ -363,7 +363,7 @@ class GuildChannel extends Channel {
    *   .then(updated => console.log(`Set the category of ${updated.name} to ${updated.parent.name}`))
    *   .catch(console.error);
    */
-  setParent(parent, reason) {
+  setCategory(parent, reason) {
     parent = this.client.resolver.resolveChannelID(parent);
     return this.edit({ parent }, reason);
   }
@@ -534,7 +534,7 @@ class GuildChannel extends Channel {
    * @type {boolean}
    * @readonly
    */
-  get deletable() {
+  get canDelete() {
     return this.id !== this.guild.id &&
       this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS);
   }
@@ -544,7 +544,7 @@ class GuildChannel extends Channel {
    * @type {boolean}
    * @readonly
    */
-  get manageable() {
+  get canManage() {
     if (this.client.user.id === this.guild.ownerID) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
