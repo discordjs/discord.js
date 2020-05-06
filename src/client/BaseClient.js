@@ -139,6 +139,26 @@ class BaseClient extends EventEmitter {
     this._immediates.delete(immediate);
   }
 
+  /**
+   * Increments max listeners by one, if they are not zero.
+   * @private
+   */
+  incrementMaxListeners() {
+    if (this.getMaxListeners() !== 0) {
+      this.setMaxListeners(this.getMaxListeners() + 1);
+    }
+  }
+
+  /**
+   * Decrements max listeners by one, if they are not zero.
+   * @private
+   */
+  decrementMaxListeners() {
+    if (this.getMaxListeners() !== 0) {
+      this.setMaxListeners(this.getMaxListeners() - 1);
+    }
+  }
+
   toJSON(...props) {
     return Util.flatten(this, { domain: false }, ...props);
   }

@@ -96,6 +96,8 @@ declare module 'discord.js' {
     private _immediates: Set<NodeJS.Immediate>;
     private readonly api: object;
     private rest: object;
+    private decrementMaxListeners(): void;
+    private incrementMaxListeners(): void;
 
     public options: ClientOptions;
     public clearInterval(interval: NodeJS.Timer): void;

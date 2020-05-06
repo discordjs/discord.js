@@ -42,7 +42,7 @@ class MessageCollector extends Collector {
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
 
-    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    this.client.incrementMaxListeners();
     this.client.on(Events.MESSAGE_CREATE, this.handleCollect);
     this.client.on(Events.MESSAGE_DELETE, this.handleDispose);
     this.client.on(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
@@ -55,7 +55,7 @@ class MessageCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_BULK_DELETE, bulkDeleteListener);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
-      if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+      this.client.decrementMaxListeners();
     });
   }
 
