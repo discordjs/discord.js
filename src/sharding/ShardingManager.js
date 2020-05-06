@@ -50,6 +50,7 @@ class ShardingManager extends EventEmitter {
         shardArgs: [],
         execArgv: [],
         token: process.env.DISCORD_TOKEN,
+        timeout: 30000
       },
       options,
     );
