@@ -126,7 +126,7 @@ class Shard extends EventEmitter {
         })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener)
-        .on('disconnect', this._handleDisconnect.bind({ parentProcessDisconnect: true }));
+        .on('disconnect', this._handleDisconnect.bind(this, { parentProcessDisconnect: true }));
     } else if (this.manager.mode === 'worker') {
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
