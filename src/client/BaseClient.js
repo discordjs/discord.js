@@ -144,8 +144,9 @@ class BaseClient extends EventEmitter {
    * @private
    */
   incrementMaxListeners() {
-    if (this.getMaxListeners() !== 0) {
-      this.setMaxListeners(this.getMaxListeners() + 1);
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners + 1);
     }
   }
 
@@ -154,8 +155,9 @@ class BaseClient extends EventEmitter {
    * @private
    */
   decrementMaxListeners() {
-    if (this.getMaxListeners() !== 0) {
-      this.setMaxListeners(this.getMaxListeners() - 1);
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners - 1);
     }
   }
 
