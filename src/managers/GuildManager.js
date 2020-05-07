@@ -196,15 +196,18 @@ class GuildManager extends BaseManager {
 
           const handleGuild = guild => {
             if (guild.id === data.id) {
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               this.client.clearTimeout(timeout);
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+              this.client.decrementMaxListeners();
               resolve(guild);
             }
           };
+          this.client.incrementMaxListeners();
           this.client.on(Events.GUILD_CREATE, handleGuild);
 
           const timeout = this.client.setTimeout(() => {
             this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+            this.client.decrementMaxListeners();
             resolve(this.client.guilds.add(data));
           }, 10000);
           return undefined;
