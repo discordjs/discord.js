@@ -88,7 +88,7 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
-    if (typeof content !== 'string') return;
+    if (typeof content !== 'string') return content;
 
     const disableMentions =
       typeof this.options.disableMentions === 'undefined'
@@ -97,7 +97,7 @@ class APIMessage {
     if (disableMentions === 'all') {
       content = Util.removeMentions(content);
     } else if (disableMentions === 'everyone') {
-      content = (content).replace(/@([^<>@ ]*)/gmsu, (match, target) => {
+      content = content.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
         if (target.match(/^[&!]?\d+$/)) {
           return `@${target}`;
         } else {
