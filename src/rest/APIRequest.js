@@ -18,9 +18,9 @@ class APIRequest {
 
     let queryString = '';
     if (options.query) {
-      const query = (options.query instanceof URLSearchParams ? [...options.query] : Object.entries(options.query))
-        // Filter out undefined query options
-        .filter(([, value]) => ![null, 'null', 'undefined'].includes(value) && typeof value !== 'undefined');
+      const query = Object.entries(options.query)
+        .filter(([, value]) => ![null, 'null', 'undefined'].includes(value) && typeof value !== 'undefined')
+        .flatMap(([key, value]) => (Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]));
       queryString = new URLSearchParams(query).toString();
     }
     this.path = `${path}${queryString && `?${queryString}`}`;
