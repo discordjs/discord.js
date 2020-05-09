@@ -83,6 +83,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * Contains the rate limit queue and metadata
+     * @name WebSocketShard#ratelimit
      * @type {Object}
      * @private
      */
@@ -98,6 +99,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The WebSocket connection for the current shard
+     * @name WebSocketShard#connection
      * @type {?WebSocket}
      * @private
      */
@@ -110,6 +112,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The compression to use
+     * @name WebSocketShard#inflate
      * @type {?Inflate}
      * @private
      */
@@ -117,6 +120,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The HELLO timeout
+     * @name WebSocketShard#helloTimeout
      * @type {?NodeJS.Timer}
      * @private
      */
@@ -124,6 +128,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * If the manager attached its event handlers on the shard
+     * @name WebSocketShard#eventsAttached
      * @type {boolean}
      * @private
      */
@@ -131,6 +136,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * A set of guild IDs this shard expects to receive
+     * @name WebSocketShard#expectedGuilds
      * @type {?Set<string>}
      * @private
      */
@@ -138,6 +144,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The ready timeout
+     * @name WebSocketShard#readyTimeout
      * @type {?NodeJS.Timer}
      * @private
      */
@@ -145,6 +152,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * Time when the WebSocket connection was opened
+     * @name WebSocketShard#connectedAt
      * @type {number}
      * @private
      */
