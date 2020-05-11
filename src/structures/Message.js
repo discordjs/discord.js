@@ -427,7 +427,7 @@ class Message extends Base {
   }
 
   /**
-   * Crossposts the message.
+   * Publishes a message in an announcement channel to all channels following it.
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
