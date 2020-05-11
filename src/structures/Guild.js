@@ -8,6 +8,7 @@ const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
+
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
@@ -312,11 +313,14 @@ class Guild extends Base {
      */
     this.vanityURLCode = data.vanity_url_code;
 
+    /* eslint-disable max-len */
     /**
      * The use count of the vanity URL code of the guild, if any
+     * <info>You will need to fetch the guild using {@link Guild#fetchVanityCode} if you want to receive this parameter</info>
      * @type {?number}
      */
     this.vanityURLUses = null;
+    /* eslint-enable max-len */
 
     /**
      * The description of the guild, if any
