@@ -468,19 +468,20 @@ class Message extends Base {
   react(emoji) {
     emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
-
     return this.client.api
       .channels(this.channel.id)
       .messages(this.id)
       .reactions(emoji, '@me')
       .put()
-      .then(() =>
-        this.reactions.add({
+      .then(() => {
+        const reaction = this.reactions.add({
           emoji: Util.parseEmoji(emoji),
           count: this.partial ? null : 0,
           me: true,
-        }),
-      );
+        });
+        reaction._add(this.client.user);
+        return reaction;
+      });
   }
 
   /**
