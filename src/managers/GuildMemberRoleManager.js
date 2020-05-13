@@ -94,7 +94,6 @@ class GuildMemberRoleManager {
           'INVALID_TYPE',
           'roles',
           'Role, Snowflake or Array or Collection of Roles or Snowflakes',
-          true,
         );
       }
 
