@@ -476,12 +476,11 @@ class Message extends Base {
       .put()
       .then(
         () =>
-          this.client.actions.MessageReactionAdd.handle({
-            user: this.client.user,
-            channel: this.channel,
-            message: this,
+          this.reactions.add({
             emoji: Util.parseEmoji(emoji),
-          }).reaction,
+            count: this.partial ? null : 0,
+            me: true,
+          }),
       );
   }
 
