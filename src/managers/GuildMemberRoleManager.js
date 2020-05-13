@@ -90,11 +90,7 @@ class GuildMemberRoleManager {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        throw new TypeError(
-          'INVALID_TYPE',
-          'roles',
-          'Role, Snowflake or Array or Collection of Roles or Snowflakes',
-        );
+        throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles.id].put({ reason });
