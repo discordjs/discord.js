@@ -474,8 +474,8 @@ class Message extends Base {
       .messages(this.id)
       .reactions(emoji, '@me')
       .put()
-      .then(
-        () => this.reactions.add({
+      .then(() =>
+        this.reactions.add({
           emoji: Util.parseEmoji(emoji),
           count: this.partial ? null : 0,
           me: true,
