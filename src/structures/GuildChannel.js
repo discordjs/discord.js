@@ -227,7 +227,7 @@ class GuildChannel extends Channel {
    */
   updateOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
+    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const existing = this.permissionOverwrites.get(userOrRole.id);
     if (existing) return existing.update(options, reason).then(() => this);
@@ -250,7 +250,7 @@ class GuildChannel extends Channel {
    */
   createOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
+    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const type = userOrRole instanceof Role ? 'role' : 'member';
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
