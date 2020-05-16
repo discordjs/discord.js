@@ -2571,7 +2571,7 @@ declare module 'discord.js' {
   interface ImageURLOptions {
     format?: AllowedImageFormat;
     size?: ImageSize;
-    dynamic:boolean;
+    dynamic?:boolean;
   }
 
   interface IntegrationData {
