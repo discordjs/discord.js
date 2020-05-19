@@ -1633,7 +1633,7 @@ declare module 'discord.js' {
     constructor(connection: VoiceConnection);
     public createStream(
       user: UserResolvable,
-      options?: { mode?: 'opus' | 'pcm'; end?: 'silence' | 'manual' },
+      options?: { mode?: 'opus' | 'pcm'; channels?: number; rate?: number; end?: 'silence' | 'manual' },
     ): Readable;
 
     public on(event: 'debug', listener: (error: Error | string) => void): this;
