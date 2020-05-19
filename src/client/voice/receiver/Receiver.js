@@ -31,6 +31,8 @@ class VoiceReceiver extends EventEmitter {
    * @property {string} [mode='opus'] The mode for audio output. This defaults to opus, meaning discord.js won't decode
    * the packets for you. You can set this to 'pcm' so that the stream's output will be 16-bit little-endian stereo
    * audio
+   * @property {number} [channels=2] The number of channels in the output stream for pcm mode. Defaults to 2 for stereo.
+   * @property {number} [rate=48000] The audio sample rate (in Hz) of the output stream for pcm mode. Defaults to 48000.
    * @property {string} [end='silence'] When the stream should be destroyed. If `silence`, this will be when the user
    * stops talking. Otherwise, if `manual`, this should be handled by you.
    */
@@ -42,12 +44,12 @@ class VoiceReceiver extends EventEmitter {
    * @param {ReceiveStreamOptions} options Options.
    * @returns {ReadableStream}
    */
-  createStream(user, { mode = 'opus', end = 'silence' } = {}) {
+  createStream(user, { mode = 'opus', end = 'silence', channels = 2, rate = 48000 } = {}) {
     user = this.connection.client.users.resolve(user);
     if (!user) throw new Error('VOICE_USER_MISSING');
     const stream = this.packets.makeStream(user.id, end);
     if (mode === 'pcm') {
-      const decoder = new prism.opus.Decoder({ channels: 2, rate: 48000, frameSize: 960 });
+      const decoder = new prism.opus.Decoder({ channels: channels, rate: rate, frameSize: 960 });
       stream.pipe(decoder);
       return decoder;
     }
