@@ -191,7 +191,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: typeof content === 'string' ? allowedMentions : null,
+      allowed_mentions: typeof content === 'string' ? allowedMentions : undefined,
       flags,
     };
     return this;
