@@ -49,7 +49,7 @@ class VoiceReceiver extends EventEmitter {
     if (!user) throw new Error('VOICE_USER_MISSING');
     const stream = this.packets.makeStream(user.id, end);
     if (mode === 'pcm') {
-      const decoder = new prism.opus.Decoder({ channels: channels, rate: rate, frameSize: 960 });
+      const decoder = new prism.opus.Decoder({ channels, rate, frameSize: 960 });
       stream.pipe(decoder);
       return decoder;
     }
