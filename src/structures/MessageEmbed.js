@@ -62,7 +62,7 @@ class MessageEmbed {
     this.timestamp = data.timestamp ? new Date(data.timestamp).getTime() : null;
 
     /**
-     * Represents a field of a MessagEmbed
+     * Represents a field of a MessageEmbed
      * @typedef {Object} EmbedField
      * @property {string} name The name of this field
      * @property {string} value The value of this field
