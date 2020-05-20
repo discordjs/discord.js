@@ -62,6 +62,7 @@ class MessageEmbed {
     this.timestamp = data.timestamp ? new Date(data.timestamp).getTime() : null;
 
     /**
+     * Represents a field of a MessagEmbed
      * @typedef {Object} EmbedField
      * @property {string} name The name of this field
      * @property {string} value The value of this field
@@ -78,6 +79,7 @@ class MessageEmbed {
     }
 
     /**
+     * Represents thumbnail of a MessageEmbed
      * @typedef {Object} MessageEmbedThumbnail
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
@@ -99,6 +101,7 @@ class MessageEmbed {
       : null;
 
     /**
+     * Represents the image of a MessageEmbed
      * @typedef {Object} MessageEmbedImage
      * @property {string} url URL for this image
      * @property {string} proxyURL ProxyURL for this image
@@ -120,6 +123,7 @@ class MessageEmbed {
       : null;
 
     /**
+     * Represents the video of a MessageEmbed
      * @typedef {Object} MessageEmbedVideo
      * @property {string} url URL of this video
      * @property {string} proxyURL ProxyURL for this video
@@ -142,6 +146,7 @@ class MessageEmbed {
       : null;
 
     /**
+     * Represents the author field of a MessageEmbed
      * @typedef {Object} MessageEmbedAuthor
      * @property {string} name The name of this author
      * @property {string} url URL of this author
@@ -163,6 +168,7 @@ class MessageEmbed {
       : null;
 
     /**
+     * Represents the provider of a MessageEmbed
      * @typedef {Object} MessageEmbedProvider
      * @property {string} name The name of this provider
      * @property {string} url URL of this provider
@@ -180,6 +186,7 @@ class MessageEmbed {
       : null;
 
     /**
+     * Represents the footer field of a MessageEmbed
      * @typedef {Object} MessageEmbedFooter
      * @property {string} text The text of this footer
      * @property {string} iconURL URL of the icon for this footer
