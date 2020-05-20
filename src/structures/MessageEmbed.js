@@ -79,7 +79,7 @@ class MessageEmbed {
     }
 
     /**
-     * Represents thumbnail of a MessageEmbed
+     * Represents the thumbnail of a MessageEmbed
      * @typedef {Object} MessageEmbedThumbnail
      * @property {string} url URL for this thumbnail
      * @property {string} proxyURL ProxyURL for this thumbnail
