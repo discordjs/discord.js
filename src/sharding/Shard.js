@@ -109,7 +109,6 @@ class Shard extends EventEmitter {
      * @type {?number}
      * @private
      */
-
     this.timeout = manager.timeout;
   }
 
