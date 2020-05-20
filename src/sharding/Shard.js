@@ -79,7 +79,7 @@ class Shard extends EventEmitter {
 
     /**
      * Parent port of the worker threads (if {@link ShardingManager#mode} is `worker`)
-     * @type (?number)
+     * @type {?number}
      */
     this.parentPort = null;
 
