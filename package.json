@@ -47,7 +47,7 @@
   },
   "peerDependencies": {
     "bufferutil": "^4.0.1",
-    "erlpack": "discord/erlpack",
+    "erlpack": "discordapp/erlpack",
     "libsodium-wrappers": "^0.7.6",
     "sodium": "^3.0.2",
     "utf-8-validate": "^5.0.2",
