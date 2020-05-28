@@ -223,7 +223,7 @@ class Guild extends Base {
     this.premiumTier = data.premium_tier;
 
     /**
-     * The total number of users currently boosting this server
+     * The total number of boosts for this server
      * @type {?number}
      * @name Guild#premiumSubscriptionCount
      */
