@@ -10,14 +10,15 @@ const Permissions = require('../util/Permissions');
  * @extends {BaseGuildEmoji}
  */
 class GuildEmoji extends BaseGuildEmoji {
-  /**
-   * @name GuildEmoji
-   * @kind constructor
-   * @memberof GuildEmoji
-   * @param {Client} client The instantiating client
-   * @param {Object} data The data for the guild emoji
-   * @param {Guild} guild The guild the guild emoji is part of
-   */
+  constructor(client, data, guild) {
+    super(client, data, guild);
+
+    /**
+     * The user who created this emoji
+     * @type {User|null}
+     */
+    this.author = null;
+  }
 
   /**
    * The guild this emoji is part of
@@ -67,7 +68,7 @@ class GuildEmoji extends BaseGuildEmoji {
       .guilds(this.guild.id)
       .emojis(this.id)
       .get()
-      .then(emoji => this.client.users.add(emoji.user));
+      .then(emoji => this._patch(emoji) || this.author);
   }
 
   /**
