@@ -15,7 +15,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
     /**
      * The user who created this emoji
-     * @type {User|null}
+     * @type {?User}
      */
     this.author = null;
   }
