@@ -46,7 +46,7 @@ class GuildChannelManager extends BaseManager {
    * @memberof GuildChannelManager
    * @instance
    * @param {GuildChannelResolvable} channel The GuildChannel resolvable to resolve
-   * @returns {?Channel}
+   * @returns {?GuildChannel}
    */
 
   /**
