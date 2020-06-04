@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: discord.js discord server
+  - name: Discord server
     url: https://discord.gg/bRCvFy9
-    about: Please use this Discord Server to ask questions and get support. We don't typically answer questions here and they will likely be closed and redirected to the Discord server.
+    about: Have questions or need support? Please go to the Discord server, as issues that are just support-related will be closed and redirected there.

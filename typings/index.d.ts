@@ -96,6 +96,8 @@ declare module 'discord.js' {
     private _immediates: Set<NodeJS.Immediate>;
     private readonly api: object;
     private rest: object;
+    private decrementMaxListeners(): void;
+    private incrementMaxListeners(): void;
 
     public options: ClientOptions;
     public clearInterval(interval: NodeJS.Timer): void;
@@ -555,7 +557,7 @@ declare module 'discord.js' {
     public httpStatus: number;
   }
 
-  export class DMChannel extends TextBasedChannel(Channel) {
+  export class DMChannel extends TextBasedChannel(Channel, ['bulkDelete']) {
     constructor(client: Client, data?: object);
     public messages: MessageManager;
     public recipient: User;
@@ -588,6 +590,8 @@ declare module 'discord.js' {
     public afkChannelID: Snowflake | null;
     public afkTimeout: number;
     public applicationID: Snowflake | null;
+    public approximateMemberCount?: number;
+    public approximatePresenceCount?: number;
     public available: boolean;
     public banner: string | null;
     public channels: GuildChannelManager;
@@ -634,6 +638,7 @@ declare module 'discord.js' {
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelID: Snowflake | null;
     public vanityURLCode: string | null;
+    public vanityURLUses: number | null;
     public verificationLevel: VerificationLevel;
     public readonly verified: boolean;
     public readonly voice: VoiceState | null;
@@ -656,6 +661,7 @@ declare module 'discord.js' {
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchVanityCode(): Promise<string>;
+    public fetchVanityData(): Promise<{ code: string; uses: number }>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public fetchWidget(): Promise<GuildWidget>;
@@ -1474,10 +1480,10 @@ declare module 'discord.js' {
     public discriminator: string;
     public readonly defaultAvatarURL: string;
     public readonly dmChannel: DMChannel;
-    public flags: Readonly<UserFlags>;
+    public flags?: Readonly<UserFlags>;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
-    public locale: string;
+    public locale?: string;
     public readonly partial: false;
     public readonly presence: Presence;
     public system?: boolean;
@@ -1489,6 +1495,7 @@ declare module 'discord.js' {
     public displayAvatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string;
     public equals(user: User): boolean;
     public fetch(): Promise<User>;
+    public fetchFlags(): Promise<UserFlags>;
     public toString(): string;
     public typingDurationIn(channel: ChannelResolvable): number;
     public typingIn(channel: ChannelResolvable): boolean;
@@ -1592,7 +1599,6 @@ declare module 'discord.js' {
     private reconnect(token: string, endpoint: string): void;
     private sendVoiceStateUpdate(options: object): Promise<Shard>;
     private setSessionID(sessionID: string): void;
-    private setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
     private setTokenAndEndpoint(token: string, endpoint: string): void;
     private updateChannel(channel: VoiceChannel): void;
 
@@ -1607,6 +1613,7 @@ declare module 'discord.js' {
     public voiceManager: ClientVoiceManager;
     public disconnect(): void;
     public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
+    public setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 
     public on(event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting', listener: () => void): this;
     public on(event: 'debug', listener: (message: string) => void): this;
@@ -1975,7 +1982,10 @@ declare module 'discord.js' {
 
   type Constructable<T> = new (...args: any[]) => T;
   function PartialTextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & PartialTextBasedChannelFields>;
-  function TextBasedChannel<T>(Base?: Constructable<T>): Constructable<T & TextBasedChannelFields>;
+  function TextBasedChannel<T, I extends keyof TextBasedChannelFields = never>(
+    Base?: Constructable<T>,
+    ignore?: I[],
+  ): Constructable<T & Omit<TextBasedChannelFields, I>>;
 
   interface PartialTextBasedChannelFields {
     lastMessageID: Snowflake | null;
@@ -2196,7 +2206,11 @@ declare module 'discord.js' {
     guildMemberAdd: [GuildMember | PartialGuildMember];
     guildMemberAvailable: [GuildMember | PartialGuildMember];
     guildMemberRemove: [GuildMember | PartialGuildMember];
-    guildMembersChunk: [Collection<Snowflake, GuildMember | PartialGuildMember>, Guild];
+    guildMembersChunk: [
+      Collection<Snowflake, GuildMember | PartialGuildMember>,
+      Guild,
+      { count: number; index: number; nonce: string | undefined },
+    ];
     guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
     guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember | PartialGuildMember];
     guildUpdate: [Guild, Guild];
@@ -2386,6 +2400,7 @@ declare module 'discord.js' {
     limit?: number;
     withPresences?: boolean;
     time?: number;
+    nonce?: string;
   }
 
   interface FileOptions {

@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { Error, TypeError } = require('../errors');
+const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
@@ -77,6 +77,7 @@ class GuildMemberManager extends BaseManager {
    * @property {number} [limit=0] Maximum number of members to request
    * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
+   * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
    */
 
   /**
@@ -224,13 +225,21 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3 } = {}) {
+  _fetchMany({
+    limit = 0,
+    withPresences: presences = false,
+    user: user_ids,
+    query,
+    time = 120e3,
+    nonce = Date.now().toString(16),
+  } = {}) {
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
         resolve(this.cache);
         return;
       }
       if (!query && !user_ids) query = '';
+      if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -238,33 +247,41 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
+          nonce,
           limit,
         },
       });
       const fetchedMembers = new Collection();
       const option = query || limit || presences || user_ids;
-      const handler = (members, guild) => {
-        if (guild.id !== this.guild.id) return;
+      let i = 0;
+      const handler = (members, _, chunk) => {
         timeout.refresh();
+        if (chunk.nonce !== nonce) return;
+        i++;
         for (const member of members.values()) {
           if (option) fetchedMembers.set(member.id, member);
         }
         if (
           this.guild.memberCount <= this.cache.size ||
           (option && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit)
+          (limit && fetchedMembers.size >= limit) ||
+          i === chunk.count
         ) {
-          this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+          this.client.clearTimeout(timeout);
+          this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+          this.client.decrementMaxListeners();
           let fetched = option ? fetchedMembers : this.cache;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
           resolve(fetched);
         }
       };
-      const timeout = this.guild.client.setTimeout(() => {
-        this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+      const timeout = this.client.setTimeout(() => {
+        this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+        this.client.decrementMaxListeners();
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, time);
-      this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
+      this.client.incrementMaxListeners();
+      this.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
     });
   }
 }
