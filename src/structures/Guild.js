@@ -336,7 +336,7 @@ class Guild extends Base {
     /* eslint-disable max-len */
     /**
      * The use count of the vanity URL code of the guild, if any
-     * <info>You will need to fetch the guild using {@link Guild#fetchVanityCode} if you want to receive this parameter</info>
+     * <info>You will need to fetch the guild using {@link Guild#fetchVanityData} if you want to receive this parameter</info>
      * @type {?number}
      */
     this.vanityURLUses = null;
