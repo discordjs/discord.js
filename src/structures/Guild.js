@@ -1453,7 +1453,6 @@ class Guild extends Base {
   }
 }
 
-
 Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
 
 Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
