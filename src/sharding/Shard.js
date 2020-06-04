@@ -140,7 +140,7 @@ class Shard extends EventEmitter {
       this.parentPort = require('worker_threads').parentPort;
 
       if (this.parentPort) {
-        this.manager.client.setInterval(() => {
+        this.setInterval(() => {
           this.parentPort = require('worker_threads').parentPort;
           if (!this.parentPort) {
             this._handleDisconnect({ parentThreadDisconnect: true });
