@@ -771,13 +771,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchVanityCode() {
-    if (!this.features.includes('VANITY_URL')) {
-      return Promise.reject(new Error('VANITY_URL'));
-    }
-    return this.client.api
-      .guilds(this.id, 'vanity-url')
-      .get()
-      .then(res => res.code);
+    return this.fetchVanityData().then(vanity => vanity.code);
   }
 
   /**
