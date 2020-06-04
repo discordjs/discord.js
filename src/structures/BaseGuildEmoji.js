@@ -51,8 +51,6 @@ class BaseGuildEmoji extends Emoji {
      */
     if (typeof data.available !== 'undefined') this.available = data.available;
 
-    if (typeof data.user !== 'undefined') this.author = this.client.users.add(data.user);
-
     if (data.roles) this._roles = data.roles;
   }
 }
