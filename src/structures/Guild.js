@@ -204,8 +204,8 @@ class Guild extends Base {
 
     /**
      * Whether embedded images are enabled on this guild
-     * @deprecated
      * @type {boolean}
+     * @deprecated
      */
     this.embedEnabled = data.embed_enabled;
 
@@ -249,9 +249,9 @@ class Guild extends Base {
 
     /**
      * The embed channel ID, if enabled
-     * @deprecated
      * @type {?string}
      * @name Guild#embedChannelID
+     * @deprecated
      */
     if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
 
@@ -527,9 +527,9 @@ class Guild extends Base {
 
   /**
    * Embed channel for this guild
-   * @deprecated
    * @type {?TextChannel}
    * @readonly
+   * @deprecated
    */
   get embedChannel() {
     return this.client.channels.cache.get(this.embedChannelID) || null;
@@ -1237,11 +1237,10 @@ class Guild extends Base {
   }
 
   /**
-   * Edits the guild's embed.
-   * @deprecated
    * @param {GuildWidgetData} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   setEmbed(embed, reason) {
     return this.client.api
