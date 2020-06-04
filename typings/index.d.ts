@@ -638,6 +638,7 @@ declare module 'discord.js' {
     public systemChannelFlags: Readonly<SystemChannelFlags>;
     public systemChannelID: Snowflake | null;
     public vanityURLCode: string | null;
+    public vanityURLUses: number | null;
     public verificationLevel: VerificationLevel;
     public readonly verified: boolean;
     public readonly voice: VoiceState | null;
@@ -660,6 +661,7 @@ declare module 'discord.js' {
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchVanityCode(): Promise<string>;
+    public fetchVanityData(): Promise<{ code: string; uses: number }>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
