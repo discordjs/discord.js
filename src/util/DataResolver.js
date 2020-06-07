@@ -88,6 +88,7 @@ class DataResolver {
   static async resolveFile(resource) {
     if (!browser && Buffer.isBuffer(resource)) return resource;
     if (browser && resource instanceof ArrayBuffer) return Util.convertToBuffer(resource);
+    if (browser && resource instanceof Blob) return resource;
     if (resource instanceof stream.Readable) return resource;
 
     if (typeof resource === 'string') {
