@@ -60,6 +60,7 @@ class VoiceState extends Base {
     this.streaming = data.self_stream || false;
     /**
      * Whether this member's camera is enabled
+     * @type {boolean}
      */
     this.video = data.self_video;
     /**
