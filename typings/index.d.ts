@@ -1672,7 +1672,7 @@ declare module 'discord.js' {
     public serverMute?: boolean;
     public sessionID?: string;
     public streaming: boolean;
-    public video: boolean;
+    public selfVideo: boolean;
     public readonly speaking: boolean | null;
 
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
