@@ -49,6 +49,11 @@ class VoiceState extends Base {
      */
     this.selfMute = data.self_mute;
     /**
+     * Whether this member's camera is enabled
+     * @type {boolean}
+     */
+    this.selfVideo = data.self_video;
+    /**
      * The session ID of this member's connection
      * @type {?string}
      */
@@ -58,11 +63,6 @@ class VoiceState extends Base {
      * @type {boolean}
      */
     this.streaming = data.self_stream || false;
-    /**
-     * Whether this member's camera is enabled
-     * @type {boolean}
-     */
-    this.video = data.self_video;
     /**
      * The ID of the voice channel that this member is in
      * @type {?Snowflake}
