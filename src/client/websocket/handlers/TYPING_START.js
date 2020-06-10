@@ -9,10 +9,7 @@ module.exports = (client, { d: data }) => {
 
   if (channel && user) {
     if (!textBasedChannelTypes.includes(channel.type)) {
-      client.emit(
-        Events.WARN,
-        `Discord sent a typing packet to a non text based channel (id: ${channel.id}, type: ${channel.type}).`,
-      );
+      client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
 
