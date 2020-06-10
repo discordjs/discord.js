@@ -1,4 +1,5 @@
 'use strict';
+
 const { Events } = require('../../../util/Constants');
 const textBasedChannelTypes = ['dm', 'text', 'news'];
 
