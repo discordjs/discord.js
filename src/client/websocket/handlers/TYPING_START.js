@@ -1,15 +1,18 @@
 'use strict';
-
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const user = client.users.cache.get(data.user_id);
   const timestamp = new Date(data.timestamp * 1000);
+  const textBasedChannelTypes = ['dm', 'text', 'news'];
 
   if (channel && user) {
-    if (channel.type === 'voice') {
-      client.emit(Events.WARN, `Discord sent a typing packet to a voice channel ${channel.id}`);
+    if (!textBasedChannelTypes.includes(channel.type)) {
+      client.emit(
+        Events.WARN,
+        `Discord sent a typing packet to a non text based channel (id: ${channel.id}, type: ${channel.type}).`,
+      );
       return;
     }
 
