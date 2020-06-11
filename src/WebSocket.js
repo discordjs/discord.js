@@ -5,8 +5,8 @@ const { browser } = require('./util/Constants');
 let erlpack;
 
 try {
-  erlpack = require('erlpack');
-  if (!erlpack.pack) erlpack = null;
+  { pack, unpack } = require('erlpack');
+  if (!pack) pack = null;
 } catch {} // eslint-disable-line no-empty
 
 let TextDecoder;
@@ -23,7 +23,7 @@ const ab = new TextDecoder();
 
 exports.encoding = erlpack ? 'etf' : 'json';
 
-exports.pack = erlpack ? erlpack.pack : JSON.stringify;
+exports.pack = pack ? pack : JSON.stringify;
 
 exports.unpack = (data, type) => {
   if (exports.encoding === 'json' || type === 'json') {
@@ -33,7 +33,7 @@ exports.unpack = (data, type) => {
     return JSON.parse(data);
   }
   if (!Buffer.isBuffer(data)) data = Buffer.from(new Uint8Array(data));
-  return erlpack.unpack(data);
+  return unpack(data);
 };
 
 exports.create = (gateway, query = {}, ...args) => {
