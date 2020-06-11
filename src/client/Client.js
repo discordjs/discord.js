@@ -135,7 +135,8 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in bot
+       * Authorization token for the logged in bot.
+       * Gets set to `process.env.DISCORD_TOKEN` when instantiating the client
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -195,9 +196,7 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * <info>If no token is provided and there hasn't been a connection yet, `process.env.DISCORD_TOKEN`
-   * will be used.</info>
-   * @param {string} [token] Token of the account to log in with
+   * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
