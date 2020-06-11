@@ -195,7 +195,8 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * If no token is provided and there hasn't been a connection yet, `process.env.DISCORD_TOKEN` will be used.
+   * <info>If no token is provided and there hasn't been a connection yet, `process.env.DISCORD_TOKEN`
+   * will be used.</info>
    * @param {string} [token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
