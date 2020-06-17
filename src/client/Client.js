@@ -202,7 +202,11 @@ class Client extends BaseClient {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
-    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    Object.defineProperty(this, "token", {
+      value: token.replace(/^(Bot|Bearer)\s*/i, ''),
+      writable: false
+    });
+    token = this.token
     this.emit(
       Events.DEBUG,
       `Provided token: ${token
@@ -210,7 +214,7 @@ class Client extends BaseClient {
         .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
         .join('.')}`,
     );
-
+    
     if (this.options.presence) {
       this.options.ws.presence = await this.presence._parse(this.options.presence);
     }
