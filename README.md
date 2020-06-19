@@ -57,7 +57,7 @@ For production bots, using @discordjs/opus should be considered a necessity, esp
 ### Optional packages
 
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
-- [erlpack](https://github.com/discordapp/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discordapp/erlpack`)
+- [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
   - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
   - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
