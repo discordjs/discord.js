@@ -56,34 +56,6 @@
     "tweetnacl": "^1.0.3",
     "ws": "^7.2.1"
   },
-  "peerDependencies": {
-    "bufferutil": "^4.0.1",
-    "erlpack": "discordapp/erlpack",
-    "libsodium-wrappers": "^0.7.6",
-    "sodium": "^3.0.2",
-    "utf-8-validate": "^5.0.2",
-    "zlib-sync": "^0.1.6"
-  },
-  "peerDependenciesMeta": {
-    "bufferutil": {
-      "optional": true
-    },
-    "erlpack": {
-      "optional": true
-    },
-    "libsodium-wrappers": {
-      "optional": true
-    },
-    "sodium": {
-      "optional": true
-    },
-    "utf-8-validate": {
-      "optional": true
-    },
-    "zlib-sync": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-angular": "^8.3.4",
