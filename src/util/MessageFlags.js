@@ -23,7 +23,7 @@ class MessageFlags extends BitField {}
  * * `SOURCE_MESSAGE_DELETED`
  * * `URGENT`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/resources/channel#message-object-message-flags}
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-flags}
  */
 MessageFlags.FLAGS = {
   CROSSPOSTED: 1 << 0,

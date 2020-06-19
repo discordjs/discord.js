@@ -30,7 +30,7 @@ class UserFlags extends BitField {}
  * * `VERIFIED_BOT`
  * * `VERIFIED_DEVELOPER`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/resources/user#user-object-user-flags}
+ * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
  */
 UserFlags.FLAGS = {
   DISCORD_EMPLOYEE: 1 << 0,

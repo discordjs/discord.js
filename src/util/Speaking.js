@@ -22,7 +22,7 @@ class Speaking extends BitField {}
  * * `SOUNDSHARE`
  * * `PRIORITY_SPEAKING`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/topics/voice-connections#speaking}
+ * @see {@link https://discord.com/developers/docs/topics/voice-connections#speaking}
  */
 Speaking.FLAGS = {
   SPEAKING: 1 << 0,

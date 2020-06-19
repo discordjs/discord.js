@@ -26,7 +26,7 @@ const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 /**
  * The WebSocket manager for this client.
  * <info>This class forwards raw dispatch events,
- * read more about it here {@link https://discordapp.com/developers/docs/topics/gateway}</info>
+ * read more about it here {@link https://discord.com/developers/docs/topics/gateway}</info>
  * @extends EventEmitter
  */
 class WebSocketManager extends EventEmitter {

@@ -57,7 +57,7 @@ class TextBasedChannel {
    * @property {string} [nonce=''] The nonce for the message
    * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {DisableMentionType} [disableMentions=this.client.options.disableMentions] Whether or not all mentions or
    * everyone/here mentions should be sanitized to prevent unexpected mentions
