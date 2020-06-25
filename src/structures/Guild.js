@@ -159,6 +159,7 @@ class Guild extends Base {
      * * ANIMATED_ICON
      * * BANNER
      * * COMMERCE
+     * * COMMUNITY
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
@@ -360,17 +361,21 @@ class Guild extends Base {
 
     /**
      * The ID of the rules channel for the guild
-     * <info>This is only available on guilds with the `PUBLIC` feature</info>
      * @type {?Snowflake}
      */
     this.rulesChannelID = data.rules_channel_id;
 
     /**
      * The ID of the public updates channel for the guild
-     * <info>This is only available on guilds with the `PUBLIC` feature</info>
      * @type {?Snowflake}
      */
     this.publicUpdatesChannelID = data.public_updates_channel_id;
+
+    /**
+     * The preferred locale of the guild, defaults to `en-US`
+     * @type {string}
+     */
+    this.preferredLocale = data.preferred_locale;
 
     if (data.channels) {
       this.channels.cache.clear();
@@ -564,7 +569,6 @@ class Guild extends Base {
 
   /**
    * Rules channel for this guild
-   * <info>This is only available on guilds with the `PUBLIC` feature</info>
    * @type {?TextChannel}
    * @readonly
    */
@@ -574,7 +578,6 @@ class Guild extends Base {
 
   /**
    * Public updates channel for this guild
-   * <info>This is only available on guilds with the `PUBLIC` feature</info>
    * @type {?TextChannel}
    * @readonly
    */
@@ -747,7 +750,7 @@ class Guild extends Base {
   }
 
   /**
-   * Obtains a guild preview for this guild from Discord, only available for public guilds.
+   * Obtains a guild preview for this guild from Discord, only available for community guilds.
    * @returns {Promise<GuildPreview>}
    */
   fetchPreview() {
@@ -949,6 +952,9 @@ class Guild extends Base {
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
+   * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
+   * @property {ChannelResolvable} [publicUpdatesChannel] The public updates channel of the guild
+   * @property {string} [preferredLocale] The preferred locale of the guild
    */
 
   /**
@@ -1001,6 +1007,13 @@ class Guild extends Base {
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
     }
+    if (typeof data.rulesChannel !== 'undefined') {
+      _data.rules_channel_id = this.client.channels.resolveID(data.rulesChannel);
+    }
+    if (typeof data.publicUpdatesChannel !== 'undefined') {
+      _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api
       .guilds(this.id)
       .patch({ data: _data, reason })
@@ -1186,6 +1199,51 @@ class Guild extends Base {
    */
   async setBanner(banner, reason) {
     return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+  }
+
+  /**
+   * Edits the rules channel of the guild.
+   * @param {ChannelResolvable} rulesChannel The new rules channel
+   * @param {string} [reason] Reason for changing the guild's rules channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild system channel
+   * guild.setRulesChannel(channel)
+   *  .then(updated => console.log(`Updated guild rules channel to ${guild.rulesChannel.name}`))
+   *  .catch(console.error);
+   */
+  setRulesChannel(rulesChannel, reason) {
+    return this.edit({ rulesChannel }, reason);
+  }
+
+  /**
+   * Edits the public updates channel of the guild.
+   * @param {ChannelResolvable} publicUpdatesChannel The new public updates channel
+   * @param {string} [reason] Reason for changing the guild's public updates channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild system channel
+   * guild.setPublicUpdatesChannel(channel)
+   *  .then(updated => console.log(`Updated guild public updates channel to ${guild.publicUpdatesChannel.name}`))
+   *  .catch(console.error);
+   */
+  setPublicUpdatesChannel(publicUpdatesChannel, reason) {
+    return this.edit({ publicUpdatesChannel }, reason);
+  }
+
+  /**
+   * Edits the preferred locale of the guild.
+   * @param {string} preferredLocale The new preferred locale of the guild
+   * @param {string} [reason] Reason for changing the guild's preferred locale
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild name
+   * guild.setPreferredLocale('en-US')
+   *  .then(updated => console.log(`Updated guild preferred locale to ${guild.preferredLocale}`))
+   *  .catch(console.error);
+   */
+  setPreferredLocale(preferredLocale, reason) {
+    return this.edit({ preferredLocale }, reason);
   }
 
   /**
