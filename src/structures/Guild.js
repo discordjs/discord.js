@@ -1207,7 +1207,7 @@ class Guild extends Base {
    * @param {string} [reason] Reason for changing the guild's rules channel
    * @returns {Promise<Guild>}
    * @example
-   * // Edit the guild system channel
+   * // Edit the guild rules channel
    * guild.setRulesChannel(channel)
    *  .then(updated => console.log(`Updated guild rules channel to ${guild.rulesChannel.name}`))
    *  .catch(console.error);
@@ -1222,7 +1222,7 @@ class Guild extends Base {
    * @param {string} [reason] Reason for changing the guild's public updates channel
    * @returns {Promise<Guild>}
    * @example
-   * // Edit the guild system channel
+   * // Edit the guild public updates channel
    * guild.setPublicUpdatesChannel(channel)
    *  .then(updated => console.log(`Updated guild public updates channel to ${guild.publicUpdatesChannel.name}`))
    *  .catch(console.error);
@@ -1237,7 +1237,7 @@ class Guild extends Base {
    * @param {string} [reason] Reason for changing the guild's preferred locale
    * @returns {Promise<Guild>}
    * @example
-   * // Edit the guild name
+   * // Edit the guild preferred locale
    * guild.setPreferredLocale('en-US')
    *  .then(updated => console.log(`Updated guild preferred locale to ${guild.preferredLocale}`))
    *  .catch(console.error);
