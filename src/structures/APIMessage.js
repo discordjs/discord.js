@@ -191,7 +191,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: typeof content === 'string' ? allowedMentions : undefined,
+      allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
       flags,
     };
     return this;
@@ -246,8 +246,8 @@ class APIMessage {
         data = { ...this.data, content: this.data.content[i] };
         opt = { ...this.options, content: this.data.content[i] };
       } else {
-        data = { content: this.data.content[i], tts: this.data.tts };
-        opt = { content: this.data.content[i], tts: this.data.tts };
+        data = { content: this.data.content[i], tts: this.data.tts, allowed_mentions: this.options.allowedMentions };
+        opt = { content: this.data.content[i], tts: this.data.tts, allowedMentions: this.options.allowedMentions };
       }
 
       const apiMessage = new APIMessage(this.target, opt);
