@@ -442,13 +442,15 @@ class Message extends Base {
 
   /**
    * Unpins this message from the channel's pinned messages.
+   * @param {Object} [options] Options for unpinning
+   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
    */
-  unpin() {
+  unpin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .delete()
+      .delete(options)
       .then(() => this);
   }
 
