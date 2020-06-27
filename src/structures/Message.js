@@ -431,6 +431,11 @@ class Message extends Base {
    * @param {Object} [options] Options for pinning
    * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
+   * @example
+   * // Pin a message with a reason
+   * message.pin({ reason: 'important'})
+   *   .then(console.log)
+   *   .catch(console.error)
    */
   pin(options) {
     return this.client.api
@@ -445,6 +450,11 @@ class Message extends Base {
    * @param {Object} [options] Options for unpinning
    * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
+   * @example
+   * // Unpin a message with a reason
+   * message.unpin({ reason: 'no longer relevant'})
+   *   .then(console.log)
+   *   .catch(console.error)
    */
   unpin(options) {
     return this.client.api
