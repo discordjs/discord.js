@@ -428,13 +428,15 @@ class Message extends Base {
 
   /**
    * Pins this message to the channel's pinned messages.
+   * @param {Object} [options] Options for pinning
+   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
    */
-  pin() {
+  pin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .put()
+      .put(options)
       .then(() => this);
   }
 
