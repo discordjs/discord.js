@@ -61,10 +61,11 @@ class DMChannel extends Channel {
 
   /**
    * Fetch this DMChannel.
+   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  fetch() {
-    return this.recipient.createDM();
+  fetch(forceFetch = false) {
+    return this.recipient.createDM(forceFetch);
   }
 
   /**
