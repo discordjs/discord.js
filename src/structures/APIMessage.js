@@ -178,16 +178,21 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     }
 
-    const allowedMentions =
-      Util.cloneObject(typeof this.options.allowedMentions === 'undefined'
+    let allowedMentions =
+      typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
-        : this.options.allowedMentions);
-    if (this.options.reply && allowedMentions) {
+        : this.options.allowedMentions;
+    if (this.options.reply) {
       const id = this.target.client.users.resolveID(this.options.reply);
-      const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
-      if (!parsed && !(allowedMentions.users && allowedMentions.users.includes(id))) {
-        if (!allowedMentions.users) allowedMentions.users = [];
-        allowedMentions.users.push(id);
+      if (allowedMentions) {
+        allowedMentions = Util.cloneObject(allowedMentions);
+        const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
+        if (!parsed && !(allowedMentions.users && allowedMentions.users.includes(id))) {
+          if (!allowedMentions.users) allowedMentions.users = [];
+          allowedMentions.users.push(id);
+        }
+      } else {
+        allowedMentions = { users: [id] };
       }
     }
 
