@@ -24,12 +24,11 @@ class Util {
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
 
-    props = Object.assign(
-      ...Object.keys(obj)
-        .filter(k => !k.startsWith('_'))
-        .map(k => ({ [k]: true })),
-      ...props,
-    );
+    const objProps = Object.keys(obj)
+      .filter(k => !k.startsWith('_'))
+      .map(k => ({ [k]: true }));
+
+    props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
     const out = {};
 
