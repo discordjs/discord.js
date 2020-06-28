@@ -179,9 +179,9 @@ class APIMessage {
     }
 
     const allowedMentions =
-      typeof this.options.allowedMentions === 'undefined'
+      Util.cloneObject(typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
-        : this.options.allowedMentions;
+        : this.options.allowedMentions);
     if (this.options.reply && allowedMentions) {
       const id = this.target.client.users.resolveID(this.options.reply);
       const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
