@@ -156,6 +156,10 @@ class GuildMemberRoleManager {
     clone.member._roles = [...this._roles.keyArray()];
     return clone;
   }
+
+  valueOf() {
+    return this.cache;
+  }
 }
 
 module.exports = GuildMemberRoleManager;
