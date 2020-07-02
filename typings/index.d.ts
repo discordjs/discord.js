@@ -2806,6 +2806,8 @@ declare module 'discord.js' {
 
   interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> {}
 
+  type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+
   interface PermissionOverwriteOptions {
     allow: PermissionResolvable;
     deny: PermissionResolvable;
