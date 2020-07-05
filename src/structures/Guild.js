@@ -750,7 +750,7 @@ class Guild extends Base {
   }
 
   /**
-   * Obtains a guild preview for this guild from Discord, only available for community guilds.
+   * Obtains a guild preview for this guild from Discord.
    * @returns {Promise<GuildPreview>}
    */
   fetchPreview() {
