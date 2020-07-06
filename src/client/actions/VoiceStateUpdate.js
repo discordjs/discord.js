@@ -1,8 +1,8 @@
 'use strict';
 
 const Action = require('./Action');
-const Structures = require('../../util/Structures');
 const { Events } = require('../../util/Constants');
+const Structures = require('../../util/Structures');
 
 class VoiceStateUpdate extends Action {
   handle(data) {
