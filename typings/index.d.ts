@@ -1477,7 +1477,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public discriminator: string;
     public readonly defaultAvatarURL: string;
-    public readonly dmChannel: DMChannel;
+    public readonly dmChannel: DMChannel | null;
     public flags?: Readonly<UserFlags>;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
