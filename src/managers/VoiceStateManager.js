@@ -8,7 +8,7 @@ const BaseManager = require('./BaseManager');
  */
 class VoiceStateManager extends BaseManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, 'VoiceState');
+    super(guild.client, iterable, { name: 'VoiceState' });
     /**
      * The guild this manager belongs to
      * @type {Guild}
