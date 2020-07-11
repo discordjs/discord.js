@@ -1192,7 +1192,9 @@ class Guild extends Base {
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
-   * @property {number} position New position for the channel
+   * @property {number} [position] New position for the channel
+   * @property {?CategoryChannel|Snowflake} [parent] Parent channel
+   * @property {boolean} [lockPermissions] If the permissions should be locked to the parent
    */
 
   /**
@@ -1208,6 +1210,8 @@ class Guild extends Base {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
+      parent_id: r.parent !== null ? this.client.channels.resolveID(r.parent) || undefined : null,
+      lock_permissions: r.lockPermissions,
     }));
 
     return this.client.api
