@@ -2969,7 +2969,7 @@ declare module 'discord.js' {
   interface RoleTagData {
     botID?: Snowflake;
     integrationID?: Snowflake;
-    premiumSubcriberRole?: boolean;
+    premiumSubcriberRole?: true;
   }
 
   type ShardingManagerMode = 'process' | 'worker';
