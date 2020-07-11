@@ -143,7 +143,7 @@ class RoleManager extends BaseManager {
 
   /**
    * The role associated with the client user of the guild, if any
-   * @rype {Role}
+   * @type {?Role}
    * @readonly
    */
   get myRole() {
