@@ -1241,6 +1241,8 @@ declare module 'discord.js' {
     public readonly hexColor: string;
     public hoist: boolean;
     public id: Snowflake;
+    public readonly isMyRole: boolean;
+    public readonly isPremiumSubscriberRole: boolean;
     public managed: boolean;
     public readonly members: Collection<Snowflake, GuildMember>;
     public mentionable: boolean;
@@ -1248,6 +1250,7 @@ declare module 'discord.js' {
     public permissions: Readonly<Permissions>;
     public readonly position: number;
     public rawPosition: number;
+    public tags?: RoleTagData;
     public comparePositionTo(role: Role): number;
     public delete(reason?: string): Promise<Role>;
     public edit(data: RoleData, reason?: string): Promise<Role>;
@@ -1899,6 +1902,7 @@ declare module 'discord.js' {
     public readonly hoist: Role | null;
     public readonly color: Role | null;
     public readonly highest: Role;
+    public readonly premiumSubscriberRole?: Role;
     public member: GuildMember;
     public guild: Guild;
 
@@ -1955,6 +1959,8 @@ declare module 'discord.js' {
     public readonly everyone: Role;
     public readonly highest: Role;
     public guild: Guild;
+    public readonly myRole?: Role;
+    public readonly premiumSubscriberRole?: Role;
 
     public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
     public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
@@ -2961,6 +2967,12 @@ declare module 'discord.js' {
   }
 
   type RoleResolvable = Role | string;
+
+  interface RoleTagData {
+    botID?: Snowflake;
+    integrationID?: Snowflake;
+    premiumSubcriberRole?: boolean;
+  }
 
   type ShardingManagerMode = 'process' | 'worker';
 

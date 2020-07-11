@@ -73,6 +73,15 @@ class GuildMemberRoleManager {
   }
 
   /**
+   * The premium subscriber role of the guild, if present on the member
+   * @type {?Role}
+   * @readonly
+   */
+  get premiumSubscriberRole() {
+    return this.cache.find(role => role.premiumSubscriberRole);
+  }
+
+  /**
    * Adds a role (or multiple roles) to the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @param {string} [reason] Reason for adding the role(s)

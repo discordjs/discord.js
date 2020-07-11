@@ -133,6 +133,24 @@ class RoleManager extends BaseManager {
   }
 
   /**
+   * The premium subscriber role of the guild, if any
+   * @type {?Role}
+   * @readonly
+   */
+  get premiumSubscriberRole() {
+    return this.cache.find(role => role.premiumSubscriberRole);
+  }
+
+  /**
+   * The role associated with the client user of the guild, if any
+   * @rype {Role}
+   * @readonly
+   */
+  get myRole() {
+    return this.cache.find(role => role.myRole);
+  }
+
+  /**
    * The role with the highest position in the cache
    * @type {Role}
    * @readonly

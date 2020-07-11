@@ -82,6 +82,44 @@ class Role extends Base {
      * @type {boolean}
      */
     this.deleted = false;
+
+    /**
+     * The tags this role has
+     * @type {?Object}
+     * @property {?Snowflake} botID The id of the bot this role belongs to
+     * @property {?Snowflake} integrationID The id of the integration this role belongs to
+     * @property {?boolean} premiumSubcriberRole Whether this is the guilds premium subscription role
+     */
+    this.tags = data.tags ? {} : null;
+    if (data.tags) {
+      if (Reflect.has(data.tags, 'bot_id')) {
+        this.tags.botID = data.tags.bot_id;
+      }
+      if (Reflect.has(data.tags, 'integration_id')) {
+        this.tags.integrationID = data.tags.integration_id;
+      }
+      if (Reflect.has(data.tags, 'premium_subscriber')) {
+        this.tags.premiumSubscriberRole = true;
+      }
+    }
+  }
+
+  /**
+   * Whether this role is the guilds premium subscription role
+   * @type {boolean}
+   * @readonly
+   */
+  get isPremiumSubscriberRole() {
+    return this.tags && this.tags.premiumSubscriberRole;
+  }
+
+  /**
+   * Whether this role is the role associated with the logged in bot user
+   * @type {boolean}
+   * @readonly
+   */
+  get isMyRole() {
+    return this.tags && this.tags.botID === this.client.user.id;
   }
 
   /**
