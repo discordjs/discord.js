@@ -1960,9 +1960,8 @@ declare module 'discord.js' {
     public readonly everyone: Role;
     public readonly highest: Role;
     public guild: Guild;
-    public readonly myRole: Role | null;
     public readonly premiumSubscriberRole: Role | null;
-
+    public botRoleFor(user: UserResolvable): Role | null;
     public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
     public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
     public fetch(id?: Snowflake, cache?: boolean): Promise<this>;

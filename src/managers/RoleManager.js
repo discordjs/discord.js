@@ -124,6 +124,18 @@ class RoleManager extends BaseManager {
   }
 
   /**
+   * Gets the managed role a user created when joining the guild, if any
+   * <info>Only ever available for bots</info>
+   * @param {UserResolvable} user The user to access the bot role for
+   * @returns {?Role}
+   */
+  botRoleFor(user) {
+    user = this.client.users.resolve(user);
+    if (!user || !user.bot) return null;
+    return this.cache.find(r => r.tags && r.tags.botID === user.id) || null;
+  }
+
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
@@ -139,15 +151,6 @@ class RoleManager extends BaseManager {
    */
   get premiumSubscriberRole() {
     return this.cache.find(role => role.premiumSubscriberRole) || null;
-  }
-
-  /**
-   * The role associated with the client user of the guild, if any
-   * @type {?Role}
-   * @readonly
-   */
-  get myRole() {
-    return this.cache.find(role => role.isMyRole) || null;
   }
 
   /**
