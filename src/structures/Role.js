@@ -88,7 +88,7 @@ class Role extends Base {
      * @type {?Object}
      * @property {?Snowflake} botID The id of the bot this role belongs to
      * @property {?Snowflake} integrationID The id of the integration this role belongs to
-     * @property {?boolean} premiumSubcriberRole Whether this is the guilds premium subscription role
+     * @property {?boolean} premiumSubcriberRole Whether this is the guild's premium subscription role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -105,7 +105,7 @@ class Role extends Base {
   }
 
   /**
-   * Whether this role is the guilds premium subscription role
+   * Whether this role is the guild's premium subscription role
    * @type {boolean}
    * @readonly
    */
@@ -114,7 +114,7 @@ class Role extends Base {
   }
 
   /**
-   * Whether this role is the role associated with the logged in bot user
+   * Whether this role is the role associated with the client user
    * @type {boolean}
    * @readonly
    */
