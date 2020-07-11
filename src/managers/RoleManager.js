@@ -147,7 +147,7 @@ class RoleManager extends BaseManager {
    * @readonly
    */
   get myRole() {
-    return this.cache.find(role => role.myRole);
+    return this.cache.find(role => role.isMyRole);
   }
 
   /**
