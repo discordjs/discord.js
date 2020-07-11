@@ -92,13 +92,13 @@ class Role extends Base {
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
-      if (Reflect.has(data.tags, 'bot_id')) {
+      if ('bot_id' in data.tags) {
         this.tags.botID = data.tags.bot_id;
       }
-      if (Reflect.has(data.tags, 'integration_id')) {
+      if ('integration_id' in data.tags) {
         this.tags.integrationID = data.tags.integration_id;
       }
-      if (Reflect.has(data.tags, 'premium_subscriber')) {
+      if ('premium_subscriber' in data.tags) {
         this.tags.premiumSubscriberRole = true;
       }
     }
