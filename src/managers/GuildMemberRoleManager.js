@@ -82,6 +82,17 @@ class GuildMemberRoleManager {
   }
 
   /**
+   * The managed role this member created when joining the guild, if any
+   * <info>Only ever available on bots</info>
+   * @type {?Role}
+   * @readonly
+   */
+  get botRole() {
+    if (!this.member.user.bot) return null;
+    return this.cache.find(role => role.tags && role.tags.bot_id === this.id) || null;
+  }
+
+  /**
    * Adds a role (or multiple roles) to the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @param {string} [reason] Reason for adding the role(s)

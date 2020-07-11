@@ -1903,6 +1903,7 @@ declare module 'discord.js' {
     public readonly color: Role | null;
     public readonly highest: Role;
     public readonly premiumSubscriberRole: Role | null;
+    public readonly botRole: Role | null;
     public member: GuildMember;
     public guild: Guild;
 
