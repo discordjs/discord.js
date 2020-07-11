@@ -89,7 +89,7 @@ class GuildMemberRoleManager {
    */
   get botRole() {
     if (!this.member.user.bot) return null;
-    return this.cache.find(role => role.tags && role.tags.bot_id === this.id) || null;
+    return this.cache.find(role => role.tags && role.tags.botID === this.member.user.id) || null;
   }
 
   /**
