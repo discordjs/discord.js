@@ -1241,8 +1241,6 @@ declare module 'discord.js' {
     public readonly hexColor: string;
     public hoist: boolean;
     public id: Snowflake;
-    public readonly isMyRole: boolean;
-    public readonly isPremiumSubscriberRole: boolean;
     public managed: boolean;
     public readonly members: Collection<Snowflake, GuildMember>;
     public mentionable: boolean;

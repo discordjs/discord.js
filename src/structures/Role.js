@@ -105,24 +105,6 @@ class Role extends Base {
   }
 
   /**
-   * Whether this role is the guild's premium subscription role
-   * @type {boolean}
-   * @readonly
-   */
-  get isPremiumSubscriberRole() {
-    return Boolean(this.tags && this.tags.premiumSubscriberRole);
-  }
-
-  /**
-   * Whether this role is the role associated with the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get isMyRole() {
-    return Boolean(this.tags && this.tags.botID === this.client.user.id);
-  }
-
-  /**
    * The timestamp the role was created at
    * @type {number}
    * @readonly
