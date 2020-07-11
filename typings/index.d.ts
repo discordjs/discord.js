@@ -1902,7 +1902,7 @@ declare module 'discord.js' {
     public readonly hoist: Role | null;
     public readonly color: Role | null;
     public readonly highest: Role;
-    public readonly premiumSubscriberRole?: Role;
+    public readonly premiumSubscriberRole: Role | null;
     public member: GuildMember;
     public guild: Guild;
 
@@ -1959,8 +1959,8 @@ declare module 'discord.js' {
     public readonly everyone: Role;
     public readonly highest: Role;
     public guild: Guild;
-    public readonly myRole?: Role;
-    public readonly premiumSubscriberRole?: Role;
+    public readonly myRole: Role | null;
+    public readonly premiumSubscriberRole: Role | null;
 
     public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
     public fetch(id: Snowflake, cache?: boolean): Promise<Role | null>;
