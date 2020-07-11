@@ -78,7 +78,7 @@ class GuildMemberRoleManager {
    * @readonly
    */
   get premiumSubscriberRole() {
-    return this.cache.find(role => role.premiumSubscriberRole);
+    return this.cache.find(role => role.premiumSubscriberRole) || null;
   }
 
   /**
