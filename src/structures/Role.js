@@ -110,7 +110,7 @@ class Role extends Base {
    * @readonly
    */
   get isPremiumSubscriberRole() {
-    return this.tags && this.tags.premiumSubscriberRole;
+    return this.tags ? this.tags.premiumSubscriberRole : false;
   }
 
   /**
@@ -119,7 +119,7 @@ class Role extends Base {
    * @readonly
    */
   get isMyRole() {
-    return this.tags && this.tags.botID === this.client.user.id;
+    return this.tags ? this.tags.botID === this.client.user.id : false;
   }
 
   /**
