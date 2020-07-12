@@ -126,21 +126,6 @@ class ClientUser extends Structures.get('User') {
    */
 
   /**
-   * Sets the status of the client user.
-   * @param {PresenceStatusData} status Status to change to
-   * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
-   * @returns {Promise<Presence>}
-   * @example
-   * // Set the client user's status
-   * client.user.setStatus('idle')
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  setStatus(status, shardID) {
-    return this.setPresence({ status, shardID });
-  }
-
-  /**
    * Options for setting an activity
    * @typedef ActivityOptions
    * @type {Object}
@@ -148,33 +133,6 @@ class ClientUser extends Structures.get('User') {
    * @property {ActivityType|number} [type] Type of the activity
    * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
-
-  /**
-   * Sets the activity the client user is playing.
-   * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
-   * @param {ActivityOptions} [options] Options for setting the activity
-   * @returns {Promise<Presence>}
-   * @example
-   * // Set the client user's activity
-   * client.user.setActivity('discord.js', { type: 'WATCHING' })
-   *   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
-   *   .catch(console.error);
-   */
-  setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activity: null, shardID: options.shardID });
-
-    const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activity, shardID: activity.shardID });
-  }
-
-  /**
-   * Sets/removes the AFK flag for the client user.
-   * @param {boolean} afk Whether or not the user is AFK
-   * @returns {Promise<Presence>}
-   */
-  setAFK(afk) {
-    return this.setPresence({ afk });
-  }
 }
 
 module.exports = ClientUser;
