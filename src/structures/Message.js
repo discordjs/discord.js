@@ -13,8 +13,8 @@ const Collection = require('../util/Collection');
 const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/Snowflake');
 const Util = require('../util/Util');
-const SnowflakeUtil = require('../util/Snowflake')
 
 /**
  * Represents a message on Discord.
