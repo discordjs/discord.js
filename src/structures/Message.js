@@ -116,7 +116,7 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = data.timestamp ? new Date(data.timestamp).getTime() : SnowflakeUtil.deconstruct(this.id).timestamp;
+    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
 
     /**
      * The timestamp the message was last edited at (if applicable)
