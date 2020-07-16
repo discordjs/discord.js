@@ -2890,7 +2890,7 @@ declare module 'discord.js' {
   interface PartialMessage
     extends Partialize<
       Message,
-      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'system' | 'url'
+      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'url'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
@@ -2899,7 +2899,6 @@ declare module 'discord.js' {
     mentions: Message['mentions'];
     readonly pinnable: boolean;
     reactions: Message['reactions'];
-    system: boolean;
     readonly url: string;
   }
 
@@ -2909,9 +2908,7 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User, 'discriminator' | 'username' | 'tag'> {
-    discriminator: undefined;
-    username: undefined;
+  interface PartialUser extends Partialize<User, 'tag'> {
     readonly tag: null;
   }
 
