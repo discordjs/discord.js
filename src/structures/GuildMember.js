@@ -30,13 +30,6 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The user that this guild member instance represents
-     * @type {User}
-     * @name GuildMember#user
-     */
-    if (data.user) this.user = client.users.add(data.user, true);
-
-    /**
      * The timestamp the member joined the guild at
      * @type {?number}
      */
@@ -71,18 +64,27 @@ class GuildMember extends Base {
   }
 
   _patch(data) {
-    /**
-     * The nickname of this member, if they have one
-     * @type {?string}
-     * @name GuildMember#nickname
-     */
-    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
+    if ('user' in data) {
+      /**
+       * The user that this guild member instance represents
+       * @type {User}
+       * @name GuildMember#user
+       */
+      this.user = this.client.users.add(data.user, true);
+    }
 
-    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
-    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
+    if ('nick' in data) {
+      /**
+       * The nickname of this member, if they have one
+       * @type {?string}
+       * @name GuildMember#nickname
+       */
+      this.nickname = data.nick;
+    }
 
-    if (data.user) this.user = this.guild.client.users.add(data.user);
-    if (data.roles) this._roles = data.roles;
+    if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
+    if ('roles' in data) this._roles = data.roles;
   }
 
   _clone() {

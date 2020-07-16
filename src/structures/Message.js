@@ -50,35 +50,62 @@ class Message extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The type of the message
-     * @type {MessageType}
-     */
-    this.type = MessageTypes[data.type];
+    if ('type' in data) {
+      /**
+       * The type of the message
+       * @type {?MessageType}
+       */
+      this.type = MessageTypes[data.type];
 
-    /**
-     * The content of the message
-     * @type {string}
-     */
-    this.content = data.content;
+      /**
+       * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+       * @type {?boolean}
+       */
+      this.system = data.type !== 0;
+    } else if (typeof this.type !== 'string') {
+      this.system = null;
+      this.type = null;
+    }
 
-    /**
-     * The author of the message
-     * @type {?User}
-     */
-    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
+    if ('content' in data) {
+      /**
+       * The content of the message
+       * @type {?string}
+       */
+      this.content = data.content;
+    } else if (typeof this.content !== 'string') {
+      this.content = null;
+    }
 
-    /**
-     * Whether or not this message is pinned
-     * @type {boolean}
-     */
-    this.pinned = data.pinned;
+    if ('author' in data) {
+      /**
+       * The author of the message
+       * @type {?User}
+       */
+      this.author = this.client.users.add(data.author, !data.webhook_id);
+    } else if (!this.author) {
+      this.author = null;
+    }
 
-    /**
-     * Whether or not the message was Text-To-Speech
-     * @type {boolean}
-     */
-    this.tts = data.tts;
+    if ('pinned' in data) {
+      /**
+       * Whether or not this message is pinned
+       * @type {?boolean}
+       */
+      this.pinned = Boolean(data.pinned);
+    } else if (typeof this.pinned !== 'boolean') {
+      this.pinned = null;
+    }
+
+    if ('tts' in data) {
+      /**
+       * Whether or not the message was Text-To-Speech
+       * @type {?boolean}
+       */
+      this.tts = data.tts;
+    } else if (typeof this.tts !== 'boolean') {
+      this.tts = null;
+    }
 
     /**
      * A random number or string used for checking message delivery
@@ -86,13 +113,7 @@ class Message extends Base {
      * lost if re-fetched</warn>
      * @type {?string}
      */
-    this.nonce = data.nonce;
-
-    /**
-     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-     * @type {boolean}
-     */
-    this.system = data.type !== 0;
+    this.nonce = 'nonce' in data ? data.nonce : null;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
@@ -121,7 +142,7 @@ class Message extends Base {
      * The timestamp the message was last edited at (if applicable)
      * @type {?number}
      */
-    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+    this.editedTimestamp = 'edited_timestamp' in data ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
      * A manager of the reactions belonging to this message
