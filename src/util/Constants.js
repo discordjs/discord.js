@@ -78,7 +78,7 @@ exports.DefaultOptions = {
    */
   http: {
     version: 7,
-    host: 'https://discordapp.com',
+    host: 'https://discord.com',
     cdn: 'https://cdn.discordapp.com',
   },
 };
