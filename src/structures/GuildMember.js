@@ -65,18 +65,20 @@ class GuildMember extends Base {
      * @type {boolean}
      */
     this.deleted = false;
+    
+    /**
+     * The nickname of this member, if they have one
+     * @type {?string}
+     * @name GuildMember#nickname
+     */
+    this.nickname = null;
 
     this._roles = [];
     if (data) this._patch(data);
   }
 
   _patch(data) {
-    /**
-     * The nickname of this member, if they have one
-     * @type {?string}
-     * @name GuildMember#nickname
-     */
-    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
+    if (typeof data.nick === 'string') this.nickname = data.nick;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
