@@ -84,3 +84,5 @@ See [the contribution guide](https://github.com/discordjs/discord.js/blob/master
 ## Help
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
 nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+
+EDIT THIS WHEN DONE! this for V11 DiscordJS that still supported some bots.
