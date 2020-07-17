@@ -78,7 +78,7 @@ class GuildMember extends Base {
   }
 
   _patch(data) {
-    if (typeof data.nick === 'string') this.nickname = data.nick;
+    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
