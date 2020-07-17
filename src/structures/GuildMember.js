@@ -65,7 +65,7 @@ class GuildMember extends Base {
      * @type {boolean}
      */
     this.deleted = false;
-    
+
     /**
      * The nickname of this member, if they have one
      * @type {?string}
