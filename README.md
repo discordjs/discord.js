@@ -29,9 +29,9 @@ discord.js is a powerful [node.js](https://nodejs.org) module that allows you to
 **Node.js 6.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discord.js`  
-With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+Without voice support: `npm install discord.js@11.6.2`  
+With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js@11.6.2 @discordjs/opus`  
+With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js@11.6.2 opusscript`
 
 ### Audio engines
 The preferred audio engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
