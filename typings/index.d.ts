@@ -958,7 +958,7 @@ declare module 'discord.js' {
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
     public fetch(): Promise<Message>;
-    public pin(): Promise<Message>;
+    public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
@@ -983,7 +983,7 @@ declare module 'discord.js' {
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(): Promise<Message>;
+    public unpin(options?: { reason?: string }): Promise<Message>;
   }
 
   export class MessageAttachment {
