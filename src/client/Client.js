@@ -420,7 +420,7 @@ class Client extends EventEmitter {
   generateInvite(permissions) {
     permissions = Permissions.resolve(permissions);
     return this.fetchApplication().then(application =>
-      `https://discordapp.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
+      `https://discord.com/oauth2/authorize?client_id=${application.id}&permissions=${permissions}&scope=bot`
     );
   }
 
