@@ -6,6 +6,7 @@ const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents a guild text channel on Discord.
@@ -130,6 +131,18 @@ class TextChannel extends GuildChannel {
         reason,
       })
       .then(data => new Webhook(this.client, data));
+  }
+
+  /**
+   * Whether a message is sendable to this channel by the client
+   * @type {boolean}
+   * @readonly
+   */
+  get writable() {
+    if (this.client.user.id === this.guild.ownerID) return true;
+    const permissions = this.permissionsFor(this.client.user);
+    if (!permissions) return false;
+    return permissions.has(Permissions.FLAGS.SEND_MESSAGES, false);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

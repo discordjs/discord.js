@@ -1463,6 +1463,7 @@ declare module 'discord.js' {
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+    public readonly writable: boolean;
   }
 
   export class User extends PartialTextBasedChannel(Base) {
