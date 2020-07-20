@@ -165,8 +165,6 @@ class Guild extends Base {
      * * INVITE_SPLASH
      * * NEWS
      * * PARTNERED
-     * * PUBLIC
-     * * PUBLIC_DISABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
