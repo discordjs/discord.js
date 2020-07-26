@@ -359,6 +359,7 @@ class GuildChannel extends Channel {
 
   /**
    * Sets a new name for the guild channel.
+   * Will only accept a new guild channel name twice per 10 minutes
    * @param {string} name The new name for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
