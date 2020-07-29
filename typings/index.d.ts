@@ -3065,7 +3065,9 @@ declare module 'discord.js' {
   }
 
   interface WebSocketProperties {
+    $os?: string;
     $browser?: string;
+    $device?: string;
   }
 
   type WSEventType =
