@@ -956,6 +956,7 @@ declare module 'discord.js' {
     public nonce: string | null;
     public readonly partial: false;
     public readonly pinnable: boolean;
+    public readonly publishable: boolean;
     public pinned: boolean;
     public reactions: ReactionManager;
     public system: boolean;
@@ -977,6 +978,7 @@ declare module 'discord.js' {
     public fetchWebhook(): Promise<Webhook>;
     public fetch(): Promise<Message>;
     public pin(options?: { reason?: string }): Promise<Message>;
+    public publish(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
