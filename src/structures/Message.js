@@ -397,6 +397,21 @@ class Message extends Base {
   }
 
   /**
+   * Whether the message is publishable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get publishable() {
+    return (
+      this.type === 'DEFAULT' &&
+      this.guild &&
+      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false) &&
+      this.channel.type === 'news'
+    );
+  }
+
+  /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
@@ -461,6 +476,24 @@ class Message extends Base {
       .channels(this.channel.id)
       .pins(this.id)
       .delete(options)
+      .then(() => this);
+  }
+
+  /**
+   * Publish this message in the news channel to subscribers.
+   * @returns {Promise<Message>}
+   * @example
+   * // Publish a message
+   * message.publish()
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  publish() {
+    return this.client.api
+      .channels(this.channel.id)
+      .messages(this.id)
+      .crosspost()
+      .post()
       .then(() => this);
   }
 
