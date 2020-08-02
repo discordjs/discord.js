@@ -2652,7 +2652,7 @@ declare module 'discord.js' {
 
   interface MessageEditOptions {
     content?: string;
-    embed?: MessageEmbedOptions | null;
+    embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString>;
     allowedMentions?: MessageMentionOptions;
