@@ -23,14 +23,14 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the message
-   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel}
+     * @type {TextChannel|DMChannel|NewsChannel}
      */
     this.channel = channel;
 
