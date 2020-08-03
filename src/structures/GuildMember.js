@@ -265,7 +265,8 @@ class GuildMember extends Base {
    */
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.permissions.has(permission, checkAdmin);
+    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
+    return permissions.has(permission, checkAdmin);
   }
 
   /**
