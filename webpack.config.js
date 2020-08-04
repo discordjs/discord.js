@@ -43,7 +43,7 @@ module.exports = {
     __dirname: true,
     process: true,
     path: 'empty',
-    Buffer: false,
+    Buffer: true,
     zlib: 'empty',
   },
   optimization: {

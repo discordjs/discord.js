@@ -30,7 +30,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    const inviteRegex = /discord(?:app\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
+    const inviteRegex = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
     const match = inviteRegex.exec(data);
     if (match && match[1]) return match[1];
     return data;

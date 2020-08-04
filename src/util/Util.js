@@ -560,15 +560,15 @@ class Util {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
           const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
+          return user ? Util.removeMentions(`@${user.username}`) : input;
         }
 
         const member = message.channel.guild.members.cache.get(id);
         if (member) {
-          return `@${member.displayName}`;
+          return Util.removeMentions(`@${member.displayName}`);
         } else {
           const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
+          return user ? Util.removeMentions(`@${user.username}`) : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {

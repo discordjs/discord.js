@@ -144,7 +144,6 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sets whether the voice connection should display as "speaking", "soundshare" or "none".
    * @param {BitFieldResolvable} value The new speaking state
-   * @private
    */
   setSpeaking(value) {
     if (this.speaking.equals(value)) return;

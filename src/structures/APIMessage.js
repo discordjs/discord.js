@@ -88,14 +88,16 @@ class APIMessage {
       content = Util.resolveString(this.options.content);
     }
 
+    if (typeof content !== 'string') return content;
+
     const disableMentions =
       typeof this.options.disableMentions === 'undefined'
         ? this.target.client.options.disableMentions
         : this.options.disableMentions;
     if (disableMentions === 'all') {
-      content = Util.removeMentions(content || '');
+      content = Util.removeMentions(content);
     } else if (disableMentions === 'everyone') {
-      content = (content || '').replace(/@([^<>@ ]*)/gmsu, (match, target) => {
+      content = content.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
         if (target.match(/^[&!]?\d+$/)) {
           return `@${target}`;
         } else {
@@ -120,17 +122,17 @@ class APIMessage {
     if (content || mentionPart) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content || '')}\n\`\`\``;
+        content = `${mentionPart}\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
         }
       } else if (mentionPart) {
-        content = `${mentionPart}${content || ''}`;
+        content = `${mentionPart}${content}`;
       }
 
       if (isSplit) {
-        content = Util.splitMessage(content || '', splitOptions);
+        content = Util.splitMessage(content, splitOptions);
       }
     }
 
@@ -189,7 +191,7 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: allowedMentions,
+      allowed_mentions: typeof content === 'string' ? allowedMentions : undefined,
       flags,
     };
     return this;

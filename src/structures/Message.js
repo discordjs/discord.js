@@ -291,7 +291,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discordapp.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
+    return `https://discord.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
   }
 
   /**
@@ -447,25 +447,39 @@ class Message extends Base {
 
   /**
    * Pins this message to the channel's pinned messages.
+   * @param {Object} [options] Options for pinning
+   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
+   * @example
+   * // Pin a message with a reason
+   * message.pin({ reason: 'important' })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  pin() {
+  pin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .put()
+      .put(options)
       .then(() => this);
   }
 
   /**
    * Unpins this message from the channel's pinned messages.
+   * @param {Object} [options] Options for unpinning
+   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
+   * @example
+   * // Unpin a message with a reason
+   * message.unpin({ reason: 'no longer relevant' })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  unpin() {
+  unpin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .delete()
+      .delete(options)
       .then(() => this);
   }
 
