@@ -196,7 +196,7 @@ class GuildMember extends Base {
 
   /**
    * The nickname of this member, or their username if they don't have one
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get displayName() {
