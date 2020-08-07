@@ -228,7 +228,7 @@ class GuildManager extends BaseManager {
     if (existing) return existing;
 
     const data = await this.client.api.guilds(id).get();
-    return this.add(data, null, cache);
+    return this.add(data, cache);
   }
 }
 
