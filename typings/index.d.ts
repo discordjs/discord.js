@@ -2838,7 +2838,7 @@ declare module 'discord.js' {
   } & {
     [K in keyof Omit<
       T,
-      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | O
+      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
     >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
   };
 
@@ -2873,29 +2873,35 @@ declare module 'discord.js' {
   interface PartialGuildMember
     extends Partialize<
       GuildMember,
-      'bannable' | 'displayColor' | 'displayHexColor' | 'displayName' | 'guild' | 'kickable' | 'permissions' | 'roles'
+      'bannable' | 'displayColor' | 'displayHexColor' | 'displayName' | 'guild' | 'kickable' | 'permissions' | 'roles' | 'manageable' | 'presence' | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
     readonly displayHexColor: string;
     readonly displayName: string;
     guild: Guild;
+    readonly manageable: boolean;
     joinedAt: null;
     joinedTimestamp: null;
     readonly kickable: boolean;
     readonly permissions: GuildMember['permissions'];
+    readonly presence: GuildMember['presence'];
     readonly roles: GuildMember['roles'];
+    readonly voice: GuildMember['voice'];
   }
 
   interface PartialMessage
     extends Partialize<
       Message,
-      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'url'
+      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'url' | 'flags' | 'edits' | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
     readonly deletable: boolean;
     readonly editable: boolean;
+    readonly edits: Message['edits'];
+    embeds: Message['embeds'];
+    flags: Message['flags'];
     mentions: Message['mentions'];
     readonly pinnable: boolean;
     reactions: Message['reactions'];
@@ -2908,8 +2914,12 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User, 'tag'> {
+  interface PartialUser extends Partialize<User, 'flags' | 'locale' | 'system' | 'tag' | 'username'> {
+    flags: User['flags'];
+    locale: User['locale'];
+    system: User['system'];
     readonly tag: null;
+    username: null;
   }
 
   type PresenceStatus = ClientPresenceStatus | 'offline';
