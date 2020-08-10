@@ -2085,7 +2085,7 @@ declare module 'discord.js' {
     deaf?: boolean;
   }
 
-  interface APIErrror {
+  interface APIError {
     UNKNOWN_ACCOUNT: number;
     UNKNOWN_APPLICATION: number;
     UNKNOWN_CHANNEL: number;
