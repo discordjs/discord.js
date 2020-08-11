@@ -3070,6 +3070,13 @@ declare module 'discord.js' {
     large_threshold?: number;
     compress?: boolean;
     intents?: BitFieldResolvable<IntentsString> | number;
+    properties?: WebSocketProperties;
+  }
+
+  interface WebSocketProperties {
+    $os?: string;
+    $browser?: string;
+    $device?: string;
   }
 
   type WSEventType =
