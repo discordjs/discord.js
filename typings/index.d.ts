@@ -1856,6 +1856,7 @@ declare module 'discord.js' {
     public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
     public resolve(resolvable: R): Holds | null;
     public resolveID(resolvable: R): K | null;
+    public valueOf(): Collection<K, Holds>;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
