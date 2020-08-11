@@ -1951,7 +1951,7 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
   }
 
-  export class ReactionManager extends BaseManager<Snowflake, MessageReaction, MessageReactionResolvable> {
+  export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
     constructor(message: Message, iterable?: Iterable<any>);
     public message: Message;
     public removeAll(): Promise<Message>;
