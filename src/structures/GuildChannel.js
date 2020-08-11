@@ -334,7 +334,7 @@ class GuildChannel extends Channel {
       });
     }
 
-    let permission_overwrites = false;
+    let permission_overwrites = undefined;
 
     if (data.permissionOverwrites) {
       permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
