@@ -136,7 +136,7 @@ class Client extends BaseClient {
     if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in bot.
-       * Gets set to `process.env.DISCORD_TOKEN` when instantiating the client
+       * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
