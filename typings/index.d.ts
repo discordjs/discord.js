@@ -2517,11 +2517,6 @@ declare module 'discord.js' {
     banner?: Base64Resolvable;
   }
 
-  interface GuildWidgetData {
-    enabled: boolean;
-    channel?: GuildChannelResolvable;
-  }
-
   interface GuildEmojiCreateOptions {
     roles?: Collection<Snowflake, Role> | RoleResolvable[];
     reason?: string;
@@ -2565,6 +2560,11 @@ declare module 'discord.js' {
     days?: number;
     dry?: boolean;
     reason?: string;
+  }
+
+  interface GuildWidgetData {
+    enabled: boolean;
+    channel: GuildChannelResolvable | null;
   }
 
   interface HTTPOptions {
