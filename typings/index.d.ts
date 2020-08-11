@@ -65,7 +65,7 @@ declare module 'discord.js' {
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
     public static partitionMessageAdditions(
-      items: (MessageEmbed | MessageAttachment)[],
+      items: readonly (MessageEmbed | MessageAttachment)[],
     ): [MessageEmbed[], MessageAttachment[]];
     public static resolveFile(fileLike: BufferResolvable | Stream | FileOptions | MessageAttachment): Promise<object>;
     public static transformOptions(
@@ -688,7 +688,7 @@ declare module 'discord.js' {
     public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
-    public setChannelPositions(channelPositions: ChannelPosition[]): Promise<Guild>;
+    public setChannelPositions(channelPositions: readonly ChannelPosition[]): Promise<Guild>;
     public setDefaultMessageNotifications(
       defaultMessageNotifications: DefaultMessageNotifications | number,
       reason?: string,
@@ -699,7 +699,7 @@ declare module 'discord.js' {
     public setName(name: string, reason?: string): Promise<Guild>;
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
     public setRegion(region: string, reason?: string): Promise<Guild>;
-    public setRolePositions(rolePositions: RolePosition[]): Promise<Guild>;
+    public setRolePositions(rolePositions: readonly RolePosition[]): Promise<Guild>;
     public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
@@ -772,7 +772,7 @@ declare module 'discord.js' {
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public lockPermissions(): Promise<this>;
     public overwritePermissions(
-      overwrites: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
+      overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
       reason?: string,
     ): Promise<this>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
@@ -980,20 +980,14 @@ declare module 'discord.js' {
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
-      options?: MessageOptions | MessageAdditions | (MessageOptions & { split?: false }) | MessageAdditions,
+      options?: MessageOptions | MessageAdditions | (MessageOptions & { split?: false }),
     ): Promise<Message>;
     public reply(
       content?: StringResolvable,
       options?: (MessageOptions & { split: true | SplitOptions }) | MessageAdditions,
     ): Promise<Message[]>;
     public reply(
-      options?:
-        | MessageOptions
-        | MessageAdditions
-        | APIMessage
-        | (MessageOptions & { split?: false })
-        | MessageAdditions
-        | APIMessage,
+      options?: MessageOptions | MessageAdditions | APIMessage | (MessageOptions & { split?: false }),
     ): Promise<Message>;
     public reply(
       options?: (MessageOptions & { split: true | SplitOptions }) | MessageAdditions | APIMessage,
@@ -1887,9 +1881,13 @@ declare module 'discord.js' {
     public emoji: GuildEmoji;
     public guild: Guild;
     public cache: Collection<Snowflake, Role>;
-    public add(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
-    public set(roles: RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
-    public remove(roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
+    public add(
+      roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
+    ): Promise<GuildEmoji>;
+    public set(roles: readonly RoleResolvable[] | Collection<Snowflake, Role>): Promise<GuildEmoji>;
+    public remove(
+      roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
+    ): Promise<GuildEmoji>;
   }
 
   export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
@@ -1922,12 +1920,12 @@ declare module 'discord.js' {
     public guild: Guild;
 
     public add(
-      roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>,
+      roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
       reason?: string,
     ): Promise<GuildMember>;
-    public set(roles: RoleResolvable[] | Collection<Snowflake, Role>, reason?: string): Promise<GuildMember>;
+    public set(roles: readonly RoleResolvable[] | Collection<Snowflake, Role>, reason?: string): Promise<GuildMember>;
     public remove(
-      roleOrRoles: RoleResolvable | RoleResolvable[] | Collection<Snowflake, Role>,
+      roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
       reason?: string,
     ): Promise<GuildMember>;
   }
@@ -2029,7 +2027,7 @@ declare module 'discord.js' {
     typingCount: number;
     awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
     bulkDelete(
-      messages: Collection<Snowflake, Message> | MessageResolvable[] | number,
+      messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
     createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
@@ -2073,7 +2071,7 @@ declare module 'discord.js' {
     name?: string;
     url?: string;
     type?: ActivityType | number;
-    shardID?: number | number[];
+    shardID?: number | readonly number[];
   }
 
   type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS';
@@ -2140,11 +2138,11 @@ declare module 'discord.js' {
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
-    errors?: string[];
+    errors?: readonly string[];
   }
 
   interface AwaitReactionsOptions extends ReactionCollectorOptions {
-    errors?: string[];
+    errors?: readonly string[];
   }
 
   interface BanOptions {
@@ -2180,7 +2178,7 @@ declare module 'discord.js' {
     parentID?: Snowflake;
     rateLimitPerUser?: number;
     lockPermissions?: boolean;
-    permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
   }
 
   interface ChannelLogsQueryOptions {
@@ -2417,7 +2415,7 @@ declare module 'discord.js' {
   }
 
   interface FetchMembersOptions {
-    user?: UserResolvable | UserResolvable[];
+    user?: UserResolvable | readonly UserResolvable[];
     query?: string;
     limit?: number;
     withPresences?: boolean;
@@ -2499,7 +2497,7 @@ declare module 'discord.js' {
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
   interface GuildCreateChannelOptions {
-    permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
     type?: Exclude<
       keyof typeof ChannelType | ChannelType,
@@ -2540,13 +2538,13 @@ declare module 'discord.js' {
   }
 
   interface GuildEmojiCreateOptions {
-    roles?: Collection<Snowflake, Role> | RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
     reason?: string;
   }
 
   interface GuildEmojiEditData {
     name?: string;
-    roles?: Collection<Snowflake, Role> | RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
   }
 
   type GuildFeatures =
@@ -2567,7 +2565,7 @@ declare module 'discord.js' {
 
   interface GuildMemberEditData {
     nick?: string;
-    roles?: Collection<Snowflake, Role> | RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
     mute?: boolean;
     deaf?: boolean;
     channel?: ChannelResolvable | null;
@@ -2689,8 +2687,8 @@ declare module 'discord.js' {
     url?: string;
     timestamp?: Date | number;
     color?: ColorResolvable;
-    fields?: EmbedFieldData[];
-    files?: (MessageAttachment | string | FileOptions)[];
+    fields?: readonly EmbedFieldData[];
+    files?: readonly (MessageAttachment | string | FileOptions)[];
     author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
     thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
@@ -2740,7 +2738,7 @@ declare module 'discord.js' {
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
     reply?: UserResolvable;
@@ -2827,7 +2825,7 @@ declare module 'discord.js' {
     | 'MANAGE_WEBHOOKS'
     | 'MANAGE_EMOJIS';
 
-  interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> {}
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
   interface PermissionOverwriteOptions {
     allow: PermissionResolvable;
@@ -3061,10 +3059,10 @@ declare module 'discord.js' {
     avatarURL?: string;
     tts?: boolean;
     nonce?: string;
-    embeds?: (MessageEmbed | object)[];
+    embeds?: readonly (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
   }
