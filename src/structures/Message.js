@@ -13,6 +13,7 @@ const Collection = require('../util/Collection');
 const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -115,7 +116,7 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = new Date(data.timestamp).getTime();
+    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
 
     /**
      * The timestamp the message was last edited at (if applicable)
