@@ -326,7 +326,7 @@ class Guild extends Base {
     }
 
     /**
-     * The vanity URL code of the guild, if any. This only includes the invite code; not the entire URL
+     * The vanity invite code of the guild, if any
      * @type {?string}
      */
     this.vanityURLCode = data.vanity_url_code;
