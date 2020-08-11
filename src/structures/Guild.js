@@ -364,7 +364,7 @@ class Guild extends Base {
     this.rulesChannelID = data.rules_channel_id;
 
     /**
-     * The ID of the public updates channel for the guild
+     * The ID of the community updates channel for the guild
      * @type {?Snowflake}
      */
     this.publicUpdatesChannelID = data.public_updates_channel_id;
@@ -951,7 +951,7 @@ class Guild extends Base {
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
-   * @property {ChannelResolvable} [publicUpdatesChannel] The public updates channel of the guild
+   * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
    */
 
@@ -1215,14 +1215,14 @@ class Guild extends Base {
   }
 
   /**
-   * Edits the public updates channel of the guild.
-   * @param {ChannelResolvable} publicUpdatesChannel The new public updates channel
-   * @param {string} [reason] Reason for changing the guild's public updates channel
+   * Edits the community updates channel of the guild.
+   * @param {ChannelResolvable} publicUpdatesChannel The new community updates channel
+   * @param {string} [reason] Reason for changing the guild's community updates channel
    * @returns {Promise<Guild>}
    * @example
-   * // Edit the guild public updates channel
+   * // Edit the guild community updates channel
    * guild.setPublicUpdatesChannel(channel)
-   *  .then(updated => console.log(`Updated guild public updates channel to ${guild.publicUpdatesChannel.name}`))
+   *  .then(updated => console.log(`Updated guild community updates channel to ${guild.publicUpdatesChannel.name}`))
    *  .catch(console.error);
    */
   setPublicUpdatesChannel(publicUpdatesChannel, reason) {
