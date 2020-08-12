@@ -9,7 +9,7 @@ const GuildChannel = require('./GuildChannel');
 class CategoryChannel extends GuildChannel {
   /**
    * Channels that are a part of this category
-   * @type {?Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, GuildChannel>}
    * @readonly
    */
   get children() {

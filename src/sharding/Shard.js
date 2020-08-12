@@ -115,6 +115,7 @@ class Shard extends EventEmitter {
         .fork(path.resolve(this.manager.file), this.args, {
           env: this.env,
           execArgv: this.execArgv,
+          silent: true,
         })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);

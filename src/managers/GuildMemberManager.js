@@ -173,7 +173,7 @@ class GuildMemberManager extends BaseManager {
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
@@ -185,12 +185,12 @@ class GuildMemberManager extends BaseManager {
    *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
-    if (options.days) options['delete-message-days'] = options.days;
+    if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api
       .guilds(this.guild.id)
-      .bans[id].put({ query: options })
+      .bans[id].put({ data: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
         const _user = this.client.users.resolve(id);

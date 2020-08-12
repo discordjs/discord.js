@@ -24,12 +24,11 @@ class Util {
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
 
-    props = Object.assign(
-      ...Object.keys(obj)
-        .filter(k => !k.startsWith('_'))
-        .map(k => ({ [k]: true })),
-      ...props,
-    );
+    const objProps = Object.keys(obj)
+      .filter(k => !k.startsWith('_'))
+      .map(k => ({ [k]: true }));
+
+    props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
     const out = {};
 
@@ -420,6 +419,10 @@ class Util {
    * - `DARK_GREY`
    * - `LIGHT_GREY`
    * - `DARK_NAVY`
+   * - `BLURPLE`
+   * - `GREYPLE`
+   * - `DARK_BUT_NOT_BLACK`
+   * - `NOT_QUITE_BLACK`
    * - `RANDOM`
    * @typedef {string|number|number[]} ColorResolvable
    */
