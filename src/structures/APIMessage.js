@@ -178,10 +178,25 @@ class APIMessage {
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
     }
 
-    const allowedMentions =
+    let allowedMentions =
       typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
+    if (this.options.reply) {
+      const id = this.target.client.users.resolveID(this.options.reply);
+      if (allowedMentions) {
+        // Clone the object as to alter the ClientOptions object
+        allowedMentions = Util.cloneObject(allowedMentions);
+        const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
+        // Check if the mention won't be parsed, and isn't supplied in `users`
+        if (!parsed && !(allowedMentions.users && allowedMentions.users.includes(id))) {
+          if (!allowedMentions.users) allowedMentions.users = [];
+          allowedMentions.users.push(id);
+        }
+      } else {
+        allowedMentions = { users: [id] };
+      }
+    }
 
     this.data = {
       content,
