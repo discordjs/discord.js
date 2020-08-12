@@ -206,6 +206,7 @@ class Guild extends Base {
     /**
      * Whether embedded images are enabled on this guild
      * @type {boolean}
+     * @deprecated
      */
     this.embedEnabled = data.embed_enabled;
 
@@ -251,6 +252,7 @@ class Guild extends Base {
      * The embed channel ID, if enabled
      * @type {?string}
      * @name Guild#embedChannelID
+     * @deprecated
      */
     if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
 
@@ -557,6 +559,7 @@ class Guild extends Base {
    * Embed channel for this guild
    * @type {?TextChannel}
    * @readonly
+   * @deprecated
    */
   get embedChannel() {
     return this.client.channels.cache.get(this.embedChannelID) || null;
@@ -839,15 +842,23 @@ class Guild extends Base {
   }
 
   /**
-   * The Guild Embed object
-   * @typedef {Object} GuildEmbedData
-   * @property {boolean} enabled Whether the embed is enabled
-   * @property {?GuildChannel} channel The embed channel
+   * Data for the Guild Widget object
+   * @typedef {Object} GuildWidget
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannel} channel The widget channel
+   */
+
+  /**
+   * The Guild Widget object
+   * @typedef {Object} GuildWidgetData
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannelResolvable} channel The widget channel
    */
 
   /**
    * Fetches the guild embed.
-   * @returns {Promise<GuildEmbedData>}
+   * @returns {Promise<GuildWidget>}
+   * @deprecated
    * @example
    * // Fetches the guild embed
    * guild.fetchEmbed()
@@ -858,6 +869,25 @@ class Guild extends Base {
     return this.client.api
       .guilds(this.id)
       .embed.get()
+      .then(data => ({
+        enabled: data.enabled,
+        channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
+      }));
+  }
+
+  /**
+   * Fetches the guild widget.
+   * @returns {Promise<GuildWidget>}
+   * @example
+   * // Fetches the guild widget
+   * guild.fetchWidget()
+   *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchWidget() {
+    return this.client.api
+      .guilds(this.id)
+      .widget.get()
       .then(data => ({
         enabled: data.enabled,
         channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -1262,9 +1292,10 @@ class Guild extends Base {
 
   /**
    * Edits the guild's embed.
-   * @param {GuildEmbedData} embed The embed for the guild
+   * @param {GuildWidgetData} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   setEmbed(embed, reason) {
     return this.client.api
@@ -1273,6 +1304,25 @@ class Guild extends Base {
         data: {
           enabled: embed.enabled,
           channel_id: this.channels.resolveID(embed.channel),
+        },
+        reason,
+      })
+      .then(() => this);
+  }
+
+  /**
+   * Edits the guild's widget.
+   * @param {GuildWidgetData} widget The widget for the guild
+   * @param {string} [reason] Reason for changing the guild's widget
+   * @returns {Promise<Guild>}
+   */
+  setWidget(widget, reason) {
+    return this.client.api
+      .guilds(this.id)
+      .widget.patch({
+        data: {
+          enabled: widget.enabled,
+          channel_id: this.channels.resolveID(widget.channel),
         },
         reason,
       })
@@ -1403,6 +1453,10 @@ class Guild extends Base {
     );
   }
 }
+
+Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
+
+Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
 
 Guild.prototype.fetchVanityCode = deprecate(
   Guild.prototype.fetchVanityCode,
