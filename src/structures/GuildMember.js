@@ -65,7 +65,7 @@ class GuildMember extends Base {
      * @name GuildMember#nickname
      */
     this.nickname = null;
-    
+
     this._roles = [];
     if (data) this._patch(data);
   }
