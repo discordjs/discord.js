@@ -63,7 +63,7 @@ class MessageManager extends BaseManager {
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
-  fetch(message, cache = true, force = true) {
+  fetch(message, cache = true, force = false) {
     return typeof message === 'string' ? this._fetchId(message, cache, force) : this._fetchMany(message, cache);
   }
 

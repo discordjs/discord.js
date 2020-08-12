@@ -158,8 +158,8 @@ declare module 'discord.js' {
     public deleted: boolean;
     public id: Snowflake;
     public type: keyof typeof ChannelType;
-    public delete(reason?: string): Promise<this>;
-    public fetch(force?: boolean): Promise<this>;
+    public delete(reason?: string): Promise<Channel>;
+    public fetch(force?: boolean): Promise<Channel>;
     public toString(): string;
   }
 
