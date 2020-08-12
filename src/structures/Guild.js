@@ -131,10 +131,16 @@ class Guild extends Base {
     this.icon = data.icon;
 
     /**
-     * The hash of the guild splash image (VIP only)
+     * The hash of the guild invite splash image
      * @type {?string}
      */
     this.splash = data.splash;
+
+    /**
+     * The hash of the guild discovery splash image
+     * @type {?string}
+     */
+    this.discoverySplash = data.discovery_splash;
 
     /**
      * The region the guild is located in
@@ -159,13 +165,12 @@ class Guild extends Base {
      * * ANIMATED_ICON
      * * BANNER
      * * COMMERCE
+     * * COMMUNITY
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
      * * NEWS
      * * PARTNERED
-     * * PUBLIC
-     * * PUBLIC_DISABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
@@ -206,6 +211,7 @@ class Guild extends Base {
     /**
      * Whether embedded images are enabled on this guild
      * @type {boolean}
+     * @deprecated
      */
     this.embedEnabled = data.embed_enabled;
 
@@ -251,6 +257,7 @@ class Guild extends Base {
      * The embed channel ID, if enabled
      * @type {?string}
      * @name Guild#embedChannelID
+     * @deprecated
      */
     if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
 
@@ -328,7 +335,7 @@ class Guild extends Base {
     }
 
     /**
-     * The vanity URL code of the guild, if any
+     * The vanity invite code of the guild, if any
      * @type {?string}
      */
     this.vanityURLCode = data.vanity_url_code;
@@ -360,17 +367,21 @@ class Guild extends Base {
 
     /**
      * The ID of the rules channel for the guild
-     * <info>This is only available on guilds with the `PUBLIC` feature</info>
      * @type {?Snowflake}
      */
     this.rulesChannelID = data.rules_channel_id;
 
     /**
-     * The ID of the public updates channel for the guild
-     * <info>This is only available on guilds with the `PUBLIC` feature</info>
+     * The ID of the community updates channel for the guild
      * @type {?Snowflake}
      */
     this.publicUpdatesChannelID = data.public_updates_channel_id;
+
+    /**
+     * The preferred locale of the guild, defaults to `en-US`
+     * @type {string}
+     */
+    this.preferredLocale = data.preferred_locale;
 
     if (data.channels) {
       this.channels.cache.clear();
@@ -503,13 +514,23 @@ class Guild extends Base {
   }
 
   /**
-   * The URL to this guild's splash.
+   * The URL to this guild's invite splash image.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   splashURL({ format, size } = {}) {
     if (!this.splash) return null;
     return this.client.rest.cdn.Splash(this.id, this.splash, format, size);
+  }
+
+  /**
+   * The URL to this guild's discovery splash image.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  discoverySplashURL({ format, size } = {}) {
+    if (!this.discoverySplash) return null;
+    return this.client.rest.cdn.DiscoverySplash(this.id, this.discoverySplash, format, size);
   }
 
   /**
@@ -557,6 +578,7 @@ class Guild extends Base {
    * Embed channel for this guild
    * @type {?TextChannel}
    * @readonly
+   * @deprecated
    */
   get embedChannel() {
     return this.client.channels.cache.get(this.embedChannelID) || null;
@@ -564,7 +586,6 @@ class Guild extends Base {
 
   /**
    * Rules channel for this guild
-   * <info>This is only available on guilds with the `PUBLIC` feature</info>
    * @type {?TextChannel}
    * @readonly
    */
@@ -574,7 +595,6 @@ class Guild extends Base {
 
   /**
    * Public updates channel for this guild
-   * <info>This is only available on guilds with the `PUBLIC` feature</info>
    * @type {?TextChannel}
    * @readonly
    */
@@ -747,7 +767,7 @@ class Guild extends Base {
   }
 
   /**
-   * Obtains a guild preview for this guild from Discord, only available for public guilds.
+   * Obtains a guild preview for this guild from Discord.
    * @returns {Promise<GuildPreview>}
    */
   fetchPreview() {
@@ -839,15 +859,23 @@ class Guild extends Base {
   }
 
   /**
-   * The Guild Embed object
-   * @typedef {Object} GuildEmbedData
-   * @property {boolean} enabled Whether the embed is enabled
-   * @property {?GuildChannel} channel The embed channel
+   * Data for the Guild Widget object
+   * @typedef {Object} GuildWidget
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannel} channel The widget channel
+   */
+
+  /**
+   * The Guild Widget object
+   * @typedef {Object} GuildWidgetData
+   * @property {boolean} enabled Whether the widget is enabled
+   * @property {?GuildChannelResolvable} channel The widget channel
    */
 
   /**
    * Fetches the guild embed.
-   * @returns {Promise<GuildEmbedData>}
+   * @returns {Promise<GuildWidget>}
+   * @deprecated
    * @example
    * // Fetches the guild embed
    * guild.fetchEmbed()
@@ -858,6 +886,25 @@ class Guild extends Base {
     return this.client.api
       .guilds(this.id)
       .embed.get()
+      .then(data => ({
+        enabled: data.enabled,
+        channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
+      }));
+  }
+
+  /**
+   * Fetches the guild widget.
+   * @returns {Promise<GuildWidget>}
+   * @example
+   * // Fetches the guild widget
+   * guild.fetchWidget()
+   *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  fetchWidget() {
+    return this.client.api
+      .guilds(this.id)
+      .widget.get()
       .then(data => ({
         enabled: data.enabled,
         channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -945,10 +992,14 @@ class Guild extends Base {
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {Base64Resolvable} [icon] The icon of the guild
    * @property {GuildMemberResolvable} [owner] The owner of the guild
-   * @property {Base64Resolvable} [splash] The splash screen of the guild
+   * @property {Base64Resolvable} [splash] The invite splash image of the guild
+   * @property {Base64Resolvable} [discoverySplash] The discovery splash image of the guild
    * @property {Base64Resolvable} [banner] The banner of the guild
    * @property {DefaultMessageNotifications|number} [defaultMessageNotifications] The default message notifications
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The system channel flags of the guild
+   * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
+   * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
+   * @property {string} [preferredLocale] The preferred locale of the guild
    */
 
   /**
@@ -985,6 +1036,7 @@ class Guild extends Base {
     if (typeof data.icon !== 'undefined') _data.icon = data.icon;
     if (data.owner) _data.owner_id = this.client.users.resolveID(data.owner);
     if (data.splash) _data.splash = data.splash;
+    if (data.discoverySplash) _data.discovery_splash = data.discoverySplash;
     if (data.banner) _data.banner = data.banner;
     if (typeof data.explicitContentFilter !== 'undefined') {
       _data.explicit_content_filter =
@@ -1001,6 +1053,13 @@ class Guild extends Base {
     if (typeof data.systemChannelFlags !== 'undefined') {
       _data.system_channel_flags = SystemChannelFlags.resolve(data.systemChannelFlags);
     }
+    if (typeof data.rulesChannel !== 'undefined') {
+      _data.rules_channel_id = this.client.channels.resolveID(data.rulesChannel);
+    }
+    if (typeof data.publicUpdatesChannel !== 'undefined') {
+      _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api
       .guilds(this.id)
       .patch({ data: _data, reason })
@@ -1160,9 +1219,9 @@ class Guild extends Base {
   }
 
   /**
-   * Sets a new guild splash screen.
-   * @param {Base64Resolvable|BufferResolvable} splash The new splash screen of the guild
-   * @param {string} [reason] Reason for changing the guild's splash screen
+   * Sets a new guild invite splash image.
+   * @param {Base64Resolvable|BufferResolvable} splash The new invite splash image of the guild
+   * @param {string} [reason] Reason for changing the guild's invite splash image
    * @returns {Promise<Guild>}
    * @example
    * // Edit the guild splash
@@ -1172,6 +1231,21 @@ class Guild extends Base {
    */
   async setSplash(splash, reason) {
     return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
+  }
+
+  /**
+   * Sets a new guild discovery splash image.
+   * @param {Base64Resolvable|BufferResolvable} discoverySplash The new discovery splash image of the guild
+   * @param {string} [reason] Reason for changing the guild's discovery splash image
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild discovery splash
+   * guild.setDiscoverySplash('./discoverysplash.png')
+   *   .then(updated => console.log('Updated the guild discovery splash'))
+   *   .catch(console.error);
+   */
+  async setDiscoverySplash(discoverySplash, reason) {
+    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash), reason });
   }
 
   /**
@@ -1186,6 +1260,51 @@ class Guild extends Base {
    */
   async setBanner(banner, reason) {
     return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+  }
+
+  /**
+   * Edits the rules channel of the guild.
+   * @param {ChannelResolvable} rulesChannel The new rules channel
+   * @param {string} [reason] Reason for changing the guild's rules channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild rules channel
+   * guild.setRulesChannel(channel)
+   *  .then(updated => console.log(`Updated guild rules channel to ${guild.rulesChannel.name}`))
+   *  .catch(console.error);
+   */
+  setRulesChannel(rulesChannel, reason) {
+    return this.edit({ rulesChannel }, reason);
+  }
+
+  /**
+   * Edits the community updates channel of the guild.
+   * @param {ChannelResolvable} publicUpdatesChannel The new community updates channel
+   * @param {string} [reason] Reason for changing the guild's community updates channel
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild community updates channel
+   * guild.setPublicUpdatesChannel(channel)
+   *  .then(updated => console.log(`Updated guild community updates channel to ${guild.publicUpdatesChannel.name}`))
+   *  .catch(console.error);
+   */
+  setPublicUpdatesChannel(publicUpdatesChannel, reason) {
+    return this.edit({ publicUpdatesChannel }, reason);
+  }
+
+  /**
+   * Edits the preferred locale of the guild.
+   * @param {string} preferredLocale The new preferred locale of the guild
+   * @param {string} [reason] Reason for changing the guild's preferred locale
+   * @returns {Promise<Guild>}
+   * @example
+   * // Edit the guild preferred locale
+   * guild.setPreferredLocale('en-US')
+   *  .then(updated => console.log(`Updated guild preferred locale to ${guild.preferredLocale}`))
+   *  .catch(console.error);
+   */
+  setPreferredLocale(preferredLocale, reason) {
+    return this.edit({ preferredLocale }, reason);
   }
 
   /**
@@ -1262,9 +1381,10 @@ class Guild extends Base {
 
   /**
    * Edits the guild's embed.
-   * @param {GuildEmbedData} embed The embed for the guild
+   * @param {GuildWidgetData} embed The embed for the guild
    * @param {string} [reason] Reason for changing the guild's embed
    * @returns {Promise<Guild>}
+   * @deprecated
    */
   setEmbed(embed, reason) {
     return this.client.api
@@ -1273,6 +1393,25 @@ class Guild extends Base {
         data: {
           enabled: embed.enabled,
           channel_id: this.channels.resolveID(embed.channel),
+        },
+        reason,
+      })
+      .then(() => this);
+  }
+
+  /**
+   * Edits the guild's widget.
+   * @param {GuildWidgetData} widget The widget for the guild
+   * @param {string} [reason] Reason for changing the guild's widget
+   * @returns {Promise<Guild>}
+   */
+  setWidget(widget, reason) {
+    return this.client.api
+      .guilds(this.id)
+      .widget.patch({
+        data: {
+          enabled: widget.enabled,
+          channel_id: this.channels.resolveID(widget.channel),
         },
         reason,
       })
@@ -1327,6 +1466,7 @@ class Guild extends Base {
       this.id === guild.id &&
       this.available === guild.available &&
       this.splash === guild.splash &&
+      this.discoverySplash === guild.discoverySplash &&
       this.region === guild.region &&
       this.name === guild.name &&
       this.memberCount === guild.memberCount &&
@@ -1371,6 +1511,7 @@ class Guild extends Base {
     });
     json.iconURL = this.iconURL();
     json.splashURL = this.splashURL();
+    json.discoverySplashURL = this.discoverySplashURL();
     json.bannerURL = this.bannerURL();
     return json;
   }
@@ -1403,6 +1544,10 @@ class Guild extends Base {
     );
   }
 }
+
+Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
+
+Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
 
 Guild.prototype.fetchVanityCode = deprecate(
   Guild.prototype.fetchVanityCode,
