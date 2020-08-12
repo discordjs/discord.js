@@ -166,7 +166,7 @@ class GuildMemberManager extends BaseManager {
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {number} [options.days=0] Number of days of messages to delete (0-7)
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
