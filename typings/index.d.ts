@@ -2537,7 +2537,7 @@ declare module 'discord.js' {
     name?: string;
     region?: string;
     verificationLevel?: VerificationLevel;
-    explicitContentFilter?: ExplicitContentFilterLevel;
+    explicitContentFilter?: ExplicitContentFilterLevel | number;
     defaultMessageNotifications?: DefaultMessageNotifications | number;
     afkChannel?: ChannelResolvable;
     systemChannel?: ChannelResolvable;
