@@ -711,7 +711,7 @@ declare module 'discord.js' {
     public setSplash(splash: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
-    public setVerificationLevel(verificationLevel: VerificationLevel, reason?: string): Promise<Guild>;
+    public setVerificationLevel(verificationLevel: VerificationLevel | number, reason?: string): Promise<Guild>;
     public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
     public splashURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
@@ -2536,7 +2536,7 @@ declare module 'discord.js' {
   interface GuildEditData {
     name?: string;
     region?: string;
-    verificationLevel?: VerificationLevel;
+    verificationLevel?: VerificationLevel | number;
     explicitContentFilter?: ExplicitContentFilterLevel | number;
     defaultMessageNotifications?: DefaultMessageNotifications | number;
     afkChannel?: ChannelResolvable;
