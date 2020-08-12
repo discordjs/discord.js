@@ -618,6 +618,7 @@ declare module 'discord.js' {
     public defaultMessageNotifications: DefaultMessageNotifications | number;
     public deleted: boolean;
     public description: string | null;
+    public discoverySplash: string | null;
     public embedChannel: GuildChannel | null;
     public embedChannelID: Snowflake | null;
     public embedEnabled: boolean;
@@ -668,6 +669,7 @@ declare module 'discord.js' {
     public bannerURL(options?: ImageURLOptions): string | null;
     public createIntegration(data: IntegrationData, reason?: string): Promise<Guild>;
     public delete(): Promise<Guild>;
+    public discoverySplashURL(options?: ImageURLOptions): string | null;
     public edit(data: GuildEditData, reason?: string): Promise<Guild>;
     public equals(guild: Guild): boolean;
     public fetch(): Promise<Guild>;
@@ -694,6 +696,7 @@ declare module 'discord.js' {
       defaultMessageNotifications: DefaultMessageNotifications | number,
       reason?: string,
     ): Promise<Guild>;
+    public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
     public setExplicitContentFilter(explicitContentFilter: ExplicitContentFilterLevel, reason?: string): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -2539,6 +2542,7 @@ declare module 'discord.js' {
     icon?: Base64Resolvable;
     owner?: GuildMemberResolvable;
     splash?: Base64Resolvable;
+    discoverySplash?: Base64Resolvable;
     banner?: Base64Resolvable;
   }
 
