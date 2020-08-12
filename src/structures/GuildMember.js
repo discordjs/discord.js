@@ -80,15 +80,7 @@ class GuildMember extends Base {
       this.user = this.client.users.add(data.user, true);
     }
 
-    if ('nick' in data) {
-      /**
-       * The nickname of this member, if they have one
-       * @type {?string}
-       * @name GuildMember#nickname
-       */
-      this.nickname = data.nick;
-    }
-
+    if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if ('roles' in data) this._roles = data.roles;
