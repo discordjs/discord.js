@@ -373,10 +373,11 @@ class GuildMember extends Base {
 
   /**
    * Fetches this GuildMember.
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<GuildMember>}
    */
-  fetch() {
-    return this.guild.members.fetch(this.id, true);
+  fetch(force = false) {
+    return this.guild.members.fetch({ user: this.id, cache: true, force });
   }
 
   /**

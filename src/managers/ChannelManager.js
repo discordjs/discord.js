@@ -74,6 +74,7 @@ class ChannelManager extends BaseManager {
    * Obtains a channel from Discord, or the channel cache if it's already available.
    * @param {Snowflake} id ID of the channel
    * @param {boolean} [cache=true] Whether to cache the new channel object if it isn't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Channel>}
    * @example
    * // Fetch a channel by its id
@@ -81,9 +82,11 @@ class ChannelManager extends BaseManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true) {
-    const existing = this.cache.get(id);
-    if (existing && !existing.partial) return existing;
+  async fetch(id, cache = true, force = false) {
+    if (!force) {
+      const existing = this.cache.get(id);
+      if (existing && !existing.partial) return existing;
+    }
 
     const data = await this.client.api.channels(id).get();
     return this.add(data, null, cache);
