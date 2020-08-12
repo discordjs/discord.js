@@ -334,8 +334,22 @@ class GuildChannel extends Channel {
       });
     }
 
-    const permission_overwrites =
-      data.permissionOverwrites && data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites;
+
+    if (data.permissionOverwrites) {
+      permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    }
+
+    if (data.lockPermissions) {
+      if (data.parentID) {
+        const newParent = this.guild.channels.resolve(data.parentID);
+        if (newParent && newParent.type === 'category') {
+          permission_overwrites = newParent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+        }
+      } else if (this.parent) {
+        permission_overwrites = this.parent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+      }
+    }
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {

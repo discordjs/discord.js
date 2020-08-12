@@ -341,7 +341,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains a guild preview from Discord, only available for public guilds.
+   * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
