@@ -2160,7 +2160,7 @@ declare module 'discord.js' {
   type Base64String = string;
 
   type BitFieldResolvable<T extends string> =
-    | RecursiveArray<T | number | Readonly<BitField<T>>>
+    | RecursiveReadonlyArray<T | number | Readonly<BitField<T>>>
     | T
     | number
     | Readonly<BitField<T>>;
@@ -2836,6 +2836,8 @@ declare module 'discord.js' {
     | 'MANAGE_EMOJIS';
 
   interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> {}
+
+  type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
   interface PermissionOverwriteOptions {
     allow: PermissionResolvable;
