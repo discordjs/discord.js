@@ -1230,8 +1230,8 @@ class Guild extends Base {
    * @example
    * // Edit the guild discovery splash
    * guild.setDiscoverySplash('./discoverysplash.png')
-   *  .then(updated => console.log('Updated the guild discovery splash'))
-   *  .catch(console.error);
+   *   .then(updated => console.log('Updated the guild discovery splash'))
+   *   .catch(console.error);
    */
   async setDiscoverySplash(discoverySplash, reason) {
     return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash), reason });
