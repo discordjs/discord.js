@@ -28,10 +28,8 @@ class MessageReactionAdd extends Action {
 
     // Verify reaction
     if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
-    const existing =
-      message.reactions.cache.has(data.emoji.id || data.emoji.name) &&
-      message.reactions.cache.get(data.emoji.id || data.emoji.name).users.cache.get(user.id);
-    if (existing) return { message, reaction: existing, user };
+    const existing = message.reactions.cache.get(data.emoji.id || data.emoji.name)
+    if (existing && existing.users.cache.has(user.id)) return { message, reaction: existing, user };
     const reaction = message.reactions.add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
