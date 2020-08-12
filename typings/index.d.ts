@@ -158,8 +158,8 @@ declare module 'discord.js' {
     public deleted: boolean;
     public id: Snowflake;
     public type: keyof typeof ChannelType;
-    public delete(reason?: string): Promise<this>;
-    public fetch(): Promise<this>;
+    public delete(reason?: string): Promise<Channel>;
+    public fetch(): Promise<Channel>;
     public toString(): string;
   }
 
@@ -193,10 +193,28 @@ declare module 'discord.js' {
     public toJSON(): object;
 
     public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public on<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
 
     public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public once<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
 
     public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+    public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
+
+    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public off<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
+
+    public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
+    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
   }
 
   export class ClientApplication extends Base {
@@ -658,7 +676,7 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
-    public fetchEmbed(): Promise<GuildEmbedData>;
+    public fetchEmbed(): Promise<GuildWidget>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
@@ -666,6 +684,7 @@ declare module 'discord.js' {
     public fetchVanityData(): Promise<{ code: string; uses: number }>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+    public fetchWidget(): Promise<GuildWidget>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public leave(): Promise<Guild>;
     public member(user: UserResolvable): GuildMember | null;
@@ -678,7 +697,7 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
-    public setEmbed(embed: GuildEmbedData, reason?: string): Promise<Guild>;
+    public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
     public setExplicitContentFilter(explicitContentFilter: ExplicitContentFilterLevel, reason?: string): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setName(name: string, reason?: string): Promise<Guild>;
@@ -689,6 +708,7 @@ declare module 'discord.js' {
     public setSystemChannel(systemChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setSystemChannelFlags(systemChannelFlags: SystemChannelFlagsResolvable, reason?: string): Promise<Guild>;
     public setVerificationLevel(verificationLevel: VerificationLevel, reason?: string): Promise<Guild>;
+    public setWidget(widget: GuildWidgetData, reason?: string): Promise<Guild>;
     public splashURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
     public toString(): string;
@@ -778,6 +798,7 @@ declare module 'discord.js' {
   export class GuildEmoji extends BaseGuildEmoji {
     public readonly deletable: boolean;
     public guild: Guild;
+    public author: User | null;
     public readonly roles: GuildEmojiRoleManager;
     public readonly url: string;
     public delete(reason?: string): Promise<GuildEmoji>;
@@ -874,7 +895,7 @@ declare module 'discord.js' {
     public syncedAt: number;
     public syncing: boolean;
     public type: string;
-    public user: User;
+    public user?: User;
     public delete(reason?: string): Promise<Integration>;
     public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
     public sync(): Promise<Integration>;
@@ -914,7 +935,7 @@ declare module 'discord.js' {
   }
 
   export class Message extends Base {
-    constructor(client: Client, data: object, channel: TextChannel | DMChannel);
+    constructor(client: Client, data: object, channel: TextChannel | DMChannel | NewsChannel);
     private _edits: Message[];
     private patch(data: object): void;
 
@@ -961,7 +982,7 @@ declare module 'discord.js' {
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
     public fetch(): Promise<Message>;
-    public pin(): Promise<Message>;
+    public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
@@ -986,7 +1007,7 @@ declare module 'discord.js' {
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(): Promise<Message>;
+    public unpin(options?: { reason?: string }): Promise<Message>;
   }
 
   export class MessageAttachment {
@@ -1841,6 +1862,7 @@ declare module 'discord.js' {
     public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
     public resolve(resolvable: R): Holds | null;
     public resolveID(resolvable: R): K | null;
+    public valueOf(): Collection<K, Holds>;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
@@ -1936,7 +1958,7 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
   }
 
-  export class ReactionManager extends BaseManager<Snowflake, MessageReaction, MessageReactionResolvable> {
+  export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
     constructor(message: Message, iterable?: Iterable<any>);
     public message: Message;
     public removeAll(): Promise<Message>;
@@ -2013,7 +2035,7 @@ declare module 'discord.js' {
     typingCount: number;
     awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
     bulkDelete(
-      messages: Collection<Snowflake, Message> | Message[] | Snowflake[] | number,
+      messages: Collection<Snowflake, Message> | MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
     createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
@@ -2070,7 +2092,7 @@ declare module 'discord.js' {
     deaf?: boolean;
   }
 
-  interface APIErrror {
+  interface APIError {
     UNKNOWN_ACCOUNT: number;
     UNKNOWN_APPLICATION: number;
     UNKNOWN_CHANNEL: number;
@@ -2141,7 +2163,7 @@ declare module 'discord.js' {
   type Base64String = string;
 
   type BitFieldResolvable<T extends string> =
-    | RecursiveArray<T | number | Readonly<BitField<T>>>
+    | RecursiveReadonlyArray<T | number | Readonly<BitField<T>>>
     | T
     | number
     | Readonly<BitField<T>>;
@@ -2279,7 +2301,7 @@ declare module 'discord.js' {
     target: WebSocket;
   }
 
-  type CollectorFilter = (...args: any[]) => boolean;
+  type CollectorFilter = (...args: any[]) => boolean | Promise<boolean>;
 
   interface CollectorOptions {
     time?: number;
@@ -2313,6 +2335,10 @@ declare module 'discord.js' {
     | 'DARK_GREY'
     | 'LIGHT_GREY'
     | 'DARK_NAVY'
+    | 'BLURPLE'
+    | 'GREYPLE'
+    | 'DARK_BUT_NOT_BLACK'
+    | 'NOT_QUITE_BLACK'
     | 'RANDOM'
     | [number, number, number]
     | number
@@ -2498,6 +2524,11 @@ declare module 'discord.js' {
     name?: string;
   }
 
+  interface GuildWidget {
+    enabled: boolean;
+    channel: GuildChannel | null;
+  }
+
   interface GuildEditData {
     name?: string;
     region?: string;
@@ -2513,11 +2544,6 @@ declare module 'discord.js' {
     splash?: Base64Resolvable;
     discoverySplash?: Base64Resolvable;
     banner?: Base64Resolvable;
-  }
-
-  interface GuildEmbedData {
-    enabled: boolean;
-    channel: GuildChannelResolvable | null;
   }
 
   interface GuildEmojiCreateOptions {
@@ -2563,6 +2589,11 @@ declare module 'discord.js' {
     days?: number;
     dry?: boolean;
     reason?: string;
+  }
+
+  interface GuildWidgetData {
+    enabled: boolean;
+    channel: GuildChannelResolvable | null;
   }
 
   interface HTTPOptions {
@@ -2638,7 +2669,7 @@ declare module 'discord.js' {
 
   interface MessageEditOptions {
     content?: string;
-    embed?: MessageEmbedOptions | null;
+    embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString>;
     allowedMentions?: MessageMentionOptions;
@@ -2810,6 +2841,8 @@ declare module 'discord.js' {
 
   interface RecursiveArray<T> extends Array<T | RecursiveArray<T>> {}
 
+  type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+
   interface PermissionOverwriteOptions {
     allow: PermissionResolvable;
     deny: PermissionResolvable;
@@ -2919,9 +2952,9 @@ declare module 'discord.js' {
     readonly tag: null;
   }
 
-  type PresenceStatus = ClientPresenceStatus | 'offline';
-
   type PresenceStatusData = ClientPresenceStatus | 'invisible';
+
+  type PresenceStatus = PresenceStatusData | 'offline';
 
   interface RateLimitData {
     timeout: number;
@@ -3056,6 +3089,13 @@ declare module 'discord.js' {
     large_threshold?: number;
     compress?: boolean;
     intents?: BitFieldResolvable<IntentsString> | number;
+    properties?: WebSocketProperties;
+  }
+
+  interface WebSocketProperties {
+    $os?: string;
+    $browser?: string;
+    $device?: string;
   }
 
   type WSEventType =

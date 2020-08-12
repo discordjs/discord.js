@@ -66,16 +66,18 @@ class GuildMember extends Base {
      */
     this.deleted = false;
 
-    this._roles = [];
-    if (data) this._patch(data);
-  }
-
-  _patch(data) {
     /**
      * The nickname of this member, if they have one
      * @type {?string}
      * @name GuildMember#nickname
      */
+    this.nickname = null;
+
+    this._roles = [];
+    if (data) this._patch(data);
+  }
+
+  _patch(data) {
     if (typeof data.nick !== 'undefined') this.nickname = data.nick;
 
     if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
@@ -356,7 +358,7 @@ class GuildMember extends Base {
   /**
    * Bans this guild member.
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example

@@ -13,6 +13,7 @@ const Collection = require('../util/Collection');
 const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -23,14 +24,14 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the message
-   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel}
+     * @type {TextChannel|DMChannel|NewsChannel}
      */
     this.channel = channel;
 
@@ -115,7 +116,7 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = new Date(data.timestamp).getTime();
+    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
 
     /**
      * The timestamp the message was last edited at (if applicable)
@@ -400,7 +401,7 @@ class Message extends Base {
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
-   * @property {Object} [embed] An embed to be added/edited
+   * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    */
@@ -428,25 +429,39 @@ class Message extends Base {
 
   /**
    * Pins this message to the channel's pinned messages.
+   * @param {Object} [options] Options for pinning
+   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
+   * @example
+   * // Pin a message with a reason
+   * message.pin({ reason: 'important' })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  pin() {
+  pin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .put()
+      .put(options)
       .then(() => this);
   }
 
   /**
    * Unpins this message from the channel's pinned messages.
+   * @param {Object} [options] Options for unpinning
+   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
+   * @example
+   * // Unpin a message with a reason
+   * message.unpin({ reason: 'no longer relevant' })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  unpin() {
+  unpin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .delete()
+      .delete(options)
       .then(() => this);
   }
 
