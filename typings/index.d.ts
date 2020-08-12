@@ -890,7 +890,7 @@ declare module 'discord.js' {
     public syncedAt: number;
     public syncing: boolean;
     public type: string;
-    public user: User;
+    public user?: User;
     public delete(reason?: string): Promise<Integration>;
     public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
     public sync(): Promise<Integration>;
