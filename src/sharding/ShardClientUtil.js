@@ -136,7 +136,7 @@ class ShardClientUtil {
   broadcastEval(script) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
-      script = typeof script === 'function' ? `(${script})(this)` : script;
+      if (typeof script === 'function') script = `(${script})(this)`;
 
       const listener = message => {
         if (!message || (message._sEval !== script && message._sEval !== `(${script})(this)`)) return;
