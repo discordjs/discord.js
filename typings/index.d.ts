@@ -193,10 +193,28 @@ declare module 'discord.js' {
     public toJSON(): object;
 
     public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public on<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
 
     public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public once<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
 
     public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
+    public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
+
+    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public off<S extends string | symbol>(
+      event: Exclude<S, keyof ClientEvents>,
+      listener: (...args: any[]) => void,
+    ): this;
+
+    public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
+    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
   }
 
   export class ClientApplication extends Base {
@@ -958,7 +976,7 @@ declare module 'discord.js' {
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
     public fetch(force?: boolean): Promise<Message>;
-    public pin(): Promise<Message>;
+    public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
@@ -983,7 +1001,7 @@ declare module 'discord.js' {
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(): Promise<Message>;
+    public unpin(options?: { reason?: string }): Promise<Message>;
   }
 
   export class MessageAttachment {
@@ -1477,7 +1495,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public discriminator: string;
     public readonly defaultAvatarURL: string;
-    public readonly dmChannel: DMChannel;
+    public readonly dmChannel: DMChannel | null;
     public flags?: Readonly<UserFlags>;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
@@ -2014,7 +2032,7 @@ declare module 'discord.js' {
     typingCount: number;
     awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
     bulkDelete(
-      messages: Collection<Snowflake, Message> | Message[] | Snowflake[] | number,
+      messages: Collection<Snowflake, Message> | MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
     createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
