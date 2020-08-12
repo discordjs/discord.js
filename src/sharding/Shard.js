@@ -255,6 +255,7 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
+    if (typeof script === 'function') script = `(${script})(this)`;
     if (this._evals.has(script)) return this._evals.get(script);
 
     const promise = new Promise((resolve, reject) => {
