@@ -532,11 +532,11 @@ class Message extends Base {
 
   /**
    * Fetch this message.
-   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
-  fetch(forceFetch = false) {
-    return this.channel.messages.fetch(this.id, true, forceFetch);
+  fetch(force = false) {
+    return this.channel.messages.fetch(this.id, true, force);
   }
 
   /**

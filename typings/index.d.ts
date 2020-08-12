@@ -159,7 +159,7 @@ declare module 'discord.js' {
     public id: Snowflake;
     public type: keyof typeof ChannelType;
     public delete(reason?: string): Promise<this>;
-    public fetch(forceFetch?: boolean): Promise<this>;
+    public fetch(force?: boolean): Promise<this>;
     public toString(): string;
   }
 
@@ -563,7 +563,7 @@ declare module 'discord.js' {
     public recipient: User;
     public readonly partial: false;
     public type: 'dm';
-    public fetch(forceFetch?: boolean): Promise<this>;
+    public fetch(force?: boolean): Promise<this>;
   }
 
   export class Emoji extends Base {
@@ -808,8 +808,8 @@ declare module 'discord.js' {
     public user: User;
     public readonly voice: VoiceState;
     public ban(options?: BanOptions): Promise<GuildMember>;
-    public fetch(forceFetch?: boolean): Promise<GuildMember>;
-    public createDM(forceFetch?: boolean): Promise<DMChannel>;
+    public fetch(force?: boolean): Promise<GuildMember>;
+    public createDM(force?: boolean): Promise<DMChannel>;
     public deleteDM(): Promise<DMChannel>;
     public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
     public hasPermission(
@@ -957,7 +957,7 @@ declare module 'discord.js' {
     public edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
-    public fetch(forceFetch?: boolean): Promise<Message>;
+    public fetch(force?: boolean): Promise<Message>;
     public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
@@ -1492,8 +1492,8 @@ declare module 'discord.js' {
     public deleteDM(): Promise<DMChannel>;
     public displayAvatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string;
     public equals(user: User): boolean;
-    public fetch(forceFetch?: boolean): Promise<User>;
-    public fetchFlags(forceFetch?: boolean): Promise<UserFlags>;
+    public fetch(force?: boolean): Promise<User>;
+    public fetchFlags(force?: boolean): Promise<UserFlags>;
     public toString(): string;
     public typingDurationIn(channel: ChannelResolvable): number;
     public typingIn(channel: ChannelResolvable): boolean;
@@ -1826,7 +1826,7 @@ declare module 'discord.js' {
 
   export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, forceFetch?: boolean): Promise<Channel>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Channel>;
   }
 
   export abstract class BaseManager<K, Holds, R> {
@@ -1917,11 +1917,11 @@ declare module 'discord.js' {
     constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
-    public fetch(message: Snowflake, cache?: boolean, forceFetch?: boolean): Promise<Message>;
+    public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
       cache?: boolean,
-      forceFetch?: boolean,
+      force?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public delete(message: MessageResolvable, reason?: string): Promise<void>;
@@ -1961,13 +1961,13 @@ declare module 'discord.js' {
     public guild: Guild;
 
     public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
-    public fetch(id: Snowflake, cache?: boolean, forceFetch?: boolean): Promise<Role | null>;
-    public fetch(id?: Snowflake, cache?: boolean, forceFetch?: boolean): Promise<this>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Role | null>;
+    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<this>;
   }
 
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, forceFetch?: boolean): Promise<User>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<User>;
   }
 
   export class VoiceStateManager extends BaseManager<Snowflake, VoiceState, typeof VoiceState> {
@@ -2395,7 +2395,7 @@ declare module 'discord.js' {
   interface FetchMemberOptions {
     user: UserResolvable;
     cache?: boolean;
-    forceFetch?: boolean;
+    force?: boolean;
   }
 
   interface FetchMembersOptions {
@@ -2405,7 +2405,7 @@ declare module 'discord.js' {
     withPresences?: boolean;
     time?: number;
     nonce?: string;
-    forceFetch?: boolean;
+    force?: boolean;
   }
 
   interface FileOptions {

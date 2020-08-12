@@ -222,11 +222,11 @@ class User extends Base {
 
   /**
    * Creates a DM channel between the client and the user.
-   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  async createDM(forceFetch = false) {
-    if (!forceFetch) {
+  async createDM(force = false) {
+    if (!force) {
       const { dmChannel } = this;
       if (dmChannel && !dmChannel.partial) return dmChannel;
     }
@@ -269,11 +269,11 @@ class User extends Base {
 
   /**
    * Fetches this user's flags.
-   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
    * @returns {Promise<UserFlags>}
    */
-  async fetchFlags(forceFetch = false) {
-    if (this.flags && !forceFetch) return this.flags;
+  async fetchFlags(force = false) {
+    if (this.flags && !force) return this.flags;
     const data = await this.client.api.users(this.id).get();
     this._patch(data);
     return this.flags;
@@ -281,11 +281,11 @@ class User extends Base {
 
   /**
    * Fetches this user.
-   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
    * @returns {Promise<User>}
    */
-  fetch(forceFetch = false) {
-    return this.client.users.fetch(this.id, true, forceFetch);
+  fetch(force = false) {
+    return this.client.users.fetch(this.id, true, force);
   }
 
   /**

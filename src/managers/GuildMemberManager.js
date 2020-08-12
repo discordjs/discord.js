@@ -67,7 +67,7 @@ class GuildMemberManager extends BaseManager {
    * @typedef {Object} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
    * @property {boolean} [cache=true] Whether or not to cache the fetched member
-   * @property {boolean} [forceFetch=false] Whether to skip the cache check and request the API
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
@@ -79,7 +79,7 @@ class GuildMemberManager extends BaseManager {
    * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
    * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
-   * @property {boolean} [forceFetch=false] Whether to skip the cache check and request the API
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
@@ -100,7 +100,7 @@ class GuildMemberManager extends BaseManager {
    *   .catch(console.error);
    * @example
    * // Fetch a single member without checking cache
-   * guild.members.fetch({ user, forceFetch: true })
+   * guild.members.fetch({ user, force: true })
    *   .then(console.log)
    *   .catch(console.error)
    * @example
@@ -222,8 +222,8 @@ class GuildMemberManager extends BaseManager {
       .then(() => this.client.users.resolve(user));
   }
 
-  _fetchSingle({ user, cache, forceFetch = false }) {
-    if (!forceFetch) {
+  _fetchSingle({ user, cache, force = false }) {
+    if (!force) {
       const existing = this.cache.get(user);
       if (existing && !existing.partial) return Promise.resolve(existing);
     }
@@ -242,10 +242,10 @@ class GuildMemberManager extends BaseManager {
     query,
     time = 120e3,
     nonce = Date.now().toString(16),
-    forceFetch = false,
+    force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !forceFetch) {
+      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !force) {
         resolve(this.cache);
         return;
       }

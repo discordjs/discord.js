@@ -90,11 +90,11 @@ class Channel extends Base {
 
   /**
    * Fetches this channel.
-   * @param {boolean} [forceFetch=false] Whether to skip the cache check and request the API
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Channel>}
    */
-  fetch(forceFetch = false) {
-    return this.client.channels.fetch(this.id, true, forceFetch);
+  fetch(force = false) {
+    return this.client.channels.fetch(this.id, true, force);
   }
 
   static create(client, data, guild) {
