@@ -155,7 +155,7 @@ class Guild extends Base {
     this.memberCount = data.member_count || this.memberCount;
 
     /**
-     * Whether the guild is "large" (has more than 250 members)
+     * Whether the guild is "large" (has more than large_threshold members, 50 by default)
      * @type {boolean}
      */
     this.large = Boolean('large' in data ? data.large : this.large);

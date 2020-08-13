@@ -56,12 +56,12 @@ exports.DefaultOptions = {
   /**
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=250] Number of members in a guild after which offline users will no longer be
+   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
    * sent in the initial guild member list, must be between 50 and 250
    * @property {IntentsResolvable} [intents] Intents to enable for this connection
    */
   ws: {
-    large_threshold: 250,
+    large_threshold: 50,
     compress: false,
     properties: {
       $os: browser ? 'browser' : process.platform,
