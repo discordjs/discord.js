@@ -990,14 +990,20 @@ declare module 'discord.js' {
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content?: StringResolvable,
-      options?: MessageOptions | MessageAdditions | (MessageOptions & { split?: false }),
+      options?: MessageOptions | MessageAdditions | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(
       content?: StringResolvable,
       options?: (MessageOptions & { split: true | SplitOptions }) | MessageAdditions,
     ): Promise<Message[]>;
     public reply(
-      options?: MessageOptions | MessageAdditions | APIMessage | (MessageOptions & { split?: false }),
+      options?:
+        | MessageOptions
+        | MessageAdditions
+        | APIMessage
+        | (MessageOptions & { split?: false })
+        | MessageAdditions
+        | APIMessage,
     ): Promise<Message>;
     public reply(
       options?: (MessageOptions & { split: true | SplitOptions }) | MessageAdditions | APIMessage,
