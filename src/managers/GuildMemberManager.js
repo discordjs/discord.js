@@ -165,7 +165,7 @@ class GuildMemberManager extends BaseManager {
       if (!resolvedRole) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
       }
-      if (resolvedRole) query.append('include_roles', role);
+      query.append('include_roles', role);
     }
 
     const endpoint = this.client.api.guilds(this.guild.id).prune;
@@ -181,7 +181,7 @@ class GuildMemberManager extends BaseManager {
         acc[k] = v;
         return acc;
       }, {});
-      return endpoint.post(body).then(data => data.pruned);
+      return endpoint.post({ data: body, reason }).then(data => data.pruned);
     }
   }
 
