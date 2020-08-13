@@ -1862,7 +1862,7 @@ declare module 'discord.js' {
       name: string,
       options?: { region?: string; icon: BufferResolvable | Base64Resolvable | null },
     ): Promise<Guild>;
-    public fetch(id: Snowflake, cache?: boolean): Promise<Guild>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Guild>;
   }
 
   export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
