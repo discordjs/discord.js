@@ -177,7 +177,7 @@ class GuildMemberManager extends BaseManager {
         acc[k] = v;
         return acc;
       }, {});
-      return endpoint.post(body).then(data => data.pruned);
+      return endpoint.post({ data: body, reason }).then(data => data.pruned);
     }
   }
 
