@@ -162,16 +162,23 @@ class GuildMemberManager extends BaseManager {
 
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveID(role);
+      if (!resolvedRole) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
+      }
       if (resolvedRole) query.append('include_roles', role);
     }
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .prune[dry ? 'get' : 'post']({
-        query,
-        reason,
-      })
-      .then(data => data.pruned);
+    const endpoint = this.client.api.guilds(this.guild.id).prune;
+
+    if (dry) {
+      return endpoint.get({ query, reason }).then(data => data.pruned);
+    } else {
+      const body = [...query.entries()].reduce((acc, [k, v]) => {
+        acc[k] = v;
+        return acc;
+      }, {});
+      return endpoint.post(body).then(data => data.pruned);
+    }
   }
 
   /**
