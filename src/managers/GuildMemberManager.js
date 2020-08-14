@@ -174,9 +174,9 @@ class GuildMemberManager extends BaseManager {
       return endpoint.get({ query, reason }).then(data => data.pruned);
     } else {
       const body = [...query.entries()].reduce((acc, [k, v]) => {
-		if (k === 'include_roles') v = (acc[k] || []).concat(v);
-		acc[k] = v;
-		return acc;
+        if (k === 'include_roles') v = (acc[k] || []).concat(v);
+        acc[k] = v;
+        return acc;
       }, {});
       return endpoint.post({ data: body, reason }).then(data => data.pruned);
     }
