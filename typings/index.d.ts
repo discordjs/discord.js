@@ -2606,6 +2606,7 @@ declare module 'discord.js' {
     days?: number;
     dry?: boolean;
     reason?: string;
+    roles?: RoleResolvable[];
   }
 
   interface GuildWidgetData {
