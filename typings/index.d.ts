@@ -2438,6 +2438,7 @@ declare module 'discord.js' {
     restWsBridgeTimeout?: number;
     restTimeOffset?: number;
     restRequestTimeout?: number;
+    restGlobalRateLimit?: number;
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
@@ -3196,6 +3197,7 @@ declare module 'discord.js' {
     method: string;
     path: string;
     route: string;
+    global: boolean;
   }
 
   interface RawOverwriteData {
