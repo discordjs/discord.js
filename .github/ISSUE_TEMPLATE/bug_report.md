@@ -28,6 +28,12 @@ You won't receive any basic help here.
 - Operating system:
 - Priority this issue should have – please be realistic and elaborate if possible:
 
+**Relevant client options:**
+
+- partials: none
+- gateway intents: none
+- other: none
+
 <!--
 If this applies to you, please check the respective checkbox: [ ] becomes [x].
 You don't have to modify the text to suit your particular situation – if you want to

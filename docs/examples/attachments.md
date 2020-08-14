@@ -33,7 +33,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -68,7 +68,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -105,13 +105,13 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
 The results are the same as the URL examples:
 
-![Image showing result](/static/attachment-example1.png)
+![Image showing result](/static/attachment-example2.png)
 
 But what if you have a buffer from an image? Or a text document? Well, it's the same as sending a local file or a URL!
 
@@ -154,7 +154,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 

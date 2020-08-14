@@ -24,12 +24,11 @@ class Util {
   static flatten(obj, ...props) {
     if (!isObject(obj)) return obj;
 
-    props = Object.assign(
-      ...Object.keys(obj)
-        .filter(k => !k.startsWith('_'))
-        .map(k => ({ [k]: true })),
-      ...props,
-    );
+    const objProps = Object.keys(obj)
+      .filter(k => !k.startsWith('_'))
+      .map(k => ({ [k]: true }));
+
+    props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
     const out = {};
 
@@ -420,6 +419,10 @@ class Util {
    * - `DARK_GREY`
    * - `LIGHT_GREY`
    * - `DARK_NAVY`
+   * - `BLURPLE`
+   * - `GREYPLE`
+   * - `DARK_BUT_NOT_BLACK`
+   * - `NOT_QUITE_BLACK`
    * - `RANDOM`
    * @typedef {string|number|number[]} ColorResolvable
    */
@@ -560,15 +563,15 @@ class Util {
         const id = input.replace(/<|!|>|@/g, '');
         if (message.channel.type === 'dm') {
           const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
+          return user ? Util.removeMentions(`@${user.username}`) : input;
         }
 
         const member = message.channel.guild.members.cache.get(id);
         if (member) {
-          return `@${member.displayName}`;
+          return Util.removeMentions(`@${member.displayName}`);
         } else {
           const user = message.client.users.cache.get(id);
-          return user ? `@${user.username}` : input;
+          return user ? Util.removeMentions(`@${user.username}`) : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {

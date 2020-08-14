@@ -58,11 +58,13 @@ class Integration extends Base {
      */
     this.role = this.guild.roles.cache.get(data.role_id);
 
-    /**
-     * The user for this integration
-     * @type {User}
-     */
-    this.user = this.client.users.add(data.user);
+    if (data.user) {
+      /**
+       * The user for this integration
+       * @type {?User}
+       */
+      this.user = this.client.users.add(data.user);
+    }
 
     /**
      * The account integration information
