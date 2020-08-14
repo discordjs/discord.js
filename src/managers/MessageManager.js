@@ -121,10 +121,7 @@ class MessageManager extends BaseManager {
   async delete(message, reason) {
     message = this.resolveID(message);
     if (message) {
-      await this.client.api
-        .channels(this.channel.id)
-        .messages(message)
-        .delete({ reason });
+      await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
     }
   }
 

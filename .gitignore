@@ -1,7 +1,6 @@
 # Packages
 node_modules/
 yarn.lock
-package-lock.json
 
 # Log files
 logs/

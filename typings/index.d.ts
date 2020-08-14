@@ -699,7 +699,10 @@ declare module 'discord.js' {
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
-    public setExplicitContentFilter(explicitContentFilter: ExplicitContentFilterLevel | number, reason?: string): Promise<Guild>;
+    public setExplicitContentFilter(
+      explicitContentFilter: ExplicitContentFilterLevel | number,
+      reason?: string,
+    ): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
     public setName(name: string, reason?: string): Promise<Guild>;
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
@@ -2928,7 +2931,17 @@ declare module 'discord.js' {
   interface PartialGuildMember
     extends Partialize<
       GuildMember,
-      'bannable' | 'displayColor' | 'displayHexColor' | 'displayName' | 'guild' | 'kickable' | 'permissions' | 'roles' | 'manageable' | 'presence' | 'voice'
+      | 'bannable'
+      | 'displayColor'
+      | 'displayHexColor'
+      | 'displayName'
+      | 'guild'
+      | 'kickable'
+      | 'permissions'
+      | 'roles'
+      | 'manageable'
+      | 'presence'
+      | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -2948,7 +2961,16 @@ declare module 'discord.js' {
   interface PartialMessage
     extends Partialize<
       Message,
-      'attachments' | 'channel' | 'deletable' | 'editable' | 'mentions' | 'pinnable' | 'url' | 'flags' | 'edits' | 'embeds'
+      | 'attachments'
+      | 'channel'
+      | 'deletable'
+      | 'editable'
+      | 'mentions'
+      | 'pinnable'
+      | 'url'
+      | 'flags'
+      | 'edits'
+      | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];

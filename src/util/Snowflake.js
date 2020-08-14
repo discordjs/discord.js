@@ -64,9 +64,7 @@ class SnowflakeUtil {
    * @returns {DeconstructedSnowflake} Deconstructed snowflake
    */
   static deconstruct(snowflake) {
-    const BINARY = Util.idToBinary(snowflake)
-      .toString(2)
-      .padStart(64, '0');
+    const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');
     const res = {
       timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
       workerID: parseInt(BINARY.substring(42, 47), 2),
