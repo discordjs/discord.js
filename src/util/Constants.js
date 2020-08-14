@@ -19,6 +19,9 @@ const { Error, RangeError } = require('../errors');
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
+ * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
+ * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,
+ * warnings will be emitted at invalid request number 500, 1000, 1500, and so on.
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
  * important usage information, as partials require you to put checks in place when handling data.
@@ -42,6 +45,7 @@ exports.DefaultOptions = {
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
+  invalidRequestWarningInterval: 0,
   partials: [],
   restWsBridgeTimeout: 5000,
   restRequestTimeout: 15000,
@@ -221,6 +225,7 @@ exports.VoiceOPCodes = {
 
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
+  INVALID_REQUEST_WARNING: 'invalidRequestWarning',
   CLIENT_READY: 'ready',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',

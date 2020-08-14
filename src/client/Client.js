@@ -478,6 +478,9 @@ class Client extends BaseClient {
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
+    if (typeof options.invalidRequestWarningInterval !== 'number' || isNaN(options.invalidRequestWarningInterval)) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'invalidRequestWarningInterval', 'a number');
+    }
     if (!Array.isArray(options.partials)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }

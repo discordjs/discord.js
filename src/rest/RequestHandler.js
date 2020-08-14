@@ -4,7 +4,7 @@ const AsyncQueue = require('./AsyncQueue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const {
-  Events: { RATE_LIMIT },
+  Events: { RATE_LIMIT, INVALID_REQUEST_WARNING },
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
@@ -20,6 +20,15 @@ function getAPIOffset(serverDate) {
 function calculateReset(reset, serverDate) {
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
+
+/* Invalid request limiting is done on a per-IP basis, not a per-token basis.
+ * The best we can do is track invalid counts process-wide (on the theory that
+ * users could have multiple bots run from one process) rather than per-bot.
+ * Therefore, store these at file scope here rather than in the client's
+ * RESTManager object.
+ */
+var invalidCount = 0;
+var invalidCountResetTime = null;
 
 class RequestHandler {
   constructor(manager) {
@@ -172,6 +181,33 @@ class RequestHandler {
            */
           res.sublimit = retryAfter;
         }
+      }
+    }
+
+    // Count the invalid requests
+    if (res.status === 401 || res.status === 403 || res.status === 429) {
+      if (!invalidCountResetTime || invalidCountResetTime < Date.now()) {
+        invalidCountResetTime = Date.now() + 1000 * 60 * 10;
+        invalidCount = 0;
+      }
+      invalidCount++;
+
+      const emitInvalid =
+        this.manager.client.listenerCount(INVALID_REQUEST_WARNING) &&
+        this.manager.client.options.invalidRequestWarningInterval > 0 &&
+        invalidCount % this.manager.client.options.invalidRequestWarningInterval === 0;
+      if (emitInvalid) {
+        /**
+         * Emitted periodically when the process sends invalid messages to let users avoid the
+         * 10k invalid messages in 10 minutes threshold that causes a ban
+         * @event Client#invalidRequestWarning
+         * @param {number} invalidRequestWarningInfo.count Number of invalid requests that have been made in the window
+         * @param {number} invalidRequestWarningInfo.remainingTime Time in ms remaining before the count resets
+         */
+        this.manager.client.emit(INVALID_REQUEST_WARNING, {
+          count: invalidCount,
+          remainingTime: invalidCountResetTime - Date.now(),
+        });
       }
     }
 
