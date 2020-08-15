@@ -30,15 +30,6 @@ class User extends Base {
   }
 
   _patch(data) {
-    if (typeof this.bot !== 'boolean') {
-      /**
-       * Whether or not the user is a bot
-       * @type {?boolean}
-       * @name User#bot
-       */
-      this.bot = 'bot' in data ? Boolean(data.bot) : null;
-    }
-
     if ('username' in data) {
       /**
        * The username of the user
@@ -49,6 +40,13 @@ class User extends Base {
     } else if (typeof this.username !== 'string') {
       this.username = null;
     }
+
+    /**
+     * Whether or not the user is a bot
+     * @type {?boolean}
+     * @name User#bot
+     */
+    this.bot = Boolean(data.bot);
 
     if ('discriminator' in data) {
       /**
