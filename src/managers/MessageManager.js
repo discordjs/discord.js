@@ -45,6 +45,7 @@ class MessageManager extends BaseManager {
    * Those need to be fetched separately in such a case.</info>
    * @param {Snowflake|ChannelLogsQueryOptions} [message] The ID of the message to fetch, or query parameters.
    * @param {boolean} [cache=true] Whether to cache the message(s)
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Message>|Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get message
@@ -62,8 +63,8 @@ class MessageManager extends BaseManager {
    *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
-  fetch(message, cache = true) {
-    return typeof message === 'string' ? this._fetchId(message, cache) : this._fetchMany(message, cache);
+  fetch(message, cache = true, force = false) {
+    return typeof message === 'string' ? this._fetchId(message, cache, force) : this._fetchMany(message, cache);
   }
 
   /**
@@ -120,16 +121,16 @@ class MessageManager extends BaseManager {
   async delete(message, reason) {
     message = this.resolveID(message);
     if (message) {
-      await this.client.api
-        .channels(this.channel.id)
-        .messages(message)
-        .delete({ reason });
+      await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
     }
   }
 
-  async _fetchId(messageID, cache) {
-    const existing = this.cache.get(messageID);
-    if (existing && !existing.partial) return existing;
+  async _fetchId(messageID, cache, force) {
+    if (!force) {
+      const existing = this.cache.get(messageID);
+      if (existing && !existing.partial) return existing;
+    }
+
     const data = await this.client.api.channels[this.channel.id].messages[messageID].get();
     return this.add(data, cache);
   }

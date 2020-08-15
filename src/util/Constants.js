@@ -56,11 +56,12 @@ exports.DefaultOptions = {
   /**
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
+   * sent in the initial guild member list, must be between 50 and 250
    * @property {IntentsResolvable} [intents] Intents to enable for this connection
    */
   ws: {
-    large_threshold: 250,
+    large_threshold: 50,
     compress: false,
     properties: {
       $os: browser ? 'browser' : process.platform,
@@ -74,13 +75,13 @@ exports.DefaultOptions = {
    * HTTP options
    * @typedef {Object} HTTPOptions
    * @property {number} [version=7] API version to use
-   * @property {string} [api='https://discordapp.com/api'] Base url of the API
+   * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
    */
   http: {
     version: 7,
-    api: 'https://discordapp.com/api',
+    api: 'https://discord.com/api',
     cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
   },
@@ -413,7 +414,6 @@ exports.MessageTypes = [
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
   'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
   'CHANNEL_FOLLOW_ADD',
-  // 13 isn't yet documented
   null,
   'GUILD_DISCOVERY_DISQUALIFIED',
   'GUILD_DISCOVERY_REQUALIFIED',

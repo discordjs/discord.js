@@ -66,7 +66,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discordapp.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -142,7 +142,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discordapp.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 

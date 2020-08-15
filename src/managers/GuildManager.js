@@ -196,20 +196,45 @@ class GuildManager extends BaseManager {
 
           const handleGuild = guild => {
             if (guild.id === data.id) {
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               this.client.clearTimeout(timeout);
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+              this.client.decrementMaxListeners();
               resolve(guild);
             }
           };
+          this.client.incrementMaxListeners();
           this.client.on(Events.GUILD_CREATE, handleGuild);
 
           const timeout = this.client.setTimeout(() => {
             this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+            this.client.decrementMaxListeners();
             resolve(this.client.guilds.add(data));
           }, 10000);
           return undefined;
         }, reject),
     );
+  }
+
+  /**
+   * Obtains a guild from Discord, or the guild cache if it's already available.
+   * @param {Snowflake} id ID of the guild
+   * @param {boolean} [cache=true] Whether to cache the new guild object if it isn't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @returns {Promise<Guild>}
+   * @example
+   * // Fetch a guild by its id
+   * client.guilds.fetch('222078108977594368')
+   *   .then(guild => console.log(guild.name))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true, force = false) {
+    if (!force) {
+      const existing = this.cache.get(id);
+      if (existing) return existing;
+    }
+
+    const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
+    return this.add(data, cache);
   }
 }
 

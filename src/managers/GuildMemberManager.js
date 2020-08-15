@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { Error, TypeError } = require('../errors');
+const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
@@ -67,6 +67,7 @@ class GuildMemberManager extends BaseManager {
    * @typedef {Object} FetchMemberOptions
    * @property {UserResolvable} user The user to fetch
    * @property {boolean} [cache=true] Whether or not to cache the fetched member
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
@@ -77,6 +78,8 @@ class GuildMemberManager extends BaseManager {
    * @property {number} [limit=0] Maximum number of members to request
    * @property {boolean} [withPresences=false] Whether or not to include the presences
    * @property {number} [time=120e3] Timeout for receipt of members
+   * @property {?string} nonce Nonce for this request (32 characters max - default to base 16 now timestamp)
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
@@ -95,6 +98,11 @@ class GuildMemberManager extends BaseManager {
    * guild.members.fetch('66564597481480192')
    *   .then(console.log)
    *   .catch(console.error);
+   * @example
+   * // Fetch a single member without checking cache
+   * guild.members.fetch({ user, force: true })
+   *   .then(console.log)
+   *   .catch(console.error)
    * @example
    * // Fetch a single member without caching
    * guild.members.fetch({ user, cache: false })
@@ -134,6 +142,7 @@ class GuildMemberManager extends BaseManager {
    * @param {number} [options.days=7] Number of days of inactivity required to kick
    * @param {boolean} [options.dry=false] Get number of users that will be kicked, without actually kicking them
    * @param {boolean} [options.count=true] Whether or not to return the number of users that have been kicked.
+   * @param {RoleResolvable[]} [options.roles=[]] Array of roles to bypass the "...and no roles" constraint when pruning
    * @param {string} [options.reason] Reason for this prune
    * @returns {Promise<number|null>} The number of members that were/will be kicked
    * @example
@@ -146,26 +155,47 @@ class GuildMemberManager extends BaseManager {
    * guild.members.prune({ days: 1, reason: 'too many people!' })
    *   .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *   .catch(console.error);
+   * @example
+   * // Include members with a specified role
+   * guild.members.prune({ days: 7, roles: ['657259391652855808'] })
+   *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
+   *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count = true, reason } = {}) {
+  prune({ days = 7, dry = false, count = true, roles = [], reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
-    return this.client.api
-      .guilds(this.guild.id)
-      .prune[dry ? 'get' : 'post']({
-        query: {
-          days,
-          compute_prune_count: count,
-        },
-        reason,
-      })
-      .then(data => data.pruned);
+
+    const query = new URLSearchParams();
+    query.set('days', days);
+    query.set('compute_prune_count', count);
+
+    for (const role of roles) {
+      const resolvedRole = this.guild.roles.resolveID(role);
+      if (!resolvedRole) {
+        return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
+      }
+      query.append('include_roles', role);
+    }
+
+    const endpoint = this.client.api.guilds(this.guild.id).prune;
+
+    if (dry) {
+      return endpoint.get({ query, reason }).then(data => data.pruned);
+    }
+
+    const body = [...query.entries()].reduce((acc, [k, v]) => {
+      if (k === 'include_roles') v = (acc[k] || []).concat(v);
+      acc[k] = v;
+      return acc;
+    }, {});
+
+    return endpoint.post({ data: body, reason }).then(data => data.pruned);
   }
 
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
@@ -177,12 +207,12 @@ class GuildMemberManager extends BaseManager {
    *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
-    if (options.days) options['delete-message-days'] = options.days;
+    if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
     return this.client.api
       .guilds(this.guild.id)
-      .bans[id].put({ query: options })
+      .bans[id].put({ data: options })
       .then(() => {
         if (user instanceof GuildMember) return user;
         const _user = this.client.users.resolve(id);
@@ -214,9 +244,12 @@ class GuildMemberManager extends BaseManager {
       .then(() => this.client.users.resolve(user));
   }
 
-  _fetchSingle({ user, cache }) {
-    const existing = this.cache.get(user);
-    if (existing && !existing.partial) return Promise.resolve(existing);
+  _fetchSingle({ user, cache, force = false }) {
+    if (!force) {
+      const existing = this.cache.get(user);
+      if (existing && !existing.partial) return Promise.resolve(existing);
+    }
+
     return this.client.api
       .guilds(this.guild.id)
       .members(user)
@@ -224,13 +257,22 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({ limit = 0, withPresences: presences = false, user: user_ids, query, time = 120e3 } = {}) {
+  _fetchMany({
+    limit = 0,
+    withPresences: presences = false,
+    user: user_ids,
+    query,
+    time = 120e3,
+    nonce = Date.now().toString(16),
+    force = false,
+  } = {}) {
     return new Promise((resolve, reject) => {
-      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids) {
+      if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !force) {
         resolve(this.cache);
         return;
       }
       if (!query && !user_ids) query = '';
+      if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -238,33 +280,41 @@ class GuildMemberManager extends BaseManager {
           presences,
           user_ids,
           query,
+          nonce,
           limit,
         },
       });
       const fetchedMembers = new Collection();
       const option = query || limit || presences || user_ids;
-      const handler = (members, guild) => {
-        if (guild.id !== this.guild.id) return;
+      let i = 0;
+      const handler = (members, _, chunk) => {
         timeout.refresh();
+        if (chunk.nonce !== nonce) return;
+        i++;
         for (const member of members.values()) {
           if (option) fetchedMembers.set(member.id, member);
         }
         if (
           this.guild.memberCount <= this.cache.size ||
           (option && members.size < 1000) ||
-          (limit && fetchedMembers.size >= limit)
+          (limit && fetchedMembers.size >= limit) ||
+          i === chunk.count
         ) {
-          this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+          this.client.clearTimeout(timeout);
+          this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+          this.client.decrementMaxListeners();
           let fetched = option ? fetchedMembers : this.cache;
           if (user_ids && !Array.isArray(user_ids) && fetched.size) fetched = fetched.first();
           resolve(fetched);
         }
       };
-      const timeout = this.guild.client.setTimeout(() => {
-        this.guild.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+      const timeout = this.client.setTimeout(() => {
+        this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
+        this.client.decrementMaxListeners();
         reject(new Error('GUILD_MEMBERS_TIMEOUT'));
       }, time);
-      this.guild.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
+      this.client.incrementMaxListeners();
+      this.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
     });
   }
 }

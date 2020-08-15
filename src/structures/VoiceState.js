@@ -49,6 +49,11 @@ class VoiceState extends Base {
      */
     this.selfMute = data.self_mute;
     /**
+     * Whether this member's camera is enabled
+     * @type {boolean}
+     */
+    this.selfVideo = data.self_video;
+    /**
      * The session ID of this member's connection
      * @type {?string}
      */
@@ -154,7 +159,7 @@ class VoiceState extends Base {
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
    * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to disconnect them
-   * from voice. Requires the `MOVE_MEMBERS` permission.
+   * from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
    */

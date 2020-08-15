@@ -41,7 +41,7 @@ class Intents extends BitField {}
  * * `DIRECT_MESSAGE_REACTIONS`
  * * `DIRECT_MESSAGE_TYPING`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/topics/gateway#list-of-intents}
+ * @see {@link https://discord.com/developers/docs/topics/gateway#list-of-intents}
  */
 Intents.FLAGS = {
   GUILDS: 1 << 0,
@@ -64,7 +64,7 @@ Intents.FLAGS = {
 /**
  * Bitfield representing all privileged intents
  * @type {number}
- * @see {@link https://discordapp.com/developers/docs/topics/gateway#privileged-intents}
+ * @see {@link https://discord.com/developers/docs/topics/gateway#privileged-intents}
  */
 Intents.PRIVILEGED = Intents.FLAGS.GUILD_MEMBERS | Intents.FLAGS.GUILD_PRESENCES;
 

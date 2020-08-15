@@ -135,7 +135,8 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in bot
+       * Authorization token for the logged in bot.
+       * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -195,7 +196,7 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * @param {string} token Token of the account to log in with
+   * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
@@ -340,7 +341,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains a guild preview from Discord, only available for public guilds.
+   * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
