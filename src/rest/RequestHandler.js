@@ -27,8 +27,8 @@ function calculateReset(reset, serverDate) {
  * Therefore, store these at file scope here rather than in the client's
  * RESTManager object.
  */
-var invalidCount = 0;
-var invalidCountResetTime = null;
+let invalidCount = 0;
+let invalidCountResetTime = null;
 
 class RequestHandler {
   constructor(manager) {
