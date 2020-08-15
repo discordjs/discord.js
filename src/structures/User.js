@@ -46,7 +46,7 @@ class User extends Base {
      * @type {?boolean}
      * @name User#bot
      */
-    this.bot = !this.partial ? Boolean(data.bot) : null;
+    this.bot = Boolean(data.bot);
 
     if ('discriminator' in data) {
       /**
