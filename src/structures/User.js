@@ -70,14 +70,12 @@ class User extends Base {
       this.avatar = null;
     }
 
-    if ('system' in data) {
-      /**
-       * Whether the user is an Official Discord System user (part of the urgent message system)
-       * @type {?boolean}
-       * @name User#system
-       */
-      this.system = Boolean(data.system);
-    }
+    /**
+     * Whether the user is an Official Discord System user (part of the urgent message system)
+     * @type {boolean}
+     * @name User#system
+     */
+    this.system = Boolean(data.system);
 
     if ('locale' in data) {
       /**
