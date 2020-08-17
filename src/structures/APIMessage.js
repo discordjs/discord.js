@@ -185,7 +185,7 @@ class APIMessage {
     if (this.options.reply) {
       const id = this.target.client.users.resolveID(this.options.reply);
       if (allowedMentions) {
-        // Clone the object as to alter the ClientOptions object
+        // Clone the object as not to alter the ClientOptions object
         allowedMentions = Util.cloneObject(allowedMentions);
         const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
         // Check if the mention won't be parsed, and isn't supplied in `users`
