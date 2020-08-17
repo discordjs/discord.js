@@ -43,7 +43,7 @@ class User extends Base {
 
     /**
      * Whether or not the user is a bot
-     * @type {?boolean}
+     * @type {boolean}
      * @name User#bot
      */
     this.bot = Boolean(data.bot);
