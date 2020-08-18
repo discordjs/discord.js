@@ -49,7 +49,7 @@ class BaseGuildEmoji extends Emoji {
      * @type {boolean}
      * @name GuildEmoji#available
      */
-    if (typeof data.available !== 'undefined') this.available = data.available;
+    this.available = Boolean(data.available);
 
     if (data.roles) this._roles = data.roles;
   }
