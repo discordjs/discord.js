@@ -114,13 +114,13 @@ declare module 'discord.js' {
     constructor(client: Client, data: object, guild: Guild);
     private _roles: string[];
 
-    public available: boolean;
+    public available?: boolean;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public guild: Guild | GuildPreview;
     public id: Snowflake;
-    public managed: boolean;
-    public requiresColons: boolean;
+    public managed?: boolean;
+    public requiresColons?: boolean;
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
