@@ -758,7 +758,7 @@ declare module 'discord.js' {
       | Webhook
       | Message
       | Integration
-      | { id: string }
+      | { id: Snowflake }
       | null;
     public targetType: GuildAuditLogsTarget;
     public toJSON(): object;
