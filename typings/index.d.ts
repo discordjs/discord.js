@@ -1009,7 +1009,7 @@ declare module 'discord.js' {
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
     public reply(
       content: StringResolvable,
       options: (MessageOptions & { split?: false }) | MessageAdditions,
@@ -1018,7 +1018,7 @@ declare module 'discord.js' {
       content: StringResolvable,
       options: MessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
@@ -2042,10 +2042,10 @@ declare module 'discord.js' {
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     send(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: MessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+    send(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
     send(content: StringResolvable, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
     send(content: StringResolvable, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(content: StringResolvable, options: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
+    send(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2079,7 +2079,7 @@ declare module 'discord.js' {
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: WebhookMessageOptions | MessageAdditions | APIMessage): Promise<Message | Message[]>;
+    send(options: WebhookMessageOptions | APIMessage): Promise<Message | Message[]>;
     send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
@@ -2088,7 +2088,7 @@ declare module 'discord.js' {
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    send(content: StringResolvable, options: WebhookMessageOptions | MessageAdditions): Promise<Message | Message[]>;
+    send(content: StringResolvable, options: WebhookMessageOptions): Promise<Message | Message[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
@@ -2162,7 +2162,7 @@ declare module 'discord.js' {
     REACTION_BLOCKED: number;
   }
 
-  type APIMessageContentResolvable = string | number | boolean | bigint | symbol | any[];
+  type APIMessageContentResolvable = string | number | boolean | bigint | symbol | readonly StringResolvable[];
 
   interface AuditLogChange {
     key: string;
