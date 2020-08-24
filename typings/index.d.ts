@@ -2663,7 +2663,7 @@ declare module 'discord.js' {
     | 'DIRECT_MESSAGES'
     | 'DIRECT_MESSAGE_REACTIONS'
     | 'DIRECT_MESSAGE_TYPING';
-                                                             
+
   interface InviteGenerationOptions {
     permissions?: PermissionResolvable;
     guild?: GuildResolvable;
