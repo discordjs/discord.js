@@ -367,7 +367,7 @@ class Client extends BaseClient {
     if (Array.isArray(options) || ['string', 'number'].includes(typeof options) || options instanceof Permissions) {
       process.emitWarning(
         'Client#generateInvite: Generate invite with an options object instead of a PermissionResolvable',
-        'DeprecationWarning'
+        'DeprecationWarning',
       );
       options = { permissions: options };
     }
