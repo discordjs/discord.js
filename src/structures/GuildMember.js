@@ -1,13 +1,12 @@
 'use strict';
 
 const Base = require('./Base');
-const { Presence } = require('./Presence');
 const Role = require('./Role');
-const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
+const Structures = require('../util/Structures');
 
 /**
  * Represents a member of a guild on Discord.
@@ -126,6 +125,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get voice() {
+    const VoiceState = Structures.get('VoiceState');
     return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
 
@@ -153,6 +153,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
+    const Presence = Structures.get('Presence');
     return (
       this.guild.presences.cache.get(this.id) ||
       new Presence(this.client, {
