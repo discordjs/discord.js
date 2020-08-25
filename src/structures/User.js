@@ -4,8 +4,9 @@ const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const Snowflake = require('../util/Snowflake');
-const Structures = require('../util/Structures');
 const UserFlags = require('../util/UserFlags');
+
+let Structures;
 
 /**
  * Represents a user on Discord.
@@ -156,6 +157,7 @@ class User extends Base {
     for (const guild of this.client.guilds.cache.values()) {
       if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
     }
+    if (!Structures) Structures = require('../util/Structures');
     const Presence = Structures.get('Presence');
     return new Presence(this.client, { user: { id: this.id } });
   }
