@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { Presence } = require('./Presence');
+const { Presence } = require('../structures/Presence');
 
 /**
  * Manages API methods for Presences and holds their cache.
