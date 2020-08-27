@@ -98,7 +98,7 @@ class Channel extends Base {
   }
 
   /**
-   * Whether this channel is text-based
+   * Indicates whether this channel is text-based.
    * @returns {boolean}
    */
   isText() {
