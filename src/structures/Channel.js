@@ -102,7 +102,7 @@ class Channel extends Base {
    * @returns {boolean}
    */
   isText() {
-    return ['text', 'dm', 'news'].includes(this.type);
+    return 'messages' in this;
   }
 
   static create(client, data, guild) {
