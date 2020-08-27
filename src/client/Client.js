@@ -377,7 +377,6 @@ class Client extends BaseClient {
   toJSON() {
     return super.toJSON({
       readyAt: false,
-      presences: false,
     });
   }
 
