@@ -359,7 +359,9 @@ class Client extends BaseClient {
    * @param {InviteGenerationOptions|PermissionResolvable} [options] Permissions to request
    * @returns {Promise<string>}
    * @example
-   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   * client.generateInvite({
+   *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
+   * })
    *   .then(link => console.log(`Generated bot invite link: ${link}`))
    *   .catch(console.error);
    */
