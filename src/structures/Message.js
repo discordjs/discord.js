@@ -565,6 +565,19 @@ class Message extends Base {
         : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
     );
   }
+  /**
+   * Quotes the message.
+   * @param {StringResolvable} [content=''] The content for the message
+   * @returns {Promise<Message|Message[]>}
+   * @example
+   * // Quote a message
+   * message.quote('Hey, I\'m a quote!')
+   *   .then(() => console.log(`Sent a quote to ${message.author.username}`))
+   *   .catch(console.error);
+   */
+  quote(content) {
+    return this.channel.send(`> ${this.content}\n${this.member || this.author} ${content}`);
+  }
 
   /**
    * Fetch this message.

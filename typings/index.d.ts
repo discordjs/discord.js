@@ -995,6 +995,7 @@ declare module 'discord.js' {
       content?: StringResolvable,
       options?: MessageOptions | MessageAdditions | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
+    public quote(content?: StringResolvable): Promise<Message>;
     public reply(
       content?: StringResolvable,
       options?: (MessageOptions & { split: true | SplitOptions }) | MessageAdditions,
