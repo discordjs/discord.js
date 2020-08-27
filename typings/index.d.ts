@@ -2991,7 +2991,8 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Partialize<User, 'flags' | 'locale' | 'system' | 'tag' | 'username'> {
+  interface PartialUser extends Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'> {
+    bot: User['bot'];
     flags: User['flags'];
     locale: User['locale'];
     system: User['system'];
