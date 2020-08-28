@@ -91,8 +91,8 @@ declare module 'discord.js' {
 
   export class BaseClient extends EventEmitter {
     constructor(options?: ClientOptions);
-    private _timeouts: Set<NodeJS.Timer>;
-    private _intervals: Set<NodeJS.Timer>;
+    private _timeouts: Set<NodeJS.Timeout>;
+    private _intervals: Set<NodeJS.Timeout>;
     private _immediates: Set<NodeJS.Immediate>;
     private readonly api: object;
     private rest: object;
@@ -100,12 +100,12 @@ declare module 'discord.js' {
     private incrementMaxListeners(): void;
 
     public options: ClientOptions;
-    public clearInterval(interval: NodeJS.Timer): void;
-    public clearTimeout(timeout: NodeJS.Timer): void;
+    public clearInterval(interval: NodeJS.Timeout): void;
+    public clearTimeout(timeout: NodeJS.Timeout): void;
     public clearImmediate(timeout: NodeJS.Immediate): void;
     public destroy(): void;
-    public setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timer;
-    public setTimeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timer;
+    public setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
+    public setTimeout(fn: (...args: any[]) => void, delay: number, ...args: any[]): NodeJS.Timeout;
     public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
   }
@@ -262,8 +262,8 @@ declare module 'discord.js' {
 
   export abstract class Collector<K, V> extends EventEmitter {
     constructor(client: Client, filter: CollectorFilter, options?: CollectorOptions);
-    private _timeout: NodeJS.Timer | null;
-    private _idletimeout: NodeJS.Timer | null;
+    private _timeout: NodeJS.Timeout | null;
+    private _idletimeout: NodeJS.Timeout | null;
 
     public readonly client: Client;
     public collected: Collection<K, V>;

@@ -121,7 +121,7 @@ class WebSocketShard extends EventEmitter {
     /**
      * The HELLO timeout
      * @name WebSocketShard#helloTimeout
-     * @type {?NodeJS.Timer}
+     * @type {?NodeJS.Timeout}
      * @private
      */
     Object.defineProperty(this, 'helloTimeout', { value: undefined, writable: true });
@@ -145,7 +145,7 @@ class WebSocketShard extends EventEmitter {
     /**
      * The ready timeout
      * @name WebSocketShard#readyTimeout
-     * @type {?NodeJS.Timer}
+     * @type {?NodeJS.Timeout}
      * @private
      */
     Object.defineProperty(this, 'readyTimeout', { value: undefined, writable: true });
