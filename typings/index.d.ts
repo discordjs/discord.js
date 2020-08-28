@@ -748,7 +748,18 @@ declare module 'discord.js' {
     public extra: object | Role | GuildMember | null;
     public id: Snowflake;
     public reason: string | null;
-    public target: Guild | User | Role | GuildEmoji | Invite | Webhook | Integration | null;
+    public target:
+      | Guild
+      | GuildChannel
+      | User
+      | Role
+      | GuildEmoji
+      | Invite
+      | Webhook
+      | Message
+      | Integration
+      | { id: Snowflake }
+      | null;
     public targetType: GuildAuditLogsTarget;
     public toJSON(): object;
   }
