@@ -122,7 +122,7 @@
   },
   "lint-staged": {
     "*.js": "eslint --fix",
-    "*.ts": "prettier --write --single-quote --print-width 120 --trailing-comma all --end-of-line lf --arrow-parens avoid"
+    "*.ts": "prettier --write --config .prettierrc"
   },
   "commitlint": {
     "extends": [
