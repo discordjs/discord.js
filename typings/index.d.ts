@@ -187,7 +187,7 @@ declare module 'discord.js' {
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
-    public generateInvite(permissions?: PermissionResolvable): Promise<string>;
+    public generateInvite(options?: InviteGenerationOptions | PermissionResolvable): Promise<string>;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
@@ -2663,6 +2663,12 @@ declare module 'discord.js' {
     | 'DIRECT_MESSAGES'
     | 'DIRECT_MESSAGE_REACTIONS'
     | 'DIRECT_MESSAGE_TYPING';
+
+  interface InviteGenerationOptions {
+    permissions?: PermissionResolvable;
+    guild?: GuildResolvable;
+    disableGuildSelect?: boolean;
+  }
 
   interface InviteOptions {
     temporary?: boolean;
