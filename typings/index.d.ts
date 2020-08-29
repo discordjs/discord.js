@@ -94,6 +94,21 @@ declare module 'discord.js' {
     public split(): APIMessage[];
   }
 
+  export abstract class Application {
+    constructor(client: Client, data: object);
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public description: string;
+    public icon: string;
+    public id: Snowflake;
+    public name: string;
+    public coverImage(options?: ImageURLOptions): string;
+    public fetchAssets(): Promise<ApplicationAsset[]>;
+    public iconURL(options?: ImageURLOptions): string;
+    public toJSON(): object;
+    public toString(): string;
+  }
+
   export class Base {
     constructor(client: Client);
     public readonly client: Client;
@@ -229,25 +244,12 @@ declare module 'discord.js' {
     public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents>): this;
   }
 
-  export class ClientApplication extends Base {
-    constructor(client: Client, data: object);
-    public bot: User | null;
+  export class ClientApplication extends Application {
     public botPublic: boolean | null;
     public botRequireCodeGrant: boolean | null;
     public cover: string | null;
-    public readonly createdAt: Date;
-    public readonly createdTimestamp: number;
-    public description: string;
-    public icon: string;
-    public id: Snowflake;
-    public name: string;
     public owner: User | Team | null;
     public rpcOrigins: string[];
-    public coverImage(options?: ImageURLOptions): string;
-    public fetchAssets(): Promise<ClientApplicationAsset[]>;
-    public iconURL(options?: ImageURLOptions): string;
-    public toJSON(): object;
-    public toString(): string;
   }
 
   export class ClientUser extends User {
@@ -931,6 +933,10 @@ declare module 'discord.js' {
     public delete(reason?: string): Promise<Integration>;
     public edit(data: IntegrationEditData, reason?: string): Promise<Integration>;
     public sync(): Promise<Integration>;
+  }
+
+  export class IntegrationApplication extends Application {
+    public bot: User | null;
   }
 
   export class Intents extends BitField<IntentsString> {
@@ -2177,6 +2183,12 @@ declare module 'discord.js' {
 
   type APIMessageContentResolvable = string | number | boolean | bigint | symbol | readonly StringResolvable[];
 
+  interface ApplicationAsset {
+    name: string;
+    id: Snowflake;
+    type: 'BIG' | 'SMALL';
+  }
+
   interface AuditLogChange {
     key: string;
     old?: any;
@@ -2240,12 +2252,6 @@ declare module 'discord.js' {
   }
 
   type ChannelResolvable = Channel | Snowflake;
-
-  interface ClientApplicationAsset {
-    name: string;
-    id: Snowflake;
-    type: 'BIG' | 'SMALL';
-  }
 
   interface ClientEvents {
     channelCreate: [Channel];
