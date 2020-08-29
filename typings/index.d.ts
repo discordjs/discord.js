@@ -3130,7 +3130,7 @@ declare module 'discord.js' {
     | 'SYSTEM'
     | 'BUGHUNTER_LEVEL_2'
     | 'VERIFIED_BOT'
-    | 'EARLY_VERIFIED_BOT_DEVELOPER'
+    | 'EARLY_VERIFIED_DEVELOPER'
     | 'VERIFIED_DEVELOPER';
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
