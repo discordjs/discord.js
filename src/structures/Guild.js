@@ -896,8 +896,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async fetchWidget() {
-    const data = await this.client.api
-      .guilds(this.id)
+    const data = await this.client.api.guilds(this.id)
       .widget.get();
     this.widgetEnabled = this.embedEnabled = data.enabled;
     this.widgetChannelID = this.embedChannelID = data.channel_id;
@@ -1383,16 +1382,7 @@ class Guild extends Base {
    * @deprecated
    */
   setEmbed(embed, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .embed.patch({
-        data: {
-          enabled: embed.enabled,
-          channel_id: this.channels.resolveID(embed.channel),
-        },
-        reason,
-      })
-      .then(() => this);
+    return this.setWidget(embed, reason);
   }
 
   /**
