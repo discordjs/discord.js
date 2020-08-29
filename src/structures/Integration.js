@@ -1,7 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
-const ClientApplication = require('./ClientApplication');
+const IntegrationApplication = require('./IntegrationApplication');
 
 /**
  * The information account for an integration
@@ -100,9 +100,9 @@ class Integration extends Base {
       } else {
         /**
          * The application for this integration
-         * @type {?ClientApplication}
+         * @type {?IntegrationApplication}
          */
-        this.application = new ClientApplication(this.client, data.application);
+        this.application = new IntegrationApplication(this.client, data.application);
       }
     } else if (!this.application) {
       this.application = null;

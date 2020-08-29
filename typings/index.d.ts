@@ -918,7 +918,7 @@ declare module 'discord.js' {
   export class Integration extends Base {
     constructor(client: Client, data: object, guild: Guild);
     public account: IntegrationAccount;
-    public application: ClientApplication | null;
+    public application: IntegrationApplication | null;
     public enabled: boolean;
     public expireBehavior: number;
     public expireGracePeriod: number;
