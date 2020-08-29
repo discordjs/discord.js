@@ -896,8 +896,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async fetchWidget() {
-    const data = await this.client.api.guilds(this.id)
-      .widget.get();
+    const data = await this.client.api.guilds(this.id).widget.get();
     this.widgetEnabled = this.embedEnabled = data.enabled;
     this.widgetChannelID = this.embedChannelID = data.channel_id;
     return {
