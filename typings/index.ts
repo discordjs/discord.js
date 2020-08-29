@@ -1,6 +1,6 @@
 /// <reference path="index.d.ts" />
 
-import { Client, Message } from 'discord.js';
+import { Client, Message, MessageAttachment, MessageEmbed } from 'discord.js';
 
 const client: Client = new Client();
 
@@ -34,6 +34,13 @@ client.on('message', ({ channel }) => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embed: {} }));
   assertIsMessage(channel.send({ another: 'property' }, {}));
+
+  const attachment = new MessageAttachment('file.png');
+  const embed = new MessageEmbed();
+  assertIsMessage(channel.send(attachment));
+  assertIsMessage(channel.send(embed));
+  assertIsMessage(channel.send([attachment, embed]));
+
   assertIsMessageArray(channel.send(Symbol('another primitive'), { split: true }));
   assertIsMessageArray(channel.send({ split: true }));
 
