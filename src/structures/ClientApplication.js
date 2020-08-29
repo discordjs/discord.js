@@ -71,6 +71,16 @@ class ClientApplication extends Base {
      * @type {?User|Team}
      */
     this.owner = data.team ? new Team(this.client, data.team) : data.owner ? this.client.users.add(data.owner) : null;
+
+    if (typeof data.bot !== 'undefined') {
+      /**
+       * The bot {@link User user} for this application
+       * @type {?User}
+       */
+      this.bot = this.client.users.add(data.bot);
+    } else if (!this.bot) {
+      this.bot = null;
+    }
   }
 
   /**

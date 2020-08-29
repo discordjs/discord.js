@@ -153,7 +153,7 @@
       ]
     }
   },
-  "prettier":{
+  "prettier": {
     "singleQuote": true,
     "printWidth": 120,
     "trailingComma": "all",

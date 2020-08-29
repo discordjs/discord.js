@@ -231,6 +231,7 @@ declare module 'discord.js' {
 
   export class ClientApplication extends Base {
     constructor(client: Client, data: object);
+    public bot: User | null;
     public botPublic: boolean | null;
     public botRequireCodeGrant: boolean | null;
     public cover: string | null;
@@ -915,6 +916,7 @@ declare module 'discord.js' {
   export class Integration extends Base {
     constructor(client: Client, data: object, guild: Guild);
     public account: IntegrationAccount;
+    public application: ClientApplication | null;
     public enabled: boolean;
     public expireBehavior: number;
     public expireGracePeriod: number;
