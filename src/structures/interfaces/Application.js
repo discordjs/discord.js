@@ -10,7 +10,7 @@ const AssetTypes = Object.keys(ClientApplicationAssetTypes);
  * Represents an OAuth2 Application.
  * @abstract
  */
-class Oauth2Application extends Base {
+class Application extends Base {
   constructor(client, data) {
     super(client);
     this._patch(data);
@@ -122,4 +122,4 @@ class Oauth2Application extends Base {
   }
 }
 
-module.exports = Oauth2Application;
+module.exports = Application;
