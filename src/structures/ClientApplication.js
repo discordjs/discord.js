@@ -5,7 +5,7 @@ const Application = require('./interfaces/Application');
 
 /**
  * Represents a Client OAuth2 Application.
- * @extends {Base}
+ * @extends {Application}
  */
 class ClientApplication extends Application {
   _patch(data) {
