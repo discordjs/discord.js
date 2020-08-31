@@ -883,13 +883,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchEmbed() {
-    return this.client.api
-      .guilds(this.id)
-      .embed.get()
-      .then(data => ({
-        enabled: data.enabled,
-        channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
-      }));
+    return this.fetchWidget();
   }
 
   /**
@@ -901,14 +895,14 @@ class Guild extends Base {
    *   .then(widget => console.log(`The widget is ${widget.enabled ? 'enabled' : 'disabled'}`))
    *   .catch(console.error);
    */
-  fetchWidget() {
-    return this.client.api
-      .guilds(this.id)
-      .widget.get()
-      .then(data => ({
-        enabled: data.enabled,
-        channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
-      }));
+  async fetchWidget() {
+    const data = await this.client.api.guilds(this.id).widget.get();
+    this.widgetEnabled = this.embedEnabled = data.enabled;
+    this.widgetChannelID = this.embedChannelID = data.channel_id;
+    return {
+      enabled: data.enabled,
+      channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
+    };
   }
 
   /**
@@ -1387,16 +1381,7 @@ class Guild extends Base {
    * @deprecated
    */
   setEmbed(embed, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .embed.patch({
-        data: {
-          enabled: embed.enabled,
-          channel_id: this.channels.resolveID(embed.channel),
-        },
-        reason,
-      })
-      .then(() => this);
+    return this.setWidget(embed, reason);
   }
 
   /**
