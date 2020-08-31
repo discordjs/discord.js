@@ -56,6 +56,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Application: require('./structures/interfaces/Application'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),

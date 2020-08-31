@@ -698,6 +698,8 @@ class Guild extends Base {
   /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
+   * @param {Object} [options] Options for fetching integrations
+   * @param {boolean} [options.includeApplications] Whether to include bot and Oauth2 webhook integrations
    * @returns {Promise<Collection<string, Integration>>}
    * @example
    * // Fetch integrations
@@ -705,10 +707,14 @@ class Guild extends Base {
    *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
    *   .catch(console.error);
    */
-  fetchIntegrations() {
+  fetchIntegrations({ includeApplications = false } = {}) {
     return this.client.api
       .guilds(this.id)
-      .integrations.get()
+      .integrations.get({
+        query: {
+          include_applications: includeApplications,
+        },
+      })
       .then(data =>
         data.reduce(
           (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),

@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const IntegrationApplication = require('./IntegrationApplication');
 
 /**
  * The information account for an integration
@@ -92,6 +93,20 @@ class Integration extends Base {
      * @type {number}
      */
     this.expireGracePeriod = data.expire_grace_period;
+
+    if ('application' in data) {
+      if (this.application) {
+        this.application._patch(data.application);
+      } else {
+        /**
+         * The application for this integration
+         * @type {?IntegrationApplication}
+         */
+        this.application = new IntegrationApplication(this.client, data.application);
+      }
+    } else if (!this.application) {
+      this.application = null;
+    }
   }
 
   /**
