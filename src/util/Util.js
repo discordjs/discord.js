@@ -436,7 +436,7 @@ class Util {
     if (typeof color === 'string') {
       if (color === 'RANDOM') return Math.floor(Math.random() * (0xffffff + 1));
       if (color === 'DEFAULT') return 0;
-      color = Colors[color] || parseInt(color.replace('#', ''), 16);
+      color = Colors[color.toUpperCase()] || parseInt(color.replace('#', ''), 16);
     } else if (Array.isArray(color)) {
       color = (color[0] << 16) + (color[1] << 8) + color[2];
     }
