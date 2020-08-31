@@ -187,6 +187,7 @@ declare module 'discord.js' {
     public type: keyof typeof ChannelType;
     public delete(reason?: string): Promise<Channel>;
     public fetch(force?: boolean): Promise<Channel>;
+    public isText(): this is TextChannel | DMChannel | NewsChannel;
     public toString(): string;
   }
 
@@ -826,6 +827,7 @@ declare module 'discord.js' {
       options: PermissionOverwriteOption,
       reason?: string,
     ): Promise<this>;
+    public isText(): this is TextChannel | NewsChannel;
   }
 
   export class GuildEmoji extends BaseGuildEmoji {

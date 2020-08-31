@@ -97,6 +97,14 @@ class Channel extends Base {
     return this.client.channels.fetch(this.id, true, force);
   }
 
+  /**
+   * Indicates whether this channel is text-based.
+   * @returns {boolean}
+   */
+  isText() {
+    return 'messages' in this;
+  }
+
   static create(client, data, guild) {
     const Structures = require('../util/Structures');
     let channel;
