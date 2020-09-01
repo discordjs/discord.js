@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('util');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
@@ -342,5 +343,10 @@ class User extends Base {
 }
 
 TextBasedChannel.applyToClass(User);
+
+User.prototype.displayAvatarURL = deprecate(
+  User.prototype.displayAvatarURL,
+  'User#displayAvatarURL is deprecated! Use User#avatarURL with the option includeDefault instead.',
+);
 
 module.exports = User;
