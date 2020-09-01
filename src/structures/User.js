@@ -165,12 +165,12 @@ class User extends Base {
 
   /**
    * A link to the user's avatar. If they don't have one and
-   * includeDefault is true, a link to their default avatar is returned.
+   * display is true, a link to their default avatar is returned.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  avatarURL({ format, size, dynamic, includeDefault } = {}) {
-    if (!this.avatar) return includeDefault ? this.defaultAvatarURL : null;
+  avatarURL({ format, size, dynamic, display } = {}) {
+    if (!this.avatar) return display ? this.defaultAvatarURL : null;
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
   }
 
@@ -188,7 +188,7 @@ class User extends Base {
    * Otherwise a link to their default avatar will be returned.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {string}
-   * @deprecated Use avatarURL() with includeDefault set to true instead.
+   * @deprecated
    */
   displayAvatarURL(options) {
     return this.avatarURL(options) || this.defaultAvatarURL;
@@ -346,7 +346,7 @@ TextBasedChannel.applyToClass(User);
 
 User.prototype.displayAvatarURL = deprecate(
   User.prototype.displayAvatarURL,
-  'User#displayAvatarURL is deprecated! Use User#avatarURL with the option includeDefault instead.',
+  'User#displayAvatarURL is deprecated: Use User#avatarURL with the display option instead',
 );
 
 module.exports = User;
