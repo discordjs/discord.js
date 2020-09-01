@@ -4,8 +4,23 @@ const { Events } = require('../../../util/Constants');
 const textBasedChannelTypes = ['dm', 'text', 'news'];
 
 module.exports = (client, { d: data }) => {
-  const channel = client.channels.cache.get(data.channel_id);
-  const user = client.users.cache.get(data.user_id);
+  let channel = client.channels.cache.get(data.channel_id);
+  let user = client.channels.cache.get(data.user_id);
+
+  if (!channel || !user) {
+    client.channels.fetch(data.channel_id).then(rChannel => {
+      channel = rChannel;
+      client.users.fetch(data.user_id).then(rUser => {
+        user = rUser;
+        triggerEvent(channel, user, data, client);
+      });
+    });
+  } else {
+    triggerEvent(channel, user, data, client);
+  }
+};
+
+function triggerEvent(channel, user, data, client) {
   const timestamp = new Date(data.timestamp * 1000);
 
   if (channel && user) {
@@ -41,7 +56,7 @@ module.exports = (client, { d: data }) => {
       client.emit(Events.TYPING_START, channel, user);
     }
   }
-};
+}
 
 function tooLate(channel, user) {
   return channel.client.setTimeout(() => {
