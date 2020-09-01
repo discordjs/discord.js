@@ -3031,11 +3031,13 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system'>, "deleted"> {
+  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, "deleted"> {
     bot: User['bot'];
     flags: User['flags'];
     locale: User['locale'];
     system: User['system'];
+    readonly tag: null;
+    username: null;
   }
 
   type PresenceStatusData = ClientPresenceStatus | 'invisible';
