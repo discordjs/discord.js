@@ -3031,7 +3031,7 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, "deleted"> {
+  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, 'deleted'> {
     bot: User['bot'];
     flags: User['flags'];
     locale: User['locale'];
