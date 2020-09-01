@@ -117,7 +117,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
  * animated avatars; the default is false.
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
- * @property {boolean} [display] If true, the default avatar is returned when a user doesn't have one.
+ * @property {boolean} [includeDefault] If true, the default avatar is returned when a user doesn't have one.
  */
 
 exports.Endpoints = {

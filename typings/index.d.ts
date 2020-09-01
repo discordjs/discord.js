@@ -1547,8 +1547,8 @@ declare module 'discord.js' {
     public system?: boolean;
     public readonly tag: string;
     public username: string;
-    public avatarURL(options?: ImageURLOptions & { dynamic?: boolean; display?: false }): string | null;
-    public avatarURL(options?: ImageURLOptions & { dynamic?: boolean; display: true }): string;
+    public avatarURL(options?: ImageURLOptions & { dynamic?: boolean; includeDefault?: false }): string | null;
+    public avatarURL(options?: ImageURLOptions & { dynamic?: boolean; includeDefault: true }): string;
     public createDM(): Promise<DMChannel>;
     public deleteDM(): Promise<DMChannel>;
     public displayAvatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string;
