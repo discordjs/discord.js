@@ -163,12 +163,13 @@ class User extends Base {
   }
 
   /**
-   * A link to the user's avatar.
+   * A link to the user's avatar. If they don't have one and
+   * includeDefault is true, a link to their default avatar is returned.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  avatarURL({ format, size, dynamic } = {}) {
-    if (!this.avatar) return null;
+  avatarURL({ format, size, dynamic, includeDefault } = {}) {
+    if (!this.avatar) return includeDefault ? this.defaultAvatarURL : null;
     return this.client.rest.cdn.Avatar(this.id, this.avatar, format, size, dynamic);
   }
 
@@ -186,6 +187,7 @@ class User extends Base {
    * Otherwise a link to their default avatar will be returned.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {string}
+   * @deprecated Use avatarURL() with includeDefault set to true instead.
    */
   displayAvatarURL(options) {
     return this.avatarURL(options) || this.defaultAvatarURL;
