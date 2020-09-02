@@ -245,7 +245,8 @@ class Util {
     })
       .then(res => {
         if (res.ok) return res.json();
-        throw new DiscordError('TOKEN_INVALID');
+        if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
+        throw res;
       })
       .then(data => data.shards * (1000 / guildsPerShard));
   }
