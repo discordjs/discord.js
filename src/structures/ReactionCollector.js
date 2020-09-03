@@ -111,7 +111,7 @@ class ReactionCollector extends Collector {
     if (reaction.message.id !== this.message.id) return null;
 
     /**
-     * Emitted when a single reaction is removed and the `dispose` option is set to true.
+     * Emitted when the reaction had one user removed and the `dispose` option is set to true.
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      * @param {User} user The user that removed the reaction
