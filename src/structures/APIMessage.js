@@ -151,8 +151,8 @@ class APIMessage {
 
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
-      nonce = parseInt(this.options.nonce);
-      if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
+      nonce = typeof this.options.nonce === 'string' ? this.options.nonce : parseInt(this.options.nonce);
+      if (!nonce) throw new RangeError('MESSAGE_NONCE_TYPE');
     }
 
     const embedLikes = [];
