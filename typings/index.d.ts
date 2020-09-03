@@ -2808,7 +2808,7 @@ declare module 'discord.js' {
 
   interface MessageOptions {
     tts?: boolean;
-    nonce?: string;
+    nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
@@ -3164,7 +3164,7 @@ declare module 'discord.js' {
     username?: string;
     avatarURL?: string;
     tts?: boolean;
-    nonce?: string;
+    nonce?: string | number;
     embeds?: readonly (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
