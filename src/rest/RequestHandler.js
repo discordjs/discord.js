@@ -66,7 +66,7 @@ class RequestHandler {
 
   globalDelayFor(ms) {
     return new Promise(resolve => {
-      setTimeout(
+      this.manager.client.setTimeout(
         manager => {
           manager.globalDelay = null;
           resolve();
