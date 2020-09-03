@@ -151,7 +151,7 @@ class APIMessage {
 
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
-      nonce = typeof this.options.nonce === 'string' ? this.options.nonce : this.options.nonce;
+      nonce = this.options.nonce;
       if ((typeof nonce === 'number' && !Number.isInteger(nonce)) || !nonce) throw new RangeError('MESSAGE_NONCE_TYPE');
     }
 
