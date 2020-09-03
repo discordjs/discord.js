@@ -5,7 +5,7 @@ const textBasedChannelTypes = ['dm', 'text', 'news'];
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
-  const user = client.users.cache.get(data.user_id);
+  const user = data.member ? client.users.add(data.member.user) : client.users.cache.get(data.user_id);
   const timestamp = new Date(data.timestamp * 1000);
 
   if (channel && user) {
