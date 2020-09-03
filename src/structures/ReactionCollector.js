@@ -103,7 +103,7 @@ class ReactionCollector extends Collector {
    */
   dispose(reaction, user) {
     /**
-     * Emitted when the entire reaction is removed and the `dispose` option is set to true.
+     * Emitted when the reaction had all the users removed and the `dispose` option is set to true.
      * @event ReactionCollector#dispose
      * @param {MessageReaction} reaction The reaction that was disposed of
      * @param {User} user The user that removed the reaction
