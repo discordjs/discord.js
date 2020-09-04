@@ -75,8 +75,8 @@ class MessageManager extends BaseManager {
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get pinned messages
-   * channel.fetchPinned()
-   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   * channel.messages.fetchPinned()
+   *   .then(messages => console.log(`Received ${messages.size} pinned messages`))
    *   .catch(console.error);
    */
   fetchPinned(cache = true) {
