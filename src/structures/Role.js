@@ -262,7 +262,7 @@ class Role extends Base {
    * @example
    * // Set the hoist of the role
    * role.setHoist(true)
-   *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
+   *   .then(updated => console.log(`Role hoisted: ${updated.hoist}`))
    *   .catch(console.error);
    */
   setHoist(hoist, reason) {
