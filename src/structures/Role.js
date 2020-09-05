@@ -173,7 +173,7 @@ class Role extends Base {
    * @example
    * // Edit a role
    * role.edit({ name: 'new role' })
-   *   .then(updated => console.log(`Edited role ${updated.name} name to ${updated.name}`))
+   *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
   async edit(data, reason) {
