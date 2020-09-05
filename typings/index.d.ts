@@ -2621,11 +2621,11 @@ declare module 'discord.js' {
     | 'INVITE_SPLASH'
     | 'NEWS'
     | 'PARTNERED'
+    | 'RELAY_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
-    | 'WELCOME_SCREEN_ENABLED'
-    | 'RELAY_ENABLED';
+    | 'WELCOME_SCREEN_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string;
