@@ -60,6 +60,10 @@ class RESTManager {
     return this.push(handler, apiRequest);
   }
 
+  get endpoint() {
+    return this.client.options.http.api;
+  }
+
   set endpoint(endpoint) {
     this.client.options.http.api = endpoint;
   }
