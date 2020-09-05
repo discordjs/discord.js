@@ -81,15 +81,7 @@ class GenericAction {
   }
 
   getMember(data, guild) {
-    const user = data.user;
-    return this.getPayload(
-      {
-        user,
-      },
-      guild.members,
-      user.id,
-      PartialTypes.GUILD_MEMBER,
-    );
+    return this.getPayload(data, guild.members, data.user.id, PartialTypes.GUILD_MEMBER);
   }
 
   getUser(data) {
