@@ -2198,11 +2198,11 @@ declare module 'discord.js' {
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
-    errors?: readonly string[];
+    errors?: string[];
   }
 
   interface AwaitReactionsOptions extends ReactionCollectorOptions {
-    errors?: readonly string[];
+    errors?: string[];
   }
 
   interface BanOptions {
@@ -2474,7 +2474,7 @@ declare module 'discord.js' {
   }
 
   interface FetchMembersOptions {
-    user?: UserResolvable | readonly UserResolvable[];
+    user?: UserResolvable | UserResolvable[];
     query?: string;
     limit?: number;
     withPresences?: boolean;
@@ -2557,7 +2557,7 @@ declare module 'discord.js' {
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
   interface GuildCreateChannelOptions {
-    permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
     type?: Exclude<
       keyof typeof ChannelType | ChannelType,
@@ -2602,13 +2602,13 @@ declare module 'discord.js' {
   }
 
   interface GuildEmojiCreateOptions {
-    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | RoleResolvable[];
     reason?: string;
   }
 
   interface GuildEmojiEditData {
     name?: string;
-    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | RoleResolvable[];
   }
 
   type GuildFeatures =
@@ -2762,8 +2762,8 @@ declare module 'discord.js' {
     url?: string;
     timestamp?: Date | number;
     color?: ColorResolvable;
-    fields?: readonly EmbedFieldData[];
-    files?: readonly (MessageAttachment | string | FileOptions)[];
+    fields?: EmbedFieldData[];
+    files?: (MessageAttachment | string | FileOptions)[];
     author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
     thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
@@ -2813,7 +2813,7 @@ declare module 'discord.js' {
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
     reply?: UserResolvable;
@@ -3165,10 +3165,10 @@ declare module 'discord.js' {
     avatarURL?: string;
     tts?: boolean;
     nonce?: string;
-    embeds?: readonly (MessageEmbed | object)[];
+    embeds?: (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
   }
