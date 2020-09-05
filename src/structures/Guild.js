@@ -171,11 +171,11 @@ class Guild extends Base {
      * * INVITE_SPLASH
      * * NEWS
      * * PARTNERED
+     * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
-     * * RELAY_ENABLED
      * @typedef {string} Features
      */
 
