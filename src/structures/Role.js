@@ -232,7 +232,7 @@ class Role extends Base {
    * @example
    * // Set the name of the role
    * role.setName('new role')
-   *   .then(updated => console.log(`Edited name of role to ${updated.name}`))
+   *   .then(updated => console.log(`Updated role name to ${updated.name}`))
    *   .catch(console.error);
    */
   setName(name, reason) {
