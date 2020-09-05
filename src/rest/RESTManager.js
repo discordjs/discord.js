@@ -61,7 +61,7 @@ class RESTManager {
   }
 
   get endpoint() {
-    return this.client.options.api;
+    return this.client.options.http.api;
   }
 
   set endpoint(endpoint) {
