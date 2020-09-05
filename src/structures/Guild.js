@@ -1106,7 +1106,7 @@ class Guild extends Base {
    * @example
    * // Edit the guild name
    * guild.setName('Discord Guild')
-   *  .then(updated => console.log(`Updated guild name to ${guild}`))
+   *  .then(updated => console.log(`Updated guild name to ${updated.name}`))
    *  .catch(console.error);
    */
   setName(name, reason) {
