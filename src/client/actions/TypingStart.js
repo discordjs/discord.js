@@ -12,7 +12,7 @@ class TypingStart extends Action {
       return;
     }
 
-    const user = this.getUserFromMember();
+    const user = this.getUserFromMember(data);
     const timestamp = new Date(data.timestamp * 1000);
 
     if (channel && user) {
