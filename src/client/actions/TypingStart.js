@@ -7,23 +7,15 @@ const textBasedChannelTypes = ['dm', 'text', 'news'];
 class TypingStart extends Action {
   handle(data) {
     const channel = this.getChannel(data);
-    let user;
-    if (data.guild_id) {
-      const guild = this.client.guilds.cache.get(data.guild_id);
-      if (guild) {
-        user = this.getMember(data.member, guild).user;
-      }
-    } else {
-      user = this.getUser(data);
+    if (!textBasedChannelTypes.includes(channel.type)) {
+      this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
+      return;
     }
+
+    const user = this.getUserFromMember();
     const timestamp = new Date(data.timestamp * 1000);
 
     if (channel && user) {
-      if (!textBasedChannelTypes.includes(channel.type)) {
-        this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
-        return;
-      }
-
       if (channel._typing.has(user.id)) {
         const typing = channel._typing.get(user.id);
 

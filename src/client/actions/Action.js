@@ -88,6 +88,16 @@ class GenericAction {
     const id = data.user_id;
     return data.user || this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
   }
+
+  getUserFromMember(data) {
+    if (data.guild_id) {
+      const guild = this.client.guilds.cache.get(data.guild_id);
+      if (guild) {
+        return this.getMember(data.member, guild).user;
+      }
+    }
+    return this.getUser(data);
+  }
 }
 
 module.exports = GenericAction;
