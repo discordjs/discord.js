@@ -171,6 +171,7 @@ class Guild extends Base {
      * * INVITE_SPLASH
      * * NEWS
      * * PARTNERED
+     * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS

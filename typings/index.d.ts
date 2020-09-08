@@ -2621,6 +2621,7 @@ declare module 'discord.js' {
     | 'INVITE_SPLASH'
     | 'NEWS'
     | 'PARTNERED'
+    | 'RELAY_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
