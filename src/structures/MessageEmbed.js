@@ -311,6 +311,10 @@ class MessageEmbed {
     this.color = Util.resolveColor(color);
     return this;
   }
+  setColour(color) {
+    this.color = Util.resolveColor(color);
+    return this;
+  }
 
   /**
    * Sets the description of this embed.
