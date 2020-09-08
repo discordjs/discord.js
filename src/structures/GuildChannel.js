@@ -334,8 +334,22 @@ class GuildChannel extends Channel {
       });
     }
 
-    const permission_overwrites =
-      data.permissionOverwrites && data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites;
+
+    if (data.permissionOverwrites) {
+      permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    }
+
+    if (data.lockPermissions) {
+      if (data.parentID) {
+        const newParent = this.guild.channels.resolve(data.parentID);
+        if (newParent && newParent.type === 'category') {
+          permission_overwrites = newParent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+        }
+      } else if (this.parent) {
+        permission_overwrites = this.parent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+      }
+    }
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {
@@ -499,7 +513,7 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
    * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {number} [options.rateLimitPerUser=ThisType.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
    * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}

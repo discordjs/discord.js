@@ -90,10 +90,19 @@ class Channel extends Base {
 
   /**
    * Fetches this channel.
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Channel>}
    */
-  fetch() {
-    return this.client.channels.fetch(this.id, true);
+  fetch(force = false) {
+    return this.client.channels.fetch(this.id, true, force);
+  }
+
+  /**
+   * Indicates whether this channel is text-based.
+   * @returns {boolean}
+   */
+  isText() {
+    return 'messages' in this;
   }
 
   static create(client, data, guild) {

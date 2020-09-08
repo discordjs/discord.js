@@ -28,7 +28,7 @@ const browser = (exports.browser = typeof window !== 'undefined');
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
  * corresponding websocket events
- * @property {number} [restTimeOffset=500] Extra time in millseconds to wait before continuing to make REST
+ * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
  * requests (higher values will reduce rate-limiting errors on bad connections)
  * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
  * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
@@ -56,11 +56,12 @@ exports.DefaultOptions = {
   /**
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=250] Number of members in a guild to be considered large
+   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
+   * sent in the initial guild member list, must be between 50 and 250
    * @property {IntentsResolvable} [intents] Intents to enable for this connection
    */
   ws: {
-    large_threshold: 250,
+    large_threshold: 50,
     compress: false,
     properties: {
       $os: browser ? 'browser' : process.platform,

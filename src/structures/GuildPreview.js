@@ -5,7 +5,7 @@ const GuildPreviewEmoji = require('./GuildPreviewEmoji');
 const Collection = require('../util/Collection');
 
 /**
- * Represents the data about the guild any bot can preview, connected to the specified public guild.
+ * Represents the data about the guild any bot can preview, connected to the specified guild.
  * @extends {Base}
  */
 class GuildPreview extends Base {
@@ -18,37 +18,37 @@ class GuildPreview extends Base {
   }
 
   /**
-   * Builds the public guild with the provided data.
-   * @param {*} data The raw data of the public guild
+   * Builds the guild with the provided data.
+   * @param {*} data The raw data of the guild
    * @private
    */
   _patch(data) {
     /**
-     * The id of this public guild
+     * The id of this guild
      * @type {string}
      */
     this.id = data.id;
 
     /**
-     * The name of this public guild
+     * The name of this guild
      * @type {string}
      */
     this.name = data.name;
 
     /**
-     * The icon of this public guild
+     * The icon of this guild
      * @type {?string}
      */
     this.icon = data.icon;
 
     /**
-     * The splash icon of this public guild
+     * The splash icon of this guild
      * @type {?string}
      */
     this.splash = data.splash;
 
     /**
-     * The discovery splash icon of this public guild
+     * The discovery splash icon of this guild
      * @type {?string}
      */
     this.discoverySplash = data.discovery_splash;
@@ -60,26 +60,26 @@ class GuildPreview extends Base {
     this.features = data.features;
 
     /**
-     * The approximate count of members in this public guild
+     * The approximate count of members in this guild
      * @type {number}
      */
     this.approximateMemberCount = data.approximate_member_count;
 
     /**
-     * The approximate count of online members in this public guild
+     * The approximate count of online members in this guild
      * @type {number}
      */
     this.approximatePresenceCount = data.approximate_presence_count;
 
     /**
-     * The description for this public guild
+     * The description for this guild
      * @type {?string}
      */
     this.description = data.description;
 
     if (!this.emojis) {
       /**
-       * Collection of emojis belonging to this public guild
+       * Collection of emojis belonging to this guild
        * @type {Collection<Snowflake, GuildPreviewEmoji>}
        */
       this.emojis = new Collection();
@@ -92,7 +92,7 @@ class GuildPreview extends Base {
   }
 
   /**
-   * The URL to this public guild's splash.
+   * The URL to this guild's splash.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -102,7 +102,7 @@ class GuildPreview extends Base {
   }
 
   /**
-   * The URL to this public guild's discovery splash.
+   * The URL to this guild's discovery splash.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -112,7 +112,7 @@ class GuildPreview extends Base {
   }
 
   /**
-   * The URL to this public guild's icon.
+   * The URL to this guild's icon.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -122,7 +122,7 @@ class GuildPreview extends Base {
   }
 
   /**
-   * Fetches this public guild.
+   * Fetches this guild.
    * @returns {Promise<GuildPreview>}
    */
   fetch() {
