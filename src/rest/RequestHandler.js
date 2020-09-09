@@ -83,11 +83,11 @@ class RequestHandler {
      * Potentially loop until this task can run if e.g. the global rate limit is hit twice
      */
     while (this.limited) {
-      let global, limit, timeout, delayPromise;
+      let isGlobal, limit, timeout, delayPromise;
 
       if (this.globalLimited) {
         // Set the variables based on the global rate limit
-        global = true;
+        isGlobal = true;
         limit = this.manager.globalLimit;
         timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
         // If this is the first task to reach the global timeout, set the global delay
@@ -98,7 +98,7 @@ class RequestHandler {
         delayPromise = this.manager.globalDelay;
       } else {
         // Set the variables based on the route-specific rate limit
-        global = false;
+        isGlobal = false;
         limit = this.limit;
         timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
         delayPromise = Util.delayFor(timeout);
@@ -122,7 +122,7 @@ class RequestHandler {
           method: request.method,
           path: request.path,
           route: request.route,
-          global: global,
+          global: isGlobal,
         });
       }
 
