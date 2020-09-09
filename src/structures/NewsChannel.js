@@ -29,7 +29,7 @@ class NewsChannel extends TextChannel {
    */
   async addFollower(channel, reason) {
     channel = this.client.channels.resolve(channel);
-    if (!channel || !['text', 'news'].includes(channel.type)) throw new Error('GUILD_TEXT_CHANNEL_RESOLVE');
+    if (!channel || channel.type !== 'text') throw new Error('GUILD_TEXT_CHANNEL_RESOLVE');
     await this.client.api.channels(this.id).followers.post({ data: { webhook_channel_id: channel.id }, reason });
     return this;
   }
