@@ -115,7 +115,7 @@ class MessageManager extends BaseManager {
 
   /**
    * Edits a message, even if it's not cached.
-   * @param {MessageResolvable} message The message to delete
+   * @param {MessageResolvable} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<void>}
@@ -131,6 +131,18 @@ class MessageManager extends BaseManager {
           clone._patch(d);
         }
       });
+    }
+  }
+
+  /**
+   * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
+   * @param {MessageResolvable} message The message to publish
+   * @returns {Promise<void>}
+   */
+  async crosspost(message) {
+    message = this.resolveID(message);
+    if (message) {
+      await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
     }
   }
 
