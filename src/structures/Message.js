@@ -439,13 +439,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    const { data } =
-      content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
-    return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
-      const clone = this._clone();
-      clone._patch(d);
-      return clone;
-    });
+    return this.channel.messages.edit(this.id, content, options).then(() => this);
   }
 
   /**

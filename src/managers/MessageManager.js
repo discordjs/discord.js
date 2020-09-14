@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const APIMessage = require('../structures/APIMessage');
 const Message = require('../structures/Message');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
@@ -111,6 +112,27 @@ class MessageManager extends BaseManager {
    * @param {MessageResolvable} message The message resolvable to resolve
    * @returns {?Snowflake}
    */
+
+  /**
+   * Edits a message, even if it's not cached.
+   * @param {MessageResolvable} message The message to delete
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
+   * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
+   * @returns {Promise<void>}
+   */
+  async edit(message, content, options) {
+    message = this.resolveID(message);
+    if (message) {
+      const { data } =
+        content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
+      await this.client.api.channels[this.channel.id].messages[message].patch({ data }).then(d => {
+        if (this.cache.has(message)) {
+          const clone = this.cache.get(message)._clone();
+          clone._patch(d);
+        }
+      });
+    }
+  }
 
   /**
    * Deletes a message, even if it's not cached.
