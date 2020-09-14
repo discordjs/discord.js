@@ -7,7 +7,7 @@ const textBasedChannelTypes = ['dm', 'text', 'news'];
 class TypingStart extends Action {
   handle(data) {
     const channel = this.getChannel(data);
-    if (!textBasedChannelTypes.includes(channel.type)) {
+    if (channel && !textBasedChannelTypes.includes(channel.type)) {
       this.client.emit(Events.WARN, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);
       return;
     }
