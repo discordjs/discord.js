@@ -419,7 +419,7 @@ class Message extends Base {
   }
 
   /**
-   * Options that can be passed into editMessage.
+   * Options that can be passed into Message#edit.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
