@@ -124,6 +124,9 @@ class Shard extends EventEmitter {
         .on('exit', this._exitListener);
     }
 
+    this._evals.clear();
+    this._fetches.clear();
+
     /**
      * Emitted upon the creation of the shard's child process/worker.
      * @event Shard#spawn
