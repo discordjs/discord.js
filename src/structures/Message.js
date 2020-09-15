@@ -550,7 +550,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   delete(options = {}) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
     const { timeout = 0, reason } = options;
     if (timeout <= 0) {
       return this.channel.messages.delete(this.id, reason).then(() => this);
