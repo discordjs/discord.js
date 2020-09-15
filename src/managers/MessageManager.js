@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { TypeError } = require('../errors');
 const Message = require('../structures/Message');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
@@ -120,9 +121,9 @@ class MessageManager extends BaseManager {
    */
   async delete(message, reason) {
     message = this.resolveID(message);
-    if (message) {
-      await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
-    }
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
   }
 
   async _fetchId(messageID, cache, force) {
