@@ -484,11 +484,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   unpin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .delete(options)
-      .then(() => this);
+    return this.channel.messages.unpin(this.id, options).then(() => this);
   }
 
   /**
