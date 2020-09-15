@@ -147,6 +147,24 @@ class MessageManager extends BaseManager {
   }
 
   /**
+   * Pins a message to the channel's pinned messages, even if it's not cached.
+   * @param {MessageResolvable} message The message to pin
+   * @param {Object} [options] Options for pinning
+   * @param {string} [options.reason] Reason for pinning
+   * @returns {Promise<void>}
+   */
+  async pin(message, options) {
+    message = this.resolveID(message);
+    if (message) {
+      await this.client.api
+        .channels(this.channel.id)
+        .pins(message)
+        .put(options)
+        .then(() => this);
+    }
+  }
+
+  /**
    * Deletes a message, even if it's not cached.
    * @param {MessageResolvable} message The message to delete
    * @param {string} [reason] Reason for deleting this message, if it does not belong to the client user

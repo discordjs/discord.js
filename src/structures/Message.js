@@ -469,11 +469,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   pin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .put(options)
-      .then(() => this);
+    return this.channel.messages.pin(this.id, options).then(() => this);
   }
 
   /**
