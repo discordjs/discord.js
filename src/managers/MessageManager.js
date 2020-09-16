@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { TypeError } = require('../errors');
 const APIMessage = require('../structures/APIMessage');
 const Message = require('../structures/Message');
 const Collection = require('../util/Collection');
@@ -180,6 +181,23 @@ class MessageManager extends BaseManager {
         .delete(options)
         .then(() => this);
     }
+  }
+
+  /**
+   * Adds a reaction to the message, even if it's not cached.
+   * @param {MessageResolvable} message The messag to react to
+   * @param {EmojiIdentifierResolvable} emoji The emoji to react with
+   * @returns {Promise<void>}
+   */
+  async react(message, emoji) {
+    message = this.resolveID(message);
+    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+
+    emoji = this.client.emojis.resolveIdentifier(emoji);
+    if (!emoji) throw new TypeError('EMOJI_TYPE', 'emoji', 'EmojiIdentifierResolvable');
+
+    // eslint-disable-next-line newline-per-chained-call
+    await this.client.api.channels(this.channel.id).messages(message).reactions(emoji, '@me').put();
   }
 
   /**

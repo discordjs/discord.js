@@ -503,23 +503,15 @@ class Message extends Base {
    *   .catch(console.error);
    */
   react(emoji) {
-    emoji = this.client.emojis.resolveIdentifier(emoji);
-    if (!emoji) throw new TypeError('EMOJI_TYPE');
-
-    return this.client.api
-      .channels(this.channel.id)
-      .messages(this.id)
-      .reactions(emoji, '@me')
-      .put()
-      .then(
-        () =>
-          this.client.actions.MessageReactionAdd.handle({
-            user: this.client.user,
-            channel: this.channel,
-            message: this,
-            emoji: Util.parseEmoji(emoji),
-          }).reaction,
-      );
+    return this.channel.messages.react(this.id, emoji).then(
+      () =>
+        this.client.actions.MessageReactionAdd.handle({
+          user: this.client.user,
+          channel: this.channel,
+          message: this,
+          emoji: Util.parseEmoji(emoji),
+        }).reaction,
+    );
   }
 
   /**
