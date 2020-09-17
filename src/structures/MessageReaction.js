@@ -118,14 +118,14 @@ class MessageReaction {
     if (this.partial) return;
     this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) this.count++;
-    if (!this.me) this.me = user.id === this.message.client.user.id;
+    this.me = user.id === this.message.client.user.id;
   }
 
   _remove(user) {
     if (this.partial) return;
     this.users.cache.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) this.count--;
-    if (user.id === this.message.client.user.id) this.me = false;
+    this.me = user.id === this.message.client.user.id;
     if (this.count <= 0 && this.users.cache.size === 0) {
       this.message.reactions.cache.delete(this.emoji.id || this.emoji.name);
     }
