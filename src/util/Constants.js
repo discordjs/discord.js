@@ -19,6 +19,9 @@ const browser = (exports.browser = typeof window !== 'undefined');
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
+ * @property {number} [messageEditHistoryMaxSize=-1] Maximum number of previous versions to hold for an edited message
+ * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
+ * indefinitely. Setting this to 0 may have undesired effects such as messageUpdate not firing)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {DisableMentionType} [disableMentions='none'] Default value for {@link MessageOptions#disableMentions}
@@ -43,6 +46,7 @@ exports.DefaultOptions = {
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
+  messageEditHistoryMaxSize: -1,
   fetchAllMembers: false,
   disableMentions: 'none',
   partials: [],

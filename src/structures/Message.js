@@ -240,8 +240,11 @@ class Message extends Base {
    * @private
    */
   patch(data) {
-    const clone = this._clone();
-    this._edits.unshift(clone);
+    const { messageEditHistoryMaxSize } = this.client.options;
+    if (messageEditHistoryMaxSize !== 0) {
+      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
+      if (this._edits.unshift(this._clone()) > editsLimit) this._edits.pop();
+    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
