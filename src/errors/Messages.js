@@ -78,7 +78,6 @@ const Messages = {
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
   GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
-  GUILD_TEXT_CHANNEL_RESOLVE: 'Could not resolve channel to a guild text channel.',
   GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
   GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
   GUILD_OWNED: 'Guild is owned by the client.',
