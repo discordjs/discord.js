@@ -32,13 +32,15 @@
 class AsyncQueue {
   constructor() {
     /**
-     * The promises array
+     * The promises array.
+     * @type {Array<{promise: Promise<void>, resolve: Function}>}
      * @private
      */
     this.promises = [];
   }
   /**
    * The remaining amount of queued promises
+   * @type {number}
    */
   get remaining() {
     return this.promises.length;
