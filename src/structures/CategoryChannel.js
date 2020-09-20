@@ -7,8 +7,8 @@ const GuildChannel = require('./GuildChannel');
  * @extends {GuildChannel}
  */
 class CategoryChannel extends GuildChannel {
-  _patch(data) {
-    super._patch(data);
+  constructor(guild, data) {
+    super(guild, data);
 
     // Category Channels cannot have invites
     this.createInvite = undefined;
