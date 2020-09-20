@@ -1526,7 +1526,7 @@ declare module 'discord.js' {
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
-    public setTopic(topic: string, reason?: string): Promise<TextChannel>;
+    public setTopic(topic: string, reason?: string): Promise<this>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
