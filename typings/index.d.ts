@@ -1374,7 +1374,7 @@ declare module 'discord.js' {
     public mode: ShardingManagerMode;
     public parentPort: any | null;
     public broadcastEval(script: string): Promise<any[]>;
-    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
+    public broadcastEval<T>(fn: (client: ShardClientUtil) => T): Promise<T[]>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<void>;
     public send(message: any): Promise<void>;
