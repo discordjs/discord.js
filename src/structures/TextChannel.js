@@ -87,6 +87,23 @@ class TextChannel extends GuildChannel {
   }
 
   /**
+   * Sets a new topic for the Text Channel.
+   * @param {string} topic The new topic for the Text channel
+   * @param {string} [reason] Reason for changing the Text channel's topic
+   * @returns {Promise<TextChannel>}
+   * @example
+   * // Set a new channel topic
+   * TextChannel.setTopic('needs more rate limiting')
+   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
+   *   .catch(console.error);
+   */
+  setTopic(topic, reason) {
+    return this.edit({
+      topic
+    }, reason);
+  }
+  
+  /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    * @example
