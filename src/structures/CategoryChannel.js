@@ -7,6 +7,14 @@ const GuildChannel = require('./GuildChannel');
  * @extends {GuildChannel}
  */
 class CategoryChannel extends GuildChannel {
+  _patch(data) {
+    super._patch(data);
+
+    // Category Channels cannot have invites
+    this.createInvite = undefined;
+    this.fetchInvites = undefined;
+  }
+
   /**
    * Channels that are a part of this category
    * @type {Collection<Snowflake, GuildChannel>}
