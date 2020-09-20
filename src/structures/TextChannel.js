@@ -90,7 +90,7 @@ class TextChannel extends GuildChannel {
    * Sets a new topic for the channel.
    * @param {string} topic The new topic for the channel
    * @param {string} [reason] Reason for changing the channel's topic
-   * @returns {Promise<TextChannel>}
+   * @returns {Promise<this>}
    * @example
    * // Set a new channel topic
    * channel.setTopic('needs more rate limiting')
@@ -98,11 +98,14 @@ class TextChannel extends GuildChannel {
    *   .catch(console.error);
    */
   setTopic(topic, reason) {
-    return this.edit({
-      topic
-    }, reason);
+    return this.edit(
+      {
+        topic,
+      },
+      reason,
+    );
   }
-  
+
   /**
    * Fetches all webhooks for the channel.
    * @returns {Promise<Collection<Snowflake, Webhook>>}
