@@ -38,7 +38,7 @@ class TextChannel extends GuildChannel {
     super._patch(data);
 
     /**
-     * The topic of the text channel
+     * The topic of the channel
      * @type {?string}
      */
     this.topic = data.topic;
@@ -87,13 +87,13 @@ class TextChannel extends GuildChannel {
   }
 
   /**
-   * Sets a new topic for the Text Channel.
-   * @param {string} topic The new topic for the Text channel
-   * @param {string} [reason] Reason for changing the Text channel's topic
+   * Sets a new topic for the channel.
+   * @param {string} topic The new topic for the channel
+   * @param {string} [reason] Reason for changing the channel's topic
    * @returns {Promise<TextChannel>}
    * @example
    * // Set a new channel topic
-   * TextChannel.setTopic('needs more rate limiting')
+   * channel.setTopic('needs more rate limiting')
    *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
    *   .catch(console.error);
    */
