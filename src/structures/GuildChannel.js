@@ -411,21 +411,6 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Sets a new topic for the guild channel.
-   * @param {string} topic The new topic for the guild channel
-   * @param {string} [reason] Reason for changing the guild channel's topic
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // Set a new channel topic
-   * channel.setTopic('needs more rate limiting')
-   *   .then(newChannel => console.log(`Channel's new topic is ${newChannel.topic}`))
-   *   .catch(console.error);
-   */
-  setTopic(topic, reason) {
-    return this.edit({ topic }, reason);
-  }
-
-  /**
    * Sets a new position for the guild channel.
    * @param {number} position The new position for the guild channel
    * @param {Object} [options] Options for setting position
