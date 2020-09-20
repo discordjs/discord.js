@@ -321,10 +321,7 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api
-          .channels(this.id)
-          .messages(messageIDs[0])
-          .delete();
+        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIDs[0],
