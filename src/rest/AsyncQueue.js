@@ -38,6 +38,7 @@ class AsyncQueue {
      */
     this.promises = [];
   }
+
   /**
    * The remaining amount of queued promises
    * @type {number}
@@ -47,7 +48,7 @@ class AsyncQueue {
   }
 
   /**
-   * Waits for last promise and queues a new one
+   * Waits for last promise and queues a new one.
    * @returns {Promise<void>}
    * @example
    * const queue = new AsyncQueue();
@@ -82,7 +83,7 @@ class AsyncQueue {
   }
 
   /**
-   * Frees the queue's lock for the next item to process
+   * Frees the queue's lock for the next item to process.
    */
   shift() {
     const deferred = this.promises.shift();
