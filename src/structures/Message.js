@@ -449,6 +449,22 @@ class Message extends Base {
   }
 
   /**
+   * Publishes a message in an announcement channel to all channels following it.
+   * @returns {Promise<Message>}
+   * @example
+   * // Crosspost a message
+   * if (message.channel.type === 'news') {
+   *   message.crosspost()
+   *     .then(() => console.log('Crossposted message'))
+   *     .catch(console.error);
+   * }
+   */
+  async crosspost() {
+    await this.client.api.channels(this.channel.id).messages(this.id).crosspost.post();
+    return this;
+  }
+
+  /**
    * Pins this message to the channel's pinned messages.
    * @param {Object} [options] Options for pinning
    * @param {string} [options.reason] Reason for pinning
@@ -534,7 +550,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   delete(options = {}) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
     const { timeout = 0, reason } = options;
     if (timeout <= 0) {
       return this.channel.messages.delete(this.id, reason).then(() => this);

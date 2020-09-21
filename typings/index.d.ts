@@ -1023,6 +1023,7 @@ declare module 'discord.js' {
     public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
+    public crosspost(): Promise<Message>;
     public fetch(force?: boolean): Promise<Message>;
     public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
@@ -2126,7 +2127,7 @@ declare module 'discord.js' {
     shardID?: number | readonly number[];
   }
 
-  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS';
+  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 
   interface AddGuildMemberOptions {
     accessToken: string;
@@ -2198,11 +2199,11 @@ declare module 'discord.js' {
   }
 
   interface AwaitMessagesOptions extends MessageCollectorOptions {
-    errors?: readonly string[];
+    errors?: string[];
   }
 
   interface AwaitReactionsOptions extends ReactionCollectorOptions {
-    errors?: readonly string[];
+    errors?: string[];
   }
 
   interface BanOptions {
@@ -2267,22 +2268,22 @@ declare module 'discord.js' {
     emojiDelete: [GuildEmoji];
     emojiUpdate: [GuildEmoji, GuildEmoji];
     error: [Error];
-    guildBanAdd: [Guild, User | PartialUser];
-    guildBanRemove: [Guild, User | PartialUser];
+    guildBanAdd: [Guild, User];
+    guildBanRemove: [Guild, User];
     guildCreate: [Guild];
     guildDelete: [Guild];
     guildUnavailable: [Guild];
     guildIntegrationsUpdate: [Guild];
-    guildMemberAdd: [GuildMember | PartialGuildMember];
+    guildMemberAdd: [GuildMember];
     guildMemberAvailable: [GuildMember | PartialGuildMember];
     guildMemberRemove: [GuildMember | PartialGuildMember];
     guildMembersChunk: [
-      Collection<Snowflake, GuildMember | PartialGuildMember>,
+      Collection<Snowflake, GuildMember>,
       Guild,
       { count: number; index: number; nonce: string | undefined },
     ];
     guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
-    guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember | PartialGuildMember];
+    guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember];
     guildUpdate: [Guild, Guild];
     inviteCreate: [Invite];
     inviteDelete: [Invite];
@@ -2302,7 +2303,7 @@ declare module 'discord.js' {
     roleDelete: [Role];
     roleUpdate: [Role, Role];
     typingStart: [Channel | PartialDMChannel, User | PartialUser];
-    userUpdate: [User | PartialUser, User | PartialUser];
+    userUpdate: [User | PartialUser, User];
     voiceStateUpdate: [VoiceState, VoiceState];
     webhookUpdate: [TextChannel];
     shardDisconnect: [CloseEvent, number];
@@ -2474,7 +2475,7 @@ declare module 'discord.js' {
   }
 
   interface FetchMembersOptions {
-    user?: UserResolvable | readonly UserResolvable[];
+    user?: UserResolvable | UserResolvable[];
     query?: string;
     limit?: number;
     withPresences?: boolean;
@@ -2557,7 +2558,7 @@ declare module 'discord.js' {
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
   interface GuildCreateChannelOptions {
-    permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    permissionOverwrites?: OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
     topic?: string;
     type?: Exclude<
       keyof typeof ChannelType | ChannelType,
@@ -2602,13 +2603,13 @@ declare module 'discord.js' {
   }
 
   interface GuildEmojiCreateOptions {
-    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | RoleResolvable[];
     reason?: string;
   }
 
   interface GuildEmojiEditData {
     name?: string;
-    roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
+    roles?: Collection<Snowflake, Role> | RoleResolvable[];
   }
 
   type GuildFeatures =
@@ -2621,6 +2622,7 @@ declare module 'discord.js' {
     | 'INVITE_SPLASH'
     | 'NEWS'
     | 'PARTNERED'
+    | 'RELAY_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
@@ -2762,8 +2764,8 @@ declare module 'discord.js' {
     url?: string;
     timestamp?: Date | number;
     color?: ColorResolvable;
-    fields?: readonly EmbedFieldData[];
-    files?: readonly (MessageAttachment | string | FileOptions)[];
+    fields?: EmbedFieldData[];
+    files?: (MessageAttachment | string | FileOptions)[];
     author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
     thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
@@ -2813,7 +2815,7 @@ declare module 'discord.js' {
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
     reply?: UserResolvable;
@@ -3031,7 +3033,8 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, 'deleted'> {
+  interface PartialUser
+    extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, 'deleted'> {
     bot: User['bot'];
     flags: User['flags'];
     locale: User['locale'];
@@ -3164,11 +3167,11 @@ declare module 'discord.js' {
     username?: string;
     avatarURL?: string;
     tts?: boolean;
-    nonce?: string | number;
-    embeds?: readonly (MessageEmbed | object)[];
+    nonce?: string;
+    embeds?: (MessageEmbed | object)[];
     disableMentions?: 'none' | 'all' | 'everyone';
     allowedMentions?: MessageMentionOptions;
-    files?: readonly (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
+    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
   }
