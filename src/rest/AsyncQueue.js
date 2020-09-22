@@ -27,7 +27,8 @@
 // TODO(kyranet, vladfrangu): replace this with discord.js v13's core AsyncQueue.
 
 /**
- * An async queue that preserves the stack and prevents lock-ups
+ * An async queue that preserves the stack and prevents lock-ups.
+ * @private
  */
 class AsyncQueue {
   constructor() {
