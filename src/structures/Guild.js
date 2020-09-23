@@ -304,10 +304,11 @@ class Guild extends Base {
     if (typeof data.max_members !== 'undefined') {
       /**
        * The maximum amount of members the guild can have
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
        * @type {?number}
        */
-      this.maximumMembers = data.max_members || 250000;
+      this.maximumMembers = data.max_members;
+    } else if (typeof this.maximumMembers === 'undefined') {
+      this.maximumMembers = null;
     }
 
     if (typeof data.max_presences !== 'undefined') {
@@ -317,6 +318,8 @@ class Guild extends Base {
        * @type {?number}
        */
       this.maximumPresences = data.max_presences || 25000;
+    } else if (typeof this.maximumPresences === 'undefined') {
+      this.maximumPresences = null;
     }
 
     if (typeof data.approximate_member_count !== 'undefined') {
