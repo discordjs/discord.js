@@ -65,6 +65,8 @@ class Integration extends Base {
        * @type {?User}
        */
       this.user = this.client.users.add(data.user);
+    } else {
+      this.user = null;
     }
 
     /**

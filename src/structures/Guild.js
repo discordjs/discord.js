@@ -231,36 +231,38 @@ class Guild extends Base {
      */
     this.premiumTier = data.premium_tier;
 
-    /**
-     * The total number of boosts for this server
-     * @type {?number}
-     * @name Guild#premiumSubscriptionCount
-     */
     if (typeof data.premium_subscription_count !== 'undefined') {
+      /**
+       * The total number of boosts for this server
+       * @type {?number}
+       */
       this.premiumSubscriptionCount = data.premium_subscription_count;
     }
 
-    /**
-     * Whether widget images are enabled on this guild
-     * @type {?boolean}
-     * @name Guild#widgetEnabled
-     */
-    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+    if (typeof data.widget_enabled !== 'undefined') {
+      /**
+       * Whether widget images are enabled on this guild
+       * @type {?boolean}
+       */
+      this.widgetEnabled = data.widget_enabled;
+    }
 
-    /**
-     * The widget channel ID, if enabled
-     * @type {?string}
-     * @name Guild#widgetChannelID
-     */
-    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+    if (typeof data.widget_channel_id !== 'undefined') {
+      /**
+       * The widget channel ID, if enabled
+       * @type {?string}
+       */
+      this.widgetChannelID = data.widget_channel_id;
+    }
 
-    /**
-     * The embed channel ID, if enabled
-     * @type {?string}
-     * @name Guild#embedChannelID
-     * @deprecated
-     */
-    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+    if (typeof data.embed_channel_id !== 'undefined') {
+      /**
+       * The embed channel ID, if enabled
+       * @type {?string}
+       * @deprecated
+       */
+      this.embedChannelID = data.embed_channel_id;
+    }
 
     /**
      * The verification level of the guild
@@ -299,40 +301,44 @@ class Guild extends Base {
      */
     this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
-    /**
-     * The maximum amount of members the guild can have
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#maximumMembers
-     */
-    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
-
-    /**
-     * The maximum amount of presences the guild can have
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#maximumPresences
-     */
-    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
-
-    /**
-     * The approximate amount of members the guild has
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#approximateMemberCount
-     */
-    if (typeof data.approximate_member_count !== 'undefined') {
-      this.approximateMemberCount = data.approximate_member_count;
+    if (typeof data.max_members !== 'undefined') {
+      /**
+       * The maximum amount of members the guild can have
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
+      this.maximumMembers = data.max_members || 250000;
     }
 
-    /**
-     * The approximate amount of presences the guild has
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#approximatePresenceCount
-     */
+    if (typeof data.max_presences !== 'undefined') {
+      /**
+       * The maximum amount of presences the guild can have
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
+      this.maximumPresences = data.max_presences || 25000;
+    }
+
+    if (typeof data.approximate_member_count !== 'undefined') {
+      /**
+       * The approximate amount of members the guild has
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
+      this.approximateMemberCount = data.approximate_member_count;
+    } else if (typeof this.approximateMemberCount === 'undefined') {
+      this.approximateMemberCount = null;
+    }
+
     if (typeof data.approximate_presence_count !== 'undefined') {
+      /**
+       * The approximate amount of presences the guild has
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
       this.approximatePresenceCount = data.approximate_presence_count;
+    } else if (typeof this.approximatePresenceCount === 'undefined') {
+      this.approximatePresenceCount = null;
     }
 
     /**

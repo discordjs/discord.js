@@ -61,7 +61,6 @@ class GuildMember extends Base {
     /**
      * The nickname of this member, if they have one
      * @type {?string}
-     * @name GuildMember#nickname
      */
     this.nickname = null;
 
@@ -74,7 +73,6 @@ class GuildMember extends Base {
       /**
        * The user that this guild member instance represents
        * @type {User}
-       * @name GuildMember#user
        */
       this.user = this.client.users.add(data.user, true);
     }

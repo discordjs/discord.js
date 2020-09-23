@@ -56,7 +56,7 @@ class StreamDispatcher extends Writable {
      * The broadcast controlling this dispatcher, if any
      * @type {?VoiceBroadcast}
      */
-    this.broadcast = this.streams.broadcast;
+    this.broadcast = this.streams.broadcast || null;
 
     this._pausedTime = 0;
     this._silentPausedTime = 0;

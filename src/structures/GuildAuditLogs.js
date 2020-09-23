@@ -24,7 +24,7 @@ const Util = require('../util/Util');
 /**
  * Key mirror of all available audit log targets.
  * @name GuildAuditLogs.Targets
- * @type {AuditLogTargetType}
+ * @type {Object<string, string>}
  */
 const Targets = {
   ALL: 'ALL',
@@ -84,7 +84,7 @@ const Targets = {
 /**
  * All available actions keyed under their names to their numeric values.
  * @name GuildAuditLogs.Actions
- * @type {AuditLogAction}
+ * @type {Object<string, number>}
  */
 const Actions = {
   ALL: null,

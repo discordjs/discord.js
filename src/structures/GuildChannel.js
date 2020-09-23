@@ -298,7 +298,7 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
-   * @property {Snowflake} [parentID] The parent ID of the channel
+   * @property {?Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
