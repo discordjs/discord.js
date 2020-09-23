@@ -29,6 +29,7 @@ declare module 'discord.js' {
     public createdTimestamp: number;
     public details: string | null;
     public emoji: Emoji | null;
+    public flags: Readonly<ActivityFlags>;
     public name: string;
     public party: {
       id: string | null;
@@ -1230,7 +1231,6 @@ declare module 'discord.js' {
     constructor(client: Client, data?: object);
     public activities: Activity[];
     public clientStatus: ClientPresenceStatusData | null;
-    public flags: Readonly<ActivityFlags>;
     public guild: Guild | null;
     public readonly member: GuildMember | null;
     public status: PresenceStatus;
