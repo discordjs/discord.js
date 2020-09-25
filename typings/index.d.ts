@@ -1941,10 +1941,7 @@ declare module 'discord.js' {
 
   export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
-    public create(
-      name: string,
-      options?: { region?: string; icon: BufferResolvable | Base64Resolvable | null },
-    ): Promise<Guild>;
+    public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Guild>;
   }
 
@@ -2575,6 +2572,19 @@ declare module 'discord.js' {
 
   interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
     name?: string;
+  }
+
+  interface GuildCreateOptions {
+    afkChannelID?: number;
+    afkTimeout?: number;
+    channels?: PartialChannelData[];
+    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    explicitContentFilter?: ExplicitContentFilterLevel | number;
+    icon?: BufferResolvable | Base64Resolvable | null;
+    region?: string;
+    roles?: PartialRoleData[];
+    systemChannelID?: number;
+    verificationLevel?: VerificationLevel | number;
   }
 
   interface GuildWidget {
