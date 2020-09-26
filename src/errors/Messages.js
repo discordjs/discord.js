@@ -66,7 +66,7 @@ const Messages = {
   IMAGE_SIZE: size => `Invalid image size: ${size}`,
 
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
-  MESSAGE_NONCE_TYPE: 'Message nonce must be a integer or a string.',
+  MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
 
   TYPING_COUNT: 'Count must be at least 1',
 
