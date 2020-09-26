@@ -90,7 +90,7 @@ class RequestHandler {
     } catch (error) {
       // Retry the specified number of times for request abortions
       if (request.retries === this.manager.client.options.retryLimit) {
-        throw new HTTPError(res.statusText, res.constructor.name, res.status, request.method, request.path);
+        throw new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path);
       }
 
       request.retries++;
