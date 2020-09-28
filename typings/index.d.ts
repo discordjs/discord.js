@@ -477,7 +477,6 @@ declare module 'discord.js' {
       RATE_LIMIT: 'rateLimit';
       INVALID_REQUEST_WARNING: 'invalidRequestWarning';
       CLIENT_READY: 'ready';
-      RESUMED: 'resumed';
       APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
       APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
       APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
@@ -513,15 +512,16 @@ declare module 'discord.js' {
       MESSAGE_REACTION_ADD: 'messageReactionAdd';
       MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
       MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
+      MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
       USER_UPDATE: 'userUpdate';
       PRESENCE_UPDATE: 'presenceUpdate';
+      VOICE_SERVER_UPDATE: 'voiceServerUpdate';
       VOICE_STATE_UPDATE: 'voiceStateUpdate';
       VOICE_BROADCAST_SUBSCRIBE: 'subscribe';
       VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
       INTERACTION_CREATE: 'interaction';
-      RECONNECTING: 'reconnecting';
       ERROR: 'error';
       WARN: 'warn';
       DEBUG: 'debug';
