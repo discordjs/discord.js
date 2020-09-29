@@ -88,8 +88,13 @@ class RequestHandler {
     try {
       res = await request.make();
     } catch (error) {
-      // NodeFetch error expected for all "operational" errors, such as 500 status code
-      throw new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path);
+      // Retry the specified number of times for request abortions
+      if (request.retries === this.manager.client.options.retryLimit) {
+        throw new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path);
+      }
+
+      request.retries++;
+      return this.execute(request);
     }
 
     if (res && res.headers) {
@@ -122,20 +127,34 @@ class RequestHandler {
       }
     }
 
+    // Handle 2xx and 3xx responses
     if (res.ok) {
       // Nothing wrong with the request, proceed with the next one
       return parseResponse(res);
     }
 
-    // Handle ratelimited requests
-    if (res.status === 429) {
-      // A ratelimit was hit - this should never happen
-      this.manager.client.emit('debug', `429 hit on route ${request.route}`);
-      await Util.delayFor(this.retryAfter);
-      return this.execute(request);
+    // Handle 4xx responses
+    if (res.status >= 400 && res.status < 500) {
+      // Handle ratelimited requests
+      if (res.status === 429) {
+        // A ratelimit was hit - this should never happen
+        this.manager.client.emit('debug', `429 hit on route ${request.route}`);
+        await Util.delayFor(this.retryAfter);
+        return this.execute(request);
+      }
+
+      // Handle possible malformed requests
+      let data;
+      try {
+        data = await parseResponse(res);
+      } catch (err) {
+        throw new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path);
+      }
+
+      throw new DiscordAPIError(request.path, data, request.method, res.status);
     }
 
-    // Handle server errors
+    // Handle 5xx responses
     if (res.status >= 500 && res.status < 600) {
       // Retry the specified number of times for possible serverside issues
       if (request.retries === this.manager.client.options.retryLimit) {
@@ -146,16 +165,8 @@ class RequestHandler {
       return this.execute(request);
     }
 
-    // Handle possible malformed requests
-    try {
-      const data = await parseResponse(res);
-      if (res.status >= 400 && res.status < 500) {
-        throw new DiscordAPIError(request.path, data, request.method, res.status);
-      }
-      return null;
-    } catch (err) {
-      throw new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path);
-    }
+    // Fallback in the rare case a status code outside the range 200..=599 is returned
+    return null;
   }
 }
 
