@@ -149,12 +149,15 @@ class VoiceState extends Base {
 
   /**
    * Mutes/unmutes and deafens/undeafens the member of this voice state.
-   * @param {boolean} mute Whether or not the member should be muted
-   * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {boolean|Object} setting Whether or not the member should be muted and deafened
+   * @param {boolean} setting.mute Whether or not the member should be muted
+   * @param {boolean} setting.mute Whether or not the member should be deafened
    * @param {string} [reason] Reason for muting/unmuting and deafening/undeafening
    * @returns {Promise<GuildMember>}
    */
-  setMuteDeaf(mute, deaf, reason) {
+  setMuteDeaf(setting, reason) {
+    if (typeof setting === 'boolean') setting = { mute: setting, deaf: setting };
+    const { mute, deaf } = setting;
     return this.member
       ? this.member.edit({ mute, deaf }, reason)
       : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
