@@ -148,6 +148,19 @@ class VoiceState extends Base {
   }
 
   /**
+   * Mutes/unmutes and deafens/undeafens the member of this voice state.
+   * @param {boolean} mute Whether or not the member should be muted
+   * @param {boolean} deaf Whether or not the member should be deafened
+   * @param {string} [reason] Reason for muting/unmuting and deafening/undeafening
+   * @returns {Promise<GuildMember>}
+   */
+  setMuteDeaf(mute, deaf, reason) {
+    return this.member
+      ? this.member.edit({ mute, deaf }, reason)
+      : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
+  }
+
+  /**
    * Kicks the member from the voice channel.
    * @param {string} [reason] Reason for kicking member from the channel
    * @returns {Promise<GuildMember>}
