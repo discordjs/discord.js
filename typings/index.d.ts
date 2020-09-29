@@ -852,6 +852,7 @@ declare module 'discord.js' {
     public readonly displayName: string;
     public guild: Guild;
     public readonly id: Snowflake;
+    public isPending: boolean | null;
     public readonly joinedAt: Date | null;
     public joinedTimestamp: number | null;
     public readonly kickable: boolean;
