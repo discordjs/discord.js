@@ -23,9 +23,11 @@ const Messages = {
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
   SHARDING_PROCESS_EXISTS: id => `Shard ${id} already has an active process.`,
+  SHARDING_WORKER_EXISTS: id => `Shard ${id} already has an active worker.`,
   SHARDING_READY_TIMEOUT: id => `Shard ${id}'s Client took too long to become ready.`,
   SHARDING_READY_DISCONNECTED: id => `Shard ${id}'s Client disconnected before becoming ready.`,
   SHARDING_READY_DIED: id => `Shard ${id}'s process exited before its Client became ready.`,
+  SHARDING_NO_CHILD_EXISTS: id => `Shard ${id} has no active process or worker.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',

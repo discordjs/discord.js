@@ -1187,6 +1187,7 @@ declare module 'discord.js' {
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+    public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
   }
 
   export class PartialGroupDMChannel extends Channel {
@@ -1941,10 +1942,7 @@ declare module 'discord.js' {
 
   export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
-    public create(
-      name: string,
-      options?: { region?: string; icon: BufferResolvable | Base64Resolvable | null },
-    ): Promise<Guild>;
+    public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Guild>;
   }
 
@@ -2140,7 +2138,7 @@ declare module 'discord.js' {
     shardID?: number | readonly number[];
   }
 
-  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS';
+  type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 
   interface AddGuildMemberOptions {
     accessToken: string;
@@ -2588,6 +2586,19 @@ declare module 'discord.js' {
 
   interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
     name?: string;
+  }
+
+  interface GuildCreateOptions {
+    afkChannelID?: number;
+    afkTimeout?: number;
+    channels?: PartialChannelData[];
+    defaultMessageNotifications?: DefaultMessageNotifications | number;
+    explicitContentFilter?: ExplicitContentFilterLevel | number;
+    icon?: BufferResolvable | Base64Resolvable | null;
+    region?: string;
+    roles?: PartialRoleData[];
+    systemChannelID?: number;
+    verificationLevel?: VerificationLevel | number;
   }
 
   interface GuildWidget {
