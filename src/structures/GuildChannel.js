@@ -31,6 +31,8 @@ class GuildChannel extends Channel {
      * @type {Guild}
      */
     this.guild = guild;
+
+    this.parentID = null;
   }
 
   _patch(data) {
@@ -48,11 +50,13 @@ class GuildChannel extends Channel {
      */
     this.rawPosition = data.position;
 
-    /**
-     * The ID of the category parent of this channel
-     * @type {?Snowflake}
-     */
-    this.parentID = data.parent_id;
+    if ('parent_id' in data) {
+      /**
+       * The ID of the category parent of this channel
+       * @type {?Snowflake}
+       */
+      this.parentID = data.parent_id;
+    }
 
     /**
      * A map of permission overwrites in this channel for roles and users
