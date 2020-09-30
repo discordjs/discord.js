@@ -5,6 +5,7 @@ const Emoji = require('./Emoji');
 /**
  * Parent class for {@link GuildEmoji} and {@link GuildPreviewEmoji}.
  * @extends {Emoji}
+ * @abstract
  */
 class BaseGuildEmoji extends Emoji {
   constructor(client, data, guild) {

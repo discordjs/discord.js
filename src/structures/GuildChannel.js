@@ -17,6 +17,7 @@ const Util = require('../util/Util');
  * - {@link NewsChannel}
  * - {@link StoreChannel}
  * @extends {Channel}
+ * @abstract
  */
 class GuildChannel extends Channel {
   /**
