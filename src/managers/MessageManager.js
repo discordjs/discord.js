@@ -126,12 +126,16 @@ class MessageManager extends BaseManager {
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
     const { data } =
       content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
-    await this.client.api.channels(this.channel.id).messages(message).patch({ data }).then(d => {
-      if (this.cache.has(message)) {
-        const clone = this.cache.get(message)._clone();
-        clone._patch(d);
-      }
-    });
+    await this.client.api
+      .channels(this.channel.id)
+      .messages(message)
+      .patch({ data })
+      .then(d => {
+        if (this.cache.has(message)) {
+          const clone = this.cache.get(message)._clone();
+          clone._patch(d);
+        }
+      });
   }
 
   /**
