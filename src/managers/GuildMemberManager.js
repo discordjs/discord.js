@@ -1,9 +1,9 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const Role = require('./Role');
 const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
+const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
