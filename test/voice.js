@@ -43,11 +43,11 @@ client.on('message', m => {
         conn.receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));
         conn.player.on('error', (...e) => console.log('player', ...e));
         if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
-        m.reply('ok!');
+        m.channel.send('ok!');
         conn.play(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
       });
     } else {
-      m.reply('Specify a voice channel!');
+      m.channel.send('Specify a voice channel!');
     }
   } else if (m.content.startsWith('#eval') && m.author.id === '66564597481480192') {
     try {

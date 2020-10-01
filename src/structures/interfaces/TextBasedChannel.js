@@ -65,7 +65,6 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
-   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
    */
 
   /**
@@ -330,7 +329,10 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
+        await this.client.api
+          .channels(this.id)
+          .messages(messageIDs[0])
+          .delete();
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIDs[0],

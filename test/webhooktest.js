@@ -32,7 +32,6 @@ const tests = [
 
   (m, hook) => hook.send(fill('x'), { split: true }),
   (m, hook) => hook.send(fill('1'), { code: 'js', split: true }),
-  (m, hook) => hook.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   (m, hook) => hook.send(fill('xyz '), { split: { char: ' ' } }),
 
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
@@ -96,7 +95,6 @@ const tests = [
   async (m, hook) => hook.send({ files: [await read(fileA)] }),
   async (m, hook) =>
     hook.send(fill('x'), {
-      reply: m.author,
       code: 'js',
       split: true,
       embeds: [embed().setImage('attachment://zero.png')],
@@ -108,7 +106,6 @@ const tests = [
   (m, hook) => hook.send({ files: [{ attachment: readStream(fileA) }] }),
   async (m, hook) =>
     hook.send(fill('xyz '), {
-      reply: m.author,
       code: 'js',
       split: { char: ' ', prepend: 'hello! ', append: '!!!' },
       embeds: [embed().setImage('attachment://zero.png')],

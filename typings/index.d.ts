@@ -1027,20 +1027,6 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Message>;
     public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-    public reply(
-      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    public reply(
-      content: StringResolvable,
-      options: (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(
-      content: StringResolvable,
-      options: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
@@ -2829,7 +2815,6 @@ declare module 'discord.js' {
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
-    reply?: UserResolvable;
   }
 
   type MessageReactionResolvable = MessageReaction | Snowflake;

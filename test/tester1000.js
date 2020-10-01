@@ -31,7 +31,7 @@ const commands = {
     }
     message.channel.send(res, { code: 'js' });
   },
-  ping: message => message.reply('pong'),
+  ping: message => message.channel.send('pong'),
 };
 
 client.on('message', message => {
