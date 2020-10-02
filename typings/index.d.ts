@@ -2859,7 +2859,8 @@ declare module 'discord.js' {
     | 'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3'
     | 'CHANNEL_FOLLOW_ADD'
     | 'GUILD_DISCOVERY_DISQUALIFIED'
-    | 'GUILD_DISCOVERY_REQUALIFIED';
+    | 'GUILD_DISCOVERY_REQUALIFIED'
+    | 'INLINE_REPLY';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
