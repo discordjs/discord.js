@@ -2097,21 +2097,25 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | APIRawMessage>;
-    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | APIRawMessage)[]>;
-    send(options: WebhookMessageOptions | APIMessage): Promise<Message | APIRawMessage | (Message | APIRawMessage)[]>;
+    ): Promise<Message | WebhookRawMessageResponse>;
+    send(
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<(Message | WebhookRawMessageResponse)[]>;
+    send(
+      options: WebhookMessageOptions | APIMessage,
+    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
     send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | APIRawMessage>;
+    ): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<(Message | APIRawMessage)[]>;
+    ): Promise<(Message | WebhookRawMessageResponse)[]>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions,
-    ): Promise<Message | APIRawMessage | (Message | APIRawMessage)[]>;
+    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
