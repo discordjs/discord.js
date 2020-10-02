@@ -147,8 +147,8 @@ class PermissionOverwrites {
    * The raw data for a permission overwrite
    * @typedef {Object} RawOverwriteData
    * @property {Snowflake} id The id of the overwrite
-   * @property {number} allow The permissions to allow
-   * @property {number} deny The permissions to deny
+   * @property {string} allow The permissions to allow
+   * @property {string} deny The permissions to deny
    * @property {OverwriteType} type The type of this OverwriteData
    */
 
@@ -185,8 +185,8 @@ class PermissionOverwrites {
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow),
-      deny: Permissions.resolve(overwrite.deny),
+      allow: Permissions.resolve(overwrite.allow).toString(),
+      deny: Permissions.resolve(overwrite.deny).toString(),
     };
   }
 }

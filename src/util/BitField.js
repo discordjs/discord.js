@@ -145,13 +145,15 @@ class BitField {
 
   /**
    * Resolves bitfields to their numeric form.
-   * @param {BitFieldResolvable} [bit=0] - bit(s) to resolve
-   * @returns {number}
+   * @param {BitFieldResolvable} [bit] - bit(s) to resolve
+   * @returns {number|bigint}
    */
-  static resolve(bit = this.defaultBit) {
-    if (typeof bit === 'number' && bit >= this.defaultBit) return bit;
+  static resolve(bit) {
+    const defaultBit = this.name === 'Permissions' ? 0n : 0;
+    if (typeof bit === 'undefined') return defaultBit;
+    if (['number', 'bigint'].includes(typeof bit) && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
-    if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, this.defaultBit);
+    if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
     if (typeof bit === 'string' && typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
     throw new RangeError('BITFIELD_INVALID', bit);
   }
