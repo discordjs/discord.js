@@ -46,6 +46,12 @@ class ClientUser extends Structures.get('User') {
     return this.client.presence;
   }
 
+  /**
+   * Edits the logged in client.
+   * @param {Object} data The new data
+   * @param {string} [data.username] The new username
+   * @param {ufferResolvable|Base64Resolvable} [data.avatar] The new avatar
+   */
   async edit(data) {
     const newData = await this.client.api.users('@me').patch({ data });
     this.client.token = newData.token;
