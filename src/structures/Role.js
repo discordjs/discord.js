@@ -301,7 +301,7 @@ class Role extends Base {
    *   .catch(console.error);
    * @example
    * // Remove all permissions from a role
-   * role.setPermissions(0n)
+   * role.setPermissions(BigInt(0))
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    */

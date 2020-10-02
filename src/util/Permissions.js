@@ -12,8 +12,8 @@ class Permissions extends BitField {
   /**
    * @param {PermissionResolvable} [bits=0] Bit(s) to read from
    */
-  constructor(bits = 0n) {
-    super(bits);
+  constructor(bits) {
+    super(bits || BigInt(0));
   }
 
   /**
@@ -126,12 +126,12 @@ Permissions.FLAGS = {
  * Bitfield representing every permission combined
  * @type {bigint}
  */
-Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0n);
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, BigInt(0));
 
 /**
  * Bitfield representing the default permissions for users
  * @type {bigint}
  */
-Permissions.DEFAULT = 104324673n;
+Permissions.DEFAULT = BigInt(104324673);
 
 module.exports = Permissions;
