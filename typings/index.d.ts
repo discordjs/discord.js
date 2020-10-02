@@ -586,9 +586,6 @@ declare module 'discord.js' {
     public deleted: boolean;
     public description: string | null;
     public discoverySplash: string | null;
-    public embedChannel: GuildChannel | null;
-    public embedChannelID: Snowflake | null;
-    public embedEnabled: boolean;
     public emojis: GuildEmojiManager;
     public explicitContentFilter: ExplicitContentFilterLevel;
     public features: GuildFeatures[];
@@ -644,7 +641,6 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
-    public fetchEmbed(): Promise<GuildWidget>;
     public fetchIntegrations(options?: FetchIntegrationsOptions): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
@@ -665,7 +661,6 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
-    public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
     public setExplicitContentFilter(
       explicitContentFilter: ExplicitContentFilterLevel | number,
       reason?: string,
