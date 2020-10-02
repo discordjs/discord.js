@@ -223,6 +223,17 @@ class Message extends Base {
           messageID: data.message_reference.message_id,
         }
       : null;
+
+    /**
+     * The message this message replies to
+     * @type {?Message}
+     */
+    if ('referenced_message' in data) {
+      this.replyReference =
+        this.channel.messages.get(data.referenced_message.id) || this.channel.messages.add(data.referenced_message);
+    } else {
+      this.replyReference = null;
+    }
   }
 
   /**

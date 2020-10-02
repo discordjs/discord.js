@@ -1011,6 +1011,7 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
+    public replyReference: Message | null;
     public awaitReactions(
       filter: CollectorFilter,
       options?: AwaitReactionsOptions,
