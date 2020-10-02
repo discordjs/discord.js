@@ -57,12 +57,12 @@ class Util {
 
   /**
    * Splits a string into multiple chunks at a designated character that do not exceed a specific length.
-   * @param {StringResolvable} text Content to split
+   * @param {string} text Content to split
    * @param {SplitOptions} [options] Options controlling the behavior of the split
    * @returns {string[]}
    */
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
-    text = Util.resolveString(text);
+    text = Util.verifyString(text, new RangeError('MESSAGE_CONTENT_TYPE'), false);
     if (text.length <= maxLength) return [text];
     const splitText = text.split(char);
     if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
@@ -347,22 +347,16 @@ class Util {
   }
 
   /**
-   * Data that can be resolved to give a string. This can be:
-   * * A string
-   * * An array (joined with a new line delimiter to give a string)
-   * * Any value
-   * @typedef {string|Array|*} StringResolvable
-   */
-
-  /**
-   * Resolves a StringResolvable to a string.
-   * @param {StringResolvable} data The string resolvable to resolve
+   * Verifies the provided data is a string, otherwise throws provided error.
+   * @param {string} data The string resolvable to resolve
+   * @param {Error} [error=Error] The error to throw, should the validation fail
+   * @param {boolean} [allowEmpty=true] Wether an empty string should be allowed
    * @returns {string}
    */
-  static resolveString(data) {
-    if (typeof data === 'string') return data;
-    if (Array.isArray(data)) return data.join('\n');
-    return String(data);
+  static verifyString(data, error = new Error(), allowEmpty = true) {
+    if (typeof data !== 'string') throw error;
+    if (!allowEmpty && data.length === 0) throw error;
+    return data;
   }
 
   /**

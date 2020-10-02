@@ -58,7 +58,7 @@ client.on('message', m => {
       m.channel.send(com, { code: true });
     } catch (e) {
       console.log(e);
-      m.channel.send(e, { code: true });
+      m.channel.send(String(e), { code: true });
     }
   }
 });

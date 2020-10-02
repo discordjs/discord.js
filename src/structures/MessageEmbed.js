@@ -265,8 +265,8 @@ class MessageEmbed {
 
   /**
    * Adds a field to the embed (max 25).
-   * @param {StringResolvable} name The name of this field
-   * @param {StringResolvable} value The value of this field
+   * @param {string} name The name of this field
+   * @param {string} value The value of this field
    * @param {boolean} [inline=false] If this field will be displayed inline
    * @returns {MessageEmbed}
    */
@@ -309,13 +309,13 @@ class MessageEmbed {
 
   /**
    * Sets the author of this embed.
-   * @param {StringResolvable} name The name of the author
+   * @param {string} name The name of the author
    * @param {string} [iconURL] The icon URL of the author
    * @param {string} [url] The URL of the author
    * @returns {MessageEmbed}
    */
   setAuthor(name, iconURL, url) {
-    this.author = { name: Util.resolveString(name), iconURL, url };
+    this.author = { name: Util.verifyString(name, new RangeError('EMBED_AUTHOR_NAME')), iconURL, url };
     return this;
   }
 
@@ -331,23 +331,23 @@ class MessageEmbed {
 
   /**
    * Sets the description of this embed.
-   * @param {StringResolvable} description The description
+   * @param {string} description The description
    * @returns {MessageEmbed}
    */
   setDescription(description) {
-    description = Util.resolveString(description);
+    description = Util.verifyString(description, new RangeError('EMBED_DESCRIPTION'));
     this.description = description;
     return this;
   }
 
   /**
    * Sets the footer of this embed.
-   * @param {StringResolvable} text The text of the footer
+   * @param {string} text The text of the footer
    * @param {string} [iconURL] The icon URL of the footer
    * @returns {MessageEmbed}
    */
   setFooter(text, iconURL) {
-    text = Util.resolveString(text);
+    text = Util.verifyString(text, new RangeError('EMBED_FOOTER_TEXT'));
     this.footer = { text, iconURL };
     return this;
   }
@@ -385,11 +385,11 @@ class MessageEmbed {
 
   /**
    * Sets the title of this embed.
-   * @param {StringResolvable} title The title
+   * @param {string} title The title
    * @returns {MessageEmbed}
    */
   setTitle(title) {
-    title = Util.resolveString(title);
+    title = Util.verifyString(title, new RangeError('EMBED_TITLE'));
     this.title = title;
     return this;
   }
@@ -437,21 +437,21 @@ class MessageEmbed {
 
   /**
    * Normalizes field input and resolves strings.
-   * @param {StringResolvable} name The name of the field
-   * @param {StringResolvable} value The value of the field
+   * @param {string} name The name of the field
+   * @param {string} value The value of the field
    * @param {boolean} [inline=false] Set the field to display inline
    * @returns {EmbedField}
    */
   static normalizeField(name, value, inline = false) {
-    name = Util.resolveString(name);
-    value = Util.resolveString(value);
+    name = Util.verifyString(name, new RangeError('EMBED_FIELD_NAME'), false);
+    value = Util.verifyString(value, new RangeError('EMBED_FIELD_VALUE'), false);
     return { name, value, inline };
   }
 
   /**
    * @typedef {Object} EmbedFieldData
-   * @property {StringResolvable} name The name of this field
-   * @property {StringResolvable} value The value of this field
+   * @property {string} name The name of this field
+   * @property {string} value The value of this field
    * @property {boolean} [inline] If this field will be displayed inline
    */
 
