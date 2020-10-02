@@ -53,7 +53,7 @@ class GuildManager extends BaseManager {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {PermissionResolvable|number} [permissions] The permissions of the role
+   * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -175,15 +175,15 @@ class GuildManager extends BaseManager {
       delete channel.parentID;
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
-        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
-        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
+        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow).toString();
+        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
       if (role.color) role.color = resolveColor(role.color);
-      if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
+      if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
     }
     return new Promise((resolve, reject) =>
       this.client.api.guilds

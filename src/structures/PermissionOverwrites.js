@@ -45,13 +45,13 @@ class PermissionOverwrites {
      * The permissions that are denied for the user or role.
      * @type {Readonly<Permissions>}
      */
-    this.deny = new Permissions(data.deny).freeze();
+    this.deny = new Permissions(BigInt(data.deny)).freeze();
 
     /**
      * The permissions that are allowed for the user or role.
      * @type {Readonly<Permissions>}
      */
-    this.allow = new Permissions(data.allow).freeze();
+    this.allow = new Permissions(BigInt(data.allow)).freeze();
   }
 
   /**
@@ -72,8 +72,9 @@ class PermissionOverwrites {
 
     return this.channel.client.api
       .channels(this.channel.id)
-      .permissions[this.id].put({
-        data: { id: this.id, type: this.type, allow: allow.bitfield, deny: deny.bitfield },
+      .permissions(this.id)
+      .put({
+        data: { id: this.id, type: this.type, allow: allow.bitfield.toString(), deny: deny.bitfield.toString() },
         reason,
       })
       .then(() => this);
@@ -85,7 +86,11 @@ class PermissionOverwrites {
    * @returns {Promise<PermissionOverwrites>}
    */
   delete(reason) {
-    return this.channel.client.api.channels[this.channel.id].permissions[this.id].delete({ reason }).then(() => this);
+    return this.channel.client.api
+      .channels(this.channel.id)
+      .permissions(this.id)
+      .delete({ reason })
+      .then(() => this);
   }
 
   toJSON() {
