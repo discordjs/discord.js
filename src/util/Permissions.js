@@ -12,8 +12,8 @@ class Permissions extends BitField {
   /**
    * @param {PermissionResolvable} [bits=0] Bit(s) to read from
    */
-  constructor(bits) {
-    super(bits || BigInt(0));
+  constructor(bits = BigInt(0)) {
+    super(bits);
   }
 
   /**
