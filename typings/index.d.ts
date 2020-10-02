@@ -2097,18 +2097,21 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: WebhookMessageOptions | APIMessage): Promise<Message | Message[]>;
+    ): Promise<Message | APIRawMessage>;
+    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | APIRawMessage)[]>;
+    send(options: WebhookMessageOptions | APIMessage): Promise<Message | APIRawMessage | (Message | APIRawMessage)[]>;
     send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
+    ): Promise<Message | APIRawMessage>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    send(content: StringResolvable, options: WebhookMessageOptions): Promise<Message | Message[]>;
+    ): Promise<(Message | APIRawMessage)[]>;
+    send(
+      content: StringResolvable,
+      options: WebhookMessageOptions,
+    ): Promise<Message | APIRawMessage | (Message | APIRawMessage)[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
