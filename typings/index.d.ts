@@ -2193,7 +2193,7 @@ declare module 'discord.js' {
     content: string;
     channel_id: Snowflake;
     author: {
-      bot: true;
+      bot: boolean;
       id: Snowflake;
       username: string;
       avatar: string | null;
@@ -2266,7 +2266,7 @@ declare module 'discord.js' {
       public_flags?: number;
       member?: {
         nick: string | null;
-        roles: string[];
+        roles: Snowflake[];
         joined_at: string;
         premium_since?: string | null;
         deaf: boolean;
