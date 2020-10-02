@@ -412,7 +412,7 @@ class GuildChannel extends Channel {
 
   /**
    * Sets a new topic for the guild channel.
-   * @param {string} topic The new topic for the guild channel
+   * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
