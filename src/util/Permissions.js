@@ -10,7 +10,7 @@ const BitField = require('./BitField');
  */
 class Permissions extends BitField {
   /**
-   * @param {PermissionResolvable} [bits=0n] Bit(s) to read from
+   * @param {PermissionResolvable} [bits=0] Bit(s) to read from
    */
   constructor(bits = 0n) {
     super(bits);
