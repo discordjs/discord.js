@@ -10,10 +10,16 @@ const BitField = require('./BitField');
  */
 class Permissions extends BitField {
   /**
-   * @name Permissions
-   * @kind constructor
-   * @memberof Permissions
-   * @param {PermissionResolvable} [bits=0] Bit(s) to read from
+   * @param {PermissionResolvable} [bits=0n] Bit(s) to read from
+   */
+  constructor(bits = 0n) {
+    super(bits);
+  }
+
+  /**
+   * Bitfield of the packed bits
+   * @type {bigint}
+   * @name Permissions#bitfield
    */
 
   /**
@@ -22,7 +28,7 @@ class Permissions extends BitField {
    * * A permission number
    * * An instance of Permissions
    * * An Array of PermissionResolvable
-   * @typedef {string|number|Permissions|PermissionResolvable[]} PermissionResolvable
+   * @typedef {string|bigint|Permissions|PermissionResolvable[]} PermissionResolvable
    */
 
   /**
@@ -83,49 +89,49 @@ class Permissions extends BitField {
  * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
 Permissions.FLAGS = {
-  CREATE_INSTANT_INVITE: 1 << 0,
-  KICK_MEMBERS: 1 << 1,
-  BAN_MEMBERS: 1 << 2,
-  ADMINISTRATOR: 1 << 3,
-  MANAGE_CHANNELS: 1 << 4,
-  MANAGE_GUILD: 1 << 5,
-  ADD_REACTIONS: 1 << 6,
-  VIEW_AUDIT_LOG: 1 << 7,
-  PRIORITY_SPEAKER: 1 << 8,
-  STREAM: 1 << 9,
-  VIEW_CHANNEL: 1 << 10,
-  SEND_MESSAGES: 1 << 11,
-  SEND_TTS_MESSAGES: 1 << 12,
-  MANAGE_MESSAGES: 1 << 13,
-  EMBED_LINKS: 1 << 14,
-  ATTACH_FILES: 1 << 15,
-  READ_MESSAGE_HISTORY: 1 << 16,
-  MENTION_EVERYONE: 1 << 17,
-  USE_EXTERNAL_EMOJIS: 1 << 18,
-  VIEW_GUILD_INSIGHTS: 1 << 19,
-  CONNECT: 1 << 20,
-  SPEAK: 1 << 21,
-  MUTE_MEMBERS: 1 << 22,
-  DEAFEN_MEMBERS: 1 << 23,
-  MOVE_MEMBERS: 1 << 24,
-  USE_VAD: 1 << 25,
-  CHANGE_NICKNAME: 1 << 26,
-  MANAGE_NICKNAMES: 1 << 27,
-  MANAGE_ROLES: 1 << 28,
-  MANAGE_WEBHOOKS: 1 << 29,
-  MANAGE_EMOJIS: 1 << 30,
+  CREATE_INSTANT_INVITE: 1n << 0n,
+  KICK_MEMBERS: 1n << 1n,
+  BAN_MEMBERS: 1n << 2n,
+  ADMINISTRATOR: 1n << 3n,
+  MANAGE_CHANNELS: 1n << 4n,
+  MANAGE_GUILD: 1n << 5n,
+  ADD_REACTIONS: 1n << 6n,
+  VIEW_AUDIT_LOG: 1n << 7n,
+  PRIORITY_SPEAKER: 1n << 8n,
+  STREAM: 1n << 9n,
+  VIEW_CHANNEL: 1n << 0n,
+  SEND_MESSAGES: 1n << 1n,
+  SEND_TTS_MESSAGES: 1n << 2n,
+  MANAGE_MESSAGES: 1n << 3n,
+  EMBED_LINKS: 1n << 4n,
+  ATTACH_FILES: 1n << 5n,
+  READ_MESSAGE_HISTORY: 1n << 6n,
+  MENTION_EVERYONE: 1n << 7n,
+  USE_EXTERNAL_EMOJIS: 1n << 8n,
+  VIEW_GUILD_INSIGHTS: 1n << 9n,
+  CONNECT: 1n << 0n,
+  SPEAK: 1n << 1n,
+  MUTE_MEMBERS: 1n << 2n,
+  DEAFEN_MEMBERS: 1n << 3n,
+  MOVE_MEMBERS: 1n << 4n,
+  USE_VAD: 1n << 5n,
+  CHANGE_NICKNAME: 1n << 6n,
+  MANAGE_NICKNAMES: 1n << 7n,
+  MANAGE_ROLES: 1n << 8n,
+  MANAGE_WEBHOOKS: 1n << 9n,
+  MANAGE_EMOJIS: 1n << 0n,
 };
 
 /**
  * Bitfield representing every permission combined
  * @type {number}
  */
-Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0);
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0n);
 
 /**
  * Bitfield representing the default permissions for users
  * @type {number}
  */
-Permissions.DEFAULT = 104324673;
+Permissions.DEFAULT = 104324673n;
 
 module.exports = Permissions;
