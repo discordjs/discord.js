@@ -198,6 +198,14 @@ class APIMessage {
       }
     }
 
+    let message_reference;
+    if (this.options.messageReference) {
+      message_reference = {
+        message_id: this.target.messages.resolveID(this.options.messageReference),
+        channel_id: this.target.id,
+      };
+    }
+
     this.data = {
       content,
       tts,
@@ -208,6 +216,7 @@ class APIMessage {
       avatar_url: avatarURL,
       allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
       flags,
+      message_reference,
     };
     return this;
   }
