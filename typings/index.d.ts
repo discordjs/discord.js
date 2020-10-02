@@ -258,12 +258,12 @@ declare module 'discord.js' {
   export class ClientUser extends User {
     public mfaEnabled: boolean;
     public verified: boolean;
-    public setActivity(options?: ActivityOptions): Promise<Presence>;
-    public setActivity(name: string, options?: ActivityOptions): Promise<Presence>;
+    public setActivity(options?: ActivityOptions): Presence;
+    public setActivity(name: string, options?: ActivityOptions): Presence;
     public setAFK(afk: boolean): Promise<Presence>;
     public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
-    public setPresence(data: PresenceData): Promise<Presence>;
-    public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<Presence>;
+    public setPresence(data: PresenceData): Presence;
+    public setStatus(status: PresenceStatusData, shardID?: number | number[]): Presence;
     public setUsername(username: string): Promise<ClientUser>;
   }
 
