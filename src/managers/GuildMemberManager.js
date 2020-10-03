@@ -5,6 +5,7 @@ const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
+const SnowflakeUtil = require('../util/Snowflake');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -263,7 +264,7 @@ class GuildMemberManager extends BaseManager {
     user: user_ids,
     query,
     time = 120e3,
-    nonce = Math.random().toString(16),
+    nonce = SnowflakeUtil.generate().toString(16),
     force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
