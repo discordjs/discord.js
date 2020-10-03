@@ -5,7 +5,12 @@ const ytdl = require('ytdl-core');
 const auth = require('./auth.js');
 const Discord = require('../src');
 
-const client = new Discord.Client({ partials: [] });
+const client = new Discord.Client({
+  partials: [],
+  ws: {
+    intents: Discord.Intents.NON_PRIVILEGED,
+  },
+});
 
 client
   .login(auth.token)
