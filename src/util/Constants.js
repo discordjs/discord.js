@@ -1,5 +1,6 @@
 'use strict';
 
+const Intents = require('./Intents');
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 
@@ -31,7 +32,7 @@ const { Error, RangeError } = require('../errors');
  * (or 0 for never)
  * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
  * @property {PresenceData} [presence] Presence data to use upon login
- * @property {WebsocketOptions} ws Options for the WebSocket
+ * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {HTTPOptions} [http] HTTP options
  */
 exports.DefaultOptions = {
@@ -52,11 +53,12 @@ exports.DefaultOptions = {
    * @typedef {Object} WebsocketOptions
    * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
    * sent in the initial guild member list, must be between 50 and 250
-   * @property {IntentsResolvable} intents Intents to enable for this connection
+   * @property {IntentsResolvable} [intents=Intents.NON_PRIVILEGED] Intents to enable for this connection
    */
   ws: {
     large_threshold: 50,
     compress: false,
+    intents: Intents.NON_PRIVILEGED,
     properties: {
       $os: process.platform,
       $browser: 'discord.js',
