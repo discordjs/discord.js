@@ -40,7 +40,7 @@ class ClientPresence extends Presence {
       return data;
     }
     if (activities && activities.length) {
-      for (const [i, activity] of activity.entries()) {
+      for (const [i, activity] of activities.entries()) {
         if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
         if (!activity.type) activity.type = 0;
 
