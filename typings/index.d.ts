@@ -517,6 +517,7 @@ declare module 'discord.js' {
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
     ActivityTypes: ActivityType[];
+    OverwriteTypes: OverwriteType[];
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
     DefaultMessageNotifications: DefaultMessageNotifications[];
     VerificationLevels: VerificationLevel[];
@@ -3181,7 +3182,7 @@ declare module 'discord.js' {
     id: Snowflake;
     allow: string;
     deny: string;
-    type: OverwriteType;
+    type: number;
   }
 
   interface ReactionCollectorOptions extends CollectorOptions {
