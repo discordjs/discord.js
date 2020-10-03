@@ -3,9 +3,8 @@
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
-const { PartialTypes } = require('../util/Constants');
+const { OverwriteTypes, PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const { OverwriteTypes } = require('../util/Constants');
 const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
 
