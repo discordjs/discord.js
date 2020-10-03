@@ -69,7 +69,7 @@ class PermissionOverwrites {
       .put({
         data: {
           id: this.id,
-          type: OverwriteTypes.indexOf(this.type),
+          type: OverwriteTypes[this.type],
           allow: allow.bitfield.toString(),
           deny: deny.bitfield.toString(),
         },
@@ -91,7 +91,7 @@ class PermissionOverwrites {
   toJSON() {
     return {
       id: this.id,
-      type: OverwriteTypes.indexOf(this.type),
+      type: OverwriteTypes[this.type],
       allow: this.allow.bitfield.toString(),
       deny: this.deny.bitfield.toString(),
     };
@@ -177,7 +177,7 @@ class PermissionOverwrites {
     if (typeof overwrite.id === 'string' && OverwriteTypes.includes(overwrite.type)) {
       return {
         id: overwrite.id,
-        type: OverwriteTypes.indexOf(overwrite.type),
+        type: OverwriteTypes[overwrite.type],
         allow: Permissions.resolve(overwrite.allow).toString(),
         deny: Permissions.resolve(overwrite.deny).toString(),
       };
@@ -185,7 +185,7 @@ class PermissionOverwrites {
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-    const type = userOrRole instanceof Role ? 0 : 1;
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
 
     return {
       id: userOrRole.id,

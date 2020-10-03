@@ -32,7 +32,7 @@ class ClientPresence extends Presence {
     const data = {
       activities: [],
       afk: typeof afk === 'boolean' ? afk : false,
-      since: typeof since === 'number' ? since : null,
+      since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
       status: status || this.status,
     };
     if (activities === null) {
@@ -40,8 +40,7 @@ class ClientPresence extends Presence {
       return data;
     }
     if (activities && activities.length) {
-      for (let i = 0; i < activities.length; i++) {
-        const activity = activities[i];
+      for (const [i, activity] of activity.entries()) {
         if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
         if (!activity.type) activity.type = 0;
 
