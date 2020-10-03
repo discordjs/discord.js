@@ -263,7 +263,7 @@ class GuildMemberManager extends BaseManager {
     user: user_ids,
     query,
     time = 120e3,
-    nonce = Date.now().toString(16),
+    nonce = Math.random().toString(16),
     force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
