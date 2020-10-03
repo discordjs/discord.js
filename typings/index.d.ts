@@ -2364,7 +2364,7 @@ declare module 'discord.js' {
 
   interface ClientEvents {
     channelCreate: [channel: GuildChannel];
-    channelDelete: [channel: GuildChannel];
+    channelDelete: [channel: DMChannel | GuildChannel];
     channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
@@ -2377,7 +2377,7 @@ declare module 'discord.js' {
     guildBanAdd: [guild: Guild, user: User];
     guildBanRemove: [guild: Guild, user: User];
     guildCreate: [guild: Guild];
-    guildDelete: [Guild: Guild];
+    guildDelete: [guild: Guild];
     guildUnavailable: [guild: Guild];
     guildIntegrationsUpdate: [guild: Guild];
     guildMemberAdd: [member: GuildMember];
