@@ -7,6 +7,7 @@ const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
 const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
+const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -204,13 +205,12 @@ class GuildChannel extends Channel {
    *   },
    * ], 'Needed to change permissions');
    */
-  overwritePermissions(overwrites, reason) {
+  async overwritePermissions(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(
-        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
-      );
+      throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    return this.edit({ permissionOverwrites: overwrites, reason }).then(() => this);
+    await this.edit({ permissionOverwrites: overwrites, reason });
+    return this;
   }
 
   /**
@@ -227,13 +227,17 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  updateOverwrite(userOrRole, options, reason) {
+  async updateOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
     if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const existing = this.permissionOverwrites.get(userOrRole.id);
-    if (existing) return existing.update(options, reason).then(() => this);
-    return this.createOverwrite(userOrRole, options, reason);
+    if (existing) {
+      await existing.update(options, reason);
+    } else {
+      await this.createOverwrite(userOrRole, options, reason);
+    }
+    return this;
   }
 
   /**
@@ -254,13 +258,19 @@ class GuildChannel extends Channel {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
     if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
-    const type = userOrRole instanceof Role ? 'role' : 'member';
+    const type = userOrRole instanceof Role ? OverwriteTypes[0] : OverwriteTypes[1];
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     return this.client.api
       .channels(this.id)
-      .permissions[userOrRole.id].put({
-        data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield },
+      .permissions(userOrRole.id)
+      .put({
+        data: {
+          id: userOrRole.id,
+          type,
+          allow: allow.bitfield.toString(),
+          deny: deny.bitfield.toString(),
+        },
         reason,
       })
       .then(() => this);

@@ -673,6 +673,14 @@ exports.WebhookTypes = [
   'Channel Follower',
 ];
 
+/**
+ * An overwrite type:
+ * * role
+ * * member
+ * @typedef {string} OverwriteType
+ */
+exports.OverwriteTypes = ['role', 'member'];
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
