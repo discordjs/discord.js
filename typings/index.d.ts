@@ -118,7 +118,7 @@ declare module 'discord.js' {
   }
 
   export class BaseClient extends EventEmitter {
-    constructor(options?: ClientOptions);
+    constructor(options: ClientOptions);
     private _timeouts: Set<NodeJS.Timeout>;
     private _intervals: Set<NodeJS.Timeout>;
     private _immediates: Set<NodeJS.Immediate>;
@@ -193,7 +193,7 @@ declare module 'discord.js' {
   }
 
   export class Client extends BaseClient {
-    constructor(options?: ClientOptions);
+    constructor(options: ClientOptions);
     private actions: object;
     private _eval(script: string): any;
     private _validateOptions(options?: ClientOptions): void;
@@ -2152,7 +2152,8 @@ declare module 'discord.js' {
     UNKNOWN_BAN: 10026;
     UNKNOWN_GUILD_TEMPLATE: 10057;
     BOT_PROHIBITED_ENDPOINT: 20001;
-    BOT_ONLY_ENDPOINT: 20002;
+		BOT_ONLY_ENDPOINT: 20002;
+		ANNOUNCEMENT_EDIT_LIMIT_EXCEEDED: 20022,
     CHANNEL_HIT_WRITE_RATELIMIT: 20028;
     MAXIMUM_GUILDS: 30001;
     MAXIMUM_FRIENDS: 30002;
@@ -2432,7 +2433,7 @@ declare module 'discord.js' {
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
-    ws?: WebSocketOptions;
+    ws: WebSocketOptions;
     http?: HTTPOptions;
   }
 
@@ -3318,7 +3319,7 @@ declare module 'discord.js' {
   interface WebSocketOptions {
     large_threshold?: number;
     compress?: boolean;
-    intents?: BitFieldResolvable<IntentsString, number> | number;
+    intents: BitFieldResolvable<IntentsString, number> | number;
     properties?: WebSocketProperties;
   }
 
