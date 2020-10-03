@@ -22,7 +22,7 @@ class BitField {
    * @private
    */
   get defaultBit() {
-    return typeof this.bitfield === 'bigint' ? BigInt(0) : 0;
+    return typeof this.bitfield === 'bigint' ? 0n : 0;
   }
 
   /**
@@ -150,7 +150,7 @@ class BitField {
    * @returns {number|bigint}
    */
   static resolve(bit) {
-    const defaultBit = this.name === 'Permissions' ? BigInt(0) : 0;
+    const defaultBit = this.name === 'Permissions' ? 0n : 0;
     if (typeof bit === 'undefined') return defaultBit;
     if (['number', 'bigint'].includes(typeof bit) && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;

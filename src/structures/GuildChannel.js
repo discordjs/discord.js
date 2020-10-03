@@ -162,12 +162,12 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.deny : BigInt(0))
-      .add(overwrites.everyone ? overwrites.everyone.allow : BigInt(0))
-      .remove(overwrites.roles.length > BigInt(0) ? overwrites.roles.map(role => role.deny) : BigInt(0))
-      .add(overwrites.roles.length > BigInt(0) ? overwrites.roles.map(role => role.allow) : BigInt(0))
-      .remove(overwrites.member ? overwrites.member.deny : BigInt(0))
-      .add(overwrites.member ? overwrites.member.allow : BigInt(0))
+      .remove(overwrites.everyone ? overwrites.everyone.deny : 0n)
+      .add(overwrites.everyone ? overwrites.everyone.allow : 0n)
+      .remove(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.deny) : 0n)
+      .add(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.allow) : 0n)
+      .remove(overwrites.member ? overwrites.member.deny : 0n)
+      .add(overwrites.member ? overwrites.member.allow : 0n)
       .freeze();
   }
 
@@ -184,10 +184,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites ? everyoneOverwrites.deny : BigInt(0))
-      .add(everyoneOverwrites ? everyoneOverwrites.allow : BigInt(0))
-      .remove(roleOverwrites ? roleOverwrites.deny : BigInt(0))
-      .add(roleOverwrites ? roleOverwrites.allow : BigInt(0))
+      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0n)
+      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0n)
+      .remove(roleOverwrites ? roleOverwrites.deny : 0n)
+      .add(roleOverwrites ? roleOverwrites.allow : 0n)
       .freeze();
   }
 

@@ -12,7 +12,7 @@ class Permissions extends BitField {
   /**
    * @param {PermissionResolvable} [bits=0] Bit(s) to read from
    */
-  constructor(bits = BigInt(0)) {
+  constructor(bits = 0n) {
     super(bits);
   }
 
@@ -126,7 +126,7 @@ Permissions.FLAGS = {
  * Bitfield representing every permission combined
  * @type {bigint}
  */
-Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, BigInt(0));
+Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0n);
 
 /**
  * Bitfield representing the default permissions for users
