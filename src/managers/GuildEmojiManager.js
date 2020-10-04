@@ -2,7 +2,6 @@
 
 const BaseManager = require('./BaseManager');
 const { Error, TypeError } = require('../errors');
-const Guild = require('../structures/Guild');
 const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const Collection = require('../util/Collection');
@@ -19,7 +18,7 @@ class GuildEmojiManager extends BaseManager {
      * The guild this manager belongs to
      * @type {?Guild}
      */
-    this.guild = guild instanceof Guild ? guild : null;
+    this.guild = 'name' in guild ? guild : null;
   }
 
   /**
