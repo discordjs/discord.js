@@ -3,7 +3,7 @@
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 const browser = (exports.browser = typeof window !== 'undefined');
-
+const Intents = require('./Intents');
 /**
  * Options for a client.
  * @typedef {Object} ClientOptions
@@ -69,6 +69,7 @@ exports.DefaultOptions = {
       $device: 'discord.js',
     },
     version: 6,
+    intents: Intents.NON_PRIVILEGED
   },
 
   /**
