@@ -1917,7 +1917,7 @@ declare module 'discord.js' {
 
   export class GuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
-    public guild: Guild;
+    public guild: Guild | null;
     public create(
       attachment: BufferResolvable | Base64Resolvable,
       name: string,
