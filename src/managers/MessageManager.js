@@ -130,14 +130,14 @@ class MessageManager extends BaseManager {
       .channels(this.channel.id)
       .messages(message)
       .patch({ data })
-      .then(data => {
+      .then(d => {
         const existing = this.cache.get(message);
         if (existing) {
           const clone = existing._clone();
-          clone._patch(data);
+          clone._patch(d);
           return clone;
         }
-        return data;
+        return d;
       });
   }
 
@@ -150,10 +150,7 @@ class MessageManager extends BaseManager {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const data = await this.client.api
-      .channels(this.channel.id)
-      .messages(message)
-      .crosspost.post();
+    const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
     return this.cache.get(data.id) || data;
   }
 
@@ -168,10 +165,7 @@ class MessageManager extends BaseManager {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api
-      .channels(this.channel.id)
-      .pins(message)
-      .put(options);
+    await this.client.api.channels(this.channel.id).pins(message).put(options);
   }
 
   /**
@@ -185,10 +179,7 @@ class MessageManager extends BaseManager {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api
-      .channels(this.channel.id)
-      .pins(message)
-      .delete(options);
+    await this.client.api.channels(this.channel.id).pins(message).delete(options);
   }
 
   /**
