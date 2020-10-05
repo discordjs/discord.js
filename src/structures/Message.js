@@ -423,7 +423,7 @@ class Message extends Base {
   }
 
   get referencedMessage() {
-    return this.reference.messageID && this.client.channels.cache.has(this.reference.channelID)
+    return this.reference && this.reference.messageID && this.client.channels.cache.has(this.reference.channelID)
       ? this.client.channels.resolve(this.reference.channelID).messages.resolve(this.reference.messageID)
       : null;
   }
