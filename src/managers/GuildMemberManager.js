@@ -152,7 +152,7 @@ class GuildMemberManager extends BaseManager {
 
   /**
    * Edits a member of the guild.
-   * <warn>The user must be a member of the guild</warn>
+   * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to edit
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
@@ -252,7 +252,7 @@ class GuildMemberManager extends BaseManager {
 
   /**
    * Kicks a user from the guild.
-   * <warn>The user must be a member of the guild</warn>
+   * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to kick
    * @param {string} [reason] Reason for kicking
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
