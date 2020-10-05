@@ -119,7 +119,7 @@ class MessageManager extends BaseManager {
    * @param {MessageResolvable} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|Object>}
    */
   async edit(message, content, options) {
     message = this.resolveID(message);
@@ -130,24 +130,31 @@ class MessageManager extends BaseManager {
       .channels(this.channel.id)
       .messages(message)
       .patch({ data })
-      .then(d => {
-        if (this.cache.has(message)) {
-          const clone = this.cache.get(message)._clone();
-          clone._patch(d);
+      .then(data => {
+        const existing = this.cache.get(message);
+        if (existing) {
+          const clone = existing._clone();
+          clone._patch(data);
+          return clone;
         }
+        return data;
       });
   }
 
   /**
    * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
    * @param {MessageResolvable} message The message to publish
-   * @returns {Promise<void>}
+   * @returns {Promise<Message|Object>}
    */
   async crosspost(message) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
+    const data = await this.client.api
+      .channels(this.channel.id)
+      .messages(message)
+      .crosspost.post();
+    return this.cache.get(data.id) || data;
   }
 
   /**
@@ -164,8 +171,7 @@ class MessageManager extends BaseManager {
     await this.client.api
       .channels(this.channel.id)
       .pins(message)
-      .put(options)
-      .then(() => this);
+      .put(options);
   }
 
   /**
@@ -182,12 +188,11 @@ class MessageManager extends BaseManager {
     await this.client.api
       .channels(this.channel.id)
       .pins(message)
-      .delete(options)
-      .then(() => this);
+      .delete(options);
   }
 
   /**
-   * Adds a reaction to the message, even if it's not cached.
+   * Adds a reaction to a message, even if it's not cached.
    * @param {MessageResolvable} message The messag to react to
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<void>}
