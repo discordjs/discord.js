@@ -162,27 +162,29 @@ class GuildMemberManager extends BaseManager {
     const id = this.client.users.resolveID(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
-    if (data.channel) {
-      data.channel = this.guild.channels.resolve(data.channel);
-      if (!data.channel || data.channel.type !== 'voice') {
+    // Clone the data object for immutability
+    const _data = { ...data };
+    if (_data.channel) {
+      _data.channel = this.guild.channels.resolve(_data.channel);
+      if (!_data.channel || _data.channel.type !== 'voice') {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
-      data.channel_id = data.channel.id;
-      data.channel = undefined;
+      _data.channel_id = _data.channel.id;
+      _data.channel = undefined;
     } else if (data.channel === null) {
-      data.channel_id = null;
-      data.channel = undefined;
+      _data.channel_id = null;
+      _data.channel = undefined;
     }
-    if (data.roles) data.roles = data.roles.map(role => (role instanceof Role ? role.id : role));
+    if (_data.roles) _data.roles = _data.roles.map(role => (role instanceof Role ? role.id : role));
     let endpoint = this.client.api.guilds(this.guild.id);
     if (id === this.client.user.id) {
-      const keys = Object.keys(data);
+      const keys = Object.keys(_data);
       if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
       else endpoint = endpoint.members(id);
     } else {
       endpoint = endpoint.members(id);
     }
-    await endpoint.patch({ data, reason }).then(d => {
+    await endpoint.patch({ _data, reason }).then(d => {
       if (this.cache.has(id)) {
         const member = this.cache.get(id);
         const clone = member._clone();
