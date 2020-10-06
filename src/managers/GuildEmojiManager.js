@@ -122,7 +122,7 @@ class GuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
-      if (res.name.length) {
+      if (res && res.name.length) {
         return `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
       if (!emoji.includes('%')) {
