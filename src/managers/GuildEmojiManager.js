@@ -123,11 +123,10 @@ class GuildEmojiManager extends BaseManager {
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
       if (res && res.name.length) {
-        return `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
+        emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
-      if (!emoji.includes('%')) {
-        return encodeURIComponent(emoji);
-      }
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+      else return emoji;
     }
     return null;
   }
