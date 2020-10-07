@@ -1028,20 +1028,6 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Message>;
     public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-    public reply(
-      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    public reply(
-      content: StringResolvable,
-      options: (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(
-      content: StringResolvable,
-      options: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
@@ -1531,6 +1517,8 @@ declare module 'discord.js' {
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
+
+  type TextBasedChannelResolvable = TextChannel | NewsChannel | DMChannel | Snowflake;
 
   export class User extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: object);
@@ -2830,8 +2818,7 @@ declare module 'discord.js' {
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
-    reply?: UserResolvable;
-    inlineReplyTo?: MessageResolvable | MessageReplyReference;
+    replyTo?: MessageResolvable;
   }
 
   type MessageReactionResolvable = MessageReaction | Snowflake;
@@ -2842,12 +2829,7 @@ declare module 'discord.js' {
     messageID: string | null;
   }
 
-  interface MessageReplyReference {
-    channelID: Snowflake;
-    messageID: Snowflake;
-  }
-
-  type MessageResolvable = Message | Snowflake;
+  type MessageResolvable = Message | { id: Snowflake; channel: TextBasedChannelResolvable };
 
   type MessageTarget = TextChannel | NewsChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
 

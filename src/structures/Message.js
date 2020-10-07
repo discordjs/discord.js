@@ -574,37 +574,18 @@ class Message extends Base {
   }
 
   /**
-   * Replies to the message.
+   * Send an inline reply to this message.
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
-   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
+   * @param {MessageResolvable} [options.replyTo=this] The message to reply to
    * @returns {Promise<Message|Message[]>}
-   * @example
-   * // Reply to a message
-   * message.reply('Hey, I\'m a reply!')
-   *   .then(() => console.log(`Sent a reply to ${message.author.username}`))
-   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
       content instanceof APIMessage
         ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
-    );
-  }
-
-  /**
-   * Send an inline reply to this message.
-   * @param {StringResolvable|APIMessage} [content=''] The content for the message
-   * @param {MessageOptions|MessageAdditions} [options={inlineReplyTo:this}]
-   * The additional options to provide
-   * @returns {Promise<Message|Message[]>}
-   */
-  inlineReply(content, options) {
-    return this.channel.send(
-      content instanceof APIMessage
-        ? content
         : APIMessage.transformOptions(content, options, {
-            inlineReplyTo: this,
+            replyTo: this,
           }),
     );
   }

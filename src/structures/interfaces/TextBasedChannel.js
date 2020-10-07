@@ -65,8 +65,7 @@ class TextBasedChannel {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
-   * @property {UserResolvable} [reply] User to reply to (prefixes the message with a mention, except in DMs)
-   * @property {MessageResolvable|MessageReplyReference} [inlineReplyTo] The message to reply to
+   * @property {MessageResolvable} [replyTo] The message to reply to
    * (must be in the same channel)
    */
 
@@ -76,13 +75,6 @@ class TextBasedChannel {
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
-   */
-
-  /**
-   * Options provided to control parsing of mentions by Discord
-   * @typedef {Object} MessageReplyReference
-   * @property {Snowflake} [messageID] Snowflakes of Users to be parsed as mentions
-   * @property {Snowflake} [channelID] Snowflakes of Roles to be parsed as mentions
    */
 
   /**

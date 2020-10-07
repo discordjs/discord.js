@@ -82,7 +82,7 @@ class Emoji extends Base {
    * @example
    * // Send a custom emoji from a guild:
    * const emoji = guild.emojis.cache.first();
-   * msg.reply(`Hello! ${emoji}`);
+   * msg.channel.send(`Hello! ${emoji}`);
    * @example
    * // Send the emoji used in a reaction to the channel the reaction is part of
    * reaction.message.channel.send(`The emoji used was: ${reaction.emoji}`);

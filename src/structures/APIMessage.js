@@ -79,8 +79,6 @@ class APIMessage {
    * @returns {?(string|string[])}
    */
   makeContent() {
-    const GuildMember = require('./GuildMember');
-
     let content;
     if (this.options.content === null) {
       content = '';
@@ -110,25 +108,14 @@ class APIMessage {
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
 
-    let mentionPart = '';
-    if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
-      const id = this.target.client.users.resolveID(this.options.reply);
-      mentionPart = `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
-      if (isSplit) {
-        splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
-      }
-    }
-
-    if (content || mentionPart) {
+    if (content) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        content = `\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
         }
-      } else if (mentionPart) {
-        content = `${mentionPart}${content}`;
       }
 
       if (isSplit) {
@@ -182,21 +169,6 @@ class APIMessage {
       typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
-    if (this.options.reply) {
-      const id = this.target.client.users.resolveID(this.options.reply);
-      if (allowedMentions) {
-        // Clone the object as not to alter the ClientOptions object
-        allowedMentions = Util.cloneObject(allowedMentions);
-        const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
-        // Check if the mention won't be parsed, and isn't supplied in `users`
-        if (!parsed && !(allowedMentions.users && allowedMentions.users.includes(id))) {
-          if (!allowedMentions.users) allowedMentions.users = [];
-          allowedMentions.users.push(id);
-        }
-      } else {
-        allowedMentions = { users: [id] };
-      }
-    }
 
     let message_reference;
     if (this.options.inlineReplyTo) {
