@@ -424,7 +424,7 @@ class Message extends Base {
 
   /**
    * The Message this crosspost/reply/pin add references, if cached
-   * @type {Message}
+   * @type {?Message}
    * @readonly
    */
   get referencedMessage() {
