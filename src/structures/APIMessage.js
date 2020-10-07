@@ -199,11 +199,16 @@ class APIMessage {
     }
 
     let message_reference;
-    if (this.options.messageReference) {
-      message_reference = {
-        message_id: this.target.messages.resolveID(this.options.messageReference),
-        channel_id: this.target.id,
-      };
+    if (this.options.inlineReplyTo) {
+      const message = this.target.messages.resolve(this.options.inlineReplyTo);
+      if (message) {
+        message_reference = { message_id: message.id, channel_id: message.channel.id };
+      } else {
+        message_reference = {
+          message_id: this.options.inlineReplyTo.messageID,
+          channel_id: this.options.inlineReplyTo.channelID,
+        };
+      }
     }
 
     this.data = {

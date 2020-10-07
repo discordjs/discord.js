@@ -2831,7 +2831,7 @@ declare module 'discord.js' {
     code?: string | boolean;
     split?: boolean | SplitOptions;
     reply?: UserResolvable;
-    messageReference?: MessageResolvable;
+    inlineReplyTo?: MessageResolvable | MessageReplyReference;
   }
 
   type MessageReactionResolvable = MessageReaction | Snowflake;
@@ -2840,6 +2840,11 @@ declare module 'discord.js' {
     channelID: string;
     guildID: string;
     messageID: string | null;
+  }
+
+  interface MessageReplyReference {
+    channelID: Snowflake;
+    messageID: Snowflake;
   }
 
   type MessageResolvable = Message | Snowflake;
