@@ -171,15 +171,11 @@ class APIMessage {
         : this.options.allowedMentions;
 
     let message_reference;
-    if (this.options.inlineReplyTo) {
-      const message = this.target.messages.resolve(this.options.inlineReplyTo);
-      if (message) {
-        message_reference = { message_id: message.id, channel_id: message.channel.id };
-      } else {
-        message_reference = {
-          message_id: this.options.inlineReplyTo.messageID,
-          channel_id: this.options.inlineReplyTo.channelID,
-        };
+    if (typeof this.options.replyTo !== 'undefined') {
+      const message_id = this.target.messages.resolveID(this.options.replyTo);
+      if (message_id) {
+        const channel_id = typeof this.options.replyTo === 'string' ? this.target.id : this.options.replyTo.channel.id;
+        message_reference = { message_id, channel_id };
       }
     }
 

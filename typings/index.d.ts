@@ -1518,8 +1518,6 @@ declare module 'discord.js' {
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
-  type TextBasedChannelResolvable = TextChannel | NewsChannel | DMChannel | Snowflake;
-
   export class User extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: object);
     public avatar: string | null;
@@ -2829,7 +2827,7 @@ declare module 'discord.js' {
     messageID: string | null;
   }
 
-  type MessageResolvable = Message | { id: Snowflake; channel: TextBasedChannelResolvable };
+  type MessageResolvable = Message | Snowflake;
 
   type MessageTarget = TextChannel | NewsChannel | DMChannel | User | GuildMember | Webhook | WebhookClient;
 

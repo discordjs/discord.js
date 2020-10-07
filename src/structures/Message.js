@@ -422,10 +422,16 @@ class Message extends Base {
     );
   }
 
+  /**
+   * The Message this crosspost/reply/pin add references, if cached
+   * @type {Message}
+   * @readonly
+   */
   get referencedMessage() {
-    return this.reference && this.reference.messageID && this.client.channels.cache.has(this.reference.channelID)
-      ? this.client.channels.resolve(this.reference.channelID).messages.resolve(this.reference.messageID)
-      : null;
+    if (!this.reference) return null;
+    const referenceChannel = this.client.channels.resolve(this.reference.channelID);
+    if (!referenceChannel) return null;
+    return referenceChannel.messages.resolve(this.reference.messageID);
   }
 
   /**
