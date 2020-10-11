@@ -84,6 +84,7 @@ exports.DefaultOptions = {
     api: 'https://discord.com/api',
     cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
+    template: 'https://discord.com/template',
   },
 };
 
