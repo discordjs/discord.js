@@ -3,9 +3,7 @@
 import { Client, Intents, Message, MessageAttachment, MessageEmbed } from 'discord.js';
 
 const client: Client = new Client({
-  ws: {
-    intents: Intents.NON_PRIVILEGED,
-  },
+  intents: Intents.NON_PRIVILEGED,
 });
 
 client.on('ready', () => {

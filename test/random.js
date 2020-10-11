@@ -10,9 +10,7 @@ const Discord = require('../src');
 console.time('magic');
 
 const client = new Discord.Client({
-	ws: {
-		intents: Discord.Intents.NON_PRIVILEGED
-	}
+	intents: Discord.Intents.NON_PRIVILEGED
 });
 
 client

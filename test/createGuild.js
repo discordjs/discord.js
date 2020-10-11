@@ -5,9 +5,7 @@ const { token } = require('./auth');
 const { Client, Intents } = require('../src');
 
 const client = new Client({
-  ws: {
-    intents: Intents.NON_PRIVILEGED,
-  },
+  intents: Intents.NON_PRIVILEGED,
 });
 
 client.on('ready', async () => {

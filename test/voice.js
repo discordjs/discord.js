@@ -7,9 +7,7 @@ const Discord = require('../src');
 
 const client = new Discord.Client({
   partials: [],
-  ws: {
-    intents: Discord.Intents.NON_PRIVILEGED,
-  },
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client

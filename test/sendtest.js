@@ -8,9 +8,7 @@ const { owner, token } = require('./auth.js');
 const Discord = require('../src');
 
 const client = new Discord.Client({
-  ws: {
-    intents: Discord.Intents.NON_PRIVILEGED,
-  },
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 const fill = c => Array(4).fill(c.repeat(1000));

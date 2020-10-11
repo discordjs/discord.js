@@ -2438,6 +2438,7 @@ declare module 'discord.js' {
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
+    intents: BitFieldResolvable<IntentsString, number> | number;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
   }
@@ -3324,7 +3325,6 @@ declare module 'discord.js' {
   interface WebSocketOptions {
     large_threshold?: number;
     compress?: boolean;
-    intents?: BitFieldResolvable<IntentsString, number> | number;
     properties?: WebSocketProperties;
   }
 
