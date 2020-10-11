@@ -52,6 +52,15 @@ class DataResolver {
   }
 
   /**
+   * Resolves GuildTemplateResolvable to a template code.
+   * @param {GuildTemplateResolvable} data The template resolvable to resolve
+   * @returns {string}
+   */
+  static resolveGuildTemplateCode(data) {
+    return this.resolveCode(data, /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/i);
+  }
+
+  /**
    * Resolves a Base64Resolvable, a string, or a BufferResolvable to a Base 64 image.
    * @param {BufferResolvable|Base64Resolvable} image The image to be resolved
    * @returns {Promise<?string>}
