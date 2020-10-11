@@ -25,6 +25,13 @@ class DataResolver {
    */
 
   /**
+   * Data that can be resolved to give an template code. This can be:
+   * * A template code
+   * * A template URL
+   * @typedef {string} GuildTemplateResolvable
+   */
+
+  /**
    * Resolves the string to a code based on the passed regex.
    * @param {string} data The string to resolve
    * @param {RegExp} regex The RegExp used to extract the code
