@@ -25,6 +25,17 @@ class DataResolver {
    */
 
   /**
+   * Resolves the string to a code based on the passed regex.
+   * @param {string} data The string to resolve
+   * @param {RegExp} regex The RegExp used to extract the code
+   * @returns {string}
+   */
+  static resolveCode(data, regex) {
+    const match = regex.exec(data);
+    return match ? match[1] || data : data;
+  }
+
+  /**
    * Resolves InviteResolvable to an invite code.
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
