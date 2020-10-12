@@ -428,9 +428,10 @@ class Message extends Base {
       this.channel.type === 'news' &&
       !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
       !this.flags.has(MessageFlags.FLAGS.IS_CROSSPOST) &&
-      this.author.id === this.client.user.id &&
       this.type === 'DEFAULT' &&
-      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)
+      (this.author.id === this.client.user.id
+        ? this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)
+        : this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
     );
   }
 
