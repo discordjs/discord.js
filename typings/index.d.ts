@@ -3029,7 +3029,7 @@ declare module 'discord.js' {
     attachments: Message['attachments'];
     channel: Message['channel'];
     readonly deletable: boolean;
-    readonly crosspostable: boolean;                                                           
+    readonly crosspostable: boolean;
     readonly editable: boolean;
     readonly edits: Message['edits'];
     embeds: Message['embeds'];
