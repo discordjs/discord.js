@@ -264,7 +264,7 @@ class GuildMemberManager extends BaseManager {
     user: user_ids,
     query,
     time = 120e3,
-    nonce = SnowflakeUtil.generate().toString(16),
+    nonce = SnowflakeUtil.generate(),
     force = false,
   } = {}) {
     return new Promise((resolve, reject) => {
