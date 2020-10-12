@@ -3017,6 +3017,7 @@ declare module 'discord.js' {
       | 'attachments'
       | 'channel'
       | 'deletable'
+      | 'crosspostable'
       | 'editable'
       | 'mentions'
       | 'pinnable'
@@ -3028,6 +3029,7 @@ declare module 'discord.js' {
     attachments: Message['attachments'];
     channel: Message['channel'];
     readonly deletable: boolean;
+    readonly crosspostable: boolean;                                                           
     readonly editable: boolean;
     readonly edits: Message['edits'];
     embeds: Message['embeds'];
