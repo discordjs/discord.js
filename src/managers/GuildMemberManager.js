@@ -184,14 +184,14 @@ class GuildMemberManager extends BaseManager {
     } else {
       endpoint = endpoint.members(id);
     }
-    await endpoint.patch({ data: _data, reason }).then(d => {
-      if (this.cache.has(id)) {
-        const member = this.cache.get(id);
-        const clone = member._clone();
-        d.user = member.user;
-        clone._patch(d);
-      }
-    });
+    await endpoint.patch({ data: _data, reason });
+
+    if (this.cache.has(id)) {
+      const member = this.cache.get(id);
+      const clone = member._clone();
+      _data.user = member.user;
+      clone._patch(_data);
+    }
   }
 
   /**
