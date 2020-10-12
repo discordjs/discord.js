@@ -417,6 +417,21 @@ class Message extends Base {
       (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
   }
+  
+    /**
+   * Whether the message is crosspostable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get crosspostable() {
+    return (
+      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+      !this.flags.has(MessageFlags.FLAGS.IS_CROSSPOST) &&
+      this.author.id === this.client.user.id &&
+      this.type === 'DEFAULT' &&
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES)
+    );
+  }
 
   /**
    * Options that can be passed into editMessage.
