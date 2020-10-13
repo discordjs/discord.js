@@ -233,17 +233,17 @@ class WebSocketManager extends EventEmitter {
         }
       });
 
-      shard.on(ShardEvents.INVALID_SESSION, () => {
+      const reconnectShard = (() => {
         this.client.emit(Events.SHARD_RECONNECTING, shard.id);
-      });
+        this.shardQueue.add(shard);
+        this.reconnect();
+      }).bind(this);
+
+      shard.on(ShardEvents.INVALID_SESSION, reconnectShard);
 
       shard.on(ShardEvents.DESTROYED, () => {
         this.debug('Shard was destroyed but no WebSocket connection was present! Reconnecting...', shard);
-
-        this.client.emit(Events.SHARD_RECONNECTING, shard.id);
-
-        this.shardQueue.add(shard);
-        this.reconnect();
+        reconnectShard();
       });
 
       shard.eventsAttached = true;
