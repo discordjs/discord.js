@@ -46,7 +46,7 @@ class GuildTemplate extends Base {
      * The amount of times this template has been used
      * @type {number}
      */
-    this.usage_count = data.usage_count;
+    this.usageCount = data.usage_count;
 
     /**
      * The ID of the user that created this template
