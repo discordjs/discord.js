@@ -213,6 +213,7 @@ declare module 'discord.js' {
     public fetchApplication(): Promise<ClientApplication>;
     public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
+    public fetchGuildTemplate(): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
     public generateInvite(options?: InviteGenerationOptions | PermissionResolvable): Promise<string>;
@@ -575,10 +576,12 @@ declare module 'discord.js' {
 
   export class DataResolver {
     public static resolveBase64(data: Base64Resolvable): string;
+    public static resolveCode(data: string, regx: RegExp): string;
     public static resolveFile(resource: BufferResolvable | Stream): Promise<Buffer | Stream>;
     public static resolveFileAsBuffer(resource: BufferResolvable | Stream): Promise<Buffer>;
     public static resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string>;
     public static resolveInviteCode(data: InviteResolvable): string;
+    public static resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
   }
 
   export class DiscordAPIError extends Error {
@@ -901,6 +904,24 @@ declare module 'discord.js' {
     public fetch(): Promise<GuildPreview>;
     public toJSON(): object;
     public toString(): string;
+  }
+
+  export class GuildTemplate extends Base {
+    constructor(client: Client, data: object);
+    private _patch(data: object): void;
+    public readonly url: string;
+    public code: string;
+    public name: string;
+    public description: string | null;
+    public usageCount: number;
+    public creatorID: string;
+    public creator: User;
+    public createdAt: Date;
+    public updatedAt: Date;
+    public guildID: string;
+    public guild: Guild;
+    public unSynced: boolean | null;
+    public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Guild;
   }
 
   export class GuildPreviewEmoji extends BaseGuildEmoji {
@@ -2726,6 +2747,8 @@ declare module 'discord.js' {
   }
 
   type InviteResolvable = string;
+
+  type GuildTemplateResolvable = string;
 
   type MembershipStates = 'INVITED' | 'ACCEPTED';
 
