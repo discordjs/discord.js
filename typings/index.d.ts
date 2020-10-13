@@ -908,7 +908,7 @@ declare module 'discord.js' {
 
   export class GuildTemplate extends Base {
     constructor(client: Client, data: object);
-    private _patch(data: object): void;
+    private _patch(data: object): GuildTemplate;
     public readonly url: string;
     public code: string;
     public name: string;
@@ -922,6 +922,9 @@ declare module 'discord.js' {
     public guild: Guild;
     public unSynced: boolean | null;
     public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Guild;
+    public delete(): GuildTemplate;
+    public edit(name: string, description?: string): GuildTemplate;
+    public sync(): GuildTemplate;
   }
 
   export class GuildPreviewEmoji extends BaseGuildEmoji {

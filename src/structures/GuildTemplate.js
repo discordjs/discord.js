@@ -21,6 +21,7 @@ class GuildTemplate extends Base {
   /**
    * Builds or updates the template with the provided data.
    * @param {Object} data The raw data for the template
+   * @returns {GuildTemplate}
    * @private
    */
   _patch(data) {
@@ -89,6 +90,8 @@ class GuildTemplate extends Base {
      * @type {?boolean}
      */
     this.unSynced = 'is_dirty' in data ? Boolean(data.is_dirty) : null;
+
+    return this;
   }
 
   /**
@@ -129,6 +132,46 @@ class GuildTemplate extends Base {
 
       const timeout = client.setTimeout(() => resolveGuild(client.guilds.add(data)), 10000);
     });
+  }
+
+  /**
+   * Updates the metadata on this template.
+   * @param {string} [name=this.name] The name of this template
+   * @param {?string} [description] The description of this template
+   * @returns {Promise<GuildTemplate>}
+   */
+  // The name must be provided as of this commit's date, the default value can be removed after this has been changed
+  // (https://github.com/discord/discord-api-docs/pull/2144#discussion_r502952362)
+  edit(name = this.name, description) {
+    return this.api
+      .guilds(this.guildID)
+      .templates(this.code)
+      .patch({ data: { name, description } })
+      .then(data => this._patch(data));
+  }
+
+  /**
+   * Deletes this template.
+   * @returns {Promise<GuildTemplate>}
+   */
+  delete() {
+    return this.api
+      .guilds(this.guildID)
+      .templates(this.code)
+      .delete()
+      .then(() => this);
+  }
+
+  /**
+   * Syncs this template to the current state of the guild.
+   * @returns {Promise<GuildTemplate>}
+   */
+  sync() {
+    return this.api
+      .guilds(this.guildID)
+      .templates(this.code)
+      .put()
+      .then(data => this._patch(data));
   }
 
   /**
