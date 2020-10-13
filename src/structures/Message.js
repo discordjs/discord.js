@@ -426,8 +426,7 @@ class Message extends Base {
   get crosspostable() {
     return (
       this.channel.type === 'news' &&
-      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
-      !this.flags.has(MessageFlags.FLAGS.IS_CROSSPOST) &&
+      !this.flags.any([MessageFlags.FLAGS.CROSSPOSTED, MessageFlags.FLAGS.IS_CROSSPOST]) &&
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
       this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
