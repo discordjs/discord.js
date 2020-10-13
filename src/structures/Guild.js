@@ -4,6 +4,7 @@ const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
+const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
@@ -725,6 +726,20 @@ class Guild extends Base {
   }
 
   /**
+   * Fetches a collection of templates from this guild.
+   * Resolves with a collection mapping templates by their codes.
+   * @returns {Promise<Collection<string, GuildTemplate>>}
+   */
+  fetchTemplates() {
+    return this.client.api
+      .guilds(this.id)
+      .templates.get()
+      .then(templates =>
+        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
+      );
+  }
+
+  /**
    * The data for creating an integration.
    * @typedef {Object} IntegrationData
    * @property {string} id The integration id
@@ -742,6 +757,19 @@ class Guild extends Base {
       .guilds(this.id)
       .integrations.post({ data, reason })
       .then(() => this);
+  }
+
+  /**
+   * Creates a template for the guild.
+   * @param {string} name The name for the template
+   * @param {string} [description] The description for the template
+   * @returns {Promise<GuildTemplate>}
+   */
+  createTemplate(name, description) {
+    return this.client.api
+      .guilds(this.id)
+      .templates.post({ data: { name, description } })
+      .then(data => new GuildTemplate(this.client, data));
   }
 
   /**
