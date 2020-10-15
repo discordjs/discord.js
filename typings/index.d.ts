@@ -114,6 +114,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
     public valueOf(): string;
+    public static isValidID(string: string): boolean;
   }
 
   export class BaseClient extends EventEmitter {

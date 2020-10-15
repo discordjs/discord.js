@@ -1,5 +1,6 @@
 'use strict';
 
+const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -36,6 +37,10 @@ class Base {
 
   valueOf() {
     return this.id;
+  }
+
+  static isValidID(string) {
+    return Snowflake.maybeSnowflake(string);
   }
 }
 
