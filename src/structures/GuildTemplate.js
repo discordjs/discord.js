@@ -136,13 +136,12 @@ class GuildTemplate extends Base {
 
   /**
    * Updates the metadata on this template.
-   * @param {string} [name=this.name] The name of this template
-   * @param {?string} [description] The description of this template
+   * @param {Object} options Options for the template
+   * @param {string} [options.name] The name of this template
+   * @param {string} [options.description] The description of this template
    * @returns {Promise<GuildTemplate>}
    */
-  // The name must be provided as of this commit's date, the default value can be removed after this has been changed
-  // (https://github.com/discord/discord-api-docs/pull/2144#discussion_r502952362)
-  edit(name = this.name, description) {
+  edit({ name, description } = {}) {
     return this.api
       .guilds(this.guildID)
       .templates(this.code)

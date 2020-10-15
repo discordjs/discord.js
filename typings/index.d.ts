@@ -213,7 +213,7 @@ declare module 'discord.js' {
     public fetchApplication(): Promise<ClientApplication>;
     public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
-    public fetchGuildTemplate(): Promise<GuildTemplate>;
+    public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
     public generateInvite(options?: InviteGenerationOptions | PermissionResolvable): Promise<string>;
@@ -923,10 +923,10 @@ declare module 'discord.js' {
     public guildID: string;
     public guild: Guild;
     public unSynced: boolean | null;
-    public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Guild;
-    public delete(): GuildTemplate;
-    public edit(name: string, description?: string): GuildTemplate;
-    public sync(): GuildTemplate;
+    public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Promise<Guild>;
+    public delete(): Promise<GuildTemplate>;
+    public edit(options?: { name?: string; description?: string }): Promise<GuildTemplate>;
+    public sync(): Promise<GuildTemplate>;
   }
 
   export class GuildPreviewEmoji extends BaseGuildEmoji {
@@ -2696,6 +2696,7 @@ declare module 'discord.js' {
     host?: string;
     cdn?: string;
     invite?: string;
+    template?: string;
   }
 
   type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
