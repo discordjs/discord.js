@@ -1,5 +1,6 @@
 'use strict';
 
+const Base = require('../structures/Base');
 const Collection = require('../util/Collection');
 let Structures;
 
@@ -69,7 +70,12 @@ class BaseManager {
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string') return idOrInstance;
+
+    if (typeof idOrInstance === 'string') {
+      if (this.holds.prototype instanceof Base) return this.holds.isValidID(idOrInstance) ? idOrInstance : null;
+      return idOrInstance;
+    }
+
     return null;
   }
 
