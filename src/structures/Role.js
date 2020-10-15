@@ -220,7 +220,7 @@ class Role extends Base {
           name: data.name || this.name,
           color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
           hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-          permissions: data.permissions.bitfield.toString(),
+          permissions: data.permissions,
           mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
         },
         reason,

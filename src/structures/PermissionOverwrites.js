@@ -70,8 +70,8 @@ class PermissionOverwrites {
         data: {
           id: this.id,
           type: OverwriteTypes[this.type],
-          allow: allow.bitfield.toString(),
-          deny: deny.bitfield.toString(),
+          allow,
+          deny,
         },
         reason,
       });
@@ -92,8 +92,8 @@ class PermissionOverwrites {
     return {
       id: this.id,
       type: OverwriteTypes[this.type],
-      allow: this.allow.bitfield.toString(),
-      deny: this.deny.bitfield.toString(),
+      allow: this.allow,
+      deny: this.deny,
     };
   }
 
@@ -178,8 +178,8 @@ class PermissionOverwrites {
       return {
         id: overwrite.id,
         type: OverwriteTypes[overwrite.type],
-        allow: Permissions.resolve(overwrite.allow).toString(),
-        deny: Permissions.resolve(overwrite.deny).toString(),
+        allow: Permissions.resolve(overwrite.allow).toJSON(),
+        deny: Permissions.resolve(overwrite.deny).toJSON(),
       };
     }
 
@@ -190,8 +190,8 @@ class PermissionOverwrites {
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow).toString(),
-      deny: Permissions.resolve(overwrite.deny).toString(),
+      allow: Permissions.resolve(overwrite.allow).toJSON(),
+      deny: Permissions.resolve(overwrite.deny).toJSON(),
     };
   }
 }

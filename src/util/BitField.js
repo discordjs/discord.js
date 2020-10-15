@@ -125,7 +125,7 @@ class BitField {
   }
 
   toJSON() {
-    return this.bitfield;
+    return typeof this.bitfield === 'number' ? this.bitfield : this.bitfield.toString();
   }
 
   valueOf() {
