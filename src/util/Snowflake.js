@@ -79,6 +79,15 @@ class SnowflakeUtil {
     });
     return res;
   }
+
+  /**
+   * Tells whether a given string may be interpreted as a snowflake.
+   * @param {string} string String to test
+   * @returns {boolean} Returns true if the string may be a snowflake
+   */
+  static maybeSnowflake(string) {
+    return /^\d{17,19}$/.test(string);
+  }
 }
 
 module.exports = SnowflakeUtil;
