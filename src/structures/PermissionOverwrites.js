@@ -174,7 +174,7 @@ class PermissionOverwrites {
    */
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();
-    if (typeof overwrite.id === 'string' && OverwriteTypes.includes(overwrite.type)) {
+    if (typeof overwrite.id === 'string' && overwrite.type in OverwriteTypes) {
       return {
         id: overwrite.id,
         type: OverwriteTypes[overwrite.type],
