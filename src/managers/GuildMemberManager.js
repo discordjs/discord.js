@@ -153,13 +153,13 @@ class GuildMemberManager extends BaseManager {
   /**
    * Edits a member of the guild.
    * <info>The user must be a member of the guild</info>
-   * @param {UserResolvable} user The member to edit
+   * @param {UserResolvable} member The member to edit
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<void>}
    */
-  async edit(user, data, reason) {
-    const id = this.client.users.resolveID(user);
+  async edit(member, data, reason) {
+    const id = this.client.users.resolveID(member);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
     // Clone the data object for immutability
@@ -187,9 +187,9 @@ class GuildMemberManager extends BaseManager {
     await endpoint.patch({ data: _data, reason });
 
     if (this.cache.has(id)) {
-      const member = this.cache.get(id);
-      const clone = member._clone();
-      _data.user = member.user;
+      const _member = this.cache.get(id);
+      const clone = _member._clone();
+      _data.user = _member.user;
       clone._patch(_data);
     }
   }
