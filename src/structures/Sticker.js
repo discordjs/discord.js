@@ -94,7 +94,7 @@ class Sticker extends Base {
 
   /**
    * The time the stikcer was created at
-   * @type {?Date}
+   * @type {Date}
    * @readonly
    */
   get createdAt() {
