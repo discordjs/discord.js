@@ -39,7 +39,6 @@ class Sticker extends Base {
     /**
      * The ID of the pack the sticker is from
      * @type {Snowflake}
-     * @name Sticker#packID
      */
     this.packID = sticker.pack_id;
 
