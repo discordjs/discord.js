@@ -16,7 +16,6 @@ class Sticker extends Base {
     /**
      * The ID of the sticker's image
      * @type {string}
-     * @name Sticker#asset
      */
     this.asset = sticker.asset;
 
