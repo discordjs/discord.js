@@ -84,7 +84,7 @@ class Sticker extends Base {
   }
 
   /**
-   * The timestamp the sticker was created at
+   * The timestamp the sticker was created at.
    * @type {?number}
    * @readonly
    */
