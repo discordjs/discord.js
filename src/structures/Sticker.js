@@ -26,7 +26,7 @@ class Sticker extends Base {
     this.description = sticker.description;
 
     /**
-     * The type of sticker format
+     * The format of the sticker
      * @type {string}
      */
     this.format = StickerFormatTypes[sticker.format_type];
