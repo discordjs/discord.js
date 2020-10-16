@@ -57,7 +57,7 @@ class Sticker extends Base {
      * A comma-separated list of tags for the sticker
      * @type {?string}
      */
-    this.tags = sticker.tags;
+    this.tags = sticker.tags || null;
   }
 
   /**
@@ -84,22 +84,20 @@ class Sticker extends Base {
   }
 
   /**
-   * The timestamp the sticker was created at
-   * @type {?number}
+   * The timestamp the sticker was created at.
+   * @type {number}
    * @readonly
    */
   get createdTimestamp() {
-    if (!this.id) return null;
     return Snowflake.deconstruct(this.id).timestamp;
   }
 
   /**
-   * The time the stikcer was created at
-   * @type {?Date}
+   * The time the sticker was created at.
+   * @type {Date}
    * @readonly
    */
   get createdAt() {
-    if (!this.id) return null;
     return new Date(this.createdTimestamp);
   }
 }
