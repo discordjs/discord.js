@@ -20,7 +20,7 @@ class Sticker extends Base {
     this.asset = sticker.asset;
 
     /**
-     * The description of sticker
+     * The description of the sticker
      * @type {string}
      */
     this.description = sticker.description;
