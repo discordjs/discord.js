@@ -45,7 +45,6 @@ class Sticker extends Base {
     /**
      * The ID of sticker preview image
      * @type {?string}
-     * @name Sticker#previewAsset
      */
     this.previewAsset = sticker.preview_asset;
 
