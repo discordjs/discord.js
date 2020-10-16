@@ -22,7 +22,6 @@ class Sticker extends Base {
     /**
      * The description of sticker
      * @type {string}
-     * @name Sticker#description
      */
     this.description = sticker.description;
 
