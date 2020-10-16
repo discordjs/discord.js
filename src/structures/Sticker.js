@@ -98,7 +98,6 @@ class Sticker extends Base {
    * @readonly
    */
   get createdAt() {
-    if (!this.id) return null;
     return new Date(this.createdTimestamp);
   }
 }
