@@ -908,7 +908,6 @@ declare module 'discord.js' {
 
   export class GuildTemplate extends Base {
     constructor(client: Client, data: object);
-    private _patch(data: object): void;
     public readonly url: string;
     public code: string;
     public name: string;
@@ -2691,6 +2690,7 @@ declare module 'discord.js' {
     host?: string;
     cdn?: string;
     invite?: string;
+    template?: string;
   }
 
   type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
