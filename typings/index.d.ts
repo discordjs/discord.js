@@ -3115,7 +3115,7 @@ declare module 'discord.js' {
   type Status = number;
 
   export class Sticker extends Base {
-    constructor(client: Client, sticker: object);
+    constructor(client: Client, data: object);
     public asset: string;
     public readonly createdTimestamp: number;
     public readonly createAt: Date;
