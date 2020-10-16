@@ -85,7 +85,7 @@ class Sticker extends Base {
 
   /**
    * The timestamp the sticker was created at.
-   * @type {?number}
+   * @type {number}
    * @readonly
    */
   get createdTimestamp() {
