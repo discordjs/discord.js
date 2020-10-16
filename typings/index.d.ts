@@ -3132,6 +3132,7 @@ declare module 'discord.js' {
 
   interface StickerURLOptions {
     size: ImageSize;
+    passthrough?: boolean;
   }
 
   type StickerFormatTypes = 'PNG' | 'APNG' | 'LOTTIE';

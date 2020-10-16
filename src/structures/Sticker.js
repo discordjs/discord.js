@@ -67,8 +67,8 @@ class Sticker extends Base {
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  stickerURL({ size } = {}) {
-    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size);
+  stickerURL({ size, passthrough } = {}) {
+    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size, passthrough);
   }
 
   /**
@@ -78,9 +78,9 @@ class Sticker extends Base {
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  stickerPreviewURL({ size } = {}) {
+  stickerPreviewURL({ size, passthrough } = {}) {
     if (!this.previewAsset) return null;
-    return this.client.rest.cdn.Sticker(this.id, this.previewAsset, this.format, size);
+    return this.client.rest.cdn.Sticker(this.id, this.previewAsset, this.format, size, passthrough);
   }
 
   /**
