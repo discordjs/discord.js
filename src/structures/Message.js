@@ -140,7 +140,6 @@ class Message extends Base {
      */
     this.stickers = new Collection();
     if (data.stickers) {
-      console.log(data.stickers);
       for (const sticker of data.stickers) {
         this.stickers.set(sticker.id, new Sticker(this.client, sticker));
       }

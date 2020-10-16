@@ -8,30 +8,26 @@ class Sticker extends Base {
   constructor(client, sticker) {
     super(client);
     /**
-     * The ID of sticker
+     * The ID of the sticker
      * @type {Snowflake}
-     * @name Sticker#id
      */
     this.id = sticker.id;
 
     /**
      * The ID of the sticker's image
      * @type {string}
-     * @name Sticker#asset
      */
     this.asset = sticker.asset;
 
     /**
-     * The description of sticker
+     * The description of the sticker
      * @type {string}
-     * @name Sticker#description
      */
     this.description = sticker.description;
 
     /**
-     * The type of sticker format
+     * The format of the sticker
      * @type {string}
-     * @name Sticker#format
      */
     this.format = StickerFormatTypes[sticker.format_type];
 
@@ -43,21 +39,18 @@ class Sticker extends Base {
     /**
      * The ID of the pack the sticker is from
      * @type {Snowflake}
-     * @name Sticker#packID
      */
     this.packID = sticker.pack_id;
 
     /**
      * The ID of sticker preview image
      * @type {?string}
-     * @name Sticker#previewAsset
      */
     this.previewAsset = sticker.preview_asset;
 
     /**
      * A comma-separated list of tags for the sticker
      * @type {?string}
-     * @name Sticker#tags
      */
     this.tags = sticker.tags;
   }
@@ -101,7 +94,7 @@ class Sticker extends Base {
    */
   get createdAt() {
     if (!this.id) return null;
-    return new Date(this.createTimestamp);
+    return new Date(this.createdTimestamp);
   }
 }
 
