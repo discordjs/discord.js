@@ -8,7 +8,7 @@ class Sticker extends Base {
   constructor(client, sticker) {
     super(client);
     /**
-     * The ID of sticker
+     * The ID of the sticker
      * @type {Snowflake}
      */
     this.id = sticker.id;
