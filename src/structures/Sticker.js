@@ -10,7 +10,6 @@ class Sticker extends Base {
     /**
      * The ID of sticker
      * @type {Snowflake}
-     * @name Sticker#id
      */
     this.id = sticker.id;
 
