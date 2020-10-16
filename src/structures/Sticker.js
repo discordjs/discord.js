@@ -33,6 +33,7 @@ class Sticker extends Base {
 
     /**
      * The name of the sticker
+     * @type {string}
      */
     this.name = sticker.name;
 
