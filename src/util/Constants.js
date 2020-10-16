@@ -119,6 +119,12 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
  */
 
+/**
+ * Options for Sticker Image URL.
+ * @typedef {Object} StickerURLOptions
+ * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
+ */
+
 exports.Endpoints = {
   CDN(root) {
     return {

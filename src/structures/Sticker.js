@@ -59,7 +59,7 @@ class Sticker extends Base {
   /**
    * A link to the sticker.
    * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   stickerURL({ size } = {}) {
@@ -70,7 +70,7 @@ class Sticker extends Base {
   /**
    * A link to the sticker preview image.
    * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   stickerPreviewURL({ size } = {}) {
