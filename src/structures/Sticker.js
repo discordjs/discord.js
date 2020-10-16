@@ -74,7 +74,7 @@ class Sticker extends Base {
    * @returns {?string}
    */
   stickerPreviewURL({ size } = {}) {
-    if (!this.id || !this.asset) return null;
+    if (!this.previewAsset) return null;
     return this.client.rest.cdn.Sticker(this.id, this.previewAsset, this.format, size);
   }
 
