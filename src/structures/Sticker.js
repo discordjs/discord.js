@@ -62,7 +62,8 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker.
-   * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
+   * <warn>If format is LOTTIE, it returns the URL of the Lottie json file.
+   * Lottie json files must be converted to display in discord.</warn>
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
@@ -72,7 +73,8 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker preview image.
-   * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
+   * <warn>If format is LOTTIE, it returns the URL of the Lottie json file.
+   * Lottie json files must be converted to display in discord.</warn>
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
