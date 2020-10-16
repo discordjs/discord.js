@@ -3118,7 +3118,7 @@ declare module 'discord.js' {
     constructor(client: Client, data: object);
     public asset: string;
     public readonly createdTimestamp: number;
-    public readonly createAt: Date;
+    public readonly createdAt: Date;
     public description: string;
     public format: StickerFormatTypes;
     public id: Snowflake;
