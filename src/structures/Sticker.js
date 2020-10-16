@@ -64,22 +64,24 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker.
+   * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   stickerURL({ size } = {}) {
     if (!this.id || !this.asset) return null;
-    return this.client.rest.cdn.Sticker(this.id, this.asset, size);
+    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size);
   }
 
   /**
    * A link to the sticker preview image.
+   * <warn>If format is "LOTTIE" it would return URL of Lottie json file</warn>
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
   stickerPreviewURL({ size } = {}) {
     if (!this.id || !this.asset) return null;
-    return this.client.rest.cdn.Sticker(this.id, this.previewAsset, size);
+    return this.client.rest.cdn.Sticker(this.id, this.previewAsset, this.format, size);
   }
 
   /**

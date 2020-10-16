@@ -123,8 +123,8 @@ exports.Endpoints = {
   CDN(root) {
     return {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
-      Sticker: (stickerID, hash, size) =>
-        makeImageUrl(`${root}/stickers/${stickerID}/${hash}`, { format: 'png', size }),
+      Sticker: (stickerID, hash, format, size) =>
+        makeImageUrl(`${root}/stickers/${stickerID}/${hash}`, { format: format !== 'LOTTIE' ? 'png' : 'json', size }),
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
