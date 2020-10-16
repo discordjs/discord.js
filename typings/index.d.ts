@@ -999,7 +999,7 @@ declare module 'discord.js' {
     public id: Snowflake;
     public readonly member: GuildMember | null;
     public mentions: MessageMentions;
-    public nonce: string | null;
+    public nonce: string | number | null;
     public readonly partial: false;
     public readonly pinnable: boolean;
     public pinned: boolean;
@@ -2821,7 +2821,7 @@ declare module 'discord.js' {
 
   interface MessageOptions {
     tts?: boolean;
-    nonce?: string;
+    nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';
@@ -3113,6 +3113,24 @@ declare module 'discord.js' {
   }
 
   type Status = number;
+
+  export class Sticker extends Base {
+    constructor(client: Client, sticker: object);
+    public asset: string;
+    public readonly createdTimestamp: Number;
+    public readonly createAt: Date;
+    public description: string;
+    public format: StickerFormatTypes;
+    public id: Snowflake;
+    public name: string;
+    public packID: Snowflake;
+    public previewAsset?: string;
+    public tags: string;
+    public stickerURL(options?: ImageURLOptions): string | null;
+    public stickerPreviewURL(options?: ImageURLOptions): string | null;
+  }
+
+  type StickerFormatTypes = 'PNG' | 'APNG' | 'LOTTIE';
 
   interface StreamOptions {
     type?: StreamType;
