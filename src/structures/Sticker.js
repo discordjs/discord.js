@@ -89,7 +89,6 @@ class Sticker extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    if (!this.id) return null;
     return Snowflake.deconstruct(this.id).timestamp;
   }
 
