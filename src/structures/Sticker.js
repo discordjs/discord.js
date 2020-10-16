@@ -4,6 +4,10 @@ const Base = require('./Base');
 const { StickerFormatTypes } = require('../util/Constants');
 const Snowflake = require('../util/Snowflake');
 
+/**
+ * Represents a Sticker.
+ * @extends {Base}
+ */
 class Sticker extends Base {
   constructor(client, sticker) {
     super(client);
@@ -63,7 +67,6 @@ class Sticker extends Base {
    * @returns {?string}
    */
   stickerURL({ size } = {}) {
-    if (!this.id || !this.asset) return null;
     return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size);
   }
 
@@ -79,7 +82,7 @@ class Sticker extends Base {
   }
 
   /**
-   * The timestamp the sticker was created at, or null if unicode
+   * The timestamp the sticker was created at
    * @type {?number}
    * @readonly
    */
@@ -89,7 +92,7 @@ class Sticker extends Base {
   }
 
   /**
-   * The time the stikcer was created at, or null if unicode
+   * The time the stikcer was created at
    * @type {?Date}
    * @readonly
    */
