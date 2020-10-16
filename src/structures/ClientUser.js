@@ -94,8 +94,6 @@ class ClientUser extends Structures.get('User') {
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [activity] Activity the user is playing
-   * @property {Object|string} [activity.application] An application object or application id
-   * @property {string} [activity.application.id] The id of the application
    * @property {string} [activity.name] Name of the activity
    * @property {ActivityType|number} [activity.type] Type of the activity
    * @property {string} [activity.url] Twitch / YouTube stream URL
