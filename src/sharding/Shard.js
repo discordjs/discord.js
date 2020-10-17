@@ -44,7 +44,7 @@ class Shard extends EventEmitter {
 
     /**
      * Arguments for the shard's process executable (only when {@link ShardingManager#mode} is `process`)
-     * @type {?string[]}
+     * @type {string[]}
      */
     this.execArgv = manager.execArgv;
 
@@ -96,7 +96,7 @@ class Shard extends EventEmitter {
      * @type {Function}
      * @private
      */
-    this._exitListener = this._handleExit.bind(this, undefined);
+    this._exitListener = this._handleExit.bind(this);
   }
 
   /**
