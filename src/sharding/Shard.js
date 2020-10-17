@@ -124,6 +124,9 @@ class Shard extends EventEmitter {
         .on('exit', this._exitListener);
     }
 
+    this._evals.clear();
+    this._fetches.clear();
+
     /**
      * Emitted upon the creation of the shard's child process/worker.
      * @event Shard#spawn
@@ -225,6 +228,10 @@ class Shard extends EventEmitter {
    *   .catch(console.error);
    */
   fetchClientValue(prop) {
+    // Shard is dead (maybe respawning), don't cache anything and error immediately
+    if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
+
+    // Cached promise from previous call
     if (this._fetches.has(prop)) return this._fetches.get(prop);
 
     const promise = new Promise((resolve, reject) => {
@@ -255,6 +262,10 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
+    // Shard is dead (maybe respawning), don't cache anything and error immediately
+    if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
+
+    // Cached promise from previous call
     if (this._evals.has(script)) return this._evals.get(script);
 
     const promise = new Promise((resolve, reject) => {

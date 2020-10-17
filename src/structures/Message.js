@@ -235,13 +235,18 @@ class Message extends Base {
   }
 
   /**
-   * Updates the message.
+   * Updates the message and returns the old message.
    * @param {Object} data Raw Discord message update data
+   * @returns {Message}
    * @private
    */
   patch(data) {
     const clone = this._clone();
-    this._edits.unshift(clone);
+    const { messageEditHistoryMaxSize } = this.client.options;
+    if (messageEditHistoryMaxSize !== 0) {
+      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
+      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
+    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -268,6 +273,8 @@ class Message extends Base {
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+
+    return clone;
   }
 
   /**

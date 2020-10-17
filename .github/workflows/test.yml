@@ -14,7 +14,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         uses: icrawl/action-eslint@v1
@@ -32,7 +32,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run TSLint
         run: npm run lint:typings
@@ -50,7 +50,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Register Problem Matcher
         run: echo "##[add-matcher].github/tsc.json"
@@ -71,7 +71,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Test documentation
         run: npm run docs:test
