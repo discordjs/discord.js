@@ -111,7 +111,7 @@ class PermissionOverwrites {
    */
 
   /**
-   * Deletes this Permission Overwrite.
+   * Resolves bitfield permissions overwrites from an object.
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {Object} initialPermissions The initial permissions
    * @param {PermissionResolvable} initialPermissions.allow Initial allowed permissions
@@ -174,7 +174,7 @@ class PermissionOverwrites {
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
-    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true);
+    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? 'role' : 'member';
 
     return {

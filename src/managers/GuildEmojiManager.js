@@ -6,6 +6,7 @@ const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
+const { parseEmoji } = require('../util/Util');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
@@ -105,6 +106,7 @@ class GuildEmojiManager extends BaseManager {
   /**
    * Data that can be resolved to give an emoji identifier. This can be:
    * * The unicode representation of an emoji
+   * * The `<a:name:id>`, `<:name:id>`, `:name:id` or `a:name:id` emoji identifier string of an emoji
    * * An EmojiResolvable
    * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
    */
@@ -119,6 +121,10 @@ class GuildEmojiManager extends BaseManager {
     if (emojiResolvable) return emojiResolvable.identifier;
     if (emoji instanceof ReactionEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
+      const res = parseEmoji(emoji);
+      if (res && res.name.length) {
+        emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
+      }
       if (!emoji.includes('%')) return encodeURIComponent(emoji);
       else return emoji;
     }

@@ -21,7 +21,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build and deploy documentation
         uses: discordjs/action-docs@v1
@@ -41,7 +41,7 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build and deploy webpack
         uses: discordjs/action-webpack@v1

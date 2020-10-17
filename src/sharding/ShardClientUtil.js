@@ -79,6 +79,7 @@ class ShardClientUtil {
    * Sends a message to the master process.
    * @param {*} message Message to send
    * @returns {Promise<void>}
+   * @emits Shard#message
    */
   send(message) {
     return new Promise((resolve, reject) => {
@@ -124,7 +125,7 @@ class ShardClientUtil {
   }
 
   /**
-   * Evaluates a script or function on all shards, in the context of the {@link Clients}.
+   * Evaluates a script or function on all shards, in the context of the {@link Client}s.
    * @param {string|Function} script JavaScript to run on each shard
    * @returns {Promise<Array<*>>} Results of the script execution
    * @example

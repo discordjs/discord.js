@@ -35,6 +35,7 @@ class ActionsManager {
     this.register(require('./GuildChannelsPositionUpdate'));
     this.register(require('./GuildIntegrationsUpdate'));
     this.register(require('./WebhooksUpdate'));
+    this.register(require('./TypingStart'));
   }
 
   register(Action) {

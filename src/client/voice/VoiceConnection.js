@@ -144,7 +144,6 @@ class VoiceConnection extends EventEmitter {
   /**
    * Sets whether the voice connection should display as "speaking", "soundshare" or "none".
    * @param {BitFieldResolvable} value The new speaking state
-   * @private
    */
   setSpeaking(value) {
     if (this.speaking.equals(value)) return;
@@ -166,7 +165,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * The voice state of this connection
-   * @type {VoiceState}
+   * @type {?VoiceState}
    */
   get voice() {
     return this.channel.guild.voice;
@@ -204,8 +203,8 @@ class VoiceConnection extends EventEmitter {
    * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
-   * @private
    * @returns {void}
+   * @private
    */
   setTokenAndEndpoint(token, endpoint) {
     this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);

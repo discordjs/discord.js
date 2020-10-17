@@ -79,14 +79,14 @@ class MessageMentions {
     }
 
     /**
-     * Cached members for {@link MessageMention#members}
+     * Cached members for {@link MessageMentions#members}
      * @type {?Collection<Snowflake, GuildMember>}
      * @private
      */
     this._members = null;
 
     /**
-     * Cached channels for {@link MessageMention#channels}
+     * Cached channels for {@link MessageMentions#channels}
      * @type {?Collection<Snowflake, GuildChannel>}
      * @private
      */
@@ -164,7 +164,7 @@ class MessageMentions {
   /**
    * Checks if a user, guild member, role, or channel is mentioned.
    * Takes into account user mentions, role mentions, and @everyone/@here mentions.
-   * @param {UserResolvable|GuildMember|Role|GuildChannel} data User/GuildMember/Role/Channel to check
+   * @param {UserResolvable|RoleResolvable|GuildChannelResolvable} data User/Role/Channel to check
    * @param {Object} [options] Options
    * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
    * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member
@@ -179,7 +179,11 @@ class MessageMentions {
     }
 
     if (!ignoreDirect) {
-      const id = data.id || data;
+      const id =
+        this.client.users.resolveID(data) ||
+        (this.guild && this.guild.roles.resolveID(data)) ||
+        this.client.channels.resolveID(data);
+
       return this.users.has(id) || this.channels.has(id) || this.roles.has(id);
     }
 

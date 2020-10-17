@@ -28,6 +28,7 @@ module.exports = {
   SnowflakeUtil: require('./util/Snowflake'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
+  UserFlags: require('./util/UserFlags'),
   Util: Util,
   version: require('../package.json').version,
 
@@ -39,6 +40,7 @@ module.exports = {
   GuildMemberManager: require('./managers/GuildMemberManager'),
   GuildMemberRoleManager: require('./managers/GuildMemberRoleManager'),
   GuildManager: require('./managers/GuildManager'),
+  ReactionManager: require('./managers/ReactionManager'),
   ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),
   PresenceManager: require('./managers/PresenceManager'),
@@ -54,6 +56,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Application: require('./structures/interfaces/Application'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),

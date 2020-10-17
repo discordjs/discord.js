@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const IntegrationApplication = require('./IntegrationApplication');
 
 /**
  * The information account for an integration
@@ -58,11 +59,15 @@ class Integration extends Base {
      */
     this.role = this.guild.roles.cache.get(data.role_id);
 
-    /**
-     * The user for this integration
-     * @type {User}
-     */
-    this.user = this.client.users.add(data.user);
+    if (data.user) {
+      /**
+       * The user for this integration
+       * @type {?User}
+       */
+      this.user = this.client.users.add(data.user);
+    } else {
+      this.user = null;
+    }
 
     /**
      * The account integration information
@@ -90,6 +95,20 @@ class Integration extends Base {
      * @type {number}
      */
     this.expireGracePeriod = data.expire_grace_period;
+
+    if ('application' in data) {
+      if (this.application) {
+        this.application._patch(data.application);
+      } else {
+        /**
+         * The application for this integration
+         * @type {?IntegrationApplication}
+         */
+        this.application = new IntegrationApplication(this.client, data.application);
+      }
+    } else if (!this.application) {
+      this.application = null;
+    }
   }
 
   /**
