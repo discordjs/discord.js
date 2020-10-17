@@ -1405,6 +1405,7 @@ declare module 'discord.js' {
     public totalShards: number | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string): Promise<any[]>;
+    public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public respawnAll(
