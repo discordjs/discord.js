@@ -32,8 +32,6 @@ class GuildChannel extends Channel {
      * @type {Guild}
      */
     this.guild = guild;
-
-    this.parentID = null;
   }
 
   _patch(data) {
