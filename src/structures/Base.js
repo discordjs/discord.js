@@ -40,7 +40,7 @@ class Base {
   }
 
   /**
-   * Tells whether a given string may be used as an ID for an instance of this class
+   * Tells whether a given string may be used as an ID for an instance of this class.
    * @param {string} string String to test
    * @returns {boolean} Returns true if the string may be used as an ID
    */
