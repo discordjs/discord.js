@@ -49,7 +49,6 @@ module.exports = {
     minimize: true,
     minimizer: [
       new TerserJSPlugin({
-        cache: false,
         terserOptions: {
           mangle: { keep_classnames: true, keep_fnames: true },
           keep_classnames: true,
