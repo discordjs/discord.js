@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { TypeError } = require('../errors');
+const { Error, TypeError } = require('../errors');
 const GuildEmoji = require('../structures/GuildEmoji');
 const ReactionEmoji = require('../structures/ReactionEmoji');
 const Collection = require('../util/Collection');
@@ -17,9 +17,9 @@ class GuildEmojiManager extends BaseManager {
     super(guild.client, iterable, GuildEmoji);
     /**
      * The guild this manager belongs to
-     * @type {Guild}
+     * @type {?Guild}
      */
-    this.guild = guild;
+    this.guild = 'name' in guild ? guild : null;
   }
 
   /**
@@ -29,6 +29,7 @@ class GuildEmojiManager extends BaseManager {
    */
 
   add(data, cache) {
+    if (!this.guild) throw new Error('GUILDEMOJIMANAGER_NO_GUILD');
     return super.add(data, cache, { extras: [this.guild] });
   }
 
@@ -52,6 +53,7 @@ class GuildEmojiManager extends BaseManager {
    *   .catch(console.error);
    */
   async create(attachment, name, { roles, reason } = {}) {
+    if (!this.guild) throw new Error('GUILDEMOJIMANAGER_NO_GUILD');
     attachment = await DataResolver.resolveImage(attachment);
     if (!attachment) throw new TypeError('REQ_RESOURCE_TYPE');
 
