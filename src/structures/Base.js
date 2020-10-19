@@ -39,6 +39,11 @@ class Base {
     return this.id;
   }
 
+  /**
+   * Tells whether a given string may be used as an ID for an instance of this class
+   * @param {string} string String to test
+   * @returns {boolean} Returns true if the string may be used as an ID
+   */
   static isValidID(string) {
     return Snowflake.maybeSnowflake(string);
   }
