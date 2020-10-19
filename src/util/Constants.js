@@ -117,7 +117,8 @@ function makeStickerUrl(root, { format = 'png', size, passthrough = true } = {})
     params.append('size', size);
   }
   params.append('passthrough', passthrough);
-  return `${root}.${format}${params.toString() ? `?${params.toString()}` : ''}`;
+  const stringifiedQuery = params.toString();
+  return `${root}.${format}${stringifiedQuery .length ? stringifiedQuery  : ''}`;
 }
 
 /**
