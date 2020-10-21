@@ -430,9 +430,10 @@ class Message extends Base {
       this.type === 'DEFAULT' &&
       this.channel.viewable &&
       this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
-      (this.author.id !== this.client.user.id
-        ? this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
-        : true)
+      (
+        this.author.id === this.client.user.id ||
+        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES)
+      )
     );
   }
 
