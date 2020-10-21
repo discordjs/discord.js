@@ -62,8 +62,8 @@ class Sticker extends Base {
 
   /**
    * A link to the sticker.
-   * <info>If format is LOTTIE, it returns the URL of the Lottie json file.
-   * Lottie json files must be converted to display in discord.</info>
+   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
+   * Lottie json files must be converted in order to be displayed in Discord.</info>
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */

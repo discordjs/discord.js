@@ -3125,7 +3125,7 @@ declare module 'discord.js' {
     public name: string;
     public packID: Snowflake;
     public previewAsset: string | null;
-    public tags: string | undefined;
+    public tags: string | null;
     public stickerURL(options?: StickerURLOptions): string | null;
     public stickerPreviewURL(options?: StickerURLOptions): string | null;
   }
