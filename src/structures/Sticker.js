@@ -72,18 +72,6 @@ class Sticker extends Base {
   }
 
   /**
-   * A link to the sticker preview image.
-   * <info>If format is LOTTIE, it returns the URL of the Lottie json file.
-   * Lottie json files must be converted to display in discord.</info>
-   * @param {StickerURLOptions} [options={}] Options for the Image URL
-   * @returns {?string}
-   */
-  stickerPreviewURL({ size, passthrough } = {}) {
-    if (!this.previewAsset) return null;
-    return this.client.rest.cdn.Sticker(this.id, this.previewAsset, this.format, size, passthrough);
-  }
-
-  /**
    * The timestamp the sticker was created at.
    * @type {number}
    * @readonly
