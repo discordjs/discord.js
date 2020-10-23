@@ -135,7 +135,7 @@ function makeStickerUrl(root, { format = 'png', size, passthrough = true } = {})
  * Options for Sticker Image URL.
  * @typedef {Object} StickerURLOptions
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
- * @property {boolean} [passthrough=true] If false, the image will make sticker static.
+ * @property {boolean} [passthrough=true] Whether the image will be animated if it has an animated version.
  */
 
 exports.Endpoints = {
