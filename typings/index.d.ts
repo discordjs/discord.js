@@ -3131,7 +3131,7 @@ declare module 'discord.js' {
   }
 
   interface StickerURLOptions {
-    size: ImageSize;
+    size?: ImageSize;
     passthrough?: boolean;
   }
 
