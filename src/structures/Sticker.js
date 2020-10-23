@@ -67,8 +67,8 @@ class Sticker extends Base {
    * @param {StickerURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
    */
-  stickerURL({ size, passthrough } = {}) {
-    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size, passthrough);
+  stickerURL({ size, animated } = {}) {
+    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size, animated);
   }
 
   /**
