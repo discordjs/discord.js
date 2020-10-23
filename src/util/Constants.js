@@ -144,7 +144,7 @@ exports.Endpoints = {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
       Sticker: (stickerID, hash, format, size, passthrough = true) =>
         makeStickerUrl(`${root}/stickers/${stickerID}/${hash}`, {
-          format: format !== 'LOTTIE' ? 'png' : 'json',
+          format: format === 'LOTTIE' ? 'json' : 'png',
           size,
           passthrough,
         }),
