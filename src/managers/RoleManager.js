@@ -2,6 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const Role = require('../structures/Role');
+const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 const { resolveColor } = require('../util/Util');
 
@@ -53,9 +54,10 @@ class RoleManager extends BaseManager {
     }
 
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const roles = await this.client.api.guilds(this.guild.id).roles.get();
-    for (const role of roles) this.add(role, cache);
-    return id ? this.cache.get(id) || null : this;
+    const data = await this.client.api.guilds(this.guild.id).roles.get();
+    const roles = new Collection();
+    for (const role of data) roles.set(role.id, this.add(role, cache));
+    return id ? roles.get(id) || null : roles;
   }
 
   /**
