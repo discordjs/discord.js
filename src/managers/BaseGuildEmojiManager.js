@@ -21,7 +21,7 @@ class BaseGuildEmojiManager extends BaseManager {
    */
 
   /**
-   * Data that can be resolved into an GuildEmoji object. This can be:
+   * Data that can be resolved into a GuildEmoji object. This can be:
    * * A custom emoji ID
    * * A GuildEmoji object
    * * A ReactionEmoji object
