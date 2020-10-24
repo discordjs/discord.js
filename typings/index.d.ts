@@ -1543,7 +1543,6 @@ declare module 'discord.js' {
     public flags: Readonly<UserFlags> | null;
     public id: Snowflake;
     public lastMessageID: Snowflake | null;
-    public locale: string | null;
     public readonly partial: false;
     public readonly presence: Presence;
     public system: boolean | null;
@@ -3045,11 +3044,9 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialUser
-    extends Omit<Partialize<User, 'bot' | 'flags' | 'locale' | 'system' | 'tag' | 'username'>, 'deleted'> {
+  interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
     bot: User['bot'];
     flags: User['flags'];
-    locale: User['locale'];
     system: User['system'];
     readonly tag: null;
     username: null;

@@ -28,7 +28,6 @@ class User extends Base {
     this.id = data.id;
 
     this.system = null;
-    this.locale = null;
     this.flags = null;
 
     this._patch(data);
@@ -77,14 +76,6 @@ class User extends Base {
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
-    }
-
-    if ('locale' in data) {
-      /**
-       * The locale of the user's client (ISO 639-1)
-       * @type {?string}
-       */
-      this.locale = data.locale;
     }
 
     if ('public_flags' in data) {
