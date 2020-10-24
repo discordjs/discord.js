@@ -35,7 +35,7 @@ class RoleManager extends BaseManager {
    * @param {Snowflake} [id] ID or IDs of the role(s)
    * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<Role|RoleManager>}
+   * @returns {Promise<Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
