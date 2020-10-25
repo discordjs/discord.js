@@ -41,8 +41,10 @@ class ChannelManager extends BaseManager {
 
   remove(id) {
     const channel = this.cache.get(id);
-    if (channel.guild) channel.guild.channels.cache.delete(id);
-    this.cache.delete(id);
+    if (channel) {
+      if (channel.guild) channel.guild.channels.cache.delete(id);
+      this.cache.delete(id);
+    }
   }
 
   /**
