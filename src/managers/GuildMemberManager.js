@@ -22,7 +22,9 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
-   * The cache of this Manager
+   * The cache of this Manager. This may not contain all members of the guild,
+   * especially when the GUILD_MEMBERS and/or GUILD_PRESENCES intents are not enabled.
+   * To fetch members, use {@link GuildMemberManager#fetch}.
    * @type {Collection<Snowflake, GuildMember>}
    * @name GuildMemberManager#cache
    */
@@ -86,7 +88,7 @@ class GuildMemberManager extends BaseManager {
   /**
    * Fetches member(s) from Discord, even if they're offline.
    * @param {UserResolvable|FetchMemberOptions|FetchMembersOptions} [options] If a UserResolvable, the user to fetch.
-   * If undefined, fetches all members.
+   * If undefined, fetches all members (requires the GUILD_MEMBERS intent).
    * If a query, it limits the results to users with similar usernames.
    * @returns {Promise<GuildMember>|Promise<Collection<Snowflake, GuildMember>>}
    * @example

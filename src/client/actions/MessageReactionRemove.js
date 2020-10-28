@@ -31,6 +31,7 @@ class MessageReactionRemove extends Action {
     reaction._remove(user);
     /**
      * Emitted whenever a reaction is removed from a cached message.
+     * Requires the GUILD_MESSAGE_REACTIONS or DIRECT_MESSAGE_REACTIONS intent.
      * @event Client#messageReactionRemove
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user whose emoji or reaction emoji was removed

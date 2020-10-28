@@ -39,6 +39,7 @@ class MessageReactionAdd extends Action {
     reaction._add(user);
     /**
      * Emitted whenever a reaction is added to a cached message.
+     * Requires the GUILD_MESSAGE_REACTIONS or DIRECT_MESSAGE_REACTIONS intent.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji

@@ -9,7 +9,7 @@ module.exports = (client, { d: data }, shard) => {
     const member = guild.members.add(data);
     if (shard.status === Status.READY) {
       /**
-       * Emitted whenever a user joins a guild.
+       * Emitted whenever a user joins a guild. Requires the GUILD_MEMBERS intent.
        * @event Client#guildMemberAdd
        * @param {GuildMember} member The member that has joined a guild
        */

@@ -18,6 +18,7 @@ module.exports = (client, { d: data }, shard) => {
         /**
          * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
          * Also emitted when the user's details (e.g. username) change.
+         * Requires the GUILD_MEMBERS intent.
          * @event Client#guildMemberUpdate
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update

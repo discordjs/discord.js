@@ -32,6 +32,7 @@ class PresenceUpdateAction extends Action {
     if (member && this.client.listenerCount(Events.PRESENCE_UPDATE)) {
       /**
        * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
+       * Requires the GUILD_PRESENCES intent.
        * @event Client#presenceUpdate
        * @param {?Presence} oldPresence The presence before the update, if one at all
        * @param {Presence} newPresence The presence after the update

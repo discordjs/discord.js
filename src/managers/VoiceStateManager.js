@@ -17,7 +17,7 @@ class VoiceStateManager extends BaseManager {
   }
 
   /**
-   * The cache of this manager
+   * The cache of this manager. Will be outdated without the GUILD_VOICE_STATES intent.
    * @type {Collection<Snowflake, VoiceState>}
    * @name VoiceStateManager#cache
    */

@@ -16,7 +16,8 @@ class MessageReactionRemoveEmoji extends Action {
     if (!message.partial) message.reactions.cache.delete(reaction.emoji.id || reaction.emoji.name);
 
     /**
-     * Emitted when a bot removes an emoji reaction from a cached message.
+     * Emitted when a bot removes all reactions of an emoji from a cached message.
+     * Requires the GUILD_MESSAGE_REACTIONS or DIRECT_MESSAGE_REACTIONS intent.
      * @event Client#messageReactionRemoveEmoji
      * @param {MessageReaction} reaction The reaction that was removed
      */

@@ -146,7 +146,7 @@ class User extends Base {
   }
 
   /**
-   * The presence of this user
+   * The presence of this user. Requires the GUILD_PRESENCES intent.
    * @type {Presence}
    * @readonly
    */

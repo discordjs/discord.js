@@ -15,7 +15,9 @@ class UserManager extends BaseManager {
   }
 
   /**
-   * The cache of this manager
+   * The cache of this manager. This will likely not contain all members of all guilds the bot is in,
+   * especially when the GUILD_MEMBERS and/or GUILD_PRESENCES intents are not enabled.
+   * To get a user by ID, use {@link UserManager#fetch}.
    * @type {Collection<Snowflake, User>}
    * @name UserManager#cache
    */

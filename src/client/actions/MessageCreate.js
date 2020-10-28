@@ -24,7 +24,7 @@ class MessageCreateAction extends Action {
       }
 
       /**
-       * Emitted whenever a message is created.
+       * Emitted whenever a message is created. Requires the GUILD_MESSAGES or DIRECT_MESSAGES intent.
        * @event Client#message
        * @param {Message} message The created message
        */

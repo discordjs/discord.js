@@ -149,7 +149,9 @@ class Guild extends Base {
     this.region = data.region;
 
     /**
-     * The full amount of members in this guild
+     * The full amount of members in this guild. If the GUILD_MEMBERS intent is not enabled,
+     * then this will only be accurate on {@link Client#ready} and {@link Client#guildCreate}.
+     * To get the current member count, fetch the guild and use {@link Guild#approximateMemberCount}.
      * @type {number}
      */
     this.memberCount = data.member_count || this.memberCount;

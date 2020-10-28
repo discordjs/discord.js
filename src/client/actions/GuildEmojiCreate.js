@@ -8,7 +8,7 @@ class GuildEmojiCreateAction extends Action {
     const already = guild.emojis.cache.has(createdEmoji.id);
     const emoji = guild.emojis.add(createdEmoji);
     /**
-     * Emitted whenever a custom emoji is created in a guild.
+     * Emitted whenever a custom emoji is created in a guild. Requires the GUILD_EMOJIS intent.
      * @event Client#emojiCreate
      * @param {GuildEmoji} emoji The emoji that was created
      */

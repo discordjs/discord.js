@@ -8,7 +8,7 @@ class GuildIntegrationsUpdate extends Action {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     /**
-     * Emitted whenever a guild integration is updated
+     * Emitted whenever a guild integration is updated. Requires the GUILD_INTEGRATIONS intent.
      * @event Client#guildIntegrationsUpdate
      * @param {Guild} guild The guild whose integrations were updated
      */

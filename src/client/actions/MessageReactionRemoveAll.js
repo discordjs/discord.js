@@ -22,6 +22,7 @@ class MessageReactionRemoveAll extends Action {
 
 /**
  * Emitted whenever all reactions are removed from a cached message.
+ * Requires the GUILD_MESSAGE_REACTIONS or DIRECT_MESSAGE_REACTIONS intent.
  * @event Client#messageReactionRemoveAll
  * @param {Message} message The message the reactions were removed from
  */

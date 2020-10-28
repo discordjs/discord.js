@@ -147,7 +147,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The presence of this guild member
+   * The presence of this guild member. Requires the GUILD_PRESENCES intent.
    * @type {Presence}
    * @readonly
    */

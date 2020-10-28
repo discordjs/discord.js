@@ -8,7 +8,7 @@ class WebhooksUpdate extends Action {
     const client = this.client;
     const channel = client.channels.cache.get(data.channel_id);
     /**
-     * Emitted whenever a guild text channel has its webhooks changed.
+     * Emitted whenever a guild channel has its webhooks changed. Requires the GUILD_WEBHOOKS intent.
      * @event Client#webhookUpdate
      * @param {TextChannel} channel The channel that had a webhook update
      */

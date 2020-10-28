@@ -7,7 +7,7 @@ module.exports = (client, { d: data }) => {
   const user = client.users.add(data.user);
 
   /**
-   * Emitted whenever a member is banned from a guild.
+   * Emitted whenever a member is banned from a guild. Requires the GUILD_BANS intent.
    * @event Client#guildBanAdd
    * @param {Guild} guild The guild that the ban occurred in
    * @param {User} user The user that was banned

@@ -9,7 +9,7 @@ class GuildBanRemove extends Action {
     const guild = client.guilds.cache.get(data.guild_id);
     const user = client.users.add(data.user);
     /**
-     * Emitted whenever a member is unbanned from a guild.
+     * Emitted whenever a member is unbanned from a guild. Requires the GUILD_BANS intent.
      * @event Client#guildBanRemove
      * @param {Guild} guild The guild that the unban occurred in
      * @param {User} user The user that was unbanned

@@ -7,7 +7,7 @@ class GuildEmojiUpdateAction extends Action {
   handle(current, data) {
     const old = current._update(data);
     /**
-     * Emitted whenever a custom emoji is updated in a guild.
+     * Emitted whenever a custom emoji is updated in a guild. Requires the GUILD_EMOJIS intent.
      * @event Client#emojiUpdate
      * @param {GuildEmoji} oldEmoji The old emoji
      * @param {GuildEmoji} newEmoji The new emoji

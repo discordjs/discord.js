@@ -14,7 +14,7 @@ class InviteCreateAction extends Action {
     const inviteData = Object.assign(data, { channel, guild });
     const invite = new Invite(client, inviteData);
     /**
-     * Emitted when an invite is created.
+     * Emitted when an invite is created. Requires the GUILD_INVITES intent.
      * <info> This event only triggers if the client has `MANAGE_GUILD` permissions for the guild,
      * or `MANAGE_CHANNEL` permissions for the channel.</info>
      * @event Client#inviteCreate

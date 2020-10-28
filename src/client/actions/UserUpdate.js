@@ -14,6 +14,7 @@ class UserUpdateAction extends Action {
       /**
        * Emitted whenever a user's details (e.g. username) are changed.
        * Triggered by the Discord gateway events USER_UPDATE, GUILD_MEMBER_UPDATE, and PRESENCE_UPDATE.
+       * The GUILD_MEMBERS or GUILD_PRESENCES intent is required to get updates for users other than the bot.
        * @event Client#userUpdate
        * @param {User} oldUser The user before the update
        * @param {User} newUser The user after the update

@@ -14,7 +14,7 @@ class MessageDeleteAction extends Action {
         channel.messages.cache.delete(message.id);
         message.deleted = true;
         /**
-         * Emitted whenever a message is deleted.
+         * Emitted whenever a message is deleted. Requires the GUILD_MESSAGES or DIRECT_MESSAGES intent.
          * @event Client#messageDelete
          * @param {Message} message The deleted message
          */
