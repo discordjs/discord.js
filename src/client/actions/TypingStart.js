@@ -39,7 +39,8 @@ class TypingStart extends Action {
 
         /**
          * Emitted whenever a user starts typing in a channel.
-         * Requires the GUILD_MESSAGE_TYPING or DIRECT_MESSAGE_TYPING intent.
+         * Requires the GUILD_MESSAGE_TYPING intent for guild channels and
+         * the DIRECT_MESSAGE_TYPING intent for DM channels.
          * @event Client#typingStart
          * @param {Channel} channel The channel the user started typing in
          * @param {User} user The user that started typing

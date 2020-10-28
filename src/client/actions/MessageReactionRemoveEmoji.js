@@ -17,7 +17,7 @@ class MessageReactionRemoveEmoji extends Action {
 
     /**
      * Emitted when a bot removes all reactions of an emoji from a cached message.
-     * Requires the GUILD_MESSAGE_REACTIONS or DIRECT_MESSAGE_REACTIONS intent.
+     * Requires the GUILD_MESSAGE_REACTIONS intent for guild messages and the DIRECT_MESSAGE_REACTIONS intent for DMs.
      * @event Client#messageReactionRemoveEmoji
      * @param {MessageReaction} reaction The reaction that was removed
      */
