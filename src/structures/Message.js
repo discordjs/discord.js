@@ -336,6 +336,7 @@ class Message extends Base {
 
   /**
    * Creates a reaction collector.
+   * Requires the GUILD_MESSAGE_REACTIONS intent for guild messages and the DIRECT_MESSAGE_REACTIONS intent for DMs.
    * @param {CollectorFilter} filter The filter to apply
    * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
@@ -359,6 +360,7 @@ class Message extends Base {
   /**
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
+   * Requires the GUILD_MESSAGE_REACTIONS intent for guild messages and the DIRECT_MESSAGE_REACTIONS intent for DMs.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string, MessageReaction>>}

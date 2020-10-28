@@ -263,6 +263,7 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector.
+   * Requires the GUILD_MESSAGES intent for guild messages and the DIRECT_MESSAGES intent for DMs.
    * @param {CollectorFilter} filter The filter to create the collector with
    * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
@@ -286,6 +287,7 @@ class TextBasedChannel {
   /**
    * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of messages that pass the specified filter.
+   * Requires the GUILD_MESSAGES intent for guild messages and the DIRECT_MESSAGES intent for DMs.
    * @param {CollectorFilter} filter The filter function to use
    * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
