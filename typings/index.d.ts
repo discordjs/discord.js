@@ -2215,7 +2215,6 @@ declare module 'discord.js' {
 
   type BitFieldResolvable<T extends string> =
     | RecursiveReadonlyArray<T | number | Readonly<BitField<T>>>
-    | T
     | number
     | Readonly<BitField<T>>;
 
