@@ -55,6 +55,7 @@ exports.DefaultOptions = {
   restTimeOffset: 500,
   restSweepInterval: 60,
   presence: {},
+  intents: undefined,
 
   /**
    * WebSocket options (these are left as snake_case to match the API)
