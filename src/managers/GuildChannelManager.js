@@ -133,7 +133,7 @@ class GuildChannelManager extends BaseManager {
    * @param {Snowflake} [id] ID of the channel
    * @param {boolean} [cache=true] Whether to cache the new channel objects if it weren't already
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<GuildChannel|Collection<Snowflake, GuildChannel>>}
+   * @returns {Promise<(?GuildChannel)|Collection<Snowflake, GuildChannel>>}
    * @example
    * // Fetch all channels from the guild
    * message.guild.channels.fetch()
