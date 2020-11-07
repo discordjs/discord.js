@@ -38,7 +38,7 @@ declare module 'discord.js' {
       id: string | null;
       size: [number, number];
     } | null;
-    public platform: ActivityPlatform;
+    public platform: ActivityPlatform | null;
     public state: string | null;
     public timestamps: {
       start: Date | null;
