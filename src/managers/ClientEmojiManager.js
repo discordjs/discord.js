@@ -138,10 +138,9 @@ class ClientEmojiManager {
 
   /**
    * Iterate through every emoji the client can use, in a key-value pair.
-   * @returns {Generator<[string, GuildEmoji]>}
    */
-  entries() {
-    return this[Symbol.iterator]();
+  *entries() {
+    return yield* this[Symbol.iterator]();
   }
 
   /**
