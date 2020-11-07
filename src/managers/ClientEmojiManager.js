@@ -140,7 +140,7 @@ class ClientEmojiManager {
    * Iterate through every emoji the client can use, in a key-value pair.
    */
   *entries() {
-    return yield* this[Symbol.iterator]();
+    yield* this[Symbol.iterator]();
   }
 
   /**
