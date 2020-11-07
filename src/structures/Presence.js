@@ -139,6 +139,13 @@ class Presence {
 }
 
 /**
+ * The platform of this activity:
+ * * **`xbox`** - playing on Xbox Live
+ * * **`samsung`** - playing on Samsung Galaxy
+ * @typedef {string} ActivityPlatform
+ */
+
+/**
  * Represents an activity that is part of a user's presence.
  */
 class Activity {
@@ -146,7 +153,13 @@ class Activity {
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
-     * The name of the activity being played
+     * The ID of the activity
+     * @type {string}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the activity
      * @type {string}
      */
     this.name = data.name;
@@ -193,6 +206,12 @@ class Activity {
           end: data.timestamps.end ? new Date(Number(data.timestamps.end)) : null,
         }
       : null;
+
+    /**
+     * The platform the game is being played on
+     * @type {?ActivityPlatform}
+     */
+    this.platform = data.platform || null;
 
     /**
      * Party of the activity

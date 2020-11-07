@@ -21,6 +21,8 @@ declare module 'discord.js' {
 
   //#region Classes
 
+  type ActivityPlatform = 'xbox' | 'samsung';
+
   export class Activity {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
@@ -30,11 +32,13 @@ declare module 'discord.js' {
     public details: string | null;
     public emoji: Emoji | null;
     public flags: Readonly<ActivityFlags>;
+    public id: string;
     public name: string;
     public party: {
       id: string | null;
       size: [number, number];
     } | null;
+    public platform: ActivityPlatform;
     public state: string | null;
     public timestamps: {
       start: Date | null;
