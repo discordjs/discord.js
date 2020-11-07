@@ -15,6 +15,7 @@ class APIRequest {
     this.method = method;
     this.route = options.route;
     this.options = options;
+    this.retries = 0;
 
     let queryString = '';
     if (options.query) {

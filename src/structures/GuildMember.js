@@ -1,13 +1,12 @@
 'use strict';
 
 const Base = require('./Base');
-const { Presence } = require('./Presence');
 const Role = require('./Role');
-const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { Error } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const Permissions = require('../util/Permissions');
+let Structures;
 
 /**
  * Represents a member of a guild on Discord.
@@ -28,13 +27,6 @@ class GuildMember extends Base {
      * @type {Guild}
      */
     this.guild = guild;
-
-    /**
-     * The user that this guild member instance represents
-     * @type {User}
-     * @name GuildMember#user
-     */
-    if (data.user) this.user = client.users.add(data.user, true);
 
     /**
      * The timestamp the member joined the guild at
@@ -66,23 +58,29 @@ class GuildMember extends Base {
      */
     this.deleted = false;
 
+    /**
+     * The nickname of this member, if they have one
+     * @type {?string}
+     */
+    this.nickname = null;
+
     this._roles = [];
     if (data) this._patch(data);
   }
 
   _patch(data) {
-    /**
-     * The nickname of this member, if they have one
-     * @type {?string}
-     * @name GuildMember#nickname
-     */
-    if (typeof data.nick !== 'undefined') this.nickname = data.nick;
+    if ('user' in data) {
+      /**
+       * The user that this guild member instance represents
+       * @type {User}
+       */
+      this.user = this.client.users.add(data.user, true);
+    }
 
-    if (data.joined_at) this.joinedTimestamp = new Date(data.joined_at).getTime();
-    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
-
-    if (data.user) this.user = this.guild.client.users.add(data.user);
-    if (data.roles) this._roles = data.roles;
+    if ('nick' in data) this.nickname = data.nick;
+    if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
+    if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
+    if ('roles' in data) this._roles = data.roles;
   }
 
   _clone() {
@@ -125,6 +123,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get voice() {
+    if (!Structures) Structures = require('../util/Structures');
+    const VoiceState = Structures.get('VoiceState');
     return this.guild.voiceStates.cache.get(this.id) || new VoiceState(this.guild, { user_id: this.id });
   }
 
@@ -152,6 +152,8 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
+    if (!Structures) Structures = require('../util/Structures');
+    const Presence = Structures.get('Presence');
     return (
       this.guild.presences.cache.get(this.id) ||
       new Presence(this.client, {
@@ -194,7 +196,7 @@ class GuildMember extends Base {
 
   /**
    * The nickname of this member, or their username if they don't have one
-   * @type {string}
+   * @type {?string}
    * @readonly
    */
   get displayName() {
@@ -265,7 +267,8 @@ class GuildMember extends Base {
    */
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.cache.some(r => r.permissions.has(permission, checkAdmin));
+    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
+    return permissions.has(permission, checkAdmin);
   }
 
   /**
@@ -356,7 +359,7 @@ class GuildMember extends Base {
   /**
    * Bans this guild member.
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example
@@ -371,10 +374,11 @@ class GuildMember extends Base {
 
   /**
    * Fetches this GuildMember.
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<GuildMember>}
    */
-  fetch() {
-    return this.guild.members.fetch(this.id, true);
+  fetch(force = false) {
+    return this.guild.members.fetch({ user: this.id, cache: true, force });
   }
 
   /**

@@ -18,9 +18,7 @@ const BeforeReadyWhitelist = [
   WSEvents.GUILD_MEMBER_REMOVE,
 ];
 
-const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes)
-  .slice(1)
-  .map(Number);
+const UNRECOVERABLE_CLOSE_CODES = Object.keys(WSCodes).slice(1).map(Number);
 const UNRESUMABLE_CLOSE_CODES = [1000, 4006, 4007];
 
 /**
@@ -45,7 +43,7 @@ class WebSocketManager extends EventEmitter {
      * The gateway this manager uses
      * @type {?string}
      */
-    this.gateway = undefined;
+    this.gateway = null;
 
     /**
      * The amount of shards this manager handles
@@ -100,11 +98,11 @@ class WebSocketManager extends EventEmitter {
      * The current session limit of the client
      * @private
      * @type {?Object}
-     * @prop {number} total Total number of identifies available
-     * @prop {number} remaining Number of identifies remaining
-     * @prop {number} reset_after Number of milliseconds after which the limit resets
+     * @property {number} total Total number of identifies available
+     * @property {number} remaining Number of identifies remaining
+     * @property {number} reset_after Number of milliseconds after which the limit resets
      */
-    this.sessionStartLimit = undefined;
+    this.sessionStartLimit = null;
   }
 
   /**
@@ -214,7 +212,7 @@ class WebSocketManager extends EventEmitter {
 
         if (UNRESUMABLE_CLOSE_CODES.includes(event.code)) {
           // These event codes cannot be resumed
-          shard.sessionID = undefined;
+          shard.sessionID = null;
         }
 
         /**

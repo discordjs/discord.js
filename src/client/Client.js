@@ -135,7 +135,8 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
       /**
-       * Authorization token for the logged in bot
+       * Authorization token for the logged in bot.
+       * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
        * <warn>This should be kept private at all times.</warn>
        * @type {?string}
        */
@@ -195,7 +196,7 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a websocket connection to Discord.
-   * @param {string} token Token of the account to log in with
+   * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
@@ -340,7 +341,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains a guild preview from Discord, only available for public guilds.
+   * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
@@ -355,28 +356,43 @@ class Client extends BaseClient {
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
-   * @param {PermissionResolvable} [permissions] Permissions to request
+   * @param {InviteGenerationOptions|PermissionResolvable} [options] Permissions to request
    * @returns {Promise<string>}
    * @example
-   * client.generateInvite(['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'])
+   * client.generateInvite({
+   *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
+   * })
    *   .then(link => console.log(`Generated bot invite link: ${link}`))
    *   .catch(console.error);
    */
-  async generateInvite(permissions) {
-    permissions = Permissions.resolve(permissions);
+  async generateInvite(options = {}) {
+    if (Array.isArray(options) || ['string', 'number'].includes(typeof options) || options instanceof Permissions) {
+      process.emitWarning(
+        'Client#generateInvite: Generate invite with an options object instead of a PermissionResolvable',
+        'DeprecationWarning',
+      );
+      options = { permissions: options };
+    }
     const application = await this.fetchApplication();
     const query = new URLSearchParams({
       client_id: application.id,
-      permissions: permissions,
+      permissions: Permissions.resolve(options.permissions),
       scope: 'bot',
     });
+    if (typeof options.disableGuildSelect === 'boolean') {
+      query.set('disable_guild_select', options.disableGuildSelect.toString());
+    }
+    if (typeof options.guild !== 'undefined') {
+      const guildID = this.guilds.resolveID(options.guild);
+      if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
+      query.set('guild_id', guildID);
+    }
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
   }
 
   toJSON() {
     return super.toJSON({
       readyAt: false,
-      presences: false,
     });
   }
 
@@ -416,6 +432,13 @@ class Client extends BaseClient {
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
+    if (
+      typeof options.messageEditHistoryMaxSize !== 'number' ||
+      isNaN(options.messageEditHistoryMaxSize) ||
+      options.messageEditHistoryMaxSize < -1
+    ) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageEditHistoryMaxSize', 'a number greater than or equal to -1');
+    }
     if (typeof options.fetchAllMembers !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
@@ -441,6 +464,14 @@ class Client extends BaseClient {
 }
 
 module.exports = Client;
+
+/**
+ * Options for {@link Client#generateInvite}.
+ * @typedef {Object} InviteGenerationOptions
+ * @property {PermissionResolvable} [permissions] Permissions to request
+ * @property {GuildResolvable} [guild] Guild to preselect
+ * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
+ */
 
 /**
  * Emitted for general warnings.
