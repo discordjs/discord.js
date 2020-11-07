@@ -3,7 +3,7 @@
 const Action = require('./Action');
 const { Status, Events } = require('../../util/Constants');
 
-class GuildMemberUpdate extends Action {
+class GuildMemberUpdateAction extends Action {
   handle(data, shard) {
     const { client } = this;
     if (data.user.username) {
@@ -41,4 +41,4 @@ class GuildMemberUpdate extends Action {
   }
 }
 
-module.exports = GuildMemberUpdate;
+module.exports = GuildMemberUpdateAction;
