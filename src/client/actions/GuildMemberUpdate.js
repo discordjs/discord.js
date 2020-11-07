@@ -6,8 +6,8 @@ const { Status, Events } = require('../../util/Constants');
 class GuildMemberUpdate extends Action {
   handle(data, shard) {
     const { client } = this;
-    const user = client.users.cache.get(data.user.id);
     if (data.user.username) {
+      const user = client.users.cache.get(data.user.id);
       if (!user) {
         client.users.add(data.user);
       } else if (!user.equals(data.user)) {
