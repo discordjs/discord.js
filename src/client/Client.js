@@ -6,7 +6,7 @@ const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const { Error, TypeError, RangeError } = require('../errors');
 const ChannelManager = require('../managers/ChannelManager');
-const GuildEmojiManager = require('../managers/GuildEmojiManager');
+const ClientEmojiManager = require('../managers/ClientEmojiManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
@@ -124,6 +124,13 @@ class Client extends BaseClient {
      */
     this.channels = new ChannelManager(this);
 
+    /**
+     * All custom emojis that the client has access to, mapped by their IDs
+     * @type {ClientEmojiManager}
+     * @readonly
+     */
+    this.emojis = new ClientEmojiManager(this);
+
     const ClientPresence = Structures.get('ClientPresence');
     /**
      * The presence of the Client
@@ -161,19 +168,6 @@ class Client extends BaseClient {
     if (this.options.messageSweepInterval > 0) {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
-  }
-
-  /**
-   * All custom emojis that the client has access to, mapped by their IDs
-   * @type {GuildEmojiManager}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new GuildEmojiManager({ client: this });
-    for (const guild of this.guilds.cache.values()) {
-      if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
-    }
-    return emojis;
   }
 
   /**

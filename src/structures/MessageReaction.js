@@ -80,12 +80,8 @@ class MessageReaction {
     if (this._emoji instanceof GuildEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
-      const emojis = this.message.client.emojis.cache;
-      if (emojis.has(this._emoji.id)) {
-        const emoji = emojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
-      }
+      const guildEmoji = this.message.client.emojis.get(this._emoji.id);
+      if (guildEmoji) this._emoji = guildEmoji;
     }
     return this._emoji;
   }
