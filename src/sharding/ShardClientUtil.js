@@ -1,7 +1,6 @@
 'use strict';
 
 const { Events } = require('../util/Constants');
-const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -235,9 +234,9 @@ class ShardClientUtil {
    * @returns {number}
    */
   static shardIdForGuildId(guildId, shardCount) {
-    // This performs (guild_id >> 22) % num_shards, but with a string Snowflake
-    const timestamp = Snowflake.deconstruct(guildId).timestamp;
-    return (timestamp - Snowflake.epoch) % shardCount;
+    const shard = Number(BigInt(guildId) >> 22n) % shardCount;
+    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildId, shardCount);
+    return shard;
   }
 }
 

@@ -29,6 +29,8 @@ const Messages = {
   SHARDING_READY_DISCONNECTED: id => `Shard ${id}'s Client disconnected before becoming ready.`,
   SHARDING_READY_DIED: id => `Shard ${id}'s process exited before its Client became ready.`,
   SHARDING_NO_CHILD_EXISTS: id => `Shard ${id} has no active process or worker.`,
+  SHARDING_SHARD_MISCALCULATION: (shard, guild, count) =>
+    `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
