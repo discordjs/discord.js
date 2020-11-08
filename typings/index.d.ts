@@ -1396,6 +1396,7 @@ declare module 'discord.js' {
         execArgv?: string[];
       },
     );
+    private _performOnShards(method: string, args: any[], shard?: number): Promise<any[]>;
 
     public file: string;
     public respawn: boolean;

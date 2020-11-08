@@ -228,17 +228,7 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script, shard) {
-    if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
-    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
-
-    if (shard !== undefined) {
-      if (this.shards.has(shard)) return Promise.all([this.shards.get(shard).eval(script)]);
-      return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
-    }
-
-    const promises = [];
-    for (const sh of this.shards.values()) promises.push(sh.eval(script));
-    return Promise.all(promises);
+    return this._performOnShards('eval', [script], shard);
   }
 
   /**
@@ -252,16 +242,28 @@ class ShardingManager extends EventEmitter {
    *   .catch(console.error);
    */
   fetchClientValues(prop, shard) {
+    return this._performOnShards('fetchClientValue', [prop], shard);
+  }
+
+  /**
+   * Runs a method with given arguments on all shards, or a given shard.
+   * @param {string} method Method name to run on each shard
+   * @param {Array<*>} args Arguments to pass through to the method call
+   * @param {number} [shard] Shard to run on, all if undefined
+   * @returns {Promise<Array<*>>} Results of the method execution
+   * @private
+   */
+  _performOnShards(method, args, shard) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
     if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
 
     if (shard !== undefined) {
-      if (this.shards.has(shard)) return Promise.all([this.shards.get(shard).fetchClientValue(prop)]);
+      if (this.shards.has(shard)) return Promise.all([this.shards.get(shard)[method](...args)]);
       return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
     }
 
     const promises = [];
-    for (const sh of this.shards.values()) promises.push(sh.fetchClientValue(prop));
+    for (const sh of this.shards.values()) promises.push(sh[method](...args));
     return Promise.all(promises);
   }
 
