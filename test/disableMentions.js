@@ -36,9 +36,19 @@ client.on('message', message => {
   // Clean content and log each character
   console.log(Util.cleanContent(args.join(' '), message).split(''));
 
-  if (command === 'test1') message.reply(tests[0]);
-  else if (command === 'test2') message.reply(tests[1]);
-  else if (command === 'test3') message.reply(tests[2]);
+  switch (command) {
+    case 'test1':
+      message.reply(tests[0]);
+      break;
+    case 'test2':
+      message.reply(tests[0]);
+      break;
+    case 'test3':
+      message.reply(tests[2]);
+      break;
+    default:
+      break;
+  }
 });
 
 client.login(token).catch(console.error);
