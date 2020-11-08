@@ -222,13 +222,19 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the {@link Client}s.
+   * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {string} script JavaScript to run on each shard
+   * @param {number} [shard] Shard to run on, all if undefined
    * @returns {Promise<Array<*>>} Results of the script execution
    */
-  broadcastEval(script) {
+  broadcastEval(script, shard) {
+    if (shard !== undefined) {
+      if (this.shards.has(shard)) return Promise.all([this.shards.get(shard).eval(script)]);
+      return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
+    }
+
     const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.eval(script));
+    for (const sh of this.shards.values()) promises.push(sh.eval(script));
     return Promise.all(promises);
   }
 

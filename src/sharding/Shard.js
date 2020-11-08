@@ -343,9 +343,10 @@ class Shard extends EventEmitter {
 
       // Shard is requesting an eval broadcast
       if (message._sEval) {
-        this.manager.broadcastEval(message._sEval).then(
-          results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) }),
+        this.manager.broadcastEval(message._sEval, message._sEvalShard).then(
+          results => this.send({ _sEval: message._sEval, _sEvalShard: message._sEvalShard, _result: results }),
+          err =>
+            this.send({ _sEval: message._sEval, _sEvalShard: message._sEvalShard, _error: Util.makePlainError(err) }),
         );
         return;
       }
