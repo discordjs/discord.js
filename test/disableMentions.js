@@ -41,7 +41,7 @@ client.on('message', message => {
       message.reply(tests[0]);
       break;
     case 'test2':
-      message.reply(tests[0]);
+      message.reply(tests[1]);
       break;
     case 'test3':
       message.reply(tests[2]);
