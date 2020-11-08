@@ -96,8 +96,9 @@ class ShardClientUtil {
   }
 
   /**
-   * Fetches a client property value of each shard.
+   * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
+   * @param {number} [shard] Shard to fetch property from, all if undefined
    * @returns {Promise<Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.cache.size')
@@ -105,19 +106,19 @@ class ShardClientUtil {
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
    */
-  fetchClientValues(prop) {
+  fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
 
       const listener = message => {
-        if (!message || message._sFetchProp !== prop) return;
+        if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
-      this.send({ _sFetchProp: prop }).catch(err => {
+      this.send({ _sFetchProp: prop, _sFetchPropShard: shard }).catch(err => {
         parent.removeListener('message', listener);
         reject(err);
       });
