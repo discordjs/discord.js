@@ -228,6 +228,9 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<Array<*>>} Results of the script execution
    */
   broadcastEval(script, shard) {
+    if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
+    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
+
     if (shard !== undefined) {
       if (this.shards.has(shard)) return Promise.all([this.shards.get(shard).eval(script)]);
       return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
