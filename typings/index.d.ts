@@ -1374,9 +1374,9 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval(script: string, shard?: number): Promise<any[]>;
-    public broadcastEval<T>(fn: (client: Client) => T, shard?: number): Promise<T[]>;
-    public fetchClientValues(prop: string, shard?: number): Promise<any[]>;
+    public broadcastEval(script: string, shard?: number): Promise<any> | Promise<any[]>;
+    public broadcastEval<T>(fn: (client: Client) => T, shard?: number): Promise<T> | Promise<T[]>;
+    public fetchClientValues(prop: string, shard?: number): Promise<any> | Promise<any[]>;
     public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<void>;
     public send(message: any): Promise<void>;
 
@@ -1397,7 +1397,7 @@ declare module 'discord.js' {
         execArgv?: string[];
       },
     );
-    private _performOnShards(method: string, args: any[], shard?: number): Promise<any[]>;
+    private _performOnShards(method: string, args: any[], shard?: number): Promise<any> | Promise<any[]>;
 
     public file: string;
     public respawn: boolean;
@@ -1406,9 +1406,9 @@ declare module 'discord.js' {
     public token: string | null;
     public totalShards: number | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval(script: string, shard?: number): Promise<any[]>;
+    public broadcastEval(script: string, shard?: number): Promise<any> | Promise<any[]>;
     public createShard(id: number): Shard;
-    public fetchClientValues(prop: string, shard?: number): Promise<any[]>;
+    public fetchClientValues(prop: string, shard?: number): Promise<any> | Promise<any[]>;
     public respawnAll(
       shardDelay?: number,
       respawnDelay?: number,
