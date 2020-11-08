@@ -1,6 +1,7 @@
 'use strict';
 
 const { Events } = require('../util/Constants');
+const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -225,6 +226,18 @@ class ShardClientUtil {
       );
     }
     return this._singleton;
+  }
+
+  /**
+   * Get the shard Id for a given guild Id.
+   * @param {Snowflake} guildId Snowflake guild Id to get shard Id for
+   * @param {number} shardCount Number of shards
+   * @returns {number}
+   */
+  static shardIdForGuildId(guildId, shardCount) {
+    // This performs (guild_id >> 22) % num_shards, but with a string Snowflake
+    const timestamp = Snowflake.deconstruct(guildId).timestamp;
+    return (timestamp - Snowflake.epoch) % shardCount;
   }
 }
 

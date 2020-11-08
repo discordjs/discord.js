@@ -1381,6 +1381,7 @@ declare module 'discord.js' {
     public send(message: any): Promise<void>;
 
     public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
+    public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
   }
 
   export class ShardingManager extends EventEmitter {
@@ -1423,6 +1424,7 @@ declare module 'discord.js' {
   export class SnowflakeUtil {
     public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
     public static generate(timestamp?: number | Date): Snowflake;
+    public static readonly EPOCH: number;
   }
 
   export class Speaking extends BitField<SpeakingString> {
