@@ -563,28 +563,16 @@ class Message extends Base {
 
   /**
    * Deletes the message.
-   * @param {Object} [options] Options
-   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
-   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
-   * message.delete({ timeout: 5000 })
-   *   .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
+   * message.delete()
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete(options = {}) {
-    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
-    const { timeout = 0, reason } = options;
-    if (timeout <= 0) {
-      return this.channel.messages.delete(this.id, reason).then(() => this);
-    } else {
-      return new Promise(resolve => {
-        this.client.setTimeout(() => {
-          resolve(this.delete({ reason }));
-        }, timeout);
-      });
-    }
+  async delete() {
+    await this.channel.messages.delete(this.id);
+    return this;
   }
 
   /**
