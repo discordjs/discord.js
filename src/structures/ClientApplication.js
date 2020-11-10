@@ -41,6 +41,32 @@ class ClientApplication extends Application {
      */
     this.owner = data.team ? new Team(this.client, data.team) : data.owner ? this.client.users.add(data.owner) : null;
   }
+
+  /**
+   * Fetch the commands associated with this application. See {@link InteractionClient}.
+   * @returns {ApplicationCommand[]} A list of commands.
+   */
+  fetchCommands() {
+    return this.client.interactionClient.fetchCommands();
+  }
+
+  /**
+   * Set the commands for this application. See {@link InteractionClient}.
+   * @param {Object[]} commands The command description.
+   * @returns {ApplicationCommand[]} The created commands.
+   */
+  setCommands(commands) {
+    return this.client.interactionClient.setCommands(commands);
+  }
+
+  /**
+   * Create a command. See {@link InteractionClient}.
+   * @param {Object} command The command description.
+   * @returns {ApplicationCommand} The created command.
+   */
+  createCommand(command) {
+    return this.client.interactionClient.createCommand(command);
+  }
 }
 
 module.exports = ClientApplication;

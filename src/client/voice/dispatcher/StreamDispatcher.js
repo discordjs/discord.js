@@ -1,7 +1,7 @@
 'use strict';
 
 const { Writable } = require('stream');
-const secretbox = require('../util/Secretbox');
+const sodium = require('../../../util/Sodium');
 const Silence = require('../util/Silence');
 const VolumeInterface = require('../util/VolumeInterface');
 
@@ -259,12 +259,12 @@ class StreamDispatcher extends Writable {
       this._nonce++;
       if (this._nonce > MAX_NONCE_SIZE) this._nonce = 0;
       this._nonceBuffer.writeUInt32BE(this._nonce, 0);
-      return [secretbox.methods.close(buffer, this._nonceBuffer, secret_key), this._nonceBuffer.slice(0, 4)];
+      return [sodium.methods.close(buffer, this._nonceBuffer, secret_key), this._nonceBuffer.slice(0, 4)];
     } else if (mode === 'xsalsa20_poly1305_suffix') {
-      const random = secretbox.methods.random(24);
-      return [secretbox.methods.close(buffer, random, secret_key), random];
+      const random = sodium.methods.random(24);
+      return [sodium.methods.close(buffer, random, secret_key), random];
     } else {
-      return [secretbox.methods.close(buffer, nonce, secret_key)];
+      return [sodium.methods.close(buffer, nonce, secret_key)];
     }
   }
 

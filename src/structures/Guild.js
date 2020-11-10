@@ -1362,6 +1362,32 @@ class Guild extends Base {
   }
 
   /**
+   * Fetch the commands associated with this guild. See {@link InteractionClient}
+   * @returns {ApplicationCommand[]} A list of commands.
+   */
+  fetchCommands() {
+    return this.client.interactionClient.fetchCommands(this.id);
+  }
+
+  /**
+   * Set the commands for this guild. See {@link InteractionClient}.
+   * @param {Object[]} commands The command description.
+   * @returns {ApplicationCommand[]} The created commands.
+   */
+  setCommands(commands) {
+    return this.client.interactionClient.setCommands(commands, this.id);
+  }
+
+  /**
+   * Create a command. See {@link InteractionClient}.
+   * @param {Object} command The command description.
+   * @returns {ApplicationCommand} The created command.
+   */
+  createCommand(command) {
+    return this.client.interactionClient.createCommand(command, this.id);
+  }
+
+  /**
    * Leaves the guild.
    * @returns {Promise<Guild>}
    * @example

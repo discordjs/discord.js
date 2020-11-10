@@ -1,8 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
+const sodium = require('../../../util/Sodium');
 const Speaking = require('../../../util/Speaking');
-const secretbox = require('../util/Secretbox');
 const { SILENCE_FRAME } = require('../util/Silence');
 
 // The delay between packets when a user is considered to have stopped speaking
@@ -58,7 +58,7 @@ class PacketHandler extends EventEmitter {
     }
 
     // Open packet
-    let packet = secretbox.methods.open(buffer.slice(12, end), this.nonce, secret_key);
+    let packet = sodium.methods.open(buffer.slice(12, end), this.nonce, secret_key);
     if (!packet) return new Error('Failed to decrypt voice packet');
     packet = Buffer.from(packet);
 

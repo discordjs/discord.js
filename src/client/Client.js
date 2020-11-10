@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseClient = require('./BaseClient');
+const InteractionClient = require('./InteractionClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
@@ -103,6 +104,12 @@ class Client extends BaseClient {
       : null;
 
     /**
+     * The interaction client.
+     * @type {InteractionClient}
+     */
+    this.interactionClient = new InteractionClient(options, this);
+
+    /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
      * @type {UserManager}
      */
@@ -150,6 +157,12 @@ class Client extends BaseClient {
      * @type {?ClientUser}
      */
     this.user = null;
+
+    /**
+     * Application that this client is associated with.
+     * @type {?Snowflake}
+     */
+    this.applicationID = null;
 
     /**
      * Time at which the client was last regarded as being in the `READY` state

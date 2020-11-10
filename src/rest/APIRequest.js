@@ -57,7 +57,7 @@ class APIRequest {
     return fetch(url, {
       method: this.method,
       headers,
-      agent,
+      agent: url.startsWith('https') ? agent : undefined,
       body,
       signal: controller.signal,
     }).finally(() => this.client.clearTimeout(timeout));

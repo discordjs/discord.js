@@ -12,6 +12,8 @@ module.exports = (client, { d: data }, shard) => {
     client.users.cache.set(clientUser.id, clientUser);
   }
 
+  client.applicationID = data.application.id;
+
   for (const guild of data.guilds) {
     guild.shardID = shard.id;
     client.guilds.add(guild);

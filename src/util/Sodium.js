@@ -5,16 +5,19 @@ const libs = {
     open: sodium.api.crypto_secretbox_open_easy,
     close: sodium.api.crypto_secretbox_easy,
     random: n => sodium.randombytes_buf(n),
+    verify: sodium.api.crypto_sign_verify_detached,
   }),
   'libsodium-wrappers': sodium => ({
     open: sodium.crypto_secretbox_open_easy,
     close: sodium.crypto_secretbox_easy,
     random: n => sodium.randombytes_buf(n),
+    verify: sodium.crypto_sign_verify_detached,
   }),
   tweetnacl: tweetnacl => ({
     open: tweetnacl.secretbox.open,
     close: tweetnacl.secretbox,
     random: n => tweetnacl.randomBytes(n),
+    verify: (s, d, p) => tweetnacl.sign.detached.verify(d, s, p),
   }),
 };
 

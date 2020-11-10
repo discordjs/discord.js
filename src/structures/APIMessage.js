@@ -74,6 +74,16 @@ class APIMessage {
   }
 
   /**
+   * Whether or not the target is an interaction
+   * @type {boolean}
+   * @readonly
+   */
+  get isInteraction() {
+    const Interaction = require('./Interaction');
+    return this.target instanceof Interaction;
+  }
+
+  /**
    * Makes the content of this message.
    * @returns {?(string|string[])}
    */
@@ -149,6 +159,8 @@ class APIMessage {
     if (this.isMessage) {
       // eslint-disable-next-line eqeqeq
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+    } else if (this.isInteraction) {
+      flags = this.options.ephemeral ? MessageFlags.FLAGS.EPHEMERAL : undefined;
     }
 
     let allowedMentions =
