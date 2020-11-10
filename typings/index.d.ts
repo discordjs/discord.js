@@ -1021,7 +1021,7 @@ declare module 'discord.js' {
     public edit(
       content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
     ): Promise<Message>;
-    public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message>;
+    public edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
     public crosspost(): Promise<Message>;
@@ -1041,7 +1041,7 @@ declare module 'discord.js' {
       content: StringResolvable,
       options: MessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+    public reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
@@ -2063,9 +2063,12 @@ declare module 'discord.js' {
     ): Promise<Message>;
     send(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
     send(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    send(content: StringResolvable, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
-    send(content: StringResolvable, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+    send(
+      content: StringResolvable,
+      options?: (MessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<Message>;
+    send(content: StringResolvable, options?: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+    send(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
@@ -2102,13 +2105,13 @@ declare module 'discord.js' {
     send(options: WebhookMessageOptions | APIMessage): Promise<Message | Message[]>;
     send(
       content: StringResolvable,
-      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+      options?: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     send(
       content: StringResolvable,
-      options: WebhookMessageOptions & { split: true | SplitOptions },
+      options?: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    send(content: StringResolvable, options: WebhookMessageOptions): Promise<Message | Message[]>;
+    send(content: StringResolvable, options?: WebhookMessageOptions): Promise<Message | Message[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
