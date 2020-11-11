@@ -208,6 +208,12 @@ class Activity {
       : null;
 
     /**
+     * The ID of the song on Spotify
+     * @type {?string}
+     */
+    this.syncID = data.sync_id || null;
+
+    /**
      * The platform the game is being played on
      * @type {?ActivityPlatform}
      */
@@ -240,6 +246,12 @@ class Activity {
      * @type {?Emoji}
      */
     this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
+
+    /**
+     * The ID of the game or Spotify session
+     * @type {?string}
+     */
+    this.sessionID = data.session_id || null;
 
     /**
      * Creation date of the activity
