@@ -154,7 +154,7 @@ class GuildChannelManager extends BaseManager {
     // We cannot fetch a single guild channel, as of this commit's date, Discord API throws with 404
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
-    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this, cache));
+    for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
     return id ? channels.get(id) || null : channels;
   }
 }
