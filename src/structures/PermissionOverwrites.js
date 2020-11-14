@@ -178,8 +178,8 @@ class PermissionOverwrites {
       return {
         id: overwrite.id,
         type: OverwriteTypes[overwrite.type],
-        allow: Permissions.resolve(overwrite.allow).toJSON(),
-        deny: Permissions.resolve(overwrite.deny).toJSON(),
+        allow: Permissions.resolve(overwrite.allow).toString(),
+        deny: Permissions.resolve(overwrite.deny).toString(),
       };
     }
 
@@ -190,8 +190,8 @@ class PermissionOverwrites {
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow).toJSON(),
-      deny: Permissions.resolve(overwrite.deny).toJSON(),
+      allow: Permissions.resolve(overwrite.allow).toString(),
+      deny: Permissions.resolve(overwrite.deny).toString(),
     };
   }
 }
