@@ -9,7 +9,7 @@ class InviteCreateAction extends Action {
     const client = this.client;
     const channel = client.channels.cache.get(data.channel_id);
     const guild = client.guilds.cache.get(data.guild_id);
-    if (!channel && !guild) return false;
+    if (!channel) return false;
 
     const inviteData = Object.assign(data, { channel, guild });
     const invite = new Invite(client, inviteData);

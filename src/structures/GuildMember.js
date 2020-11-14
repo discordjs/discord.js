@@ -61,7 +61,6 @@ class GuildMember extends Base {
     /**
      * The nickname of this member, if they have one
      * @type {?string}
-     * @name GuildMember#nickname
      */
     this.nickname = null;
 
@@ -74,7 +73,6 @@ class GuildMember extends Base {
       /**
        * The user that this guild member instance represents
        * @type {User}
-       * @name GuildMember#user
        */
       this.user = this.client.users.add(data.user, true);
     }
@@ -269,7 +267,8 @@ class GuildMember extends Base {
    */
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.cache.some(r => r.permissions.has(permission, checkAdmin));
+    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
+    return permissions.has(permission, checkAdmin);
   }
 
   /**

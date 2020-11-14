@@ -27,6 +27,10 @@ class User extends Base {
      */
     this.id = data.id;
 
+    this.system = null;
+    this.locale = null;
+    this.flags = null;
+
     this._patch(data);
   }
 
@@ -35,7 +39,6 @@ class User extends Base {
       /**
        * The username of the user
        * @type {?string}
-       * @name User#username
        */
       this.username = data.username;
     } else if (typeof this.username !== 'string') {
@@ -45,7 +48,6 @@ class User extends Base {
     /**
      * Whether or not the user is a bot
      * @type {boolean}
-     * @name User#bot
      */
     this.bot = Boolean(data.bot);
 
@@ -53,7 +55,6 @@ class User extends Base {
       /**
        * A discriminator based on username for the user
        * @type {?string}
-       * @name User#discriminator
        */
       this.discriminator = data.discriminator;
     } else if (typeof this.discriminator !== 'string') {
@@ -64,7 +65,6 @@ class User extends Base {
       /**
        * The ID of the user's avatar
        * @type {?string}
-       * @name User#avatar
        */
       this.avatar = data.avatar;
     } else if (typeof this.avatar !== 'string') {
@@ -75,7 +75,6 @@ class User extends Base {
       /**
        * Whether the user is an Official Discord System user (part of the urgent message system)
        * @type {?boolean}
-       * @name User#system
        */
       this.system = Boolean(data.system);
     }
@@ -84,7 +83,6 @@ class User extends Base {
       /**
        * The locale of the user's client (ISO 639-1)
        * @type {?string}
-       * @name User#locale
        */
       this.locale = data.locale;
     }
@@ -93,7 +91,6 @@ class User extends Base {
       /**
        * The flags for this user
        * @type {?UserFlags}
-       * @name User#flags
        */
       this.flags = new UserFlags(data.public_flags);
     }
