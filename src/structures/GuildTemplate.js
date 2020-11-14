@@ -142,7 +142,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   edit({ name, description } = {}) {
-    return this.api
+    return this.client.api
       .guilds(this.guildID)
       .templates(this.code)
       .patch({ data: { name, description } })
@@ -154,7 +154,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   delete() {
-    return this.api
+    return this.client.api
       .guilds(this.guildID)
       .templates(this.code)
       .delete()
@@ -166,7 +166,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   sync() {
-    return this.api
+    return this.client.api
       .guilds(this.guildID)
       .templates(this.code)
       .put()

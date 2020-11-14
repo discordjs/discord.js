@@ -498,6 +498,7 @@ declare module 'discord.js' {
       UNKNOWN_USER: 10013;
       UNKNOWN_EMOJI: 10014;
       UNKNOWN_WEBHOOK: 10015;
+      UNKNOWN_GUILD_TEMPLATE: 10057;
       BOT_PROHIBITED_ENDPOINT: 20001;
       BOT_ONLY_ENDPOINT: 20002;
       MAXIMUM_GUILDS: 30001;
@@ -910,7 +911,6 @@ declare module 'discord.js' {
 
   export class GuildTemplate extends Base {
     constructor(client: Client, data: object);
-    private _patch(data: object): GuildTemplate;
     public readonly url: string;
     public code: string;
     public name: string;
@@ -2177,6 +2177,7 @@ declare module 'discord.js' {
     UNKNOWN_USER: number;
     UNKNOWN_EMOJI: number;
     UNKNOWN_WEBHOOK: number;
+    UNKNOWN_GUILD_TEMPLATE: number;
     BOT_PROHIBITED_ENDPOINT: number;
     BOT_ONLY_ENDPOINT: number;
     MAXIMUM_GUILDS: number;

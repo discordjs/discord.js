@@ -60,6 +60,7 @@ export const {
   GuildChannel,
   GuildEmoji,
   GuildMember,
+  GuildPreview,
   GuildTemplate,
   Integration,
   Invite,
