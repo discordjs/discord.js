@@ -54,7 +54,7 @@ class Sticker extends Base {
     this.previewAsset = sticker.preview_asset;
 
     /**
-     * A comma-separated list of tags for the sticker
+     * An array of tags for the sticker, if any
      * @type {?string[]}
      */
     this.tags = sticker.tags ? sticker.tags.split(',') : null;
