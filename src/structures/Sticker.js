@@ -48,7 +48,7 @@ class Sticker extends Base {
     this.packID = sticker.pack_id;
 
     /**
-     * The ID of sticker preview image
+     * The ID of the sticker preview image
      * @type {?string}
      */
     this.previewAsset = sticker.preview_asset;
