@@ -31,7 +31,7 @@ class Sticker extends Base {
 
     /**
      * The format of the sticker
-     * @type {string}
+     * @type {StickerFormatTypes}
      */
     this.format = StickerFormatTypes[sticker.format_type];
 
