@@ -174,8 +174,7 @@ class APIMessage {
     if (typeof this.options.replyTo !== 'undefined') {
       const message_id = this.target.messages.resolveID(this.options.replyTo);
       if (message_id) {
-        const channel_id = typeof this.options.replyTo === 'string' ? this.target.id : this.options.replyTo.channel.id;
-        message_reference = { message_id, channel_id };
+        message_reference = { message_id };
       }
     }
 
