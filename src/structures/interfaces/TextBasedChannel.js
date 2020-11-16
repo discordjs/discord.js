@@ -74,6 +74,7 @@ class TextBasedChannel {
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
+   * @property {boolean} [repliedUser] Whether the author of the Message being replied to should be pinged
    */
 
   /**
