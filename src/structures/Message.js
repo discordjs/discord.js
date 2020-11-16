@@ -205,11 +205,11 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a crossposted message.
+     * Reference data sent in a crossposted message or inline reply.
      * @typedef {Object} MessageReference
-     * @property {string} channelID ID of the channel the message was crossposted from
-     * @property {?string} guildID ID of the guild the message was crossposted from
-     * @property {?string} messageID ID of the message that was crossposted
+     * @property {string} channelID ID of the channel the message was referenced
+     * @property {?string} guildID ID of the guild the message was referenced
+     * @property {?string} messageID ID of the message that was referenced
      */
 
     /**
@@ -423,7 +423,7 @@ class Message extends Base {
   }
 
   /**
-   * The Message this crosspost/reply/pin add references, if cached
+   * The Message this crosspost/reply/pin-add references, if cached
    * @type {?Message}
    * @readonly
    */
