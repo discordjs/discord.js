@@ -432,6 +432,13 @@ class Client extends BaseClient {
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
+    if (
+      typeof options.messageEditHistoryMaxSize !== 'number' ||
+      isNaN(options.messageEditHistoryMaxSize) ||
+      options.messageEditHistoryMaxSize < -1
+    ) {
+      throw new TypeError('CLIENT_INVALID_OPTION', 'messageEditHistoryMaxSize', 'a number greater than or equal to -1');
+    }
     if (typeof options.fetchAllMembers !== 'boolean') {
       throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }

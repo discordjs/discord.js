@@ -239,13 +239,18 @@ class Message extends Base {
   }
 
   /**
-   * Updates the message.
+   * Updates the message and returns the old message.
    * @param {Object} data Raw Discord message update data
+   * @returns {Message}
    * @private
    */
   patch(data) {
     const clone = this._clone();
-    this._edits.unshift(clone);
+    const { messageEditHistoryMaxSize } = this.client.options;
+    if (messageEditHistoryMaxSize !== 0) {
+      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
+      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
+    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -272,6 +277,8 @@ class Message extends Base {
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+
+    return clone;
   }
 
   /**
@@ -432,6 +439,23 @@ class Message extends Base {
     const referenceChannel = this.client.channels.resolve(this.reference.channelID);
     if (!referenceChannel) return null;
     return referenceChannel.messages.resolve(this.reference.messageID);
+  }
+
+  /**
+   * Whether the message is crosspostable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get crosspostable() {
+    return (
+      this.channel.type === 'news' &&
+      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+      this.type === 'DEFAULT' &&
+      this.channel.viewable &&
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
+      (this.author.id === this.client.user.id ||
+        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
+    );
   }
 
   /**
