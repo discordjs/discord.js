@@ -224,7 +224,7 @@ class Message extends Base {
         }
       : null;
 
-    if ('referenced_message' in data) {
+    if (data.referenced_message) {
       this.channel.messages.add(data.referenced_message);
     }
   }
