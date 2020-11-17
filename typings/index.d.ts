@@ -2863,7 +2863,7 @@ declare module 'discord.js' {
     | 'CHANNEL_FOLLOW_ADD'
     | 'GUILD_DISCOVERY_DISQUALIFIED'
     | 'GUILD_DISCOVERY_REQUALIFIED'
-    | 'INLINE_REPLY';
+    | 'REPLY';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
