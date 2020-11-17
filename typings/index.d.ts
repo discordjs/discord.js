@@ -21,8 +21,6 @@ declare module 'discord.js' {
 
   //#region Classes
 
-  type ActivityPlatform = 'xbox' | 'samsung';
-
   export class Activity {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
@@ -2130,6 +2128,8 @@ declare module 'discord.js' {
     type?: ActivityType | number;
     shardID?: number | readonly number[];
   }
+
+  type ActivityPlatform = 'xbox' | 'samsung';
 
   type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 
