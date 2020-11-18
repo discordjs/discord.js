@@ -2232,7 +2232,10 @@ declare module 'discord.js' {
 
   interface ChannelData {
     name?: string;
-    type?: string;
+    type?: Exclude<
+      keyof typeof ChannelType | ChannelType,
+      'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
+    >;
     position?: number;
     topic?: string;
     nsfw?: boolean;
