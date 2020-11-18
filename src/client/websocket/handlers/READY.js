@@ -21,8 +21,10 @@ module.exports = async (client, { d: data }, shard) => {
   const url = 'https://api.github.com/repos/discordjs/discord.js/releases/latest';
   const body = await fetch(url).then(response => response.json());
   if (version !== body.tag_name && outdatedwarn === true) {
-    console.warn('Your version is outdated. First of all, read the newest changelog for discord.js so you can update your code.');
-    console.warn(`Once you have read the changelog and understand how it works, please update to the current version using 'npm install discord.js@latest'
+    console.warn(`Your version is outdated.
+To start, read the newest changelog for discord.js to help you with updating your code`);
+    console.warn(`Once you have read the changelog and understand how it works,
+please update to the current version using 'npm install discord.js@latest'
 or if you're using voice support, use one of these;
 npm install discord.js @discordjs/opus
 npm install discord.js opusscript`);
