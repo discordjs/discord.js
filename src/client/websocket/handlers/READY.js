@@ -1,7 +1,7 @@
 'use strict';
 
 let ClientUser;
-const miniget = require('miniget');
+const fetch = require('node-fetch');
 module.exports = async (client, { d: data }, shard) => {
   if (client.user) {
     client.user._patch(data.user);
@@ -18,11 +18,9 @@ module.exports = async (client, { d: data }, shard) => {
   and tell them to update.*/
   const { version } = require('../../../../package.json');
   const { outdatedwarn } = require('../../../../package.json');
-  const body = await miniget('https://api.github.com/repos/discordjs/discord.js/releases/latest', {
-    headers: { 'User-Agent': 'a/b' },
-  }).text();
-  const res = JSON.parse(body);
-  if (version !== res.tag_name && outdatedwarn === true) {
+  const url = 'https://api.github.com/repos/discordjs/discord.js/releases/latest';
+  const body = await fetch(url).then(response => response.json());
+  if (version !== body.tag_name && outdatedwarn === true) {
     console.warn(`Your version is outdated. Please update to the current version using 'npm install discord.js@latest'
 or if you're using voice support, use one of these;
 npm install discord.js @discordjs/opus
