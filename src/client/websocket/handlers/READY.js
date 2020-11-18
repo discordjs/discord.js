@@ -20,7 +20,7 @@ module.exports = async (client, { d: data }, shard) => {
   const { outdatedwarn } = require('../../../../package.json');
   const body = await miniget('https://api.github.com/repos/discordjs/discord.js/releases/latest', {
 		headers: { 'User-Agent': 'a/b' },
-	}).text();
+  }).text();
   const res = JSON.parse(body);
   if (version !== res.tag_name && outdatedwarn === true) {
     console.warn(`Your version is outdated. Please update to the current version using 'npm install discord.js@latest'
