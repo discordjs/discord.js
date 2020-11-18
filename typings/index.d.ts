@@ -2232,6 +2232,7 @@ declare module 'discord.js' {
 
   interface ChannelData {
     name?: string;
+    type?: string;
     position?: number;
     topic?: string;
     nsfw?: boolean;
