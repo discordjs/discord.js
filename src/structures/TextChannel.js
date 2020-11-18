@@ -89,7 +89,7 @@ class TextChannel extends GuildChannel {
   /**
    * Sets the type of this channel (only conversion between text and news is supported)
    * @param {string} type The new channel type
-   * @param {string} reason Reason for changing the channel's type
+   * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}
    */
   setType(type, reason) {
