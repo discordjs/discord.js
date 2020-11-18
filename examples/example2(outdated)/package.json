@@ -1,31 +1,87 @@
 {
-  "_from": "discord.js",
-  "_id": "discord.js@12.4.1",
-  "_inBundle": false,
-  "_integrity": "sha512-KxOB8LOAN3GmrvkD6a6Fr1nlfArIFZ+q7Uqg4T/5duB90GZy9a0/Py2E+Y+eHKP6ZUCR2mbNMLCcHGjahiaNqA==",
-  "_location": "/discord.js",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "tag",
-    "registry": true,
-    "raw": "discord.js",
-    "name": "discord.js",
-    "escapedName": "discord.js",
-    "rawSpec": "",
-    "saveSpec": null,
-    "fetchSpec": "latest"
+  "name": "discord.js",
+  "version": "12.3.1",
+  "outdatedwarn": true,
+  "description": "A powerful library for interacting with the Discord API",
+  "main": "./src/index",
+  "types": "./typings/index.d.ts",
+  "exports": {
+    ".": [
+      {
+        "require": "./src/index.js",
+        "import": "./esm/discord.mjs"
+      },
+      "./src/index.js"
+    ],
+    "./esm": "./esm/discord.mjs"
   },
-  "_requiredBy": [
-    "#USER",
-    "/"
+  "scripts": {
+    "test": "npm run lint && npm run docs:test && npm run lint:typings",
+    "test:typescript": "tsc",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
+    "docs:test": "docgen --source src --custom docs/index.yml",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "lint:typings": "tslint typings/index.d.ts",
+    "prettier": "prettier --write src/**/*.js typings/**/*.ts",
+    "build:browser": "webpack",
+    "prepublishOnly": "npm run test && cross-env NODE_ENV=production npm run build:browser"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discordjs/discord.js.git"
+  },
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "client",
+    "node",
+    "discordapp"
   ],
-  "_resolved": "https://registry.npmjs.org/discord.js/-/discord.js-12.4.1.tgz",
-  "_shasum": "be88bb32caa9e41eae67749a4e2387585745ac3b",
-  "_spec": "discord.js",
-  "_where": "C:\\Users\\Owner\\Documents\\BirdyBirdy",
-  "author": {
-    "name": "Amish Shah",
-    "email": "amishshah.2k@gmail.com"
+  "author": "Amish Shah <amishshah.2k@gmail.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/discordjs/discord.js/issues"
+  },
+  "homepage": "https://github.com/discordjs/discord.js#readme",
+  "runkitExampleFilename": "./docs/examples/ping.js",
+  "unpkg": "./webpack/discord.min.js",
+  "dependencies": {
+    "@discordjs/collection": "^0.1.6",
+    "@discordjs/form-data": "^3.0.1",
+    "abort-controller": "^3.0.0",
+    "node-fetch": "^2.6.1",
+    "prism-media": "^1.2.2",
+    "setimmediate": "^1.0.5",
+    "tweetnacl": "^1.0.3",
+    "ws": "^7.3.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-angular": "^11.0.0",
+    "@types/node": "^12.12.6",
+    "@types/ws": "^7.2.7",
+    "cross-env": "^7.0.2",
+    "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
+    "dtslint": "^4.0.4",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.13.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.3.0",
+    "jest": "^26.6.0",
+    "json-filter-loader": "^1.0.0",
+    "lint-staged": "^10.4.2",
+    "prettier": "^2.1.2",
+    "terser-webpack-plugin": "^4.2.3",
+    "tslint": "^6.1.3",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
+  },
+  "engines": {
+    "node": ">=12.0.0"
   },
   "browser": {
     "@discordjs/opus": false,
@@ -59,10 +115,16 @@
     "src/client/voice/util/Silence.js": false,
     "src/client/voice/util/VolumeInterface.js": false
   },
-  "bugs": {
-    "url": "https://github.com/discordjs/discord.js/issues"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
-  "bundleDependencies": false,
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "*.ts": "prettier --write"
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-angular"
@@ -92,103 +154,11 @@
       ]
     }
   },
-  "dependencies": {
-    "@discordjs/collection": "^0.1.6",
-    "@discordjs/form-data": "^3.0.1",
-    "abort-controller": "^3.0.0",
-    "miniget": "^3.1.0",
-    "node-fetch": "^2.6.1",
-    "prism-media": "^1.2.2",
-    "setimmediate": "^1.0.5",
-    "tweetnacl": "^1.0.3",
-    "ws": "^7.3.1"
-  },
-  "deprecated": false,
-  "description": "A powerful library for interacting with the Discord API",
-  "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-angular": "^11.0.0",
-    "@types/node": "^12.12.6",
-    "@types/ws": "^7.2.7",
-    "cross-env": "^7.0.2",
-    "discord.js-docgen": "github:discordjs/docgen",
-    "dtslint": "^4.0.4",
-    "eslint": "^7.11.0",
-    "eslint-config-prettier": "^6.13.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "husky": "^4.3.0",
-    "jest": "^26.6.0",
-    "json-filter-loader": "^1.0.0",
-    "lint-staged": "^10.4.2",
-    "prettier": "^2.1.2",
-    "terser-webpack-plugin": "^4.2.3",
-    "tslint": "^6.1.3",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
-  },
-  "engines": {
-    "node": ">=12.0.0"
-  },
-  "exports": {
-    ".": [
-      {
-        "require": "./src/index.js",
-        "import": "./esm/discord.mjs"
-      },
-      "./src/index.js"
-    ],
-    "./esm": "./esm/discord.mjs"
-  },
-  "homepage": "https://github.com/discordjs/discord.js#readme",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "keywords": [
-    "discord",
-    "api",
-    "bot",
-    "client",
-    "node",
-    "discordapp"
-  ],
-  "license": "Apache-2.0",
-  "lint-staged": {
-    "*.js": "eslint --fix",
-    "*.ts": "prettier --write"
-  },
-  "main": "./src/index",
-  "name": "discord.js",
   "prettier": {
     "singleQuote": true,
     "printWidth": 120,
     "trailingComma": "all",
     "endOfLine": "lf",
     "arrowParens": "avoid"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/discordjs/discord.js.git"
-  },
-  "runkitExampleFilename": "./docs/examples/ping.js",
-  "scripts": {
-    "build:browser": "webpack",
-    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
-    "docs:test": "docgen --source src --custom docs/index.yml",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "lint:typings": "tslint typings/index.d.ts",
-    "prepublishOnly": "npm run test && cross-env NODE_ENV=production npm run build:browser",
-    "prettier": "prettier --write src/**/*.js typings/**/*.ts",
-    "test": "npm run lint && npm run docs:test && npm run lint:typings",
-    "test:typescript": "tsc"
-  },
-  "types": "./typings/index.d.ts",
-  "unpkg": "./webpack/discord.min.js",
-  "version": "12.4.1",
-  "outdatedwarn": true 
+  }
 }
