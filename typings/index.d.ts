@@ -1384,7 +1384,7 @@ declare module 'discord.js' {
     public send(message: any): Promise<void>;
 
     public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
-    public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
+    public static shardIDForGuildID(guildID: Snowflake, shardCount: number): number;
   }
 
   export class ShardingManager extends EventEmitter {

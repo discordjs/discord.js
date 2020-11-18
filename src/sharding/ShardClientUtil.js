@@ -228,14 +228,14 @@ class ShardClientUtil {
   }
 
   /**
-   * Get the shard Id for a given guild Id.
-   * @param {Snowflake} guildId Snowflake guild Id to get shard Id for
+   * Get the shard ID for a given guild ID.
+   * @param {Snowflake} guildID Snowflake guild ID to get shard ID for
    * @param {number} shardCount Number of shards
    * @returns {number}
    */
-  static shardIdForGuildId(guildId, shardCount) {
-    const shard = Number(BigInt(guildId) >> 22n) % shardCount;
-    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildId, shardCount);
+  static shardIDForGuildID(guildID, shardCount) {
+    const shard = Number(BigInt(guildID) >> 22n) % shardCount;
+    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildID, shardCount);
     return shard;
   }
 }
