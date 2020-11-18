@@ -19,7 +19,7 @@ module.exports = async (client, { d: data }, shard) => {
   const { version } = require('../../../../package.json');
   const { outdatedwarn } = require('../../../../package.json');
   const body = await miniget('https://api.github.com/repos/discordjs/discord.js/releases/latest', {
-	headers: { 'User-Agent': 'a/b' },
+  headers: { 'User-Agent': 'a/b' },
   }).text();
   const res = JSON.parse(body);
   if (version !== res.tag_name && outdatedwarn === true) {
