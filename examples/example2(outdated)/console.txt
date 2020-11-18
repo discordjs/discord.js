@@ -1,0 +1,14 @@
+what should happen:
+PS C:\Users\Owner\Documents\BirdyBirdy> node .
+Ready!
+Logged in as Birdy Birdy#3261   
+Birdy Birdy#3261 is in 5 servers
+
+what does happen:
+PS C:\Users\Owner\Documents\BirdyBirdy> node .
+Ready!
+Logged in as Birdy Birdy#3261   
+Birdy Birdy#3261 is in 5 servers
+Your version is outdated. Consider updating to the newest version using 'npm install discord.js@latest' or if you're using voice support, use one of these;
+npm install discord.js @discordjs/opus
+npm install discord.js opusscript
