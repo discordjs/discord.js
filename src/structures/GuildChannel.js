@@ -370,9 +370,7 @@ class GuildChannel extends Channel {
       reason,
     });
 
-    const clone = this._clone();
-    clone._patch(newData);
-    return clone;
+    return this.client.actions.ChannelUpdate.handle(newData).updated;
   }
 
   /**
