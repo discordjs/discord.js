@@ -2026,7 +2026,13 @@ declare module 'discord.js' {
     public readonly highest: Role;
     public guild: Guild;
 
-    public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
+    public create(options?: {
+      name?: string;
+      color?: ColorResolvable;
+      permissions?: Permissions;
+      position?: number;
+      reason?: string;
+    }): Promise<Role>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Role | null>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<this>;
   }

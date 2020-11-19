@@ -87,7 +87,10 @@ class RoleManager extends BaseManager {
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
-   * @param {RoleData} [options.data] The data to create the role with
+   * @param {string} [options.name] The name of the new role
+   * @param {ColorResolvable} [options.color] The data to create the role with
+   * @param {Permissions} [options.permissions] The permissions for the new role
+   * @param {number} [options.position] The position of the new role
    * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
@@ -98,28 +101,34 @@ class RoleManager extends BaseManager {
    * @example
    * // Create a new role with data and a reason
    * guild.roles.create({
-   *   data: {
-   *     name: 'Super Cool People',
-   *     color: 'BLUE',
-   *   },
+   *   name: 'Super Cool Blue People',
+   *   color: 'BLUE',
    *   reason: 'we needed a role for Super Cool People',
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create({ data = {}, reason } = {}) {
-    if (data.color) data.color = resolveColor(data.color);
-    if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
+  create(options = {}) {
+    let { name, color, permissions, position, reason } = options;
+    if (color) color = resolveColor(color);
+    if (permissions) permissions = Permissions.resolve(permissions);
 
     return this.guild.client.api
       .guilds(this.guild.id)
-      .roles.post({ data, reason })
+      .roles.post({
+        data: {
+          name,
+          color,
+          permissions,
+        },
+        reason,
+      })
       .then(r => {
         const { role } = this.client.actions.GuildRoleCreate.handle({
           guild_id: this.guild.id,
           role: r,
         });
-        if (data.position) return role.setPosition(data.position, reason);
+        if (position) return role.setPosition(position, reason);
         return role;
       });
   }
