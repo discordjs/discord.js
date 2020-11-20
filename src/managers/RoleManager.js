@@ -89,7 +89,7 @@ class RoleManager extends BaseManager {
    * @param {Object} [options] Options
    * @param {string} [options.name] The name of the new role
    * @param {ColorResolvable} [options.color] The data to create the role with
-   * @param {Permissions} [options.permissions] The permissions for the new role
+   * @param {PermissionResolvable} [options.permissions] The permissions for the new role
    * @param {number} [options.position] The position of the new role
    * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
