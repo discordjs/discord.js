@@ -599,11 +599,19 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    return this.channel.send(
-      content instanceof APIMessage
-        ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
-    );
+    if(options && options.new) {
+      return this.channel.send(
+        content instanceof APIMessage
+          ? content
+          : APIMessage.transformOptions(content, options, { message_reference: { message_id: this.id, guild_id: this.guild ? this.guild.id : null } }),
+      );
+    } else {
+      return this.channel.send(
+        content instanceof APIMessage
+          ? content
+          : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+      );
+    }
   }
 
   /**
