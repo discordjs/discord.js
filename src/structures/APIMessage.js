@@ -208,7 +208,11 @@ class APIMessage {
       avatar_url: avatarURL,
       allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
       flags,
-      message_reference: this.options.message_reference,
+      message_reference: this.options.refer ? {
+        message_id: this.options.refer.message,
+        guild_id: this.options.refer.guild,
+        channel_id: this.options.refer.channel
+      } : null,
     };
     return this;
   }

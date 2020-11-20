@@ -599,11 +599,11 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    if(options && options.refer && !options.message_reference) {
+    if(options && options.refer instanceof Boolean && options.refer) {
       return this.channel.send(
         content instanceof APIMessage
           ? content
-          : APIMessage.transformOptions(content, options, { message_reference: { message_id: this.id, guild_id: this.guild ? this.guild.id : null } }),
+          : APIMessage.transformOptions(content, options, { refer: { message: this.id, guild: this.guild ? this.guild.id : null } }),
       );
     } else {
       return this.channel.send(
