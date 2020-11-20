@@ -859,17 +859,20 @@ declare module 'discord.js' {
 
   export class GuildTemplate extends Base {
     constructor(client: Client, data: object);
+    public readonly createdTimestamp: number;
+    public readonly updatedTimestamp: number;
     public readonly url: string;
     public code: string;
     public name: string;
     public description: string | null;
     public usageCount: number;
-    public creatorID: string;
     public creator: User;
+    public creatorID: Snowflake;
     public createdAt: Date;
     public updatedAt: Date;
-    public guildID: string;
-    public guild: Guild;
+    public guild: Guild | null;
+    public guildID: Snowflake;
+    public serializedGuild: object;
     public unSynced: boolean | null;
     public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Promise<Guild>;
     public delete(): Promise<GuildTemplate>;
@@ -2139,6 +2142,7 @@ declare module 'discord.js' {
     MAXIMUM_CHANNELS: 30013;
     MAXIMUM_ATTACHMENTS: 30015;
     MAXIMUM_INVITES: 30016;
+    GUILD_ALREADY_HAS_TEMPLATE: 30031;
     UNAUTHORIZED: 40001;
     ACCOUNT_VERIFICATION_REQUIRED: 40002;
     REQUEST_ENTITY_TOO_LARGE: 40005;

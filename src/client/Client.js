@@ -260,7 +260,7 @@ class Client extends BaseClient {
    * @param {GuildTemplateResolvable} template Template code or URL
    * @returns {Promise<GuildTemplate>}
    * @example
-   * client.fetchGuildTemplate('https://discord.com/template/FKvmczH2HyUf')
+   * client.fetchGuildTemplate('https://discord.new/FKvmczH2HyUf')
    *   .then(template => console.log(`Obtained template with code: ${template.code}`))
    *   .catch(console.error);
    */

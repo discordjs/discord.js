@@ -51,7 +51,7 @@ class GuildTemplate extends Base {
 
     /**
      * The ID of the user that created this template
-     * @type {string}
+     * @type {Snowflake}
      */
     this.creatorID = data.creator_id;
 
@@ -75,15 +75,16 @@ class GuildTemplate extends Base {
 
     /**
      * The ID of the guild that this template belongs to
-     * @type {string}
+     * @type {Snowflake}
      */
     this.guildID = data.source_guild_id;
 
     /**
-     * The guild that this template belongs to
-     * @type {Guild}
+     * The data of the guild that this template would create
+     * @type {Object}
+     * @see {@link https://discord.com/developers/docs/resources/guild#guild-resource}
      */
-    this.guild = this.client.guilds.add(data.serialized_source_guild, false);
+    this.serializedGuild = data.serialized_source_guild;
 
     /**
      * Whether this template has unsynced changes
@@ -173,6 +174,32 @@ class GuildTemplate extends Base {
       .then(data => this._patch(data));
   }
 
+  /**
+   * The timestamp of when this template was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return this.createdAt.getTime();
+  }
+
+  /**
+   * The timestamp of when this template was last synced to the guild
+   * @type {number}
+   * @readonly
+   */
+  get updatedTimestamp() {
+    return this.updatedAt.getTime();
+  }
+
+  /**
+   * The guild that this template belongs to
+   * @type {?Guild}
+   * @readonly
+   */
+  get guild() {
+    return this.client.guilds.get(this.guildID) || null;
+  }
   /**
    * The URL of this template
    * @type {string}
