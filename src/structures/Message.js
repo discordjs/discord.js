@@ -599,7 +599,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(content, options) {
-    if(options && options.refer) {
+    if(options && options.refer && !options.message_reference) {
       return this.channel.send(
         content instanceof APIMessage
           ? content
