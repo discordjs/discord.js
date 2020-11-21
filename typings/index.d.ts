@@ -3128,7 +3128,6 @@ declare module 'discord.js' {
     public previewAsset: string | null;
     public tags: string[] | null;
     public stickerURL(options?: StickerURLOptions): string;
-    public stickerPreviewURL(options?: StickerURLOptions): string | null;
   }
 
   interface StickerURLOptions {
