@@ -5,6 +5,7 @@ const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
+const SnowflakeUtil = require('../util/Snowflake');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -161,19 +162,22 @@ class GuildMemberManager extends BaseManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count = true, roles = [], reason } = {}) {
+  prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
     if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
 
-    const query = new URLSearchParams();
-    query.set('days', days);
-    query.set('compute_prune_count', count);
+    const query = { days };
+    const resolvedRoles = [];
 
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
         return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
       }
-      query.append('include_roles', role);
+      resolvedRoles.push(resolvedRole);
+    }
+
+    if (resolvedRoles.length) {
+      query.include_roles = dry ? resolvedRoles.join(',') : resolvedRoles;
     }
 
     const endpoint = this.client.api.guilds(this.guild.id).prune;
@@ -182,13 +186,12 @@ class GuildMemberManager extends BaseManager {
       return endpoint.get({ query, reason }).then(data => data.pruned);
     }
 
-    const body = [...query.entries()].reduce((acc, [k, v]) => {
-      if (k === 'include_roles') v = (acc[k] || []).concat(v);
-      acc[k] = v;
-      return acc;
-    }, {});
-
-    return endpoint.post({ data: body, reason }).then(data => data.pruned);
+    return endpoint
+      .post({
+        data: { ...query, compute_prune_count },
+        reason,
+      })
+      .then(data => data.pruned);
   }
 
   /**
@@ -263,7 +266,7 @@ class GuildMemberManager extends BaseManager {
     user: user_ids,
     query,
     time = 120e3,
-    nonce = Date.now().toString(16),
+    nonce = SnowflakeUtil.generate(),
     force = false,
   } = {}) {
     return new Promise((resolve, reject) => {

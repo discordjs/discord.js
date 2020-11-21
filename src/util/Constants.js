@@ -19,6 +19,8 @@ const browser = (exports.browser = typeof window !== 'undefined');
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
+ * @property {number} [messageEditHistoryMaxSize=-1] Maximum number of previous versions to hold for an edited message
+ * (-1 or Infinity for unlimited - don't do this without sweeping, otherwise memory usage may climb indefinitely.)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
  * @property {DisableMentionType} [disableMentions='none'] Default value for {@link MessageOptions#disableMentions}
@@ -43,6 +45,7 @@ exports.DefaultOptions = {
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
+  messageEditHistoryMaxSize: -1,
   fetchAllMembers: false,
   disableMentions: 'none',
   partials: [],
@@ -540,17 +543,25 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * UNKNOWN_USER
  * * UNKNOWN_EMOJI
  * * UNKNOWN_WEBHOOK
+ * * UNKNOWN_BAN
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
+ * * CHANNEL_HIT_WRITE_RATELIMIT
  * * MAXIMUM_GUILDS
  * * MAXIMUM_FRIENDS
  * * MAXIMUM_PINS
  * * MAXIMUM_ROLES
+ * * MAXIMUM_WEBHOOKS
  * * MAXIMUM_REACTIONS
  * * MAXIMUM_CHANNELS
+ * * MAXIMUM_ATTACHMENTS
  * * MAXIMUM_INVITES
  * * UNAUTHORIZED
+ * * ACCOUNT_VERIFICATION_REQUIRED
+ * * REQUEST_ENTITY_TOO_LARGE
+ * * FEATURE_TEMPORARILY_DISABLED
  * * USER_BANNED
+ * * ALREADY_CROSSPOSTED
  * * MISSING_ACCESS
  * * INVALID_ACCOUNT_TYPE
  * * CANNOT_EXECUTE_ON_DM
@@ -575,6 +586,7 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * INVALID_FORM_BODY
  * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
  * * INVALID_API_VERSION
+ * * CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL
  * * REACTION_BLOCKED
  * * RESOURCE_OVERLOADED
  * @typedef {string} APIError
@@ -595,17 +607,25 @@ exports.APIErrors = {
   UNKNOWN_USER: 10013,
   UNKNOWN_EMOJI: 10014,
   UNKNOWN_WEBHOOK: 10015,
+  UNKNOWN_BAN: 10026,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
+  CHANNEL_HIT_WRITE_RATELIMIT: 20028,
   MAXIMUM_GUILDS: 30001,
   MAXIMUM_FRIENDS: 30002,
   MAXIMUM_PINS: 30003,
   MAXIMUM_ROLES: 30005,
+  MAXIMUM_WEBHOOKS: 30007,
   MAXIMUM_REACTIONS: 30010,
   MAXIMUM_CHANNELS: 30013,
+  MAXIMUM_ATTACHMENTS: 30015,
   MAXIMUM_INVITES: 30016,
   UNAUTHORIZED: 40001,
+  ACCOUNT_VERIFICATION_REQUIRED: 40002,
+  REQUEST_ENTITY_TOO_LARGE: 40005,
+  FEATURE_TEMPORARILY_DISABLED: 40006,
   USER_BANNED: 40007,
+  ALREADY_CROSSPOSTED: 40033,
   MISSING_ACCESS: 50001,
   INVALID_ACCOUNT_TYPE: 50002,
   CANNOT_EXECUTE_ON_DM: 50003,
@@ -630,6 +650,7 @@ exports.APIErrors = {
   INVALID_FORM_BODY: 50035,
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   INVALID_API_VERSION: 50041,
+  CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
   INVALID_STICKER_SENT: 50081,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,

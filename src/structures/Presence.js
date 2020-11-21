@@ -184,8 +184,8 @@ class Activity {
     /**
      * Timestamps for the activity
      * @type {?Object}
-     * @prop {?Date} start When the activity started
-     * @prop {?Date} end When the activity will end
+     * @property {?Date} start When the activity started
+     * @property {?Date} end When the activity will end
      */
     this.timestamps = data.timestamps
       ? {
@@ -197,8 +197,8 @@ class Activity {
     /**
      * Party of the activity
      * @type {?Object}
-     * @prop {?string} id ID of the party
-     * @prop {number[]} size Size of the party as `[current, max]`
+     * @property {?string} id ID of the party
+     * @property {number[]} size Size of the party as `[current, max]`
      */
     this.party = data.party || null;
 
