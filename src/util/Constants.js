@@ -81,12 +81,14 @@ exports.DefaultOptions = {
    * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
+   * @property {string} [template='https://discord.new'] Base url of templates
    */
   http: {
     version: 7,
     api: 'https://discord.com/api',
     cdn: 'https://cdn.discordapp.com',
     invite: 'https://discord.gg',
+    template: 'https://discord.new',
   },
 };
 
@@ -520,6 +522,7 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * UNKNOWN_EMOJI
  * * UNKNOWN_WEBHOOK
  * * UNKNOWN_BAN
+ * * UNKNOWN_GUILD_TEMPLATE
  * * BOT_PROHIBITED_ENDPOINT
  * * BOT_ONLY_ENDPOINT
  * * CHANNEL_HIT_WRITE_RATELIMIT
@@ -532,6 +535,7 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
  * * MAXIMUM_CHANNELS
  * * MAXIMUM_ATTACHMENTS
  * * MAXIMUM_INVITES
+ * * GUILD_ALREADY_HAS_TEMPLATE
  * * UNAUTHORIZED
  * * ACCOUNT_VERIFICATION_REQUIRED
  * * REQUEST_ENTITY_TOO_LARGE
@@ -584,6 +588,7 @@ exports.APIErrors = {
   UNKNOWN_EMOJI: 10014,
   UNKNOWN_WEBHOOK: 10015,
   UNKNOWN_BAN: 10026,
+  UNKNOWN_GUILD_TEMPLATE: 10057,
   BOT_PROHIBITED_ENDPOINT: 20001,
   BOT_ONLY_ENDPOINT: 20002,
   CHANNEL_HIT_WRITE_RATELIMIT: 20028,
@@ -596,6 +601,7 @@ exports.APIErrors = {
   MAXIMUM_CHANNELS: 30013,
   MAXIMUM_ATTACHMENTS: 30015,
   MAXIMUM_INVITES: 30016,
+  GUILD_ALREADY_HAS_TEMPLATE: 30031,
   UNAUTHORIZED: 40001,
   ACCOUNT_VERIFICATION_REQUIRED: 40002,
   REQUEST_ENTITY_TOO_LARGE: 40005,

@@ -65,6 +65,7 @@ export const {
   GuildEmoji,
   GuildMember,
   GuildPreview,
+  GuildTemplate,
   Integration,
   Invite,
   Message,
