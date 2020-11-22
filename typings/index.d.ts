@@ -1188,7 +1188,10 @@ declare module 'discord.js' {
       options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
-    public setType(type: string, reason?: string): Promise<GuildChannel>;
+    public setType(
+      type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>,
+      reason?: string,
+    ): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
   }
@@ -1530,7 +1533,10 @@ declare module 'discord.js' {
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
-    public setType(type: string, reason?: string): Promise<GuildChannel>;
+    public setType(
+      type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>,
+      reason?: string,
+    ): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
@@ -2232,10 +2238,7 @@ declare module 'discord.js' {
 
   interface ChannelData {
     name?: string;
-    type?: Exclude<
-      keyof typeof ChannelType | ChannelType,
-      'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
-    >;
+    type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>;
     position?: number;
     topic?: string;
     nsfw?: boolean;
