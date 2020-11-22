@@ -1,3 +1,26 @@
 {
   "plugins": ["node_modules/jsdoc-strip-async-await"]
 }
+^ban <@user> <reason>
+^kick <@user>
+^mute<@user>
+^invite 
+^say <message>
+^addrole <@user> <role>
+^removerole <@user> <role>
+^softban <@user> <reason>
+^ping 
+^suggest <suggestions>
+^warn <@user>
+^warnings <@user>
+^clearwarnings <@user>
+^memes
+^create_meme <#id> <quote1 , quote2 ,>
+^embed
+^unban <@user>
+^av <@user>
+^afk <reason>
+^covid <location>
+^stats
+^steal <emoji>
+^vote
