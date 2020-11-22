@@ -357,7 +357,6 @@ class Client extends BaseClient {
       .get()
       .then(app => new ClientApplication(this, app));
   }
-  
   /**
    * Obtains the widget from a guild, available for all guilds
    * @param {GuildResolvable} guild The guild to fetch the widget for
