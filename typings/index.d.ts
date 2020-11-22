@@ -976,7 +976,7 @@ declare module 'discord.js' {
     public id: Snowflake;
     public readonly member: GuildMember | null;
     public mentions: MessageMentions;
-    public nonce: string | null;
+    public nonce: string | number | null;
     public readonly partial: false;
     public readonly pinnable: boolean;
     public pinned: boolean;
@@ -2830,7 +2830,7 @@ declare module 'discord.js' {
 
   interface MessageOptions {
     tts?: boolean;
-    nonce?: string;
+    nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
     disableMentions?: 'none' | 'all' | 'everyone';

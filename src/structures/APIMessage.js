@@ -151,8 +151,11 @@ class APIMessage {
 
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
-      nonce = parseInt(this.options.nonce);
-      if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
+      nonce = this.options.nonce;
+      // eslint-disable-next-line max-len
+      if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
+        throw new RangeError('MESSAGE_NONCE_TYPE');
+      }
     }
 
     const embedLikes = [];
