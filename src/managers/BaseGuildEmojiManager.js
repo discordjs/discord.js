@@ -71,7 +71,7 @@ class BaseGuildEmojiManager extends BaseManager {
         emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
       if (!emoji.includes('%')) return encodeURIComponent(emoji);
-      else return emoji;
+      return emoji;
     }
     return null;
   }
