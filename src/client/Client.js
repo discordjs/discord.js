@@ -367,7 +367,7 @@ class Client extends BaseClient {
     const id = this.guilds.resolveID(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     return this.api
-      .guilds(guild)
+      .guilds(id)
       ['widget.json'].get()
   }
   /**
