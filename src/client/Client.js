@@ -369,7 +369,6 @@ class Client extends BaseClient {
     return this.api
       .guilds(guild)
       ['widget.json'].get()
-      .then(app => app);
   }
   /**
    * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
