@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const Speaking = require('../../../util/Speaking');
 const secretbox = require('../util/Secretbox');
 
 // The delay between packets when a user is considered to have stopped speaking
@@ -89,7 +90,7 @@ class PacketHandler extends EventEmitter {
       // Ensure at least the speaking bit is set.
       // As the object is by reference, it's only needed once per client re-connect.
       if (userStat.speaking === 0) {
-        userStat.speaking = 1;
+        userStat.speaking = Speaking.FLAGS.SPEAKING;
       }
       this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: userStat.speaking });
       speakingTimeout = this.receiver.connection.client.setTimeout(() => {
