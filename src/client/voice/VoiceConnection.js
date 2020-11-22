@@ -501,7 +501,7 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (guild && user && !speaking.equals(old)) {
-      const member = guild.member(user);
+      const member = guild.members.resolve(user);
       if (member) {
         /**
          * Emitted once a guild member changes speaking state.

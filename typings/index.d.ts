@@ -658,7 +658,6 @@ declare module 'discord.js' {
     public fetchWidget(): Promise<GuildWidget>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public leave(): Promise<Guild>;
-    public member(user: UserResolvable): GuildMember | null;
     public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
     public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
     public setBanner(banner: Base64Resolvable | null, reason?: string): Promise<Guild>;
