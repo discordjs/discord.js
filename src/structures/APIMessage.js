@@ -170,6 +170,11 @@ class APIMessage {
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
 
+    if (allowedMentions) {
+      allowedMentions.replied_user = allowedMentions.repliedUser;
+      delete allowedMentions.repliedUser;
+    }
+
     let message_reference;
     if (typeof this.options.replyTo !== 'undefined') {
       const message_id = this.isMessage
@@ -188,7 +193,8 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
+      allowed_mentions:
+        typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,
       message_reference,
     };
