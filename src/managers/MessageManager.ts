@@ -11,7 +11,7 @@ const LimitedCollection = require('../util/LimitedCollection');
  * @extends {BaseManager}
  */
 class MessageManager extends BaseManager {
-  constructor(channel, iterable) {
+  constructor(channel, iterable?) {
     super(channel.client, iterable, Message, LimitedCollection, channel.client.options.messageCacheMaxSize);
     /**
      * The channel that the messages belong to

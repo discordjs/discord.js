@@ -1,6 +1,8 @@
 'use strict';
 
 import Client from './client/Client';
+
+// Managers
 import BaseGuildEmojiManager from './managers/BaseGuildEmojiManager';
 import ChannelManager from './managers/ChannelManager';
 import GuildChannelManager from './managers/GuildChannelManager';
@@ -16,11 +18,57 @@ import ReactionUserManager from './managers/ReactionUserManager';
 import RoleManager from './managers/RoleManager';
 import UserManager from './managers/UserManager';
 import VoiceStateManager from './managers/VoiceStateManager';
+
+// Shortcuts to Util methods
+
+// Structures
+import Application from './structures/interfaces/Application';
+import Collector from './structures/interfaces/Collector';
+import APIMessage from './structures/APIMessage';
+import Base from './structures/Base';
+import BaseGuildEmoji from './structures/BaseGuildEmoji';
+import CategoryChannel from './structures/CategoryChannel';
+import ClientPresence from './structures/ClientPresence';
+import Channel from './structures/Channel';
+import ClientApplication from './structures/ClientApplication';
+import DMChannel from './structures/DMChannel';
+import Emoji from './structures/Emoji';
+import Guild from './structures/Guild';
+import GuildChannel from './structures/GuildChannel';
+import GuildEmoji from './structures/GuildEmoji';
+import GuildMember from './structures/GuildMember';
+import GuildPreview from './structures/GuildPreview';
+import GuildTemplate from './structures/GuildTemplate';
+import Integration from './structures/Integration';
+import Invite from './structures/Invite';
 import Message from './structures/Message';
+import MessageAttachment from './structures/MessageAttachment';
+import MessageCollector from './structures/MessageCollector';
 import MessageEmbed from './structures/MessageEmbed';
+import MessageMentions from './structures/MessageMentions';
+import MessageReaction from './structures/MessageReaction';
+import NewsChannel from './structures/NewsChannel';
+import PermissionOverwrites from './structures/PermissionOverwrites';
+import { Activity, Presence, RichPresenceAssets } from './structures/Presence';
+import ReactionCollector from './structures/ReactionCollector';
+import ReactionEmoji from './structures/ReactionEmoji';
+import Role from './structures/Role';
+import StoreChannel from './structures/StoreChannel';
+import Team from './structures/Team';
+import TeamMember from './structures/TeamMember';
+import TextChannel from './structures/TextChannel';
+import User from './structures/User';
+import VoiceChannel from './structures/VoiceChannel';
+import VoiceRegion from './structures/VoiceRegion';
+import VoiceState from './structures/VoiceState';
+import Webhook from './structures/Webhook';
+
+import * as WebSocket from './WebSocket';
 
 export {
   Client,
+
+  // Managers
   BaseGuildEmojiManager,
   ChannelManager,
   GuildChannelManager,
@@ -36,8 +84,52 @@ export {
   RoleManager,
   UserManager,
   VoiceStateManager,
+
+  // Structures
+  APIMessage,
+  Application,
+  Base,
+  BaseGuildEmoji,
+  CategoryChannel,
+  Channel,
+  ClientApplication,
+  ClientPresence,
+  Collector,
+  DMChannel,
+  Emoji,
+  Guild,
+  // GuildAuditLogs: require('./structures/GuildAuditLogs'),
+  GuildChannel,
+  GuildEmoji,
+  GuildMember,
+  GuildPreview,
+  GuildTemplate,
+  Integration,
+  Invite,
   Message,
-  MessageEmbed
+  MessageAttachment,
+  MessageCollector,
+  MessageEmbed,
+  MessageMentions,
+  MessageReaction,
+  NewsChannel,
+  PermissionOverwrites,
+  Presence,
+  ReactionCollector,
+  ReactionEmoji,
+  RichPresenceAssets,
+  Role,
+  StoreChannel,
+  Team,
+  TeamMember,
+  TextChannel,
+  User,
+  VoiceChannel,
+  VoiceRegion,
+  VoiceState,
+  Webhook,
+
+  WebSocket
 };
 
 const UtilLib = require('./util/Util');
@@ -97,55 +189,55 @@ const Discord = {
   splitMessage: UtilLib.splitMessage,
 
   // Structures
-  Application: require('./structures/interfaces/Application'),
-  Base: require('./structures/Base'),
-  Activity: require('./structures/Presence').Activity,
-  APIMessage: require('./structures/APIMessage'),
-  BaseGuildEmoji: require('./structures/BaseGuildEmoji'),
-  CategoryChannel: require('./structures/CategoryChannel'),
-  Channel: require('./structures/Channel'),
-  ClientApplication: require('./structures/ClientApplication'),
+  Activity,
+  APIMessage,
+  Application,
+  Base,
+  BaseGuildEmoji,
+  CategoryChannel,
+  Channel,
+  ClientApplication,
+  ClientPresence,
+  Collector,
+  DMChannel,
+  Emoji,
   get ClientUser() {
     // This is a getter so that it properly extends any custom User class
     return require('./structures/ClientUser');
   },
-  Collector: require('./structures/interfaces/Collector'),
-  DMChannel: require('./structures/DMChannel'),
-  Emoji: require('./structures/Emoji'),
-  Guild: require('./structures/Guild'),
+  Guild,
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
-  GuildChannel: require('./structures/GuildChannel'),
-  GuildEmoji: require('./structures/GuildEmoji'),
-  GuildMember: require('./structures/GuildMember'),
-  GuildPreview: require('./structures/GuildPreview'),
-  GuildTemplate: require('./structures/GuildTemplate'),
-  Integration: require('./structures/Integration'),
-  Invite: require('./structures/Invite'),
+  GuildChannel,
+  GuildEmoji,
+  GuildMember,
+  GuildPreview,
+  GuildTemplate,
+  Integration,
+  Invite,
   Message,
-  MessageAttachment: require('./structures/MessageAttachment'),
-  MessageCollector: require('./structures/MessageCollector'),
+  MessageAttachment,
+  MessageCollector,
   MessageEmbed,
-  MessageMentions: require('./structures/MessageMentions'),
-  MessageReaction: require('./structures/MessageReaction'),
-  NewsChannel: require('./structures/NewsChannel'),
-  PermissionOverwrites: require('./structures/PermissionOverwrites'),
-  Presence: require('./structures/Presence').Presence,
-  ClientPresence: require('./structures/ClientPresence'),
-  ReactionCollector: require('./structures/ReactionCollector'),
-  ReactionEmoji: require('./structures/ReactionEmoji'),
-  RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
-  Role: require('./structures/Role'),
-  StoreChannel: require('./structures/StoreChannel'),
-  Team: require('./structures/Team'),
-  TeamMember: require('./structures/TeamMember'),
-  TextChannel: require('./structures/TextChannel'),
-  User: require('./structures/User'),
-  VoiceChannel: require('./structures/VoiceChannel'),
-  VoiceRegion: require('./structures/VoiceRegion'),
-  VoiceState: require('./structures/VoiceState'),
-  Webhook: require('./structures/Webhook'),
+  MessageMentions,
+  MessageReaction,
+  NewsChannel,
+  PermissionOverwrites,
+  Presence,
+  ReactionCollector,
+  ReactionEmoji,
+  RichPresenceAssets,
+  Role,
+  StoreChannel,
+  Team,
+  TeamMember,
+  TextChannel,
+  User,
+  VoiceChannel,
+  VoiceRegion,
+  VoiceState,
+  Webhook,
 
-  WebSocket: require('./WebSocket'),
+  WebSocket,
 };
 
 export default Discord;
@@ -180,46 +272,6 @@ export const { fetchRecommendedShards } = Discord;
 export const { resolveColor } = Discord;
 export const { resolveString } = Discord;
 export const { splitMessage } = Discord;
-export const { Application } = Discord;
-export const { Base } = Discord;
-export const { Activity } = Discord;
-export const { APIMessage } = Discord;
-export const { BaseGuildEmoji } = Discord;
-export const { CategoryChannel } = Discord;
-export const { Channel } = Discord;
-export const { ClientApplication } = Discord;
 export const { ClientUser } = Discord;
-export const { Collector } = Discord;
-export const { DMChannel } = Discord;
-export const { Emoji } = Discord;
-export const { Guild } = Discord;
 export const { GuildAuditLogs } = Discord;
-export const { GuildChannel } = Discord;
-export const { GuildEmoji } = Discord;
-export const { GuildMember } = Discord;
-export const { GuildPreview } = Discord;
-export const { GuildTemplate } = Discord;
-export const { Integration } = Discord;
-export const { Invite } = Discord;
-export const { MessageAttachment } = Discord;
-export const { MessageCollector } = Discord;
-export const { MessageMentions } = Discord;
-export const { MessageReaction } = Discord;
-export const { NewsChannel } = Discord;
-export const { PermissionOverwrites } = Discord;
-export const { Presence } = Discord;
-export const { ClientPresence } = Discord;
-export const { ReactionCollector } = Discord;
-export const { ReactionEmoji } = Discord;
-export const { RichPresenceAssets } = Discord;
-export const { Role } = Discord;
-export const { StoreChannel } = Discord;
-export const { Team } = Discord;
-export const { TeamMember } = Discord;
-export const { TextChannel } = Discord;
-export const { User } = Discord;
-export const { VoiceChannel } = Discord;
-export const { VoiceRegion } = Discord;
-export const { VoiceState } = Discord;
-export const { Webhook } = Discord;
-export const { WebSocket } = Discord;
+

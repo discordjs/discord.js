@@ -1,9 +1,12 @@
 'use strict';
 
 import type { FIXME } from '../types';
+import Base from './Base';
+import Guild from './Guild';
+import GuildMember from './GuildMember';
 
 const APIMessage = require('./APIMessage');
-const Base = require('./Base');
+
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
@@ -23,6 +26,29 @@ const Util = require('../util/Util');
  * @extends {Base}
  */
 class Message extends Base {
+  channel: FIXME;
+  deleted: FIXME;
+  type: FIXME;
+  system: FIXME;
+  content: FIXME;
+  author: FIXME;
+  client: FIXME;
+  pinned: FIXME;
+  tts: FIXME;
+  nonce: FIXME;
+  embeds: FIXME;
+  attachments: FIXME;
+  createdTimestamp: FIXME;
+  editedTimestamp: FIXME;
+  reactions: FIXME;
+  mentions: FIXME;
+  webhookID: FIXME;
+  application: FIXME;
+  activity: FIXME;
+  _edits: FIXME;
+  flags: FIXME;
+  reference: FIXME;
+
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the message
@@ -285,7 +311,7 @@ class Message extends Base {
    * @type {?GuildMember}
    * @readonly
    */
-  get member() {
+  get member(): GuildMember {
     return this.guild ? this.guild.members.resolve(this.author) || null : null;
   }
 
@@ -294,7 +320,7 @@ class Message extends Base {
    * @type {Date}
    * @readonly
    */
-  get createdAt() {
+  get createdAt(): Date {
     return new Date(this.createdTimestamp);
   }
 
@@ -303,7 +329,7 @@ class Message extends Base {
    * @type {?Date}
    * @readonly
    */
-  get editedAt() {
+  get editedAt(): Date | null {
     return this.editedTimestamp ? new Date(this.editedTimestamp) : null;
   }
 
@@ -312,7 +338,7 @@ class Message extends Base {
    * @type {?Guild}
    * @readonly
    */
-  get guild() {
+  get guild(): Guild | null {
     return this.channel.guild || null;
   }
 
