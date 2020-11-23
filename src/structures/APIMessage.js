@@ -172,7 +172,9 @@ class APIMessage {
 
     let message_reference;
     if (typeof this.options.replyTo !== 'undefined') {
-      const message_id = this.target.messages.resolveID(this.options.replyTo);
+      const message_id = this.isMessage
+        ? this.target.channel.messages.resolveID(this.options.replyTo)
+        : this.target.messages.resolveID(this.options.replyTo);
       if (message_id) {
         message_reference = { message_id };
       }
