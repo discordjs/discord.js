@@ -1,8 +1,8 @@
 'use strict';
 
-const Util = require('./util/Util');
+const UtilLib = require('./util/Util');
 
-module.exports = {
+const Discord = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
   Client: require('./client/Client'),
@@ -29,7 +29,7 @@ module.exports = {
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
   UserFlags: require('./util/UserFlags'),
-  Util: Util,
+  Util: UtilLib,
   version: require('../package.json').version,
 
   // Managers
@@ -49,12 +49,12 @@ module.exports = {
   UserManager: require('./managers/UserManager'),
 
   // Shortcuts to Util methods
-  discordSort: Util.discordSort,
-  escapeMarkdown: Util.escapeMarkdown,
-  fetchRecommendedShards: Util.fetchRecommendedShards,
-  resolveColor: Util.resolveColor,
-  resolveString: Util.resolveString,
-  splitMessage: Util.splitMessage,
+  discordSort: UtilLib.discordSort,
+  escapeMarkdown: UtilLib.escapeMarkdown,
+  fetchRecommendedShards: UtilLib.fetchRecommendedShards,
+  resolveColor: UtilLib.resolveColor,
+  resolveString: UtilLib.resolveString,
+  splitMessage: UtilLib.splitMessage,
 
   // Structures
   Application: require('./structures/interfaces/Application'),
@@ -107,3 +107,95 @@ module.exports = {
 
   WebSocket: require('./WebSocket'),
 };
+
+export default Discord;
+export const { BaseClient } = Discord;
+export const { Client } = Discord;
+export const { Shard } = Discord;
+export const { ShardClientUtil } = Discord;
+export const { ShardingManager } = Discord;
+export const { WebhookClient } = Discord;
+export const { ActivityFlags } = Discord;
+export const { BitField } = Discord;
+export const { Collection } = Discord;
+export const { Constants } = Discord;
+export const { DataResolver } = Discord;
+export const { BaseManager } = Discord;
+export const { DiscordAPIError } = Discord;
+export const { HTTPError } = Discord;
+export const { MessageFlags } = Discord;
+export const { Intents } = Discord;
+export const { Permissions } = Discord;
+export const { Speaking } = Discord;
+export const { Snowflake } = Discord;
+export const { SnowflakeUtil } = Discord;
+export const { Structures } = Discord;
+export const { SystemChannelFlags } = Discord;
+export const { UserFlags } = Discord;
+export const { Util } = Discord;
+export const { version } = Discord;
+export const { BaseGuildEmojiManager } = Discord;
+export const { ChannelManager } = Discord;
+export const { GuildChannelManager } = Discord;
+export const { GuildEmojiManager } = Discord;
+export const { GuildEmojiRoleManager } = Discord;
+export const { GuildMemberManager } = Discord;
+export const { GuildMemberRoleManager } = Discord;
+export const { GuildManager } = Discord;
+export const { ReactionManager } = Discord;
+export const { ReactionUserManager } = Discord;
+export const { MessageManager } = Discord;
+export const { PresenceManager } = Discord;
+export const { RoleManager } = Discord;
+export const { UserManager } = Discord;
+export const { discordSort } = Discord;
+export const { escapeMarkdown } = Discord;
+export const { fetchRecommendedShards } = Discord;
+export const { resolveColor } = Discord;
+export const { resolveString } = Discord;
+export const { splitMessage } = Discord;
+export const { Application } = Discord;
+export const { Base } = Discord;
+export const { Activity } = Discord;
+export const { APIMessage } = Discord;
+export const { BaseGuildEmoji } = Discord;
+export const { CategoryChannel } = Discord;
+export const { Channel } = Discord;
+export const { ClientApplication } = Discord;
+export const { ClientUser } = Discord;
+export const { Collector } = Discord;
+export const { DMChannel } = Discord;
+export const { Emoji } = Discord;
+export const { Guild } = Discord;
+export const { GuildAuditLogs } = Discord;
+export const { GuildChannel } = Discord;
+export const { GuildEmoji } = Discord;
+export const { GuildMember } = Discord;
+export const { GuildPreview } = Discord;
+export const { GuildTemplate } = Discord;
+export const { Integration } = Discord;
+export const { Invite } = Discord;
+export const { Message } = Discord;
+export const { MessageAttachment } = Discord;
+export const { MessageCollector } = Discord;
+export const { MessageEmbed } = Discord;
+export const { MessageMentions } = Discord;
+export const { MessageReaction } = Discord;
+export const { NewsChannel } = Discord;
+export const { PermissionOverwrites } = Discord;
+export const { Presence } = Discord;
+export const { ClientPresence } = Discord;
+export const { ReactionCollector } = Discord;
+export const { ReactionEmoji } = Discord;
+export const { RichPresenceAssets } = Discord;
+export const { Role } = Discord;
+export const { StoreChannel } = Discord;
+export const { Team } = Discord;
+export const { TeamMember } = Discord;
+export const { TextChannel } = Discord;
+export const { User } = Discord;
+export const { VoiceChannel } = Discord;
+export const { VoiceRegion } = Discord;
+export const { VoiceState } = Discord;
+export const { Webhook } = Discord;
+export const { WebSocket } = Discord;

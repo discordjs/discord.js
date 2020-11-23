@@ -10,7 +10,7 @@ const prod = process.env.NODE_ENV === 'production';
 const filename = `discord${process.env.VERSIONED ? `.${version}` : ''}${prod ? '.min' : ''}.js`;
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './dist/index.js',
   mode: prod ? 'production' : 'development',
   output: {
     path: path.resolve('./webpack'),

@@ -1,4 +1,7 @@
 {
+  "include": [
+    "src/**/*"
+  ],
   "compilerOptions": {
     "strict": true,
     "moduleResolution": "node",
@@ -16,6 +19,8 @@
       "esnext.symbol"
     ],
     "sourceMap": false,
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+    "allowJs": true,
+    "outDir": "dist"
   }
 }
