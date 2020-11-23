@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const BaseManager = require('./BaseManager');
 const Guild = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
@@ -157,7 +159,7 @@ class GuildManager extends BaseManager {
       roles = [],
       systemChannelID,
       verificationLevel,
-    } = {},
+    }: FIXME,
   ) {
     icon = await DataResolver.resolveImage(icon);
     if (typeof verificationLevel !== 'undefined' && typeof verificationLevel !== 'number') {
@@ -249,4 +251,4 @@ class GuildManager extends BaseManager {
   }
 }
 
-module.exports = GuildManager;
+export default GuildManager;

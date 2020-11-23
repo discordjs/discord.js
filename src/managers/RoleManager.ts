@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const BaseManager = require('./BaseManager');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
@@ -109,7 +111,7 @@ class RoleManager extends BaseManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  create({ data = {}, reason } = {}) {
+  create({ data = {}, reason }: FIXME) {
     if (data.color) data.color = resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
@@ -145,4 +147,4 @@ class RoleManager extends BaseManager {
   }
 }
 
-module.exports = RoleManager;
+export default RoleManager;

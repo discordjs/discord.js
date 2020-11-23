@@ -69,4 +69,4 @@ class UserManager extends BaseManager {
   }
 }
 
-module.exports = UserManager;
+export default UserManager;

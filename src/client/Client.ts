@@ -1,12 +1,16 @@
 'use strict';
 
+import { URLSearchParams } from 'url';
+import ChannelManager from '../managers/ChannelManager';
+import type { FIXME } from '../types';
+
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
-const { Error, TypeError, RangeError } = require('../errors');
+const { Error: DiscordError, TypeError: DiscordTypeError, RangeError: DiscordRangeError } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
-const ChannelManager = require('../managers/ChannelManager');
+
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
@@ -44,13 +48,13 @@ class Client extends BaseClient {
     }
 
     if (this.options.shards === DefaultOptions.shards) {
-      if ('SHARDS' in data) {
+      if (data.SHARDS) {
         this.options.shards = JSON.parse(data.SHARDS);
       }
     }
 
     if (this.options.shardCount === DefaultOptions.shardCount) {
-      if ('SHARD_COUNT' in data) {
+      if (data.SHARD_COUNT) {
         this.options.shardCount = Number(data.SHARD_COUNT);
       } else if (Array.isArray(this.options.shards)) {
         this.options.shardCount = this.options.shards.length;
@@ -203,7 +207,7 @@ class Client extends BaseClient {
    * client.login('my token');
    */
   async login(token = this.token) {
-    if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');
+    if (!token || typeof token !== 'string') throw new DiscordError('TOKEN_INVALID');
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.emit(
       Events.DEBUG,
@@ -282,7 +286,7 @@ class Client extends BaseClient {
    *   .then(webhook => console.log(`Obtained webhook with name: ${webhook.name}`))
    *   .catch(console.error);
    */
-  fetchWebhook(id, token) {
+  fetchWebhook(id, token: string) {
     return this.api
       .webhooks(id, token)
       .get()
@@ -319,7 +323,7 @@ class Client extends BaseClient {
    */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== 'number' || isNaN(lifetime)) {
-      throw new TypeError('INVALID_TYPE', 'lifetime', 'number');
+      throw new DiscordTypeError('INVALID_TYPE', 'lifetime', 'number');
     }
     if (lifetime <= 0) {
       this.emit(Events.DEBUG, "Didn't sweep messages - lifetime is unlimited");
@@ -365,7 +369,7 @@ class Client extends BaseClient {
    */
   fetchGuildPreview(guild) {
     const id = this.guilds.resolveID(guild);
-    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
+    if (!id) throw new DiscordTypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     return this.api
       .guilds(id)
       .preview.get()
@@ -383,7 +387,7 @@ class Client extends BaseClient {
    *   .then(link => console.log(`Generated bot invite link: ${link}`))
    *   .catch(console.error);
    */
-  async generateInvite(options = {}) {
+  async generateInvite(options: FIXME = {}) {
     if (Array.isArray(options) || ['string', 'number'].includes(typeof options) || options instanceof Permissions) {
       process.emitWarning(
         'Client#generateInvite: Generate invite with an options object instead of a PermissionResolvable',
@@ -402,7 +406,7 @@ class Client extends BaseClient {
     }
     if (typeof options.guild !== 'undefined') {
       const guildID = this.guilds.resolveID(options.guild);
-      if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
+      if (!guildID) throw new DiscordTypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildID);
     }
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
@@ -421,7 +425,7 @@ class Client extends BaseClient {
    * @returns {*}
    * @private
    */
-  _eval(script) {
+  _eval(script: string) {
     return eval(script);
   }
 
@@ -435,53 +439,53 @@ class Client extends BaseClient {
       options.ws.intents = Intents.resolve(options.ws.intents);
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'shards', "'auto', a number or array of numbers");
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'shards', "'auto', a number or array of numbers");
     }
-    if (options.shards && !options.shards.length) throw new RangeError('CLIENT_INVALID_PROVIDED_SHARDS');
+    if (options.shards && !options.shards.length) throw new DiscordRangeError('CLIENT_INVALID_PROVIDED_SHARDS');
     if (typeof options.messageCacheMaxSize !== 'number' || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'messageCacheMaxSize', 'a number');
     }
     if (typeof options.messageCacheLifetime !== 'number' || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'The messageCacheLifetime', 'a number');
     }
     if (typeof options.messageSweepInterval !== 'number' || isNaN(options.messageSweepInterval)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'messageSweepInterval', 'a number');
     }
     if (
       typeof options.messageEditHistoryMaxSize !== 'number' ||
       isNaN(options.messageEditHistoryMaxSize) ||
       options.messageEditHistoryMaxSize < -1
     ) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'messageEditHistoryMaxSize', 'a number greater than or equal to -1');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'messageEditHistoryMaxSize', 'a number greater than or equal to -1');
     }
     if (typeof options.fetchAllMembers !== 'boolean') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'fetchAllMembers', 'a boolean');
     }
     if (typeof options.disableMentions !== 'string') {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'disableMentions', 'a string');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'disableMentions', 'a string');
     }
     if (!Array.isArray(options.partials)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'partials', 'an Array');
     }
     if (typeof options.restWsBridgeTimeout !== 'number' || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'restWsBridgeTimeout', 'a number');
     }
     if (typeof options.restRequestTimeout !== 'number' || isNaN(options.restRequestTimeout)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'restRequestTimeout', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'restRequestTimeout', 'a number');
     }
     if (typeof options.restSweepInterval !== 'number' || isNaN(options.restSweepInterval)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'restSweepInterval', 'a number');
     }
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
-      throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
+      throw new DiscordTypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
   }
 }
 
-module.exports = Client;
+export default Client;
 
 /**
  * Options for {@link Client#generateInvite}.

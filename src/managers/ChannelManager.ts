@@ -1,6 +1,6 @@
 'use strict';
+import BaseManager from './BaseManager';
 
-const BaseManager = require('./BaseManager');
 const Channel = require('../structures/Channel');
 const { Events } = require('../util/Constants');
 
@@ -9,7 +9,7 @@ const { Events } = require('../util/Constants');
  * @extends {BaseManager}
  */
 class ChannelManager extends BaseManager {
-  constructor(client, iterable) {
+  constructor(client, iterable?) {
     super(client, iterable, Channel);
   }
 
@@ -93,4 +93,4 @@ class ChannelManager extends BaseManager {
   }
 }
 
-module.exports = ChannelManager;
+export default ChannelManager;

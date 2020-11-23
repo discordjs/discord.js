@@ -66,4 +66,4 @@ class ReactionManager extends BaseManager {
   }
 }
 
-module.exports = ReactionManager;
+export default ReactionManager;

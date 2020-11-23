@@ -126,4 +126,4 @@ class MessageCollector extends Collector {
   }
 }
 
-module.exports = MessageCollector;
+export default MessageCollector;

@@ -32,4 +32,4 @@ class VoiceStateManager extends BaseManager {
   }
 }
 
-module.exports = VoiceStateManager;
+export default VoiceStateManager;

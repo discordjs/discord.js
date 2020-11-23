@@ -56,4 +56,4 @@ class PresenceManager extends BaseManager {
   }
 }
 
-module.exports = PresenceManager;
+export default PresenceManager;

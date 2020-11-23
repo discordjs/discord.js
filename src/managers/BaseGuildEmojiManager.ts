@@ -77,4 +77,4 @@ class BaseGuildEmojiManager extends BaseManager {
   }
 }
 
-module.exports = BaseGuildEmojiManager;
+export default BaseGuildEmojiManager;

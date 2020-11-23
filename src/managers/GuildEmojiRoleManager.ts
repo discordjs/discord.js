@@ -1,12 +1,17 @@
 'use strict';
 
-const { TypeError } = require('../errors');
+import type { FIXME } from '../types';
+
+const { TypeError: DiscordTypeError } = require('../errors');
 const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.
  */
 class GuildEmojiRoleManager {
+  emoji: FIXME;
+  guild: FIXME;
+
   constructor(emoji) {
     /**
      * The emoji belonging to this manager
@@ -56,7 +61,7 @@ class GuildEmojiRoleManager {
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
 
     if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
+      return Promise.reject(new DiscordTypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
     }
 
     const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
@@ -74,7 +79,7 @@ class GuildEmojiRoleManager {
     roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
-      return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
+      return Promise.reject(new DiscordTypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));
     }
 
     const newRoles = this._roles.keyArray().filter(role => !roleOrRoles.includes(role));
@@ -101,7 +106,7 @@ class GuildEmojiRoleManager {
   }
 
   clone() {
-    const clone = new this.constructor(this.emoji);
+    const clone = new (<typeof GuildEmojiRoleManager>this.constructor)(this.emoji);
     clone._patch(this._roles.keyArray().slice());
     return clone;
   }
@@ -116,4 +121,4 @@ class GuildEmojiRoleManager {
   }
 }
 
-module.exports = GuildEmojiRoleManager;
+export default GuildEmojiRoleManager;

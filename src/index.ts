@@ -1,11 +1,51 @@
 'use strict';
 
+import Client from './client/Client';
+import BaseGuildEmojiManager from './managers/BaseGuildEmojiManager';
+import ChannelManager from './managers/ChannelManager';
+import GuildChannelManager from './managers/GuildChannelManager';
+import GuildEmojiManager from './managers/GuildEmojiManager';
+import GuildEmojiRoleManager from './managers/GuildEmojiRoleManager';
+import GuildManager from './managers/GuildManager';
+import GuildMemberManager from './managers/GuildMemberManager';
+import GuildMemberRoleManager from './managers/GuildMemberRoleManager';
+import MessageManager from './managers/MessageManager';
+import PresenceManager from './managers/PresenceManager';
+import ReactionManager from './managers/ReactionManager';
+import ReactionUserManager from './managers/ReactionUserManager';
+import RoleManager from './managers/RoleManager';
+import UserManager from './managers/UserManager';
+import VoiceStateManager from './managers/VoiceStateManager';
+import Message from './structures/Message';
+import MessageEmbed from './structures/MessageEmbed';
+
+export {
+  Client,
+  BaseGuildEmojiManager,
+  ChannelManager,
+  GuildChannelManager,
+  GuildEmojiManager,
+  GuildEmojiRoleManager,
+  GuildManager,
+  GuildMemberManager,
+  GuildMemberRoleManager,
+  MessageManager,
+  PresenceManager,
+  ReactionManager,
+  ReactionUserManager,
+  RoleManager,
+  UserManager,
+  VoiceStateManager,
+  Message,
+  MessageEmbed
+};
+
 const UtilLib = require('./util/Util');
 
 const Discord = {
   // "Root" classes (starting points)
   BaseClient: require('./client/BaseClient'),
-  Client: require('./client/Client'),
+  Client,
   Shard: require('./sharding/Shard'),
   ShardClientUtil: require('./sharding/ShardClientUtil'),
   ShardingManager: require('./sharding/ShardingManager'),
@@ -33,20 +73,20 @@ const Discord = {
   version: require('../package.json').version,
 
   // Managers
-  BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
-  ChannelManager: require('./managers/ChannelManager'),
-  GuildChannelManager: require('./managers/GuildChannelManager'),
-  GuildEmojiManager: require('./managers/GuildEmojiManager'),
-  GuildEmojiRoleManager: require('./managers/GuildEmojiRoleManager'),
-  GuildMemberManager: require('./managers/GuildMemberManager'),
-  GuildMemberRoleManager: require('./managers/GuildMemberRoleManager'),
-  GuildManager: require('./managers/GuildManager'),
-  ReactionManager: require('./managers/ReactionManager'),
-  ReactionUserManager: require('./managers/ReactionUserManager'),
-  MessageManager: require('./managers/MessageManager'),
-  PresenceManager: require('./managers/PresenceManager'),
-  RoleManager: require('./managers/RoleManager'),
-  UserManager: require('./managers/UserManager'),
+  BaseGuildEmojiManager,
+  ChannelManager,
+  GuildChannelManager,
+  GuildEmojiManager,
+  GuildEmojiRoleManager,
+  GuildMemberManager,
+  GuildMemberRoleManager,
+  GuildManager,
+  ReactionManager,
+  ReactionUserManager,
+  MessageManager,
+  PresenceManager,
+  RoleManager,
+  UserManager,
 
   // Shortcuts to Util methods
   discordSort: UtilLib.discordSort,
@@ -81,10 +121,10 @@ const Discord = {
   GuildTemplate: require('./structures/GuildTemplate'),
   Integration: require('./structures/Integration'),
   Invite: require('./structures/Invite'),
-  Message: require('./structures/Message'),
+  Message,
   MessageAttachment: require('./structures/MessageAttachment'),
   MessageCollector: require('./structures/MessageCollector'),
-  MessageEmbed: require('./structures/MessageEmbed'),
+  MessageEmbed,
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   NewsChannel: require('./structures/NewsChannel'),
@@ -110,7 +150,7 @@ const Discord = {
 
 export default Discord;
 export const { BaseClient } = Discord;
-export const { Client } = Discord;
+
 export const { Shard } = Discord;
 export const { ShardClientUtil } = Discord;
 export const { ShardingManager } = Discord;
@@ -134,20 +174,6 @@ export const { SystemChannelFlags } = Discord;
 export const { UserFlags } = Discord;
 export const { Util } = Discord;
 export const { version } = Discord;
-export const { BaseGuildEmojiManager } = Discord;
-export const { ChannelManager } = Discord;
-export const { GuildChannelManager } = Discord;
-export const { GuildEmojiManager } = Discord;
-export const { GuildEmojiRoleManager } = Discord;
-export const { GuildMemberManager } = Discord;
-export const { GuildMemberRoleManager } = Discord;
-export const { GuildManager } = Discord;
-export const { ReactionManager } = Discord;
-export const { ReactionUserManager } = Discord;
-export const { MessageManager } = Discord;
-export const { PresenceManager } = Discord;
-export const { RoleManager } = Discord;
-export const { UserManager } = Discord;
 export const { discordSort } = Discord;
 export const { escapeMarkdown } = Discord;
 export const { fetchRecommendedShards } = Discord;
@@ -175,10 +201,8 @@ export const { GuildPreview } = Discord;
 export const { GuildTemplate } = Discord;
 export const { Integration } = Discord;
 export const { Invite } = Discord;
-export const { Message } = Discord;
 export const { MessageAttachment } = Discord;
 export const { MessageCollector } = Discord;
-export const { MessageEmbed } = Discord;
 export const { MessageMentions } = Discord;
 export const { MessageReaction } = Discord;
 export const { NewsChannel } = Discord;

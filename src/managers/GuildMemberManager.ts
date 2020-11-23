@@ -1,7 +1,9 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const BaseManager = require('./BaseManager');
-const { Error, TypeError, RangeError } = require('../errors');
+const { Error: DiscordError, TypeError: DiscordTypeError, RangeError: DiscordRangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
@@ -162,16 +164,16 @@ class GuildMemberManager extends BaseManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
+  prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason }) {
+    if (typeof days !== 'number') throw new DiscordTypeError('PRUNE_DAYS_TYPE');
 
-    const query = { days };
-    const resolvedRoles = [];
+    const query: FIXME = { days };
+    const resolvedRoles: FIXME[] = [];
 
     for (const role of roles) {
-      const resolvedRole = this.guild.roles.resolveID(role);
+      const resolvedRole: FIXME = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
+        return Promise.reject(new DiscordTypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -209,11 +211,11 @@ class GuildMemberManager extends BaseManager {
    *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *   .catch(console.error);
    */
-  ban(user, options = { days: 0 }) {
-    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
+  ban(user, options: FIXME = { days: 0 }) {
+    if (typeof options !== 'object') return Promise.reject(new DiscordTypeError('INVALID_TYPE', 'options', 'object', true));
     if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
-    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
+    if (!id) return Promise.reject(new DiscordError('BAN_RESOLVE_ID', true));
     return this.client.api
       .guilds(this.guild.id)
       .bans[id].put({ data: options })
@@ -241,7 +243,7 @@ class GuildMemberManager extends BaseManager {
    */
   unban(user, reason) {
     const id = this.client.users.resolveID(user);
-    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
+    if (!id) return Promise.reject(new DiscordError('BAN_RESOLVE_ID'));
     return this.client.api
       .guilds(this.guild.id)
       .bans[id].delete({ reason })
@@ -261,22 +263,23 @@ class GuildMemberManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  _fetchMany({
-    limit = 0,
-    withPresences: presences = false,
-    user: user_ids,
-    query,
-    time = 120e3,
-    nonce = SnowflakeUtil.generate(),
-    force = false,
-  } = {}) {
+  _fetchMany(options?) {
+    let {
+      limit = 0,
+      withPresences: presences = false,
+      user: user_ids,
+      query,
+      time = 120e3,
+      nonce = SnowflakeUtil.generate(),
+      force = false,
+    } = options;
     return new Promise((resolve, reject) => {
       if (this.guild.memberCount === this.cache.size && !query && !limit && !presences && !user_ids && !force) {
         resolve(this.cache);
         return;
       }
       if (!query && !user_ids) query = '';
-      if (nonce.length > 32) throw new RangeError('MEMBER_FETCH_NONCE_LENGTH');
+      if (nonce.length > 32) throw new DiscordRangeError('MEMBER_FETCH_NONCE_LENGTH');
       this.guild.shard.send({
         op: OPCodes.REQUEST_GUILD_MEMBERS,
         d: {
@@ -315,7 +318,7 @@ class GuildMemberManager extends BaseManager {
       const timeout = this.client.setTimeout(() => {
         this.client.removeListener(Events.GUILD_MEMBERS_CHUNK, handler);
         this.client.decrementMaxListeners();
-        reject(new Error('GUILD_MEMBERS_TIMEOUT'));
+        reject(new DiscordError('GUILD_MEMBERS_TIMEOUT'));
       }, time);
       this.client.incrementMaxListeners();
       this.client.on(Events.GUILD_MEMBERS_CHUNK, handler);
@@ -323,4 +326,4 @@ class GuildMemberManager extends BaseManager {
   }
 }
 
-module.exports = GuildMemberManager;
+export default GuildMemberManager;

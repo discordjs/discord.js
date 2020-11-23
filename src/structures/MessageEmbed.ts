@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
@@ -7,6 +9,21 @@ const Util = require('../util/Util');
  * Represents an embed in a message (image/video preview, rich embed, etc.)
  */
 class MessageEmbed {
+  type: FIXME;
+  title: FIXME;
+  description: FIXME;
+  url: FIXME;
+  color: FIXME;
+  timestamp: FIXME;
+  fields: FIXME;
+  thumbnail: FIXME;
+  image: FIXME;
+  video: FIXME;
+  author: FIXME;
+  provider: FIXME;
+  footer: FIXME;
+  files: FIXME;
+
   /**
    * @name MessageEmbed
    * @kind constructor
@@ -47,13 +64,13 @@ class MessageEmbed {
      * The URL of this embed
      * @type {?string}
      */
-    this.url = 'url' in data ? data.url : null;
+    this.url = data.url ? data.url : null;
 
     /**
      * The color of this embed
      * @type {?number}
      */
-    this.color = 'color' in data ? Util.resolveColor(data.color) : null;
+    this.color = data.color ? Util.resolveColor(data.color) : null;
 
     /**
      * The timestamp of this embed
@@ -75,7 +92,7 @@ class MessageEmbed {
      */
     this.fields = [];
     if (data.fields) {
-      this.fields = skipValidation ? data.fields.map(Util.cloneObject) : this.constructor.normalizeFields(data.fields);
+      this.fields = skipValidation ? data.fields.map(Util.cloneObject) : (<typeof MessageEmbed>this.constructor).normalizeFields(data.fields);
     }
 
     /**
@@ -263,7 +280,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addFields(...fields) {
-    this.fields.push(...this.constructor.normalizeFields(fields));
+    this.fields.push(...(<typeof MessageEmbed>this.constructor).normalizeFields(fields));
     return this;
   }
 
@@ -275,7 +292,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   spliceFields(index, deleteCount, ...fields) {
-    this.fields.splice(index, deleteCount, ...this.constructor.normalizeFields(...fields));
+    this.fields.splice(index, deleteCount, ...(<typeof MessageEmbed>this.constructor).normalizeFields(...fields));
     return this;
   }
 
@@ -297,7 +314,7 @@ class MessageEmbed {
    * @param {string} [url] The URL of the author
    * @returns {MessageEmbed}
    */
-  setAuthor(name, iconURL, url) {
+  setAuthor(name, iconURL?: string, url?: string) {
     this.author = { name: Util.resolveString(name), iconURL, url };
     return this;
   }
@@ -360,7 +377,7 @@ class MessageEmbed {
    * @param {Date|number} [timestamp=Date.now()] The timestamp or date
    * @returns {MessageEmbed}
    */
-  setTimestamp(timestamp = Date.now()) {
+  setTimestamp(timestamp: Date | number = Date.now()) {
     if (timestamp instanceof Date) timestamp = timestamp.getTime();
     this.timestamp = timestamp;
     return this;
@@ -458,4 +475,4 @@ class MessageEmbed {
   }
 }
 
-module.exports = MessageEmbed;
+export default MessageEmbed;

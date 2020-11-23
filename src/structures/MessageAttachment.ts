@@ -1,11 +1,22 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const Util = require('../util/Util');
 
 /**
  * Represents an attachment in a message.
  */
 class MessageAttachment {
+  attachment: FIXME;
+  name: FIXME;
+  id: FIXME;
+  size: FIXME;
+  url: FIXME;
+  proxyURL: FIXME;
+  height: FIXME;
+  width: FIXME;
+
   /**
    * @param {BufferResolvable|Stream} attachment The file
    * @param {string} [name=null] The name of the file, if any
@@ -95,4 +106,4 @@ class MessageAttachment {
   }
 }
 
-module.exports = MessageAttachment;
+export default MessageAttachment;

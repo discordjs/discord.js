@@ -91,7 +91,7 @@ class GuildChannelManager extends BaseManager {
    *   ],
    * })
    */
-  async create(name, options = {}) {
+  async create(name, options) {
     let {
       type,
       topic,
@@ -128,4 +128,4 @@ class GuildChannelManager extends BaseManager {
   }
 }
 
-module.exports = GuildChannelManager;
+export default GuildChannelManager;

@@ -21,6 +21,11 @@
     "sourceMap": false,
     "skipDefaultLibCheck": true,
     "allowJs": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "noImplicitAny": false,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ]
   }
 }

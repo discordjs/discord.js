@@ -1,7 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const { TypeError } = require('../errors');
+const { TypeError: DiscordTypeError } = require('../errors');
 const Message = require('../structures/Message');
 const Collection = require('../util/Collection');
 const LimitedCollection = require('../util/LimitedCollection');
@@ -121,7 +121,7 @@ class MessageManager extends BaseManager {
    */
   async delete(message, reason) {
     message = this.resolveID(message);
-    if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
+    if (!message) throw new DiscordTypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     await this.client.api.channels(this.channel.id).messages(message).delete({ reason });
   }
@@ -144,4 +144,4 @@ class MessageManager extends BaseManager {
   }
 }
 
-module.exports = MessageManager;
+export default MessageManager;

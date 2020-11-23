@@ -1,5 +1,7 @@
-# Packages
+# npm
 node_modules/
+
+# Yarn
 yarn.lock
 
 # Log files
@@ -16,10 +18,20 @@ deploy/deploy_key.pub
 
 # Miscellaneous
 .tmp/
-.vscode/
 .idea/
+
+# Docs
 docs/docs.json
-typings/index.js
+
+# VSCode
+.vscode/
+
+# Built files
 webpack/
 dist/
+
+# Ultra runner
 .ultra.cache.json
+
+# npm pack
+*.tgz

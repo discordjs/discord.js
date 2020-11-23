@@ -1,5 +1,6 @@
 'use strict';
 
+import type { FIXME } from '../types';
 const Collection = require('../util/Collection');
 let Structures;
 
@@ -8,6 +9,11 @@ let Structures;
  * @abstract
  */
 class BaseManager {
+  cacheType: FIXME;
+  cache: FIXME;
+  holds: FIXME;
+  client: FIXME;
+
   constructor(client, iterable, holds, cacheType = Collection, ...cacheOptions) {
     if (!Structures) Structures = require('../util/Structures');
     /**
@@ -41,7 +47,7 @@ class BaseManager {
     if (iterable) for (const i of iterable) this.add(i);
   }
 
-  add(data, cache = true, { id, extras = [] } = {}) {
+  add(data: any, cache: any = true, { id, extras = [] }: any = {}) {
     const existing = this.cache.get(id || data.id);
     if (existing && existing._patch && cache) existing._patch(data);
     if (existing) return existing;
@@ -78,4 +84,4 @@ class BaseManager {
   }
 }
 
-module.exports = BaseManager;
+export default BaseManager;

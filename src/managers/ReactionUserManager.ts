@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const BaseManager = require('./BaseManager');
 const { Error } = require('../errors');
 const Collection = require('../util/Collection');
@@ -32,7 +34,7 @@ class ReactionUserManager extends BaseManager {
    * @param {Snowflake} [options.after] Limit fetching users to those with an id greater than the supplied id
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  async fetch({ limit = 100, after, before } = {}) {
+  async fetch({ limit = 100, after, before }: FIXME = {}) {
     const message = this.reaction.message;
     const data = await this.client.api.channels[message.channel.id].messages[message.id].reactions[
       this.reaction.emoji.identifier
@@ -63,4 +65,4 @@ class ReactionUserManager extends BaseManager {
   }
 }
 
-module.exports = ReactionUserManager;
+export default ReactionUserManager;

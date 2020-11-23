@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
@@ -7,7 +9,7 @@ const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
-const { Error, TypeError } = require('../errors');
+const { Error: DiscordError, TypeError: DiscordTypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
 const { MessageTypes } = require('../util/Constants');
@@ -369,7 +371,7 @@ class Message extends Base {
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
-  awaitReactions(filter, options = {}) {
+  awaitReactions(filter, options: FIXME = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(filter, options);
       collector.once('end', (reactions, reason) => {
@@ -462,7 +464,7 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  edit(content, options) {
+  edit(content: FIXME, options?: FIXME) {
     const { data } =
       content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
     return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
@@ -543,7 +545,7 @@ class Message extends Base {
    */
   react(emoji) {
     emoji = this.client.emojis.resolveIdentifier(emoji);
-    if (!emoji) throw new TypeError('EMOJI_TYPE');
+    if (!emoji) throw new DiscordTypeError('EMOJI_TYPE');
 
     return this.client.api
       .channels(this.channel.id)
@@ -573,8 +575,8 @@ class Message extends Base {
    *   .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
    *   .catch(console.error);
    */
-  delete(options = {}) {
-    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
+  delete(options: FIXME = {}) {
+    if (typeof options !== 'object') return Promise.reject(new DiscordTypeError('INVALID_TYPE', 'options', 'object', true));
     const { timeout = 0, reason } = options;
     if (timeout <= 0) {
       return this.channel.messages.delete(this.id, reason).then(() => this);
@@ -620,7 +622,7 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
+    if (!this.webhookID) return Promise.reject(new DiscordError('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
   }
 
@@ -697,4 +699,4 @@ class Message extends Base {
   }
 }
 
-module.exports = Message;
+export default Message;

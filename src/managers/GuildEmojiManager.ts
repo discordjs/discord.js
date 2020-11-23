@@ -1,7 +1,8 @@
 'use strict';
 
-const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
-const { TypeError } = require('../errors');
+import type { FIXME } from '../types';
+import BaseGuildEmojiManager from './BaseGuildEmojiManager';
+const { TypeError: DiscordTypeError } = require('../errors');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
@@ -43,18 +44,18 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  async create(attachment, name, { roles, reason } = {}) {
+  async create(attachment, name, { roles, reason }) {
     attachment = await DataResolver.resolveImage(attachment);
-    if (!attachment) throw new TypeError('REQ_RESOURCE_TYPE');
+    if (!attachment) throw new DiscordTypeError('REQ_RESOURCE_TYPE');
 
-    const data = { image: attachment, name };
+    const data: FIXME = { image: attachment, name };
     if (roles) {
       data.roles = [];
       for (let role of roles instanceof Collection ? roles.values() : roles) {
         role = this.guild.roles.resolve(role);
         if (!role) {
           return Promise.reject(
-            new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
+            new DiscordTypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
           );
         }
         data.roles.push(role.id);
@@ -68,4 +69,4 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   }
 }
 
-module.exports = GuildEmojiManager;
+export default GuildEmojiManager;

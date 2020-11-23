@@ -1,5 +1,7 @@
 'use strict';
 
+import type { FIXME } from '../types';
+
 const { TypeError } = require('../errors');
 const Collection = require('../util/Collection');
 
@@ -7,6 +9,10 @@ const Collection = require('../util/Collection');
  * Manages API methods for roles of a GuildMember and stores their cache.
  */
 class GuildMemberRoleManager {
+  member: FIXME;
+  guild: FIXME;
+  client: FIXME;
+
   constructor(member) {
     /**
      * The GuildMember this manager belongs to
@@ -152,10 +158,10 @@ class GuildMemberRoleManager {
   }
 
   clone() {
-    const clone = new this.constructor(this.member);
+    const clone = new (<typeof GuildMemberRoleManager>this.constructor)(this.member);
     clone.member._roles = [...this._roles.keyArray()];
     return clone;
   }
 }
 
-module.exports = GuildMemberRoleManager;
+export default GuildMemberRoleManager;
