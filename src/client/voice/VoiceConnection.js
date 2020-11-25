@@ -473,7 +473,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   onStartSpeaking({ user_id, ssrc, speaking }) {
-    this.ssrcMap.set(+ssrc, { userID: user_id, speaking: speaking });
+    this.ssrcMap.set(+ssrc, {
+      ...(this.ssrcMap.get(+ssrc) || {}),
+      userID: user_id,
+      speaking: speaking,
+    });
   }
 
   /**
