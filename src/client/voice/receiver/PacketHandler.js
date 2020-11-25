@@ -1,7 +1,9 @@
 'use strict';
 
 const EventEmitter = require('events');
+const Speaking = require('../../../util/Speaking');
 const secretbox = require('../util/Secretbox');
+const { SILENCE_FRAME } = require('../util/Silence');
 
 // The delay between packets when a user is considered to have stopped speaking
 // https://github.com/discordjs/discord.js/issues/3524#issuecomment-540373200
@@ -84,12 +86,30 @@ class PacketHandler extends EventEmitter {
     const userStat = this.connection.ssrcMap.get(ssrc);
     if (!userStat) return;
 
+    let opusPacket;
+    const streamInfo = this.streams.get(userStat.userID);
+    // If the user is in video, we need to check if the packet is just silence
+    if (userStat.hasVideo) {
+      opusPacket = this.parseBuffer(buffer);
+      if (opusPacket instanceof Error) {
+        // Only emit an error if we were actively receiving packets from this user
+        if (streamInfo) {
+          this.emit('error', opusPacket);
+          return;
+        }
+      }
+      if (SILENCE_FRAME.equals(opusPacket)) {
+        // If this is a silence frame, pretend we never received it
+        return;
+      }
+    }
+
     let speakingTimeout = this.speakingTimeouts.get(ssrc);
     if (typeof speakingTimeout === 'undefined') {
       // Ensure at least the speaking bit is set.
       // As the object is by reference, it's only needed once per client re-connect.
       if (userStat.speaking === 0) {
-        userStat.speaking = 1;
+        userStat.speaking = Speaking.FLAGS.SPEAKING;
       }
       this.connection.onSpeaking({ user_id: userStat.userID, ssrc: ssrc, speaking: userStat.speaking });
       speakingTimeout = this.receiver.connection.client.setTimeout(() => {
@@ -106,15 +126,17 @@ class PacketHandler extends EventEmitter {
       speakingTimeout.refresh();
     }
 
-    let stream = this.streams.get(userStat.userID);
-    if (!stream) return;
-    stream = stream.stream;
-    const opusPacket = this.parseBuffer(buffer);
-    if (opusPacket instanceof Error) {
-      this.emit('error', opusPacket);
-      return;
+    if (streamInfo) {
+      const { stream } = streamInfo;
+      if (!opusPacket) {
+        opusPacket = this.parseBuffer(buffer);
+        if (opusPacket instanceof Error) {
+          this.emit('error', opusPacket);
+          return;
+        }
+      }
+      stream.push(opusPacket);
     }
-    stream.push(opusPacket);
   }
 }
 
