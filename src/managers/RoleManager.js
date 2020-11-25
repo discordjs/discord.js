@@ -2,6 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const Role = require('../structures/Role');
+const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 const { resolveColor } = require('../util/Util');
 
@@ -31,9 +32,10 @@ class RoleManager extends BaseManager {
 
   /**
    * Obtains one or more roles from Discord, or the role cache if they're already available.
-   * @param {Snowflake} [id] ID or IDs of the role(s)
-   * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
-   * @returns {Promise<Role|RoleManager>}
+   * @param {Snowflake} [id] ID of the role to fetch
+   * @param {boolean} [cache=true] Whether to cache the new role object(s) if they weren't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
@@ -45,16 +47,17 @@ class RoleManager extends BaseManager {
    *   .then(role => console.log(`The role color is: ${role.color}`))
    *   .catch(console.error);
    */
-  async fetch(id, cache = true) {
-    if (id) {
+  async fetch(id, cache = true, force = false) {
+    if (id && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const roles = await this.client.api.guilds(this.guild.id).roles.get();
-    for (const role of roles) this.add(role, cache);
-    return id ? this.cache.get(id) || null : this;
+    const data = await this.client.api.guilds(this.guild.id).roles.get();
+    const roles = new Collection();
+    for (const role of data) roles.set(role.id, this.add(role, cache));
+    return id ? roles.get(id) || null : roles;
   }
 
   /**

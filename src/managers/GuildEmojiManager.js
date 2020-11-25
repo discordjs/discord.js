@@ -1,31 +1,24 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
 const { TypeError } = require('../errors');
-const GuildEmoji = require('../structures/GuildEmoji');
-const ReactionEmoji = require('../structures/ReactionEmoji');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
- * @extends {BaseManager}
+ * @extends {BaseGuildEmojiManager}
  */
-class GuildEmojiManager extends BaseManager {
+class GuildEmojiManager extends BaseGuildEmojiManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable, GuildEmoji);
+    super(guild.client, iterable);
+
     /**
      * The guild this manager belongs to
      * @type {Guild}
      */
     this.guild = guild;
   }
-
-  /**
-   * The cache of GuildEmojis
-   * @type {Collection<Snowflake, GuildEmoji>}
-   * @name GuildEmojiManager#cache
-   */
 
   add(data, cache) {
     return super.add(data, cache, { extras: [this.guild] });
@@ -72,57 +65,6 @@ class GuildEmojiManager extends BaseManager {
       .guilds(this.guild.id)
       .emojis.post({ data, reason })
       .then(emoji => this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji);
-  }
-
-  /**
-   * Data that can be resolved into an GuildEmoji object. This can be:
-   * * A custom emoji ID
-   * * A GuildEmoji object
-   * * A ReactionEmoji object
-   * @typedef {Snowflake|GuildEmoji|ReactionEmoji} EmojiResolvable
-   */
-
-  /**
-   * Resolves an EmojiResolvable to an Emoji object.
-   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
-   * @returns {?GuildEmoji}
-   */
-  resolve(emoji) {
-    if (emoji instanceof ReactionEmoji) return super.resolve(emoji.id);
-    return super.resolve(emoji);
-  }
-
-  /**
-   * Resolves an EmojiResolvable to an Emoji ID string.
-   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
-   * @returns {?Snowflake}
-   */
-  resolveID(emoji) {
-    if (emoji instanceof ReactionEmoji) return emoji.id;
-    return super.resolveID(emoji);
-  }
-
-  /**
-   * Data that can be resolved to give an emoji identifier. This can be:
-   * * The unicode representation of an emoji
-   * * An EmojiResolvable
-   * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
-   */
-
-  /**
-   * Resolves an EmojiResolvable to an emoji identifier.
-   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
-   * @returns {?string}
-   */
-  resolveIdentifier(emoji) {
-    const emojiResolvable = this.resolve(emoji);
-    if (emojiResolvable) return emojiResolvable.identifier;
-    if (emoji instanceof ReactionEmoji) return emoji.identifier;
-    if (typeof emoji === 'string') {
-      if (!emoji.includes('%')) return encodeURIComponent(emoji);
-      else return emoji;
-    }
-    return null;
   }
 }
 

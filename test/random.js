@@ -116,7 +116,8 @@ client.on('message', message => {
 
     if (message.content.startsWith('kick')) {
       message.guild
-        .member(message.mentions.users.first())
+        .members
+        .resolve(message.mentions.users.first())
         .kick()
         .then(member => {
           console.log(member);

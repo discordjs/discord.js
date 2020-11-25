@@ -32,32 +32,32 @@ class VoiceState extends Base {
      * Whether this member is deafened server-wide
      * @type {?boolean}
      */
-    this.serverDeaf = data.deaf;
+    this.serverDeaf = 'deaf' in data ? data.deaf : null;
     /**
      * Whether this member is muted server-wide
      * @type {?boolean}
      */
-    this.serverMute = data.mute;
+    this.serverMute = 'mute' in data ? data.mute : null;
     /**
      * Whether this member is self-deafened
      * @type {?boolean}
      */
-    this.selfDeaf = data.self_deaf;
+    this.selfDeaf = 'self_deaf' in data ? data.self_deaf : null;
     /**
      * Whether this member is self-muted
      * @type {?boolean}
      */
-    this.selfMute = data.self_mute;
+    this.selfMute = 'self_mute' in data ? data.self_mute : null;
     /**
      * Whether this member's camera is enabled
-     * @type {boolean}
+     * @type {?boolean}
      */
-    this.selfVideo = data.self_video;
+    this.selfVideo = 'self_video' in data ? data.self_video : null;
     /**
      * The session ID of this member's connection
      * @type {?string}
      */
-    this.sessionID = data.session_id;
+    this.sessionID = 'session_id' in data ? data.session_id : null;
     /**
      * Whether this member is streaming using "Go Live"
      * @type {boolean}
@@ -67,7 +67,7 @@ class VoiceState extends Base {
      * The ID of the voice channel that this member is in
      * @type {?Snowflake}
      */
-    this.channelID = data.channel_id;
+    this.channelID = data.channel_id || null;
     return this;
   }
 

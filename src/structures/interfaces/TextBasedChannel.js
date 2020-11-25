@@ -312,7 +312,7 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
+   * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
@@ -330,10 +330,7 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api
-          .channels(this.id)
-          .messages(messageIDs[0])
-          .delete();
+        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIDs[0],

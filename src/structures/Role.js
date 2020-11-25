@@ -147,7 +147,7 @@ class Role extends Base {
    */
   get editable() {
     if (this.managed) return false;
-    const clientMember = this.guild.member(this.client.user);
+    const clientMember = this.guild.members.resolve(this.client.user);
     if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
@@ -193,7 +193,7 @@ class Role extends Base {
    * @example
    * // Edit a role
    * role.edit({ name: 'new role' })
-   *   .then(updated => console.log(`Edited role ${updated.name} name to ${updated.name}`))
+   *   .then(updated => console.log(`Edited role name to ${updated.name}`))
    *   .catch(console.error);
    */
   async edit(data, reason) {
@@ -252,7 +252,7 @@ class Role extends Base {
    * @example
    * // Set the name of the role
    * role.setName('new role')
-   *   .then(updated => console.log(`Edited name of role ${role.name} to ${updated.name}`))
+   *   .then(updated => console.log(`Updated role name to ${updated.name}`))
    *   .catch(console.error);
    */
   setName(name, reason) {
@@ -282,7 +282,7 @@ class Role extends Base {
    * @example
    * // Set the hoist of the role
    * role.setHoist(true)
-   *   .then(r => console.log(`Role hoisted: ${r.hoist}`))
+   *   .then(updated => console.log(`Role hoisted: ${updated.hoist}`))
    *   .catch(console.error);
    */
   setHoist(hoist, reason) {

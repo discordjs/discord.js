@@ -2,7 +2,6 @@
 
 const path = require('path');
 const TerserJSPlugin = require('terser-webpack-plugin');
-const webpack = require('webpack');
 const version = require('./package.json').version;
 
 const prod = process.env.NODE_ENV === 'production';
@@ -47,17 +46,17 @@ module.exports = {
     zlib: 'empty',
   },
   optimization: {
+    minimize: true,
     minimizer: [
       new TerserJSPlugin({
         cache: false,
         terserOptions: {
-          mangle: { keep_classnames: true },
-          compress: { keep_classnames: true },
+          mangle: { keep_classnames: true, keep_fnames: true },
           keep_classnames: true,
+          keep_fnames: true,
           output: { comments: false },
         },
       }),
     ],
   },
-  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 };

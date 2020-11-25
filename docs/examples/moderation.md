@@ -33,7 +33,7 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.member(user);
+      const member = message.guild.members.resolve(user);
       // If the member is in the guild
       if (member) {
         /**
@@ -66,7 +66,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -105,7 +105,7 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.member(user);
+      const member = message.guild.members.resolve(user);
       // If the member is in the guild
       if (member) {
         /**
@@ -142,7 +142,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
