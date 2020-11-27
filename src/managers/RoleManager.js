@@ -89,8 +89,10 @@ class RoleManager extends BaseManager {
    * @param {Object} [options] Options
    * @param {string} [options.name] The name of the new role
    * @param {ColorResolvable} [options.color] The data to create the role with
+   * @param {boolean} [options.hoist] Whether or not the new role should be hoisted.
    * @param {PermissionResolvable} [options.permissions] The permissions for the new role
    * @param {number} [options.position] The position of the new role
+   * @param {boolean} [options.mentionable] Whether or not the new role should be mentionable.
    * @param {string} [options.reason] Reason for creating this role
    * @returns {Promise<Role>}
    * @example
@@ -109,7 +111,7 @@ class RoleManager extends BaseManager {
    *   .catch(console.error);
    */
   create(options = {}) {
-    let { name, color, permissions, position, reason } = options;
+    let { name, color, hoist, permissions, position, mentionable, reason } = options;
     if (color) color = resolveColor(color);
     if (permissions) permissions = Permissions.resolve(permissions);
 
@@ -119,7 +121,9 @@ class RoleManager extends BaseManager {
         data: {
           name,
           color,
+          hoist,
           permissions,
+          mentionable,
         },
         reason,
       })
