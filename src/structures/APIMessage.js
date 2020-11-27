@@ -171,6 +171,7 @@ class APIMessage {
         : this.options.allowedMentions;
 
     if (allowedMentions) {
+      allowedMentions = Util.cloneObject(allowedMentions);
       allowedMentions.replied_user = allowedMentions.repliedUser;
       delete allowedMentions.repliedUser;
     }
