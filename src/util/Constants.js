@@ -120,7 +120,7 @@ function makeStickerUrl(root, { format = 'png', size, passthrough = true } = {})
     params.append('size', size);
   }
   params.append('passthrough', passthrough);
-  return `${root}.${format}${params}`;
+  return `${root}.${format}?${params}`;
 }
 
 /**
