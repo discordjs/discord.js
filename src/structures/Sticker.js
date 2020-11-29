@@ -58,19 +58,14 @@ class Sticker extends Base {
      * @type {?string[]}
      */
     this.tags = sticker.tags ? sticker.tags.split(', ') : null;
-  }
 
-  /**
-   * A link to the sticker.
-   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
-   * Lottie json files must be converted in order to be displayed in Discord.</info>
-   * @param {StickerURLOptions} [options={}] Options for the Image URL
-   * @returns {?string}
-   */
-  stickerURL({ size, animated } = {}) {
-    return this.client.rest.cdn.Sticker(this.id, this.asset, this.format, size, animated);
+    /**
+     * A link to the sticker.
+     * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
+     * Lottie json files must be converted in order to be displayed in Discord.</info>
+     */
+    this.url = this.client.rest.cdn.Sticker(this.id, this.asset, this.format);
   }
-
   /**
    * The timestamp the sticker was created at
    * @type {number}

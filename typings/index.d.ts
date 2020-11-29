@@ -3096,12 +3096,7 @@ declare module 'discord.js' {
     public packID: Snowflake;
     public previewAsset: string | null;
     public tags: string[] | null;
-    public stickerURL(options?: StickerURLOptions): string;
-  }
-
-  interface StickerURLOptions {
-    size?: ImageSize;
-    animated?: boolean;
+    public url: string;
   }
 
   type StickerFormatTypes = 'PNG' | 'APNG' | 'LOTTIE';

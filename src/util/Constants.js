@@ -113,14 +113,8 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
 
-function makeStickerUrl(root, { format = 'png', size, passthrough = true } = {}) {
-  const params = new URLSearchParams();
-  if (size) {
-    if (!AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
-    params.append('size', size);
-  }
-  params.append('passthrough', passthrough);
-  return `${root}.${format}?${params}`;
+function makeStickerUrl(root, { format = 'png' } = {}) {
+  return `${root}.${format}`;
 }
 
 /**
@@ -133,22 +127,13 @@ function makeStickerUrl(root, { format = 'png', size, passthrough = true } = {})
  * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
  */
 
-/**
- * Options for Sticker Image URL.
- * @typedef {Object} StickerURLOptions
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
- * @property {boolean} [animated=true] Whether the image will be animated if it has an animated version.
- */
-
 exports.Endpoints = {
   CDN(root) {
     return {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
-      Sticker: (stickerID, hash, format, size, passthrough = true) =>
+      Sticker: (stickerID, hash, format) =>
         makeStickerUrl(`${root}/stickers/${stickerID}/${hash}`, {
           format: format === 'LOTTIE' ? 'json' : 'png',
-          size,
-          passthrough,
         }),
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
