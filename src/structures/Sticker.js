@@ -60,7 +60,7 @@ class Sticker extends Base {
     this.tags = sticker.tags ? sticker.tags.split(', ') : null;
 
     /**
-     * A link to the sticker.
+     * A link to the sticker
      * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
      * Lottie json files must be converted in order to be displayed in Discord.</info>
      */
