@@ -63,6 +63,7 @@ class Sticker extends Base {
      * A link to the sticker
      * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
      * Lottie json files must be converted in order to be displayed in Discord.</info>
+     * @type {string}
      */
     this.url = this.client.rest.cdn.Sticker(this.id, this.asset, this.format);
   }
