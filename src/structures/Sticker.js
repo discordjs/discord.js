@@ -65,7 +65,9 @@ class Sticker extends Base {
      * Lottie json files must be converted in order to be displayed in Discord.</info>
      * @type {string}
      */
-    this.url = this.client.rest.cdn.Sticker(this.id, this.asset, this.format);
+    this.url = `${client.options.http.cdn}/stickers/${this.id}/${this.asset}.${
+      this.format === 'LOTTIE' ? 'json' : 'png'
+    }`;
   }
   /**
    * The timestamp the sticker was created at

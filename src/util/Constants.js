@@ -113,10 +113,6 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
 
-function makeStickerUrl(root, { format = 'png' } = {}) {
-  return `${root}.${format}`;
-}
-
 /**
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
@@ -131,10 +127,6 @@ exports.Endpoints = {
   CDN(root) {
     return {
       Emoji: (emojiID, format = 'png') => `${root}/emojis/${emojiID}.${format}`,
-      Sticker: (stickerID, hash, format) =>
-        makeStickerUrl(`${root}/stickers/${stickerID}/${hash}`, {
-          format: format === 'LOTTIE' ? 'json' : 'png',
-        }),
       Asset: name => `${root}/assets/${name}`,
       DefaultAvatar: discriminator => `${root}/embed/avatars/${discriminator}.png`,
       Avatar: (userID, hash, format = 'webp', size, dynamic = false) => {
@@ -673,21 +665,6 @@ exports.WebhookTypes = [
   null,
   'Incoming',
   'Channel Follower',
-];
-
-/**
- * The type for sticker format
- * * PNG
- * * APNG
- * * LOTTIE
- * @typedef {string} StickerFormatTypes
- */
-exports.StickerFormatTypes = [
-  // They start at 1
-  null,
-  'PNG',
-  'APNG',
-  'LOTTIE',
 ];
 
 function keyMirror(arr) {
