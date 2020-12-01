@@ -319,7 +319,7 @@ class GuildMember extends Base {
 
   /**
    * Sets the nickname for this member.
-   * @param {string} nick The nickname for the guild member
+   * @param {string|null} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */
