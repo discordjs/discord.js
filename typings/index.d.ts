@@ -831,6 +831,7 @@ declare module 'discord.js' {
     public kick(reason?: string): Promise<GuildMember>;
     public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string, reason?: string): Promise<GuildMember>;
+    public resetNickname(reason?: string): Promise<GuildMember>;
     public toJSON(): object;
     public toString(): string;
     public valueOf(): string;

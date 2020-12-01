@@ -328,6 +328,15 @@ class GuildMember extends Base {
   }
 
   /**
+   * Resets the nickname for this member.
+   * @param {string} [reason] Reason for resetting the nickname
+   * @returns {Promise<GuildMember>}
+   */
+  resetNickname(reason) {
+    return this.edit({ nick: '' }, reason);
+  }
+
+  /**
    * Creates a DM channel between the client and this member.
    * @returns {Promise<DMChannel>}
    */
