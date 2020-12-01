@@ -409,7 +409,9 @@ class Message extends Base {
     return (
       !this.deleted &&
       (this.author.id === this.client.user.id ||
-        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        (this.guild &&
+          this.channel.permissionsFor(this.client.user) &&
+          this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
     );
   }
 
