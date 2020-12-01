@@ -373,38 +373,46 @@ class Client extends BaseClient {
   }
 
   /**
-   * Generates a link that can be used to invite the bot to a guild.
-   * @param {InviteGenerationOptions|PermissionResolvable} [options] Permissions to request
-   * @returns {Promise<string>}
-   * @example
-   * client.generateInvite({
-   *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
-   * })
-   *   .then(link => console.log(`Generated bot invite link: ${link}`))
-   *   .catch(console.error);
+   * Options for {@link Client#generateInvite}.
+   * @typedef {Object} InviteGenerationOptions
+   * @property {PermissionResolvable} [permissions] Permissions to request
+   * @property {GuildResolvable} [guild] Guild to preselect
+   * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
    */
-  async generateInvite(options = {}) {
-    if (Array.isArray(options) || ['string', 'number'].includes(typeof options) || options instanceof Permissions) {
-      process.emitWarning(
-        'Client#generateInvite: Generate invite with an options object instead of a PermissionResolvable',
-        'DeprecationWarning',
-      );
-      options = { permissions: options };
-    }
-    const application = await this.fetchApplication();
+
+  /**
+   * Generates a link that can be used to invite the bot to a guild.
+   * @param {InviteGenerationOptions} [options={}] Options for the invite
+   * @returns {string}
+   * @example
+   * const link = client.generateInvite({
+   *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
+   * });
+   * console.log(`Generated bot invite link: ${link}`);
+   */
+  generateInvite(options = {}) {
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+
     const query = new URLSearchParams({
-      client_id: application.id,
-      permissions: Permissions.resolve(options.permissions),
+      client_id: this.user.id,
       scope: 'bot',
     });
-    if (typeof options.disableGuildSelect === 'boolean') {
-      query.set('disable_guild_select', options.disableGuildSelect.toString());
+
+    if (options.permissions) {
+      const permissions = Permissions.resolve(options.permissions);
+      if (permissions) query.set('permissions', permissions);
     }
-    if (typeof options.guild !== 'undefined') {
+
+    if (options.disableGuildSelect) {
+      query.set('disable_guild_select', true);
+    }
+
+    if (options.guild) {
       const guildID = this.guilds.resolveID(options.guild);
       if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildID);
     }
+
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
   }
 
@@ -482,14 +490,6 @@ class Client extends BaseClient {
 }
 
 module.exports = Client;
-
-/**
- * Options for {@link Client#generateInvite}.
- * @typedef {Object} InviteGenerationOptions
- * @property {PermissionResolvable} [permissions] Permissions to request
- * @property {GuildResolvable} [guild] Guild to preselect
- * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
- */
 
 /**
  * Emitted for general warnings.
