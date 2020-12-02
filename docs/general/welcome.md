@@ -33,11 +33,11 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 14.0.0 or newer is required.**
+**Node.js 14.0.0 or newer is required.**  
 Ignore any warnings about unmet peer dependencies, as they're all optional.
 
-Without voice support: `npm install discord.js`
-With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`
+Without voice support: `npm install discord.js`  
+With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
 
 ### Audio engines
@@ -94,7 +94,7 @@ client.login('token');
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs).
+[documentation](https://discord.js.org/#/docs).  
 See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
 ## Help
