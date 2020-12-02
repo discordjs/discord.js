@@ -602,7 +602,14 @@ class Message extends Base {
     return this.channel.send(
       content instanceof APIMessage
         ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+        : APIMessage.transformOptions(content, options, {
+          reply: this.member || this.author,
+          message_reference: {
+            message_id: this.id,
+            messagechannel_id: (this.channel || {}).id,
+            channelguild_id: (this.guild || {}).id
+          }
+        })
     );
   }
 
