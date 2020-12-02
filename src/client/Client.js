@@ -383,18 +383,20 @@ class Client extends BaseClient {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    * @param {InviteGenerationOptions} [options={}] Options for the invite
-   * @returns {string}
+   * @returns {Promise<string>}
    * @example
-   * const link = client.generateInvite({
+   * client.generateInvite({
    *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
-   * });
-   * console.log(`Generated bot invite link: ${link}`);
+   * })
+   *   .then(link => console.log(`Generated bot invite link: ${link}`))
+   *   .catch(console.error);
    */
-  generateInvite(options = {}) {
+  async generateInvite(options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
 
+    const application = await this.fetchApplication();
     const query = new URLSearchParams({
-      client_id: this.user.id,
+      client_id: application.id,
       scope: 'bot',
     });
 
