@@ -205,6 +205,7 @@ class APIMessage {
       content,
       tts,
       nonce,
+      message_reference: this.options.message_reference,
       embed: this.options.embed === null ? null : embeds[0],
       embeds,
       username,
