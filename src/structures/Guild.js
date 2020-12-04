@@ -641,6 +641,7 @@ class Guild extends Base {
    * Returns the GuildMember form of a User object, if the user is present in the guild.
    * @param {UserResolvable} user The user that you want to obtain the GuildMember of
    * @returns {?GuildMember}
+   * @deprecated
    * @example
    * // Get the guild member of a user
    * const member = guild.member(message.author);
@@ -1579,5 +1580,7 @@ Guild.prototype.fetchVanityCode = deprecate(
   Guild.prototype.fetchVanityCode,
   'Guild#fetchVanityCode: Use fetchVanityData() instead',
 );
+
+Guild.prototype.member = deprecate(Guild.prototype.member, 'Guild#member: Use members.resolve instead');
 
 module.exports = Guild;
