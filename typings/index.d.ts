@@ -3133,6 +3133,8 @@ declare module 'discord.js' {
     fec?: boolean;
     bitrate?: number | 'auto';
     highWaterMark?: number;
+    replaceArgs?: boolean;
+    customFFMPEGArgs?: string[];
   }
 
   type SpeakingString = 'SPEAKING' | 'SOUNDSHARE' | 'PRIORITY_SPEAKING';

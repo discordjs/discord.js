@@ -41,7 +41,8 @@ class BasePlayer extends EventEmitter {
 
     const isStream = input instanceof ReadableStream;
 
-    const args = isStream ? FFMPEG_ARGUMENTS.slice() : ['-i', input, ...FFMPEG_ARGUMENTS];
+    const ARGS = options.replaceArgs ? options.customFFMPEGArgs : [...FFMPEG_ARGUMENTS, ...options.customFFMPEGArgs];
+    const args = isStream ? ARGS.slice() : ['-i', input, ...ARGS];
     if (options.seek) args.unshift('-ss', String(options.seek));
 
     const ffmpeg = new prism.FFmpeg({ args });

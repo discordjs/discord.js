@@ -59,7 +59,7 @@ class PlayInterface {
    * connection.play('http://www.sample-videos.com/audio/mp3/wave.mp3');
    * @returns {StreamDispatcher}
    */
-  play(resource, options = {}) {
+  play(resource, options = { replaceArgs: false, customFFMPEGArgs: [] }) {
     const VoiceBroadcast = require('../VoiceBroadcast');
     if (resource instanceof VoiceBroadcast) {
       if (!this.player.playBroadcast) throw new Error('VOICE_PLAY_INTERFACE_NO_BROADCAST');
