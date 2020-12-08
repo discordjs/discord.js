@@ -205,11 +205,11 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a crossposted message.
+     * Reference data sent in a crossposted message or inline reply.
      * @typedef {Object} MessageReference
-     * @property {string} channelID ID of the channel the message was crossposted from
-     * @property {?string} guildID ID of the guild the message was crossposted from
-     * @property {?string} messageID ID of the message that was crossposted
+     * @property {string} channelID ID of the channel the message was referenced
+     * @property {?string} guildID ID of the guild the message was referenced
+     * @property {?string} messageID ID of the message that was referenced
      */
 
     /**
@@ -223,6 +223,10 @@ class Message extends Base {
           messageID: data.message_reference.message_id,
         }
       : null;
+
+    if (data.referenced_message) {
+      this.channel.messages.add(data.referenced_message);
+    }
   }
 
   /**
@@ -426,6 +430,18 @@ class Message extends Base {
   }
 
   /**
+   * The Message this crosspost/reply/pin-add references, if cached
+   * @type {?Message}
+   * @readonly
+   */
+  get referencedMessage() {
+    if (!this.reference) return null;
+    const referenceChannel = this.client.channels.resolve(this.reference.channelID);
+    if (!referenceChannel) return null;
+    return referenceChannel.messages.resolve(this.reference.messageID);
+  }
+
+  /**
    * Whether the message is crosspostable by the client user
    * @type {boolean}
    * @readonly
@@ -588,21 +604,19 @@ class Message extends Base {
   }
 
   /**
-   * Replies to the message.
+   * Send an inline reply to this message.
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
-   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
+   * @param {MessageResolvable} [options.replyTo=this] The message to reply to
    * @returns {Promise<Message|Message[]>}
-   * @example
-   * // Reply to a message
-   * message.reply('Hey, I\'m a reply!')
-   *   .then(() => console.log(`Sent a reply to ${message.author.username}`))
-   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
       content instanceof APIMessage
         ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+        : APIMessage.transformOptions(content, options, {
+            replyTo: this,
+          }),
     );
   }
 

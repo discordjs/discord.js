@@ -403,6 +403,7 @@ exports.WSEvents = keyMirror([
  * * CHANNEL_FOLLOW_ADD
  * * GUILD_DISCOVERY_DISQUALIFIED
  * * GUILD_DISCOVERY_REQUALIFIED
+ * * REPLY
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -422,6 +423,10 @@ exports.MessageTypes = [
   null,
   'GUILD_DISCOVERY_DISQUALIFIED',
   'GUILD_DISCOVERY_REQUALIFIED',
+  null,
+  null,
+  null,
+  'REPLY',
 ];
 
 /**
