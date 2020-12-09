@@ -5,13 +5,14 @@ const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const { Error, TypeError, RangeError } = require('../errors');
+const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
-const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const ClientApplication = require('../structures/ClientApplication');
 const GuildPreview = require('../structures/GuildPreview');
+const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
@@ -165,11 +166,11 @@ class Client extends BaseClient {
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {GuildEmojiManager}
+   * @type {BaseGuildEmojiManager}
    * @readonly
    */
   get emojis() {
-    const emojis = new GuildEmojiManager({ client: this });
+    const emojis = new BaseGuildEmojiManager(this);
     for (const guild of this.guilds.cache.values()) {
       if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
     }
@@ -252,6 +253,23 @@ class Client extends BaseClient {
       .invites(code)
       .get({ query: { with_counts: true } })
       .then(data => new Invite(this, data));
+  }
+
+  /**
+   * Obtains a template from Discord.
+   * @param {GuildTemplateResolvable} template Template code or URL
+   * @returns {Promise<GuildTemplate>}
+   * @example
+   * client.fetchGuildTemplate('https://discord.new/FKvmczH2HyUf')
+   *   .then(template => console.log(`Obtained template with code: ${template.code}`))
+   *   .catch(console.error);
+   */
+  fetchGuildTemplate(template) {
+    const code = DataResolver.resolveGuildTemplateCode(template);
+    return this.api.guilds
+      .templates(code)
+      .get()
+      .then(data => new GuildTemplate(this, data));
   }
 
   /**

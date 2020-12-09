@@ -1,6 +1,6 @@
 {
   "name": "discord.js",
-  "version": "12.4.1",
+  "version": "12.5.0",
   "description": "A powerful library for interacting with the Discord API",
   "main": "./src/index",
   "types": "./typings/index.d.ts",
@@ -62,7 +62,7 @@
     "@types/node": "^12.12.6",
     "@types/ws": "^7.2.7",
     "cross-env": "^7.0.2",
-    "discord.js-docgen": "discordjs/docgen",
+    "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
     "dtslint": "^4.0.4",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^6.13.0",
@@ -80,7 +80,7 @@
     "webpack-cli": "^3.3.12"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "browser": {
     "@discordjs/opus": false,

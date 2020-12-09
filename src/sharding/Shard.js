@@ -96,7 +96,7 @@ class Shard extends EventEmitter {
      * @type {Function}
      * @private
      */
-    this._exitListener = this._handleExit.bind(this);
+    this._exitListener = this._handleExit.bind(this, undefined);
   }
 
   /**
@@ -334,18 +334,20 @@ class Shard extends EventEmitter {
 
       // Shard is requesting a property fetch
       if (message._sFetchProp) {
-        this.manager.fetchClientValues(message._sFetchProp).then(
-          results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
-          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) }),
+        const resp = { _sFetchProp: message._sFetchProp, _sFetchPropShard: message._sFetchPropShard };
+        this.manager.fetchClientValues(message._sFetchProp, message._sFetchPropShard).then(
+          results => this.send({ ...resp, _result: results }),
+          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
         );
         return;
       }
 
       // Shard is requesting an eval broadcast
       if (message._sEval) {
-        this.manager.broadcastEval(message._sEval).then(
-          results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) }),
+        const resp = { _sEval: message._sEval, _sEvalShard: message._sEvalShard };
+        this.manager.broadcastEval(message._sEval, message._sEvalShard).then(
+          results => this.send({ ...resp, _result: results }),
+          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
         );
         return;
       }

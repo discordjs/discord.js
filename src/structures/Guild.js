@@ -4,6 +4,7 @@ const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
+const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
@@ -17,6 +18,7 @@ const RoleManager = require('../managers/RoleManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
+  browser,
   ChannelTypes,
   DefaultMessageNotifications,
   PartialTypes,
@@ -636,18 +638,6 @@ class Guild extends Base {
   }
 
   /**
-   * Returns the GuildMember form of a User object, if the user is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // Get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.members.resolve(user);
-  }
-
-  /**
    * Fetches this guild.
    * @returns {Promise<Guild>}
    */
@@ -734,6 +724,20 @@ class Guild extends Base {
   }
 
   /**
+   * Fetches a collection of templates from this guild.
+   * Resolves with a collection mapping templates by their codes.
+   * @returns {Promise<Collection<string, GuildTemplate>>}
+   */
+  fetchTemplates() {
+    return this.client.api
+      .guilds(this.id)
+      .templates.get()
+      .then(templates =>
+        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
+      );
+  }
+
+  /**
    * The data for creating an integration.
    * @typedef {Object} IntegrationData
    * @property {string} id The integration id
@@ -751,6 +755,19 @@ class Guild extends Base {
       .guilds(this.id)
       .integrations.post({ data, reason })
       .then(() => this);
+  }
+
+  /**
+   * Creates a template for the guild.
+   * @param {string} name The name for the template
+   * @param {string} [description] The description for the template
+   * @returns {Promise<GuildTemplate>}
+   */
+  createTemplate(name, description) {
+    return this.client.api
+      .guilds(this.id)
+      .templates.post({ data: { name, description } })
+      .then(data => new GuildTemplate(this.client, data));
   }
 
   /**
@@ -965,29 +982,25 @@ class Guild extends Base {
    * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @returns {Promise<GuildMember>}
    */
-  addMember(user, options) {
+  async addMember(user, options) {
     user = this.client.users.resolveID(user);
-    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
-    if (this.members.cache.has(user)) return Promise.resolve(this.members.cache.get(user));
+    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
         role = this.roles.resolve(role);
         if (!role) {
-          return Promise.reject(
-            new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
-          );
+          throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
         roles.push(role.id);
       }
       options.roles = roles;
     }
-    return this.client.api
-      .guilds(this.id)
-      .members(user)
-      .put({ data: options })
-      .then(data => this.members.add(data));
+    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof (browser ? ArrayBuffer : Buffer) ? this.members.fetch(user) : this.members.add(data);
   }
 
   /**

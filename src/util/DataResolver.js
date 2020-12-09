@@ -25,15 +25,39 @@ class DataResolver {
    */
 
   /**
+   * Data that can be resolved to give an template code. This can be:
+   * * A template code
+   * * A template URL
+   * @typedef {string} GuildTemplateResolvable
+   */
+
+  /**
+   * Resolves the string to a code based on the passed regex.
+   * @param {string} data The string to resolve
+   * @param {RegExp} regex The RegExp used to extract the code
+   * @returns {string}
+   */
+  static resolveCode(data, regex) {
+    const match = regex.exec(data);
+    return match ? match[1] || data : data;
+  }
+
+  /**
    * Resolves InviteResolvable to an invite code.
    * @param {InviteResolvable} data The invite resolvable to resolve
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    const inviteRegex = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i;
-    const match = inviteRegex.exec(data);
-    if (match && match[1]) return match[1];
-    return data;
+    return this.resolveCode(data, /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i);
+  }
+
+  /**
+   * Resolves GuildTemplateResolvable to a template code.
+   * @param {GuildTemplateResolvable} data The template resolvable to resolve
+   * @returns {string}
+   */
+  static resolveGuildTemplateCode(data) {
+    return this.resolveCode(data, /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/i);
   }
 
   /**
