@@ -629,15 +629,6 @@ class Guild extends Base {
   }
 
   /**
-   * The voice state for the client user of this guild, if any
-   * @type {?VoiceState}
-   * @readonly
-   */
-  get voice() {
-    return this.voiceStates.cache.get(this.client.user.id);
-  }
-
-  /**
    * Fetches this guild.
    * @returns {Promise<Guild>}
    */
