@@ -406,11 +406,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    const permissions = this.guild && this.channel.permissionsFor(this.client.user);
     return (
       !this.deleted &&
       (this.author.id === this.client.user.id ||
-        (permissions && permissions.has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        ((this.guild && this.channel.permissionsFor(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
     );
   }
 
