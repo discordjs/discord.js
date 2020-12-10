@@ -17,7 +17,7 @@ class BaseGuildEmoji extends Emoji {
      */
     this.guild = guild;
 
-    this.requireColons = null;
+    this.requiresColons = null;
     this.managed = null;
     this.available = null;
 

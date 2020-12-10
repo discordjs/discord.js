@@ -10,10 +10,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: npm ci
@@ -28,10 +28,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: npm ci
@@ -46,10 +46,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: npm ci
@@ -67,10 +67,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v1
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: npm ci

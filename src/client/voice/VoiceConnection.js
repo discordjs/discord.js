@@ -473,7 +473,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   onStartSpeaking({ user_id, ssrc, speaking }) {
-    this.ssrcMap.set(+ssrc, { userID: user_id, speaking: speaking });
+    this.ssrcMap.set(+ssrc, {
+      ...(this.ssrcMap.get(+ssrc) || {}),
+      userID: user_id,
+      speaking: speaking,
+    });
   }
 
   /**
@@ -501,7 +505,7 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (guild && user && !speaking.equals(old)) {
-      const member = guild.member(user);
+      const member = guild.members.resolve(user);
       if (member) {
         /**
          * Emitted once a guild member changes speaking state.

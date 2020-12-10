@@ -96,28 +96,29 @@ class ShardClientUtil {
   }
 
   /**
-   * Fetches a client property value of each shard.
+   * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
-   * @returns {Promise<Array<*>>}
+   * @param {number} [shard] Shard to fetch property from, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>}
    * @example
    * client.shard.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
    */
-  fetchClientValues(prop) {
+  fetchClientValues(prop, shard) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
 
       const listener = message => {
-        if (!message || message._sFetchProp !== prop) return;
+        if (!message || message._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
-      this.send({ _sFetchProp: prop }).catch(err => {
+      this.send({ _sFetchProp: prop, _sFetchPropShard: shard }).catch(err => {
         parent.removeListener('message', listener);
         reject(err);
       });
@@ -125,29 +126,30 @@ class ShardClientUtil {
   }
 
   /**
-   * Evaluates a script or function on all shards, in the context of the {@link Client}s.
+   * Evaluates a script or function on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {string|Function} script JavaScript to run on each shard
-   * @returns {Promise<Array<*>>} Results of the script execution
+   * @param {number} [shard] Shard to run script on, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    * @example
    * client.shard.broadcastEval('this.guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
    */
-  broadcastEval(script) {
+  broadcastEval(script, shard) {
     return new Promise((resolve, reject) => {
       const parent = this.parentPort || process;
       script = typeof script === 'function' ? `(${script})(this)` : script;
 
       const listener = message => {
-        if (!message || message._sEval !== script) return;
+        if (!message || message._sEval !== script || message._sEvalShard !== shard) return;
         parent.removeListener('message', listener);
         if (!message._error) resolve(message._result);
         else reject(Util.makeError(message._error));
       };
       parent.on('message', listener);
 
-      this.send({ _sEval: script }).catch(err => {
+      this.send({ _sEval: script, _sEvalShard: shard }).catch(err => {
         parent.removeListener('message', listener);
         reject(err);
       });
@@ -223,6 +225,18 @@ class ShardClientUtil {
       );
     }
     return this._singleton;
+  }
+
+  /**
+   * Get the shard ID for a given guild ID.
+   * @param {Snowflake} guildID Snowflake guild ID to get shard ID for
+   * @param {number} shardCount Number of shards
+   * @returns {number}
+   */
+  static shardIDForGuildID(guildID, shardCount) {
+    const shard = Number(BigInt(guildID) >> 22n) % shardCount;
+    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildID, shardCount);
+    return shard;
   }
 }
 
