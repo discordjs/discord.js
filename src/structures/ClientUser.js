@@ -170,7 +170,7 @@ class ClientUser extends Structures.get('User') {
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
-   * @param {number|number[]} [shardID]  Shard Id(s) to have the AFK flag set on
+   * @param {number|number[]} [shardID] Shard Id(s) to have the AFK flag set on
    * @returns {Presence}
    */
   setAFK(afk, shardID) {
