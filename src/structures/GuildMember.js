@@ -274,7 +274,7 @@ class GuildMember extends Base {
   /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
-   * @property {string} [nick] The nickname to set for the member
+   * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
