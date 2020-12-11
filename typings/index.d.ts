@@ -1532,6 +1532,7 @@ declare module 'discord.js' {
     public readonly partial: false;
     public readonly presence: Presence;
     public system: boolean | null;
+    public premium: string | null;
     public readonly tag: string;
     public username: string;
     public avatarURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
