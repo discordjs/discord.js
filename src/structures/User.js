@@ -79,6 +79,15 @@ class User extends Base {
        */
       this.system = Boolean(data.system);
     }
+    if ('premium_type' in data) {
+      /**
+       * The type of nitro the user has
+       * @type {?string}
+       */
+      if(data.premium_type == 0) this.premium = null;
+      if(data.premium_type == 1) this.premium = "NITRO_CLASSIC";
+      if(data.premium_type == 2) this.premium = "NITRO";
+    }
 
     if ('public_flags' in data) {
       /**
