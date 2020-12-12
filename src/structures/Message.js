@@ -10,7 +10,7 @@ const ReactionCollector = require('./ReactionCollector');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
-const { MessageTypes } = require('../util/Constants');
+const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/Snowflake');
@@ -62,7 +62,7 @@ class Message extends Base {
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
        * @type {?boolean}
        */
-      this.system = data.type !== 0;
+      this.system = SystemMessageTypes.includes(this.type);
     } else if (typeof this.type !== 'string') {
       this.system = null;
       this.type = null;
