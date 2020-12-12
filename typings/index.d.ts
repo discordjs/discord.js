@@ -829,7 +829,7 @@ declare module 'discord.js' {
     ): boolean;
     public kick(reason?: string): Promise<GuildMember>;
     public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
-    public setNickname(nickname: string, reason?: string): Promise<GuildMember>;
+    public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
     public toJSON(): object;
     public toString(): string;
     public valueOf(): string;
@@ -2648,7 +2648,7 @@ declare module 'discord.js' {
     | 'WELCOME_SCREEN_ENABLED';
 
   interface GuildMemberEditData {
-    nick?: string;
+    nick?: string | null;
     roles?: Collection<Snowflake, Role> | readonly RoleResolvable[];
     mute?: boolean;
     deaf?: boolean;
