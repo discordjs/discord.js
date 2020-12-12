@@ -435,8 +435,8 @@ exports.MessageTypes = [
  * * REPLY
  * @typedef {string} SystemMessageType
  */
-exports.SystemMessageTypes = module.exports.MessageTypes.filter(
-  type => type !== null && type !== 'DEFAULT' && type !== 'REPLY',
+exports.SystemMessageTypes = exports.MessageTypes.filter(
+  type => type && type !== 'DEFAULT' && type !== 'REPLY',
 );
 
 /**
