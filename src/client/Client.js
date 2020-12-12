@@ -373,8 +373,16 @@ class Client extends BaseClient {
   }
 
   /**
+   * Options for {@link Client#generateInvite}.
+   * @typedef {Object} InviteGenerationOptions
+   * @property {PermissionResolvable} [permissions] Permissions to request
+   * @property {GuildResolvable} [guild] Guild to preselect
+   * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
+   */
+
+  /**
    * Generates a link that can be used to invite the bot to a guild.
-   * @param {InviteGenerationOptions|PermissionResolvable} [options] Permissions to request
+   * @param {InviteGenerationOptions} [options={}] Options for the invite
    * @returns {Promise<string>}
    * @example
    * client.generateInvite({
@@ -384,27 +392,29 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async generateInvite(options = {}) {
-    if (Array.isArray(options) || ['string', 'number'].includes(typeof options) || options instanceof Permissions) {
-      process.emitWarning(
-        'Client#generateInvite: Generate invite with an options object instead of a PermissionResolvable',
-        'DeprecationWarning',
-      );
-      options = { permissions: options };
-    }
+    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+
     const application = await this.fetchApplication();
     const query = new URLSearchParams({
       client_id: application.id,
-      permissions: Permissions.resolve(options.permissions),
       scope: 'bot',
     });
-    if (typeof options.disableGuildSelect === 'boolean') {
-      query.set('disable_guild_select', options.disableGuildSelect.toString());
+
+    if (options.permissions) {
+      const permissions = Permissions.resolve(options.permissions);
+      if (permissions) query.set('permissions', permissions);
     }
-    if (typeof options.guild !== 'undefined') {
+
+    if (options.disableGuildSelect) {
+      query.set('disable_guild_select', true);
+    }
+
+    if (options.guild) {
       const guildID = this.guilds.resolveID(options.guild);
       if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildID);
     }
+
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
   }
 
@@ -482,14 +492,6 @@ class Client extends BaseClient {
 }
 
 module.exports = Client;
-
-/**
- * Options for {@link Client#generateInvite}.
- * @typedef {Object} InviteGenerationOptions
- * @property {PermissionResolvable} [permissions] Permissions to request
- * @property {GuildResolvable} [guild] Guild to preselect
- * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
- */
 
 /**
  * Emitted for general warnings.
