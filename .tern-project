@@ -10,8 +10,5 @@
       "fullDocs": true,
       "strong": true
     },
-    "webpack": {
-      "configPath": "./webpack.config.js"
-    }
   }
 }

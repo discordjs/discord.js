@@ -3,7 +3,6 @@
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
-const { browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -288,9 +287,7 @@ class APIMessage {
     };
 
     const ownAttachment =
-      typeof fileLike === 'string' ||
-      fileLike instanceof (browser ? ArrayBuffer : Buffer) ||
-      typeof fileLike.pipe === 'function';
+      typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);

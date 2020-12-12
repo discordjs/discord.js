@@ -2,7 +2,6 @@
 
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
-const browser = (exports.browser = typeof window !== 'undefined');
 
 /**
  * Options for a client.
@@ -67,7 +66,7 @@ exports.DefaultOptions = {
     large_threshold: 50,
     compress: false,
     properties: {
-      $os: browser ? 'browser' : process.platform,
+      $os: process.platform,
       $browser: 'discord.js',
       $device: 'discord.js',
     },
@@ -92,9 +91,7 @@ exports.DefaultOptions = {
   },
 };
 
-exports.UserAgent = browser
-  ? null
-  : `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
+exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
