@@ -516,6 +516,7 @@ declare module 'discord.js' {
       BIG: 2;
     };
     MessageTypes: MessageType[];
+    SystemMessageTypes: SystemMessageType[];
     ActivityTypes: ActivityType[];
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
     DefaultMessageNotifications: DefaultMessageNotifications[];
@@ -3146,6 +3147,8 @@ declare module 'discord.js' {
   type SystemChannelFlagsString = 'WELCOME_MESSAGE_DISABLED' | 'BOOST_MESSAGE_DISABLED';
 
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
+
+  type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY'>;
 
   type TargetUser = number;
 
