@@ -430,39 +430,14 @@ exports.MessageTypes = [
 ];
 
 /**
- * The types of messges that are considered `System`. Here are the available types:
- * * RECIPIENT_ADD
- * * RECIPIENT_REMOVE
- * * CALL
- * * CHANNEL_NAME_CHANGE
- * * CHANNEL_ICON_CHANGE
- * * PINS_ADD
- * * GUILD_MEMBER_JOIN
- * * USER_PREMIUM_GUILD_SUBSCRIPTION
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
- * * CHANNEL_FOLLOW_ADD
- * * GUILD_DISCOVERY_DISQUALIFIED
- * * GUILD_DISCOVERY_REQUALIFIED
+ * The types of messages that are `System`. The available types are `MessageTypes` excluding:
+ * * DEFAULT
+ * * REPLY
  * @typedef {string} SystemMessageType
  */
-exports.SystemMessageTypes = [
-  'RECIPIENT_ADD',
-  'RECIPIENT_REMOVE',
-  'CALL',
-  'CHANNEL_NAME_CHANGE',
-  'CHANNEL_ICON_CHANGE',
-  'PINS_ADD',
-  'GUILD_MEMBER_JOIN',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2',
-  'USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3',
-  'CHANNEL_FOLLOW_ADD',
-  'GUILD_DISCOVERY_DISQUALIFIED',
-  'GUILD_DISCOVERY_REQUALIFIED',
-];
+exports.SystemMessageTypes = module.exports.MessageTypes.filter(
+  type => type !== null && type !== 'DEFAULT' && type !== 'REPLY',
+);
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
