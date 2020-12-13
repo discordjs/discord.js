@@ -168,7 +168,7 @@ class VoiceConnection extends EventEmitter {
    * @type {?VoiceState}
    */
   get voice() {
-    return this.channel.guild.voice;
+    return this.channel.guild.me?.voice ?? null;
   }
 
   /**
@@ -182,8 +182,8 @@ class VoiceConnection extends EventEmitter {
       {
         guild_id: this.channel.guild.id,
         channel_id: this.channel.id,
-        self_mute: this.voice ? this.voice.selfMute : false,
-        self_deaf: this.voice ? this.voice.selfDeaf : false,
+        self_mute: this.voice?.selfMute ?? false,
+        self_deaf: this.voice?.selfDeaf ?? false,
       },
       options,
     );
@@ -473,7 +473,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   onStartSpeaking({ user_id, ssrc, speaking }) {
-    this.ssrcMap.set(+ssrc, { userID: user_id, speaking: speaking });
+    this.ssrcMap.set(+ssrc, {
+      ...(this.ssrcMap.get(+ssrc) || {}),
+      userID: user_id,
+      speaking: speaking,
+    });
   }
 
   /**
@@ -501,7 +505,7 @@ class VoiceConnection extends EventEmitter {
     }
 
     if (guild && user && !speaking.equals(old)) {
-      const member = guild.member(user);
+      const member = guild.members.resolve(user);
       if (member) {
         /**
          * Emitted once a guild member changes speaking state.

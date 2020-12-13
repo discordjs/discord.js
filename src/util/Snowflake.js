@@ -79,6 +79,15 @@ class SnowflakeUtil {
     });
     return res;
   }
+
+  /**
+   * Discord's epoch value (2015-01-01T00:00:00.000Z).
+   * @type {number}
+   * @readonly
+   */
+  static get EPOCH() {
+    return EPOCH;
+  }
 }
 
 module.exports = SnowflakeUtil;

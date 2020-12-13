@@ -20,7 +20,7 @@ class APIRequest {
     let queryString = '';
     if (options.query) {
       const query = Object.entries(options.query)
-        .filter(([, value]) => ![null, 'null', 'undefined'].includes(value) && typeof value !== 'undefined')
+        .filter(([, value]) => value !== null && typeof value !== 'undefined')
         .flatMap(([key, value]) => (Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]));
       queryString = new URLSearchParams(query).toString();
     }

@@ -32,7 +32,6 @@ const tests = [
 
   m => m.channel.send(fill('x'), { split: true }),
   m => m.channel.send(fill('1'), { code: 'js', split: true }),
-  m => m.channel.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   m => m.channel.send(fill('xyz '), { split: { char: ' ' } }),
 
   m => m.channel.send('x', { embed: { description: 'a' } }),
@@ -99,7 +98,6 @@ const tests = [
   async m => m.channel.send({ files: [await read(fileA)] }),
   async m =>
     m.channel.send(fill('x'), {
-      reply: m.author,
       code: 'js',
       split: true,
       embed: embed().setImage('attachment://zero.png'),
@@ -111,7 +109,6 @@ const tests = [
   m => m.channel.send({ files: [{ attachment: readStream(fileA) }] }),
   async m =>
     m.channel.send(fill('xyz '), {
-      reply: m.author,
       code: 'js',
       split: { char: ' ', prepend: 'hello! ', append: '!!!' },
       embed: embed().setImage('attachment://zero.png'),
