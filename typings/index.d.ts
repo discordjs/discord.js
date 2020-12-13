@@ -1374,7 +1374,7 @@ declare module 'discord.js' {
     public readonly ids: number[];
     public mode: ShardingManagerMode;
     public parentPort: any | null;
-    public broadcastEval<T>(fn: (client: Client) => T | string): Promise<T[]>;
+    public broadcastEval<T>(fn: (client: Client) => T) | string: Promise<T[]>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public respawnAll(shardDelay?: number, respawnDelay?: number, spawnTimeout?: number): Promise<void>;
     public send(message: any): Promise<void>;
@@ -1403,7 +1403,7 @@ declare module 'discord.js' {
     public token: string | null;
     public totalShards: number | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
-    public broadcastEval<T>(fn: (client: Client) => T | string): Promise<T[]>;
+    public broadcastEval<T>(fn: (client: Client) => T) | string: Promise<T[]>;
     public createShard(id: number): Shard;
     public fetchClientValues(prop: string): Promise<any[]>;
     public respawnAll(
