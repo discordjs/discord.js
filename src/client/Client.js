@@ -131,7 +131,7 @@ class Client extends BaseClient {
      * @private
      * @type {ClientPresence}
      */
-    this.presence = new ClientPresence(this);
+    this.presence = new ClientPresence(this, options.presence);
 
     Object.defineProperty(this, 'token', { writable: true });
     if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
