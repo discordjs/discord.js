@@ -18,7 +18,6 @@ const RoleManager = require('../managers/RoleManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const Collection = require('../util/Collection');
 const {
-  browser,
   ChannelTypes,
   DefaultMessageNotifications,
   PartialTypes,
@@ -991,7 +990,7 @@ class Guild extends Base {
     }
     const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.
-    return data instanceof (browser ? ArrayBuffer : Buffer) ? this.members.fetch(user) : this.members.add(data);
+    return data instanceof Buffer ? this.members.fetch(user) : this.members.add(data);
   }
 
   /**

@@ -17,7 +17,7 @@ const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
-const { Events, browser, DefaultOptions } = require('../util/Constants');
+const { Events, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
@@ -89,19 +89,18 @@ class Client extends BaseClient {
     this.actions = new ActionsManager(this);
 
     /**
-     * The voice manager of the client (`null` in browsers)
-     * @type {?ClientVoiceManager}
+     * The voice manager of the client
+     * @type {ClientVoiceManager}
      */
-    this.voice = !browser ? new ClientVoiceManager(this) : null;
+    this.voice = new ClientVoiceManager(this);
 
     /**
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
      * @type {?ShardClientUtil}
      */
-    this.shard =
-      !browser && process.env.SHARDING_MANAGER
-        ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
-        : null;
+    this.shard = process.env.SHARDING_MANAGER
+      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
+      : null;
 
     /**
      * All of the {@link User} objects that have been cached at any point, mapped by their IDs
@@ -134,7 +133,7 @@ class Client extends BaseClient {
     this.presence = new ClientPresence(this, options.presence);
 
     Object.defineProperty(this, 'token', { writable: true });
-    if (!browser && !this.token && 'DISCORD_TOKEN' in process.env) {
+    if (!this.token && 'DISCORD_TOKEN' in process.env) {
       /**
        * Authorization token for the logged in bot.
        * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client

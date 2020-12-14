@@ -8,7 +8,6 @@
     "es2020": true,
     "node": true
   },
-  "overrides": [{ "files": ["*.browser.js"], "env": { "browser": true } }],
   "rules": {
     "import/order": [
       "error",
