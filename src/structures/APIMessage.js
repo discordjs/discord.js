@@ -88,22 +88,6 @@ class APIMessage {
 
     if (typeof content !== 'string') return content;
 
-    const disableMentions =
-      typeof this.options.disableMentions === 'undefined'
-        ? this.target.client.options.disableMentions
-        : this.options.disableMentions;
-    if (disableMentions === 'all') {
-      content = Util.removeMentions(content);
-    } else if (disableMentions === 'everyone') {
-      content = content.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
-        if (target.match(/^[&!]?\d+$/)) {
-          return `@${target}`;
-        } else {
-          return `@\u200b${target}`;
-        }
-      });
-    }
-
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
