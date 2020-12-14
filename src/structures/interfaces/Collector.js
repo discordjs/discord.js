@@ -1,6 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
+const { TypeError } = require('../../errors');
 const Collection = require('../../util/Collection');
 const Util = require('../../util/Util');
 
@@ -73,6 +74,10 @@ class Collector extends EventEmitter {
      * @private
      */
     this._idletimeout = null;
+
+    if (typeof filter !== 'function') {
+      throw new TypeError('INVALID_TYPE', 'filter', 'function');
+    }
 
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
