@@ -296,7 +296,7 @@ class Role extends Base {
    * @returns {Promise<Role>}
    * @example
    * // Set the permissions of the role
-   * role.setPermissions(['KICK_MEMBERS', 'BAN_MEMBERS'])
+   * role.setPermissions([Permissions.FLAGS.KICK_MEMBERS, Permissions.FLAGS.BAN_MEMBERS])
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    * @example
