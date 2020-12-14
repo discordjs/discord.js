@@ -1927,6 +1927,7 @@ declare module 'discord.js' {
     public remove(
       roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
     ): Promise<GuildEmoji>;
+    public valueOf(): Collection<Snowflake, Role>;
   }
 
   export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
@@ -1965,6 +1966,7 @@ declare module 'discord.js' {
       roleOrRoles: RoleResolvable | readonly RoleResolvable[] | Collection<Snowflake, Role>,
       reason?: string,
     ): Promise<GuildMember>;
+    public valueOf(): Collection<Snowflake, Role>;
   }
 
   export class MessageManager extends BaseManager<Snowflake, Message, MessageResolvable> {
