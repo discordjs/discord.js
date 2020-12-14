@@ -66,10 +66,10 @@ class GuildMember extends Base {
     this.nickname = null;
 
     /**
-     * Whether this member yet has to complete the guild's rules gate
+     * Whether this member has yet to complete the guild's rules gate
      * @type {?boolean}
      */
-    this.isPending = null;
+    this.pending = null;
 
     this._roles = [];
     if (data) this._patch(data);
@@ -89,7 +89,7 @@ class GuildMember extends Base {
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if ('roles' in data) this._roles = data.roles;
-    if ('is_pending' in data) this.isPending = data.is_pending;
+    if ('pending' in data) this.pending = data.pending;
   }
 
   _clone() {
