@@ -66,6 +66,39 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       .emojis.post({ data, reason })
       .then(emoji => this.client.actions.GuildEmojiCreate.handle(this.guild, emoji).emoji);
   }
+
+  /**
+   * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
+   * @param {Snowflake} [id] ID of the emoji
+   * @param {boolean} [cache=true] Whether to cache the new emoji objects if it weren't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @returns {Promise<GuildEmoji|Collection<Snowflake, GuildEmoji>>}
+   * @example
+   * // Fetch all emojis from the guild
+   * message.guild.emojis.fetch()
+   *   .then(emojis => console.log(`There are ${emojis.size} emojis.`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch a single emoji
+   * message.guild.emojis.fetch('222078108977594368')
+   *   .then(emoji => console.log(`The emoji name is: ${emoji.name}`))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true, force = false) {
+    if (id) {
+      if (!force) {
+        const existing = this.cache.get(id);
+        if (existing) return existing;
+      }
+      const emoji = await this.client.api.guilds(this.guild.id).emojis(id).get();
+      return this.add(emoji, cache);
+    }
+
+    const data = await this.client.api.guilds(this.guild.id).emojis.get();
+    const emojis = new Collection();
+    for (const emoji of data) emojis.set(emoji.id, this.add(emoji, cache));
+    return emojis;
+  }
 }
 
 module.exports = GuildEmojiManager;
