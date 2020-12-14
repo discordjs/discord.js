@@ -1913,6 +1913,8 @@ declare module 'discord.js' {
       name: string,
       options?: GuildEmojiCreateOptions,
     ): Promise<GuildEmoji>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<GuildEmoji>;
+    public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, GuildEmoji>>;
   }
 
   export class GuildEmojiRoleManager {
