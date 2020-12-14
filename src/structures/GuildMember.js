@@ -66,7 +66,7 @@ class GuildMember extends Base {
     this.nickname = null;
 
     /**
-     * Whether this member has yet to complete the guild's rules gate
+     * Whether this member has yet to pass the guild's membership gate
      * @type {?boolean}
      */
     this.pending = null;
