@@ -3,7 +3,6 @@
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
-const { browser } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -79,8 +78,6 @@ class APIMessage {
    * @returns {?(string|string[])}
    */
   makeContent() {
-    const GuildMember = require('./GuildMember');
-
     let content;
     if (this.options.content === null) {
       content = '';
@@ -90,45 +87,18 @@ class APIMessage {
 
     if (typeof content !== 'string') return content;
 
-    const disableMentions =
-      typeof this.options.disableMentions === 'undefined'
-        ? this.target.client.options.disableMentions
-        : this.options.disableMentions;
-    if (disableMentions === 'all') {
-      content = Util.removeMentions(content);
-    } else if (disableMentions === 'everyone') {
-      content = content.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
-        if (target.match(/^[&!]?\d+$/)) {
-          return `@${target}`;
-        } else {
-          return `@\u200b${target}`;
-        }
-      });
-    }
-
     const isSplit = typeof this.options.split !== 'undefined' && this.options.split !== false;
     const isCode = typeof this.options.code !== 'undefined' && this.options.code !== false;
     const splitOptions = isSplit ? { ...this.options.split } : undefined;
 
-    let mentionPart = '';
-    if (this.options.reply && !this.isUser && this.target.type !== 'dm') {
-      const id = this.target.client.users.resolveID(this.options.reply);
-      mentionPart = `<@${this.options.reply instanceof GuildMember && this.options.reply.nickname ? '!' : ''}${id}>, `;
-      if (isSplit) {
-        splitOptions.prepend = `${mentionPart}${splitOptions.prepend || ''}`;
-      }
-    }
-
-    if (content || mentionPart) {
+    if (content) {
       if (isCode) {
         const codeName = typeof this.options.code === 'string' ? this.options.code : '';
-        content = `${mentionPart}\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
+        content = `\`\`\`${codeName}\n${Util.cleanCodeBlockContent(content)}\n\`\`\``;
         if (isSplit) {
           splitOptions.prepend = `${splitOptions.prepend || ''}\`\`\`${codeName}\n`;
           splitOptions.append = `\n\`\`\`${splitOptions.append || ''}`;
         }
-      } else if (mentionPart) {
-        content = `${mentionPart}${content}`;
       }
 
       if (isSplit) {
@@ -151,8 +121,11 @@ class APIMessage {
 
     let nonce;
     if (typeof this.options.nonce !== 'undefined') {
-      nonce = parseInt(this.options.nonce);
-      if (isNaN(nonce) || nonce < 0) throw new RangeError('MESSAGE_NONCE_TYPE');
+      nonce = this.options.nonce;
+      // eslint-disable-next-line max-len
+      if (typeof nonce === 'number' ? !Number.isInteger(nonce) : typeof nonce !== 'string') {
+        throw new RangeError('MESSAGE_NONCE_TYPE');
+      }
     }
 
     const embedLikes = [];
@@ -182,19 +155,20 @@ class APIMessage {
       typeof this.options.allowedMentions === 'undefined'
         ? this.target.client.options.allowedMentions
         : this.options.allowedMentions;
-    if (this.options.reply) {
-      const id = this.target.client.users.resolveID(this.options.reply);
-      if (allowedMentions) {
-        // Clone the object as not to alter the ClientOptions object
-        allowedMentions = Util.cloneObject(allowedMentions);
-        const parsed = allowedMentions.parse && allowedMentions.parse.includes('users');
-        // Check if the mention won't be parsed, and isn't supplied in `users`
-        if (!parsed && !(allowedMentions.users && allowedMentions.users.includes(id))) {
-          if (!allowedMentions.users) allowedMentions.users = [];
-          allowedMentions.users.push(id);
-        }
-      } else {
-        allowedMentions = { users: [id] };
+
+    if (allowedMentions) {
+      allowedMentions = Util.cloneObject(allowedMentions);
+      allowedMentions.replied_user = allowedMentions.repliedUser;
+      delete allowedMentions.repliedUser;
+    }
+
+    let message_reference;
+    if (typeof this.options.replyTo !== 'undefined') {
+      const message_id = this.isMessage
+        ? this.target.channel.messages.resolveID(this.options.replyTo)
+        : this.target.messages.resolveID(this.options.replyTo);
+      if (message_id) {
+        message_reference = { message_id };
       }
     }
 
@@ -206,8 +180,10 @@ class APIMessage {
       embeds,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: typeof content === 'undefined' ? undefined : allowedMentions,
+      allowed_mentions:
+        typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,
+      message_reference,
     };
     return this;
   }
@@ -295,9 +271,7 @@ class APIMessage {
     };
 
     const ownAttachment =
-      typeof fileLike === 'string' ||
-      fileLike instanceof (browser ? ArrayBuffer : Buffer) ||
-      typeof fileLike.pipe === 'function';
+      typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);

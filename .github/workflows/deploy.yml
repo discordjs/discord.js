@@ -15,35 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@master
 
-      - name: Install Node v12
+      - name: Install Node v14
         uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 14
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build and deploy documentation
         uses: discordjs/action-docs@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  webpack:
-    name: webpack
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@master
-
-      - name: Install Node v12
-        uses: actions/setup-node@master
-        with:
-          node-version: 12
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build and deploy webpack
-        uses: discordjs/action-webpack@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

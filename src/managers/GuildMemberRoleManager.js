@@ -73,6 +73,26 @@ class GuildMemberRoleManager {
   }
 
   /**
+   * The premium subscriber role of the guild, if present on the member
+   * @type {?Role}
+   * @readonly
+   */
+  get premiumSubscriberRole() {
+    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) || null;
+  }
+
+  /**
+   * The managed role this member created when joining the guild, if any
+   * <info>Only ever available on bots</info>
+   * @type {?Role}
+   * @readonly
+   */
+  get botRole() {
+    if (!this.member.user.bot) return null;
+    return this.cache.find(role => role.tags && role.tags.botID === this.member.user.id) || null;
+  }
+
+  /**
    * Adds a role (or multiple roles) to the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @param {string} [reason] Reason for adding the role(s)
@@ -155,6 +175,10 @@ class GuildMemberRoleManager {
     const clone = new this.constructor(this.member);
     clone.member._roles = [...this._roles.keyArray()];
     return clone;
+  }
+
+  valueOf() {
+    return this.cache;
   }
 }
 
