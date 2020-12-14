@@ -199,7 +199,7 @@ class GuildChannel extends Channel {
    * channel.overwritePermissions([
    *   {
    *      id: message.author.id,
-   *      deny: ['VIEW_CHANNEL'],
+   *      deny: [Permissions.FLAGS.VIEW_CHANNEL],
    *   },
    * ], 'Needed to change permissions');
    */
