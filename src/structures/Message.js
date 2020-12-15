@@ -471,7 +471,7 @@ class Message extends Base {
   /* eslint-enable max-len */
 
   /**
-   * Edits the content of the message.
+   * Edits a message.
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
@@ -482,7 +482,12 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    const editFlags = typeof this.options.suppressEmbeds !== 'undefined';
+    if (!options && typeof content === 'object' && !Array.isArray(content)) {
+      options = content;
+      content = undefined;
+    }
+
+    const editFlags = typeof this.options?.suppressEmbeds !== 'undefined';
 
     if (editFlags) {
       const flags = new MessageFlags(this.flags.bitfield);
