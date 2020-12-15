@@ -1188,10 +1188,7 @@ declare module 'discord.js' {
       options?: { avatar?: BufferResolvable | Base64Resolvable; reason?: string },
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<NewsChannel>;
-    public setType(
-      type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>,
-      reason?: string,
-    ): Promise<GuildChannel>;
+    public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public addFollower(channel: GuildChannelResolvable, reason?: string): Promise<NewsChannel>;
   }
