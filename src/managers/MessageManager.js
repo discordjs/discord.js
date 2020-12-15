@@ -119,14 +119,14 @@ class MessageManager extends BaseManager {
    * @param {MessageResolvable} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message>}
    */
   async edit(message, content, options) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
     const { data } =
       content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
-    await this.client.api
+    return this.client.api
       .channels(this.channel.id)
       .messages(message)
       .patch({ data })
@@ -137,7 +137,7 @@ class MessageManager extends BaseManager {
           clone._patch(d);
           return clone;
         }
-        return d;
+        return this.add(d);
       });
   }
 

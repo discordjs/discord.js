@@ -439,7 +439,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    return this.channel.messages.edit(this.id, content, options).then(() => this);
+    return this.channel.messages.edit(this.id, content, options);
   }
 
   /**
