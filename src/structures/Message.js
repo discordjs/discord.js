@@ -454,7 +454,7 @@ class Message extends Base {
    * }
    */
   crosspost() {
-    return this.channel.messages.crosspost(this.id).then(() => this);
+    return this.channel.messages.crosspost(this.id);
   }
 
   /**
