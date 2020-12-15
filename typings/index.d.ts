@@ -2763,6 +2763,7 @@ declare module 'discord.js' {
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
+    suppressEmbeds?: boolean;
     flags?: BitFieldResolvable<MessageFlagsString>;
     allowedMentions?: MessageMentionOptions;
   }

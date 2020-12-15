@@ -458,6 +458,7 @@ class Message extends Base {
     );
   }
 
+  /* eslint-disable max-len */
   /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
@@ -465,7 +466,9 @@ class Message extends Base {
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {boolean} [suppressEmbeds] If the embeds should be suppressed or not. Requires `MANAGE_MESSAGES` when the message author is not {@link ClientUser}.
    */
+  /* eslint-enable max-len */
 
   /**
    * Edits the content of the message.
@@ -479,6 +482,20 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
+    const editFlags = typeof this.options.suppressEmbeds !== 'undefined';
+
+    if (editFlags) {
+      const flags = new MessageFlags(this.flags.bitfield);
+
+      if (this.options.suppressEmbeds) {
+        flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      } else {
+        flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
+      }
+
+      options.flags = flags;
+    }
+
     const { data } =
       content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
     return this.client.api.channels[this.channel.id].messages[this.id].patch({ data }).then(d => {
@@ -624,23 +641,6 @@ class Message extends Base {
   fetchWebhook() {
     if (!this.webhookID) return Promise.reject(new Error('WEBHOOK_MESSAGE'));
     return this.client.fetchWebhook(this.webhookID);
-  }
-
-  /**
-   * Suppresses or unsuppresses embeds on a message
-   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
-   * @returns {Promise<Message>}
-   */
-  suppressEmbeds(suppress = true) {
-    const flags = new MessageFlags(this.flags.bitfield);
-
-    if (suppress) {
-      flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
-    } else {
-      flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
-    }
-
-    return this.edit({ flags });
   }
 
   /**
