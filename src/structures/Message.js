@@ -487,12 +487,12 @@ class Message extends Base {
       content = undefined;
     }
 
-    const editFlags = typeof this.options?.suppressEmbeds !== 'undefined';
+    const editFlags = typeof options?.suppressEmbeds !== 'undefined';
 
     if (editFlags) {
       const flags = new MessageFlags(this.flags.bitfield);
 
-      if (this.options.suppressEmbeds) {
+      if (options.suppressEmbeds) {
         flags.add(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
       } else {
         flags.remove(MessageFlags.FLAGS.SUPPRESS_EMBEDS);
