@@ -198,10 +198,10 @@ declare module 'discord.js' {
   }
 
   export class Client extends BaseClient {
-    constructor(options?: ClientOptions);
+    constructor(options: ClientOptions);
     private actions: object;
     private _eval(script: string): any;
-    private _validateOptions(options?: ClientOptions): void;
+    private _validateOptions(options: ClientOptions): void;
 
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
@@ -1757,7 +1757,7 @@ declare module 'discord.js' {
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
-    constructor(id: string, token: string, options?: ClientOptions);
+    constructor(id: string, token: string, options?: Partial<ClientOptions>);
     public client: this;
     public token: string;
   }
@@ -2326,10 +2326,10 @@ declare module 'discord.js' {
   type Base64String = string;
 
   type BitFieldResolvable<T extends string, N extends number | bigint> =
-    | RecursiveReadonlyArray<T | number | bigint | Readonly<BitField<T>>>
+    | RecursiveReadonlyArray<T | number | bigint | Readonly<BitField<T, N>>>
     | T
     | N
-    | Readonly<BitField<T>>;
+    | Readonly<BitField<T, N>>;
 
   type BufferResolvable = Buffer | string;
 
@@ -2438,7 +2438,7 @@ declare module 'discord.js' {
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
-    intents: BitFieldResolvable<IntentsString, number> | number;
+    intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
   }
