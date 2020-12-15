@@ -3289,27 +3289,6 @@ declare module 'discord.js' {
 
   type VoiceStatus = number;
 
-  // interface ClientOptions {
-  //   shards?: number | number[] | 'auto';
-  //   shardCount?: number;
-  //   messageCacheMaxSize?: number;
-  //   messageCacheLifetime?: number;
-  //   messageSweepInterval?: number;
-  //   messageEditHistoryMaxSize?: number;
-  //   fetchAllMembers?: boolean;
-  //   allowedMentions?: MessageMentionOptions;
-  //   partials?: PartialTypes[];
-  //   restWsBridgeTimeout?: number;
-  //   restTimeOffset?: number;
-  //   restRequestTimeout?: number;
-  //   restSweepInterval?: number;
-  //   retryLimit?: number;
-  //   presence?: PresenceData;
-  //   intents: BitFieldResolvable<IntentsString, number>;
-  //   ws?: WebSocketOptions;
-  //   http?: HTTPOptions;
-  // }
-
   type WebhookClientOptions = Pick<
     ClientOptions,
     'allowedMentions' | 'restWsBridgeTimeout' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
