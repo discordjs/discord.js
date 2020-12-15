@@ -123,7 +123,7 @@ declare module 'discord.js' {
   }
 
   export class BaseClient extends EventEmitter {
-    constructor(options?: ClientOptions);
+    constructor(options?: ClientOptions | WebhookClientOptions);
     private _timeouts: Set<NodeJS.Timeout>;
     private _intervals: Set<NodeJS.Timeout>;
     private _immediates: Set<NodeJS.Immediate>;
@@ -132,7 +132,7 @@ declare module 'discord.js' {
     private decrementMaxListeners(): void;
     private incrementMaxListeners(): void;
 
-    public options: ClientOptions;
+    public options: ClientOptions | WebhookClientOptions;
     public clearInterval(interval: NodeJS.Timeout): void;
     public clearTimeout(timeout: NodeJS.Timeout): void;
     public clearImmediate(timeout: NodeJS.Immediate): void;
@@ -206,6 +206,7 @@ declare module 'discord.js' {
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
+    public options: ClientOptions;
     public readyAt: Date | null;
     public readonly readyTimestamp: number | null;
     public shard: ShardClientUtil | null;
@@ -1757,8 +1758,9 @@ declare module 'discord.js' {
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
-    constructor(id: string, token: string, options?: Partial<ClientOptions>);
+    constructor(id: string, token: string, options?: WebhookClientOptions);
     public client: this;
+    public options: WebhookClientOptions;
     public token: string;
   }
 
@@ -3286,6 +3288,32 @@ declare module 'discord.js' {
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
   type VoiceStatus = number;
+
+  // interface ClientOptions {
+  //   shards?: number | number[] | 'auto';
+  //   shardCount?: number;
+  //   messageCacheMaxSize?: number;
+  //   messageCacheLifetime?: number;
+  //   messageSweepInterval?: number;
+  //   messageEditHistoryMaxSize?: number;
+  //   fetchAllMembers?: boolean;
+  //   allowedMentions?: MessageMentionOptions;
+  //   partials?: PartialTypes[];
+  //   restWsBridgeTimeout?: number;
+  //   restTimeOffset?: number;
+  //   restRequestTimeout?: number;
+  //   restSweepInterval?: number;
+  //   retryLimit?: number;
+  //   presence?: PresenceData;
+  //   intents: BitFieldResolvable<IntentsString, number>;
+  //   ws?: WebSocketOptions;
+  //   http?: HTTPOptions;
+  // }
+
+  type WebhookClientOptions = Pick<
+    ClientOptions,
+    'allowedMentions' | 'restWsBridgeTimeout' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
+  >;
 
   interface WebhookEditData {
     name?: string;
