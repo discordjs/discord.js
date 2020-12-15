@@ -144,14 +144,14 @@ class MessageManager extends BaseManager {
   /**
    * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
    * @param {MessageResolvable} message The message to publish
-   * @returns {Promise<Message|Object>}
+   * @returns {Promise<Message>}
    */
   async crosspost(message) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const data = await this.client.api.channels(this.channel.id).messages(message).crosspost.post();
-    return this.cache.get(data.id) || data;
+    return this.cache.get(data.id) || this.add(data);
   }
 
   /**
