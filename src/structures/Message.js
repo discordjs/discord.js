@@ -480,6 +480,16 @@ class Message extends Base {
    * message.edit('This is my new content!')
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
+   * @example
+   * // Suppress embeds on a message
+   * message.edit({ suppressEmbeds: true })
+   *   .then(msg => console.log(`Suppressed the embeds of a message`))
+   *   .catch(console.error);
+   * @example
+   * // Update a message and make sure it is unsuppressed
+   * message.edit({ embed: {MessageEmbed}, suppressEmbeds: false })
+   *   .then(msg => console.log(`Edited the content of a message, including an embed`))
+   *   .catch(console.error);
    */
   edit(content, options) {
     if (!options && typeof content === 'object' && !Array.isArray(content)) {
