@@ -2328,7 +2328,7 @@ declare module 'discord.js' {
   type Base64String = string;
 
   type BitFieldResolvable<T extends string, N extends number | bigint> =
-    | RecursiveReadonlyArray<T | number | bigint | Readonly<BitField<T, N>>>
+    | RecursiveReadonlyArray<T | N | Readonly<BitField<T, N>>>
     | T
     | N
     | Readonly<BitField<T, N>>;
