@@ -1983,7 +1983,6 @@ declare module 'discord.js' {
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: Message): Promise<Message>;
-    public crosspost(message: MessageResolvable): Promise<Message | APIRawMessage>;
     public delete(message: MessageResolvable, reason?: string): Promise<void>;
     public edit(
       message: Message,
@@ -1994,15 +1993,6 @@ declare module 'discord.js' {
       content: StringResolvable,
       options: MessageEditOptions | MessageEmbed,
     ): Promise<Message>;
-    public edit(
-      message: MessageResolvable,
-      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message | APIRawMessage>;
-    public edit(
-      message: MessageResolvable,
-      content: StringResolvable,
-      options: MessageEditOptions | MessageEmbed,
-    ): Promise<Message | APIRawMessage>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,
