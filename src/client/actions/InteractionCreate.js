@@ -5,7 +5,7 @@ const { Events } = require('../../util/Constants');
 
 class InteractionCreateAction extends Action {
   handle(data) {
-    console.log(data)
+    console.log("sata")
 
     return {};
   }
