@@ -3,7 +3,7 @@
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
 
-class MessageCreateAction extends Action {
+class InteractionCreateAction extends Action {
   handle(data) {
     console.log(data)
 
@@ -11,4 +11,4 @@ class MessageCreateAction extends Action {
   }
 }
 
-module.exports = MessageCreateAction;
+module.exports = InteractionCreateAction;

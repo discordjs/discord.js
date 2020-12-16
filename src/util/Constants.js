@@ -259,6 +259,7 @@ exports.Events = {
   MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
   MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll',
   MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji',
+  INTERACTION_CREATE: 'interactionCreate',
   USER_UPDATE: 'userUpdate',
   PRESENCE_UPDATE: 'presenceUpdate',
   VOICE_SERVER_UPDATE: 'voiceServerUpdate',
