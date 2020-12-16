@@ -414,6 +414,7 @@ declare module 'discord.js' {
       SHARD_RESUME: 'shardResume';
       INVALIDATED: 'invalidated';
       RAW: 'raw';
+      INTERACTION_CREATE: "interactionCreate"
     };
     ShardEvents: {
       CLOSE: 'close';
