@@ -414,7 +414,7 @@ declare module 'discord.js' {
       SHARD_RESUME: 'shardResume';
       INVALIDATED: 'invalidated';
       RAW: 'raw';
-      INTERACTION_CREATE: "interactionCreate"
+      INTERACTION_CREATE: 'interactionCreate';
     };
     ShardEvents: {
       CLOSE: 'close';
@@ -2037,6 +2037,15 @@ declare module 'discord.js' {
     public guild: Guild;
   }
 
+  export interface Interaction {
+    channel: TextChannel;
+    guild: Guild;
+    member: GuildMember | null;
+    author: User | null;
+    name: string;
+    options: { value: string; name: string }[] | null;
+  }
+
   //#endregion
 
   //#region Mixins
@@ -2325,6 +2334,7 @@ declare module 'discord.js' {
     shardReady: [number, Set<Snowflake> | undefined];
     shardReconnecting: [number];
     shardResume: [number, number];
+    interactionCreate: Interaction;
   }
 
   interface ClientOptions {
