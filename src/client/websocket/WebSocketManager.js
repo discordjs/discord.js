@@ -366,6 +366,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   handlePacket(packet, shard) {
+    console.log("hadnle packet")
     if (packet && this.status !== Status.READY) {
       if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.packetQueue.push({ packet, shard });
