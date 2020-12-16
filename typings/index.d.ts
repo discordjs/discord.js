@@ -2037,15 +2037,6 @@ declare module 'discord.js' {
     public guild: Guild;
   }
 
-  export interface Interaction {
-    channel: TextChannel;
-    guild: Guild;
-    member: GuildMember | null;
-    author: User | null;
-    name: string;
-    options: { value: string; name: string }[] | null;
-  }
-
   //#endregion
 
   //#region Mixins
@@ -2334,7 +2325,7 @@ declare module 'discord.js' {
     shardReady: [number, Set<Snowflake> | undefined];
     shardReconnecting: [number];
     shardResume: [number, number];
-    interactionCreate: Interaction;
+    interactionCreate: [Interaction];
   }
 
   interface ClientOptions {
@@ -2811,6 +2802,15 @@ declare module 'discord.js' {
     image?: Partial<MessageEmbedImage> & { proxy_url?: string };
     video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
     footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
+  }
+
+  interface Interaction {
+    channel: TextChannel;
+    guild: Guild;
+    member: GuildMember | null;
+    author: User | null;
+    name: string;
+    options: { value: string; name: string }[] | null;
   }
 
   interface MessageEmbedProvider {
