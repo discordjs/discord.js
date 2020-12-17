@@ -2,6 +2,7 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
+const SnowflakeUtil = require("../../util/Snowflake");
 
 const parseContent = (options) => {
   let content = "";
