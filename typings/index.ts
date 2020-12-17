@@ -1,6 +1,4 @@
-/// <reference path="index.d.ts" />
-
-import { Client, Message, MessageAttachment, MessageEmbed } from 'discord.js';
+import { Client, Message, MessageAttachment, MessageEmbed } from '..';
 
 const client: Client = new Client();
 
