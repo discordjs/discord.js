@@ -2811,7 +2811,7 @@ declare module 'discord.js' {
     author: User | null;
     name: string;
     content: string;
-    createdTimestamp: string
+    createdTimestamp: number;
     options: { value: string; name: string }[] | null;
   }
 
