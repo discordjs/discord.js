@@ -465,6 +465,7 @@ class Message extends Base {
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    */
 
   /**
@@ -627,7 +628,7 @@ class Message extends Base {
   }
 
   /**
-   * Suppresses or unsuppresses embeds on a message
+   * Suppresses or unsuppresses embeds on a message.
    * @param {boolean} [suppress=true] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */
