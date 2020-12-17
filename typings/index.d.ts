@@ -2812,6 +2812,7 @@ declare module 'discord.js' {
     name: string;
     options: { value: string; name: string }[] | null;
     content: string;
+    createdTimeStamp: string
     raw: {
       type: number;
       token: string;
