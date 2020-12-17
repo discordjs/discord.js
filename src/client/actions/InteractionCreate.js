@@ -22,7 +22,6 @@ class InteractionCreateAction extends Action {
       options: data.data.options ? data.data.options : null,
       content: parseContent(data.data.options),
       createdTimeStamp: SnowflakeUtil.deconstruct(data.id).timestamp,
-      raw: data
     };
     client.emit(Events.INTERACTION_CREATE, interaction);
     return { interaction };
