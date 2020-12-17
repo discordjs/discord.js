@@ -2813,43 +2813,6 @@ declare module 'discord.js' {
     options: { value: string; name: string }[] | null;
     content: string;
     createdTimestamp: string
-    raw: {
-      type: number;
-      token: string;
-      member: {
-        user: {
-          id: number;
-          username: string;
-          avatar: string;
-          discriminator: string;
-          public_flags: number;
-        };
-        roles: string[];
-        premium_since: null;
-        permissions: string;
-        pending: boolean;
-        nick: string | null;
-        mute: boolean;
-        joined_at: string;
-        is_pending: boolean;
-        deaf: boolean;
-      };
-      id: string;
-      guild_id: string;
-      data: {
-        options:
-          | [
-              {
-                name: string;
-                value: string;
-              },
-            ]
-          | undefined;
-        name: string;
-        id: string;
-      };
-      channel_id: string;
-    };
   }
 
   interface MessageEmbedProvider {
