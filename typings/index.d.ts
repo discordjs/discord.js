@@ -1530,10 +1530,7 @@ declare module 'discord.js' {
     ): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
-    public setType(
-      type: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>,
-      reason?: string,
-    ): Promise<GuildChannel>;
+    public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
   }
 
@@ -2235,7 +2232,7 @@ declare module 'discord.js' {
 
   interface ChannelData {
     name?: string;
-    type?: Exclude<keyof typeof ChannelType, 'dm' | 'group' | 'unknown' | 'category' | 'voice' | 'store'>;
+    type?: Pick<typeof ChannelType, 'text' | 'news'>;
     position?: number;
     topic?: string;
     nsfw?: boolean;
