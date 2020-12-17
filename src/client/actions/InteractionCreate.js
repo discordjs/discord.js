@@ -2,12 +2,13 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
-const SnowflakeUtil = require("../../util/Snowflake");
+const SnowflakeUtil = require('../../util/Snowflake');
 
-const parseContent = (options) => {
-  let content = "";
-  options.forEach(element => content += `${element.name} ${element.value}`);
-}
+const parseContent = options => {
+  let content = '';
+  options.forEach(element => (content += `${element.name} ${element.value}`));
+  return content;
+};
 
 class InteractionCreateAction extends Action {
   async handle(data) {
@@ -19,9 +20,9 @@ class InteractionCreateAction extends Action {
       member: guild.members.cache.get(data.member.user.id) || (await guild.members.fetch(data.member.user.id)) || null,
       author: client.users.cache.get(data.member.user.id) || (await client.users.fetch(data.member.user.id)) || null,
       name: data.data.name,
-      options: data.data.options ? data.data.options : null,
       content: parseContent(data.data.options),
-      createdTimeStamp: SnowflakeUtil.deconstruct(data.id).timestamp,
+      createdTimestamp: SnowflakeUtil.deconstruct(data.id).timestamp,
+      options: data.data.options ? data.data.options : null,
     };
     client.emit(Events.INTERACTION_CREATE, interaction);
     return { interaction };

@@ -2810,9 +2810,9 @@ declare module 'discord.js' {
     member: GuildMember | null;
     author: User | null;
     name: string;
-    options: { value: string; name: string }[] | null;
     content: string;
     createdTimestamp: string
+    options: { value: string; name: string }[] | null;
   }
 
   interface MessageEmbedProvider {
