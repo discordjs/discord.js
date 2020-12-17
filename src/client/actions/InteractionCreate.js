@@ -20,7 +20,7 @@ class InteractionCreateAction extends Action {
       member: guild.members.cache.get(data.member.user.id) || (await guild.members.fetch(data.member.user.id)) || null,
       author: client.users.cache.get(data.member.user.id) || (await client.users.fetch(data.member.user.id)) || null,
       name: data.data.name,
-      content: parseContent(data.data.options),
+      content: data.data.options ? parseContent(data.data.options) : "",
       createdTimestamp: SnowflakeUtil.deconstruct(data.id).timestamp,
       options: data.data.options ? data.data.options : null,
     };
