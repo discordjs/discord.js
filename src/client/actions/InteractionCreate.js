@@ -6,7 +6,7 @@ const SnowflakeUtil = require('../../util/Snowflake');
 
 const parseContent = options => {
   let content = '';
-  options.forEach(element => (content += `${element.name} ${element.value}`));
+  options.forEach(element => (content += element.value));
   return content;
 };
 
