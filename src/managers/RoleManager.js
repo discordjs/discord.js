@@ -113,7 +113,7 @@ class RoleManager extends BaseManager {
     if (data.color) data.color = resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.guild.client.api
+    return this.client.api
       .guilds(this.guild.id)
       .roles.post({ data, reason })
       .then(r => {
