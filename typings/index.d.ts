@@ -2860,11 +2860,11 @@ export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
 export type OverwriteType = 'member' | 'role';
 
-export interface PermissionFlags extends Record<PermissionString, number> {}
+export type PermissionFlags = Record<PermissionString, number>;
 
-export interface PermissionObject extends Record<PermissionString, boolean> {}
+export type PermissionObject = Record<PermissionString, boolean>;
 
-export interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
+export type PermissionOverwriteOption = Partial<Record<PermissionString, boolean | null>>;
 
 export type PermissionResolvable = BitFieldResolvable<PermissionString>;
 
@@ -2901,7 +2901,7 @@ export type PermissionString =
   | 'MANAGE_WEBHOOKS'
   | 'MANAGE_EMOJIS';
 
-export interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
+export type RecursiveArray<T> = ReadonlyArray<T | RecursiveArray<T>>;
 
 export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
