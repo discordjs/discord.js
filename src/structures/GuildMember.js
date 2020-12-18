@@ -67,9 +67,9 @@ class GuildMember extends Base {
 
     /**
      * Whether this member has yet to pass the guild's membership gate
-     * @type {?boolean}
+     * @type {boolean}
      */
-    this.pending = null;
+    this.pending = false;
 
     this._roles = [];
     if (data) this._patch(data);
