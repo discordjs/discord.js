@@ -135,7 +135,7 @@ class RoleManager extends BaseManager {
   botRoleFor(user) {
     const userID = this.client.users.resolveID(user);
     if (!userID) return null;
-    return this.cache.find(role => role.tags && role.tags.botID === userID) ?? null;
+    return this.cache.find(role => role.tags?.botID === userID) ?? null;
   }
 
   /**
