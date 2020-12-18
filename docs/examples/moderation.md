@@ -33,7 +33,7 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.member(user);
+      const member = message.guild.members.resolve(user);
       // If the member is in the guild
       if (member) {
         /**
@@ -45,23 +45,23 @@ client.on('message', message => {
           .kick('Optional reason that will display in the audit logs')
           .then(() => {
             // We let the message author know we were able to kick the person
-            message.reply(`Successfully kicked ${user.tag}`);
+            message.channel.send(`Successfully kicked ${user.tag}`);
           })
           .catch(err => {
             // An error happened
             // This is generally due to the bot not being able to kick the member,
             // either due to missing permissions or role hierarchy
-            message.reply('I was unable to kick the member');
+            message.channel.send('I was unable to kick the member');
             // Log the error
             console.error(err);
           });
       } else {
         // The mentioned user isn't in this guild
-        message.reply("That user isn't in this guild!");
+        message.channel.send("That user isn't in this guild!");
       }
       // Otherwise, if no user was mentioned
     } else {
-      message.reply("You didn't mention the user to kick!");
+      message.channel.send("You didn't mention the user to kick!");
     }
   }
 });
@@ -105,7 +105,7 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.member(user);
+      const member = message.guild.members.resolve(user);
       // If the member is in the guild
       if (member) {
         /**
@@ -121,23 +121,23 @@ client.on('message', message => {
           })
           .then(() => {
             // We let the message author know we were able to ban the person
-            message.reply(`Successfully banned ${user.tag}`);
+            message.channel.send(`Successfully banned ${user.tag}`);
           })
           .catch(err => {
             // An error happened
             // This is generally due to the bot not being able to ban the member,
             // either due to missing permissions or role hierarchy
-            message.reply('I was unable to ban the member');
+            message.channel.send('I was unable to ban the member');
             // Log the error
             console.error(err);
           });
       } else {
         // The mentioned user isn't in this guild
-        message.reply("That user isn't in this guild!");
+        message.channel.send("That user isn't in this guild!");
       }
     } else {
       // Otherwise, if no user was mentioned
-      message.reply("You didn't mention the user to ban!");
+      message.channel.send("You didn't mention the user to ban!");
     }
   }
 });

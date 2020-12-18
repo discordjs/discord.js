@@ -93,8 +93,9 @@ class GenericAction {
     if (data.guild_id && data.member && data.member.user) {
       const guild = this.client.guilds.cache.get(data.guild_id);
       if (guild) {
-        const member = this.getMember(data.member, guild);
-        return member ? member.user : this.getUser(data.member.user);
+        return guild.members.add(data.member).user;
+      } else {
+        return this.client.users.add(data.member.user);
       }
     }
     return this.getUser(data);
