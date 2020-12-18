@@ -138,7 +138,7 @@ class MessageMentions {
     if (!this.guild) return null;
     this._members = new Collection();
     this.users.forEach(user => {
-      const member = this.guild.member(user);
+      const member = this.guild.members.resolve(user);
       if (member) this._members.set(member.user.id, member);
     });
     return this._members;

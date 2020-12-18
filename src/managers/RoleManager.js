@@ -2,6 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const Role = require('../structures/Role');
+const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 const { resolveColor } = require('../util/Util');
 
@@ -30,11 +31,11 @@ class RoleManager extends BaseManager {
   }
 
   /**
-   * Obtains one or more roles from Discord, or the role cache if they're already available.
-   * @param {Snowflake} [id] ID or IDs of the role(s)
-   * @param {boolean} [cache=true] Whether to cache the new roles objects if it weren't already
+   * Obtains a role from Discord, or the role cache if they're already available.
+   * @param {Snowflake} [id] ID of the role
+   * @param {boolean} [cache=true] Whether to cache the new role object(s) if they weren't already
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<Role|RoleManager>}
+   * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
@@ -53,9 +54,10 @@ class RoleManager extends BaseManager {
     }
 
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const roles = await this.client.api.guilds(this.guild.id).roles.get();
-    for (const role of roles) this.add(role, cache);
-    return id ? this.cache.get(id) || null : this;
+    const data = await this.client.api.guilds(this.guild.id).roles.get();
+    const roles = new Collection();
+    for (const role of data) roles.set(role.id, this.add(role, cache));
+    return id ? roles.get(id) || null : roles;
   }
 
   /**
@@ -125,12 +127,33 @@ class RoleManager extends BaseManager {
   }
 
   /**
+   * Gets the managed role a user created when joining the guild, if any
+   * <info>Only ever available for bots</info>
+   * @param {UserResolvable} user The user to access the bot role for
+   * @returns {?Role}
+   */
+  botRoleFor(user) {
+    const userID = this.client.users.resolveID(user);
+    if (!userID) return null;
+    return this.cache.find(role => role.tags && role.tags.botID === userID) || null;
+  }
+
+  /**
    * The `@everyone` role of the guild
    * @type {Role}
    * @readonly
    */
   get everyone() {
     return this.cache.get(this.guild.id);
+  }
+
+  /**
+   * The premium subscriber role of the guild, if any
+   * @type {?Role}
+   * @readonly
+   */
+  get premiumSubscriberRole() {
+    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) || null;
   }
 
   /**

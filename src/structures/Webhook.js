@@ -86,8 +86,6 @@ class Webhook {
    * @property {Object[]} [embeds] An array of embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
-   * @property {DisableMentionType} [disableMentions=this.client.options.disableMentions] Whether or not all mentions or
-   * everyone/here mentions should be sanitized to prevent unexpected mentions
    * @property {FileOptions[]|string[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if

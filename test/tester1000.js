@@ -31,16 +31,13 @@ const commands = {
     }
     message.channel.send(res, { code: 'js' });
   },
-  ping: message => message.reply('pong'),
+  ping: message => message.channel.send('pong'),
 };
 
 client.on('message', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  message.content = message.content
-    .replace(prefix, '')
-    .trim()
-    .split(' ');
+  message.content = message.content.replace(prefix, '').trim().split(' ');
   const command = message.content.shift();
   message.content = message.content.join(' ');
 
