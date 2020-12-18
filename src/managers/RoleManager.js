@@ -153,7 +153,7 @@ class RoleManager extends BaseManager {
    * @readonly
    */
   get premiumSubscriberRole() {
-    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) ?? null;
+    return this.cache.find(role => role.tags?.premiumSubscriberRole) ?? null;
   }
 
   /**
