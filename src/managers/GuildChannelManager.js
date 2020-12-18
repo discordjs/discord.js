@@ -155,7 +155,7 @@ class GuildChannelManager extends BaseManager {
     const data = await this.client.api.guilds(this.guild.id).channels.get();
     const channels = new Collection();
     for (const channel of data) channels.set(channel.id, this.client.channels.add(channel, this.guild, cache));
-    return id ? channels.get(id) || null : channels;
+    return id ? channels.get(id) ?? null : channels;
   }
 }
 
