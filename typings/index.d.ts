@@ -2822,9 +2822,9 @@ export interface MessageOptions {
 export type MessageReactionResolvable = MessageReaction | Snowflake;
 
 export interface MessageReference {
-  channelID: string;
-  guildID: string;
-  messageID: string | null;
+  channelID: Snowflake;
+  guildID: Snowflake;
+  messageID: Snowflake | null;
 }
 
 export type MessageResolvable = Message | Snowflake;
@@ -3088,7 +3088,7 @@ export interface RolePosition {
   position: number;
 }
 
-export type RoleResolvable = Role | string;
+export type RoleResolvable = Role | Snowflake;
 
 export interface RoleTagData {
   botID?: Snowflake;
