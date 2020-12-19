@@ -66,14 +66,10 @@ class RequestHandler {
 
   globalDelayFor(ms) {
     return new Promise(resolve => {
-      this.manager.client.setTimeout(
-        manager => {
-          manager.globalDelay = null;
-          resolve();
-        },
-        ms,
-        this.manager,
-      );
+      this.manager.client.setTimeout(() => {
+        this.manager.globalDelay = null;
+        resolve();
+      }, ms);
     });
   }
 
