@@ -2805,6 +2805,7 @@ declare module 'discord.js' {
   }
 
   interface Interaction {
+    id: string;
     channel: TextChannel;
     guild: Guild;
     member: GuildMember | null;
