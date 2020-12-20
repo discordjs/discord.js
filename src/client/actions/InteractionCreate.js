@@ -12,7 +12,6 @@ const parseContent = options => {
 
 class InteractionCreateAction extends Action {
   async handle(data) {
-    console.log(data)
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     const interaction = {
