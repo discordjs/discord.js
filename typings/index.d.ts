@@ -2643,8 +2643,7 @@ declare module 'discord.js' {
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
-    | 'WELCOME_SCREEN_ENABLED'
-    | 'COMMUNITY';
+    | 'WELCOME_SCREEN_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string;
