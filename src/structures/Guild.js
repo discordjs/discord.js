@@ -178,6 +178,7 @@ class Guild extends Base {
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
+     * * COMMUNITY
      * @typedef {string} Features
      */
 
