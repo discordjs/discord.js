@@ -177,6 +177,8 @@ class Guild extends Base {
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
+     * * MEMBER_VERIFICATION_GATE_ENABLED
+     * * PREVIEW_ENABLED
      * @typedef {string} Features
      */
 
@@ -264,6 +266,12 @@ class Guild extends Base {
        */
       this.embedChannelID = data.embed_channel_id;
     }
+
+    /**
+     * Whether Membership Screening is enabled on this guild
+     * @type {boolean}
+     */
+    this.membershipScreeningEnabled = this.features.includes('MEMBERSHIP_VERIFICATION_GATE_ENABLED');
 
     /**
      * The verification level of the guild
@@ -960,6 +968,61 @@ class Guild extends Base {
   }
 
   /**
+   * Data for a field in Membership Screening
+   * @typedef {Object} GuildMembershipScreeningField
+   * @property {MembershipScreeningType} fieldType The type of the field
+   * @property {string} label The title of the field
+   * @property {string[]?} values The list of values in the field
+   * @property {boolean} required Whether the user has to fill out this field
+   */
+
+  /**
+   * Data for the Guild Membership Screening object
+   * @typedef {Object} GuildMembershipScreening
+   * @property {boolean} enabled Whether membership screening is enabled
+   * @property {string} description The server description shown in the membership screening form
+   * @property {GuildMembershipScreeningField[]} formFields The steps in the membership screening form
+   */
+
+  /**
+   * The Guild Membership Screening object
+   * @typedef {Object} GuildMembershipScreeningData
+   * @property {boolean} [enabled] Whether membership screening is enabled
+   * @property {string} [description] The server description shown in the membership screening form
+   * @property {GuildMembershipScreeningField[]} [formFields] The steps in the membership screening form
+   */
+
+  /**
+   * Fetches the guild Membership Screening data.
+   * @returns {Promise<GuildMembershipScreening>}
+   * @example
+   * // Fetches the guild membership screening options
+   * guild.fetchMembershipScreening()
+   *   .then(memberScreen => console.log(`Membership Screening is ${memberScreen.enabled ? 'enabled' : 'disabled'}`))
+   *   .catch(console.error);
+   */
+  async fetchMembershipScreening() {
+    if (!this.features.includes('COMMUNITY')) {
+      throw new Error('COMMUNITY');
+    }
+    const data = await this.client.api.guilds(this.id, 'verification-level').get();
+    let formFields = [];
+    for (const field of data.form_fields) {
+      formFields.push({
+        fieldType: field.field_type,
+        label: field.label,
+        values: field.values,
+        required: field.required,
+      });
+    }
+    return {
+      enabled: this.membershipScreeningEnabled,
+      description: data.description,
+      formFields: formFields,
+    };
+  }
+
+  /**
    * Adds a user to the guild using OAuth2. Requires the `CREATE_INSTANT_INVITE` permission.
    * @param {UserResolvable} user User to add to the guild
    * @param {Object} options Options for the addition
@@ -1420,6 +1483,52 @@ class Guild extends Base {
         reason,
       })
       .then(() => this);
+  }
+
+  /**
+   * Edits the guild's membership screening form.
+   * @param {GuildMembershipScreeningData} memberScreen The membership screening data for the guild
+   * @returns {Promise<GuildMembershipScreening>}
+   */
+  setMembershipScreening(memberScreen) {
+    if (!this.features.includes('COMMUNITY')) {
+      throw new Error('COMMUNITY');
+    }
+    let form_fields = [];
+    for (const field of memberScreen.formFields) {
+      form_fields.push({
+        field_type: field.field_type,
+        label: field.label,
+        values: field.values,
+        required: field.required,
+      });
+    }
+    return this.client.api
+      .guilds(this.id, 'member-verification')
+      .patch({
+        data: {
+          enabled: memberScreen.enabled,
+          form_fields: JSON.stringify(form_fields),
+          description: memberScreen.description,
+        },
+      })
+      .then(data => {
+        this.membershipScreeningEnabled = memberScreen.enabled;
+        let formFields = [];
+        for (const field of data.form_fields) {
+          formFields.push({
+            fieldType: field.field_type,
+            label: field.label,
+            values: field.values,
+            required: field.required,
+          });
+        }
+        return {
+          enabled: this.membershipScreeningEnabled,
+          description: data.description,
+          formFields: formFields,
+        };
+      });
   }
 
   /**

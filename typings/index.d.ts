@@ -519,6 +519,7 @@ declare module 'discord.js' {
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
     DefaultMessageNotifications: DefaultMessageNotifications[];
     VerificationLevels: VerificationLevel[];
+    MembershipScreeningType: MembershipScreeningType[];
     MembershipStates: 'INVITED' | 'ACCEPTED';
   };
 
@@ -602,6 +603,7 @@ declare module 'discord.js' {
     public readonly me: GuildMember | null;
     public memberCount: number;
     public members: GuildMemberManager;
+    public membershipScreeningEnabled: boolean;
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
@@ -647,6 +649,7 @@ declare module 'discord.js' {
     public fetchEmbed(): Promise<GuildWidget>;
     public fetchIntegrations(options?: FetchIntegrationsOptions): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchMembershipScreening(): Promise<GuildMembershipScreening>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
     public fetchVanityCode(): Promise<string>;
@@ -671,6 +674,7 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
+    public setMembershipScreening(memberScreen: GuildMembershipScreeningData): Promise<GuildMembershipScreening>;
     public setName(name: string, reason?: string): Promise<Guild>;
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
     public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;
@@ -2652,7 +2656,9 @@ declare module 'discord.js' {
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
-    | 'WELCOME_SCREEN_ENABLED';
+    | 'WELCOME_SCREEN_ENABLED'
+    | 'MEMBER_VERIFICATION_GATE_ENABLED'
+    | 'PREVIEW_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string | null;
@@ -2663,6 +2669,25 @@ declare module 'discord.js' {
   }
 
   type GuildMemberResolvable = GuildMember | UserResolvable;
+
+  interface GuildMembershipScreening {
+    description: string;
+    enabled: boolean;
+    formFields: GuildMembershipScreeningField[];
+  }
+
+  interface GuildMembershipScreeningData {
+    description?: string;
+    enabled?: boolean;
+    formFields?: GuildMembershipScreeningField[];
+  }
+
+  interface GuildMembershipScreeningField {
+    fieldType: MembershipScreeningType;
+    label: string;
+    required: boolean;
+    values?: string;
+  }
 
   type GuildResolvable = Guild | GuildChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
 
@@ -2744,6 +2769,8 @@ declare module 'discord.js' {
   type InviteResolvable = string;
 
   type GuildTemplateResolvable = string;
+
+  type MembershipScreeningType = 'TERMS';
 
   type MembershipStates = 'INVITED' | 'ACCEPTED';
 

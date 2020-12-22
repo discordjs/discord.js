@@ -513,6 +513,13 @@ exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL
 exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
 
 /**
+ * The type of membership screening. Here are the available types:
+ * * TERMS
+ * @typedef {string} MembershipScreeningType
+ */
+exports.MembershipScreeningType = ['TERMS'];
+
+/**
  * An error encountered while performing an API request. Here are the potential errors:
  * * UNKNOWN_ACCOUNT
  * * UNKNOWN_APPLICATION
