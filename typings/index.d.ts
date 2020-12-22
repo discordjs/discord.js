@@ -2129,7 +2129,7 @@ declare module 'discord.js' {
     shardID?: number | readonly number[];
   }
 
-  type ActivityPlatform = 'xbox' | 'samsung';
+  type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
   type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 

@@ -140,8 +140,9 @@ class Presence {
 
 /**
  * The platform of this activity:
- * * **`xbox`** - playing on Xbox Live
+ * * **`desktop`**
  * * **`samsung`** - playing on Samsung Galaxy
+ * * **`xbox`** - playing on Xbox Live
  * @typedef {string} ActivityPlatform
  */
 
