@@ -1495,27 +1495,29 @@ class Guild extends Base {
       throw new Error('COMMUNITY');
     }
     let form_fields = [];
-    for (const field of memberScreen.formFields) {
-      form_fields.push({
-        field_type: field.field_type,
-        label: field.label,
-        values: field.values,
-        required: field.required,
-      });
+    if (typeof memberScreen.formFields !== 'undefined') {
+      for (const field of memberScreen.formFields) {
+        form_fields.push({
+          field_type: field.field_type,
+          label: field.label,
+          values: field.values,
+          required: field.required,
+        });
+      }
     }
+    let data = {};
+    if (typeof memberScreen.enabled !== 'undefined') data.enabled = memberScreen.enabled;
+    if (typeof memberScreen.description !== 'undefined') data.description = memberScreen.description;
+    if (typeof memberScreen.formFields !== 'undefined') data.form_fields = JSON.stringify(form_fields);
     return this.client.api
       .guilds(this.id, 'member-verification')
       .patch({
-        data: {
-          enabled: memberScreen.enabled,
-          form_fields: JSON.stringify(form_fields),
-          description: memberScreen.description,
-        },
+        data: data,
       })
-      .then(data => {
+      .then(res => {
         this.membershipScreeningEnabled = memberScreen.enabled;
         let formFields = [];
-        for (const field of data.form_fields) {
+        for (const field of res.form_fields) {
           formFields.push({
             fieldType: field.field_type,
             label: field.label,
@@ -1525,7 +1527,7 @@ class Guild extends Base {
         }
         return {
           enabled: this.membershipScreeningEnabled,
-          description: data.description,
+          description: res.description,
           formFields: formFields,
         };
       });
