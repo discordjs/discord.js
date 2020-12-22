@@ -603,7 +603,7 @@ declare module 'discord.js' {
     public readonly me: GuildMember | null;
     public memberCount: number;
     public members: GuildMemberManager;
-    public membershipScreeningEnabled: boolean;
+    public readonly membershipScreeningEnabled: boolean;
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
@@ -2674,12 +2674,6 @@ declare module 'discord.js' {
     description: string;
     enabled: boolean;
     formFields: GuildMembershipScreeningField[];
-  }
-
-  interface GuildMembershipScreeningData {
-    description?: string;
-    enabled?: boolean;
-    formFields?: GuildMembershipScreeningField[];
   }
 
   interface GuildMembershipScreeningField {

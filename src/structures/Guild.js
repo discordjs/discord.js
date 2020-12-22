@@ -268,12 +268,6 @@ class Guild extends Base {
     }
 
     /**
-     * Whether Membership Screening is enabled on this guild
-     * @type {boolean}
-     */
-    this.membershipScreeningEnabled = this.features.includes('MEMBERSHIP_VERIFICATION_GATE_ENABLED');
-
-    /**
      * The verification level of the guild
      * @type {VerificationLevel}
      */
@@ -490,6 +484,15 @@ class Guild extends Base {
    */
   get joinedAt() {
     return new Date(this.joinedTimestamp);
+  }
+
+  /**
+   * Whether Membership Screening is enabled on this guild
+   * @type {boolean}
+   * @readonly
+   */
+  get membershipScreeningEnabled() {
+    return this.features.includes('MEMBERSHIP_VERIFICATION_GATE_ENABLED');
   }
 
   /**
@@ -972,7 +975,7 @@ class Guild extends Base {
    * @typedef {Object} GuildMembershipScreeningField
    * @property {MembershipScreeningType} fieldType The type of the field
    * @property {string} label The title of the field
-   * @property {string[]?} values The list of values in the field
+   * @property {string[]} [values] The list of values in the field
    * @property {boolean} required Whether the user has to fill out this field
    */
 
@@ -982,14 +985,6 @@ class Guild extends Base {
    * @property {boolean} enabled Whether membership screening is enabled
    * @property {string} description The server description shown in the membership screening form
    * @property {GuildMembershipScreeningField[]} formFields The steps in the membership screening form
-   */
-
-  /**
-   * The Guild Membership Screening object
-   * @typedef {Object} GuildMembershipScreeningData
-   * @property {boolean} [enabled] Whether membership screening is enabled
-   * @property {string} [description] The server description shown in the membership screening form
-   * @property {GuildMembershipScreeningField[]} [formFields] The steps in the membership screening form
    */
 
   /**
@@ -1006,19 +1001,15 @@ class Guild extends Base {
       throw new Error('COMMUNITY');
     }
     const data = await this.client.api.guilds(this.id, 'member-verification').get();
-    let formFields = [];
-    for (const field of data.form_fields) {
-      formFields.push({
+    return {
+      enabled: this.membershipScreeningEnabled,
+      description: data.description,
+      formFields: data.form_fields.map(field => ({
         fieldType: field.field_type,
         label: field.label,
         values: field.values,
         required: field.required,
-      });
-    }
-    return {
-      enabled: this.membershipScreeningEnabled,
-      description: data.description,
-      formFields: formFields,
+      })),
     };
   }
 
@@ -1487,50 +1478,34 @@ class Guild extends Base {
 
   /**
    * Edits the guild's membership screening form.
-   * @param {GuildMembershipScreeningData} memberScreen The membership screening data for the guild
+   * @param {Partial<GuildMembershipScreening>} memberScreen The membership screening data for the guild
    * @returns {Promise<GuildMembershipScreening>}
    */
-  setMembershipScreening(memberScreen) {
+  async setMembershipScreening(memberScreen) {
     if (!this.features.includes('COMMUNITY')) {
       throw new Error('COMMUNITY');
     }
-    let form_fields = [];
-    if (typeof memberScreen.formFields !== 'undefined') {
-      for (const field of memberScreen.formFields) {
-        form_fields.push({
-          field_type: field.field_type,
-          label: field.label,
-          values: field.values,
-          required: field.required,
-        });
-      }
-    }
-    let data = {};
+    const fields = memberScreen.formFields?.map(field => ({
+      field_type: field.field_type,
+      label: field.label,
+      values: field.values,
+      required: field.required,
+    }));
+    const data = {};
     if (typeof memberScreen.enabled !== 'undefined') data.enabled = memberScreen.enabled;
     if (typeof memberScreen.description !== 'undefined') data.description = memberScreen.description;
-    if (typeof memberScreen.formFields !== 'undefined') data.form_fields = JSON.stringify(form_fields);
-    return this.client.api
-      .guilds(this.id, 'member-verification')
-      .patch({
-        data: data,
-      })
-      .then(res => {
-        this.membershipScreeningEnabled = memberScreen.enabled;
-        let formFields = [];
-        for (const field of res.form_fields) {
-          formFields.push({
-            fieldType: field.field_type,
-            label: field.label,
-            values: field.values,
-            required: field.required,
-          });
-        }
-        return {
-          enabled: this.membershipScreeningEnabled,
-          description: res.description,
-          formFields: formFields,
-        };
-      });
+    if (typeof memberScreen.formFields !== 'undefined') data.form_fields = JSON.stringify(fields);
+    const res = await this.client.api.guilds(this.id, 'member-verification').patch({ data });
+    return {
+      enabled: memberScreen.enabled,
+      description: res.description,
+      formFields: res.form_fields.map(field => ({
+        fieldType: field.field_type,
+        label: field.label,
+        values: field.values,
+        required: field.required,
+      })),
+    };
   }
 
   /**
