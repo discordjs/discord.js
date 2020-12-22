@@ -1005,7 +1005,7 @@ class Guild extends Base {
     if (!this.features.includes('COMMUNITY')) {
       throw new Error('COMMUNITY');
     }
-    const data = await this.client.api.guilds(this.id, 'verification-level').get();
+    const data = await this.client.api.guilds(this.id, 'member-verification').get();
     let formFields = [];
     for (const field of data.form_fields) {
       formFields.push({
