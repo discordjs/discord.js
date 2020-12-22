@@ -674,7 +674,7 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<Guild>;
     public setIcon(icon: Base64Resolvable | null, reason?: string): Promise<Guild>;
-    public setMembershipScreening(memberScreen: GuildMembershipScreeningData): Promise<GuildMembershipScreening>;
+    public setMembershipScreening(memberScreen: Partial<GuildMembershipScreening>): Promise<GuildMembershipScreening>;
     public setName(name: string, reason?: string): Promise<Guild>;
     public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
     public setPreferredLocale(preferredLocale: string, reason?: string): Promise<Guild>;

@@ -492,7 +492,7 @@ class Guild extends Base {
    * @readonly
    */
   get membershipScreeningEnabled() {
-    return this.features.includes('MEMBERSHIP_VERIFICATION_GATE_ENABLED');
+    return this.features.includes('MEMBER_VERIFICATION_GATE_ENABLED');
   }
 
   /**
