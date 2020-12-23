@@ -114,7 +114,7 @@ class Application extends Base {
    * console.log(`Application name: ${application}`);
    */
   toString() {
-    return this.name ?? null;
+    return this.name;
   }
 
   toJSON() {
