@@ -212,13 +212,13 @@ class Activity {
      * The ID of the song on Spotify
      * @type {?string}
      */
-    this.syncID = data.sync_id || null;
+    this.syncID = data.sync_id ?? null;
 
     /**
      * The platform the game is being played on
      * @type {?ActivityPlatform}
      */
-    this.platform = data.platform || null;
+    this.platform = data.platform ?? null;
 
     /**
      * Party of the activity
@@ -252,7 +252,7 @@ class Activity {
      * The ID of the game or Spotify session
      * @type {?string}
      */
-    this.sessionID = data.session_id || null;
+    this.sessionID = data.session_id ?? null;
 
     /**
      * Creation date of the activity
