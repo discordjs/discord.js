@@ -10,4 +10,6 @@ class Silence extends Readable {
   }
 }
 
+Silence.SILENCE_FRAME = SILENCE_FRAME;
+
 module.exports = Silence;

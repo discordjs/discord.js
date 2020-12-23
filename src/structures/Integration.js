@@ -83,6 +83,16 @@ class Integration extends Base {
     this._patch(data);
   }
 
+  /**
+   * All roles that are managed by this integration
+   * @type {Collection<Snowflake, Role>}
+   * @readonly
+   */
+  get roles() {
+    const roles = this.guild.roles.cache;
+    return roles.filter(role => role.tags && role.tags.integrationID === this.id);
+  }
+
   _patch(data) {
     /**
      * The behavior of expiring subscribers

@@ -116,7 +116,8 @@ client.on('message', message => {
 
     if (message.content.startsWith('kick')) {
       message.guild
-        .member(message.mentions.users.first())
+        .members
+        .resolve(message.mentions.users.first())
         .kick()
         .then(member => {
           console.log(member);
@@ -134,7 +135,7 @@ client.on('message', message => {
       }
       message.channel.send('last one...').then(m => {
         const diff = Date.now() - start;
-        m.reply(`Each message took ${diff / 21}ms to send`);
+        m.channel.send(`Each message took ${diff / 21}ms to send`);
       });
     }
 
@@ -205,7 +206,7 @@ client.on('message', msg => {
       .join()
       .then(conn => {
         con = conn;
-        msg.reply('done');
+        msg.channel.send('done');
         const s = ytdl(song, { filter: 'audioonly' }, { passes: 3 });
         s.on('error', e => console.log(`e w stream 2 ${e}`));
         disp = conn.playStream(s);
