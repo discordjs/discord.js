@@ -198,6 +198,7 @@ declare module 'discord.js' {
     private _eval(script: string): any;
     private _validateOptions(options?: ClientOptions): void;
 
+    public application: ClientApplication | null;
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
