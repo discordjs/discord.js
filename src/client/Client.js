@@ -10,7 +10,6 @@ const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
-const ClientApplication = require('../structures/ClientApplication');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
@@ -150,6 +149,12 @@ class Client extends BaseClient {
      * @type {?ClientUser}
      */
     this.user = null;
+
+    /**
+     * The application of this bot
+     * @type {?ClientApplication}
+     */
+    this.application = null;
 
     /**
      * Time at which the client was last regarded as being in the `READY` state
@@ -347,17 +352,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the OAuth Application of this bot from Discord.
-   * @returns {Promise<ClientApplication>}
-   */
-  fetchApplication() {
-    return this.api.oauth2
-      .applications('@me')
-      .get()
-      .then(app => new ClientApplication(this, app));
-  }
-
-  /**
    * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
@@ -382,20 +376,18 @@ class Client extends BaseClient {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    * @param {InviteGenerationOptions} [options={}] Options for the invite
-   * @returns {Promise<string>}
+   * @returns {string}
    * @example
-   * client.generateInvite({
+   * const link = client.generateInvite({
    *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
-   * })
-   *   .then(link => console.log(`Generated bot invite link: ${link}`))
-   *   .catch(console.error);
+   * });
+   * console.log(`Generated bot invite link: ${link}`);
    */
-  async generateInvite(options = {}) {
+  generateInvite(options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
 
-    const application = await this.fetchApplication();
     const query = new URLSearchParams({
-      client_id: application.id,
+      client_id: this.application.id,
       scope: 'bot',
     });
 

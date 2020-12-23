@@ -99,15 +99,15 @@ declare module 'discord.js' {
     constructor(client: Client, data: object);
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
-    public description: string;
-    public icon: string;
+    public description: string | null;
+    public icon: string | null;
     public id: Snowflake;
-    public name: string;
-    public coverImage(options?: ImageURLOptions): string;
+    public name: string | null;
+    public coverImage(options?: ImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
-    public iconURL(options?: ImageURLOptions): string;
+    public iconURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
-    public toString(): string;
+    public toString(): string | null;
   }
 
   export class Base {
@@ -211,13 +211,12 @@ declare module 'discord.js' {
     public voice: ClientVoiceManager | null;
     public ws: WebSocketManager;
     public destroy(): void;
-    public fetchApplication(): Promise<ClientApplication>;
     public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
-    public generateInvite(options?: InviteGenerationOptions): Promise<string>;
+    public generateInvite(options?: InviteGenerationOptions): string;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
@@ -251,8 +250,11 @@ declare module 'discord.js' {
     public botPublic: boolean | null;
     public botRequireCodeGrant: boolean | null;
     public cover: string | null;
+    public flags: number;
     public owner: User | Team | null;
     public rpcOrigins: string[];
+    public readonly partial: boolean;
+    public fetch(): ClientApplication;
   }
 
   export class ClientUser extends User {
