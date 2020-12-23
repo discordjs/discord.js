@@ -25,6 +25,7 @@ declare module 'discord.js' {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
     public assets: RichPresenceAssets | null;
+    public buttons: string[];
     public readonly createdAt: Date;
     public createdTimestamp: number;
     public details: string | null;

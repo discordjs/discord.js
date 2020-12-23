@@ -255,6 +255,12 @@ class Activity {
     this.sessionID = data.session_id ?? null;
 
     /**
+     * The labels of the buttons of this rich presence
+     * @type {string[]}
+     */
+    this.buttons = data.buttons ?? [];
+
+    /**
      * Creation date of the activity
      * @type {number}
      */
