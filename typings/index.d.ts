@@ -253,8 +253,8 @@ declare module 'discord.js' {
     public cover: string | null;
     public flags: number;
     public owner: User | Team | null;
-    public rpcOrigins: string[];
     public readonly partial: boolean;
+    public rpcOrigins: string[];
     public fetch(): ClientApplication;
   }
 
