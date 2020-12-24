@@ -385,6 +385,7 @@ class Client extends BaseClient {
    */
   generateInvite(options = {}) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (!this.application) throw new Error('CLIENT_NOT_READY', 'generate an invite link');
 
     const query = new URLSearchParams({
       client_id: this.application.id,
