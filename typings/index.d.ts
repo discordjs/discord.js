@@ -208,7 +208,7 @@ declare module 'discord.js' {
     public readonly uptime: number | null;
     public user: ClientUser | null;
     public users: UserManager;
-    public voice: ClientVoiceManager | null;
+    public voice: ClientVoiceManager;
     public ws: WebSocketManager;
     public destroy(): void;
     public fetchApplication(): Promise<ClientApplication>;
