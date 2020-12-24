@@ -27,19 +27,19 @@ class Application extends Base {
      * The name of the app
      * @type {?string}
      */
-    this.name = data.name ?? null;
+    this.name = data.name ?? this.name ?? null;
 
     /**
      * The app's description
      * @type {?string}
      */
-    this.description = data.description ?? null;
+    this.description = data.description ?? this.description ?? null;
 
     /**
      * The app's icon hash
      * @type {?string}
      */
-    this.icon = data.icon ?? null;
+    this.icon = data.icon ?? this.icon ?? null;
   }
 
   /**

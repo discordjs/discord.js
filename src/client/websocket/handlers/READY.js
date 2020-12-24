@@ -17,7 +17,9 @@ module.exports = (client, { d: data }, shard) => {
     client.guilds.add(guild);
   }
 
-  if (!client.application) {
+  if (client.application) {
+    client.application._patch(data.application);
+  } else {
     client.application = new ClientApplication(client, data.application);
   }
 
