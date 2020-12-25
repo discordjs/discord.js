@@ -160,9 +160,7 @@ declare module 'discord.js' {
       (...args: string[]): RouteBuilderReturn;
     };
 
-  interface RouteBuilder {
-    [key: string]: RouteBuilderReturn;
-  }
+  type RouteBuilder = Record<string, RouteBuilderReturn>;
 
   export class BaseGuildEmoji extends Emoji {
     constructor(client: Client, data: object, guild: Guild);
