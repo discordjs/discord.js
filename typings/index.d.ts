@@ -122,7 +122,7 @@ declare module 'discord.js' {
     private _timeouts: Set<NodeJS.Timeout>;
     private _intervals: Set<NodeJS.Timeout>;
     private _immediates: Set<NodeJS.Immediate>;
-    private readonly api: object;
+    private readonly api: RouteBuilder;
     private rest: object;
     private decrementMaxListeners(): void;
     private incrementMaxListeners(): void;
@@ -137,6 +137,34 @@ declare module 'discord.js' {
     public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
   }
+  
+	interface RouteBuilderMethodOptions {
+		query?: any;
+		versioned?: boolean;
+		auth?: boolean;
+		reason?: string;
+		headers?: {
+			[key: string]: string;
+		};
+		data: any;
+	}
+
+	interface RouteBuilderMethods {
+		get(opts?: RouteBuilderMethodOptions): Promise<any>;
+		post(opts?: RouteBuilderMethodOptions): Promise<any>;
+		delete(opts?: RouteBuilderMethodOptions): Promise<any>;
+		patch(opts?: RouteBuilderMethodOptions): Promise<any>;
+		put(opts?: RouteBuilderMethodOptions): Promise<any>;
+	}
+
+	type RouteBuilderReturn = RouteBuilder &
+		RouteBuilderMethods & {
+			(...args: any[]): RouteBuilderReturn;
+		};
+
+	interface RouteBuilder {
+		[key: string]: RouteBuilderReturn;
+	}
 
   export class BaseGuildEmoji extends Emoji {
     constructor(client: Client, data: object, guild: Guild);
