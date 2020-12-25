@@ -137,34 +137,34 @@ declare module 'discord.js' {
     public setImmediate(fn: (...args: any[]) => void, ...args: any[]): NodeJS.Immediate;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
   }
-  
-	interface RouteBuilderMethodOptions {
-		query?: any;
-		versioned?: boolean;
-		auth?: boolean;
-		reason?: string;
-		headers?: {
-			[key: string]: string;
-		};
-		data: any;
-	}
 
-	interface RouteBuilderMethods {
-		get(opts?: RouteBuilderMethodOptions): Promise<any>;
-		post(opts?: RouteBuilderMethodOptions): Promise<any>;
-		delete(opts?: RouteBuilderMethodOptions): Promise<any>;
-		patch(opts?: RouteBuilderMethodOptions): Promise<any>;
-		put(opts?: RouteBuilderMethodOptions): Promise<any>;
-	}
+  interface RouteBuilderMethodOptions {
+    query?: any;
+    versioned?: boolean;
+    auth?: boolean;
+    reason?: string;
+    headers?: {
+      [key: string]: string;
+    };
+    data: any;
+  }
 
-	type RouteBuilderReturn = RouteBuilder &
-		RouteBuilderMethods & {
-			(...args: any[]): RouteBuilderReturn;
-		};
+  interface RouteBuilderMethods {
+    get(opts?: RouteBuilderMethodOptions): Promise<any>;
+    post(opts?: RouteBuilderMethodOptions): Promise<any>;
+    delete(opts?: RouteBuilderMethodOptions): Promise<any>;
+    patch(opts?: RouteBuilderMethodOptions): Promise<any>;
+    put(opts?: RouteBuilderMethodOptions): Promise<any>;
+  }
 
-	interface RouteBuilder {
-		[key: string]: RouteBuilderReturn;
-	}
+  type RouteBuilderReturn = RouteBuilder &
+    RouteBuilderMethods & {
+      (...args: any[]): RouteBuilderReturn;
+    };
+
+  interface RouteBuilder {
+    [key: string]: RouteBuilderReturn;
+  }
 
   export class BaseGuildEmoji extends Emoji {
     constructor(client: Client, data: object, guild: Guild);
