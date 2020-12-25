@@ -157,7 +157,7 @@ declare module 'discord.js' {
 
   type RouteBuilderReturn = RouteBuilder &
     RouteBuilderMethods & {
-      (...args: any[]): RouteBuilderReturn;
+      (...args: string[]): RouteBuilderReturn;
     };
 
   interface RouteBuilder {
