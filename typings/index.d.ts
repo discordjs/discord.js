@@ -143,9 +143,7 @@ declare module 'discord.js' {
     versioned?: boolean;
     auth?: boolean;
     reason?: string;
-    headers?: {
-      [key: string]: string;
-    };
+    headers?: Record<string, string>;
     data: any;
   }
 
