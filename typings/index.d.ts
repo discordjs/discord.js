@@ -144,7 +144,7 @@ declare module 'discord.js' {
     auth?: boolean;
     reason?: string;
     headers?: Record<string, string>;
-    data: any;
+    data: Record<string, unknown>;
   }
 
   interface RouteBuilderMethods {
