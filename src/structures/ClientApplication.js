@@ -5,6 +5,8 @@ const Application = require('./interfaces/Application');
 
 /**
  * Represents a Client OAuth2 Application.
+ * <info>The only guaranteed properties are `id` and `flags`. To get the entire
+ * application, you need to fetch it with `application.fetch()` first.</info>
  * @extends {Application}
  */
 class ClientApplication extends Application {
@@ -15,41 +17,38 @@ class ClientApplication extends Application {
      * The flags this application has
      * @type {number}
      */
-    this.flags = data.flags ?? this.flags;
+    if ('flags' in data) this.flags = data.flags;
 
     /**
      * The app's cover image
-     * @type {?string}
+     * @type {string}
      */
-    this.cover = data.cover_image ?? this.cover ?? null;
+    if ('cover_image' in data) this.cover = data.cover_image;
 
     /**
      * The app's RPC origins, if enabled
      * @type {string[]}
      */
-    this.rpcOrigins = data.rpc_origins ?? this.rpcOrigins ?? [];
+    if ('rpc_origins' in data) this.rpcOrigins = data.rpc_origins;
 
     /**
      * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {?boolean}
+     * @type {boolean}
      */
-    this.botRequireCodeGrant = data.bot_require_code_grant ?? this.botRequireCodeGrant ?? null;
+    if ('bot_require_code_grant' in data) this.botRequireCodeGrant = data.bot_require_code_grant;
 
     /**
      * If this app's bot is public
-     * @type {?boolean}
+     * @type {boolean}
      */
-    this.botPublic = data.bot_public ?? this.botPublic ?? null;
+    if ('bot_public' in data) this.botPublic = data.bot_public;
 
     /**
      * The owner of this OAuth application
-     * @type {?User|Team}
+     * @type {User|Team}
      */
-    this.owner = data.team
-      ? new Team(this.client, data.team)
-      : data.owner
-      ? this.client.users.add(data.owner)
-      : this.owner ?? null;
+    if ('team' in data) this.owner = new Team(this.client, data.team);
+    else if ('owner' in data) this.owner = this.client.users.add(data.owner);
   }
 
   /**

@@ -25,21 +25,21 @@ class Application extends Base {
 
     /**
      * The name of the app
-     * @type {?string}
+     * @type {string}
      */
-    this.name = data.name ?? this.name ?? null;
+    if ('name' in data) this.name = data.name;
 
     /**
      * The app's description
-     * @type {?string}
+     * @type {string}
      */
-    this.description = data.description ?? this.description ?? null;
+    if ('description' in data) this.description = data.description;
 
     /**
      * The app's icon hash
-     * @type {?string}
+     * @type {string}
      */
-    this.icon = data.icon ?? this.icon ?? null;
+    if ('icon' in data) this.icon = data.icon;
   }
 
   /**
@@ -114,7 +114,7 @@ class Application extends Base {
    * console.log(`Application name: ${application}`);
    */
   toString() {
-    return this.name;
+    return this.name ?? null;
   }
 
   toJSON() {

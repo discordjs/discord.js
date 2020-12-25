@@ -99,10 +99,10 @@ declare module 'discord.js' {
     constructor(client: Client, data: object);
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
-    public description: string | null;
-    public icon: string | null;
+    public description?: string;
+    public icon?: string;
     public id: Snowflake;
-    public name: string | null;
+    public name?: string;
     public coverImage(options?: ImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
     public iconURL(options?: ImageURLOptions): string | null;
@@ -248,11 +248,11 @@ declare module 'discord.js' {
   }
 
   export class ClientApplication extends Application {
-    public botPublic: boolean | null;
-    public botRequireCodeGrant: boolean | null;
-    public cover: string | null;
+    public botPublic?: boolean;
+    public botRequireCodeGrant?: boolean;
+    public cover?: string;
     public flags: number;
-    public owner: User | Team | null;
+    public owner?: User | Team;
     public readonly partial: boolean;
     public rpcOrigins: string[];
     public fetch(): Promise<ClientApplication>;
