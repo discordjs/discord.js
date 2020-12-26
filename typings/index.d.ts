@@ -822,10 +822,6 @@ declare module 'discord.js' {
     public createDM(force?: boolean): Promise<DMChannel>;
     public deleteDM(): Promise<DMChannel>;
     public edit(data: GuildMemberEditData, reason?: string): Promise<GuildMember>;
-    public hasPermission(
-      permission: PermissionResolvable,
-      options?: { checkAdmin?: boolean; checkOwner?: boolean },
-    ): boolean;
     public kick(reason?: string): Promise<GuildMember>;
     public permissionsIn(channel: ChannelResolvable): Readonly<Permissions>;
     public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
