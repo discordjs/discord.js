@@ -57,7 +57,7 @@ class RoleManager extends BaseManager {
     const data = await this.client.api.guilds(this.guild.id).roles.get();
     const roles = new Collection();
     for (const role of data) roles.set(role.id, this.add(role, cache));
-    return id ? roles.get(id) || null : roles;
+    return id ? roles.get(id) ?? null : roles;
   }
 
   /**
@@ -113,7 +113,7 @@ class RoleManager extends BaseManager {
     if (data.color) data.color = resolveColor(data.color);
     if (data.permissions) data.permissions = Permissions.resolve(data.permissions);
 
-    return this.guild.client.api
+    return this.client.api
       .guilds(this.guild.id)
       .roles.post({ data, reason })
       .then(r => {
@@ -135,7 +135,7 @@ class RoleManager extends BaseManager {
   botRoleFor(user) {
     const userID = this.client.users.resolveID(user);
     if (!userID) return null;
-    return this.cache.find(role => role.tags && role.tags.botID === userID) || null;
+    return this.cache.find(role => role.tags?.botID === userID) ?? null;
   }
 
   /**
@@ -153,7 +153,7 @@ class RoleManager extends BaseManager {
    * @readonly
    */
   get premiumSubscriberRole() {
-    return this.cache.find(role => role.tags && role.tags.premiumSubscriberRole) || null;
+    return this.cache.find(role => role.tags?.premiumSubscriberRole) ?? null;
   }
 
   /**
