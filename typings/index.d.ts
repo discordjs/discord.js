@@ -2021,7 +2021,7 @@ declare module 'discord.js' {
     public guild: Guild;
     public readonly premiumSubscriberRole: Role | null;
     public botRoleFor(user: UserResolvable): Role | null;
-    public create(options?: { data?: RoleData; reason?: string }): Promise<Role>;
+    public create(options?: RoleData & { reason?: string }): Promise<Role>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Role | null>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, Role>>;
   }
