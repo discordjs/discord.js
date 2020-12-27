@@ -951,7 +951,6 @@ declare module 'discord.js' {
 
   export class Message extends Base {
     constructor(client: Client, data: object, channel: TextChannel | DMChannel | NewsChannel);
-    private _edits: Message[];
     private patch(data: object): Message;
 
     public activity: MessageActivity | null;
@@ -968,7 +967,6 @@ declare module 'discord.js' {
     public readonly editable: boolean;
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
-    public readonly edits: Message[];
     public embeds: MessageEmbed[];
     public readonly guild: Guild | null;
     public id: Snowflake;
@@ -2332,7 +2330,6 @@ declare module 'discord.js' {
     messageCacheMaxSize?: number;
     messageCacheLifetime?: number;
     messageSweepInterval?: number;
-    messageEditHistoryMaxSize?: number;
     fetchAllMembers?: boolean;
     allowedMentions?: MessageMentionOptions;
     partials?: PartialTypes[];
@@ -3042,7 +3039,6 @@ declare module 'discord.js' {
       | 'pinnable'
       | 'url'
       | 'flags'
-      | 'edits'
       | 'embeds'
     > {
     attachments: Message['attachments'];
@@ -3050,7 +3046,6 @@ declare module 'discord.js' {
     readonly deletable: boolean;
     readonly crosspostable: boolean;
     readonly editable: boolean;
-    readonly edits: Message['edits'];
     embeds: Message['embeds'];
     flags: Message['flags'];
     mentions: Message['mentions'];

@@ -185,13 +185,6 @@ class Message extends Base {
         }
       : null;
 
-    /**
-     * The previous versions of the message, sorted with the most recent first
-     * @type {Message[]}
-     * @private
-     */
-    this._edits = [];
-
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
@@ -246,11 +239,6 @@ class Message extends Base {
    */
   patch(data) {
     const clone = this._clone();
-    const { messageEditHistoryMaxSize } = this.client.options;
-    if (messageEditHistoryMaxSize !== 0) {
-      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
-      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
-    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -381,18 +369,6 @@ class Message extends Base {
         else resolve(reactions);
       });
     });
-  }
-
-  /**
-   * An array of cached versions of the message, including the current version
-   * Sorted from latest (first) to oldest (last)
-   * @type {Message[]}
-   * @readonly
-   */
-  get edits() {
-    const copy = this._edits.slice();
-    copy.unshift(this);
-    return copy;
   }
 
   /**
