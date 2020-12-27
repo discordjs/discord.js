@@ -85,6 +85,7 @@
   },
   "lint-staged": {
     "*.js": "eslint --fix",
+    "*.ts": "prettier --write"
   },
   "commitlint": {
     "extends": [
