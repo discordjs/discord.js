@@ -3128,7 +3128,7 @@ declare module 'discord.js' {
 
   type ShardingManagerMode = 'process' | 'worker';
 
-  type Snowflake = `${number}`;
+  type Snowflake = `${bigint}`;
 
   interface SplitOptions {
     maxLength?: number;
