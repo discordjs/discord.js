@@ -1216,7 +1216,7 @@ declare module 'discord.js' {
     public equals(presence: Presence): boolean;
   }
 
-  export class ReactionCollector extends Collector<Snowflake| string, MessageReaction> {
+  export class ReactionCollector extends Collector<Snowflake | string, MessageReaction> {
     constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
