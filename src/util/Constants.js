@@ -18,7 +18,7 @@ const { Error, RangeError } = require('../errors');
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
- * @property {number} [messageEditHistoryMaxSize=-1] Maximum number of previous versions to hold for an edited message
+ * @property {number} [messageEditHistoryMaxSize=10] Maximum number of previous versions to hold for an edited message
  * (-1 or Infinity for unlimited - don't do this without sweeping, otherwise memory usage may climb indefinitely.)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
@@ -43,7 +43,7 @@ exports.DefaultOptions = {
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
-  messageEditHistoryMaxSize: -1,
+  messageEditHistoryMaxSize: 10,
   fetchAllMembers: false,
   partials: [],
   restWsBridgeTimeout: 5000,
