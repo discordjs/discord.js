@@ -12,8 +12,8 @@ class UserUpdateAction extends Action {
 
     if (!oldUser.equals(newUser)) {
       /**
-       * Emitted whenever a user's details (e.g. username) are changed.
-       * Triggered by the Discord gateway events USER_UPDATE, GUILD_MEMBER_UPDATE, and PRESENCE_UPDATE.
+       * Emitted whenever the client user's details (e.g. username) are changed.
+       * Other user updates can be found in {@link Client#guildMemberUpdate}
        * @event Client#userUpdate
        * @param {User} oldUser The user before the update
        * @param {User} newUser The user after the update
