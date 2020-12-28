@@ -2,18 +2,16 @@
 
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
-const { browser, Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 
 const STATUS_KEYS = Object.keys(Status);
 const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
 
 let zlib;
 
-if (!browser) {
-  try {
-    zlib = require('zlib-sync');
-  } catch {} // eslint-disable-line no-empty
-}
+try {
+  zlib = require('zlib-sync');
+} catch {} // eslint-disable-line no-empty
 
 /**
  * Represents a Shard's WebSocket connection
@@ -56,10 +54,10 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The current session ID of the shard
-     * @type {string}
+     * @type {?string}
      * @private
      */
-    this.sessionID = undefined;
+    this.sessionID = null;
 
     /**
      * The previous heartbeat ping of the shard
@@ -124,7 +122,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?NodeJS.Timeout}
      * @private
      */
-    Object.defineProperty(this, 'helloTimeout', { value: undefined, writable: true });
+    Object.defineProperty(this, 'helloTimeout', { value: null, writable: true });
 
     /**
      * If the manager attached its event handlers on the shard
@@ -140,7 +138,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?Set<string>}
      * @private
      */
-    Object.defineProperty(this, 'expectedGuilds', { value: undefined, writable: true });
+    Object.defineProperty(this, 'expectedGuilds', { value: null, writable: true });
 
     /**
      * The ready timeout
@@ -148,7 +146,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?NodeJS.Timeout}
      * @private
      */
-    Object.defineProperty(this, 'readyTimeout', { value: undefined, writable: true });
+    Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
 
     /**
      * Time when the WebSocket connection was opened
@@ -428,7 +426,7 @@ class WebSocketShard extends EventEmitter {
         // Reset the sequence
         this.sequence = -1;
         // Reset the session ID as it's invalid
-        this.sessionID = undefined;
+        this.sessionID = null;
         // Set the status to reconnecting
         this.status = Status.RECONNECTING;
         // Finally, emit the INVALID_SESSION event
@@ -457,7 +455,7 @@ class WebSocketShard extends EventEmitter {
     // Step 0. Clear the ready timeout, if it exists
     if (this.readyTimeout) {
       this.manager.client.clearTimeout(this.readyTimeout);
-      this.readyTimeout = undefined;
+      this.readyTimeout = null;
     }
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
@@ -480,7 +478,7 @@ class WebSocketShard extends EventEmitter {
       this.debug(`Shard did not receive any more guild packets in 15 seconds.
   Unavailable guild count: ${this.expectedGuilds.size}`);
 
-      this.readyTimeout = undefined;
+      this.readyTimeout = null;
 
       this.status = Status.READY;
 
@@ -498,7 +496,7 @@ class WebSocketShard extends EventEmitter {
       if (this.helloTimeout) {
         this.debug('Clearing the HELLO timeout.');
         this.manager.client.clearTimeout(this.helloTimeout);
-        this.helloTimeout = undefined;
+        this.helloTimeout = null;
       }
       return;
     }
@@ -519,7 +517,7 @@ class WebSocketShard extends EventEmitter {
       if (this.heartbeatInterval) {
         this.debug('Clearing the heartbeat interval.');
         this.manager.client.clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = undefined;
+        this.heartbeatInterval = null;
       }
       return;
     }
@@ -734,7 +732,7 @@ class WebSocketShard extends EventEmitter {
     // Step 5: Reset the sequence and session ID if requested
     if (reset) {
       this.sequence = -1;
-      this.sessionID = undefined;
+      this.sessionID = null;
     }
 
     // Step 6: reset the ratelimit data

@@ -61,7 +61,6 @@ class GuildMember extends Base {
     /**
      * The nickname of this member, if they have one
      * @type {?string}
-     * @name GuildMember#nickname
      */
     this.nickname = null;
 
@@ -74,7 +73,6 @@ class GuildMember extends Base {
       /**
        * The user that this guild member instance represents
        * @type {User}
-       * @name GuildMember#user
        */
       this.user = this.client.users.add(data.user, true);
     }
@@ -269,13 +267,14 @@ class GuildMember extends Base {
    */
   hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
     if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    return this.roles.cache.some(r => r.permissions.has(permission, checkAdmin));
+    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
+    return permissions.has(permission, checkAdmin);
   }
 
   /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
-   * @property {string} [nick] The nickname to set for the member
+   * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role IDs to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
@@ -320,7 +319,7 @@ class GuildMember extends Base {
 
   /**
    * Sets the nickname for this member.
-   * @param {string} nick The nickname for the guild member
+   * @param {?string} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
    */

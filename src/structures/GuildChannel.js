@@ -17,6 +17,7 @@ const Util = require('../util/Util');
  * - {@link NewsChannel}
  * - {@link StoreChannel}
  * @extends {Channel}
+ * @abstract
  */
 class GuildChannel extends Channel {
   /**
@@ -52,7 +53,7 @@ class GuildChannel extends Channel {
      * The ID of the category parent of this channel
      * @type {?Snowflake}
      */
-    this.parentID = data.parent_id;
+    this.parentID = data.parent_id || null;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -212,7 +213,7 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Updates Overwrites for a user or role in this channel. (creates if non-existent)
+   * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
@@ -235,13 +236,13 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * Overwrites the permissions for a user or role in this channel. (replaces if existent)
+   * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<GuildChannel>}
    * @example
-   * // Create or Replace permissions overwrites for a message author
+   * // Create or Replace permission overwrites for a message author
    * message.channel.createOverwrite(message.author, {
    *   SEND_MESSAGES: false
    * })
@@ -298,7 +299,7 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
-   * @property {Snowflake} [parentID] The parent ID of the channel
+   * @property {?Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
@@ -412,7 +413,7 @@ class GuildChannel extends Channel {
 
   /**
    * Sets a new topic for the guild channel.
-   * @param {string} topic The new topic for the guild channel
+   * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
