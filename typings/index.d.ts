@@ -1978,15 +1978,11 @@ declare module 'discord.js' {
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: Message): Promise<Message>;
-    public delete(message: MessageResolvable, reason?: string): Promise<void>;
+    public delete(message: MessageResolvable): Promise<void>;
     public edit(
-      message: Message,
-      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message>;
-    public edit(
-      message: Message,
-      content: StringResolvable,
-      options: MessageEditOptions | MessageEmbed,
+      ...args:
+        | [message: Message, content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage]
+        | [message: Message, content: StringResolvable, options: MessageEditOptions | MessageEmbed]
     ): Promise<Message>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
@@ -1998,7 +1994,6 @@ declare module 'discord.js' {
     public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
     public pin(message: MessageResolvable, options?: { reason?: string }): Promise<void>;
     public unpin(message: MessageResolvable, options?: { reason?: string }): Promise<void>;
-    public delete(message: MessageResolvable): Promise<void>;
   }
 
   // Hacky workaround because changing the signature of an overridden method errors
