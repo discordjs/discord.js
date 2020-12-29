@@ -2316,7 +2316,7 @@ declare module 'discord.js' {
     roleDelete: [Role];
     roleUpdate: [Role, Role];
     typingStart: [Channel | PartialDMChannel, User | PartialUser];
-    userUpdate: [User | PartialUser, User];
+    userUpdate: [ClientUser, ClientUser];
     voiceStateUpdate: [VoiceState, VoiceState];
     webhookUpdate: [TextChannel];
     shardDisconnect: [CloseEvent, number];
