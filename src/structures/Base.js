@@ -40,10 +40,10 @@ class Base {
   }
 
   /**
-   * The `Partial` object is a representation of any existing object.
+   * A `Partial` object is a representation of any existing object.
    * This object contains between 1 and all of the original objects parameters.
    * This is true regardless of whether the parameters are optional in the base object.
-   * @typedef {Object} Partial
+   * @interface Partial
    */
 }
 
