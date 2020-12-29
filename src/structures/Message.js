@@ -392,40 +392,6 @@ class Message extends Base {
   }
 
   /**
-   * Whether the message is editable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get editable() {
-    return this.author.id === this.client.user.id;
-  }
-
-  /**
-   * Whether the message is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return (
-      !this.deleted &&
-      (this.author.id === this.client.user.id ||
-        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
-    );
-  }
-
-  /**
-   * Whether the message is pinnable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get pinnable() {
-    return (
-      this.type === 'DEFAULT' &&
-      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
-    );
-  }
-
-  /**
    * Whether the message is crosspostable by the client user
    * @type {boolean}
    * @readonly
