@@ -2,7 +2,6 @@
 
 const Action = require('./Action');
 const { Events } = require('../../util/Constants');
-const ClientUser = require('../../structures/ClientUser');
 
 class UserUpdateAction extends Action {
   handle(data) {
