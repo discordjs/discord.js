@@ -28,6 +28,8 @@ class PresenceUpdateAction extends Action {
     if (member && this.client.listenerCount(Events.PRESENCE_UPDATE)) {
       /**
        * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
+       * Also emitted when the user's details (e.g. username) change.
+       * Even when emitted from a user detail change, the user object will be identical.
        * @event Client#presenceUpdate
        * @param {?Presence} oldPresence The presence before the update, if one at all
        * @param {Presence} newPresence The presence after the update

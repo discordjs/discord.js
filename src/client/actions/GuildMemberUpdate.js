@@ -15,6 +15,7 @@ class GuildMemberUpdateAction extends Action {
         /**
          * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
          * Also emitted when the user's details (e.g. username) change.
+         * Even when emitted from a user detail change, the user object will be identical.
          * @event Client#guildMemberUpdate
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
