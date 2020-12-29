@@ -964,7 +964,6 @@ declare module 'discord.js' {
     public content: string;
     public readonly createdAt: Date;
     public createdTimestamp: number;
-    public readonly deletable: boolean;
     public deleted: boolean;
     public readonly editable: boolean;
     public readonly editedAt: Date | null;
@@ -977,7 +976,6 @@ declare module 'discord.js' {
     public mentions: MessageMentions;
     public nonce: string | number | null;
     public readonly partial: false;
-    public readonly pinnable: boolean;
     public pinned: boolean;
     public reactions: ReactionManager;
     public system: boolean;
@@ -3025,28 +3023,16 @@ declare module 'discord.js' {
   interface PartialMessage
     extends Partialize<
       Message,
-      | 'attachments'
-      | 'channel'
-      | 'deletable'
-      | 'crosspostable'
-      | 'editable'
-      | 'mentions'
-      | 'pinnable'
-      | 'url'
-      | 'flags'
-      | 'edits'
-      | 'embeds'
+      'attachments' | 'channel' | 'crosspostable' | 'editable' | 'mentions' | 'url' | 'flags' | 'edits' | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];
-    readonly deletable: boolean;
     readonly crosspostable: boolean;
     readonly editable: boolean;
     readonly edits: Message['edits'];
     embeds: Message['embeds'];
     flags: Message['flags'];
     mentions: Message['mentions'];
-    readonly pinnable: boolean;
     reactions: Message['reactions'];
     readonly url: string;
   }
