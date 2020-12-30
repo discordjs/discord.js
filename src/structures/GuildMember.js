@@ -89,7 +89,7 @@ class GuildMember extends Base {
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if ('roles' in data) this._roles = data.roles;
-    if ('pending' in data) this.pending = data.pending;
+    this.pending = data.pending ?? false;
   }
 
   _clone() {
