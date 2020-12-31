@@ -515,6 +515,11 @@ declare module 'discord.js' {
       SMALL: 1;
       BIG: 2;
     };
+    StickerFormats: {
+      PNG: 1;
+      APNG: 2;
+      LOTTIE: 3;
+    };
     MessageTypes: MessageType[];
     ActivityTypes: ActivityType[];
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
@@ -818,6 +823,7 @@ declare module 'discord.js' {
     public premiumSinceTimestamp: number | null;
     public readonly presence: Presence;
     public readonly roles: GuildMemberRoleManager;
+    public readonly pending: boolean;
     public user: User;
     public readonly voice: VoiceState;
     public ban(options?: BanOptions): Promise<GuildMember>;
@@ -972,6 +978,7 @@ declare module 'discord.js' {
     public editedTimestamp: number | null;
     public readonly edits: Message[];
     public embeds: MessageEmbed[];
+    public stickers: MessageSticker[];
     public readonly guild: Guild | null;
     public id: Snowflake;
     public readonly member: GuildMember | null;
@@ -1097,6 +1104,17 @@ declare module 'discord.js' {
     public static normalizeFields(...fields: EmbedFieldData[] | EmbedFieldData[][]): Required<EmbedFieldData>[];
   }
 
+  export class MessageSticker {
+    constructor(data?: MessageSticker);
+    public id: Snowflake;
+    public packID: Snowflake;
+    public name: string | null;
+    public description: string | null;
+    public tags: StickerTag[];
+    public type: string;
+    public toJSON(): object;
+  }
+                                                              
   export class MessageFlags extends BitField<MessageFlagsString> {
     public static FLAGS: Record<MessageFlagsString, number>;
     public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
