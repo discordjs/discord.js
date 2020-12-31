@@ -33,6 +33,7 @@ module.exports = {
   version: require('../package.json').version,
 
   // Managers
+  BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
   ChannelManager: require('./managers/ChannelManager'),
   GuildChannelManager: require('./managers/GuildChannelManager'),
   GuildEmojiManager: require('./managers/GuildEmojiManager'),

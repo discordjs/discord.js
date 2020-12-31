@@ -23,8 +23,7 @@
     "lint:fix": "eslint src --fix",
     "lint:typings": "tslint typings/index.d.ts",
     "prettier": "prettier --write src/**/*.js typings/**/*.ts",
-    "build:browser": "webpack",
-    "prepublishOnly": "npm run test && cross-env NODE_ENV=production npm run build:browser"
+    "prepublishOnly": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -45,14 +44,12 @@
   },
   "homepage": "https://github.com/discordjs/discord.js#readme",
   "runkitExampleFilename": "./docs/examples/ping.js",
-  "unpkg": "./webpack/discord.min.js",
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
     "@discordjs/form-data": "^3.0.1",
     "abort-controller": "^3.0.0",
     "node-fetch": "^2.6.1",
     "prism-media": "^1.2.2",
-    "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.3",
     "ws": "^7.3.1"
   },
@@ -73,46 +70,11 @@
     "json-filter-loader": "^1.0.0",
     "lint-staged": "^10.4.2",
     "prettier": "^2.1.2",
-    "terser-webpack-plugin": "^4.2.3",
     "tslint": "^6.1.3",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12"
+    "typescript": "^4.0.3"
   },
   "engines": {
-    "node": ">=12.0.0"
-  },
-  "browser": {
-    "@discordjs/opus": false,
-    "https": false,
-    "ws": false,
-    "erlpack": false,
-    "prism-media": false,
-    "opusscript": false,
-    "node-opus": false,
-    "tweetnacl": false,
-    "sodium": false,
-    "worker_threads": false,
-    "zlib-sync": false,
-    "src/sharding/Shard.js": false,
-    "src/sharding/ShardClientUtil.js": false,
-    "src/sharding/ShardingManager.js": false,
-    "src/client/voice/ClientVoiceManager.js": false,
-    "src/client/voice/VoiceBroadcast.js": false,
-    "src/client/voice/VoiceConnection.js": false,
-    "src/client/voice/dispatcher/BroadcastDispatcher.js": false,
-    "src/client/voice/dispatcher/StreamDispatcher.js": false,
-    "src/client/voice/networking/VoiceUDPClient.js": false,
-    "src/client/voice/networking/VoiceWebSocket.js": false,
-    "src/client/voice/player/AudioPlayer.js": false,
-    "src/client/voice/player/BasePlayer.js": false,
-    "src/client/voice/player/BroadcastAudioPlayer.js": false,
-    "src/client/voice/receiver/PacketHandler.js": false,
-    "src/client/voice/receiver/Receiver.js": false,
-    "src/client/voice/util/PlayInterface.js": false,
-    "src/client/voice/util/Secretbox.js": false,
-    "src/client/voice/util/Silence.js": false,
-    "src/client/voice/util/VolumeInterface.js": false
+    "node": ">=14.0.0"
   },
   "husky": {
     "hooks": {

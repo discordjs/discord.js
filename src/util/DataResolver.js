@@ -5,8 +5,6 @@ const path = require('path');
 const stream = require('stream');
 const fetch = require('node-fetch');
 const { Error: DiscordError, TypeError } = require('../errors');
-const { browser } = require('../util/Constants');
-const Util = require('../util/Util');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -110,26 +108,21 @@ class DataResolver {
    * @returns {Promise<Buffer|Stream>}
    */
   static async resolveFile(resource) {
-    if (!browser && Buffer.isBuffer(resource)) return resource;
-    if (browser && resource instanceof ArrayBuffer) return Util.convertToBuffer(resource);
-    // eslint-disable-next-line no-undef
-    if (browser && resource instanceof Blob) return resource;
-    if (resource instanceof stream.Readable) return resource;
-
+    if (Buffer.isBuffer(resource) || resource instanceof stream.Readable) return resource;
     if (typeof resource === 'string') {
       if (/^https?:\/\//.test(resource)) {
         const res = await fetch(resource);
-        return browser ? res.blob() : res.body;
-      } else if (!browser) {
-        return new Promise((resolve, reject) => {
-          const file = path.resolve(resource);
-          fs.stat(file, (err, stats) => {
-            if (err) return reject(err);
-            if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
-            return resolve(fs.createReadStream(file));
-          });
-        });
+        return res.body;
       }
+
+      return new Promise((resolve, reject) => {
+        const file = path.resolve(resource);
+        fs.stat(file, (err, stats) => {
+          if (err) return reject(err);
+          if (!stats.isFile()) return reject(new DiscordError('FILE_NOT_FOUND', file));
+          return resolve(fs.createReadStream(file));
+        });
+      });
     }
 
     throw new TypeError('REQ_RESOURCE_TYPE');

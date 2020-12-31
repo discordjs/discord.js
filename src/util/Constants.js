@@ -2,7 +2,6 @@
 
 const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
-const browser = (exports.browser = typeof window !== 'undefined');
 
 /**
  * Options for a client.
@@ -19,11 +18,8 @@ const browser = (exports.browser = typeof window !== 'undefined');
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
- * @property {number} [messageEditHistoryMaxSize=-1] Maximum number of previous versions to hold for an edited message
- * (-1 or Infinity for unlimited - don't do this without sweeping, otherwise memory usage may climb indefinitely.)
  * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
  * upon joining a guild (should be avoided whenever possible)
- * @property {DisableMentionType} [disableMentions='none'] Default value for {@link MessageOptions#disableMentions}
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
  * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
@@ -45,9 +41,7 @@ exports.DefaultOptions = {
   messageCacheMaxSize: 200,
   messageCacheLifetime: 0,
   messageSweepInterval: 0,
-  messageEditHistoryMaxSize: -1,
   fetchAllMembers: false,
-  disableMentions: 'none',
   partials: [],
   restWsBridgeTimeout: 5000,
   restRequestTimeout: 15000,
@@ -67,7 +61,7 @@ exports.DefaultOptions = {
     large_threshold: 50,
     compress: false,
     properties: {
-      $os: browser ? 'browser' : process.platform,
+      $os: process.platform,
       $browser: 'discord.js',
       $device: 'discord.js',
     },
@@ -92,9 +86,7 @@ exports.DefaultOptions = {
   },
 };
 
-exports.UserAgent = browser
-  ? null
-  : `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
+exports.UserAgent = `DiscordBot (${Package.homepage.split('#')[0]}, ${Package.version}) Node.js/${process.version}`;
 
 exports.WSCodes = {
   1000: 'WS_CLOSE_REQUESTED',
@@ -403,6 +395,7 @@ exports.WSEvents = keyMirror([
  * * CHANNEL_FOLLOW_ADD
  * * GUILD_DISCOVERY_DISQUALIFIED
  * * GUILD_DISCOVERY_REQUALIFIED
+ * * REPLY
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -422,6 +415,10 @@ exports.MessageTypes = [
   null,
   'GUILD_DISCOVERY_DISQUALIFIED',
   'GUILD_DISCOVERY_REQUALIFIED',
+  null,
+  null,
+  null,
+  'REPLY',
 ];
 
 /**
@@ -436,6 +433,14 @@ exports.StickerFormats = {
   APNG: 2,
   LOTTIE: 3
 }
+
+/**
+ * The types of messages that are `System`. The available types are `MessageTypes` excluding:
+ * * DEFAULT
+ * * REPLY
+ * @typedef {string} SystemMessageType
+ */
+exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !== 'DEFAULT' && type !== 'REPLY');
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>

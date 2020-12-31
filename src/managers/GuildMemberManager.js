@@ -210,6 +210,7 @@ class GuildMemberManager extends BaseManager {
    *   .catch(console.error);
    */
   ban(user, options = { days: 0 }) {
+    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
     if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
