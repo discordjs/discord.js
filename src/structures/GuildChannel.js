@@ -572,8 +572,8 @@ class GuildChannel extends Channel {
    */
   get deletable() {
     return (
-        this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) && 
-        (this.guild.rulesChannelID !== this.id || this.guild.systemChannelID !== this.id)
+      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) && 
+      (this.guild.rulesChannelID !== this.id || this.guild.publicUpdatesChannelID !== this.id)
     );
   }
 
