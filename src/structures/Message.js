@@ -4,6 +4,7 @@ const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
+const Sticker = require('./NessageSticker');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
@@ -122,6 +123,12 @@ class Message extends Base {
      */
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
 
+    /**
+     * A list of embeds in the message - e.g. YouTube Player
+     * @type {MessageEmbed[]}
+     */
+    this.stickers = (data.stickers || []).map(e => new Sticker(e, true));
+    
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
      * @type {Collection<Snowflake, MessageAttachment>}
