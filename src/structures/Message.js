@@ -4,8 +4,8 @@ const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
-const Sticker = require('./NessageSticker');
 const Embed = require('./MessageEmbed');
+const Sticker = require('./Sticker');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
 const { Error, TypeError } = require('../errors');
@@ -122,10 +122,10 @@ class Message extends Base {
      * @type {MessageEmbed[]}
      */
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
-
+    
     /**
-     * A list of embeds in the message - e.g. YouTube Player
-     * @type {MessageEmbed[]}
+     * A list of stickers in the message
+     * @type {MessageSticker[]}
      */
     this.stickers = (data.stickers || []).map(e => new Sticker(e, true));
     
