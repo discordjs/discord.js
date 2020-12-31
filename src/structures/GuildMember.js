@@ -68,7 +68,7 @@ class GuildMember extends Base {
      * Wether the member is pending  
      * @type {?boolean}
      */
-    this.pending = null;
+    this.pending = false;
 
     this._roles = [];
     if (data) this._patch(data);
