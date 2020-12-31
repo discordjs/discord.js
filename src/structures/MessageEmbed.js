@@ -242,8 +242,8 @@ class MessageEmbed {
       (this.fields.length >= 1
         ? this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0)
         : 0) +
-      (this.footer ? this.footer.text.length : 0) +
-      (this.author ? this.author.name.length : 0)
+      (this.footer?.text.length ?? 0) +
+      (this.author?.name.length ?? 0)
     );
   }
 
