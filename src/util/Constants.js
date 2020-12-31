@@ -425,6 +425,19 @@ exports.MessageTypes = [
 ];
 
 /**
+ * The format type of a sticker. Here are the available types:
+ * * PNG
+ * * APNG
+ * * LOTTIE
+ * @typedef {string} StickerFormat
+ */
+exports.StickerFormats = {
+  PNG: 1,
+  APNG: 2,
+  LOTTIE: 3
+}
+
+/**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
  * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
  * * PLAYING
