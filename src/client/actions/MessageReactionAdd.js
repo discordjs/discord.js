@@ -18,7 +18,9 @@ class MessageReactionAdd extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const member = this.getMember(data);
+    const client = this.client;
+    const guild = client.guilds.cache.get(data.guild_id);
+    const member = this.getMember({ user: data.member.user }, guild);
     if (!member) return false;
 
     // Verify channel
