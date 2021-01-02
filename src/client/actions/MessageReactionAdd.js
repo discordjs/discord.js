@@ -18,8 +18,7 @@ class MessageReactionAdd extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const client = this.client;
-    const guild = client.guilds.cache.get(data.guild_id);
+    const guild = this.client.guilds.cache.get(data.guild_id);
     let member = null;
     if (guild) member = this.getMember({ user: data.member.user }, guild);
     else member = this.getUserFromMember(data);
@@ -51,7 +50,7 @@ class MessageReactionAdd extends Action {
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {GuildMember} member The guild member that applied the guild or reaction emoji
+     * @param {Member} member The member that applied the guild or reaction emoji
      */
     this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, member);
 
