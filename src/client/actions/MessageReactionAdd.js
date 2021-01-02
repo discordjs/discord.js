@@ -20,8 +20,13 @@ class MessageReactionAdd extends Action {
 
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
-    const member = this.getMember({ user: data.member.user }, guild);
+    let member = null
+    if (guild) member = this.getMember({ user: data.member.user }, guild);
+    else member = this.getUserFromMember(data)
     if (!member) return false;
+    let me = false
+    if (member.user) me = member.user.id === this.client.user.id
+    else me = member.id === this.client.user.id
 
     // Verify channel
     const channel = this.getChannel(data);
@@ -38,7 +43,7 @@ class MessageReactionAdd extends Action {
     const reaction = message.reactions.add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
-      me: member.user.id === this.client.user.id,
+      me: me,
     });
     if (!reaction) return false;
     reaction._add(member);
@@ -46,7 +51,7 @@ class MessageReactionAdd extends Action {
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {Member} member The guild member that applied the guild or reaction emoji
+     * @param {GuildMember} member The guild member that applied the guild or reaction emoji
      */
     this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, member);
 

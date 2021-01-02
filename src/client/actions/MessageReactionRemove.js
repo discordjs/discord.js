@@ -17,7 +17,9 @@ class MessageReactionRemove extends Action {
 
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
-    const member = this.getMember({ user: { id: data.user_id } }, guild);
+    let member = null
+    if (guild) member = this.getMember({ user: { id: data.user_id } }, guild);
+    else member = this.getUserFromMember(data)
     if (!member) return false;
 
     // Verify channel
@@ -36,7 +38,7 @@ class MessageReactionRemove extends Action {
      * Emitted whenever a reaction is removed from a cached message.
      * @event Client#messageReactionRemove
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {Member} member The guild member whose emoji or reaction emoji was removed
+     * @param {GuildMember} member The guild member whose emoji or reaction emoji was removed
      */
     this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, member);
 
