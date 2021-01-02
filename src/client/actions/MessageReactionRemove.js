@@ -17,9 +17,9 @@ class MessageReactionRemove extends Action {
 
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
-    let member = null
+    let member = null;
     if (guild) member = this.getMember({ user: { id: data.user_id } }, guild);
-    else member = this.getUserFromMember(data)
+    else member = this.getUserFromMember(data);
     if (!member) return false;
 
     // Verify channel

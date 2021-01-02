@@ -20,13 +20,13 @@ class MessageReactionAdd extends Action {
 
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
-    let member = null
+    let member = null;
     if (guild) member = this.getMember({ user: data.member.user }, guild);
-    else member = this.getUserFromMember(data)
+    else member = this.getUserFromMember(data);
     if (!member) return false;
-    let me = false
-    if (member.user) me = member.user.id === this.client.user.id
-    else me = member.id === this.client.user.id
+    let me = false;
+    if (member.user) me = member.user.id === this.client.user.id;
+    else me = member.id === this.client.user.id;
 
     // Verify channel
     const channel = this.getChannel(data);
