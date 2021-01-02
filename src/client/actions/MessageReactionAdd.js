@@ -18,8 +18,8 @@ class MessageReactionAdd extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const user = this.getUserFromMember(data);
-    if (!user) return false;
+    const member = this.getMember(data);
+    if (!member) return false;
 
     // Verify channel
     const channel = this.getChannel(data);
@@ -32,23 +32,23 @@ class MessageReactionAdd extends Action {
     // Verify reaction
     if (message.partial && !this.client.options.partials.includes(PartialTypes.REACTION)) return false;
     const existing = message.reactions.cache.get(data.emoji.id || data.emoji.name);
-    if (existing && existing.users.cache.has(user.id)) return { message, reaction: existing, user };
+    if (existing && existing.users.cache.has(member.user.id)) return { message, reaction: existing, member };
     const reaction = message.reactions.add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
-      me: user.id === this.client.user.id,
+      me: member.user.id === this.client.user.id,
     });
     if (!reaction) return false;
-    reaction._add(user);
+    reaction._add(member);
     /**
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {User} user The user that applied the guild or reaction emoji
+     * @param {Member} member The guild member that applied the guild or reaction emoji
      */
-    this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, user);
+    this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, member);
 
-    return { message, reaction, user };
+    return { message, reaction, member };
   }
 }
 

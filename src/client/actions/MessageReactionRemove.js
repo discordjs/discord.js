@@ -15,8 +15,8 @@ class MessageReactionRemove extends Action {
   handle(data) {
     if (!data.emoji) return false;
 
-    const user = this.getUser(data);
-    if (!user) return false;
+    const member = this.getUser(data);
+    if (!member) return false;
 
     // Verify channel
     const channel = this.getChannel(data);
@@ -27,18 +27,18 @@ class MessageReactionRemove extends Action {
     if (!message) return false;
 
     // Verify reaction
-    const reaction = this.getReaction(data, message, user);
+    const reaction = this.getReaction(data, message, member);
     if (!reaction) return false;
-    reaction._remove(user);
+    reaction._remove(member);
     /**
      * Emitted whenever a reaction is removed from a cached message.
      * @event Client#messageReactionRemove
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {User} user The user whose emoji or reaction emoji was removed
+     * @param {Member} member The guild member whose emoji or reaction emoji was removed
      */
-    this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, user);
+    this.client.emit(Events.MESSAGE_REACTION_REMOVE, reaction, member);
 
-    return { message, reaction, user };
+    return { message, reaction, member };
   }
 }
 

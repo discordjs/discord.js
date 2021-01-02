@@ -217,14 +217,14 @@ client.on('message', msg => {
   }
 });
 
-client.on('messageReactionAdd', (reaction, user) => {
+client.on('messageReactionAdd', (reaction, member) => {
   if (reaction.message.channel.id !== '222086648706498562') return;
-  reaction.message.channel.send(`${user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
+  reaction.message.channel.send(`${member.user.username} added reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
 
-client.on('messageReactionRemove', (reaction, user) => {
+client.on('messageReactionRemove', (reaction, member) => {
   if (reaction.message.channel.id !== '222086648706498562') return;
-  reaction.message.channel.send(`${user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
+  reaction.message.channel.send(`${member.user.username} removed reaction ${reaction.emoji}, count is now ${reaction.count}`);
 });
 
 client.on('message', m => {
