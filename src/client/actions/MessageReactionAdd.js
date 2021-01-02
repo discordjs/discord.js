@@ -50,7 +50,7 @@ class MessageReactionAdd extends Action {
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {Member} member The member that applied the guild or reaction emoji
+     * @param {GuildMember} member The member that applied the guild or reaction emoji
      */
     this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, member);
 
