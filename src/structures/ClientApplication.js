@@ -70,7 +70,7 @@ class ClientApplication extends Application {
    * @readonly
    */
   get partial() {
-    return this.name === null;
+    return 'name' in this;
   }
 
   /**
