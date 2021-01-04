@@ -23,23 +23,29 @@ class Application extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The name of the app
-     * @type {string}
-     */
-    if ('name' in data) this.name = data.name;
+    if ('name' in data) {
+      /**
+       * The name of the app
+       * @type {string}
+       */
+      this.name = data.name;
+    }
 
-    /**
-     * The app's description
-     * @type {string}
-     */
-    if ('description' in data) this.description = data.description;
+    if ('description' in data) {
+      /**
+       * The app's description
+       * @type {string}
+       */
+      this.description = data.description;
+    }
 
-    /**
-     * The app's icon hash
-     * @type {string}
-     */
-    if ('icon' in data) this.icon = data.icon;
+    if ('icon' in data) {
+      /**
+       * The app's icon hash
+       * @type {string}
+       */
+      this.icon = data.icon;
+    }
   }
 
   /**

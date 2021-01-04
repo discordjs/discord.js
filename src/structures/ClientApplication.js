@@ -13,42 +13,55 @@ class ClientApplication extends Application {
   _patch(data) {
     super._patch(data);
 
-    /**
-     * The flags this application has
-     * @type {number}
-     */
-    if ('flags' in data) this.flags = data.flags;
+    if ('flags' in data) {
+      /**
+       * The flags this application has
+       * @type {number}
+       */
+      this.flags = data.flags;
+    }
 
-    /**
-     * The app's cover image
-     * @type {string}
-     */
-    if ('cover_image' in data) this.cover = data.cover_image;
+    if ('cover_image' in data) {
+      /**
+       * The app's cover image
+       * @type {string}
+       */
+      this.cover = data.cover_image;
+    }
 
-    /**
-     * The app's RPC origins, if enabled
-     * @type {string[]}
-     */
-    if ('rpc_origins' in data) this.rpcOrigins = data.rpc_origins;
+    if ('rpc_origins' in data) {
+      /**
+       * The app's RPC origins, if enabled
+       * @type {string[]}
+       */
+      this.rpcOrigins = data.rpc_origins;
+    }
 
-    /**
-     * If this app's bot requires a code grant when using the OAuth2 flow
-     * @type {boolean}
-     */
-    if ('bot_require_code_grant' in data) this.botRequireCodeGrant = data.bot_require_code_grant;
+    if ('bot_require_code_grant' in data) {
+      /**
+       * If this app's bot requires a code grant when using the OAuth2 flow
+       * @type {boolean}
+       */
+      this.botRequireCodeGrant = data.bot_require_code_grant;
+    }
 
-    /**
-     * If this app's bot is public
-     * @type {boolean}
-     */
-    if ('bot_public' in data) this.botPublic = data.bot_public;
+    if ('bot_public' in data) {
+      /**
+       * If this app's bot is public
+       * @type {boolean}
+       */
+      this.botPublic = data.bot_public;
+    }
 
-    /**
-     * The owner of this OAuth application
-     * @type {User|Team}
-     */
-    if ('team' in data) this.owner = new Team(this.client, data.team);
-    else if ('owner' in data) this.owner = this.client.users.add(data.owner);
+    if ('team' in data) {
+      /**
+       * The owner of this OAuth application
+       * @type {User|Team}
+       */
+      this.owner = new Team(this.client, data.team);
+    } else if ('owner' in data) {
+      this.owner = this.client.users.add(data.owner);
+    }
   }
 
   /**
