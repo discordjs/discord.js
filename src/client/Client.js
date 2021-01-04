@@ -19,7 +19,6 @@ const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
 const { Events, DefaultOptions } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
 const Structures = require('../util/Structures');
 
@@ -444,13 +443,9 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    const intents = options.intents && Intents.resolve(options.intents);
-    if (!intents) {
+    if (typeof options.intents === 'undefined') {
       throw new TypeError('CLIENT_MISSING_INTENTS');
     }
-
-    options.intents = intents;
-
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'shardCount', 'a number greater than or equal to 1');
     }
