@@ -1198,8 +1198,8 @@ declare module 'discord.js' {
     public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
     public toArray(checkAdmin?: boolean): PermissionString[];
 
-    public static ALL: number;
-    public static DEFAULT: number;
+    public static ALL: bigint;
+    public static DEFAULT: bigint;
     public static FLAGS: PermissionFlags;
     public static resolve(permission?: PermissionResolvable): bigint;
   }
