@@ -63,13 +63,13 @@ class BaseManager {
   }
 
   /**
-   * Resolves a data entry to a instance ID.
+   * Resolves a data entry to an instance ID.
    * @param {string|Object} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string') return idOrInstance;
+    if (typeof idOrInstance === 'string' && /^\d{17,19}$/.test(idOrInstance)) return idOrInstance;
     return null;
   }
 
