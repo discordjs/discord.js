@@ -1423,7 +1423,7 @@ declare module 'discord.js' {
   export class SnowflakeUtil {
     public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
     public static generate(timestamp?: number | Date): Snowflake;
-    public static maybeSnowflake(string: string): boolean;
+    public static maybeSnowflake(string: string): string is Snowflake;
   }
 
   export class Speaking extends BitField<SpeakingString> {
