@@ -363,7 +363,7 @@ class Client extends BaseClient {
    * @param {GuildResolvable} guild The guild to fetch the widget for
    * @returns {Promise<Object>}
    */
-  fetchWidget(guild) {
+  fetchWidgetSettings(guild) {
     const id = this.guilds.resolveID(guild);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable'));
     return this.api.guilds(id)['widget.json'].get();
