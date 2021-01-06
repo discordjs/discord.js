@@ -584,20 +584,7 @@ class Util {
         const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
-    if (message.client.options.disableMentions === 'everyone') {
-      str = str.replace(/@([^<>@ ]*)/gmsu, (match, target) => {
-        if (target.match(/^[&!]?\d+$/)) {
-          return `@${target}`;
-        } else {
-          return `@\u200b${target}`;
-        }
-      });
-    }
-    if (message.client.options.disableMentions === 'all') {
-      return Util.removeMentions(str);
-    } else {
-      return str;
-    }
+    return str;
   }
 
   /**

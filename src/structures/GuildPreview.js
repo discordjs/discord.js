@@ -75,7 +75,7 @@ class GuildPreview extends Base {
      * The description for this guild
      * @type {?string}
      */
-    this.description = data.description;
+    this.description = data.description || null;
 
     if (!this.emojis) {
       /**

@@ -222,30 +222,48 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the {@link Client}s.
+   * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array<*>>} Results of the script execution
+   * @param {number} [shard] Shard to run on, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    */
-  broadcastEval(script) {
-    const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.eval(script));
-    return Promise.all(promises);
+  broadcastEval(script, shard) {
+    return this._performOnShards('eval', [script], shard);
   }
 
   /**
-   * Fetches a client property value of each shard.
+   * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
-   * @returns {Promise<Array<*>>}
+   * @param {number} [shard] Shard to fetch property from, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
-  fetchClientValues(prop) {
+  fetchClientValues(prop, shard) {
+    return this._performOnShards('fetchClientValue', [prop], shard);
+  }
+
+  /**
+   * Runs a method with given arguments on all shards, or a given shard.
+   * @param {string} method Method name to run on each shard
+   * @param {Array<*>} args Arguments to pass through to the method call
+   * @param {number} [shard] Shard to run on, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>} Results of the method execution
+   * @private
+   */
+  _performOnShards(method, args, shard) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
     if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
+
+    if (typeof shard === 'number') {
+      if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
+      return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
+    }
+
     const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
+    for (const sh of this.shards.values()) promises.push(sh[method](...args));
     return Promise.all(promises);
   }
 

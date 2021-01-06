@@ -88,6 +88,15 @@ class SnowflakeUtil {
   static maybeSnowflake(string) {
     return /^\d{17,19}$/.test(string);
   }
+
+  /**
+   * Discord's epoch value (2015-01-01T00:00:00.000Z).
+   * @type {number}
+   * @readonly
+   */
+  static get EPOCH() {
+    return EPOCH;
+  }
 }
 
 module.exports = SnowflakeUtil;

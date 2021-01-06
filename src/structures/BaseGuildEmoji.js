@@ -5,6 +5,7 @@ const Emoji = require('./Emoji');
 /**
  * Parent class for {@link GuildEmoji} and {@link GuildPreviewEmoji}.
  * @extends {Emoji}
+ * @abstract
  */
 class BaseGuildEmoji extends Emoji {
   constructor(client, data, guild) {
@@ -15,6 +16,10 @@ class BaseGuildEmoji extends Emoji {
      * @type {Guild|GuildPreview}
      */
     this.guild = guild;
+
+    this.requiresColons = null;
+    this.managed = null;
+    this.available = null;
 
     /**
      * Array of role ids this emoji is active for
@@ -30,26 +35,29 @@ class BaseGuildEmoji extends Emoji {
   _patch(data) {
     if (data.name) this.name = data.name;
 
-    /**
-     * Whether or not this emoji requires colons surrounding it
-     * @type {?boolean}
-     * @name GuildEmoji#requiresColons
-     */
-    if (typeof data.require_colons !== 'undefined') this.requiresColons = data.require_colons;
+    if (typeof data.require_colons !== 'undefined') {
+      /**
+       * Whether or not this emoji requires colons surrounding it
+       * @type {?boolean}
+       */
+      this.requiresColons = data.require_colons;
+    }
 
-    /**
-     * Whether this emoji is managed by an external service
-     * @type {?boolean}
-     * @name GuildEmoji#managed
-     */
-    if (typeof data.managed !== 'undefined') this.managed = data.managed;
+    if (typeof data.managed !== 'undefined') {
+      /**
+       * Whether this emoji is managed by an external service
+       * @type {?boolean}
+       */
+      this.managed = data.managed;
+    }
 
-    /**
-     * Whether this emoji is available
-     * @type {?boolean}
-     * @name GuildEmoji#available
-     */
-    if (typeof data.available !== 'undefined') this.available = data.available;
+    if (typeof data.available !== 'undefined') {
+      /**
+       * Whether this emoji is available
+       * @type {?boolean}
+       */
+      this.available = data.available;
+    }
 
     if (data.roles) this._roles = data.roles;
   }

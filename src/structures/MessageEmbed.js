@@ -29,37 +29,37 @@ class MessageEmbed {
      * * `link` - a link embed
      * @type {string}
      */
-    this.type = data.type;
+    this.type = data.type || 'rich';
 
     /**
      * The title of this embed
      * @type {?string}
      */
-    this.title = data.title;
+    this.title = 'title' in data ? data.title : null;
 
     /**
      * The description of this embed
      * @type {?string}
      */
-    this.description = data.description;
+    this.description = 'description' in data ? data.description : null;
 
     /**
      * The URL of this embed
      * @type {?string}
      */
-    this.url = data.url;
+    this.url = 'url' in data ? data.url : null;
 
     /**
      * The color of this embed
      * @type {?number}
      */
-    this.color = Util.resolveColor(data.color);
+    this.color = 'color' in data ? Util.resolveColor(data.color) : null;
 
     /**
      * The timestamp of this embed
      * @type {?number}
      */
-    this.timestamp = data.timestamp ? new Date(data.timestamp).getTime() : null;
+    this.timestamp = 'timestamp' in data ? new Date(data.timestamp).getTime() : null;
 
     /**
      * Represents a field of a MessageEmbed
@@ -231,18 +231,19 @@ class MessageEmbed {
   }
 
   /**
-   * The accumulated length for the embed title, description, fields and footer text
+   * The accumulated length for the embed title, description, fields, footer text, and author name
    * @type {number}
    * @readonly
    */
   get length() {
     return (
-      (this.title ? this.title.length : 0) +
-      (this.description ? this.description.length : 0) +
+      (this.title?.length ?? 0) +
+      (this.description?.length ?? 0) +
       (this.fields.length >= 1
         ? this.fields.reduce((prev, curr) => prev + curr.name.length + curr.value.length, 0)
         : 0) +
-      (this.footer ? this.footer.text.length : 0)
+      (this.footer?.text.length ?? 0) +
+      (this.author?.name.length ?? 0)
     );
   }
 
@@ -331,7 +332,7 @@ class MessageEmbed {
    */
   setFooter(text, iconURL) {
     text = Util.resolveString(text);
-    this.footer = { text, iconURL, proxyIconURL: undefined };
+    this.footer = { text, iconURL };
     return this;
   }
 

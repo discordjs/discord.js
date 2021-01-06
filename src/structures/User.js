@@ -27,6 +27,9 @@ class User extends Base {
      */
     this.id = data.id;
 
+    this.system = null;
+    this.flags = null;
+
     this._patch(data);
   }
 
@@ -35,25 +38,24 @@ class User extends Base {
       /**
        * The username of the user
        * @type {?string}
-       * @name User#username
        */
       this.username = data.username;
     } else if (typeof this.username !== 'string') {
       this.username = null;
     }
 
-    /**
-     * Whether or not the user is a bot
-     * @type {boolean}
-     * @name User#bot
-     */
-    this.bot = Boolean(data.bot);
+    if ('bot' in data || typeof this.bot !== 'boolean') {
+      /**
+       * Whether or not the user is a bot
+       * @type {boolean}
+       */
+      this.bot = Boolean(data.bot);
+    }
 
     if ('discriminator' in data) {
       /**
        * A discriminator based on username for the user
        * @type {?string}
-       * @name User#discriminator
        */
       this.discriminator = data.discriminator;
     } else if (typeof this.discriminator !== 'string') {
@@ -64,7 +66,6 @@ class User extends Base {
       /**
        * The ID of the user's avatar
        * @type {?string}
-       * @name User#avatar
        */
       this.avatar = data.avatar;
     } else if (typeof this.avatar !== 'string') {
@@ -75,25 +76,14 @@ class User extends Base {
       /**
        * Whether the user is an Official Discord System user (part of the urgent message system)
        * @type {?boolean}
-       * @name User#system
        */
       this.system = Boolean(data.system);
-    }
-
-    if ('locale' in data) {
-      /**
-       * The locale of the user's client (ISO 639-1)
-       * @type {?string}
-       * @name User#locale
-       */
-      this.locale = data.locale;
     }
 
     if ('public_flags' in data) {
       /**
        * The flags for this user
        * @type {?UserFlags}
-       * @name User#flags
        */
       this.flags = new UserFlags(data.public_flags);
     }
@@ -288,7 +278,7 @@ class User extends Base {
 
   /**
    * Fetches this user's flags.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<UserFlags>}
    */
   async fetchFlags(force = false) {
@@ -300,7 +290,7 @@ class User extends Base {
 
   /**
    * Fetches this user.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
   fetch(force = false) {

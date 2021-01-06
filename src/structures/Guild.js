@@ -4,6 +4,7 @@ const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
+const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
@@ -231,36 +232,38 @@ class Guild extends Base {
      */
     this.premiumTier = data.premium_tier;
 
-    /**
-     * The total number of boosts for this server
-     * @type {?number}
-     * @name Guild#premiumSubscriptionCount
-     */
     if (typeof data.premium_subscription_count !== 'undefined') {
+      /**
+       * The total number of boosts for this server
+       * @type {?number}
+       */
       this.premiumSubscriptionCount = data.premium_subscription_count;
     }
 
-    /**
-     * Whether widget images are enabled on this guild
-     * @type {?boolean}
-     * @name Guild#widgetEnabled
-     */
-    if (typeof data.widget_enabled !== 'undefined') this.widgetEnabled = data.widget_enabled;
+    if (typeof data.widget_enabled !== 'undefined') {
+      /**
+       * Whether widget images are enabled on this guild
+       * @type {?boolean}
+       */
+      this.widgetEnabled = data.widget_enabled;
+    }
 
-    /**
-     * The widget channel ID, if enabled
-     * @type {?string}
-     * @name Guild#widgetChannelID
-     */
-    if (typeof data.widget_channel_id !== 'undefined') this.widgetChannelID = data.widget_channel_id;
+    if (typeof data.widget_channel_id !== 'undefined') {
+      /**
+       * The widget channel ID, if enabled
+       * @type {?string}
+       */
+      this.widgetChannelID = data.widget_channel_id;
+    }
 
-    /**
-     * The embed channel ID, if enabled
-     * @type {?string}
-     * @name Guild#embedChannelID
-     * @deprecated
-     */
-    if (typeof data.embed_channel_id !== 'undefined') this.embedChannelID = data.embed_channel_id;
+    if (typeof data.embed_channel_id !== 'undefined') {
+      /**
+       * The embed channel ID, if enabled
+       * @type {?string}
+       * @deprecated
+       */
+      this.embedChannelID = data.embed_channel_id;
+    }
 
     /**
      * The verification level of the guild
@@ -299,40 +302,47 @@ class Guild extends Base {
      */
     this.systemChannelFlags = new SystemChannelFlags(data.system_channel_flags).freeze();
 
-    /**
-     * The maximum amount of members the guild can have
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#maximumMembers
-     */
-    if (typeof data.max_members !== 'undefined') this.maximumMembers = data.max_members || 250000;
-
-    /**
-     * The maximum amount of presences the guild can have
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#maximumPresences
-     */
-    if (typeof data.max_presences !== 'undefined') this.maximumPresences = data.max_presences || 25000;
-
-    /**
-     * The approximate amount of members the guild has
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#approximateMemberCount
-     */
-    if (typeof data.approximate_member_count !== 'undefined') {
-      this.approximateMemberCount = data.approximate_member_count;
+    if (typeof data.max_members !== 'undefined') {
+      /**
+       * The maximum amount of members the guild can have
+       * @type {?number}
+       */
+      this.maximumMembers = data.max_members;
+    } else if (typeof this.maximumMembers === 'undefined') {
+      this.maximumMembers = null;
     }
 
-    /**
-     * The approximate amount of presences the guild has
-     * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
-     * @type {?number}
-     * @name Guild#approximatePresenceCount
-     */
+    if (typeof data.max_presences !== 'undefined') {
+      /**
+       * The maximum amount of presences the guild can have
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
+      this.maximumPresences = data.max_presences || 25000;
+    } else if (typeof this.maximumPresences === 'undefined') {
+      this.maximumPresences = null;
+    }
+
+    if (typeof data.approximate_member_count !== 'undefined') {
+      /**
+       * The approximate amount of members the guild has
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
+      this.approximateMemberCount = data.approximate_member_count;
+    } else if (typeof this.approximateMemberCount === 'undefined') {
+      this.approximateMemberCount = null;
+    }
+
     if (typeof data.approximate_presence_count !== 'undefined') {
+      /**
+       * The approximate amount of presences the guild has
+       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * @type {?number}
+       */
       this.approximatePresenceCount = data.approximate_presence_count;
+    } else if (typeof this.approximatePresenceCount === 'undefined') {
+      this.approximatePresenceCount = null;
     }
 
     /**
@@ -618,27 +628,6 @@ class Guild extends Base {
   }
 
   /**
-   * The voice state for the client user of this guild, if any
-   * @type {?VoiceState}
-   * @readonly
-   */
-  get voice() {
-    return this.voiceStates.cache.get(this.client.user.id);
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the user is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // Get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.members.resolve(user);
-  }
-
-  /**
    * Fetches this guild.
    * @returns {Promise<Guild>}
    */
@@ -725,6 +714,20 @@ class Guild extends Base {
   }
 
   /**
+   * Fetches a collection of templates from this guild.
+   * Resolves with a collection mapping templates by their codes.
+   * @returns {Promise<Collection<string, GuildTemplate>>}
+   */
+  fetchTemplates() {
+    return this.client.api
+      .guilds(this.id)
+      .templates.get()
+      .then(templates =>
+        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
+      );
+  }
+
+  /**
    * The data for creating an integration.
    * @typedef {Object} IntegrationData
    * @property {string} id The integration id
@@ -742,6 +745,19 @@ class Guild extends Base {
       .guilds(this.id)
       .integrations.post({ data, reason })
       .then(() => this);
+  }
+
+  /**
+   * Creates a template for the guild.
+   * @param {string} name The name for the template
+   * @param {string} [description] The description for the template
+   * @returns {Promise<GuildTemplate>}
+   */
+  createTemplate(name, description) {
+    return this.client.api
+      .guilds(this.id)
+      .templates.post({ data: { name, description } })
+      .then(data => new GuildTemplate(this.client, data));
   }
 
   /**
@@ -956,29 +972,25 @@ class Guild extends Base {
    * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @returns {Promise<GuildMember>}
    */
-  addMember(user, options) {
+  async addMember(user, options) {
     user = this.client.users.resolveID(user);
-    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
-    if (this.members.cache.has(user)) return Promise.resolve(this.members.cache.get(user));
+    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
         role = this.roles.resolve(role);
         if (!role) {
-          return Promise.reject(
-            new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
-          );
+          throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
         roles.push(role.id);
       }
       options.roles = roles;
     }
-    return this.client.api
-      .guilds(this.id)
-      .members(user)
-      .put({ data: options })
-      .then(data => this.members.add(data));
+    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof Buffer ? this.members.fetch(user) : this.members.add(data);
   }
 
   /**

@@ -5,13 +5,11 @@ const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const {
   Events: { RATE_LIMIT },
-  browser,
 } = require('../util/Constants');
 const Util = require('../util/Util');
 
 function parseResponse(res) {
   if (res.headers.get('content-type').startsWith('application/json')) return res.json();
-  if (browser) return res.blob();
   return res.buffer();
 }
 

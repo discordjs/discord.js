@@ -46,13 +46,14 @@ class MessageReaction {
   }
 
   _patch(data) {
-    /**
-     * The number of people that have given the same reaction
-     * @type {?number}
-     * @name MessageReaction#count
-     */
     // eslint-disable-next-line eqeqeq
-    if (this.count == undefined) this.count = data.count;
+    if (this.count == undefined) {
+      /**
+       * The number of people that have given the same reaction
+       * @type {?number}
+       */
+      this.count = data.count;
+    }
   }
 
   /**
