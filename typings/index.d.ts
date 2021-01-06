@@ -1837,7 +1837,7 @@ declare module 'discord.js' {
     public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => void): this;
     public once(event: string, listener: (...args: any[]) => void): this;
   }
-                                                              
+
    export class WidgetUser extends Base {
     constructor(client: Client, data: any);
     public username: string;
