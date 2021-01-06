@@ -2053,9 +2053,10 @@ declare module 'discord.js' {
   }
   export class WidgetChannelManager extends Base {
     constructor(client: Client, data: any);
-    public add(data: any, cache: true) : WidgetChannel;
-    public fetch(id: Snowflake, data: any, cache: true) : Channel;
+    public add(data: any, cache: true): WidgetChannel;
+    public fetch(id: Snowflake, data: any, cache: true): Channel;
   }
+
   //#endregion
 
   //#region Mixins
