@@ -1837,7 +1837,40 @@ declare module 'discord.js' {
     public once(event: 'allReady', listener: (unavailableGuilds?: Set<Snowflake>) => void): this;
     public once(event: string, listener: (...args: any[]) => void): this;
   }
-
+                                                              
+   export class WidgetUser extends Base {
+    constructor(client: Client, data: any);
+    public username: string;
+    public discriminator: string;
+    public avatar: null;
+    public avatar_url: string;
+    public game: object | null;
+    public status: string | null;
+    public deaf: boolean | null;
+    public mute: boolean | null;
+    public self_deaf: boolean | null;
+    public self_mute: boolean | null;
+    public suppress: boolean | null;
+    public channel_id: string | null;
+    public equals(user: WidgetUser) : boolean;
+  }
+                                                              
+  export class WidgetChannel extends Base {
+    constructor(client: Client, data: any);
+    public id: Snowflake;
+    public name: string;
+    public position: number;
+  }
+    export class Widget extends Base {
+    constructor(client: Client, data: any, id: Snowflake);
+    public id: Snowflake;
+    public members: Array<WidgetUser>;
+    public channels: WidgetChannelManager;
+    public name: string;
+    public instant_invite: string;
+    public disabled: boolean;
+    public fetch() : Widget;
+  }
   //#endregion
 
   //#region Collections
@@ -2016,7 +2049,11 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
   }
-
+  export class WidgetChannelManager extends Base {
+    constructor(client: Client, data: any);
+    public add(data: any, cache: true) : WidgetChannel;
+    public fetch(id: Snowflake, data: any, cache: true) : Channel;
+  }
   //#endregion
 
   //#region Mixins
