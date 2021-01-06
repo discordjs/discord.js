@@ -25,8 +25,8 @@ class Widget extends Base {
    * @param {*} data The raw data of the widget
    * @private
    */
-  _patch(data){
-    if (data?.code !== "50004") {
+  _patch(data) {
+    if (data?.code !== '50004') {
       this.disabled = false;
       this.id = data.id;
       this.name = data.name;
@@ -55,7 +55,9 @@ class Widget extends Base {
    * @returns {Promise<Widget>}
    */
   fetch() {
-    return this.api.guilds(this.id)['widget.json'].get()
+    return this.api
+      .guilds(this.id)
+      ['widget.json'].get()
       .then(data => {
         this._patch(data);
         return this;
