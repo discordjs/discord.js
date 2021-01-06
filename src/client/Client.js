@@ -362,26 +362,17 @@ class Client extends BaseClient {
   /**
    * Obtains the widget from a guild, available for all guilds
    * @param {GuildResolvable} guild The guild to fetch the widget for
-   * @returns {Promise<Object>}
-   */
-  fetchWidgetSettings(guild) {
-    const id = this.guilds.resolveID(guild);
-    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable'));
-    return this.api.guilds(id)['widget.json'].get();
-  }
-  
-  /**
-   * Obtains the widget from a guild, available for all guilds
-   * @param {GuildResolvable} guild The guild to fetch the widget for
    * @returns {Promise<Widget>}
    */
   fetchWidget(guild) {
     const id = this.guilds.resolveID(guild);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable'));
-    return this.api.guilds(id)['widget.json'].get()
+    return this.api
+      .guilds(id)
+      ['widget.json'].get()
       .then(data => new Widget(this, data, id));
   }
-  
+
   /**
    * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
    * @param {GuildResolvable} guild The guild to fetch the preview for
