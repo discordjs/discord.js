@@ -1,8 +1,8 @@
 'use strict';
 
 const Base = require('./Base');
-const WidgetChannelManager = require('../managers/WidgetChannelManager');
 const WidgetUser = require('./WidgetUser');
+const WidgetChannelManager = require('../managers/WidgetChannelManager');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
@@ -26,7 +26,7 @@ class Widget extends Base {
    * @private
    */
   _patch(data){
-    if(data?.code != 50004) {
+    if (data?.code !== "50004") {
       this.disabled = false;
       this.id = data.id;
       this.name = data.name;
@@ -39,7 +39,7 @@ class Widget extends Base {
         this.members = [];
         for (const user of data.members) this.members.push(new WidgetUser(this.client, user));
       }
-    }else{
+    } else {
       delete this.disabled;
       delete this.name;
       delete this.instant_invite;
