@@ -115,7 +115,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     public toJSON(...props: { [key: string]: boolean | string }[]): object;
     public valueOf(): string;
-    public static isValidID(string: string): string is Snowflake;
+    public static isValidID(value: string): value is Snowflake;
   }
 
   export class BaseClient extends EventEmitter {
@@ -1407,7 +1407,7 @@ declare module 'discord.js' {
   export class SnowflakeUtil {
     public static deconstruct(snowflake: Snowflake): DeconstructedSnowflake;
     public static generate(timestamp?: number | Date): Snowflake;
-    public static maybeSnowflake(string: string): string is Snowflake;
+    public static maybeSnowflake(value: string): value is Snowflake;
     public static readonly EPOCH: number;
   }
 

@@ -82,11 +82,11 @@ class SnowflakeUtil {
 
   /**
    * Tells whether a given string may be interpreted as a snowflake.
-   * @param {string} string String to test
+   * @param {string} value String to test
    * @returns {boolean} Returns true if the string may be a snowflake
    */
-  static maybeSnowflake(string) {
-    return /^\d{17,19}$/.test(string);
+  static maybeSnowflake(value) {
+    return /^\d{17,19}$/.test(value);
   }
 
   /**
