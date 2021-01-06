@@ -18,8 +18,8 @@ class WidgetUser extends Base {
 
   _patch(data) {
     this.username = data.username;
-    this.discriminator = "0000"; // Discord return always 0000
-    this.avatar = null; // Discord return always null
+    this.discriminator = '0000';
+    this.avatar = null;
     this.avatar_url = data.avatar_url;
 
     this.game = data?.game;
