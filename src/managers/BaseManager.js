@@ -69,7 +69,7 @@ class BaseManager {
    */
   resolveID(idOrInstance) {
     if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string' && /^\d{17,19}$/.test(idOrInstance)) return idOrInstance;
+    if (typeof idOrInstance === 'string') return idOrInstance;
     return null;
   }
 
