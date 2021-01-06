@@ -1852,25 +1852,27 @@ declare module 'discord.js' {
     public self_mute: boolean | null;
     public suppress: boolean | null;
     public channel_id: string | null;
-    public equals(user: WidgetUser) : boolean;
+    public equals(user: WidgetUser): boolean;
   }
-                                                              
+
   export class WidgetChannel extends Base {
     constructor(client: Client, data: any);
     public id: Snowflake;
     public name: string;
     public position: number;
   }
-    export class Widget extends Base {
+
+  export class Widget extends Base {
     constructor(client: Client, data: any, id: Snowflake);
     public id: Snowflake;
-    public members: Array<WidgetUser>;
+    public members: WidgetUser[];
     public channels: WidgetChannelManager;
     public name: string;
     public instant_invite: string;
     public disabled: boolean;
-    public fetch() : Widget;
+    public fetch(): Widget;
   }
+
   //#endregion
 
   //#region Collections
