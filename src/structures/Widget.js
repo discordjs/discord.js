@@ -55,7 +55,7 @@ class Widget extends Base {
    * @returns {Promise<Widget>}
    */
   fetch() {
-    return this.api.guilds(id)['widget.json'].get()
+    return this.api.guilds(this.id)['widget.json'].get()
       .then(data => {
         this._patch(data);
         return this;
