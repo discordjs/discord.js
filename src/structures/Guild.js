@@ -1000,7 +1000,7 @@ class Guild extends Base {
     if (!this.features.includes('COMMUNITY')) {
       throw new Error('COMMUNITY');
     }
-    const data = await this.client.api.guilds(this.id, 'member-verification').get();
+    const data = await this.client.api.guilds(this.id)['member-verification'].get();
     return {
       enabled: this.membershipScreeningEnabled,
       description: data.description,
@@ -1502,7 +1502,7 @@ class Guild extends Base {
     if (typeof memberScreen.enabled !== 'undefined') data.enabled = memberScreen.enabled;
     if (typeof memberScreen.description !== 'undefined') data.description = memberScreen.description;
     if (typeof memberScreen.formFields !== 'undefined') data.form_fields = JSON.stringify(fields);
-    const res = await this.client.api.guilds(this.id, 'member-verification').patch({ data });
+    const res = await this.client.api.guilds(this.id)['member-verification'].patch({ data });
     return {
       enabled: memberScreen.enabled,
       description: res.description,
