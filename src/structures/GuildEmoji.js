@@ -150,6 +150,7 @@ class GuildEmoji extends BaseGuildEmoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
+        other.available === this.available &&
         other.requiresColons === this.requiresColons &&
         other.roles.cache.size === this.roles.cache.size &&
         other.roles.cache.every(role => this.roles.cache.has(role.id))
