@@ -514,7 +514,7 @@ exports.VerificationLevels = ['NONE', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH'];
 
 /**
  * The type of membership screening. Here are the available types:
- * * TERMS
+ * * `TERMS`: Server Rules
  * @typedef {string} MembershipScreeningType
  */
 exports.MembershipScreeningType = ['TERMS'];

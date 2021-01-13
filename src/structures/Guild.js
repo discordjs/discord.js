@@ -487,15 +487,6 @@ class Guild extends Base {
   }
 
   /**
-   * Whether Membership Screening is enabled on this guild
-   * @type {boolean}
-   * @readonly
-   */
-  get membershipScreeningEnabled() {
-    return this.features.includes('MEMBER_VERIFICATION_GATE_ENABLED');
-  }
-
-  /**
    * If this guild is partnered
    * @type {boolean}
    * @readonly
@@ -993,7 +984,10 @@ class Guild extends Base {
    * @example
    * // Fetches the guild membership screening options
    * guild.fetchMembershipScreening()
-   *   .then(memberScreen => console.log(`Membership Screening is ${memberScreen.enabled ? 'enabled' : 'disabled'}`))
+   *   .then(memberScreen => {
+   *     const requiredFields = memberScreen.formFields.filter(field => field.required);
+   *     console.log(`Screening has ${memberScreen.formFields.length} steps, ${requiredFields.length} are required`);
+   *   })
    *   .catch(console.error);
    */
   async fetchMembershipScreening() {
@@ -1002,7 +996,7 @@ class Guild extends Base {
     }
     const data = await this.client.api.guilds(this.id)['member-verification'].get();
     return {
-      enabled: this.membershipScreeningEnabled,
+      enabled: this.features.includes('MEMBER_VERIFICATION_GATE_ENABLED'),
       description: data.description,
       formFields: data.form_fields.map(field => ({
         fieldType: field.field_type,
@@ -1504,7 +1498,7 @@ class Guild extends Base {
     if (typeof memberScreen.formFields !== 'undefined') data.form_fields = JSON.stringify(fields);
     const res = await this.client.api.guilds(this.id)['member-verification'].patch({ data });
     return {
-      enabled: memberScreen.enabled,
+      enabled: memberScreen.enabled ?? this.features.includes('MEMBER_VERIFICATION_GATE_ENABLED'),
       description: res.description,
       formFields: res.form_fields.map(field => ({
         fieldType: field.field_type,

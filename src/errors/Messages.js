@@ -101,6 +101,8 @@ const Messages = {
 
   VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
 
+  COMMUNITY: 'This guild does not have the COMMUNITY feature enabled.',
+
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
