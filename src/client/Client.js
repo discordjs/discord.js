@@ -17,7 +17,7 @@ const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
-const { Events, DefaultOptions } = require('../util/Constants');
+const { Events, DefaultOptions, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Intents = require('../util/Intents');
 const Permissions = require('../util/Permissions');
@@ -377,6 +377,7 @@ class Client extends BaseClient {
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
+   * @property {InviteScope[]} additionalScopes
    */
 
   /**
@@ -412,6 +413,17 @@ class Client extends BaseClient {
       const guildID = this.guilds.resolveID(options.guild);
       if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildID);
+    }
+
+    if (options.additionalScopes) {
+      const scopes = options.additionalScopes;
+      scopes.forEach(scope => {
+        if (!InviteScopes.includes(scope)) {
+          throw new TypeError('INVALID_TYPE', 'additionalScopes', 'Array of Invite Scopes', true);
+        }
+      });
+      scopes.unshift('bot');
+      query.set('scope', scopes.join('+'));
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
