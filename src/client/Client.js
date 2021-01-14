@@ -423,7 +423,7 @@ class Client extends BaseClient {
         }
       });
       scopes.unshift('bot');
-      query.set('scope', scopes.join('+'));
+      query.set('scope', scopes.join(' '));
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
