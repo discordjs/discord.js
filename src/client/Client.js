@@ -377,7 +377,7 @@ class Client extends BaseClient {
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect
    * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
-   * @property {InviteScope[]} additionalScopes
+   * @property {InviteScope[]} [additionalScopes] Whether any additional scopes should be requested
    */
 
   /**
