@@ -417,11 +417,10 @@ class Client extends BaseClient {
 
     if (options.additionalScopes) {
       const scopes = options.additionalScopes;
-      if (scopes.some(scope => !InviteScopes.includes(scope))) {
+      if (!Array.isArray(scopes) || scopes.some(scope => !InviteScopes.includes(scope))) {
         throw new TypeError('INVALID_TYPE', 'additionalScopes', 'Array of Invite Scopes', true);
       }
-      scopes.unshift('bot');
-      query.set('scope', scopes.join(' '));
+      query.set('scope', ['bot', ...scopes].join(' '));
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
