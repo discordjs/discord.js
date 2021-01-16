@@ -1648,7 +1648,7 @@ declare module 'discord.js' {
 
     public channel: VoiceChannel;
     public readonly client: Client;
-    public readonly dispatcher: StreamDispatcher;
+    public readonly dispatcher: StreamDispatcher | null;
     public player: object;
     public receiver: VoiceReceiver;
     public speaking: Readonly<Speaking>;
