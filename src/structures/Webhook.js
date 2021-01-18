@@ -217,6 +217,34 @@ class Webhook {
   }
 
   /**
+   * Edits a message that was sent by this webhook.
+   * @param {MessageResolvable} message The message to edit
+   * @param {StringResolvable} [content] The new content for the message
+   * @param {Object} [options] The options to provide
+   * @param {MessageMentionOptions} [options.allowedMentions] Which mentions should be parsed from the message content
+   * @property {MessageEmbed[]|Object[]} [options.embeds] An array of embeds for the message
+   * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
+   * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
+   */
+  async editMessage(message, content, options) {
+    const { data } = APIMessage.create(this, content, options).resolveData();
+    const d = await this.client.api
+      .webhooks(this.id, this.token)
+      .messages(typeof message === 'string' ? message : message.id)
+      .patch({ data });
+
+    const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
+    if (!messageManager) return d;
+
+    const existing = messageManager.cache.get(d.id);
+    if (!existing) return messageManager.add(d);
+
+    const clone = existing._clone();
+    clone._patch(d);
+    return clone;
+  }
+
+  /**
    * Deletes the webhook.
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise}
@@ -224,6 +252,19 @@ class Webhook {
   delete(reason) {
     return this.client.api.webhooks(this.id, this.token).delete({ reason });
   }
+
+  /**
+   * Delete a message that was sent by this webhook.
+   * @param {MessageResolvable} message The message to delete
+   * @returns {Promise<void>}
+   */
+  async deleteMessage(message) {
+    await this.client.api
+      .webhooks(this.id, this.token)
+      .messages(typeof message === 'string' ? message : message.id)
+      .delete();
+  }
+
   /**
    * The timestamp the webhook was created at
    * @type {number}
@@ -262,7 +303,17 @@ class Webhook {
   }
 
   static applyToClass(structure) {
-    for (const prop of ['send', 'sendSlackMessage', 'edit', 'delete', 'createdTimestamp', 'createdAt', 'url']) {
+    for (const prop of [
+      'send',
+      'sendSlackMessage',
+      'edit',
+      'editMessage',
+      'delete',
+      'deleteMessage',
+      'createdTimestamp',
+      'createdAt',
+      'url',
+    ]) {
       Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
     }
   }
