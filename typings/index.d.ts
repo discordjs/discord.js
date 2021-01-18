@@ -2269,60 +2269,60 @@ declare module 'discord.js' {
   type ChannelResolvable = Channel | Snowflake;
 
   interface ClientEvents {
-    channelCreate: [Channel];
-    channelDelete: [Channel | PartialDMChannel];
-    channelPinsUpdate: [Channel | PartialDMChannel, Date];
-    channelUpdate: [Channel, Channel];
-    debug: [string];
-    warn: [string];
-    disconnect: [any, number];
-    emojiCreate: [GuildEmoji];
-    emojiDelete: [GuildEmoji];
-    emojiUpdate: [GuildEmoji, GuildEmoji];
-    error: [Error];
-    guildBanAdd: [Guild, User];
-    guildBanRemove: [Guild, User];
-    guildCreate: [Guild];
-    guildDelete: [Guild];
-    guildUnavailable: [Guild];
-    guildIntegrationsUpdate: [Guild];
-    guildMemberAdd: [GuildMember];
-    guildMemberAvailable: [GuildMember | PartialGuildMember];
-    guildMemberRemove: [GuildMember | PartialGuildMember];
+    channelCreate: [channel: Channel];
+    channelDelete: [channel: Channel | PartialDMChannel];
+    channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
+    channelUpdate: [oldChannel: Channel, newChannel: Channel];
+    debug: [message: string];
+    warn: [message: string];
+    disconnect: [closeEvent: any, status: number];
+    emojiCreate: [emoji: GuildEmoji];
+    emojiDelete: [emoji: GuildEmoji];
+    emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
+    error: [error: Error];
+    guildBanAdd: [guild: Guild, user: User];
+    guildBanRemove: [guild: Guild, user: User];
+    guildCreate: [guild: Guild];
+    guildDelete: [guild: Guild];
+    guildUnavailable: [guild: Guild];
+    guildIntegrationsUpdate: [guild: Guild];
+    guildMemberAdd: [member: GuildMember];
+    guildMemberAvailable: [member: GuildMember | PartialGuildMember];
+    guildMemberRemove: [member: GuildMember | PartialGuildMember];
     guildMembersChunk: [
-      Collection<Snowflake, GuildMember>,
-      Guild,
-      { count: number; index: number; nonce: string | undefined },
+      members: Collection<Snowflake, GuildMember>,
+      guild: Guild,
+      data: { count: number; index: number; nonce: string | undefined },
     ];
-    guildMemberSpeaking: [GuildMember | PartialGuildMember, Readonly<Speaking>];
-    guildMemberUpdate: [GuildMember | PartialGuildMember, GuildMember];
-    guildUpdate: [Guild, Guild];
-    inviteCreate: [Invite];
-    inviteDelete: [Invite];
-    message: [Message];
-    messageDelete: [Message | PartialMessage];
-    messageReactionRemoveAll: [Message | PartialMessage];
-    messageReactionRemoveEmoji: [MessageReaction];
-    messageDeleteBulk: [Collection<Snowflake, Message | PartialMessage>];
-    messageReactionAdd: [MessageReaction, User | PartialUser];
-    messageReactionRemove: [MessageReaction, User | PartialUser];
-    messageUpdate: [Message | PartialMessage, Message | PartialMessage];
-    presenceUpdate: [Presence | undefined, Presence];
-    rateLimit: [RateLimitData];
+    guildMemberSpeaking: [member: GuildMember | PartialGuildMember, speaking: Readonly<Speaking>];
+    guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
+    guildUpdate: [oldGuild: Guild, newGuild: Guild];
+    inviteCreate: [invite: Invite];
+    inviteDelete: [invite: Invite];
+    message: [message: Message];
+    messageDelete: [message: Message | PartialMessage];
+    messageReactionRemoveAll: [message: Message | PartialMessage];
+    messageReactionRemoveEmoji: [reaction: MessageReaction];
+    messageDeleteBulk: [messages: Collection<Snowflake, Message | PartialMessage>];
+    messageReactionAdd: [message: MessageReaction, user: User | PartialUser];
+    messageReactionRemove: [reaction: MessageReaction, user: User | PartialUser];
+    messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
+    presenceUpdate: [oldPresence: Presence | undefined, newPresence: Presence];
+    rateLimit: [rateLimitData: RateLimitData];
     ready: [];
     invalidated: [];
-    roleCreate: [Role];
-    roleDelete: [Role];
-    roleUpdate: [Role, Role];
-    typingStart: [Channel | PartialDMChannel, User | PartialUser];
-    userUpdate: [User | PartialUser, User];
-    voiceStateUpdate: [VoiceState, VoiceState];
-    webhookUpdate: [TextChannel];
-    shardDisconnect: [CloseEvent, number];
-    shardError: [Error, number];
-    shardReady: [number, Set<Snowflake> | undefined];
-    shardReconnecting: [number];
-    shardResume: [number, number];
+    roleCreate: [role: Role];
+    roleDelete: [role: Role];
+    roleUpdate: [oldRole: Role, newRole: Role];
+    typingStart: [channel: Channel | PartialDMChannel, user: User | PartialUser];
+    userUpdate: [oldUser: User | PartialUser, newUser: User];
+    voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
+    webhookUpdate: [channel: TextChannel];
+    shardDisconnect: [closeEvent: CloseEvent, shardID: number];
+    shardError: [error: Error, shardID: number];
+    shardReady: [shardID: number, unavailableGuilds: Set<Snowflake> | undefined];
+    shardReconnecting: [shardID: number];
+    shardResume: [shardID: number, replayedEvents: number];
   }
 
   interface ClientOptions {
