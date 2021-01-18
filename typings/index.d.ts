@@ -2089,7 +2089,14 @@ declare module 'discord.js' {
     readonly createdTimestamp: number;
     readonly url: string;
     delete(reason?: string): Promise<void>;
+    deleteMessage(message: MessageResolvable): Promise<void>;
     edit(options: WebhookEditData): Promise<Webhook>;
+    editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable,
+      options?: WebhookEditMessageOptions,
+    ): Promise<Message | object>;
+    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | object>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
@@ -3194,6 +3201,8 @@ declare module 'discord.js' {
     channel?: ChannelResolvable;
     reason?: string;
   }
+
+  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'embeds' | 'allowedMentions'>;
 
   interface WebhookMessageOptions {
     username?: string;
