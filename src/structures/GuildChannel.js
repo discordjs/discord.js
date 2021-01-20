@@ -266,6 +266,26 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Deletes existing permission overwrites for a user or role in this channel.
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Delete permission overwrites for a message author
+   * message.channel.deleteOverwrite(message.author)
+   *   .then(() => console.log("Deleted permission overwrites for " + message.author.tag + " in " + message.channel))
+   *   .catch(console.error);
+   */
+  deleteOverwrite(userOrRole) {
+    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
+    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+
+    return this.client.api
+      .channels(this.id)
+      .permissions[userOrRole.id].delete(userOrRole.id)
+      .then(() => this);
+  }
+
+  /**
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */

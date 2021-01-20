@@ -757,6 +757,7 @@ declare module 'discord.js' {
       options: PermissionOverwriteOption,
       reason?: string,
     ): Promise<this>;
+    public deleteOverwrite(userOrRole: RoleResolvable | UserResolvable): Promise<this>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
     public fetchInvites(): Promise<Collection<string, Invite>>;
