@@ -267,7 +267,7 @@ class GuildChannel extends Channel {
 
   /**
    * Deletes existing permission overwrites for a user or role in this channel.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role's permission overwrites to delete
    * @returns {Promise<GuildChannel>}
    * @example
    * // Delete permission overwrites for a message author
