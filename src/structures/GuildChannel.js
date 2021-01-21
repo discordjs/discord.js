@@ -515,6 +515,7 @@ class GuildChannel extends Channel {
    * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @param {number} [options.position=this.position] Position of the new channel
    * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
@@ -531,6 +532,7 @@ class GuildChannel extends Channel {
         bitrate: this.bitrate,
         userLimit: this.userLimit,
         rateLimitPerUser: this.rateLimitPerUser,
+        position: this.position,
         reason: null,
       },
       options,
