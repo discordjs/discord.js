@@ -50,7 +50,6 @@
     "abort-controller": "^3.0.0",
     "node-fetch": "^2.6.1",
     "prism-media": "^1.2.2",
-    "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.3",
     "ws": "^7.3.1"
   },
