@@ -2092,18 +2092,25 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: WebhookMessageOptions | APIMessage): Promise<Message | Message[]>;
+    ): Promise<Message | WebhookRawMessageResponse>;
+    send(
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<(Message | WebhookRawMessageResponse)[]>;
+    send(
+      options: WebhookMessageOptions | APIMessage,
+    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
     send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
+    ): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    send(content: StringResolvable, options: WebhookMessageOptions): Promise<Message | Message[]>;
+    ): Promise<(Message | WebhookRawMessageResponse)[]>;
+    send(
+      content: StringResolvable,
+      options: WebhookMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
@@ -2197,6 +2204,95 @@ declare module 'discord.js' {
   }
 
   type APIMessageContentResolvable = string | number | boolean | bigint | symbol | readonly StringResolvable[];
+
+  interface APIRawMessage {
+    id: Snowflake;
+    type: number;
+    content: string;
+    channel_id: Snowflake;
+    author: {
+      bot?: true;
+      id: Snowflake;
+      username: string;
+      avatar: string | null;
+      discriminator: string;
+    };
+    attachments: {
+      id: Snowflake;
+      filename: string;
+      size: number;
+      url: string;
+      proxy_url: string;
+      height: number | null;
+      width: number | null;
+    }[];
+    embeds: {
+      title?: string;
+      type?: 'rich' | 'image' | 'video' | 'gifv' | 'article' | 'link';
+      description?: string;
+      url?: string;
+      timestamp?: string;
+      color?: number;
+      footer?: {
+        text: string;
+        icon_url?: string;
+        proxy_icon_url?: string;
+      };
+      image?: {
+        url?: string;
+        proxy_url?: string;
+        height?: number;
+        width?: number;
+      };
+      thumbnail?: {
+        url?: string;
+        proxy_url?: string;
+        height?: number;
+        width?: number;
+      };
+      video?: {
+        url?: string;
+        height?: number;
+        width?: number;
+      };
+      provider?: { name?: string; url?: string };
+      author?: {
+        name?: string;
+        url?: string;
+        icon_url?: string;
+        proxy_icon_url?: string;
+      };
+      fields?: {
+        name: string;
+        value: string;
+        inline?: boolean;
+      }[];
+    }[];
+    mentions: {
+      id: Snowflake;
+      username: string;
+      discriminator: string;
+      avatar: string | null;
+      bot?: true;
+      public_flags?: number;
+      member?: {
+        nick: string | null;
+        roles: Snowflake[];
+        joined_at: string;
+        premium_since?: string | null;
+        deaf: boolean;
+        mute: boolean;
+      };
+    }[];
+    mention_roles: Snowflake[];
+    pinned: boolean;
+    mention_everyone: boolean;
+    tts: boolean;
+    timestamp: string;
+    edited_timestamp: string | null;
+    flags: number;
+    webhook_id: Snowflake;
+  }
 
   interface ApplicationAsset {
     name: string;
@@ -3206,6 +3302,16 @@ declare module 'discord.js' {
     code?: string | boolean;
     split?: boolean | SplitOptions;
   }
+
+  type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
+    author: {
+      bot: true;
+      id: Snowflake;
+      username: string;
+      avatar: string | null;
+      discriminator: '0000';
+    };
+  };
 
   type WebhookTypes = 'Incoming' | 'Channel Follower';
 
