@@ -82,6 +82,7 @@ class Webhook {
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {boolean} [tts=false] Whether or not the message should be spoken aloud
+   * @property {StringResolvable} [content] The content for the message
    * @property {string} [nonce=''] The nonce for the message
    * @property {Object[]} [embeds] An array of embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
@@ -221,6 +222,7 @@ class Webhook {
    * @param {MessageResolvable} message The message to edit
    * @param {StringResolvable} [content] The new content for the message
    * @param {Object} [options] The options to provide
+   * @param {StringResolvable} [options.content] The new content for the message
    * @param {MessageMentionOptions} [options.allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageEmbed[]|Object[]} [options.embeds] An array of embeds for the message
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
