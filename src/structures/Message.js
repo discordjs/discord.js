@@ -185,13 +185,6 @@ class Message extends Base {
         }
       : null;
 
-    /**
-     * The previous versions of the message, sorted with the most recent first
-     * @type {Message[]}
-     * @private
-     */
-    this._edits = [];
-
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
@@ -246,11 +239,6 @@ class Message extends Base {
    */
   patch(data) {
     const clone = this._clone();
-    const { messageEditHistoryMaxSize } = this.client.options;
-    if (messageEditHistoryMaxSize !== 0) {
-      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
-      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
-    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -384,18 +372,6 @@ class Message extends Base {
   }
 
   /**
-   * An array of cached versions of the message, including the current version
-   * Sorted from latest (first) to oldest (last)
-   * @type {Message[]}
-   * @readonly
-   */
-  get edits() {
-    const copy = this._edits.slice();
-    copy.unshift(this);
-    return copy;
-  }
-
-  /**
    * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
@@ -410,10 +386,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return (
+    return Boolean(
       !this.deleted &&
-      (this.author.id === this.client.user.id ||
-        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        (this.author.id === this.client.user.id ||
+          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
     );
   }
 
@@ -465,6 +441,7 @@ class Message extends Base {
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    */
 
   /**
@@ -627,7 +604,7 @@ class Message extends Base {
   }
 
   /**
-   * Suppresses or unsuppresses embeds on a message
+   * Suppresses or unsuppresses embeds on a message.
    * @param {boolean} [suppress=true] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */

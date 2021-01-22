@@ -13,7 +13,7 @@ const Messages = {
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  BITFIELD_INVALID: 'Invalid bitfield flag or number.',
+  BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
 
   SHARDING_INVALID: 'Invalid shard settings were provided.',
   SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
