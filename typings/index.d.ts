@@ -1766,16 +1766,17 @@ declare module 'discord.js' {
       content: APIMessageContentResolvable,
       options?: WebhookEditMessageOptions,
     ): Promise<WebhookRawMessageResponse>;
-    public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<WebhookRawMessageResponse>;
+    public editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
     public send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<WebhookRawMessageResponse>;
-    public send(
-      options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<WebhookRawMessageResponse[]>;
+    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<WebhookRawMessageResponse[]>;
     public send(
       options: WebhookMessageOptions | APIMessage,
-    ): Promise<WebhookRawMessageResponse |WebhookRawMessageResponse[]>;
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
     public send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
@@ -2123,7 +2124,10 @@ declare module 'discord.js' {
       content: APIMessageContentResolvable,
       options?: WebhookEditMessageOptions,
     ): Promise<Message | WebhookRawMessageResponse>;
-    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | WebhookRawMessageResponse>;
+    editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | WebhookRawMessageResponse>;
@@ -3325,19 +3329,9 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'embeds' | 'allowedMentions'>;
+  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'allowedMentions'>;
 
-  interface WebhookMessageOptions {
-    username?: string;
-    avatarURL?: string;
-    tts?: boolean;
-    nonce?: string;
-    embeds?: (MessageEmbed | object)[];
-    allowedMentions?: MessageMentionOptions;
-    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-    code?: string | boolean;
-    split?: boolean | SplitOptions;
-  }
+  type WebhookMessageOptions = Omit<MessageOptions, 'embed'> & { embeds?: (MessageEmbed | object)[] };
 
   type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
     author: {
