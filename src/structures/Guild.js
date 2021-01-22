@@ -1487,7 +1487,7 @@ class Guild extends Base {
       throw new Error('COMMUNITY');
     }
     const fields = memberScreen.formFields?.map(field => ({
-      field_type: field.field_type,
+      field_type: field.fieldType,
       label: field.label,
       values: field.values,
       required: field.required,
