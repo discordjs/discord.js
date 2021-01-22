@@ -1761,6 +1761,33 @@ declare module 'discord.js' {
     constructor(id: string, token: string, options?: ClientOptions);
     public client: this;
     public token: string;
+    public editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable,
+      options?: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
+    public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      options: WebhookMessageOptions | APIMessage,
+    ): Promise<WebhookRawMessageResponse |WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions,
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
