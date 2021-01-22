@@ -255,7 +255,7 @@ declare module 'discord.js' {
     public owner?: User | Team;
     public readonly partial: boolean;
     public rpcOrigins: string[];
-    public fetch(): Promise<ClientApplication>;
+    public fetch(): Promise<Required<ClientApplication>>;
   }
 
   export class ClientUser extends User {
