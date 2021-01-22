@@ -2095,8 +2095,8 @@ declare module 'discord.js' {
       message: MessageResolvable,
       content: APIMessageContentResolvable,
       options?: WebhookEditMessageOptions,
-    ): Promise<Message | object>;
-    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | object>;
+    ): Promise<Message | WebhookRawMessageResponse>;
+    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | WebhookRawMessageResponse>;
