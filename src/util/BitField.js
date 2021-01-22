@@ -145,9 +145,7 @@ class BitField {
     if (typeof bit === 'number' && bit >= 0) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, 0);
-    const error = new RangeError('BITFIELD_INVALID');
-    error.bit = bit;
-    throw error;
+    throw new RangeError('BITFIELD_INVALID', bit);
   }
 }
 
