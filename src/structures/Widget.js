@@ -1,8 +1,8 @@
 'use strict';
 
 const Base = require('./Base');
-const WidgetUser = require('./WidgetUser');
 const WidgetChannelManager = require('../managers/WidgetChannelManager');
+const WidgetUserManager = require('../managers/WidgetUserManager');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
@@ -12,12 +12,12 @@ class Widget extends Base {
   constructor(client, data, id) {
     super(client);
 
-    if (!data) return;
     this.id = id;
-    this._patch(data);
 
-    this.members = [];
+    this.members = new WidgetUserManager(client);
     this.channels = new WidgetChannelManager(client);
+
+    this._patch(data);
   }
 
   /**
@@ -26,30 +26,29 @@ class Widget extends Base {
    * @private
    */
   _patch(data) {
-    if (data?.code !== '50004') {
+    if (!data.code) {
       this.disabled = false;
       this.id = data.id;
       this.name = data.name;
-      this.instant_invite = data?.instant_invite;
+      this.instantInvite = data.instant_invite || null;
       if (data.channels) {
         this.channels.cache.clear();
         for (const channel of data.channels) this.channels.add(channel);
       }
       if (data.members) {
-        this.members = [];
-        for (const user of data.members) this.members.push(new WidgetUser(this.client, user));
+        this.members.cache.clear();
+        for (const user of data.members) this.members.add(user);
       }
+      this.presenceCount = data.presence_count;
     } else {
-      delete this.disabled;
-      delete this.name;
-      delete this.instant_invite;
-      delete this.channels;
-      this.members = [];
+      this.name = null;
+      this.instantInvite = null;
+      this.members.cache.clear();
       this.channels.cache.clear();
       this.disabled = true;
+      this.presenceCount = 0;
     }
   }
-
   /**
    * Fetches this widget.
    * @returns {Promise<Widget>}
@@ -73,11 +72,6 @@ class Widget extends Base {
    */
   toString() {
     return this.name;
-  }
-
-  toJSON() {
-    const json = super.toJSON();
-    return json;
   }
 }
 
