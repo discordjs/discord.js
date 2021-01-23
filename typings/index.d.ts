@@ -2051,6 +2051,7 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
   }
+
   export class WidgetChannelManager extends Base {
     constructor(client: Client, data: any);
     public add(data: any, cache: true): WidgetChannel;
