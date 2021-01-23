@@ -1,7 +1,8 @@
 'use strict';
 
 const Base = require('./Base');
-
+const Presence = require('./Presence').Presence;
+const WidgetVoiceState = require('./WidgetVoiceState');
 /**
  * Represents a user on a Widget of Discord.
  * @extends {Base}
@@ -13,24 +14,18 @@ class WidgetUser extends Base {
    */
   constructor(client, data) {
     super(client);
+    this.id = data.id;
     this._patch(data);
   }
 
   _patch(data) {
     this.username = data.username;
-    this.discriminator = '0000';
-    this.avatar = null;
-    this.avatar_url = data.avatar_url;
-
-    this.game = data?.game;
-    this.status = data?.status;
-
-    this.deaf = data?.deaf;
-    this.mute = data?.mute;
-    this.self_deaf = data?.self_deaf;
-    this.self_mute = data?.self_mute;
-    this.suppress = data?.suppress;
-    this.channel_id = data?.channel_id;
+    this.discriminator = data.discriminator;
+    this.avatar = data.avatar || null;
+    this.avatarURL = data.avatar_url;
+    this.game = data.game ? new Presence(this.client, { ...data.game, user: { id: data.id } }) : null;
+    this.status = data.status;
+    this.voice = data.channel_id ? new WidgetVoiceState(this.client, data) : null;
   }
 
   equals(user) {
