@@ -46,7 +46,8 @@ module.exports = {
   PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
   UserManager: require('./managers/UserManager'),
-  WidgetChannelManager: require('./structures/WidgetChannelManager'),
+  WidgetChannelManager: require('./managers/WidgetChannelManager'),
+  WidgetUserManager: require('./managers/WidgetUserManager'),
 
   // Shortcuts to Util methods
   discordSort: Util.discordSort,
@@ -107,5 +108,6 @@ module.exports = {
   Widget: require('./structures/Widget'),
   WidgetChannel: require('./structures/WidgetChannel'),
   WidgetUser: require('./structures/WidgetChannel'),
+  WidgetVoiceState: require('./structures/WidgetVoiceState'),
   WebSocket: require('./WebSocket'),
 };
