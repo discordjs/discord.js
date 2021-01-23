@@ -1844,15 +1844,23 @@ declare module 'discord.js' {
     public discriminator: string;
     public avatar: null;
     public avatar_url: string;
-    public game: object | null;
-    public status: string | null;
-    public deaf: boolean | null;
-    public mute: boolean | null;
-    public self_deaf: boolean | null;
-    public self_mute: boolean | null;
-    public suppress: boolean | null;
-    public channel_id: string | null;
+    public game: Presence | null;
+    public status: string;
+    public voice: WidgetVoiceState | null;
     public equals(user: WidgetUser): boolean;
+  }
+
+  export class WidgetVoiceState extends Base {
+    constructor(client: Client, data: any);
+    public id: string;
+    public serverDeaf: boolean | null;
+    public serverMute: boolean | null;
+    public selfDeaf: boolean | null;
+    public selfMute: boolean | null;
+    public suppress: boolean | null;
+    public channelID: string | null;
+    public deaf: boolean;
+    public mute: boolean;
   }
 
   export class WidgetChannel extends Base {
@@ -1865,11 +1873,12 @@ declare module 'discord.js' {
   export class Widget extends Base {
     constructor(client: Client, data: any, id: Snowflake);
     public id: Snowflake;
-    public members: WidgetUser[];
+    public members: WidgetUserManager;
     public channels: WidgetChannelManager;
     public name: string;
-    public instant_invite: string;
+    public instantInvite: string;
     public disabled: boolean;
+    public presenceCount: number;
     public fetch(): Widget;
   }
 
@@ -2053,9 +2062,13 @@ declare module 'discord.js' {
   }
 
   export class WidgetChannelManager extends Base {
-    constructor(client: Client, data: any);
+    constructor(client: Client, data: Iterable<any>);
     public add(data: any, cache: true): WidgetChannel;
-    public fetch(id: Snowflake, data: any, cache: true): Channel;
+  }
+
+  export class WidgetUserManager extends Base {
+    constructor(client: Client, data: Iterable<any>);
+    public add(data: any, cache: true): WidgetUser;
   }
 
   //#endregion
