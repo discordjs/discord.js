@@ -23,6 +23,7 @@ class WidgetChannelManager extends BaseManager {
 
     return channel;
   }
+
   /**
    * Obtains a channel from Discord, or the channel cache if it's already available.
    * @param {Snowflake} id ID of the channel
