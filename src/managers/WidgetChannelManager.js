@@ -11,6 +11,7 @@ class WidgetChannelManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, WidgetChannel);
   }
+
   add(data, cache = true) {
     const existing = this.cache.get(data.id);
     if (existing) {
