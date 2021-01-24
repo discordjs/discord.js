@@ -27,7 +27,7 @@ class Widget extends Base {
    */
   _patch(data) {
     if (!data.code) {
-      this.disabled = false;
+      this.enabled = true;
       this.id = data.id;
       this.name = data.name;
       this.instantInvite = data.instant_invite || null;
@@ -45,7 +45,7 @@ class Widget extends Base {
       this.instantInvite = null;
       this.members.cache.clear();
       this.channels.cache.clear();
-      this.disabled = true;
+      this.enabled = false;
       this.presenceCount = 0;
     }
   }
