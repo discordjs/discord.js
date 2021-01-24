@@ -2,7 +2,7 @@
 
 const { Events, Status } = require('../../../util/Constants');
 
-module.exports = async (client, { d: data }, shard) => {
+module.exports = (client, { d: data }, shard) => {
   let guild = client.guilds.cache.get(data.id);
   if (guild) {
     if (!guild.available && !data.unavailable) {

@@ -16,6 +16,14 @@ client
   .then(() => console.log('logged in'))
   .catch(console.error);
 
+// Fetch all members in a new guild
+client.on('guildCreate', guild => guild.members.fetch()
+    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)));
+
+// Fetch all members in a newly available guild
+client.on('guildUpdate', (oldGuild, newGuild) => !oldGuild.available && newGuild.available ? guild.members.fetch()
+    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)) : Promise.resolve());
+
 client.on('ready', async () => {
   // Fetch all members for initially available guilds
   try {
@@ -24,14 +32,6 @@ client.on('ready', async () => {
   } catch (err) {
     console.log(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
   }
-
-  // Fetch all members in a new guild
-  client.on('guildCreate', guild => guild.members.fetch()
-    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)));
-
-  // Fetch all members in a newly available guild
-  client.on('guildUpdate', (oldGuild, newGuild) => !oldGuild.available && newGuild.available ? guild.members.fetch()
-    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)) : Promise.resolve());
 
   console.log(`ready with ${client.users.cache.size} users`);
   console.timeEnd('magic');

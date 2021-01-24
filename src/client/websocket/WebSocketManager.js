@@ -391,13 +391,11 @@ class WebSocketManager extends EventEmitter {
    * Checks whether the client is ready to be marked as ready.
    * @private
    */
-  async checkShardsReady() {
+  checkShardsReady() {
     if (this.status === Status.READY) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
       return;
     }
-
-    this.status = Status.NEARLY;
 
     this.triggerClientReady();
   }
