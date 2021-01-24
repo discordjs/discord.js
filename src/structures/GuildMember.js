@@ -311,10 +311,10 @@ class GuildMember extends Base {
     let endpoint = this.client.api.guilds[this.guild.id];
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;
-      else endpoint = endpoint.members(this.id);
+      if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members['@me'].nick;
+      else endpoint = endpoint.members[this.id];
     } else {
-      endpoint = endpoint.members(this.id);
+      endpoint = endpoint.members[this.id];
     }
     await endpoint.patch({ data, reason });
 
