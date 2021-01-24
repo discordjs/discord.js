@@ -35,7 +35,7 @@ class RESTManager {
     Object.defineProperty(this, 'token', { value: token, writable: true });
 
     /**
-     * All current Requesthandlers
+     * All current request handlers
      * @type {Collection<string, RequestHandler>}
      * @readonly
      * @private
