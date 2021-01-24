@@ -49,7 +49,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
