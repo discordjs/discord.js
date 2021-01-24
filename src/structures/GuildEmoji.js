@@ -99,9 +99,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   edit(data, reason) {
     const roles = data.roles ? data.roles.map(r => r.id || r) : undefined;
-    return this.client.api
-      .guilds(this.guild.id)
-      .emojis(this.id)
+    return this.client.api.guilds[this.guild.id].emojis[this.id]
       .patch({
         data: {
           name: data.name,
@@ -132,11 +130,7 @@ class GuildEmoji extends BaseGuildEmoji {
    * @returns {Promise<GuildEmoji>}
    */
   delete(reason) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .emojis(this.id)
-      .delete({ reason })
-      .then(() => this);
+    return this.client.api.guilds[this.guild.id].emojis[this.id].delete({ reason }).then(() => this);
   }
 
   /**
