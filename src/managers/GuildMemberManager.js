@@ -214,18 +214,15 @@ class GuildMemberManager extends BaseManager {
     if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
-    return this.client.api
-      .guilds(this.guild.id)
-      .bans[id].put({ data: options })
-      .then(() => {
-        if (user instanceof GuildMember) return user;
-        const _user = this.client.users.resolve(id);
-        if (_user) {
-          const member = this.resolve(_user);
-          return member || _user;
-        }
-        return id;
-      });
+    return this.client.api.guilds[this.guild.id].bans[id].put({ data: options }).then(() => {
+      if (user instanceof GuildMember) return user;
+      const _user = this.client.users.resolve(id);
+      if (_user) {
+        const member = this.resolve(_user);
+        return member || _user;
+      }
+      return id;
+    });
   }
 
   /**
@@ -242,9 +239,8 @@ class GuildMemberManager extends BaseManager {
   unban(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
-    return this.client.api
-      .guilds(this.guild.id)
-      .bans[id].delete({ reason })
+    return this.client.api.guilds[this.guild.id].bans[id]
+      .delete({ reason })
       .then(() => this.client.users.resolve(user));
   }
 
@@ -254,11 +250,7 @@ class GuildMemberManager extends BaseManager {
       if (existing && !existing.partial) return Promise.resolve(existing);
     }
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(user)
-      .get()
-      .then(data => this.add(data, cache));
+    return this.client.api.guilds[this.guild.id].members[user].get().then(data => this.add(data, cache));
   }
 
   _fetchMany({
