@@ -25,7 +25,7 @@ declare module 'discord.js' {
 
   class AsyncQueue {
     // tslint:disable-next-line:ban-types
-    private readonly promises: { promise: Promise<void>; resolve: Function }[];
+    private readonly promises: { promise: Promise<void>; resolve(): void }[];
     public remaining: number;
     public wait(): Promise<void>;
     private shift(): void;
