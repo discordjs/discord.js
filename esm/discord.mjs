@@ -95,5 +95,7 @@ export const {
   WidgetChannel,
   WidgetChannelManager,
   WidgetUser,
+  WidgetUserManager,
+  WidgetVoiceState,
   WebSocket
 } = Discord;
