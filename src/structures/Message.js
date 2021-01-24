@@ -493,11 +493,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   pin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .put(options)
-      .then(() => this);
+    return this.client.api.channels[this.channel.id].pins[this.id].put(options).then(() => this);
   }
 
   /**
@@ -512,11 +508,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   unpin(options) {
-    return this.client.api
-      .channels(this.channel.id)
-      .pins(this.id)
-      .delete(options)
-      .then(() => this);
+    return this.client.api.channels[this.channel.id].pins[this.id].delete(options).then(() => this);
   }
 
   /**
@@ -538,20 +530,15 @@ class Message extends Base {
     emoji = this.client.emojis.resolveIdentifier(emoji);
     if (!emoji) throw new TypeError('EMOJI_TYPE');
 
-    return this.client.api
-      .channels(this.channel.id)
-      .messages(this.id)
-      .reactions(emoji, '@me')
-      .put()
-      .then(
-        () =>
-          this.client.actions.MessageReactionAdd.handle({
-            user: this.client.user,
-            channel: this.channel,
-            message: this,
-            emoji: Util.parseEmoji(emoji),
-          }).reaction,
-      );
+    return this.client.api.channels[this.channel.id].messages[this.id].reactions[emoji]['@me'].put().then(
+      () =>
+        this.client.actions.MessageReactionAdd.handle({
+          user: this.client.user,
+          channel: this.channel,
+          message: this,
+          emoji: Util.parseEmoji(emoji),
+        }).reaction,
+    );
   }
 
   /**
