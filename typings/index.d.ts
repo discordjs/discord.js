@@ -69,7 +69,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     private readonly handlers: Collection<string, RequestHandler>;
     private readonly tokenPrefix: string;
-    private readonly versoined: boolean;
+    private readonly versioned: boolean;
     public globalTimeout: Promise<void> | null;
     public cdn: string;
     public set endpoint(endpoint: string);
