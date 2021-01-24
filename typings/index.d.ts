@@ -41,8 +41,8 @@ declare module 'discord.js' {
     public limited: boolean;
     private readonly inactive: boolean;
 
-    private execute(): Collection<string, unknown> | Buffer;
-    public push(): Collection<string, unknown> | Buffer;
+    private execute(): Record<string, unknown> | Buffer;
+    public push(): Record<string, unknown> | Buffer;
   }
 
   interface RequestOptions {
@@ -76,7 +76,7 @@ declare module 'discord.js' {
 
     public api: RouteBuilder;
     public getAuth(): string;
-    public request(method: string, url: string, options: RequestOptions): Collection<string, unknown> | Buffer;
+    public request(method: string, url: string, options: RequestOptions): Record<string, unknown> | Buffer;
   }
 
   export class APIRequest {
