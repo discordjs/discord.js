@@ -32,7 +32,7 @@ class RESTManager {
      * @readonly
      * @private
      */
-    this.token = token;
+    Object.defineProperty(this, 'token', { value: token, writable: true });
 
     /**
      * All current Requesthandlers
