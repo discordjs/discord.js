@@ -88,7 +88,7 @@ class ChannelManager extends BaseManager {
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.channels(id).get();
+    const data = await this.client.api.channels[id].get();
     return this.add(data, null, cache);
   }
 }

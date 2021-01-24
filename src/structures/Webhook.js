@@ -205,7 +205,9 @@ class Webhook {
       avatar = await DataResolver.resolveImage(avatar);
     }
     if (channel) channel = channel instanceof Channel ? channel.id : channel;
-    const data = await this.client.api.webhooks(this.id, channel ? undefined : this.token).patch({
+    let endpoint = this.client.api.webhooks[this.id];
+    if (!channel) endpoint = endpoint[this.token];
+    const data = await endpoint.patch({
       data: { name, avatar, channel_id: channel },
       reason,
     });
@@ -222,7 +224,7 @@ class Webhook {
    * @returns {Promise}
    */
   delete(reason) {
-    return this.client.api.webhooks(this.id, this.token).delete({ reason });
+    return this.client.api.webhooks[this.id][this.token].delete({ reason });
   }
   /**
    * The timestamp the webhook was created at
@@ -248,7 +250,7 @@ class Webhook {
    * @readonly
    */
   get url() {
-    return this.client.options.http.api + this.client.api.webhooks(this.id, this.token);
+    return this.client.options.http.api + this.client.api.webhooks[this.id][this.token];
   }
 
   /**

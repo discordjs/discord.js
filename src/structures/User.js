@@ -240,7 +240,7 @@ class User extends Base {
       if (dmChannel && !dmChannel.partial) return dmChannel;
     }
 
-    const data = await this.client.api.users(this.client.user.id).channels.post({
+    const data = await this.client.api.users[this.client.user.id].channels.post({
       data: {
         recipient_id: this.id,
       },
@@ -255,7 +255,7 @@ class User extends Base {
   async deleteDM() {
     const { dmChannel } = this;
     if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
-    const data = await this.client.api.channels(dmChannel.id).delete();
+    const data = await this.client.api.channels[dmChannel.id].delete();
     return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
@@ -283,7 +283,7 @@ class User extends Base {
    */
   async fetchFlags(force = false) {
     if (this.flags && !force) return this.flags;
-    const data = await this.client.api.users(this.id).get();
+    const data = await this.client.api.users[this.id].get();
     this._patch(data);
     return this.flags;
   }

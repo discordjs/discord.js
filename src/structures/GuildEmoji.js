@@ -74,7 +74,7 @@ class GuildEmoji extends BaseGuildEmoji {
         throw new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild);
       }
     }
-    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
+    const data = await this.client.api.guilds[this.guild.id].emojis[this.id].get();
     this._patch(data);
     return this.author;
   }

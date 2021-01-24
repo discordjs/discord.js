@@ -205,7 +205,7 @@ class Role extends Base {
         data.position,
         false,
         this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
+        this.client.api.guilds[this.guild.id].roles,
         reason,
       ).then(updatedRoles => {
         this.client.actions.GuildRolesPositionUpdate.handle({
@@ -343,7 +343,7 @@ class Role extends Base {
       position,
       relative,
       this.guild._sortedRoles(),
-      this.client.api.guilds(this.guild.id).roles,
+      this.client.api.guilds[this.guild.id].roles,
       reason,
     ).then(updatedRoles => {
       this.client.actions.GuildRolesPositionUpdate.handle({

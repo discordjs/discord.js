@@ -327,7 +327,7 @@ class GuildChannel extends Channel {
         data.position,
         false,
         this.guild._sortedChannels(this),
-        this.client.api.guilds(this.guild.id).channels,
+        this.client.api.guilds[this.guild.id].channels,
         reason,
       ).then(updatedChannels => {
         this.client.actions.GuildChannelsPositionUpdate.handle({
@@ -354,7 +354,7 @@ class GuildChannel extends Channel {
       }
     }
 
-    const newData = await this.client.api.channels(this.id).patch({
+    const newData = await this.client.api.channels[this.id].patch({
       data: {
         name: (data.name || this.name).trim(),
         type: data.type ? ChannelTypes[data.type.toUpperCase()] : this.type,
@@ -446,7 +446,7 @@ class GuildChannel extends Channel {
       position,
       relative,
       this.guild._sortedChannels(this),
-      this.client.api.guilds(this.guild.id).channels,
+      this.client.api.guilds[this.guild.id].channels,
       reason,
     ).then(updatedChannels => {
       this.client.actions.GuildChannelsPositionUpdate.handle({
@@ -494,7 +494,7 @@ class GuildChannel extends Channel {
    * @returns {Promise<Collection<string, Invite>>}
    */
   async fetchInvites() {
-    const inviteItems = await this.client.api.channels(this.id).invites.get();
+    const inviteItems = await this.client.api.channels[this.id].invites.get();
     const invites = new Collection();
     for (const inviteItem of inviteItems) {
       const invite = new Invite(this.client, inviteItem);

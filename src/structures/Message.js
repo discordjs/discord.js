@@ -477,7 +477,7 @@ class Message extends Base {
    * }
    */
   async crosspost() {
-    await this.client.api.channels(this.channel.id).messages(this.id).crosspost.post();
+    await this.client.api.channels[this.channel.id].messages[this.id].crosspost.post();
     return this;
   }
 

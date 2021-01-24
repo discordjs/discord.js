@@ -93,16 +93,13 @@ class Application extends Base {
    * @returns {Promise<Array<ApplicationAsset>>}
    */
   fetchAssets() {
-    return this.client.api.oauth2
-      .applications(this.id)
-      .assets.get()
-      .then(assets =>
-        assets.map(a => ({
-          id: a.id,
-          name: a.name,
-          type: AssetTypes[a.type - 1],
-        })),
-      );
+    return this.client.api.oauth2.applications[this.id].assets.get().then(assets =>
+      assets.map(a => ({
+        id: a.id,
+        name: a.name,
+        type: AssetTypes[a.type - 1],
+      })),
+    );
   }
 
   /**

@@ -265,10 +265,7 @@ class Client extends BaseClient {
    */
   fetchGuildTemplate(template) {
     const code = DataResolver.resolveGuildTemplateCode(template);
-    return this.api.guilds
-      .templates(code)
-      .get()
-      .then(data => new GuildTemplate(this, data));
+    return this.api.guilds.templates[code].get().then(data => new GuildTemplate(this, data));
   }
 
   /**
@@ -351,10 +348,7 @@ class Client extends BaseClient {
    * @returns {Promise<ClientApplication>}
    */
   fetchApplication() {
-    return this.api.oauth2
-      .applications('@me')
-      .get()
-      .then(app => new ClientApplication(this, app));
+    return this.api.oauth2.applications['@me'].get().then(app => new ClientApplication(this, app));
   }
 
   /**

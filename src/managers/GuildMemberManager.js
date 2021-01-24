@@ -180,7 +180,7 @@ class GuildMemberManager extends BaseManager {
       query.include_roles = dry ? resolvedRoles.join(',') : resolvedRoles;
     }
 
-    const endpoint = this.client.api.guilds(this.guild.id).prune;
+    const endpoint = this.client.api.guilds[this.guild.id].prune;
 
     if (dry) {
       return endpoint.get({ query, reason }).then(data => data.pruned);

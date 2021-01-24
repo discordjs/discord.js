@@ -90,11 +90,11 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         const existing = this.cache.get(id);
         if (existing) return existing;
       }
-      const emoji = await this.client.api.guilds(this.guild.id).emojis(id).get();
+      const emoji = await this.client.api.guilds[this.guild.id].emojis[id].get();
       return this.add(emoji, cache);
     }
 
-    const data = await this.client.api.guilds(this.guild.id).emojis.get();
+    const data = await this.client.api.guilds[this.guild.id].emojis.get();
     const emojis = new Collection();
     for (const emoji of data) emojis.set(emoji.id, this.add(emoji, cache));
     return emojis;

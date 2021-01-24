@@ -308,7 +308,7 @@ class GuildMember extends Base {
       data.channel = undefined;
     }
     if (data.roles) data.roles = data.roles.map(role => (role instanceof Role ? role.id : role));
-    let endpoint = this.client.api.guilds(this.guild.id);
+    let endpoint = this.client.api.guilds[this.guild.id];
     if (this.user.id === this.client.user.id) {
       const keys = Object.keys(data);
       if (keys.length === 1 && keys[0] === 'nick') endpoint = endpoint.members('@me').nick;

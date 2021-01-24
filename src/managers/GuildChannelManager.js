@@ -109,7 +109,7 @@ class GuildChannelManager extends BaseManager {
       permissionOverwrites = permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
     }
 
-    const data = await this.client.api.guilds(this.guild.id).channels.post({
+    const data = await this.client.api.guilds[this.guild.id].channels.post({
       data: {
         name,
         topic,

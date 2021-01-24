@@ -37,7 +37,7 @@ class ClientPresence extends Presence {
       if (!activity.type) activity.type = 0;
       if (activity.assets && applicationID) {
         try {
-          const a = await this.client.api.oauth2.applications(applicationID).assets.get();
+          const a = await this.client.api.oauth2.applications[applicationID].assets.get();
           for (const asset of a) assets.set(asset.name, asset.id);
         } catch {} // eslint-disable-line no-empty
       }

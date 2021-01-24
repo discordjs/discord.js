@@ -122,7 +122,7 @@ class MessageManager extends BaseManager {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).messages(message).delete();
+    await this.client.api.channels[this.channel.id].messages[message].delete();
   }
 
   async _fetchId(messageID, cache, force) {

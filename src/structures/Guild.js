@@ -840,7 +840,7 @@ class Guild extends Base {
     if (!this.features.includes('VANITY_URL')) {
       throw new Error('VANITY_URL');
     }
-    const data = await this.client.api.guilds(this.id, 'vanity-url').get();
+    const data = await this.client.api.guilds[this.id]['vanity-url'].get();
     this.vanityURLUses = data.uses;
 
     return data;
@@ -919,7 +919,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async fetchWidget() {
-    const data = await this.client.api.guilds(this.id).widget.get();
+    const data = await this.client.api.guilds[this.id].widget.get();
     this.widgetEnabled = this.embedEnabled = data.enabled;
     this.widgetChannelID = this.embedChannelID = data.channel_id;
     return {
@@ -988,7 +988,7 @@ class Guild extends Base {
       }
       options.roles = roles;
     }
-    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
+    const data = await this.client.api.guilds[this.id].members[user].put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.
     return data instanceof Buffer ? this.members.fetch(user) : this.members.add(data);
   }

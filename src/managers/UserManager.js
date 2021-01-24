@@ -64,7 +64,7 @@ class UserManager extends BaseManager {
       if (existing && !existing.partial) return existing;
     }
 
-    const data = await this.client.api.users(id).get();
+    const data = await this.client.api.users[id].get();
     return this.add(data, cache);
   }
 }
