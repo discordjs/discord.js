@@ -143,9 +143,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   edit({ name, description } = {}) {
-    return this.client.api
-      .guilds(this.guildID)
-      .templates(this.code)
+    return this.client.api.guilds[this.guildID].templates[this.code]
       .patch({ data: { name, description } })
       .then(data => this._patch(data));
   }
@@ -155,11 +153,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   delete() {
-    return this.client.api
-      .guilds(this.guildID)
-      .templates(this.code)
-      .delete()
-      .then(() => this);
+    return this.client.api.guilds[this.guildID].templates[this.code].delete().then(() => this);
   }
 
   /**
@@ -167,11 +161,7 @@ class GuildTemplate extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   sync() {
-    return this.client.api
-      .guilds(this.guildID)
-      .templates(this.code)
-      .put()
-      .then(data => this._patch(data));
+    return this.client.api.guilds[this.guildID].templates[this.code].put().then(data => this._patch(data));
   }
 
   /**
