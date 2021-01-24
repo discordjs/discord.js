@@ -47,15 +47,12 @@ class ClientUser extends Structures.get('User') {
   }
 
   edit(data) {
-    return this.client.api
-      .users('@me')
-      .patch({ data })
-      .then(newData => {
-        this.client.token = newData.token;
-        const { updated } = this.client.actions.UserUpdate.handle(newData);
-        if (updated) return updated;
-        return this;
-      });
+    return this.client.api.users['@me'].patch({ data }).then(newData => {
+      this.client.token = newData.token;
+      const { updated } = this.client.actions.UserUpdate.handle(newData);
+      if (updated) return updated;
+      return this;
+    });
   }
 
   /**
