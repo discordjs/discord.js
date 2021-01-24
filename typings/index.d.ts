@@ -656,6 +656,7 @@ declare module 'discord.js' {
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public fetchWidget(): Promise<GuildWidget>;
+    public fetchWidgetOptions(): Promise<Widget>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public leave(): Promise<Guild>;
     public member(user: UserResolvable): GuildMember | null;
