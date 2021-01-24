@@ -120,7 +120,7 @@ class RESTManager {
    * @param {string} method The HTTP method to perform
    * @param {string} url The url to request
    * @param {?RequestOptions} options The options for the request
-   * @returns {Collection<string, *> | Buffer}
+   * @returns {Collection<string, *>|Buffer}
    */
   request(method, url, options = {}) {
     const apiRequest = new APIRequest(this, method, url, options);
