@@ -4,6 +4,7 @@ const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
 const { PartialTypes } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
 const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
 
@@ -441,7 +442,7 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.INVITE) {
       this.target = guild.members.fetch(guild.client.user.id).then(me => {
-        if (me.permissions.has('MANAGE_GUILD')) {
+        if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           const change = this.changes.find(c => c.key === 'code');
           return guild.fetchInvites().then(invites => {
             this.target = invites.find(i => i.code === (change.new || change.old));
