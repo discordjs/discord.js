@@ -87,7 +87,7 @@ class RESTManager {
   }
 
   /**
-   * Creates the Authorizaation header value
+   * Creates the Authorization header value
    * @returns {string}
    */
   getAuth() {
