@@ -148,8 +148,7 @@ class Webhook {
     }
 
     const { data, files } = await apiMessage.resolveFiles();
-    return this.client.api
-      .webhooks(this.id, this.token)
+    return this.client.api.webhooks[this.id][this.token]
       .post({
         data,
         files,
@@ -181,9 +180,8 @@ class Webhook {
    * }).catch(console.error);
    */
   sendSlackMessage(body) {
-    return this.client.api
-      .webhooks(this.id, this.token)
-      .slack.post({
+    return this.client.api.webhooks[this.id][this.token].slack
+      .post({
         query: { wait: true },
         auth: false,
         data: body,
