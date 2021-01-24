@@ -356,11 +356,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   kick(reason) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(this.user.id)
-      .delete({ reason })
-      .then(() => this);
+    return this.client.api.guilds[this.guild.id].members[this.user.id].delete({ reason }).then(() => this);
   }
 
   /**
