@@ -3173,7 +3173,6 @@ declare module 'discord.js' {
   interface RateLimitData {
     timeout: number;
     limit: number;
-    timeDifference: number;
     method: string;
     path: string;
     route: string;
