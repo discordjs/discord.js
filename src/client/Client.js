@@ -248,10 +248,7 @@ class Client extends BaseClient {
    */
   fetchInvite(invite) {
     const code = DataResolver.resolveInviteCode(invite);
-    return this.api
-      .invites(code)
-      .get({ query: { with_counts: true } })
-      .then(data => new Invite(this, data));
+    return this.api.invites[code].get({ query: { with_counts: true } }).then(data => new Invite(this, data));
   }
 
   /**
@@ -279,10 +276,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   fetchWebhook(id, token) {
-    return this.api
-      .webhooks(id, token)
-      .get()
-      .then(data => new Webhook(this, data));
+    return this.api.webhooks[id][token].get().then(data => new Webhook(this, data));
   }
 
   /**
@@ -359,10 +353,7 @@ class Client extends BaseClient {
   fetchGuildPreview(guild) {
     const id = this.guilds.resolveID(guild);
     if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
-    return this.api
-      .guilds(id)
-      .preview.get()
-      .then(data => new GuildPreview(this, data));
+    return this.api.guilds[id].preview.get().then(data => new GuildPreview(this, data));
   }
 
   /**
