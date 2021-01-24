@@ -1,5 +1,3 @@
-import { URLSearchParams } from 'url';
-
 declare enum ChannelType {
   text = 0,
   dm = 1,
@@ -18,6 +16,7 @@ declare module 'discord.js' {
   import { PathLike } from 'fs';
   import { Response } from 'node-fetch';
   import { Readable, Stream, Writable } from 'stream';
+  import { URLSearchParams } from 'url';
   import * as WebSocket from 'ws';
 
   export const version: string;
