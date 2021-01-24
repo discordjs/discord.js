@@ -257,9 +257,8 @@ class GuildChannel extends Channel {
     const type = userOrRole instanceof Role ? 'role' : 'member';
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
-    return this.client.api
-      .channels(this.id)
-      .permissions[userOrRole.id].put({
+    return this.client.api.channels[this.id].permissions[userOrRole.id]
+      .put({
         data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield },
         reason,
       })
@@ -474,9 +473,8 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
-    return this.client.api
-      .channels(this.id)
-      .invites.post({
+    return this.client.api.channels[this.id].invites
+      .post({
         data: {
           temporary,
           max_age: maxAge,
@@ -615,10 +613,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   delete(reason) {
-    return this.client.api
-      .channels(this.id)
-      .delete({ reason })
-      .then(() => this);
+    return this.client.api.channels[this.id].delete({ reason }).then(() => this);
   }
 }
 
