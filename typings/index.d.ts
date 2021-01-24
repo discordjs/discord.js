@@ -631,8 +631,6 @@ declare module 'discord.js' {
     public readonly verified: boolean;
     public readonly voice: VoiceState | null;
     public readonly voiceStates: VoiceStateManager;
-    public readonly widgetChannel: TextChannel | null;
-    public widgetChannelID: Snowflake | null;
     public widgetEnabled: boolean | null;
     public addMember(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
     public bannerURL(options?: ImageURLOptions): string | null;
@@ -655,7 +653,7 @@ declare module 'discord.js' {
     public fetchVanityData(): Promise<{ code: string; uses: number }>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
-    public fetchWidget(): Promise<GuildWidget>;
+    public fetchWidget(): Promise<Widget>;
     public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
     public leave(): Promise<Guild>;
     public member(user: UserResolvable): GuildMember | null;
@@ -1877,7 +1875,7 @@ declare module 'discord.js' {
     public channels: WidgetChannelManager;
     public name: string;
     public instantInvite: string;
-    public disabled: boolean;
+    public enabled: boolean;
     public presenceCount: number;
     public fetch(): Widget;
   }
