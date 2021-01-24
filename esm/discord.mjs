@@ -9,6 +9,7 @@ export const {
   ShardClientUtil,
   ShardingManager,
   WebhookClient,
+  RESTManager,
   ActivityFlags,
   BitField,
   Collection,

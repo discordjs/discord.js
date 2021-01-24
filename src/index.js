@@ -11,6 +11,9 @@ module.exports = {
   ShardingManager: require('./sharding/ShardingManager'),
   WebhookClient: require('./client/WebhookClient'),
 
+  // Rest
+  RESTManager: require('./rest/RESTManager'),
+
   // Utilities
   ActivityFlags: require('./util/ActivityFlags'),
   BitField: require('./util/BitField'),

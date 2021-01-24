@@ -1,3 +1,5 @@
+import { URLSearchParams } from 'url';
+
 declare enum ChannelType {
   text = 0,
   dm = 1,
@@ -14,10 +16,83 @@ declare module 'discord.js' {
   import { ChildProcess } from 'child_process';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
+  import { Response } from 'node-fetch';
   import { Readable, Stream, Writable } from 'stream';
   import * as WebSocket from 'ws';
 
   export const version: string;
+
+  //#region Rest
+
+  class AsyncQueue {
+    // tslint:disable-next-line:ban-types
+    private readonly promises: { promise: Promise<void>; resolve: Function }[];
+    public remaining: number;
+    public wait(): Promise<void>;
+    private shift(): void;
+  }
+
+  class RequestHandler {
+    private readonly manager: RESTManager;
+    private readonly queue: AsyncQueue;
+    public reset: number;
+    public remaining: number;
+    public limit: number;
+    public retryAfter: number;
+    public limited: boolean;
+    private readonly inactive: boolean;
+
+    private execute(): Collection<string, unknown> | Buffer;
+    public push(): Collection<string, unknown> | Buffer;
+  }
+
+  interface RequestOptions {
+    query?: URLSearchParams | Record<string, string | string[]>;
+    versioned?: boolean;
+    auth?: boolean;
+    reason?: string;
+    headers?: Record<string, string>;
+    data?: Record<string, unknown>;
+  }
+
+  interface RouteBuilderMethods {
+    get(opts?: RequestOptions): Promise<unknown>;
+    post(opts?: RequestOptions): Promise<unknown>;
+    delete(opts?: RequestOptions): Promise<unknown>;
+    patch(opts?: RequestOptions): Promise<unknown>;
+    put(opts?: RequestOptions): Promise<unknown>;
+  }
+
+  type RouteBuilder = Record<string, RouteBuilderMethods & ((...args: string[]) => RouteBuilderMethods)>;
+
+  export class RESTManager {
+    public constructor(client: Client, tokenPrefix?: string, token?: string);
+    public readonly client: Client;
+    private readonly handlers: Collection<string, RequestHandler>;
+    private readonly tokenPrefix: string;
+    private readonly versoined: boolean;
+    public globalTimeout: Promise<void> | null;
+    public cdn: string;
+    public set endpoint(endpoint: string);
+
+    public api: RouteBuilder;
+    public getAuth(): string;
+    public request(method: string, url: string, options: RequestOptions): Collection<string, unknown> | Buffer;
+  }
+
+  export class APIRequest {
+    public constructor(rest: RESTManager, method: string, path: string, options: RequestOptions);
+    private readonly rest: RESTManager;
+    private readonly client: Client;
+    private readonly method: string;
+    private readonly route: string;
+    private readonly options: RequestOptions;
+    private readonly retries: number;
+
+    public make(): Promise<Response>;
+  }
+
+  ////#endregion
 
   //#region Classes
 

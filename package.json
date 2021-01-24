@@ -57,6 +57,7 @@
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-angular": "^11.0.0",
     "@types/node": "^12.12.6",
+    "@types/node-fetch": "^2.5.8",
     "@types/ws": "^7.2.7",
     "cross-env": "^7.0.2",
     "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
