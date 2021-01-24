@@ -632,13 +632,10 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   fetch() {
-    return this.client.api
-      .guilds(this.id)
-      .get({ query: { with_counts: true } })
-      .then(data => {
-        this._patch(data);
-        return this;
-      });
+    return this.client.api.guilds[this.id].get({ query: { with_counts: true } }).then(data => {
+      this._patch(data);
+      return this;
+    });
   }
 
   /**
@@ -656,14 +653,10 @@ class Guild extends Base {
   fetchBan(user) {
     const id = this.client.users.resolveID(user);
     if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
-    return this.client.api
-      .guilds(this.id)
-      .bans(id)
-      .get()
-      .then(ban => ({
-        reason: ban.reason,
-        user: this.client.users.add(ban.user),
-      }));
+    return this.client.api.guilds[this.id].bans[id].get().then(ban => ({
+      reason: ban.reason,
+      user: this.client.users.add(ban.user),
+    }));
   }
 
   /**
@@ -671,18 +664,15 @@ class Guild extends Base {
    * @returns {Promise<Collection<Snowflake, BanInfo>>}
    */
   fetchBans() {
-    return this.client.api
-      .guilds(this.id)
-      .bans.get()
-      .then(bans =>
-        bans.reduce((collection, ban) => {
-          collection.set(ban.user.id, {
-            reason: ban.reason,
-            user: this.client.users.add(ban.user),
-          });
-          return collection;
-        }, new Collection()),
-      );
+    return this.client.api.guilds[this.id].bans.get().then(bans =>
+      bans.reduce((collection, ban) => {
+        collection.set(ban.user.id, {
+          reason: ban.reason,
+          user: this.client.users.add(ban.user),
+        });
+        return collection;
+      }, new Collection()),
+    );
   }
 
   /**
@@ -698,9 +688,8 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchIntegrations({ includeApplications = false } = {}) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.get({
+    return this.client.api.guilds[this.id].integrations
+      .get({
         query: {
           include_applications: includeApplications,
         },
@@ -719,9 +708,8 @@ class Guild extends Base {
    * @returns {Promise<Collection<string, GuildTemplate>>}
    */
   fetchTemplates() {
-    return this.client.api
-      .guilds(this.id)
-      .templates.get()
+    return this.client.api.guilds[this.id].templates
+      .get()
       .then(templates =>
         templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
       );
@@ -741,10 +729,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   createIntegration(data, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.post({ data, reason })
-      .then(() => this);
+    return this.client.api.guilds[this.id].integrations.post({ data, reason }).then(() => this);
   }
 
   /**
@@ -754,9 +739,8 @@ class Guild extends Base {
    * @returns {Promise<GuildTemplate>}
    */
   createTemplate(name, description) {
-    return this.client.api
-      .guilds(this.id)
-      .templates.post({ data: { name, description } })
+    return this.client.api.guilds[this.id].templates
+      .post({ data: { name, description } })
       .then(data => new GuildTemplate(this.client, data));
   }
 
@@ -776,17 +760,14 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   fetchInvites() {
-    return this.client.api
-      .guilds(this.id)
-      .invites.get()
-      .then(inviteItems => {
-        const invites = new Collection();
-        for (const inviteItem of inviteItems) {
-          const invite = new Invite(this.client, inviteItem);
-          invites.set(invite.code, invite);
-        }
-        return invites;
-      });
+    return this.client.api.guilds[this.id].invites.get().then(inviteItems => {
+      const invites = new Collection();
+      for (const inviteItem of inviteItems) {
+        const invite = new Invite(this.client, inviteItem);
+        invites.set(invite.code, invite);
+      }
+      return invites;
+    });
   }
 
   /**
@@ -794,10 +775,7 @@ class Guild extends Base {
    * @returns {Promise<GuildPreview>}
    */
   fetchPreview() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => new GuildPreview(this.client, data));
+    return this.client.api.guilds[this.id].preview.get().then(data => new GuildPreview(this.client, data));
   }
 
   /**
@@ -856,14 +834,11 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   fetchWebhooks() {
-    return this.client.api
-      .guilds(this.id)
-      .webhooks.get()
-      .then(data => {
-        const hooks = new Collection();
-        for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
-        return hooks;
-      });
+    return this.client.api.guilds[this.id].webhooks.get().then(data => {
+      const hooks = new Collection();
+      for (const hook of data) hooks.set(hook.id, new Webhook(this.client, hook));
+      return hooks;
+    });
   }
 
   /**
@@ -871,14 +846,11 @@ class Guild extends Base {
    * @returns {Promise<Collection<string, VoiceRegion>>}
    */
   fetchVoiceRegions() {
-    return this.client.api
-      .guilds(this.id)
-      .regions.get()
-      .then(res => {
-        const regions = new Collection();
-        for (const region of res) regions.set(region.id, new VoiceRegion(region));
-        return regions;
-      });
+    return this.client.api.guilds[this.id].regions.get().then(res => {
+      const regions = new Collection();
+      for (const region of res) regions.set(region.id, new VoiceRegion(region));
+      return regions;
+    });
   }
 
   /**
@@ -946,9 +918,8 @@ class Guild extends Base {
     if (options.before && options.before instanceof GuildAuditLogs.Entry) options.before = options.before.id;
     if (typeof options.type === 'string') options.type = GuildAuditLogs.Actions[options.type];
 
-    return this.client.api
-      .guilds(this.id)
-      ['audit-logs'].get({
+    return this.client.api.guilds[this.id]['audit-logs']
+      .get({
         query: {
           before: options.before,
           limit: options.limit,
@@ -1073,8 +1044,7 @@ class Guild extends Base {
       _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
-    return this.client.api
-      .guilds(this.id)
+    return this.client.api.guilds[this.id]
       .patch({ data: _data, reason })
       .then(newData => this.client.actions.GuildUpdate.handle(newData).updated);
   }
@@ -1342,16 +1312,13 @@ class Guild extends Base {
       position: r.position,
     }));
 
-    return this.client.api
-      .guilds(this.id)
-      .channels.patch({ data: updatedChannels })
-      .then(
-        () =>
-          this.client.actions.GuildChannelsPositionUpdate.handle({
-            guild_id: this.id,
-            channels: updatedChannels,
-          }).guild,
-      );
+    return this.client.api.guilds[this.id].channels.patch({ data: updatedChannels }).then(
+      () =>
+        this.client.actions.GuildChannelsPositionUpdate.handle({
+          guild_id: this.id,
+          channels: updatedChannels,
+        }).guild,
+    );
   }
 
   /**
@@ -1378,9 +1345,8 @@ class Guild extends Base {
     }));
 
     // Call the API to update role positions
-    return this.client.api
-      .guilds(this.id)
-      .roles.patch({
+    return this.client.api.guilds[this.id].roles
+      .patch({
         data: rolePositions,
       })
       .then(
@@ -1410,9 +1376,8 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    */
   setWidget(widget, reason) {
-    return this.client.api
-      .guilds(this.id)
-      .widget.patch({
+    return this.client.api.guilds[this.id].widget
+      .patch({
         data: {
           enabled: widget.enabled,
           channel_id: this.channels.resolveID(widget.channel),
@@ -1433,9 +1398,7 @@ class Guild extends Base {
    */
   leave() {
     if (this.ownerID === this.client.user.id) return Promise.reject(new Error('GUILD_OWNED'));
-    return this.client.api
-      .users('@me')
-      .guilds(this.id)
+    return this.client.api.users['@me'].guilds[this.id]
       .delete()
       .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
@@ -1450,8 +1413,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   delete() {
-    return this.client.api
-      .guilds(this.id)
+    return this.client.api.guilds[this.id]
       .delete()
       .then(() => this.client.actions.GuildDelete.handle({ id: this.id }).guild);
   }
