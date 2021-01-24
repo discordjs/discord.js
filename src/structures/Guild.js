@@ -9,7 +9,6 @@ const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
-const Widget = require('./Widget');
 const { Error, TypeError } = require('../errors');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -248,6 +247,23 @@ class Guild extends Base {
        * @type {?boolean}
        */
       this.widgetEnabled = data.widget_enabled;
+    }
+
+    if (typeof data.widget_channel_id !== 'undefined') {
+      /**
+       * The widget channel ID, if enabled
+       * @type {?string}
+       */
+      this.widgetChannelID = data.widget_channel_id;
+    }
+
+    if (typeof data.embed_channel_id !== 'undefined') {
+      /**
+       * The embed channel ID, if enabled
+       * @type {?string}
+       * @deprecated
+       */
+      this.embedChannelID = data.embed_channel_id;
     }
 
     /**
@@ -559,6 +575,25 @@ class Guild extends Base {
    */
   get systemChannel() {
     return this.client.channels.cache.get(this.systemChannelID) || null;
+  }
+
+  /**
+   * Widget channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   */
+  get widgetChannel() {
+    return this.client.channels.cache.get(this.widgetChannelID) || null;
+  }
+
+  /**
+   * Embed channel for this guild
+   * @type {?TextChannel}
+   * @readonly
+   * @deprecated
+   */
+  get embedChannel() {
+    return this.client.channels.cache.get(this.embedChannelID) || null;
   }
 
   /**
@@ -898,7 +933,7 @@ class Guild extends Base {
 
   /**
    * Fetches the guild widget.
-   * @returns {Promise<Widget>}
+   * @returns {Promise<GuildWidget>}
    * @example
    * // Fetches the guild widget
    * guild.fetchWidget()
@@ -907,8 +942,12 @@ class Guild extends Base {
    */
   async fetchWidget() {
     const data = await this.client.api.guilds(this.id).widget.get();
-    this.widgetEnabled = this.embedEnabled = !data.code;
-    return new Widget(this.client, data, this.id);
+    this.widgetEnabled = this.embedEnabled = data.enabled;
+    this.widgetChannelID = this.embedChannelID = data.channel_id;
+    return {
+      enabled: data.enabled,
+      channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
+    };
   }
 
   /**
