@@ -19,7 +19,7 @@ class RESTManager {
    */
   constructor(client, tokenPrefix = 'Bot', token = client.token) {
     /**
-     * The client who's configuration & utilities to use
+     * The client whose configuration & utilities to use
      * @type {Client}
      * @readonly
      * @private
