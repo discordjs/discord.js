@@ -9,6 +9,7 @@ const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
+const Widget = require('./Widget');
 const { Error, TypeError } = require('../errors');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -948,6 +949,20 @@ class Guild extends Base {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
     };
+  }
+
+  /**
+   * Fetches the guild widget options.
+   * @returns {Promise<Widget>}
+   * @example
+   * // Fetches the guild widget
+   * guild.fetchWidgetOptions()
+   *   .then(widget => console.log(`The guild has ${widget.members.cache.size} members`))
+   *   .catch(console.error);
+   */
+  async fetchWidgetOptions() {
+    const data = await this.client.api.guilds(this.id)['widget.json'].get();
+    return new Widget(this.client, data, this.id);
   }
 
   /**
