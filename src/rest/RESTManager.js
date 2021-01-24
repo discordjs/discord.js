@@ -14,8 +14,8 @@ class RESTManager {
   /**
    *
    * @param {Client} client The Discord client
-   * @param {?string} tokenPrefix The token prefix for the Authorization header
-   * @param {?string} token The token to perform requests with
+   * @param {?string} [tokenPrefix='Bot'] The token prefix for the Authorization header
+   * @param {?string} [token=client.token] The token to perform requests with
    */
   constructor(client, tokenPrefix = 'Bot', token = client.token) {
     /**
