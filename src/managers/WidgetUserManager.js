@@ -7,7 +7,7 @@ const WidgetUser = require('../structures/WidgetUser');
  * Manages API methods for users and stores their cache.
  * @extends {BaseManager}
  */
-class WidgetChannelManager extends BaseManager {
+class WidgetUserManager extends BaseManager {
   constructor(client, iterable) {
     super(client, iterable, WidgetUser);
   }
@@ -25,4 +25,4 @@ class WidgetChannelManager extends BaseManager {
   }
 }
 
-module.exports = WidgetChannelManager;
+module.exports = WidgetUserManager;
