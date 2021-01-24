@@ -126,13 +126,10 @@ class GuildPreview extends Base {
    * @returns {Promise<GuildPreview>}
    */
   fetch() {
-    return this.client.api
-      .guilds(this.id)
-      .preview.get()
-      .then(data => {
-        this._patch(data);
-        return this;
-      });
+    return this.client.api.guilds[this.id].preview.get().then(data => {
+      this._patch(data);
+      return this;
+    });
   }
 
   /**
