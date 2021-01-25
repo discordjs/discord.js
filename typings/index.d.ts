@@ -765,7 +765,7 @@ declare module 'discord.js' {
       overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
       reason?: string,
     ): Promise<this>;
-    public permissionsFor(memberOrRole: Exclude<GuildMemberResolvable | RoleResolvable, string>): Readonly<Permissions>;
+    public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(
