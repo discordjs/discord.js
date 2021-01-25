@@ -3339,16 +3339,6 @@ declare module 'discord.js' {
     };
   };
 
-  type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
-    author: {
-      bot: true;
-      id: Snowflake;
-      username: string;
-      avatar: string | null;
-      discriminator: '0000';
-    };
-  };
-
   type WebhookTypes = 'Incoming' | 'Channel Follower';
 
   interface WebSocketOptions {
