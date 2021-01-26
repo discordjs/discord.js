@@ -100,7 +100,7 @@ declare module 'discord.js' {
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public description?: string;
-    public icon?: string;
+    public icon?: string | null;
     public id: Snowflake;
     public name?: string;
     public coverImage(options?: ImageURLOptions): string | null;
