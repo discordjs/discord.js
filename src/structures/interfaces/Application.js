@@ -42,7 +42,7 @@ class Application extends Base {
     if ('icon' in data) {
       /**
        * The app's icon hash
-       * @type {string}
+       * @type {?string}
        */
       this.icon = data.icon;
     }
