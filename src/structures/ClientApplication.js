@@ -53,7 +53,8 @@ class ClientApplication extends Application {
       this.botPublic = data.bot_public;
     }
 
-    if ('team' in data) {
+    // Discord explicitly sends null for this field, if not owned by a team.
+    if (data.team) {
       /**
        * The owner of this OAuth application
        * @type {User|Team}
