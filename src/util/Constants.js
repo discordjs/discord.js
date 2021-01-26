@@ -667,6 +667,21 @@ exports.WebhookTypes = [
   'Channel Follower',
 ];
 
+/**
+ * The value set for a sticker's type:
+ * * PNG
+ * * APNG
+ * * LOTTIE
+ * @typedef {string} StickerFormatTypes
+ */
+exports.StickerFormatTypes = [
+  // They start at 1
+  null,
+  'PNG',
+  'APNG',
+  'LOTTIE',
+];
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
