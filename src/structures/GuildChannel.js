@@ -6,6 +6,7 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
 const Collection = require('../util/Collection');
+const { ChannelTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -199,7 +200,7 @@ class GuildChannel extends Channel {
    * channel.overwritePermissions([
    *   {
    *      id: message.author.id,
-   *      deny: ['VIEW_CHANNEL'],
+   *      deny: [Permissions.FLAGS.VIEW_CHANNEL],
    *   },
    * ], 'Needed to change permissions');
    */
@@ -283,7 +284,7 @@ class GuildChannel extends Channel {
   get members() {
     const members = new Collection();
     for (const member of this.guild.members.cache.values()) {
-      if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
+      if (this.permissionsFor(member).has(Permissions.FLAGS.VIEW_CHANNEL, false)) {
         members.set(member.id, member);
       }
     }
@@ -294,6 +295,7 @@ class GuildChannel extends Channel {
    * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
+   * @property {string} [type] The type of the the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -355,6 +357,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
+        type: data.type ? ChannelTypes[data.type.toUpperCase()] : this.type,
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
@@ -367,9 +370,7 @@ class GuildChannel extends Channel {
       reason,
     });
 
-    const clone = this._clone();
-    clone._patch(newData);
-    return clone;
+    return this.client.actions.ChannelUpdate.handle(newData).updated;
   }
 
   /**

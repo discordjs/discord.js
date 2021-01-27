@@ -64,6 +64,12 @@ class GuildMember extends Base {
      */
     this.nickname = null;
 
+    /**
+     * Whether this member has yet to pass the guild's membership gate
+     * @type {boolean}
+     */
+    this.pending = false;
+
     this._roles = [];
     if (data) this._patch(data);
   }
@@ -81,6 +87,7 @@ class GuildMember extends Base {
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
     if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if ('roles' in data) this._roles = data.roles;
+    this.pending = data.pending ?? false;
   }
 
   _clone() {
@@ -255,20 +262,6 @@ class GuildMember extends Base {
     channel = this.guild.channels.resolve(channel);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.memberPermissions(this);
-  }
-
-  /**
-   * Checks if any of this member's roles have a permission.
-   * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {Object} [options] Options
-   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
-   * @returns {boolean}
-   */
-  hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
-    if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
-    return permissions.has(permission, checkAdmin);
   }
 
   /**

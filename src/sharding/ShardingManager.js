@@ -255,12 +255,13 @@ class ShardingManager extends EventEmitter {
    */
   _performOnShards(method, args, shard) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
-    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
 
     if (typeof shard === 'number') {
       if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
       return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
     }
+
+    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
 
     const promises = [];
     for (const sh of this.shards.values()) promises.push(sh[method](...args));
