@@ -1,7 +1,7 @@
 ---
 
 name: Bug report
-about: Report incorrect or unexpected behaviour of discord.js
+about: Report incorrect or unexpected behavior of discord.js
 title: ''
 labels: 's: unverified, type: bug'
 assignees: ''
