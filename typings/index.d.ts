@@ -765,6 +765,7 @@ declare module 'discord.js' {
       overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
       reason?: string,
     ): Promise<this>;
+    public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
     public setParent(
@@ -1873,7 +1874,9 @@ declare module 'discord.js' {
     public cacheType: Collection<K, Holds>;
     public readonly client: Client;
     public add(data: any, cache?: boolean, { id, extras }?: { id: K; extras: any[] }): Holds;
+    public resolve(resolvable: Holds): Holds;
     public resolve(resolvable: R): Holds | null;
+    public resolveID(resolvable: Holds): K;
     public resolveID(resolvable: R): K | null;
     public valueOf(): Collection<K, Holds>;
   }
