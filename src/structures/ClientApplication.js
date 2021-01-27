@@ -6,7 +6,7 @@ const Application = require('./interfaces/Application');
 /**
  * Represents a Client OAuth2 Application.
  * <info>The only guaranteed properties are `id` and `flags`. To get the entire
- * application, you need to fetch it with `application.fetch()` first.</info>
+ * application, you need to fetch it with {@link ClientApplication#fetch} first.</info>
  * @extends {Application}
  */
 class ClientApplication extends Application {
