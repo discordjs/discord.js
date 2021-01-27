@@ -1,21 +1,21 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
+const ServerChannel = require('./ServerChannel');
 
 /**
- * Represents a guild store channel on Discord.
- * @extends {GuildChannel}
+ * Represents a server store channel on Discord.
+ * @extends {ServerChannel}
  */
-class StoreChannel extends GuildChannel {
+class StoreChannel extends ServerChannel {
   /**
-   * @param {*} guild The guild the store channel is part of
+   * @param {*} server The server the store channel is part of
    * @param {*} data The data for the store channel
    */
-  constructor(guild, data) {
-    super(guild, data);
+  constructor(server, data) {
+    super(server, data);
 
     /**
-     * If the guild considers this channel NSFW
+     * If the server considers this channel NSFW
      * @type {boolean}
      * @readonly
      */

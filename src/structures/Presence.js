@@ -52,10 +52,10 @@ class Presence {
     this.userID = data.user.id;
 
     /**
-     * The guild of this presence
-     * @type {?Guild}
+     * The server of this presence
+     * @type {?Server}
      */
-    this.guild = data.guild || null;
+    this.server = data.server || null;
 
     this.patch(data);
   }
@@ -71,11 +71,11 @@ class Presence {
 
   /**
    * The member of this presence
-   * @type {?GuildMember}
+   * @type {?ServerMember}
    * @readonly
    */
   get member() {
-    return this.guild.members.cache.get(this.userID) || null;
+    return this.server.members.cache.get(this.userID) || null;
   }
 
   patch(data) {

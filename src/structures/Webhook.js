@@ -54,10 +54,10 @@ class Webhook {
     this.type = WebhookTypes[data.type];
 
     /**
-     * The guild the webhook belongs to
+     * The server the webhook belongs to
      * @type {Snowflake}
      */
-    this.guildID = data.guild_id;
+    this.serverID = data.server_id;
 
     /**
      * The channel the webhook belongs to

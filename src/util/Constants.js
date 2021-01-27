@@ -50,8 +50,8 @@ exports.DefaultOptions = {
   /**
    * WebSocket options (these are left as snake_case to match the API)
    * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
-   * sent in the initial guild member list, must be between 50 and 250
+   * @property {number} [large_threshold=50] Number of members in a server after which offline users will no longer be
+   * sent in the initial server member list, must be between 50 and 250
    * @property {IntentsResolvable} [intents] Intents to enable for this connection
    */
   ws: {
@@ -123,11 +123,11 @@ exports.Endpoints = {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
         return makeImageUrl(`${root}/avatars/${userID}/${hash}`, { format, size });
       },
-      Banner: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/banners/${guildID}/${hash}`, { format, size }),
-      Icon: (guildID, hash, format = 'webp', size, dynamic = false) => {
+      Banner: (serverID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/banners/${serverID}/${hash}`, { format, size }),
+      Icon: (serverID, hash, format = 'webp', size, dynamic = false) => {
         if (dynamic) format = hash.startsWith('a_') ? 'gif' : format;
-        return makeImageUrl(`${root}/icons/${guildID}/${hash}`, { format, size });
+        return makeImageUrl(`${root}/icons/${serverID}/${hash}`, { format, size });
       },
       AppIcon: (clientID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/app-icons/${clientID}/${hash}`, { size, format }),
@@ -135,10 +135,10 @@ exports.Endpoints = {
         makeImageUrl(`${root}/app-assets/${clientID}/${hash}`, { size, format }),
       GDMIcon: (channelID, hash, format = 'webp', size) =>
         makeImageUrl(`${root}/channel-icons/${channelID}/${hash}`, { size, format }),
-      Splash: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/splashes/${guildID}/${hash}`, { size, format }),
-      DiscoverySplash: (guildID, hash, format = 'webp', size) =>
-        makeImageUrl(`${root}/discovery-splashes/${guildID}/${hash}`, { size, format }),
+      Splash: (serverID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/splashes/${serverID}/${hash}`, { size, format }),
+      DiscoverySplash: (serverID, hash, format = 'webp', size) =>
+        makeImageUrl(`${root}/discovery-splashes/${serverID}/${hash}`, { size, format }),
       TeamIcon: (teamID, hash, { format = 'webp', size } = {}) =>
         makeImageUrl(`${root}/team-icons/${teamID}/${hash}`, { size, format }),
     };
@@ -219,18 +219,18 @@ exports.VoiceOPCodes = {
 exports.Events = {
   RATE_LIMIT: 'rateLimit',
   CLIENT_READY: 'ready',
-  GUILD_CREATE: 'guildCreate',
-  GUILD_DELETE: 'guildDelete',
-  GUILD_UPDATE: 'guildUpdate',
-  GUILD_UNAVAILABLE: 'guildUnavailable',
-  GUILD_AVAILABLE: 'guildAvailable',
-  GUILD_MEMBER_ADD: 'guildMemberAdd',
-  GUILD_MEMBER_REMOVE: 'guildMemberRemove',
-  GUILD_MEMBER_UPDATE: 'guildMemberUpdate',
-  GUILD_MEMBER_AVAILABLE: 'guildMemberAvailable',
-  GUILD_MEMBER_SPEAKING: 'guildMemberSpeaking',
-  GUILD_MEMBERS_CHUNK: 'guildMembersChunk',
-  GUILD_INTEGRATIONS_UPDATE: 'guildIntegrationsUpdate',
+  GUILD_CREATE: 'serverCreate',
+  GUILD_DELETE: 'serverDelete',
+  GUILD_UPDATE: 'serverUpdate',
+  GUILD_UNAVAILABLE: 'serverUnavailable',
+  GUILD_AVAILABLE: 'serverAvailable',
+  GUILD_MEMBER_ADD: 'serverMemberAdd',
+  GUILD_MEMBER_REMOVE: 'serverMemberRemove',
+  GUILD_MEMBER_UPDATE: 'serverMemberUpdate',
+  GUILD_MEMBER_AVAILABLE: 'serverMemberAvailable',
+  GUILD_MEMBER_SPEAKING: 'serverMemberSpeaking',
+  GUILD_MEMBERS_CHUNK: 'serverMembersChunk',
+  GUILD_INTEGRATIONS_UPDATE: 'serverIntegrationsUpdate',
   GUILD_ROLE_CREATE: 'roleCreate',
   GUILD_ROLE_DELETE: 'roleDelete',
   INVITE_CREATE: 'inviteCreate',
@@ -239,8 +239,8 @@ exports.Events = {
   GUILD_EMOJI_CREATE: 'emojiCreate',
   GUILD_EMOJI_DELETE: 'emojiDelete',
   GUILD_EMOJI_UPDATE: 'emojiUpdate',
-  GUILD_BAN_ADD: 'guildBanAdd',
-  GUILD_BAN_REMOVE: 'guildBanRemove',
+  GUILD_BAN_ADD: 'serverBanAdd',
+  GUILD_BAN_REMOVE: 'serverBanRemove',
   CHANNEL_CREATE: 'channelCreate',
   CHANNEL_DELETE: 'channelDelete',
   CHANNEL_UPDATE: 'channelUpdate',
@@ -487,7 +487,7 @@ exports.Colors = {
 };
 
 /**
- * The value set for the explicit content filter levels for a guild:
+ * The value set for the explicit content filter levels for a server:
  * * DISABLED
  * * MEMBERS_WITHOUT_ROLES
  * * ALL_MEMBERS
@@ -496,7 +496,7 @@ exports.Colors = {
 exports.ExplicitContentFilterLevels = ['DISABLED', 'MEMBERS_WITHOUT_ROLES', 'ALL_MEMBERS'];
 
 /**
- * The value set for the verification levels for a guild:
+ * The value set for the verification levels for a server:
  * * NONE
  * * LOW
  * * MEDIUM
@@ -640,7 +640,7 @@ exports.APIErrors = {
 };
 
 /**
- * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
+ * The value set for a server's default message notifications, e.g. `ALL`. Here are the available types:
  * * ALL
  * * MENTIONS
  * @typedef {string} DefaultMessageNotifications

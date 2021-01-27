@@ -16,18 +16,18 @@ client
   .then(() => console.log('logged in'))
   .catch(console.error);
 
-// Fetch all members in a new guild
-client.on('guildCreate', guild => guild.members.fetch()
+// Fetch all members in a new server
+client.on('serverCreate', server => server.members.fetch()
     .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)));
 
-// Fetch all members in a newly available guild
-client.on('guildUpdate', (oldGuild, newGuild) => !oldGuild.available && newGuild.available ? guild.members.fetch()
+// Fetch all members in a newly available server
+client.on('serverUpdate', (oldServer, newServer) => !oldServer.available && newServer.available ? server.members.fetch()
     .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)) : Promise.resolve());
 
 client.on('ready', async () => {
-  // Fetch all members for initially available guilds
+  // Fetch all members for initially available servers
   try {
-    const promises = client.guilds.cache.map(guild => guild.available ? guild.members.fetch() : Promise.resolve());
+    const promises = client.servers.cache.map(server => server.available ? server.members.fetch() : Promise.resolve());
     await Promise.all(promises);
   } catch (err) {
     console.log(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
@@ -45,8 +45,8 @@ client.on('reconnecting', m => console.log('reconnecting', m));
 client.on('message', message => {
   if (true) {
     if (message.content === 'makechann') {
-      if (message.channel.guild) {
-        message.channel.guild.channels.create('hi', { type: 'text' }).then(console.log);
+      if (message.channel.server) {
+        message.channel.server.channels.create('hi', { type: 'text' }).then(console.log);
       }
     }
 
@@ -96,25 +96,25 @@ client.on('message', message => {
     }
 
     if (message.content.startsWith('gn')) {
-      message.guild
+      message.server
         .setName(message.content.substr(3))
-        .then(guild => console.log('guild updated to', guild.name))
+        .then(server => console.log('server updated to', server.name))
         .catch(console.error);
     }
 
     if (message.content === 'leave') {
-      message.guild
+      message.server
         .leave()
-        .then(guild => console.log('left guild', guild.name))
+        .then(server => console.log('left server', server.name))
         .catch(console.error);
     }
 
     if (message.content === 'stats') {
       let m = '';
-      m += `I am aware of ${message.guild.channels.cache.size} channels\n`;
-      m += `I am aware of ${message.guild.members.cache.size} members\n`;
+      m += `I am aware of ${message.server.channels.cache.size} channels\n`;
+      m += `I am aware of ${message.server.members.cache.size} members\n`;
       m += `I am aware of ${client.channels.cache.size} channels overall\n`;
-      m += `I am aware of ${client.guilds.cache.size} guilds overall\n`;
+      m += `I am aware of ${client.servers.cache.size} servers overall\n`;
       m += `I am aware of ${client.users.cache.size} users overall\n`;
       message.channel
         .send(m)
@@ -131,7 +131,7 @@ client.on('message', message => {
     }
 
     if (message.content.startsWith('kick')) {
-      message.guild
+      message.server
         .members
         .resolve(message.mentions.users.first())
         .kick()
@@ -156,7 +156,7 @@ client.on('message', message => {
     }
 
     if (message.content === 'makerole') {
-      message.guild
+      message.server
         .roles
         .create()
         .then(role => {
@@ -216,7 +216,7 @@ client.on('message', msg => {
       .split(' ')
       .slice(1)
       .join(' ');
-    msg.channel.guild.channels
+    msg.channel.server.channels
       .cache
       .get(chan)
       .join()

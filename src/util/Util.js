@@ -233,10 +233,10 @@ class Util {
   /**
    * Gets the recommended shard count from Discord.
    * @param {string} token Discord auth token
-   * @param {number} [guildsPerShard=1000] Number of guilds per shard
+   * @param {number} [serversPerShard=1000] Number of servers per shard
    * @returns {Promise<number>} The recommended number of shards
    */
-  static fetchRecommendedShards(token, guildsPerShard = 1000) {
+  static fetchRecommendedShards(token, serversPerShard = 1000) {
     if (!token) throw new DiscordError('TOKEN_MISSING');
     return fetch(`${DefaultOptions.http.api}/v${DefaultOptions.http.version}${Endpoints.botGateway}`, {
       method: 'GET',
@@ -247,7 +247,7 @@ class Util {
         if (res.status === 401) throw new DiscordError('TOKEN_INVALID');
         throw res;
       })
-      .then(data => data.shards * (1000 / guildsPerShard));
+      .then(data => data.shards * (1000 / serversPerShard));
   }
 
   /**
@@ -543,7 +543,7 @@ class Util {
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
 
-        const member = message.channel.guild.members.cache.get(id);
+        const member = message.channel.server.members.cache.get(id);
         if (member) {
           return Util.removeMentions(`@${member.displayName}`);
         } else {
@@ -557,7 +557,7 @@ class Util {
       })
       .replace(/<@&[0-9]+>/g, input => {
         if (message.channel.type === 'dm') return input;
-        const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
+        const role = message.server.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
     return str;

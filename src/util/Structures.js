@@ -2,15 +2,15 @@
 
 /**
  * An extendable structure:
- * * **`GuildEmoji`**
+ * * **`ServerEmoji`**
  * * **`DMChannel`**
  * * **`TextChannel`**
  * * **`VoiceChannel`**
  * * **`CategoryChannel`**
  * * **`NewsChannel`**
  * * **`StoreChannel`**
- * * **`GuildMember`**
- * * **`Guild`**
+ * * **`ServerMember`**
+ * * **`Server`**
  * * **`Message`**
  * * **`MessageReaction`**
  * * **`Presence`**
@@ -50,15 +50,15 @@ class Structures {
    * @example
    * const { Structures } = require('discord.js');
    *
-   * Structures.extend('Guild', Guild => {
-   *   class CoolGuild extends Guild {
+   * Structures.extend('Server', Server => {
+   *   class CoolServer extends Server {
    *     constructor(client, data) {
    *       super(client, data);
    *       this.cool = true;
    *     }
    *   }
    *
-   *   return CoolGuild;
+   *   return CoolServer;
    * });
    */
   static extend(structure, extender) {
@@ -91,15 +91,15 @@ class Structures {
 }
 
 const structures = {
-  GuildEmoji: require('../structures/GuildEmoji'),
+  ServerEmoji: require('../structures/ServerEmoji'),
   DMChannel: require('../structures/DMChannel'),
   TextChannel: require('../structures/TextChannel'),
   VoiceChannel: require('../structures/VoiceChannel'),
   CategoryChannel: require('../structures/CategoryChannel'),
   NewsChannel: require('../structures/NewsChannel'),
   StoreChannel: require('../structures/StoreChannel'),
-  GuildMember: require('../structures/GuildMember'),
-  Guild: require('../structures/Guild'),
+  ServerMember: require('../structures/ServerMember'),
+  Server: require('../structures/Server'),
   Message: require('../structures/Message'),
   MessageReaction: require('../structures/MessageReaction'),
   Presence: require('../structures/Presence').Presence,

@@ -9,8 +9,8 @@ const { PartialTypes } = require('../../util/Constants');
      message_id: 'id',
      emoji: { name: '�', id: null },
      channel_id: 'id',
-     // If originating from a guild
-     guild_id: 'id',
+     // If originating from a server
+     server_id: 'id',
      member: { ..., user: { ... } } }
 */
 
@@ -44,7 +44,7 @@ class MessageReactionAdd extends Action {
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
-     * @param {User} user The user that applied the guild or reaction emoji
+     * @param {User} user The user that applied the server or reaction emoji
      */
     this.client.emit(Events.MESSAGE_REACTION_ADD, reaction, user);
 

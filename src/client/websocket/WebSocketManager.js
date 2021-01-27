@@ -184,14 +184,14 @@ class WebSocketManager extends EventEmitter {
     this.shardQueue.delete(shard);
 
     if (!shard.eventsAttached) {
-      shard.on(ShardEvents.ALL_READY, unavailableGuilds => {
+      shard.on(ShardEvents.ALL_READY, unavailableServers => {
         /**
          * Emitted when a shard turns ready.
          * @event Client#shardReady
          * @param {number} id The shard ID that turned ready
-         * @param {?Set<string>} unavailableGuilds Set of unavailable guild IDs, if any
+         * @param {?Set<string>} unavailableServers Set of unavailable server IDs, if any
          */
-        this.client.emit(Events.SHARD_READY, shard.id, unavailableGuilds);
+        this.client.emit(Events.SHARD_READY, shard.id, unavailableServers);
 
         if (!this.shardQueue.size) this.reconnecting = false;
         this.checkShardsReady();

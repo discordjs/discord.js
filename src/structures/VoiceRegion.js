@@ -3,7 +3,7 @@
 const Util = require('../util/Util');
 
 /**
- * Represents a Discord voice region for guilds.
+ * Represents a Discord voice region for servers.
  */
 class VoiceRegion {
   constructor(data) {

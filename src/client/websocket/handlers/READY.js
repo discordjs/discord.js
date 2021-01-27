@@ -12,9 +12,9 @@ module.exports = (client, { d: data }, shard) => {
     client.users.cache.set(clientUser.id, clientUser);
   }
 
-  for (const guild of data.guilds) {
-    guild.shardID = shard.id;
-    client.guilds.add(guild);
+  for (const server of data.servers) {
+    server.shardID = shard.id;
+    client.servers.add(server);
   }
 
   shard.checkReady();

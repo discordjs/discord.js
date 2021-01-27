@@ -23,7 +23,7 @@ class SingleSilence extends Silence {
 const SUPPORTED_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
 
 /**
- * Represents a connection to a guild's voice server.
+ * Represents a connection to a server's voice server.
  * ```js
  * // Obtained using:
  * voiceChannel.join()
@@ -168,7 +168,7 @@ class VoiceConnection extends EventEmitter {
    * @type {?VoiceState}
    */
   get voice() {
-    return this.channel.guild.me?.voice ?? null;
+    return this.channel.server.me?.voice ?? null;
   }
 
   /**
@@ -180,7 +180,7 @@ class VoiceConnection extends EventEmitter {
   sendVoiceStateUpdate(options = {}) {
     options = Util.mergeDefault(
       {
-        guild_id: this.channel.guild.id,
+        server_id: this.channel.server.id,
         channel_id: this.channel.id,
         self_mute: this.voice?.selfMute ?? false,
         self_deaf: this.voice?.selfDeaf ?? false,
@@ -190,7 +190,7 @@ class VoiceConnection extends EventEmitter {
 
     this.emit('debug', `Sending voice state update: ${JSON.stringify(options)}`);
 
-    return this.channel.guild.shard.send(
+    return this.channel.server.shard.send(
       {
         op: OPCodes.VOICE_STATE_UPDATE,
         d: options,
@@ -306,7 +306,7 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Move to a different voice channel in the same guild.
+   * Move to a different voice channel in the same server.
    * @param {VoiceChannel} channel The channel to move to
    * @private
    */
@@ -351,8 +351,8 @@ class VoiceConnection extends EventEmitter {
     this.emit('closing');
     this.emit('debug', 'disconnect() triggered');
     this.client.clearTimeout(this.connectTimeout);
-    const conn = this.voiceManager.connections.get(this.channel.guild.id);
-    if (conn === this) this.voiceManager.connections.delete(this.channel.guild.id);
+    const conn = this.voiceManager.connections.get(this.channel.server.id);
+    if (conn === this) this.voiceManager.connections.delete(this.channel.server.id);
     this.sendVoiceStateUpdate({
       channel_id: null,
     });
@@ -487,7 +487,7 @@ class VoiceConnection extends EventEmitter {
    */
   onSpeaking({ user_id, speaking }) {
     speaking = new Speaking(speaking).freeze();
-    const guild = this.channel.guild;
+    const server = this.channel.server;
     const user = this.client.users.cache.get(user_id);
     const old = this._speaking.get(user_id);
     this._speaking.set(user_id, speaking);
@@ -504,13 +504,13 @@ class VoiceConnection extends EventEmitter {
       }
     }
 
-    if (guild && user && !speaking.equals(old)) {
-      const member = guild.members.resolve(user);
+    if (server && user && !speaking.equals(old)) {
+      const member = server.members.resolve(user);
       if (member) {
         /**
-         * Emitted once a guild member changes speaking state.
-         * @event Client#guildMemberSpeaking
-         * @param {GuildMember} member The member that started/stopped speaking
+         * Emitted once a server member changes speaking state.
+         * @event Client#serverMemberSpeaking
+         * @param {ServerMember} member The member that started/stopped speaking
          * @param {Readonly<Speaking>} speaking The speaking state of the member
          */
         this.client.emit(Events.GUILD_MEMBER_SPEAKING, member, speaking);

@@ -1,19 +1,19 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
+const ServerChannel = require('./ServerChannel');
 
 /**
- * Represents a guild category channel on Discord.
- * @extends {GuildChannel}
+ * Represents a server category channel on Discord.
+ * @extends {ServerChannel}
  */
-class CategoryChannel extends GuildChannel {
+class CategoryChannel extends ServerChannel {
   /**
    * Channels that are a part of this category
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, ServerChannel>}
    * @readonly
    */
   get children() {
-    return this.guild.channels.cache.filter(c => c.parentID === this.id);
+    return this.server.channels.cache.filter(c => c.parentID === this.id);
   }
 
   /**
@@ -22,11 +22,11 @@ class CategoryChannel extends GuildChannel {
    * @method setParent
    * @memberof CategoryChannel
    * @instance
-   * @param {?GuildChannel|Snowflake} channel Parent channel
+   * @param {?ServerChannel|Snowflake} channel Parent channel
    * @param {Object} [options={}] Options to pass
    * @param {boolean} [options.lockPermissions=true] Lock the permissions to what the parent's permissions are
    * @param {string} [options.reason] Reason for modifying the parent of this channel
-   * @returns {Promise<GuildChannel>}
+   * @returns {Promise<ServerChannel>}
    */
 }
 

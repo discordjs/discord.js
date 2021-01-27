@@ -17,11 +17,11 @@ class MessageMentions {
     Object.defineProperty(this, 'client', { value: message.client });
 
     /**
-     * The guild the message is in
-     * @type {?Guild}
+     * The server the message is in
+     * @type {?Server}
      * @readonly
      */
-    Object.defineProperty(this, 'guild', { value: message.guild });
+    Object.defineProperty(this, 'server', { value: message.server });
 
     /**
      * The initial message content
@@ -48,8 +48,8 @@ class MessageMentions {
       } else {
         this.users = new Collection();
         for (const mention of users) {
-          if (mention.member && message.guild) {
-            message.guild.members.add(Object.assign(mention.member, { user: mention }));
+          if (mention.member && message.server) {
+            message.server.members.add(Object.assign(mention.member, { user: mention }));
           }
           const user = message.client.users.add(mention);
           this.users.set(user.id, user);
@@ -70,7 +70,7 @@ class MessageMentions {
       } else {
         this.roles = new Collection();
         for (const mention of roles) {
-          const role = message.channel.guild.roles.cache.get(mention);
+          const role = message.channel.server.roles.cache.get(mention);
           if (role) this.roles.set(role.id, role);
         }
       }
@@ -80,14 +80,14 @@ class MessageMentions {
 
     /**
      * Cached members for {@link MessageMentions#members}
-     * @type {?Collection<Snowflake, GuildMember>}
+     * @type {?Collection<Snowflake, ServerMember>}
      * @private
      */
     this._members = null;
 
     /**
      * Cached channels for {@link MessageMentions#channels}
-     * @type {?Collection<Snowflake, GuildChannel>}
+     * @type {?Collection<Snowflake, ServerChannel>}
      * @private
      */
     this._channels = null;
@@ -96,7 +96,7 @@ class MessageMentions {
      * Crossposted channel data.
      * @typedef {Object} CrosspostedChannel
      * @property {string} channelID ID of the mentioned channel
-     * @property {string} guildID ID of the guild that has the channel
+     * @property {string} serverID ID of the server that has the channel
      * @property {string} type Type of the channel
      * @property {string} name The name of the channel
      */
@@ -116,7 +116,7 @@ class MessageMentions {
           const type = channelTypes[d.type];
           this.crosspostedChannels.set(d.id, {
             channelID: d.id,
-            guildID: d.guild_id,
+            serverID: d.server_id,
             type: type ? type.toLowerCase() : 'unknown',
             name: d.name,
           });
@@ -130,15 +130,15 @@ class MessageMentions {
   /**
    * Any members that were mentioned (only in {@link TextChannel}s)
    * <info>Order as received from the API, not as they appear in the message content</info>
-   * @type {?Collection<Snowflake, GuildMember>}
+   * @type {?Collection<Snowflake, ServerMember>}
    * @readonly
    */
   get members() {
     if (this._members) return this._members;
-    if (!this.guild) return null;
+    if (!this.server) return null;
     this._members = new Collection();
     this.users.forEach(user => {
-      const member = this.guild.members.resolve(user);
+      const member = this.server.members.resolve(user);
       if (member) this._members.set(member.user.id, member);
     });
     return this._members;
@@ -147,7 +147,7 @@ class MessageMentions {
   /**
    * Any channels that were mentioned
    * <info>Order as they appear first in the message content</info>
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, ServerChannel>}
    * @readonly
    */
   get channels() {
@@ -162,26 +162,26 @@ class MessageMentions {
   }
 
   /**
-   * Checks if a user, guild member, role, or channel is mentioned.
+   * Checks if a user, server member, role, or channel is mentioned.
    * Takes into account user mentions, role mentions, and @everyone/@here mentions.
-   * @param {UserResolvable|RoleResolvable|GuildChannelResolvable} data User/Role/Channel to check
+   * @param {UserResolvable|RoleResolvable|ServerChannelResolvable} data User/Role/Channel to check
    * @param {Object} [options] Options
    * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
-   * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member
+   * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a server member
    * @param {boolean} [options.ignoreEveryone=false] - Whether to ignore everyone/here mentions
    * @returns {boolean}
    */
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreEveryone = false } = {}) {
     if (!ignoreEveryone && this.everyone) return true;
-    const GuildMember = require('./GuildMember');
-    if (!ignoreRoles && data instanceof GuildMember) {
+    const ServerMember = require('./ServerMember');
+    if (!ignoreRoles && data instanceof ServerMember) {
       for (const role of this.roles.values()) if (data.roles.cache.has(role.id)) return true;
     }
 
     if (!ignoreDirect) {
       const id =
         this.client.users.resolveID(data) ||
-        (this.guild && this.guild.roles.resolveID(data)) ||
+        (this.server && this.server.roles.resolveID(data)) ||
         this.client.channels.resolveID(data);
 
       return this.users.has(id) || this.channels.has(id) || this.roles.has(id);

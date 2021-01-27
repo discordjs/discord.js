@@ -5,15 +5,15 @@ const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
 const { Error, TypeError, RangeError } = require('../errors');
-const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
+const BaseServerEmojiManager = require('../managers/BaseServerEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
-const GuildManager = require('../managers/GuildManager');
+const ServerManager = require('../managers/ServerManager');
 const UserManager = require('../managers/UserManager');
 const ShardClientUtil = require('../sharding/ShardClientUtil');
 const ClientApplication = require('../structures/ClientApplication');
-const GuildPreview = require('../structures/GuildPreview');
-const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
+const ServerPreview = require('../structures/ServerPreview');
+const ServerTemplate = require('../structures/ServerTemplate');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Collection = require('../util/Collection');
@@ -109,15 +109,15 @@ class Client extends BaseClient {
     this.users = new UserManager(this);
 
     /**
-     * All of the guilds the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {GuildManager}
+     * All of the servers the client is currently handling, mapped by their IDs -
+     * as long as sharding isn't being used, this will be *every* server the bot is a member of
+     * @type {ServerManager}
      */
-    this.guilds = new GuildManager(this);
+    this.servers = new ServerManager(this);
 
     /**
      * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
+     * as long as sharding isn't being used, this will be *every* channel in *every* server the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
      * @type {ChannelManager}
@@ -165,13 +165,13 @@ class Client extends BaseClient {
 
   /**
    * All custom emojis that the client has access to, mapped by their IDs
-   * @type {BaseGuildEmojiManager}
+   * @type {BaseServerEmojiManager}
    * @readonly
    */
   get emojis() {
-    const emojis = new BaseGuildEmojiManager(this);
-    for (const guild of this.guilds.cache.values()) {
-      if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
+    const emojis = new BaseServerEmojiManager(this);
+    for (const server of this.servers.cache.values()) {
+      if (server.available) for (const emoji of server.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
     }
     return emojis;
   }
@@ -256,19 +256,19 @@ class Client extends BaseClient {
 
   /**
    * Obtains a template from Discord.
-   * @param {GuildTemplateResolvable} template Template code or URL
-   * @returns {Promise<GuildTemplate>}
+   * @param {ServerTemplateResolvable} template Template code or URL
+   * @returns {Promise<ServerTemplate>}
    * @example
-   * client.fetchGuildTemplate('https://discord.new/FKvmczH2HyUf')
+   * client.fetchServerTemplate('https://discord.new/FKvmczH2HyUf')
    *   .then(template => console.log(`Obtained template with code: ${template.code}`))
    *   .catch(console.error);
    */
-  fetchGuildTemplate(template) {
-    const code = DataResolver.resolveGuildTemplateCode(template);
-    return this.api.guilds
+  fetchServerTemplate(template) {
+    const code = DataResolver.resolveServerTemplateCode(template);
+    return this.api.servers
       .templates(code)
       .get()
-      .then(data => new GuildTemplate(this, data));
+      .then(data => new ServerTemplate(this, data));
   }
 
   /**
@@ -358,29 +358,29 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
-   * @param {GuildResolvable} guild The guild to fetch the preview for
-   * @returns {Promise<GuildPreview>}
+   * Obtains a server preview from Discord, available for all servers the bot is in and all Discoverable servers.
+   * @param {ServerResolvable} server The server to fetch the preview for
+   * @returns {Promise<ServerPreview>}
    */
-  fetchGuildPreview(guild) {
-    const id = this.guilds.resolveID(guild);
-    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
+  fetchServerPreview(server) {
+    const id = this.servers.resolveID(server);
+    if (!id) throw new TypeError('INVALID_TYPE', 'server', 'ServerResolvable');
     return this.api
-      .guilds(id)
+      .servers(id)
       .preview.get()
-      .then(data => new GuildPreview(this, data));
+      .then(data => new ServerPreview(this, data));
   }
 
   /**
    * Options for {@link Client#generateInvite}.
    * @typedef {Object} InviteGenerationOptions
    * @property {PermissionResolvable} [permissions] Permissions to request
-   * @property {GuildResolvable} [guild] Guild to preselect
-   * @property {boolean} [disableGuildSelect] Whether to disable the guild selection
+   * @property {ServerResolvable} [server] Server to preselect
+   * @property {boolean} [disableServerSelect] Whether to disable the server selection
    */
 
   /**
-   * Generates a link that can be used to invite the bot to a guild.
+   * Generates a link that can be used to invite the bot to a server.
    * @param {InviteGenerationOptions} [options={}] Options for the invite
    * @returns {Promise<string>}
    * @example
@@ -408,14 +408,14 @@ class Client extends BaseClient {
       if (permissions) query.set('permissions', permissions);
     }
 
-    if (options.disableGuildSelect) {
-      query.set('disable_guild_select', true);
+    if (options.disableServerSelect) {
+      query.set('disable_server_select', true);
     }
 
-    if (options.guild) {
-      const guildID = this.guilds.resolveID(options.guild);
-      if (!guildID) throw new TypeError('INVALID_TYPE', 'options.guild', 'GuildResolvable');
-      query.set('guild_id', guildID);
+    if (options.server) {
+      const serverID = this.servers.resolveID(options.server);
+      if (!serverID) throw new TypeError('INVALID_TYPE', 'options.server', 'ServerResolvable');
+      query.set('server_id', serverID);
     }
 
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;

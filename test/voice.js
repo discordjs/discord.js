@@ -34,15 +34,15 @@ client.on('messageDelete', async m => {
 });
 
 client.on('message', m => {
-  if (!m.guild) return;
+  if (!m.server) return;
   if (m.author.id !== '66564597481480192') return;
   if (m.content.startsWith('/join')) {
-    const channel = m.guild.channels.cache.get(m.content.split(' ')[1]) || m.member.voice.channel;
+    const channel = m.server.channels.cache.get(m.content.split(' ')[1]) || m.member.voice.channel;
     if (channel && channel.type === 'voice') {
       channel.join().then(conn => {
         conn.receiver.createStream(m.author, true).on('data', b => console.log(b.toString()));
         conn.player.on('error', (...e) => console.log('player', ...e));
-        if (!connections.has(m.guild.id)) connections.set(m.guild.id, { conn, queue: [] });
+        if (!connections.has(m.server.id)) connections.set(m.server.id, { conn, queue: [] });
         m.channel.send('ok!');
         conn.play(ytdl('https://www.youtube.com/watch?v=_XXOSf0s2nk', { filter: 'audioonly' }, { passes: 3 }));
       });

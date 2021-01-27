@@ -101,8 +101,8 @@ class ShardClientUtil {
    * @param {number} [shard] Shard to fetch property from, all if undefined
    * @returns {Promise<*>|Promise<Array<*>>}
    * @example
-   * client.shard.fetchClientValues('guilds.cache.size')
-   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
+   * client.shard.fetchClientValues('servers.cache.size')
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total servers`))
    *   .catch(console.error);
    * @see {@link ShardingManager#fetchClientValues}
    */
@@ -131,8 +131,8 @@ class ShardClientUtil {
    * @param {number} [shard] Shard to run script on, all if undefined
    * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    * @example
-   * client.shard.broadcastEval('this.guilds.cache.size')
-   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
+   * client.shard.broadcastEval('this.servers.cache.size')
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total servers`))
    *   .catch(console.error);
    * @see {@link ShardingManager#broadcastEval}
    */
@@ -228,14 +228,14 @@ class ShardClientUtil {
   }
 
   /**
-   * Get the shard ID for a given guild ID.
-   * @param {Snowflake} guildID Snowflake guild ID to get shard ID for
+   * Get the shard ID for a given server ID.
+   * @param {Snowflake} serverID Snowflake server ID to get shard ID for
    * @param {number} shardCount Number of shards
    * @returns {number}
    */
-  static shardIDForGuildID(guildID, shardCount) {
-    const shard = Number(BigInt(guildID) >> 22n) % shardCount;
-    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, guildID, shardCount);
+  static shardIDForServerID(serverID, shardCount) {
+    const shard = Number(BigInt(serverID) >> 22n) % shardCount;
+    if (shard < 0) throw new Error('SHARDING_SHARD_MISCALCULATION', shard, serverID, shardCount);
     return shard;
   }
 }

@@ -6,17 +6,17 @@ const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
 /**
- * Represents a permission overwrite for a role or member in a guild channel.
+ * Represents a permission overwrite for a role or member in a server channel.
  */
 class PermissionOverwrites {
-  constructor(guildChannel, data) {
+  constructor(serverChannel, data) {
     /**
-     * The GuildChannel this overwrite is for
+     * The ServerChannel this overwrite is for
      * @name PermissionOverwrites#channel
-     * @type {GuildChannel}
+     * @type {ServerChannel}
      * @readonly
      */
-    Object.defineProperty(this, 'channel', { value: guildChannel });
+    Object.defineProperty(this, 'channel', { value: serverChannel });
 
     if (data) this._patch(data);
   }
@@ -155,7 +155,7 @@ class PermissionOverwrites {
   /**
    * Data that can be used for a permission overwrite
    * @typedef {Object} OverwriteData
-   * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
+   * @property {ServerMemberResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
    * @property {OverwriteType} [type] The type of this OverwriteData
@@ -164,16 +164,16 @@ class PermissionOverwrites {
   /**
    * Resolves an overwrite into {@link RawOverwriteData}.
    * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
-   * @param {Guild} guild The guild to resolve from
+   * @param {Server} server The server to resolve from
    * @returns {RawOverwriteData}
    */
-  static resolve(overwrite, guild) {
+  static resolve(overwrite, server) {
     if (overwrite instanceof this) return overwrite.toJSON();
     if (typeof overwrite.id === 'string' && ['role', 'member'].includes(overwrite.type)) {
       return { ...overwrite, allow: Permissions.resolve(overwrite.allow), deny: Permissions.resolve(overwrite.deny) };
     }
 
-    const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
+    const userOrRole = server.roles.resolve(overwrite.id) || server.client.users.resolve(overwrite.id);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? 'role' : 'member';
 

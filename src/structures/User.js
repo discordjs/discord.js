@@ -144,8 +144,8 @@ class User extends Base {
    * @readonly
    */
   get presence() {
-    for (const guild of this.client.guilds.cache.values()) {
-      if (guild.presences.cache.has(this.id)) return guild.presences.cache.get(this.id);
+    for (const server of this.client.servers.cache.values()) {
+      if (server.presences.cache.has(this.id)) return server.presences.cache.get(this.id);
     }
     if (!Structures) Structures = require('../util/Structures');
     const Presence = Structures.get('Presence');

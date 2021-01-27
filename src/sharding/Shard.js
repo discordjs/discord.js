@@ -223,8 +223,8 @@ class Shard extends EventEmitter {
    * @param {string} prop Name of the client property to get, using periods for nesting
    * @returns {Promise<*>}
    * @example
-   * shard.fetchClientValue('guilds.cache.size')
-   *   .then(count => console.log(`${count} guilds in shard ${shard.id}`))
+   * shard.fetchClientValue('servers.cache.size')
+   *   .then(count => console.log(`${count} servers in shard ${shard.id}`))
    *   .catch(console.error);
    */
   fetchClientValue(prop) {

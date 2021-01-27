@@ -8,7 +8,7 @@ client.on('ready', () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);
 });
 
-client.on('guildCreate', g => {
+client.on('serverCreate', g => {
   const channel = g.channels.cache.random();
   if (!channel) return;
 

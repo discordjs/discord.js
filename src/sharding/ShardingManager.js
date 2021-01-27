@@ -237,8 +237,8 @@ class ShardingManager extends EventEmitter {
    * @param {number} [shard] Shard to fetch property from, all if undefined
    * @returns {Promise<*>|Promise<Array<*>>}
    * @example
-   * manager.fetchClientValues('guilds.cache.size')
-   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
+   * manager.fetchClientValues('servers.cache.size')
+   *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total servers`))
    *   .catch(console.error);
    */
   fetchClientValues(prop, shard) {

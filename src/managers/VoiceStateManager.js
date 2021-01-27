@@ -7,13 +7,13 @@ const BaseManager = require('./BaseManager');
  * @extends {BaseManager}
  */
 class VoiceStateManager extends BaseManager {
-  constructor(guild, iterable) {
-    super(guild.client, iterable, { name: 'VoiceState' });
+  constructor(server, iterable) {
+    super(server.client, iterable, { name: 'VoiceState' });
     /**
-     * The guild this manager belongs to
-     * @type {Guild}
+     * The server this manager belongs to
+     * @type {Server}
      */
-    this.guild = guild;
+    this.server = server;
   }
 
   /**
@@ -26,7 +26,7 @@ class VoiceStateManager extends BaseManager {
     const existing = this.cache.get(data.user_id);
     if (existing) return existing._patch(data);
 
-    const entry = new this.holds(this.guild, data);
+    const entry = new this.holds(this.server, data);
     if (cache) this.cache.set(data.user_id, entry);
     return entry;
   }

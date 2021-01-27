@@ -11,13 +11,13 @@ const { resolveColor } = require('../util/Util');
  * @extends {BaseManager}
  */
 class RoleManager extends BaseManager {
-  constructor(guild, iterable) {
-    super(guild.client, iterable, Role);
+  constructor(server, iterable) {
+    super(server.client, iterable, Role);
     /**
-     * The guild belonging to this manager
-     * @type {Guild}
+     * The server belonging to this manager
+     * @type {Server}
      */
-    this.guild = guild;
+    this.server = server;
   }
 
   /**
@@ -27,7 +27,7 @@ class RoleManager extends BaseManager {
    */
 
   add(data, cache) {
-    return super.add(data, cache, { extras: [this.guild] });
+    return super.add(data, cache, { extras: [this.server] });
   }
 
   /**
@@ -37,13 +37,13 @@ class RoleManager extends BaseManager {
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<?Role|Collection<Snowflake, Role>>}
    * @example
-   * // Fetch all roles from the guild
-   * message.guild.roles.fetch()
+   * // Fetch all roles from the server
+   * message.server.roles.fetch()
    *   .then(roles => console.log(`There are ${roles.cache.size} roles.`))
    *   .catch(console.error);
    * @example
    * // Fetch a single role
-   * message.guild.roles.fetch('222078108977594368')
+   * message.server.roles.fetch('222078108977594368')
    *   .then(role => console.log(`The role color is: ${role.color}`))
    *   .catch(console.error);
    */
@@ -54,7 +54,7 @@ class RoleManager extends BaseManager {
     }
 
     // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const data = await this.client.api.guilds(this.guild.id).roles.get();
+    const data = await this.client.api.servers(this.server.id).roles.get();
     const roles = new Collection();
     for (const role of data) roles.set(role.id, this.add(role, cache));
     return id ? roles.get(id) ?? null : roles;
@@ -86,7 +86,7 @@ class RoleManager extends BaseManager {
    */
 
   /**
-   * Creates a new role in the guild with given information.
+   * Creates a new role in the server with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
    * @param {Object} [options] Options
    * @param {string} [options.name] The name of the new role
@@ -99,12 +99,12 @@ class RoleManager extends BaseManager {
    * @returns {Promise<Role>}
    * @example
    * // Create a new role
-   * guild.roles.create()
+   * server.roles.create()
    *   .then(console.log)
    *   .catch(console.error);
    * @example
    * // Create a new role with data and a reason
-   * guild.roles.create({
+   * server.roles.create({
    *   name: 'Super Cool Blue People',
    *   color: 'BLUE',
    *   reason: 'we needed a role for Super Cool People',
@@ -118,7 +118,7 @@ class RoleManager extends BaseManager {
     if (permissions) permissions = Permissions.resolve(permissions);
 
     return this.client.api
-      .guilds(this.guild.id)
+      .servers(this.server.id)
       .roles.post({
         data: {
           name,
@@ -130,8 +130,8 @@ class RoleManager extends BaseManager {
         reason,
       })
       .then(r => {
-        const { role } = this.client.actions.GuildRoleCreate.handle({
-          guild_id: this.guild.id,
+        const { role } = this.client.actions.ServerRoleCreate.handle({
+          server_id: this.server.id,
           role: r,
         });
         if (position) return role.setPosition(position, reason);
@@ -140,7 +140,7 @@ class RoleManager extends BaseManager {
   }
 
   /**
-   * Gets the managed role a user created when joining the guild, if any
+   * Gets the managed role a user created when joining the server, if any
    * <info>Only ever available for bots</info>
    * @param {UserResolvable} user The user to access the bot role for
    * @returns {?Role}
@@ -152,16 +152,16 @@ class RoleManager extends BaseManager {
   }
 
   /**
-   * The `@everyone` role of the guild
+   * The `@everyone` role of the server
    * @type {Role}
    * @readonly
    */
   get everyone() {
-    return this.cache.get(this.guild.id);
+    return this.cache.get(this.server.id);
   }
 
   /**
-   * The premium subscriber role of the guild, if any
+   * The premium subscriber role of the server, if any
    * @type {?Role}
    * @readonly
    */

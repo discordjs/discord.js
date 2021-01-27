@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * A bot that welcomes new guild members when they join
+ * A bot that welcomes new server members when they join
  */
 
 // Import the discord.js module
@@ -18,10 +18,10 @@ client.on('ready', () => {
   console.log('I am ready!');
 });
 
-// Create an event listener for new guild members
-client.on('guildMemberAdd', member => {
+// Create an event listener for new server members
+client.on('serverMemberAdd', member => {
   // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
+  const channel = member.server.channels.cache.find(ch => ch.name === 'member-log');
   // Do nothing if the channel wasn't found on this server
   if (!channel) return;
   // Send the message, mentioning the member

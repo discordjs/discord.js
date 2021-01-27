@@ -1,14 +1,14 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
+const ServerChannel = require('./ServerChannel');
 const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 
 /**
- * Represents a guild voice channel on Discord.
- * @extends {GuildChannel}
+ * Represents a server voice channel on Discord.
+ * @extends {ServerChannel}
  */
-class VoiceChannel extends GuildChannel {
+class VoiceChannel extends ServerChannel {
   _patch(data) {
     super._patch(data);
     /**
@@ -26,12 +26,12 @@ class VoiceChannel extends GuildChannel {
 
   /**
    * The members in this voice channel
-   * @type {Collection<Snowflake, GuildMember>}
+   * @type {Collection<Snowflake, ServerMember>}
    * @readonly
    */
   get members() {
     const coll = new Collection();
-    for (const state of this.guild.voiceStates.cache.values()) {
+    for (const state of this.server.voiceStates.cache.values()) {
       if (state.channelID === this.id && state.member) {
         coll.set(state.id, state.member);
       }
@@ -137,7 +137,7 @@ class VoiceChannel extends GuildChannel {
    * voiceChannel.leave();
    */
   leave() {
-    const connection = this.client.voice.connections.get(this.guild.id);
+    const connection = this.client.voice.connections.get(this.server.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
 }

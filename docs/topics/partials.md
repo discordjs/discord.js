@@ -61,5 +61,5 @@ This allows developers to listen to events that contain uncached data, which is 
 bot or any bot that relies on still receiving updates to resources you don't have cached -- message reactions are a
 good example.
 
-Currently, the only type of channel that can be uncached is a DM channel, there is no reason why guild channels should
+Currently, the only type of channel that can be uncached is a DM channel, there is no reason why server channels should
 not be cached.

@@ -8,7 +8,7 @@ const { Events } = require('../../util/Constants');
      message_id: 'id',
      emoji: { name: '�', id: null },
      channel_id: 'id',
-     guild_id: 'id' }
+     server_id: 'id' }
 */
 
 class MessageReactionRemove extends Action {

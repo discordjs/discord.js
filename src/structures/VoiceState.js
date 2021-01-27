@@ -4,20 +4,20 @@ const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 
 /**
- * Represents the voice state for a Guild Member.
+ * Represents the voice state for a Server Member.
  */
 class VoiceState extends Base {
   /**
-   * @param {Guild} guild The guild the voice state is part of
+   * @param {Server} server The server the voice state is part of
    * @param {Object} data The data for the voice state
    */
-  constructor(guild, data) {
-    super(guild.client);
+  constructor(server, data) {
+    super(server.client);
     /**
-     * The guild of this voice state
-     * @type {Guild}
+     * The server of this voice state
+     * @type {Server}
      */
-    this.guild = guild;
+    this.server = server;
     /**
      * The ID of the member of this voice state
      * @type {Snowflake}
@@ -72,11 +72,11 @@ class VoiceState extends Base {
 
   /**
    * The member that this voice state belongs to
-   * @type {?GuildMember}
+   * @type {?ServerMember}
    * @readonly
    */
   get member() {
-    return this.guild.members.cache.get(this.id) || null;
+    return this.server.members.cache.get(this.id) || null;
   }
 
   /**
@@ -85,17 +85,17 @@ class VoiceState extends Base {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.cache.get(this.channelID) || null;
+    return this.server.channels.cache.get(this.channelID) || null;
   }
 
   /**
-   * If this is a voice state of the client user, then this will refer to the active VoiceConnection for this guild
+   * If this is a voice state of the client user, then this will refer to the active VoiceConnection for this server
    * @type {?VoiceConnection}
    * @readonly
    */
   get connection() {
     if (this.id !== this.client.user.id) return null;
-    return this.client.voice.connections.get(this.guild.id) || null;
+    return this.client.voice.connections.get(this.server.id) || null;
   }
 
   /**
@@ -118,7 +118,7 @@ class VoiceState extends Base {
 
   /**
    * Whether this member is currently speaking. A boolean if the information is available (aka
-   * the bot is connected to any voice channel in the guild), otherwise this is null
+   * the bot is connected to any voice channel in the server), otherwise this is null
    * @type {?boolean}
    * @readonly
    */
@@ -130,7 +130,7 @@ class VoiceState extends Base {
    * Mutes/unmutes the member of this voice state.
    * @param {boolean} mute Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<ServerMember>}
    */
   setMute(mute, reason) {
     return this.member ? this.member.edit({ mute }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
@@ -140,7 +140,7 @@ class VoiceState extends Base {
    * Deafens/undeafens the member of this voice state.
    * @param {boolean} deaf Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<ServerMember>}
    */
   setDeaf(deaf, reason) {
     return this.member ? this.member.edit({ deaf }, reason) : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
@@ -149,7 +149,7 @@ class VoiceState extends Base {
   /**
    * Kicks the member from the voice channel.
    * @param {string} [reason] Reason for kicking member from the channel
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<ServerMember>}
    */
   kick(reason) {
     return this.setChannel(null, reason);
@@ -160,7 +160,7 @@ class VoiceState extends Base {
    * @param {ChannelResolvable|null} [channel] Channel to move the member to, or `null` if you want to disconnect them
    * from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
-   * @returns {Promise<GuildMember>}
+   * @returns {Promise<ServerMember>}
    */
   setChannel(channel, reason) {
     return this.member

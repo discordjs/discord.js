@@ -5,7 +5,7 @@ const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
 /**
- * Represents an invitation to a guild channel.
+ * Represents an invitation to a server channel.
  * <warn>The only guaranteed properties are `code`, `channel`, and `url`. Other properties can be missing.</warn>
  * @extends {Base}
  */
@@ -17,10 +17,10 @@ class Invite extends Base {
 
   _patch(data) {
     /**
-     * The guild the invite is for
-     * @type {?Guild}
+     * The server the invite is for
+     * @type {?Server}
      */
-    this.guild = data.guild ? this.client.guilds.add(data.guild, false) : null;
+    this.server = data.server ? this.client.servers.add(data.server, false) : null;
 
     /**
      * The code for this invite
@@ -29,13 +29,13 @@ class Invite extends Base {
     this.code = data.code;
 
     /**
-     * The approximate number of online members of the guild this invite is for
+     * The approximate number of online members of the server this invite is for
      * @type {?number}
      */
     this.presenceCount = 'approximate_presence_count' in data ? data.approximate_presence_count : null;
 
     /**
-     * The approximate total number of members of the guild this invite is for
+     * The approximate total number of members of the server this invite is for
      * @type {?number}
      */
     this.memberCount = 'approximate_member_count' in data ? data.approximate_member_count : null;
@@ -92,7 +92,7 @@ class Invite extends Base {
      * The channel the invite is for
      * @type {Channel}
      */
-    this.channel = this.client.channels.add(data.channel, this.guild, false);
+    this.channel = this.client.channels.add(data.channel, this.server, false);
 
     /**
      * The timestamp the invite was created at
@@ -116,12 +116,12 @@ class Invite extends Base {
    * @readonly
    */
   get deletable() {
-    const guild = this.guild;
-    if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
-    if (!guild.me) throw new Error('GUILD_UNCACHED_ME');
+    const server = this.server;
+    if (!server || !this.client.servers.cache.has(server.id)) return false;
+    if (!server.me) throw new Error('GUILD_UNCACHED_ME');
     return (
       this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) ||
-      guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
+      server.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)
     );
   }
 
@@ -182,7 +182,7 @@ class Invite extends Base {
       uses: false,
       channel: 'channelID',
       inviter: 'inviterID',
-      guild: 'guildID',
+      server: 'serverID',
     });
   }
 

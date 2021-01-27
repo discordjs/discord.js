@@ -12,7 +12,7 @@ class ChannelCreateAction extends Action {
       /**
        * Emitted whenever a channel is created.
        * @event Client#channelCreate
-       * @param {DMChannel|GuildChannel} channel The channel that was created
+       * @param {DMChannel|ServerChannel} channel The channel that was created
        */
       client.emit(Events.CHANNEL_CREATE, channel);
     }

@@ -28,9 +28,9 @@ const client = new Discord.Client();
 client.login('token here');
 
 client.on('message', async message => {
-  // Voice only works in guilds, if the message does not come from a guild,
+  // Voice only works in servers, if the message does not come from a server,
   // we ignore it
-  if (!message.guild) return;
+  if (!message.server) return;
 
   if (message.content === '/join') {
     // Only try to join the sender's voice channel if they are in one themselves

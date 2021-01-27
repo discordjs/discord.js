@@ -22,8 +22,8 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-  // Ignore messages that aren't from a guild
-  if (!message.guild) return;
+  // Ignore messages that aren't from a server
+  if (!message.server) return;
 
   // If the message content starts with "!kick"
   if (message.content.startsWith('!kick')) {
@@ -33,8 +33,8 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.members.resolve(user);
-      // If the member is in the guild
+      const member = message.server.members.resolve(user);
+      // If the member is in the server
       if (member) {
         /**
          * Kick the member
@@ -56,8 +56,8 @@ client.on('message', message => {
             console.error(err);
           });
       } else {
-        // The mentioned user isn't in this guild
-        message.channel.send("That user isn't in this guild!");
+        // The mentioned user isn't in this server
+        message.channel.send("That user isn't in this server!");
       }
       // Otherwise, if no user was mentioned
     } else {
@@ -94,8 +94,8 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-  // Ignore messages that aren't from a guild
-  if (!message.guild) return;
+  // Ignore messages that aren't from a server
+  if (!message.server) return;
 
   // if the message content starts with "!ban"
   if (message.content.startsWith('!ban')) {
@@ -105,15 +105,15 @@ client.on('message', message => {
     // If we have a user mentioned
     if (user) {
       // Now we get the member from the user
-      const member = message.guild.members.resolve(user);
-      // If the member is in the guild
+      const member = message.server.members.resolve(user);
+      // If the member is in the server
       if (member) {
         /**
          * Ban the member
          * Make sure you run this on a member, not a user!
          * There are big differences between a user and a member
          * Read more about what ban options there are over at
-         * https://discord.js.org/#/docs/main/master/class/GuildMember?scrollTo=ban
+         * https://discord.js.org/#/docs/main/master/class/ServerMember?scrollTo=ban
          */
         member
           .ban({
@@ -132,8 +132,8 @@ client.on('message', message => {
             console.error(err);
           });
       } else {
-        // The mentioned user isn't in this guild
-        message.channel.send("That user isn't in this guild!");
+        // The mentioned user isn't in this server
+        message.channel.send("That user isn't in this server!");
       }
     } else {
       // Otherwise, if no user was mentioned

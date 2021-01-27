@@ -1,7 +1,7 @@
 'use strict';
 
-const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
+const ServerEmoji = require('./ServerEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
 const Util = require('../util/Util');
 
@@ -70,14 +70,14 @@ class MessageReaction {
   }
 
   /**
-   * The emoji of this reaction, either an GuildEmoji object for known custom emojis, or a ReactionEmoji
+   * The emoji of this reaction, either an ServerEmoji object for known custom emojis, or a ReactionEmoji
    * object which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
-   * @type {GuildEmoji|ReactionEmoji}
+   * @type {ServerEmoji|ReactionEmoji}
    * @readonly
    */
   get emoji() {
-    if (this._emoji instanceof GuildEmoji) return this._emoji;
+    if (this._emoji instanceof ServerEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const emojis = this.message.client.emojis.cache;

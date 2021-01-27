@@ -3,8 +3,8 @@
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
- * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
+ * Data structure that makes it easy to interact with a permission bitfield. All {@link ServerMember}s have a set of
+ * permissions in their server, and each channel in the server may also have {@link PermissionOverwrites} for the member
  * that override their default permissions.
  * @extends {BitField}
  */
@@ -49,11 +49,11 @@ class Permissions extends BitField {
 /**
  * Numeric permission flags. All available properties:
  * * `ADMINISTRATOR` (implicitly has *all* permissions, and bypasses all channel overwrites)
- * * `CREATE_INSTANT_INVITE` (create invitations to the guild)
+ * * `CREATE_INSTANT_INVITE` (create invitations to the server)
  * * `KICK_MEMBERS`
  * * `BAN_MEMBERS`
  * * `MANAGE_CHANNELS` (edit and reorder channels)
- * * `MANAGE_GUILD` (edit the guild information, region, etc.)
+ * * `MANAGE_GUILD` (edit the server information, region, etc.)
  * * `ADD_REACTIONS` (add new reactions to messages)
  * * `VIEW_AUDIT_LOG`
  * * `PRIORITY_SPEAKER`
@@ -66,7 +66,7 @@ class Permissions extends BitField {
  * * `ATTACH_FILES`
  * * `READ_MESSAGE_HISTORY` (view messages that were posted prior to opening Discord)
  * * `MENTION_EVERYONE`
- * * `USE_EXTERNAL_EMOJIS` (use emojis from different guilds)
+ * * `USE_EXTERNAL_EMOJIS` (use emojis from different servers)
  * * `VIEW_GUILD_INSIGHTS`
  * * `CONNECT` (connect to a voice channel)
  * * `SPEAK` (speak in a voice channel)

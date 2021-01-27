@@ -1,8 +1,8 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
-const GuildMember = require('../structures/GuildMember');
 const Message = require('../structures/Message');
+const ServerMember = require('../structures/ServerMember');
 const User = require('../structures/User');
 
 /**
@@ -25,8 +25,8 @@ class UserManager extends BaseManager {
    * * A User object
    * * A Snowflake
    * * A Message object (resolves to the message author)
-   * * A GuildMember object
-   * @typedef {User|Snowflake|Message|GuildMember} UserResolvable
+   * * A ServerMember object
+   * @typedef {User|Snowflake|Message|ServerMember} UserResolvable
    */
 
   /**
@@ -35,7 +35,7 @@ class UserManager extends BaseManager {
    * @returns {?User}
    */
   resolve(user) {
-    if (user instanceof GuildMember) return user.user;
+    if (user instanceof ServerMember) return user.user;
     if (user instanceof Message) return user.author;
     return super.resolve(user);
   }
@@ -46,7 +46,7 @@ class UserManager extends BaseManager {
    * @returns {?Snowflake}
    */
   resolveID(user) {
-    if (user instanceof GuildMember) return user.user.id;
+    if (user instanceof ServerMember) return user.user.id;
     if (user instanceof Message) return user.author.id;
     return super.resolveID(user);
   }

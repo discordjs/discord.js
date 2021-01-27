@@ -4,7 +4,7 @@ const TextChannel = require('./TextChannel');
 const { Error } = require('../errors');
 
 /**
- * Represents a guild news channel on Discord.
+ * Represents a server news channel on Discord.
  * @extends {TextChannel}
  */
 class NewsChannel extends TextChannel {
@@ -17,7 +17,7 @@ class NewsChannel extends TextChannel {
 
   /**
    * Adds the target to this channel's followers.
-   * @param {GuildChannelResolvable} channel The channel where the webhook should be created
+   * @param {ServerChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<NewsChannel>}
    * @example
@@ -28,7 +28,7 @@ class NewsChannel extends TextChannel {
    * }
    */
   async addFollower(channel, reason) {
-    const channelID = this.guild.channels.resolveID(channel);
+    const channelID = this.server.channels.resolveID(channel);
     if (!channelID) throw new Error('GUILD_CHANNEL_RESOLVE');
     await this.client.api.channels(this.id).followers.post({ data: { webhook_channel_id: channelID }, reason });
     return this;

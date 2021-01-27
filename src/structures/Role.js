@@ -14,23 +14,23 @@ class Role extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the role
-   * @param {Guild} guild The guild the role is part of
+   * @param {Server} server The server the role is part of
    */
-  constructor(client, data, guild) {
+  constructor(client, data, server) {
     super(client);
 
     /**
-     * The guild that the role belongs to
-     * @type {Guild}
+     * The server that the role belongs to
+     * @type {Server}
      */
-    this.guild = guild;
+    this.server = server;
 
     if (data) this._patch(data);
   }
 
   _patch(data) {
     /**
-     * The ID of the role (unique to the guild it is part of)
+     * The ID of the role (unique to the server it is part of)
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -88,7 +88,7 @@ class Role extends Base {
      * @type {?Object}
      * @property {Snowflake} [botID] The id of the bot this role belongs to
      * @property {Snowflake} [integrationID] The id of the integration this role belongs to
-     * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
+     * @property {true} [premiumSubscriberRole] Whether this is the server's premium subscription role
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
@@ -132,12 +132,12 @@ class Role extends Base {
   }
 
   /**
-   * The cached guild members that have this role
-   * @type {Collection<Snowflake, GuildMember>}
+   * The cached server members that have this role
+   * @type {Collection<Snowflake, ServerMember>}
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => m.roles.cache.has(this.id));
+    return this.server.members.cache.filter(m => m.roles.cache.has(this.id));
   }
 
   /**
@@ -147,7 +147,7 @@ class Role extends Base {
    */
   get editable() {
     if (this.managed) return false;
-    const clientMember = this.guild.members.resolve(this.client.user);
+    const clientMember = this.server.members.resolve(this.client.user);
     if (!clientMember.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return false;
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
@@ -158,7 +158,7 @@ class Role extends Base {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedRoles();
+    const sorted = this.server._sortedRoles();
     return sorted.array().indexOf(sorted.get(this.id));
   }
 
@@ -169,7 +169,7 @@ class Role extends Base {
    * positive number if this one is higher (other's is lower), 0 if equal
    */
   comparePositionTo(role) {
-    role = this.guild.roles.resolve(role);
+    role = this.server.roles.resolve(role);
     if (!role) throw new TypeError('INVALID_TYPE', 'role', 'Role nor a Snowflake');
     return this.constructor.comparePositions(this, role);
   }
@@ -204,17 +204,17 @@ class Role extends Base {
         this,
         data.position,
         false,
-        this.guild._sortedRoles(),
-        this.client.api.guilds(this.guild.id).roles,
+        this.server._sortedRoles(),
+        this.client.api.servers(this.server.id).roles,
         reason,
       ).then(updatedRoles => {
-        this.client.actions.GuildRolesPositionUpdate.handle({
-          guild_id: this.guild.id,
+        this.client.actions.ServerRolesPositionUpdate.handle({
+          server_id: this.server.id,
           roles: updatedRoles,
         });
       });
     }
-    return this.client.api.guilds[this.guild.id].roles[this.id]
+    return this.client.api.servers[this.server.id].roles[this.id]
       .patch({
         data: {
           name: data.name || this.name,
@@ -233,13 +233,13 @@ class Role extends Base {
   }
 
   /**
-   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a guild channel,
+   * Returns `channel.permissionsFor(role)`. Returns permissions for a role in a server channel,
    * taking into account permission overwrites.
-   * @param {ChannelResolvable} channel The guild channel to use as context
+   * @param {ChannelResolvable} channel The server channel to use as context
    * @returns {Readonly<Permissions>}
    */
   permissionsIn(channel) {
-    channel = this.guild.channels.resolve(channel);
+    channel = this.server.channels.resolve(channel);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
     return channel.rolePermissions(this);
   }
@@ -342,12 +342,12 @@ class Role extends Base {
       this,
       position,
       relative,
-      this.guild._sortedRoles(),
-      this.client.api.guilds(this.guild.id).roles,
+      this.server._sortedRoles(),
+      this.client.api.servers(this.server.id).roles,
       reason,
     ).then(updatedRoles => {
-      this.client.actions.GuildRolesPositionUpdate.handle({
-        guild_id: this.guild.id,
+      this.client.actions.ServerRolesPositionUpdate.handle({
+        server_id: this.server.id,
         roles: updatedRoles,
       });
       return this;
@@ -365,8 +365,8 @@ class Role extends Base {
    *   .catch(console.error);
    */
   delete(reason) {
-    return this.client.api.guilds[this.guild.id].roles[this.id].delete({ reason }).then(() => {
-      this.client.actions.GuildRoleDelete.handle({ guild_id: this.guild.id, role_id: this.id });
+    return this.client.api.servers[this.server.id].roles[this.id].delete({ reason }).then(() => {
+      this.client.actions.ServerRoleDelete.handle({ server_id: this.server.id, role_id: this.id });
       return this;
     });
   }
@@ -399,7 +399,7 @@ class Role extends Base {
    * console.log(`Role: ${role}`);
    */
   toString() {
-    if (this.id === this.guild.id) return '@everyone';
+    if (this.id === this.server.id) return '@everyone';
     return `<@&${this.id}>`;
   }
 

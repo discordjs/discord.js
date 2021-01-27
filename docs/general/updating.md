@@ -84,7 +84,7 @@ const client = new Discord.Client({
 ## Presences
 
 Presences have been completely restructured.
-Previous versions of discord.js assumed that users had the same presence amongst all guilds - with the introduction of sharding, however, this is no longer the case.
+Previous versions of discord.js assumed that users had the same presence amongst all servers - with the introduction of sharding, however, this is no longer the case.
 
 v9 discord.js code may look something like this:
 
@@ -94,12 +94,12 @@ User.game; // the game that the user is playing
 ClientUser.setStatus(status, game, url); // set the new status for the user
 ```
 
-v10 moves presences to GuildMember instances. For the sake of simplicity, though, User classes also expose presences.
-When accessing a presence on a User object, it simply finds the first GuildMember for the user, and uses its presence.
+v10 moves presences to ServerMember instances. For the sake of simplicity, though, User classes also expose presences.
+When accessing a presence on a User object, it simply finds the first ServerMember for the user, and uses its presence.
 Additionally, the introduction of the Presence class keeps all of the presence data organised.
 
-**It is strongly recommended that you use a GuildMember's presence where available, rather than a User.
-A user may have an entirely different presence between two different guilds.**
+**It is strongly recommended that you use a ServerMember's presence where available, rather than a User.
+A user may have an entirely different presence between two different servers.**
 
 v10 code:
 
@@ -125,16 +125,16 @@ Many events have been renamed or had their arguments change.
 
 | Version 9                                      | Version 10                              |
 | ---------------------------------------------- | --------------------------------------- |
-| guildMemberAdd(guild, member)                  | guildMemberAdd(member)                  |
-| guildMemberAvailable(guild, member)            | guildMemberAvailable(member)            |
-| guildMemberRemove(guild, member)               | guildMemberRemove(member)               |
-| guildMembersChunk(guild, members)              | guildMembersChunk(members)              |
-| guildMemberUpdate(guild, oldMember, newMember) | guildMemberUpdate(oldMember, newMember) |
-| guildRoleCreate(guild, role)                   | roleCreate(role)                        |
-| guildRoleDelete(guild, role)                   | roleDelete(role)                        |
-| guildRoleUpdate(guild, oldRole, newRole)       | roleUpdate(oldRole, newRole)            |
+| serverMemberAdd(server, member)                  | serverMemberAdd(member)                  |
+| serverMemberAvailable(server, member)            | serverMemberAvailable(member)            |
+| serverMemberRemove(server, member)               | serverMemberRemove(member)               |
+| serverMembersChunk(server, members)              | serverMembersChunk(members)              |
+| serverMemberUpdate(server, oldMember, newMember) | serverMemberUpdate(oldMember, newMember) |
+| serverRoleCreate(server, role)                   | roleCreate(role)                        |
+| serverRoleDelete(server, role)                   | roleDelete(role)                        |
+| serverRoleUpdate(server, oldRole, newRole)       | roleUpdate(oldRole, newRole)            |
 
-The guild parameter that has been dropped from the guild-related events can still be derived using `member.guild` or `role.guild`.
+The server parameter that has been dropped from the server-related events can still be derived using `member.server` or `role.server`.
 
 ### VoiceConnection events
 
@@ -169,13 +169,13 @@ Here are a few examples of methods that have changed:
   - `Client.sendMessage(user, message)` ==> `User.sendMessage(message)`
 - `Client.updateMessage(message, "New content")` ==> `Message.edit("New Content")`
 - `Client.getChannelLogs(channel, limit)` ==> `TextChannel.fetchMessages({options})`
-- `Server.detailsOfUser(User)` ==> `Server.members.get(User).properties` (retrieving a member gives a GuildMember object)
+- `Server.detailsOfUser(User)` ==> `Server.members.get(User).properties` (retrieving a member gives a ServerMember object)
 - `Client.joinVoiceChannel(voicechannel)` => `VoiceChannel.join()`
 
 A couple more important details:
 
 - `Client.loginWithToken("token")` ==> `client.login("token")`
-- `Client.servers.length` ==> `client.guilds.size` (all instances of `server` are now `guild`)
+- `Client.servers.length` ==> `client.servers.size` (all instances of `server` are now `server`)
 
 ## No more callbacks!
 

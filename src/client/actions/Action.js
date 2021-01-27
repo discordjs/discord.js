@@ -38,7 +38,7 @@ class GenericAction {
       this.getPayload(
         {
           id,
-          guild_id: data.guild_id,
+          server_id: data.server_id,
           recipients: [data.author || { id: data.user_id }],
         },
         this.client.channels,
@@ -56,7 +56,7 @@ class GenericAction {
         {
           id,
           channel_id: channel.id,
-          guild_id: data.guild_id || (channel.guild ? channel.guild.id : null),
+          server_id: data.server_id || (channel.server ? channel.server.id : null),
         },
         channel.messages,
         id,
@@ -80,8 +80,8 @@ class GenericAction {
     );
   }
 
-  getMember(data, guild) {
-    return this.getPayload(data, guild.members, data.user.id, PartialTypes.GUILD_MEMBER);
+  getMember(data, server) {
+    return this.getPayload(data, server.members, data.user.id, PartialTypes.GUILD_MEMBER);
   }
 
   getUser(data) {
@@ -90,10 +90,10 @@ class GenericAction {
   }
 
   getUserFromMember(data) {
-    if (data.guild_id && data.member && data.member.user) {
-      const guild = this.client.guilds.cache.get(data.guild_id);
-      if (guild) {
-        return guild.members.add(data.member).user;
+    if (data.server_id && data.member && data.member.user) {
+      const server = this.client.servers.cache.get(data.server_id);
+      if (server) {
+        return server.members.add(data.member).user;
       } else {
         return this.client.users.add(data.member.user);
       }

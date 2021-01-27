@@ -187,8 +187,8 @@ class Message extends Base {
 
     if (this.member && data.member) {
       this.member._patch(data.member);
-    } else if (data.member && this.guild && this.author) {
-      this.guild.members.add(Object.assign(data.member, { user: this.author }));
+    } else if (data.member && this.server && this.author) {
+      this.server.members.add(Object.assign(data.member, { user: this.author }));
     }
 
     /**
@@ -201,7 +201,7 @@ class Message extends Base {
      * Reference data sent in a crossposted message or inline reply.
      * @typedef {Object} MessageReference
      * @property {string} channelID ID of the channel the message was referenced
-     * @property {?string} guildID ID of the guild the message was referenced
+     * @property {?string} serverID ID of the server the message was referenced
      * @property {?string} messageID ID of the message that was referenced
      */
 
@@ -212,7 +212,7 @@ class Message extends Base {
     this.reference = data.message_reference
       ? {
           channelID: data.message_reference.channel_id,
-          guildID: data.message_reference.guild_id,
+          serverID: data.message_reference.server_id,
           messageID: data.message_reference.message_id,
         }
       : null;
@@ -270,13 +270,13 @@ class Message extends Base {
   }
 
   /**
-   * Represents the author of the message as a guild member.
-   * Only available if the message comes from a guild where the author is still a member
-   * @type {?GuildMember}
+   * Represents the author of the message as a server member.
+   * Only available if the message comes from a server where the author is still a member
+   * @type {?ServerMember}
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.members.resolve(this.author) || null : null;
+    return this.server ? this.server.members.resolve(this.author) || null : null;
   }
 
   /**
@@ -298,12 +298,12 @@ class Message extends Base {
   }
 
   /**
-   * The guild the message was sent in (if in a guild channel)
-   * @type {?Guild}
+   * The server the message was sent in (if in a server channel)
+   * @type {?Server}
    * @readonly
    */
-  get guild() {
-    return this.channel.guild || null;
+  get server() {
+    return this.channel.server || null;
   }
 
   /**
@@ -312,7 +312,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discord.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
+    return `https://discord.com/channels/${this.server ? this.server.id : '@me'}/${this.channel.id}/${this.id}`;
   }
 
   /**
@@ -401,7 +401,7 @@ class Message extends Base {
   get pinnable() {
     return (
       this.type === 'DEFAULT' &&
-      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
+      (!this.server || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
   }
 
@@ -530,7 +530,7 @@ class Message extends Base {
    *   .catch(console.error);
    * @example
    * // React to a message with a custom emoji
-   * message.react(message.guild.emojis.cache.get('123456789012345678'))
+   * message.react(message.server.emojis.cache.get('123456789012345678'))
    *   .then(console.log)
    *   .catch(console.error);
    */
@@ -668,7 +668,7 @@ class Message extends Base {
       channel: 'channelID',
       author: 'authorID',
       application: 'applicationID',
-      guild: 'guildID',
+      server: 'serverID',
       cleanContent: true,
       member: false,
       reactions: false,

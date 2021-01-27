@@ -19,18 +19,18 @@ class ChannelManager extends BaseManager {
    * @name ChannelManager#cache
    */
 
-  add(data, guild, cache = true) {
+  add(data, server, cache = true) {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (existing._patch && cache) existing._patch(data);
-      if (guild) guild.channels.add(existing);
+      if (server) server.channels.add(existing);
       return existing;
     }
 
-    const channel = Channel.create(this.client, data, guild);
+    const channel = Channel.create(this.client, data, server);
 
     if (!channel) {
-      this.client.emit(Events.DEBUG, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
+      this.client.emit(Events.DEBUG, `Failed to find server, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
 
@@ -41,7 +41,7 @@ class ChannelManager extends BaseManager {
 
   remove(id) {
     const channel = this.cache.get(id);
-    channel?.guild?.channels.cache.delete(id);
+    channel?.server?.channels.cache.delete(id);
     this.cache.delete(id);
   }
 

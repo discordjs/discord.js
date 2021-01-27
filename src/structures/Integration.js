@@ -11,17 +11,17 @@ const IntegrationApplication = require('./IntegrationApplication');
  */
 
 /**
- *  Represents a guild integration.
+ *  Represents a server integration.
  */
 class Integration extends Base {
-  constructor(client, data, guild) {
+  constructor(client, data, server) {
     super(client);
 
     /**
-     * The guild this integration belongs to
-     * @type {Guild}
+     * The server this integration belongs to
+     * @type {Server}
      */
-    this.guild = guild;
+    this.server = server;
 
     /**
      * The integration id
@@ -57,7 +57,7 @@ class Integration extends Base {
      * The role that this integration uses for subscribers
      * @type {Role}
      */
-    this.role = this.guild.roles.cache.get(data.role_id);
+    this.role = this.server.roles.cache.get(data.role_id);
 
     if (data.user) {
       /**
@@ -89,7 +89,7 @@ class Integration extends Base {
    * @readonly
    */
   get roles() {
-    const roles = this.guild.roles.cache;
+    const roles = this.server.roles.cache;
     return roles.filter(role => role.tags && role.tags.integrationID === this.id);
   }
 
@@ -128,7 +128,7 @@ class Integration extends Base {
   sync() {
     this.syncing = true;
     return this.client.api
-      .guilds(this.guild.id)
+      .servers(this.server.id)
       .integrations(this.id)
       .post()
       .then(() => {
@@ -162,7 +162,7 @@ class Integration extends Base {
     }
     // The option enable_emoticons is only available for Twitch at this moment
     return this.client.api
-      .guilds(this.guild.id)
+      .servers(this.server.id)
       .integrations(this.id)
       .patch({ data, reason })
       .then(() => {
@@ -178,7 +178,7 @@ class Integration extends Base {
    */
   delete(reason) {
     return this.client.api
-      .guilds(this.guild.id)
+      .servers(this.server.id)
       .integrations(this.id)
       .delete({ reason })
       .then(() => this);
@@ -187,7 +187,7 @@ class Integration extends Base {
   toJSON() {
     return super.toJSON({
       role: 'roleID',
-      guild: 'guildID',
+      server: 'serverID',
       user: 'userID',
     });
   }

@@ -121,7 +121,7 @@ client.on('message', async message => {
   const hooks = [
     { type: 'WebhookClient', hook: new Discord.WebhookClient(webhookChannel, webhookToken) },
     { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
-    { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
+    { type: 'Server#fetchWebhooks', hook: await message.server.fetchWebhooks().then(x => x.first()) },
   ];
   if (match && match[1] === 'it') {
     /* eslint-disable no-await-in-loop */

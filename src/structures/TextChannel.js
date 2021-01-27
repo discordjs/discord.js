@@ -1,6 +1,6 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
+const ServerChannel = require('./ServerChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
@@ -8,17 +8,17 @@ const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
 /**
- * Represents a guild text channel on Discord.
- * @extends {GuildChannel}
+ * Represents a server text channel on Discord.
+ * @extends {ServerChannel}
  * @implements {TextBasedChannel}
  */
-class TextChannel extends GuildChannel {
+class TextChannel extends ServerChannel {
   /**
-   * @param {Guild} guild The guild the text channel is part of
+   * @param {Server} server The server the text channel is part of
    * @param {Object} data The data for the text channel
    */
-  constructor(guild, data) {
-    super(guild, data);
+  constructor(server, data) {
+    super(server, data);
     /**
      * A manager of the messages sent to this channel
      * @type {MessageManager}
@@ -26,7 +26,7 @@ class TextChannel extends GuildChannel {
     this.messages = new MessageManager(this);
 
     /**
-     * If the guild considers this channel NSFW
+     * If the server considers this channel NSFW
      * @type {boolean}
      * @readonly
      */
@@ -90,7 +90,7 @@ class TextChannel extends GuildChannel {
    * Sets the type of this channel (only conversion between text and news is supported)
    * @param {string} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
-   * @returns {Promise<GuildChannel>}
+   * @returns {Promise<ServerChannel>}
    */
   setType(type, reason) {
     return this.edit({ type }, reason);

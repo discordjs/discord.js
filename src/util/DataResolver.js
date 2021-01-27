@@ -26,7 +26,7 @@ class DataResolver {
    * Data that can be resolved to give an template code. This can be:
    * * A template code
    * * A template URL
-   * @typedef {string} GuildTemplateResolvable
+   * @typedef {string} ServerTemplateResolvable
    */
 
   /**
@@ -50,11 +50,11 @@ class DataResolver {
   }
 
   /**
-   * Resolves GuildTemplateResolvable to a template code.
-   * @param {GuildTemplateResolvable} data The template resolvable to resolve
+   * Resolves ServerTemplateResolvable to a template code.
+   * @param {ServerTemplateResolvable} data The template resolvable to resolve
    * @returns {string}
    */
-  static resolveGuildTemplateCode(data) {
+  static resolveServerTemplateCode(data) {
     return this.resolveCode(data, /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/i);
   }
 

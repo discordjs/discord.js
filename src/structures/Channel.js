@@ -17,12 +17,12 @@ class Channel extends Base {
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
-     * * `text` - a guild text channel
-     * * `voice` - a guild voice channel
-     * * `category` - a guild category channel
-     * * `news` - a guild news channel
-     * * `store` - a guild store channel
-     * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
+     * * `text` - a server text channel
+     * * `voice` - a server voice channel
+     * * `category` - a server category channel
+     * * `news` - a server news channel
+     * * `store` - a server store channel
+     * * `unknown` - a generic channel of unknown type, could be Channel or ServerChannel
      * @type {string}
      */
     this.type = type ? type.toLowerCase() : 'unknown';
@@ -106,10 +106,10 @@ class Channel extends Base {
     return 'messages' in this;
   }
 
-  static create(client, data, guild) {
+  static create(client, data, server) {
     const Structures = require('../util/Structures');
     let channel;
-    if (!data.guild_id && !guild) {
+    if (!data.server_id && !server) {
       if ((data.recipients && data.type !== ChannelTypes.GROUP) || data.type === ChannelTypes.DM) {
         const DMChannel = Structures.get('DMChannel');
         channel = new DMChannel(client, data);
@@ -118,36 +118,36 @@ class Channel extends Base {
         channel = new PartialGroupDMChannel(client, data);
       }
     } else {
-      guild = guild || client.guilds.cache.get(data.guild_id);
-      if (guild) {
+      server = server || client.servers.cache.get(data.server_id);
+      if (server) {
         switch (data.type) {
           case ChannelTypes.TEXT: {
             const TextChannel = Structures.get('TextChannel');
-            channel = new TextChannel(guild, data);
+            channel = new TextChannel(server, data);
             break;
           }
           case ChannelTypes.VOICE: {
             const VoiceChannel = Structures.get('VoiceChannel');
-            channel = new VoiceChannel(guild, data);
+            channel = new VoiceChannel(server, data);
             break;
           }
           case ChannelTypes.CATEGORY: {
             const CategoryChannel = Structures.get('CategoryChannel');
-            channel = new CategoryChannel(guild, data);
+            channel = new CategoryChannel(server, data);
             break;
           }
           case ChannelTypes.NEWS: {
             const NewsChannel = Structures.get('NewsChannel');
-            channel = new NewsChannel(guild, data);
+            channel = new NewsChannel(server, data);
             break;
           }
           case ChannelTypes.STORE: {
             const StoreChannel = Structures.get('StoreChannel');
-            channel = new StoreChannel(guild, data);
+            channel = new StoreChannel(server, data);
             break;
           }
         }
-        if (channel) guild.channels.cache.set(channel.id, channel);
+        if (channel) server.channels.cache.set(channel.id, channel);
       }
     }
     return channel;

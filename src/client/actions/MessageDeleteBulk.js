@@ -16,7 +16,7 @@ class MessageDeleteBulkAction extends Action {
         const message = this.getMessage(
           {
             id,
-            guild_id: data.guild_id,
+            server_id: data.server_id,
           },
           channel,
           false,

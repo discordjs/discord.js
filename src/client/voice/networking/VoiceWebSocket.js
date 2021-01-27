@@ -120,7 +120,7 @@ class VoiceWebSocket extends EventEmitter {
     this.sendPacket({
       op: OPCodes.DISPATCH,
       d: {
-        server_id: this.connection.channel.guild.id,
+        server_id: this.connection.channel.server.id,
         user_id: this.client.user.id,
         token: this.connection.authentication.token,
         session_id: this.connection.authentication.sessionID,

@@ -16,7 +16,7 @@ const Messages = {
   BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
 
   SHARDING_INVALID: 'Invalid shard settings were provided.',
-  SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
+  SHARDING_REQUIRED: 'This session would have handled too many servers - Sharding is required.',
   INVALID_INTENTS: 'Invalid intent provided for WebSocket intents.',
   DISALLOWED_INTENTS: 'Privileged intent provided is not enabled or whitelisted.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
@@ -29,8 +29,8 @@ const Messages = {
   SHARDING_READY_DISCONNECTED: id => `Shard ${id}'s Client disconnected before becoming ready.`,
   SHARDING_READY_DIED: id => `Shard ${id}'s process exited before its Client became ready.`,
   SHARDING_NO_CHILD_EXISTS: id => `Shard ${id} has no active process or worker.`,
-  SHARDING_SHARD_MISCALCULATION: (shard, guild, count) =>
-    `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
+  SHARDING_SHARD_MISCALCULATION: (shard, server, count) =>
+    `Calculated invalid shard ${shard} for server ${server} with ${count} shards.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
@@ -81,25 +81,25 @@ const Messages = {
 
   PRUNE_DAYS_TYPE: 'Days must be a number',
 
-  GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a guild channel.',
-  GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a guild voice channel.',
-  GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this guild channel.',
-  GUILD_OWNED: 'Guild is owned by the client.',
+  GUILD_CHANNEL_RESOLVE: 'Could not resolve channel to a server channel.',
+  GUILD_VOICE_CHANNEL_RESOLVE: 'Could not resolve channel to a server voice channel.',
+  GUILD_CHANNEL_ORPHAN: 'Could not find a parent to this server channel.',
+  GUILD_OWNED: 'Server is owned by the client.',
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
-  GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
+  GUILD_UNCACHED_ME: 'The client user as a member of this server is uncached.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 
-  EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
+  EMOJI_TYPE: 'Emoji must be a string or ServerEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
-  MISSING_MANAGE_EMOJIS_PERMISSION: guild =>
-    `Client must have Manage Emoji permission in guild ${guild} to see emoji authors.`,
+  MISSING_MANAGE_EMOJIS_PERMISSION: server =>
+    `Client must have Manage Emoji permission in server ${server} to see emoji authors.`,
 
   REACTION_RESOLVE_USER: "Couldn't resolve the user ID to remove from the reaction.",
 
-  VANITY_URL: 'This guild does not have the VANITY_URL feature enabled.',
+  VANITY_URL: 'This server does not have the VANITY_URL feature enabled.',
 
   DELETE_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot delete them",
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",

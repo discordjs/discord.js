@@ -14,7 +14,7 @@ const { Events } = require('../util/Constants');
 /**
  * Collects reactions on messages.
  * Will automatically stop if the message (`'messageDelete'`),
- * channel (`'channelDelete'`), or guild (`'guildDelete'`) are deleted.
+ * channel (`'channelDelete'`), or server (`'serverDelete'`) are deleted.
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
@@ -46,7 +46,7 @@ class ReactionCollector extends Collector {
 
     this.empty = this.empty.bind(this);
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
-    this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
+    this._handleServerDeletion = this._handleServerDeletion.bind(this);
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
     this.client.incrementMaxListeners();
@@ -55,7 +55,7 @@ class ReactionCollector extends Collector {
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
     this.client.on(Events.MESSAGE_DELETE, this._handleMessageDeletion);
     this.client.on(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-    this.client.on(Events.GUILD_DELETE, this._handleGuildDeletion);
+    this.client.on(Events.GUILD_DELETE, this._handleServerDeletion);
 
     this.once('end', () => {
       this.client.removeListener(Events.MESSAGE_REACTION_ADD, this.handleCollect);
@@ -63,7 +63,7 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
-      this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
+      this.client.removeListener(Events.GUILD_DELETE, this._handleServerDeletion);
       this.client.decrementMaxListeners();
     });
 
@@ -168,7 +168,7 @@ class ReactionCollector extends Collector {
   /**
    * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
    * @private
-   * @param {GuildChannel} channel The channel that was deleted
+   * @param {ServerChannel} channel The channel that was deleted
    * @returns {void}
    */
   _handleChannelDeletion(channel) {
@@ -178,14 +178,14 @@ class ReactionCollector extends Collector {
   }
 
   /**
-   * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   * Handles checking if the server has been deleted, and if so, stops the collector with the reason 'serverDelete'.
    * @private
-   * @param {Guild} guild The guild that was deleted
+   * @param {Server} server The server that was deleted
    * @returns {void}
    */
-  _handleGuildDeletion(guild) {
-    if (this.message.guild && guild.id === this.message.guild.id) {
-      this.stop('guildDelete');
+  _handleServerDeletion(server) {
+    if (this.message.server && server.id === this.message.server.id) {
+      this.stop('serverDelete');
     }
   }
 

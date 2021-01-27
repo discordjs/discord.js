@@ -133,12 +133,12 @@ class WebSocketShard extends EventEmitter {
     Object.defineProperty(this, 'eventsAttached', { value: false, writable: true });
 
     /**
-     * A set of guild IDs this shard expects to receive
-     * @name WebSocketShard#expectedGuilds
+     * A set of server IDs this shard expects to receive
+     * @name WebSocketShard#expectedServers
      * @type {?Set<string>}
      * @private
      */
-    Object.defineProperty(this, 'expectedGuilds', { value: null, writable: true });
+    Object.defineProperty(this, 'expectedServers', { value: null, writable: true });
 
     /**
      * The ready timeout
@@ -376,13 +376,13 @@ class WebSocketShard extends EventEmitter {
     switch (packet.t) {
       case WSEvents.READY:
         /**
-         * Emitted when the shard receives the READY payload and is now waiting for guilds
+         * Emitted when the shard receives the READY payload and is now waiting for servers
          * @event WebSocketShard#ready
          */
         this.emit(ShardEvents.READY);
 
         this.sessionID = packet.d.session_id;
-        this.expectedGuilds = new Set(packet.d.guilds.map(d => d.id));
+        this.expectedServers = new Set(packet.d.servers.map(d => d.id));
         this.status = Status.WAITING_FOR_GUILDS;
         this.debug(`[READY] Session ${this.sessionID}.`);
         this.lastHeartbeatAcked = true;
@@ -441,7 +441,7 @@ class WebSocketShard extends EventEmitter {
       default:
         this.manager.handlePacket(packet, this);
         if (this.status === Status.WAITING_FOR_GUILDS && packet.t === WSEvents.GUILD_CREATE) {
-          this.expectedGuilds.delete(packet.d.id);
+          this.expectedServers.delete(packet.d.id);
           this.checkReady();
         }
     }
@@ -457,32 +457,32 @@ class WebSocketShard extends EventEmitter {
       this.manager.client.clearTimeout(this.readyTimeout);
       this.readyTimeout = null;
     }
-    // Step 1. If we don't have any other guilds pending, we are ready
-    if (!this.expectedGuilds.size) {
-      this.debug('Shard received all its guilds. Marking as fully ready.');
+    // Step 1. If we don't have any other servers pending, we are ready
+    if (!this.expectedServers.size) {
+      this.debug('Shard received all its servers. Marking as fully ready.');
       this.status = Status.READY;
 
       /**
        * Emitted when the shard is fully ready.
        * This event is emitted if:
-       * * all guilds were received by this shard
-       * * the ready timeout expired, and some guilds are unavailable
+       * * all servers were received by this shard
+       * * the ready timeout expired, and some servers are unavailable
        * @event WebSocketShard#allReady
-       * @param {?Set<string>} unavailableGuilds Set of unavailable guilds, if any
+       * @param {?Set<string>} unavailableServers Set of unavailable servers, if any
        */
       this.emit(ShardEvents.ALL_READY);
       return;
     }
-    // Step 2. Create a 15s timeout that will mark the shard as ready if there are still unavailable guilds
+    // Step 2. Create a 15s timeout that will mark the shard as ready if there are still unavailable servers
     this.readyTimeout = this.manager.client.setTimeout(() => {
-      this.debug(`Shard did not receive any more guild packets in 15 seconds.
-  Unavailable guild count: ${this.expectedGuilds.size}`);
+      this.debug(`Shard did not receive any more server packets in 15 seconds.
+  Unavailable server count: ${this.expectedServers.size}`);
 
       this.readyTimeout = null;
 
       this.status = Status.READY;
 
-      this.emit(ShardEvents.ALL_READY, this.expectedGuilds);
+      this.emit(ShardEvents.ALL_READY, this.expectedServers);
     }, 15000);
   }
 

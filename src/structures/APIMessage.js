@@ -59,8 +59,8 @@ class APIMessage {
    */
   get isUser() {
     const User = require('./User');
-    const GuildMember = require('./GuildMember');
-    return this.target instanceof User || this.target instanceof GuildMember;
+    const ServerMember = require('./ServerMember');
+    return this.target instanceof User || this.target instanceof ServerMember;
   }
 
   /**
@@ -361,7 +361,7 @@ module.exports = APIMessage;
 
 /**
  * A target for a message.
- * @typedef {TextChannel|DMChannel|User|GuildMember|Webhook|WebhookClient} MessageTarget
+ * @typedef {TextChannel|DMChannel|User|ServerMember|Webhook|WebhookClient} MessageTarget
  */
 
 /**

@@ -41,19 +41,19 @@ class ClientVoiceManager {
     return broadcast;
   }
 
-  onVoiceServer({ guild_id, token, endpoint }) {
-    this.client.emit('debug', `[VOICE] voiceServer guild: ${guild_id} token: ${token} endpoint: ${endpoint}`);
-    const connection = this.connections.get(guild_id);
+  onVoiceServer({ server_id, token, endpoint }) {
+    this.client.emit('debug', `[VOICE] voiceServer server: ${server_id} token: ${token} endpoint: ${endpoint}`);
+    const connection = this.connections.get(server_id);
     if (connection) connection.setTokenAndEndpoint(token, endpoint);
   }
 
-  onVoiceStateUpdate({ guild_id, session_id, channel_id }) {
-    const connection = this.connections.get(guild_id);
-    this.client.emit('debug', `[VOICE] connection? ${!!connection}, ${guild_id} ${session_id} ${channel_id}`);
+  onVoiceStateUpdate({ server_id, session_id, channel_id }) {
+    const connection = this.connections.get(server_id);
+    this.client.emit('debug', `[VOICE] connection? ${!!connection}, ${server_id} ${session_id} ${channel_id}`);
     if (!connection) return;
     if (!channel_id) {
       connection._disconnect();
-      this.connections.delete(guild_id);
+      this.connections.delete(server_id);
       return;
     }
     connection.channel = this.client.channels.cache.get(channel_id);
@@ -72,25 +72,25 @@ class ClientVoiceManager {
         throw new Error('VOICE_JOIN_CHANNEL', channel.full);
       }
 
-      let connection = this.connections.get(channel.guild.id);
+      let connection = this.connections.get(channel.server.id);
 
       if (connection) {
         if (connection.channel.id !== channel.id) {
-          this.connections.get(channel.guild.id).updateChannel(channel);
+          this.connections.get(channel.server.id).updateChannel(channel);
         }
         resolve(connection);
         return;
       } else {
         connection = new VoiceConnection(this, channel);
         connection.on('debug', msg =>
-          this.client.emit('debug', `[VOICE (${channel.guild.id}:${connection.status})]: ${msg}`),
+          this.client.emit('debug', `[VOICE (${channel.server.id}:${connection.status})]: ${msg}`),
         );
         connection.authenticate();
-        this.connections.set(channel.guild.id, connection);
+        this.connections.set(channel.server.id, connection);
       }
 
       connection.once('failed', reason => {
-        this.connections.delete(channel.guild.id);
+        this.connections.delete(channel.server.id);
         reject(reason);
       });
 
@@ -101,7 +101,7 @@ class ClientVoiceManager {
           resolve(connection);
           connection.removeListener('error', reject);
         });
-        connection.once('disconnect', () => this.connections.delete(channel.guild.id));
+        connection.once('disconnect', () => this.connections.delete(channel.server.id));
       });
     });
   }

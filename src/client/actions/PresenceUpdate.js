@@ -13,14 +13,14 @@ class PresenceUpdateAction extends Action {
       if (!user.equals(data.user)) this.client.actions.UserUpdate.handle(data.user);
     }
 
-    const guild = this.client.guilds.cache.get(data.guild_id);
-    if (!guild) return;
+    const server = this.client.servers.cache.get(data.server_id);
+    if (!server) return;
 
-    let oldPresence = guild.presences.cache.get(user.id);
+    let oldPresence = server.presences.cache.get(user.id);
     if (oldPresence) oldPresence = oldPresence._clone();
-    let member = guild.members.cache.get(user.id);
+    let member = server.members.cache.get(user.id);
     if (!member && data.status !== 'offline') {
-      member = guild.members.add({
+      member = server.members.add({
         user,
         roles: data.roles,
         deaf: false,
@@ -28,10 +28,10 @@ class PresenceUpdateAction extends Action {
       });
       this.client.emit(Events.GUILD_MEMBER_AVAILABLE, member);
     }
-    guild.presences.add(Object.assign(data, { guild }));
+    server.presences.add(Object.assign(data, { server }));
     if (member && this.client.listenerCount(Events.PRESENCE_UPDATE)) {
       /**
-       * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
+       * Emitted whenever a server member's presence (e.g. status, activity) is changed.
        * @event Client#presenceUpdate
        * @param {?Presence} oldPresence The presence before the update, if one at all
        * @param {Presence} newPresence The presence after the update

@@ -143,9 +143,9 @@ class TextBasedChannel {
    */
   async send(content, options) {
     const User = require('../User');
-    const GuildMember = require('../GuildMember');
+    const ServerMember = require('../ServerMember');
 
-    if (this instanceof User || this instanceof GuildMember) {
+    if (this instanceof User || this instanceof ServerMember) {
       return this.createDM().then(dm => dm.send(content, options));
     }
 

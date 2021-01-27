@@ -4,7 +4,7 @@ const BitField = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link VoiceConnection#speaking}
- * and {@link guildMemberSpeaking} event bitfields.
+ * and {@link serverMemberSpeaking} event bitfields.
  * @extends {BitField}
  */
 class Speaking extends BitField {}

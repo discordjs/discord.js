@@ -3,7 +3,7 @@
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with a {@link Guild#systemChannelFlags} bitfield.
+ * Data structure that makes it easy to interact with a {@link Server#systemChannelFlags} bitfield.
  * <info>Note that all event message types are enabled by default,
  * and by setting their corresponding flags you are disabling them</info>
  * @extends {BitField}
