@@ -143,7 +143,6 @@ class BitField {
    */
   static resolve(bit) {
     const { defaultBit } = this;
-    console.log(defaultBit);
     if (typeof bit === 'undefined') return defaultBit;
     if (typeof defaultBit === typeof bit && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
