@@ -7,9 +7,9 @@ const { RangeError } = require('../errors');
  */
 class BitField {
   /**
-   * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+   * @param {BitFieldResolvable} [bits=this.constructor.defaultBit] Bit(s) to read from
    */
-  constructor(bits = 0) {
+  constructor(bits = this.constructor.defaultBit) {
     /**
      * Bitfield of the packed bits
      * @type {number|bigint}
@@ -18,20 +18,12 @@ class BitField {
   }
 
   /**
-   * @type {number|bigint}
-   * @private
-   */
-  get defaultBit() {
-    return typeof this.bitfield === 'bigint' ? 0n : 0;
-  }
-
-  /**
    * Checks whether the bitfield has a bit, or any of multiple bits.
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
    */
   any(bit) {
-    return (this.bitfield & this.constructor.resolve(bit)) !== this.defaultBit;
+    return (this.bitfield & this.constructor.resolve(bit)) !== this.constructor.defaultBit;
   }
 
   /**
@@ -79,7 +71,7 @@ class BitField {
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
   add(...bits) {
-    let total = this.defaultBit;
+    let total = this.constructor.defaultBit;
     for (const bit of bits) {
       total |= this.constructor.resolve(bit);
     }
@@ -94,7 +86,7 @@ class BitField {
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
   remove(...bits) {
-    let total = this.defaultBit;
+    let total = this.constructor.defaultBit;
     for (const bit of bits) {
       total |= this.constructor.resolve(bit);
     }
@@ -150,9 +142,10 @@ class BitField {
    * @returns {number|bigint}
    */
   static resolve(bit) {
-    const defaultBit = this.name === 'Permissions' ? 0n : 0;
+    const { defaultBit } = this;
+    console.log(defaultBit);
     if (typeof bit === 'undefined') return defaultBit;
-    if (['number', 'bigint'].includes(typeof bit) && bit >= defaultBit) return bit;
+    if (typeof defaultBit === typeof bit && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
     if (typeof bit === 'string' && typeof this.FLAGS[bit] !== 'undefined') return this.FLAGS[bit];
@@ -167,5 +160,11 @@ class BitField {
  * @abstract
  */
 BitField.FLAGS = {};
+
+/**
+ * @type {number|bigint}
+ * @private
+ */
+BitField.defaultBit = 0;
 
 module.exports = BitField;

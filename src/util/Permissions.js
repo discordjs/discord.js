@@ -10,13 +10,6 @@ const BitField = require('./BitField');
  */
 class Permissions extends BitField {
   /**
-   * @param {PermissionResolvable} [bits=0] Bit(s) to read from
-   */
-  constructor(bits = 0n) {
-    super(bits);
-  }
-
-  /**
    * Bitfield of the packed bits
    * @type {bigint}
    * @name Permissions#bitfield
@@ -133,5 +126,7 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  * @type {bigint}
  */
 Permissions.DEFAULT = BigInt(104324673);
+
+Permissions.defaultBit = 0n;
 
 module.exports = Permissions;
