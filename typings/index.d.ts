@@ -3291,7 +3291,7 @@ declare module 'discord.js' {
 
   type WebhookClientOptions = Pick<
     ClientOptions,
-    'allowedMentions' | 'restWsBridgeTimeout' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
+    'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
   >;
 
   interface WebhookEditData {

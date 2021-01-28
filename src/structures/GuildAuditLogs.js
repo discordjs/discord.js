@@ -389,14 +389,14 @@ class GuildAuditLogsEntry {
             this.extra = guild.roles.cache.get(data.options.id) || {
               id: data.options.id,
               name: data.options.role_name,
-              type: OverwriteTypes[0],
+              type: OverwriteTypes[OverwriteTypes.role],
             };
             break;
 
           case OverwriteTypes.member:
             this.extra = guild.members.cache.get(data.options.id) || {
               id: data.options.id,
-              type: OverwriteTypes[1],
+              type: OverwriteTypes[OverwriteTypes.member],
             };
             break;
 
