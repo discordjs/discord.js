@@ -3,6 +3,7 @@
 const BaseManager = require('./BaseManager');
 const GuildBan = require('../structures/GuildBan');
 const GuildMember = require('../structures/GuildMember');
+const Collection = require('../util/Collection');
 
 /**
  * Manages API methods for Guilds bans and stores their cache.
@@ -30,26 +31,46 @@ class GuildBanManager extends BaseManager {
   }
 
   /**
+   * Data that resolves to give a GuildBan object. This can be:
+   * * A GuildBan object
+   * * A User resolvable
+   * @typedef {GuildBan|UserResolvable} GuildBanResolvable
+   */
+
+  /**
+   * Resolves a GuildBanResolvable to a GuildBan object.
+   * @param {GuildBanResolvable} ban The ban that is in the guild
+   * @returns {?GuildBan}
+   */
+  resolve(ban) {
+    const banResolvable = super.resolve(ban);
+    if (banResolvable) return banResolvable;
+    const userResolvable = this.client.users.resolveID(ban);
+    if (userResolvable) return super.resolve(userResolvable);
+    return null;
+  }
+
+  /**
    * Options used to fetch a single ban from a guild.
    * @typedef {Object} FetchBanOptions
    * @property {UserResolvable} user The ban to fetch
-   * @property {boolean} [cache=true] Whether or not to cache the ban
+   * @property {boolean} [cache=true] Whether or not to cache the fetched ban
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
 
   /**
-   * Fetches bans from Discord.
+   * Fetches ban(s) from Discord.
    * @param {UserResolvable|FetchBanOptions} [options] If provided fetches a single ban.
    * If undefined, fetches all bans.
-   * @returns {Promise<Collection<Snowflake, BanInfo>>}
+   * @returns {Promise<GuildBan>|Promise<Collection<Snowflake, GuildBan>>}
    * @example
    * // Fetch all bans from a guild
    * guild.bans.fetch()
    *   .then(console.log)
    *   .catch(console.error);
    * @example
-   * // Fetch a single member
-   * guild.bans.fetch('66564597481480192')
+   * // Fetch a single ban
+   * guild.bans.fetch('351871113346809860')
    *   .then(console.log)
    *   .catch(console.error);
    * @example
@@ -64,7 +85,7 @@ class GuildBanManager extends BaseManager {
    *   .catch(console.error);
    */
   fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) return this._fetchMany(options.cache);
     const user = this.client.users.resolveID(options);
     if (user) return this._fetchSingle({ user, cache: true });
     if (options.user) {
@@ -87,10 +108,11 @@ class GuildBanManager extends BaseManager {
       .then(data => this.add(data, cache));
   }
 
-  async _fetchMany() {
+  async _fetchMany(cache) {
     const data = await this.client.api.guilds(this.guild.id).bans().get();
-    for (let ban of data) this.add(ban);
-    return this.cache;
+    const bans = new Collection();
+    for (const ban of data) bans.set(ban.user.id, this.add(ban, cache));
+    return bans;
   }
 
   /**

@@ -3,20 +3,20 @@
 const Base = require('./Base');
 
 /**
- * Represents a ban of a guild on Discord.
+ * Represents a ban in a guild on Discord.
  * @extends {Base}
  */
 class GuildBan extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the ban
-   * @param {Guild} guild The guild the ban is part of
+   * @param {Guild} guild The guild in which the ban is
    */
   constructor(client, data, guild) {
     super(client);
 
     /**
-     * The guild that this member is part of
+     * The guild in which the ban is
      * @type {Guild}
      */
     this.guild = guild;
