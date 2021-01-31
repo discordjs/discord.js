@@ -127,6 +127,6 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  */
 Permissions.DEFAULT = BigInt(104324673);
 
-Permissions.defaultBit = 0n;
+Permissions.defaultBit = BigInt(0);
 
 module.exports = Permissions;
