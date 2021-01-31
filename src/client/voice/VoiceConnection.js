@@ -142,6 +142,14 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
+   * The previous heartbeat ping of this connection
+   * @type {number}
+   */
+  get ping() {
+    return this.sockets.ws?.ping ?? -1;
+  }
+
+  /**
    * Sets whether the voice connection should display as "speaking", "soundshare" or "none".
    * @param {BitFieldResolvable} value The new speaking state
    */

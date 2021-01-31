@@ -496,6 +496,7 @@ declare module 'discord.js' {
       HEARTBEAT: 3;
       SESSION_DESCRIPTION: 4;
       SPEAKING: 5;
+      HEARTBEAT_ACK: 6;
       HELLO: 8;
       CLIENT_CONNECT: 12;
       CLIENT_DISCONNECT: 13;
@@ -1646,6 +1647,7 @@ declare module 'discord.js' {
     public channel: VoiceChannel;
     public readonly client: Client;
     public readonly dispatcher: StreamDispatcher | null;
+    public readonly ping: number;
     public player: object;
     public receiver: VoiceReceiver;
     public speaking: Readonly<Speaking>;

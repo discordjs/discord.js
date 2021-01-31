@@ -25,7 +25,24 @@ class VoiceWebSocket extends EventEmitter {
      */
     this.attempts = 0;
 
+    /**
+     * Whether this connection is dead
+     * @type {boolean}
+     */
     this.dead = false;
+
+    /**
+     * The previous heartbeat ping of this connection
+     * @type {number}
+     */
+    this.ping = -1;
+
+    /**
+     * The last time a ping was sent (a timestamp)
+     * @type {number}
+     */
+    this.lastPingTimestamp = -1;
+
     this.connection.on('closing', this.shutdown.bind(this));
   }
 
@@ -178,6 +195,9 @@ class VoiceWebSocket extends EventEmitter {
          */
         this.emit('ready', packet.d);
         break;
+      case VoiceOPCodes.HEARTBEAT_ACK:
+        this.ping = Date.now() - this.lastPingTimestamp;
+        break;
       /* eslint-disable no-case-declarations */
       case VoiceOPCodes.SESSION_DESCRIPTION:
         packet.d.secret_key = new Uint8Array(packet.d.secret_key);
@@ -258,6 +278,7 @@ class VoiceWebSocket extends EventEmitter {
    * Sends a heartbeat packet.
    */
   sendHeartbeat() {
+    this.lastPingTimestamp = Date.now();
     this.sendPacket({ op: VoiceOPCodes.HEARTBEAT, d: Math.floor(Math.random() * 10e10) }).catch(() => {
       this.emit('warn', 'Tried to send heartbeat, but connection is not open');
       this.clearHeartbeat();
