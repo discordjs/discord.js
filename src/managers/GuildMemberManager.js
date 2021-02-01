@@ -248,6 +248,37 @@ class GuildMemberManager extends BaseManager {
       .then(() => this.client.users.resolve(user));
   }
 
+  /**
+   * Kicks a user from the guild.
+   * @param {UserResolvable} user The user to kick
+   * @param {string} [reason] Reason for kicking
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * @example
+   * // Kicks a user by ID (or with a user/guild member object)
+   * guild.members.kick('620567262004248596')
+   *   .then(user => console.log(`Kicked ${user.username || user.id || user} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  kick(user, reason) {
+    const id = this.client.users.resolveID(user);
+    if (!id) return Promise.reject(new Error('KICK_RESOLVE_ID'));
+    return this.client.api
+      .guilds(this.guild.id)
+      .members(id)
+      .delete({ reason })
+      .then(() => {
+        if (user instanceof GuildMember) return user;
+        const _user = this.client.users.resolve(id);
+        if (_user) {
+          const member = this.resolve(_user);
+          return member || _user;
+        }
+        return id;
+      });
+  }
+
   _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
