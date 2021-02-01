@@ -26,7 +26,7 @@ class GuildBanManager extends BaseManager {
    * @name GuildBanManager#cache
    */
 
-  add(data, cache = true) {
+  add(data, cache) {
     return super.add(data, cache, { id: data.user.id, extras: [this.guild] });
   }
 
