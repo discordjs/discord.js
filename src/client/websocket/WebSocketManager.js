@@ -141,7 +141,7 @@ class WebSocketManager extends EventEmitter {
 
     this.sessionStartLimit = sessionStartLimit;
 
-    const { total, remaining, reset_after } = sessionStartLimit;
+    const { total, remaining } = sessionStartLimit;
 
     this.debug(`Fetched Gateway Information
     URL: ${gatewayURL}
@@ -164,8 +164,6 @@ class WebSocketManager extends EventEmitter {
     this.totalShards = shards.length;
     this.debug(`Spawning shards: ${shards.join(', ')}`);
     this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
-
-    await this._handleSessionLimit(remaining, reset_after);
 
     return this.createShards();
   }
@@ -226,7 +224,7 @@ class WebSocketManager extends EventEmitter {
 
         if (shard.sessionID) {
           this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
-          this.reconnect(true);
+          this.reconnect();
         } else {
           shard.destroy({ reset: true, emit: false, log: false });
           this.reconnect();
@@ -268,7 +266,6 @@ class WebSocketManager extends EventEmitter {
     if (this.shardQueue.size) {
       this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
       await Util.delayFor(5000);
-      await this._handleSessionLimit();
       return this.createShards();
     }
 
@@ -277,15 +274,13 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Handles reconnects for this manager.
-   * @param {boolean} [skipLimit=false] IF this reconnect should skip checking the session limit
    * @private
    * @returns {Promise<boolean>}
    */
-  async reconnect(skipLimit = false) {
+  async reconnect() {
     if (this.reconnecting || this.status !== Status.READY) return false;
     this.reconnecting = true;
     try {
-      if (!skipLimit) await this._handleSessionLimit();
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
@@ -334,28 +329,6 @@ class WebSocketManager extends EventEmitter {
     this.destroyed = true;
     this.shardQueue.clear();
     for (const shard of this.shards.values()) shard.destroy({ closeCode: 1000, reset: true, emit: false, log: false });
-  }
-
-  /**
-   * Handles the timeout required if we cannot identify anymore.
-   * @param {number} [remaining] The amount of remaining identify sessions that can be done today
-   * @param {number} [resetAfter] The amount of time in which the identify counter resets
-   * @private
-   */
-  async _handleSessionLimit(remaining, resetAfter) {
-    if (typeof remaining === 'undefined' && typeof resetAfter === 'undefined') {
-      const { session_start_limit } = await this.client.api.gateway.bot.get();
-      this.sessionStartLimit = session_start_limit;
-      remaining = session_start_limit.remaining;
-      resetAfter = session_start_limit.reset_after;
-      this.debug(`Session Limit Information
-    Total: ${session_start_limit.total}
-    Remaining: ${remaining}`);
-    }
-    if (!remaining) {
-      this.debug(`Exceeded identify threshold. Will attempt a connection in ${resetAfter}ms`);
-      await Util.delayFor(resetAfter);
-    }
   }
 
   /**
