@@ -15,8 +15,7 @@ class GuildBanAdd extends Action {
      * @param {GuildBan} guild The guild that the ban occurred in
      */
     if (guild && user) {
-      let d = guild.bans.add({ user: user, reason: data.reason });
-      client.emit(Events.GUILD_BAN_ADD, d);
+      client.emit(Events.GUILD_BAN_ADD, guild.bans.add({ user: user, reason: data.reason }));
     }
   }
 }
