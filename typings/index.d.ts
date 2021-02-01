@@ -54,15 +54,13 @@ declare module 'discord.js' {
     data?: Record<string, unknown>;
   }
 
-  interface RouteBuilderMethods {
-    get(opts?: RequestOptions): Promise<unknown>;
-    post(opts?: RequestOptions): Promise<unknown>;
-    delete(opts?: RequestOptions): Promise<unknown>;
-    patch(opts?: RequestOptions): Promise<unknown>;
-    put(opts?: RequestOptions): Promise<unknown>;
-  }
+  type HttpMethod = 'get' | 'post' | 'delete' | 'patch' | 'put';
 
-  type RouteBuilder = Record<string, RouteBuilderMethods & ((...args: string[]) => RouteBuilderMethods)>;
+  export type RouteBuilder = Record<HttpMethod, <T>(options?: RequestOptions) => Promise<T>> &
+    {
+      [k in string]: RouteBuilder;
+    } &
+    ((...args: string[]) => RouteBuilder);
 
   export class RESTManager {
     public constructor(client: Client, tokenPrefix?: string, token?: string);
