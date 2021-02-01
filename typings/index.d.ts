@@ -1759,7 +1759,7 @@ declare module 'discord.js' {
     public token: string;
     public editMessage(
       message: MessageResolvable,
-      content: APIMessageContentResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<WebhookRawMessageResponse>;
     public editMessage(
@@ -2117,7 +2117,7 @@ declare module 'discord.js' {
     edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
       message: MessageResolvable,
-      content: APIMessageContentResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<Message | WebhookRawMessageResponse>;
     editMessage(

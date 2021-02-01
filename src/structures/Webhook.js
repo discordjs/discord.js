@@ -228,13 +228,13 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable} message The message to edit
-   * @param {StringResolvable} [content] The new content for the message
-   * @param {WebhookEditMessageOptions} [options] The options to provide
+   * @param {StringResolvable|APIMessage} [content] The new content for the message
+   * @param {WebhookEditMessageOptions|MessageEmbed|MessageEmbed[]} [options] The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, content, options) {
-    const { data } = APIMessage.create(this, content, options).resolveData();
+    const { data } = content.resolveData?.() ?? APIMessage.create(this, content, options).resolveData();
     const d = await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
