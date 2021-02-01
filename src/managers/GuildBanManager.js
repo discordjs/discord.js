@@ -109,7 +109,7 @@ class GuildBanManager extends BaseManager {
   }
 
   async _fetchMany(cache) {
-    const data = await this.client.api.guilds(this.guild.id).bans().get();
+    const data = await this.client.api.guilds(this.guild.id).bans.get();
     const bans = new Collection();
     for (const ban of data) bans.set(ban.user.id, this.add(ban, cache));
     return bans;
