@@ -525,7 +525,6 @@ class Guild extends Base {
    * @readonly
    */
   get nameAcronym() {
-    if (!this.name) return null;
     return this.name
       .replace(/'s /g, ' ')
       .replace(/\w+/g, e => e[0])
