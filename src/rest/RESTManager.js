@@ -14,13 +14,13 @@ class RESTManager {
   /**
    *
    * @param {Client} client The Discord client
-   * @param {?string} tokenPrefix The token prefix for the Authorization header
-   * @param {?string} token The token to perform requests with
+   * @param {?string} [tokenPrefix='Bot'] The token prefix for the Authorization header
+   * @param {?string} [token=client.token] The token to perform requests with
    */
   constructor(client, tokenPrefix = 'Bot', token = client.token) {
     /**
-     * The client who's configuration & utilities to use
-     * @type {Client}
+     * The client whose configuration & utilities to use
+     * @type {BaseClient}
      * @readonly
      * @private
      */
@@ -32,10 +32,10 @@ class RESTManager {
      * @readonly
      * @private
      */
-    this.token = token;
+    Object.defineProperty(this, 'token', { value: token, writable: true });
 
     /**
-     * All current Requesthandlers
+     * All current request handlers
      * @type {Collection<string, RequestHandler>}
      * @readonly
      * @private
@@ -87,7 +87,7 @@ class RESTManager {
   }
 
   /**
-   * Creates the Authorizaation header value
+   * Creates the Authorization header value
    * @returns {string}
    */
   getAuth() {
@@ -120,7 +120,7 @@ class RESTManager {
    * @param {string} method The HTTP method to perform
    * @param {string} url The url to request
    * @param {?RequestOptions} options The options for the request
-   * @returns {Collection<string, *> | Buffer}
+   * @returns {Collection<string, *>|Buffer}
    */
   request(method, url, options = {}) {
     const apiRequest = new APIRequest(this, method, url, options);

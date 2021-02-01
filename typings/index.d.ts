@@ -25,7 +25,7 @@ declare module 'discord.js' {
 
   class AsyncQueue {
     // tslint:disable-next-line:ban-types
-    private readonly promises: { promise: Promise<void>; resolve: Function }[];
+    private readonly promises: { promise: Promise<void>; resolve(): void }[];
     public remaining: number;
     public wait(): Promise<void>;
     private shift(): void;
@@ -41,8 +41,8 @@ declare module 'discord.js' {
     public limited: boolean;
     private readonly inactive: boolean;
 
-    private execute(): Collection<string, unknown> | Buffer;
-    public push(): Collection<string, unknown> | Buffer;
+    private execute(): Record<string, unknown> | Buffer;
+    public push(): Record<string, unknown> | Buffer;
   }
 
   interface RequestOptions {
@@ -50,8 +50,8 @@ declare module 'discord.js' {
     versioned?: boolean;
     auth?: boolean;
     reason?: string;
-    headers?: Record<string, string>;
-    data?: Record<string, unknown>;
+    headers?: {};
+    data?: {};
   }
 
   type HttpMethod = 'get' | 'post' | 'delete' | 'patch' | 'put';
@@ -67,14 +67,14 @@ declare module 'discord.js' {
     public readonly client: Client;
     private readonly handlers: Collection<string, RequestHandler>;
     private readonly tokenPrefix: string;
-    private readonly versoined: boolean;
+    private readonly versioned: boolean;
     public globalTimeout: Promise<void> | null;
     public cdn: string;
     public set endpoint(endpoint: string);
 
     public api: RouteBuilder;
     public getAuth(): string;
-    public request(method: string, url: string, options: RequestOptions): Collection<string, unknown> | Buffer;
+    public request(method: string, url: string, options: RequestOptions): Record<string, unknown> | Buffer;
   }
 
   export class APIRequest {
