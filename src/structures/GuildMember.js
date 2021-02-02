@@ -235,24 +235,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * Whether this member is kickable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get kickable() {
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.KICK_MEMBERS);
-  }
-
-  /**
-   * Whether this member is bannable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get bannable() {
-    return this.manageable && this.guild.me.permissions.has(Permissions.FLAGS.BAN_MEMBERS);
-  }
-
-  /**
    * Returns `channel.permissionsFor(guildMember)`. Returns permissions for a member in a guild channel,
    * taking into account roles and permission overwrites.
    * @param {ChannelResolvable} channel The guild channel to use as context

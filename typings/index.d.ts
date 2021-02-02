@@ -796,7 +796,6 @@ declare module 'discord.js' {
 
   export class GuildMember extends PartialTextBasedChannel(Base) {
     constructor(client: Client, data: object, guild: Guild);
-    public readonly bannable: boolean;
     public deleted: boolean;
     public readonly displayColor: number;
     public readonly displayHexColor: string;
@@ -806,7 +805,6 @@ declare module 'discord.js' {
     public pending: boolean;
     public readonly joinedAt: Date | null;
     public joinedTimestamp: number | null;
-    public readonly kickable: boolean;
     public lastMessageChannelID: Snowflake | null;
     public readonly manageable: boolean;
     public nickname: string | null;
@@ -3091,19 +3089,16 @@ declare module 'discord.js' {
   interface PartialGuildMember
     extends Partialize<
       GuildMember,
-      | 'bannable'
       | 'displayColor'
       | 'displayHexColor'
       | 'displayName'
       | 'guild'
-      | 'kickable'
       | 'permissions'
       | 'roles'
       | 'manageable'
       | 'presence'
       | 'voice'
     > {
-    readonly bannable: boolean;
     readonly displayColor: number;
     readonly displayHexColor: string;
     readonly displayName: string;
@@ -3111,7 +3106,6 @@ declare module 'discord.js' {
     readonly manageable: boolean;
     joinedAt: null;
     joinedTimestamp: null;
-    readonly kickable: boolean;
     readonly permissions: GuildMember['permissions'];
     readonly presence: GuildMember['presence'];
     readonly roles: GuildMember['roles'];
