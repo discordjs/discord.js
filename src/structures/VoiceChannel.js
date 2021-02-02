@@ -49,15 +49,6 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Whether the channel is deletable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get deletable() {
-    return super.deletable && this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false);
-  }
-
-  /**
    * Whether the channel is editable by the client user
    * @type {boolean}
    * @readonly

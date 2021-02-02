@@ -737,7 +737,6 @@ declare module 'discord.js' {
     private rolePermissions(role: Role): Readonly<Permissions>;
 
     public readonly calculatedPosition: number;
-    public readonly deletable: boolean;
     public guild: Guild;
     public readonly manageable: boolean;
     public readonly members: Collection<Snowflake, GuildMember>;
@@ -1608,7 +1607,6 @@ declare module 'discord.js' {
   export class VoiceChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public bitrate: number;
-    public readonly editable: boolean;
     public readonly full: boolean;
     public readonly joinable: boolean;
     public readonly speakable: boolean;
