@@ -962,7 +962,6 @@ declare module 'discord.js' {
     public createdTimestamp: number;
     public readonly deletable: boolean;
     public deleted: boolean;
-    public readonly editable: boolean;
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
     public embeds: MessageEmbed[];

@@ -370,16 +370,7 @@ class Message extends Base {
       });
     });
   }
-
-  /**
-   * Whether the message is editable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get editable() {
-    return this.author.id === this.client.user.id;
-  }
-
+  
   /**
    * Whether the message is deletable by the client user
    * @type {boolean}
