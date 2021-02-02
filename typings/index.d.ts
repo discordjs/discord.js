@@ -3128,7 +3128,6 @@ declare module 'discord.js' {
       | 'channel'
       | 'deletable'
       | 'crosspostable'
-      | 'editable'
       | 'mentions'
       | 'url'
       | 'flags'
@@ -3138,7 +3137,6 @@ declare module 'discord.js' {
     channel: Message['channel'];
     readonly deletable: boolean;
     readonly crosspostable: boolean;
-    readonly editable: boolean;
     embeds: Message['embeds'];
     flags: Message['flags'];
     mentions: Message['mentions'];
