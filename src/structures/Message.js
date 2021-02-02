@@ -370,7 +370,7 @@ class Message extends Base {
       });
     });
   }
-  
+
   /**
    * Whether the message is deletable by the client user
    * @type {boolean}
@@ -381,18 +381,6 @@ class Message extends Base {
       !this.deleted &&
         (this.author.id === this.client.user.id ||
           this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
-    );
-  }
-
-  /**
-   * Whether the message is pinnable by the client user
-   * @type {boolean}
-   * @readonly
-   */
-  get pinnable() {
-    return (
-      this.type === 'DEFAULT' &&
-      (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
   }
 

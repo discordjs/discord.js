@@ -971,7 +971,6 @@ declare module 'discord.js' {
     public mentions: MessageMentions;
     public nonce: string | number | null;
     public readonly partial: false;
-    public readonly pinnable: boolean;
     public pinned: boolean;
     public reactions: ReactionManager;
     public system: boolean;
@@ -3131,7 +3130,6 @@ declare module 'discord.js' {
       | 'crosspostable'
       | 'editable'
       | 'mentions'
-      | 'pinnable'
       | 'url'
       | 'flags'
       | 'embeds'
@@ -3144,7 +3142,6 @@ declare module 'discord.js' {
     embeds: Message['embeds'];
     flags: Message['flags'];
     mentions: Message['mentions'];
-    readonly pinnable: boolean;
     reactions: Message['reactions'];
     readonly url: string;
   }
