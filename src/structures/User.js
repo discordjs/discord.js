@@ -137,10 +137,11 @@ class User extends Base {
     const channel = this.client.channels.cache.get(this.lastMessageChannelID);
     return (channel && channel.messages.cache.get(this.lastMessageID)) || null;
   }
-  
+
   /**
    * This returns a mention string for the user
    * @returns {string}
+   * @readonly
    */
   get asMention() {
     return this.toString();
