@@ -258,6 +258,14 @@ class User extends Base {
     const data = await this.client.api.channels(dmChannel.id).delete();
     return this.client.actions.ChannelDelete.handle(data).channel;
   }
+  
+  /**
+   * This creates a mention of an user, that no brackets need to be added in addition.
+   * @returns {string}
+   */
+  asMention() {
+    return `<@${this.id}>`;
+  }
 
   /**
    * Checks if the user is equal to another. It compares ID, username, discriminator, avatar, and bot flags.
