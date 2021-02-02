@@ -70,15 +70,6 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Checks if the client has permission to send audio to the voice channel
-   * @type {boolean}
-   * @readonly
-   */
-  get speakable() {
-    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.SPEAK, false);
-  }
-
-  /**
    * Sets the bitrate of the channel.
    * @param {number} bitrate The new bitrate
    * @param {string} [reason] Reason for changing the channel's bitrate

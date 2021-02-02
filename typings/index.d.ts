@@ -1609,7 +1609,6 @@ declare module 'discord.js' {
     public bitrate: number;
     public readonly full: boolean;
     public readonly joinable: boolean;
-    public readonly speakable: boolean;
     public type: 'voice';
     public userLimit: number;
     public join(): Promise<VoiceConnection>;
