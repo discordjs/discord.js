@@ -19,11 +19,13 @@ client.on('ready', () => {
 });
 
 // Create an event listener for messages
-client.on('message', message => {
+client.on('message', async message => {
   // If the message is "ping"
   if (message.content === 'ping') {
-    // Send "pong" to the same channel
-    message.channel.send('pong');
+    // Send the reply to the same channel.
+    var m = await message.channel.send('Pinging...');
+    var ping = m.createdTimestamp - message.createdTimestamp;
+    m.edit(`${ping} ms.`);
   }
 });
 
