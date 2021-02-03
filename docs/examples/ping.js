@@ -23,8 +23,8 @@ client.on('message', async message => {
   // If the message is "ping"
   if (message.content === 'ping') {
     // Send the reply to the same channel.
-    var m = await message.channel.send('Pinging...');
-    var ping = m.createdTimestamp - message.createdTimestamp;
+    const m = await message.channel.send('Pinging...');
+    const ping = m.createdTimestamp - message.createdTimestamp;
     m.edit(`${ping} ms.`);
   }
 });
