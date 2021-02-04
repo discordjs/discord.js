@@ -1977,12 +1977,15 @@ declare module 'discord.js' {
     constructor(channel: TextChannel | DMChannel, iterable?: Iterable<any>);
     public channel: TextBasedChannelFields;
     public cache: Collection<Snowflake, Message>;
-    public crosspost(message: Message): Promise<Message>;
+    public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
     public edit(
       ...args:
-        | [message: Message, content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage]
-        | [message: Message, content: StringResolvable, options: MessageEditOptions | MessageEmbed]
+        | [
+            message: MessageResolvable,
+            content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
+          ]
+        | [message: MessageResolvable, content: StringResolvable, options: MessageEditOptions | MessageEmbed]
     ): Promise<Message>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(

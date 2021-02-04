@@ -121,20 +121,20 @@ class MessageManager extends BaseManager {
    * @param {MessageEditOptions|MessageEmbed} [options] The options to provide
    * @returns {Promise<Message>}
    */
-  edit(message, content, options) {
+  async edit(message, content, options) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
     const { data } =
       content instanceof APIMessage ? content.resolveData() : APIMessage.create(this, content, options).resolveData();
-    return this.client.api.channels[this.channel.id].messages[message].patch({ data }).then(d => {
-      if (this.cache.has(message)) {
-        const clone = this.cache.get(message)._clone();
-        clone._patch(d);
-        return clone;
-      }
-      return this.channel.messages.add(d);
-    });
+    const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data });
+
+    if (this.cache.has(message)) {
+      const clone = this.cache.get(message)._clone();
+      clone._patch(d);
+      return clone;
+    }
+    return this.add(d);
   }
 
   /**
