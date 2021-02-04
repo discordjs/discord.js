@@ -188,9 +188,8 @@ class GuildMemberManager extends BaseManager {
 
     if (this.cache.has(id)) {
       const _member = this.cache.get(id);
-      const clone = _member._clone();
       _data.user = _member.user;
-      clone._patch(_data);
+      member._patch(_data);
     }
   }
 
@@ -276,10 +275,9 @@ class GuildMemberManager extends BaseManager {
       .delete({ reason })
       .then(() => {
         if (user instanceof GuildMember) return user;
-        const _user = this.client.users.resolve(id);
+        const _user = this.client.users.cache.get(id);
         if (_user) {
-          const member = this.resolve(_user);
-          return member || _user;
+          return this.resolve(_user) || _user;
         }
         return id;
       });
