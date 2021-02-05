@@ -1148,19 +1148,19 @@ declare module 'discord.js' {
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public removeAttachments(): Promise<Message>;
     public reply(
-      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+      content: APIMessageContentResolvable | (ReplyMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
+    public reply(options: ReplyMessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
+    public reply(options: ReplyMessageOptions | APIMessage): Promise<Message | Message[]>;
     public reply(
       content: StringResolvable,
-      options: (MessageOptions & { split?: false }) | MessageAdditions,
+      options: (ReplyMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
     public reply(
       content: StringResolvable,
-      options: MessageOptions & { split: true | SplitOptions },
+      options: ReplyMessageOptions & { split: true | SplitOptions },
     ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+    public reply(content: StringResolvable, options: ReplyMessageOptions): Promise<Message | Message[]>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
@@ -3480,6 +3480,8 @@ declare module 'discord.js' {
     messageReference: MessageResolvable;
     failIfNotExists?: boolean;
   }
+
+  interface ReplyMessageOptions extends Omit<MessageOptions, 'replyTo'> {}
 
   interface ResolvedOverwriteOptions {
     allow: Permissions;
