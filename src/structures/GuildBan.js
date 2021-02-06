@@ -47,7 +47,7 @@ class GuildBan extends Base {
    * @readonly
    */
   get partial() {
-    return 'reason' in this;
+    return !('reason' in this);
   }
 
   /**
