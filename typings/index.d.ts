@@ -2941,7 +2941,7 @@ declare module 'discord.js' {
     code?: string | boolean;
     split?: boolean | SplitOptions;
     replyTo?: MessageResolvable;
-    replyIfDeleted?: boolean;
+    errorOnInvalidReply?: boolean;
   }
 
   type MessageReactionResolvable = MessageReaction | Snowflake;

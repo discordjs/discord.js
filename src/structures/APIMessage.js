@@ -170,7 +170,7 @@ class APIMessage {
       if (message_id) {
         message_reference = {
           message_id,
-          fail_if_not_exists: !this.options.replyIfDeleted,
+          fail_if_not_exists: this.options.errorOnInvalidReply ?? true,
         };
       }
     }
