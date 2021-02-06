@@ -383,6 +383,8 @@ exports.WSEvents = keyMirror([
  * <warn>Scopes that require whitelist are not considered valid for this generator</warn>
  * * `applications.builds.read`: allows reading build data for a users applications
  * * `applications.commands`: allows this bot to create commands in the server
+ * * `applications.entitlements`: allows reading entitlements for a users applications
+ * * `applications.store.update`: allows reading and updating of store data for a users applications
  * * `connections`: makes the endpoint for getting a users connections available
  * * `email`: allows the `/users/@me` endpoint return with an email
  * * `identify`: allows the `/users/@me` endpoint without an email
