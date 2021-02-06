@@ -2,7 +2,7 @@
 
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
-const { RangeError } = require('../errors');
+const { RangeError, TypeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -167,6 +167,9 @@ class APIMessage {
       const message_id = this.isMessage
         ? this.target.channel.messages.resolveID(this.options.replyTo)
         : this.target.messages.resolveID(this.options.replyTo);
+      if (this.options.errorOnInvalidReply && typeof this.options.errorOnInvalidReply !== 'boolean') {
+        throw new TypeError('INVALID_TYPE', 'options.errorOnInvalidReply', 'boolean');
+      }
       if (message_id) {
         message_reference = {
           message_id,
