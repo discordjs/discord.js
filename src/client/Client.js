@@ -419,8 +419,9 @@ class Client extends BaseClient {
       const scopes = options.additionalScopes;
       if (!Array.isArray(scopes)) {
         throw new TypeError('INVALID_TYPE', 'additionalScopes', 'Array of Invite Scopes', true);
-      } else if (scopes.some(scope => !InviteScopes.includes(scope))) {
-        const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
+      }
+      const invalidScope = scopes.find(scope => !InviteScopes.includes(scope));
+      if (invalidScope) {
         throw new TypeError('INVALID_ELEMENT', 'Array', 'additionalScopes', invalidScope);
       }
       query.set('scope', ['bot', ...scopes].join(' '));
