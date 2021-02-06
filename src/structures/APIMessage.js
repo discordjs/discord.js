@@ -168,7 +168,10 @@ class APIMessage {
         ? this.target.channel.messages.resolveID(this.options.replyTo)
         : this.target.messages.resolveID(this.options.replyTo);
       if (message_id) {
-        message_reference = { message_id };
+        message_reference = {
+          message_id,
+          fail_if_not_exists: !this.options.replyIfDeleted,
+        };
       }
     }
 
