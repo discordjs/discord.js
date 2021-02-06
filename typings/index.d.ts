@@ -734,10 +734,10 @@ declare module 'discord.js' {
 
   export class GuildBan {
     constructor(client: Client, data: object, guild: Guild);
-    public readonly guild: Guild;
-    public readonly user: User;
+    public guild: Guild;
+    public user: User;
     public readonly partial: boolean;
-    public readonly reason?: string;
+    public reason?: string | null;
     public fetch(force?: boolean): Promise<GuildBan>;
   }
 
