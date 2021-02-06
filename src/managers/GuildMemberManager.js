@@ -186,7 +186,9 @@ class GuildMemberManager extends BaseManager {
     }
     const d = await endpoint.patch({ data: _data, reason });
 
-    return this.add(d);
+    const _member = this.add(d, false)._clone();
+    _member.patch(d);
+    return _member;
   }
 
   /**
