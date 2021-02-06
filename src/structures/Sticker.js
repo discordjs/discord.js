@@ -55,7 +55,7 @@ class Sticker extends Base {
 
     /**
      * An array of tags for the sticker, if any
-     * @type {?string[]}
+     * @type {string[]}
      */
     this.tags = sticker.tags?.split(', ') ?? [];
 
