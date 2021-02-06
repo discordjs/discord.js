@@ -156,7 +156,7 @@ class GuildMemberManager extends BaseManager {
    * @param {UserResolvable} member The member to edit
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
-   * @returns {Promise<void>}
+   * @returns {Promise<GuildMember>}
    */
   async edit(member, data, reason) {
     const id = this.client.users.resolveID(member);
@@ -186,9 +186,7 @@ class GuildMemberManager extends BaseManager {
     }
     const d = await endpoint.patch({ data: _data, reason });
 
-    const _member = this.cache.get(id) ?? this.add(d);
-    d.user = _member.user;
-    return member._patch(d);
+    return this.add(d);
   }
 
   /**
