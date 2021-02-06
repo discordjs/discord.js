@@ -265,22 +265,18 @@ class GuildMemberManager extends BaseManager {
    *   .then(user => console.log(`Kicked ${user.username || user.id || user} from ${guild.name}`))
    *   .catch(console.error);
    */
-  kick(user, reason) {
+  async kick(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
 
-    return this.client.api
-      .guilds(this.guild.id)
-      .members(id)
-      .delete({ reason })
-      .then(() => {
-        if (user instanceof GuildMember) return user;
-        const _user = this.client.users.cache.get(id);
-        if (_user) {
-          return this.resolve(_user) || _user;
-        }
-        return id;
-      });
+    await this.client.api.guilds(this.guild.id).members(id).delete({ reason });
+
+    if (user instanceof GuildMember) return user;
+    const _user = this.client.users.cache.get(id);
+    if (_user) {
+      return this.resolve(_user) || _user;
+    }
+    return id;
   }
 
   /**
@@ -298,23 +294,21 @@ class GuildMemberManager extends BaseManager {
    *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
    *   .catch(console.error);
    */
-  ban(user, options = { days: 0 }) {
+  async ban(user, options = { days: 0 }) {
     if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
     if (options.days) options.delete_message_days = options.days;
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
-    return this.client.api
-      .guilds(this.guild.id)
-      .bans[id].put({ data: options })
-      .then(() => {
-        if (user instanceof GuildMember) return user;
-        const _user = this.client.users.resolve(id);
-        if (_user) {
-          const member = this.resolve(_user);
-          return member || _user;
-        }
-        return id;
-      });
+
+    await this.client.api.guilds(this.guild.id).bans[id].put({ data: options });
+
+    if (user instanceof GuildMember) return user;
+    const _user = this.client.users.resolve(id);
+    if (_user) {
+      const member = this.resolve(_user);
+      return member || _user;
+    }
+    return id;
   }
 
   /**
@@ -328,13 +322,11 @@ class GuildMemberManager extends BaseManager {
    *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *   .catch(console.error);
    */
-  unban(user, reason) {
+  async unban(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
-    return this.client.api
-      .guilds(this.guild.id)
-      .bans[id].delete({ reason })
-      .then(() => this.client.users.resolve(user));
+    await this.client.api.guilds(this.guild.id).bans[id].delete({ reason });
+    return this.client.users.resolve(user);
   }
 
   _fetchSingle({ user, cache, force = false }) {
