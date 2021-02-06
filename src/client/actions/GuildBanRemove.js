@@ -15,8 +15,7 @@ class GuildBanRemove extends Action {
      * @param {GuildBan} ban The ban that was removed
      */
     if (guild) {
-      const ban =
-        guild.bans.cache.get(data.user.id) ?? new GuildBan(client, { user: data.user, reason: data.reason }, guild);
+      const ban = guild.bans.cache.get(data.user.id) ?? new GuildBan(client, data, guild);
       guild.bans.cache.delete(ban.user.id);
       client.emit(Events.GUILD_BAN_REMOVE, ban);
     }
