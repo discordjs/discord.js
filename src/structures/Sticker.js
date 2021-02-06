@@ -69,6 +69,7 @@ class Sticker extends Base {
       this.format === 'LOTTIE' ? 'json' : 'png'
     }`;
   }
+
   /**
    * The timestamp the sticker was created at
    * @type {number}
