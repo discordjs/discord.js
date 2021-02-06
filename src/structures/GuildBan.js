@@ -21,19 +21,7 @@ class GuildBan extends Base {
      */
     this.guild = guild;
 
-    /**
-     * The reason for the ban
-     * @type {?string}
-     */
-    this.reason = null;
-
-    /**
-     * The user this ban applies to
-     * @type {User}
-     */
-    this.user = null;
-
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
