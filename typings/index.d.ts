@@ -1961,10 +1961,8 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
-    public fetch(
-      options: UserResolvable | FetchBanOptions | (UserResolvable & { user: UserResolvable }),
-    ): Promise<GuildBan>;
-    public fetch(): Promise<Collection<Snowflake, GuildBan>>;
+    public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
+    public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
     public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
@@ -2593,6 +2591,10 @@ declare module 'discord.js' {
     user: UserResolvable;
     cache?: boolean;
     force?: boolean;
+  }
+
+  interface FetchBansOptions {
+    cache?: boolean;
   }
 
   interface FetchIntegrationsOptions {
