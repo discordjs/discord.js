@@ -572,7 +572,7 @@ class Message extends Base {
    * Send an inline reply to this message.
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
    * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
-   * @param {MessageResolvable} [options.replyTo=this] The message to reply to
+   * @param {MessageResolvable} [options.reply.messageReference=this] The message to reply to
    * @returns {Promise<Message|Message[]>}
    */
   reply(content, options) {
@@ -580,7 +580,7 @@ class Message extends Base {
       content instanceof APIMessage
         ? content
         : APIMessage.transformOptions(content, options, {
-            replyTo: this,
+            reply: { messageReference: this },
           }),
     );
   }

@@ -2940,8 +2940,7 @@ declare module 'discord.js' {
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
     split?: boolean | SplitOptions;
-    replyTo?: MessageResolvable;
-    errorOnInvalidReply?: boolean;
+    reply?: ReplyOptions;
   }
 
   type MessageReactionResolvable = MessageReaction | Snowflake;
@@ -3188,6 +3187,11 @@ declare module 'discord.js' {
     max?: number;
     maxEmojis?: number;
     maxUsers?: number;
+  }
+
+  interface ReplyOptions {
+    messageReference: MessageResolvable;
+    failIfNotExists: boolean;
   }
 
   interface ResolvedOverwriteOptions {

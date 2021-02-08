@@ -2,7 +2,7 @@
 
 const MessageAttachment = require('./MessageAttachment');
 const MessageEmbed = require('./MessageEmbed');
-const { RangeError, TypeError } = require('../errors');
+const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
 const MessageFlags = require('../util/MessageFlags');
 const Util = require('../util/Util');
@@ -163,17 +163,14 @@ class APIMessage {
     }
 
     let message_reference;
-    if (typeof this.options.replyTo !== 'undefined') {
+    if (typeof this.options.reply === 'object') {
       const message_id = this.isMessage
-        ? this.target.channel.messages.resolveID(this.options.replyTo)
-        : this.target.messages.resolveID(this.options.replyTo);
-      if (this.options.errorOnInvalidReply && typeof this.options.errorOnInvalidReply !== 'boolean') {
-        throw new TypeError('INVALID_TYPE', 'options.errorOnInvalidReply', 'boolean');
-      }
+        ? this.target.channel.messages.resolveID(this.options.reply.messageReference)
+        : this.target.messages.resolveID(this.options.reply.messageReference);
       if (message_id) {
         message_reference = {
           message_id,
-          fail_if_not_exists: this.options.errorOnInvalidReply ?? true,
+          fail_if_not_exists: this.options.reply.failIfNotExists ?? true,
         };
       }
     }
