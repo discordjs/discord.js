@@ -576,11 +576,12 @@ class Message extends Base {
    * @returns {Promise<Message|Message[]>}
    */
   reply(content, options) {
+    const failIfNotExists = options?.reply?.failIfNotExists ?? content?.reply?.failIfNotExists ?? true;
     return this.channel.send(
       content instanceof APIMessage
         ? content
         : APIMessage.transformOptions(content, options, {
-            reply: { messageReference: this },
+            reply: { messageReference: this, failIfNotExists },
           }),
     );
   }
