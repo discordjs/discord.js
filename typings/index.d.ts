@@ -2594,7 +2594,7 @@ declare module 'discord.js' {
   }
 
   interface FetchBansOptions {
-    cache?: boolean;
+    cache: boolean;
   }
 
   interface FetchIntegrationsOptions {
