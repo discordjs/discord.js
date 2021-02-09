@@ -130,11 +130,11 @@ class GuildBanManager extends BaseManager {
    * be resolved, the user ID will be the result.
    * @example
    * // Ban a user by ID (or with a user/guild member object)
-   * guild.bans.ban('84484653687267328')
-   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   * guild.bans.create('84484653687267328')
+   *   .then(user => console.log(`Banned ${user.username ?? user.id ?? user} from ${guild.name}`))
    *   .catch(console.error);
    */
-  async ban(user, options = { days: 0 }) {
+  async create(user, options = { days: 0 }) {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID', true);
@@ -162,11 +162,11 @@ class GuildBanManager extends BaseManager {
    * @returns {Promise<User>}
    * @example
    * // Unban a user by ID (or with a user/guild member object)
-   * guild.bans.unban('84484653687267328')
+   * guild.bans.remove('84484653687267328')
    *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *   .catch(console.error);
    */
-  async unban(user, reason) {
+  async remove(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
     await this.client.api.guilds(this.guild.id).bans(id).delete({ reason });

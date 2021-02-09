@@ -194,6 +194,42 @@ class GuildMemberManager extends BaseManager {
       .then(data => data.pruned);
   }
 
+  /**
+   * Bans a user from the guild.
+   * @param {UserResolvable} user The user to ban
+   * @param {Object} [options] Options for the ban
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
+   * @param {string} [options.reason] Reason for banning
+   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
+   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
+   * be resolved, the user ID will be the result.
+   * Internally calls the GuildBanManager#create method.
+   * @example
+   * // Ban a user by ID (or with a user/guild member object)
+   * guild.members.ban('84484653687267328')
+   *   .then(user => console.log(`Banned ${user.username ?? user.id ?? user} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  ban(user, options = { days: 0 }) {
+    return this.guild.bans.create(user, options);
+  }
+
+  /**
+   * Unbans a user from the guild.
+   * @param {UserResolvable} user The user to unban
+   * @param {string} [reason] Reason for unbanning user
+   * @returns {Promise<User>}
+   * Internally calls the GuildBanManager#remove method.
+   * @example
+   * // Unban a user by ID (or with a user/guild member object)
+   * guild.members.unban('84484653687267328')
+   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
+   *   .catch(console.error);
+   */
+  unban(user, reason) {
+    return this.guild.bans.remove(user, reason);
+  }
+
   _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
