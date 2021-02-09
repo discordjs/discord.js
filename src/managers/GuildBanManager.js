@@ -55,13 +55,23 @@ class GuildBanManager extends BaseManager {
    */
 
   /**
+   * Options used to fetch all bans from a guild.
+   * @typedef {Object} FetchBansOptions
+   * @property {boolean} cache Whether or not to cache the fetched bans
+   */
+
+  /**
    * Fetches ban(s) from Discord.
-   * @param {UserResolvable|FetchBanOptions} [options] If provided fetches a single ban.
-   * If undefined, fetches all bans.
+   * @param {UserResolvable|FetchBanOptions|FetchBansOptions} [options] Options for fetching guild ban(s)
    * @returns {Promise<GuildBan>|Promise<Collection<Snowflake, GuildBan>>}
    * @example
    * // Fetch all bans from a guild
    * guild.bans.fetch()
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Fetch all bans from a guild without caching
+   * guild.bans.fetch({ cache: false })
    *   .then(console.log)
    *   .catch(console.error);
    * @example
