@@ -133,8 +133,7 @@ class GuildBanManager extends BaseManager {
     if (user instanceof GuildMember) return user;
     const _user = this.client.users.resolve(id);
     if (_user) {
-      const member = this.resolve(_user);
-      return member || _user;
+      return this.guild.members.resolve(_user) ?? _user;
     }
     return id;
   }
