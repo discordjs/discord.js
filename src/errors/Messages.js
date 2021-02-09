@@ -105,6 +105,8 @@ const Messages = {
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
+
+  API_ROUTER_INVALID_CALL: 'API router function calls must use HTTP verbs.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);

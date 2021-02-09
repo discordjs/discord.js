@@ -1,5 +1,7 @@
 'use strict';
 
+const { Error } = require('../errors');
+
 const noop = () => {}; // eslint-disable-line no-empty-function
 const methods = ['get', 'post', 'delete', 'patch', 'put'];
 const reflectors = [
@@ -22,8 +24,7 @@ function buildRoute(manager) {
     apply(target, _, args) {
       const method = route[route.length - 1];
       if (!methods.includes(method)) {
-        route.push(...args.filter(x => x != null)); // eslint-disable-line eqeqeq
-        return new Proxy(noop, handler);
+        return Promise.reject(new Error('API_ROUTER_INVALID_CALL'));
       }
 
       route.pop();
