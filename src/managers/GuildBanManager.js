@@ -128,7 +128,15 @@ class GuildBanManager extends BaseManager {
     if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
     const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID', true);
-    await this.client.api.guilds(this.guild.id).bans[id].put({ data: options });
+    await this.client.api
+      .guilds(this.guild.id)
+      .bans(id)
+      .put({
+        data: {
+          reason: options.reason,
+          delete_message_days: options.days,
+        },
+      });
     if (user instanceof GuildMember) return user;
     const _user = this.client.users.resolve(id);
     if (_user) {
