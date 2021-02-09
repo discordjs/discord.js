@@ -1949,21 +1949,23 @@ declare module 'discord.js' {
   export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
+    public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
     public fetch(
       options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
     ): Promise<GuildMember>;
     public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
     public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
     public prune(options?: GuildPruneMembersOptions): Promise<number>;
+    public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
   export class GuildBanManager extends BaseManager<Snowflake, GuildBan, GuildBanResolvable> {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
-    public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+    public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
     public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
     public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
-    public unban(user: UserResolvable, reason?: string): Promise<User>;
+    public remove(user: UserResolvable, reason?: string): Promise<User>;
   }
 
   export class GuildMemberRoleManager extends OverridableManager<Snowflake, Role, RoleResolvable> {
