@@ -43,11 +43,7 @@ class GuildBanManager extends BaseManager {
    * @returns {?GuildBan}
    */
   resolve(ban) {
-    const banResolvable = super.resolve(ban);
-    if (banResolvable) return banResolvable;
-    const userResolvable = this.client.users.resolveID(ban);
-    if (userResolvable) return super.resolve(userResolvable);
-    return null;
+    return super.resolve(ban) ?? super.resolve(this.client.users.resolveID(ban));
   }
 
   /**
