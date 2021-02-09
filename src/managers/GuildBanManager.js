@@ -152,7 +152,7 @@ class GuildBanManager extends BaseManager {
   async unban(user, reason) {
     const id = this.client.users.resolveID(user);
     if (!id) throw new Error('BAN_RESOLVE_ID');
-    await this.client.api.guilds(this.guild.id).bans[id].delete({ reason });
+    await this.client.api.guilds(this.guild.id).bans(id).delete({ reason });
     return this.client.users.resolve(user);
   }
 }
