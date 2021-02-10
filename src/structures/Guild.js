@@ -918,21 +918,17 @@ class Guild extends Base {
    */
   async addMember(user, options) {
     user = this.client.users.resolveID(user);
-    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
+    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
     if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
       if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
-        return Promise.reject(
-          new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
-        );
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
       }
       const resolvedRoles = [];
       for (const role of options.roles.values()) {
         const resolvedRole = this.roles.resolve(role);
-        if (!role) {
-          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role));
-        }
+        if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         resolvedRoles.push(resolvedRole.id);
       }
       options.roles = resolvedRoles;
