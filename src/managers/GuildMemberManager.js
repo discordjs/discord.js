@@ -184,7 +184,7 @@ class GuildMemberManager extends BaseManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'roles', role));
+        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role));
       }
       resolvedRoles.push(resolvedRole);
     }
