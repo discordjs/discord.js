@@ -376,6 +376,36 @@ exports.WSEvents = keyMirror([
 ]);
 
 /**
+ * A valid scope to request when generating an invite link.
+ * <warn>Scopes that require whitelist are not considered valid for this generator</warn>
+ * * `applications.builds.read`: allows reading build data for a users applications
+ * * `applications.commands`: allows this bot to create commands in the server
+ * * `applications.entitlements`: allows reading entitlements for a users applications
+ * * `applications.store.update`: allows reading and updating of store data for a users applications
+ * * `connections`: makes the endpoint for getting a users connections available
+ * * `email`: allows the `/users/@me` endpoint return with an email
+ * * `identify`: allows the `/users/@me` endpoint without an email
+ * * `guilds`: makes the `/users/@me/guilds` endpoint available for a user
+ * * `guilds.join`: allows the bot to join the user to any guild it is in using Guild#addMember
+ * * `gdm.join`: allows joining the user to a group dm
+ * * `webhook.incoming`: generates a webhook to a channel
+ * @typedef {string} InviteScope
+ */
+exports.InviteScopes = [
+  'applications.builds.read',
+  'applications.commands',
+  'applications.entitlements',
+  'applications.store.update',
+  'connections',
+  'email',
+  'identity',
+  'guilds',
+  'guilds.join',
+  'gdm.join',
+  'webhook.incoming',
+];
+
+/**
  * The type of a message, e.g. `DEFAULT`. Here are the available types:
  * * DEFAULT
  * * RECIPIENT_ADD
