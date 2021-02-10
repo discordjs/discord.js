@@ -103,9 +103,7 @@ class GuildMemberRoleManager {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolve(role);
-        if (!resolvedRole) {
-          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
-        }
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
 
@@ -114,9 +112,7 @@ class GuildMemberRoleManager {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(
-          new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes'),
-        );
+        throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].put({ reason });
@@ -138,9 +134,7 @@ class GuildMemberRoleManager {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolve(role);
-        if (!resolvedRole) {
-          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
-        }
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
 
@@ -149,9 +143,7 @@ class GuildMemberRoleManager {
     } else {
       roleOrRoles = this.guild.roles.resolve(roleOrRoles);
       if (roleOrRoles === null) {
-        return Promise.reject(
-          new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes'),
-        );
+        throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes');
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].delete({ reason });
