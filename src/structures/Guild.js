@@ -928,7 +928,7 @@ class Guild extends Base {
         );
       }
       const resolvedRoles = [];
-      for (const role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
+      for (const role of options.roles.values()) {
         const resolvedRole = this.roles.resolve(role);
         if (!role) {
           return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role));

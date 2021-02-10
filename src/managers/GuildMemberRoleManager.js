@@ -101,7 +101,7 @@ class GuildMemberRoleManager {
   async add(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
-      for (const role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+      for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolve(role);
         if (!resolvedRole) {
           return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
@@ -136,7 +136,7 @@ class GuildMemberRoleManager {
   async remove(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
-      for (const role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+      for (const role of roleOrRoles.values()) {
         const resolvedRole = this.guild.roles.resolve(role);
         if (!resolvedRole) {
           return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));

@@ -53,7 +53,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
         throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
       }
       data.roles = [];
-      for (const role of roles instanceof Collection ? roles.values() : roles) {
+      for (const role of roles.values()) {
         const resolvedRole = this.guild.roles.resolve(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         data.roles.push(resolvedRole.id);
