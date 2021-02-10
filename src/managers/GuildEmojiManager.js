@@ -45,21 +45,17 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    */
   async create(attachment, name, { roles, reason } = {}) {
     attachment = await DataResolver.resolveImage(attachment);
-    if (!attachment) return Promise.reject(new TypeError('REQ_RESOURCE_TYPE'));
+    if (!attachment) throw new TypeError('REQ_RESOURCE_TYPE');
 
     const data = { image: attachment, name };
     if (roles) {
       if (!Array.isArray(roles) && !(roles instanceof Collection)) {
-        return Promise.reject(
-          new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
-        );
+        throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
       }
       data.roles = [];
       for (const role of roles instanceof Collection ? roles.values() : roles) {
         const resolvedRole = this.guild.roles.resolve(role);
-        if (!resolvedRole) {
-          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role));
-        }
+        if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
         data.roles.push(resolvedRole.id);
       }
     }
