@@ -918,19 +918,24 @@ class Guild extends Base {
    */
   async addMember(user, options) {
     user = this.client.users.resolveID(user);
-    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
     if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
-      const roles = [];
-      for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        let roleID = this.roles.resolveID(role);
-        if (!roleID) {
-          throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
-        }
-        roles.push(roleID);
+      if (!Array.isArray(options.roles) && !(options.roles instanceof Collection)) {
+        return Promise.reject(
+          new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
+        );
       }
-      options.roles = roles;
+      const resolvedRoles = [];
+      for (const role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
+        const resolvedRole = this.roles.resolve(role);
+        if (!role) {
+          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role));
+        }
+        resolvedRoles.push(resolvedRole.id);
+      }
+      options.roles = resolvedRoles;
     }
     const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
     // Data is an empty buffer if the member is already part of the guild.

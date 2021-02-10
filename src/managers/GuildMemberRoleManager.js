@@ -100,17 +100,23 @@ class GuildMemberRoleManager {
    */
   async add(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
-      if (roleOrRoles.includes(null)) {
-        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
+      const resolvedRoles = [];
+      for (const role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+        const resolvedRole = this.guild.roles.resolve(role);
+        if (!resolvedRole) {
+          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+        }
+        resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = [...new Set(roleOrRoles.concat(...this._roles.values()))];
+      const newRoles = [...new Set(resolvedRoles.concat(...this._roles.values()))];
       return this.set(newRoles, reason);
     } else {
-      const roleID = this.guild.roles.resolveID(roleOrRoles);
-      if (roleID === null) {
-        throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
+      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      if (roleOrRoles === null) {
+        return Promise.reject(
+          new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes'),
+        );
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].put({ reason });
@@ -129,17 +135,23 @@ class GuildMemberRoleManager {
    */
   async remove(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
-      if (roleOrRoles.includes(null)) {
-        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
+      const resolvedRoles = [];
+      for (const role of roleOrRoles instanceof Collection ? roleOrRoles.values() : roleOrRoles) {
+        const resolvedRole = this.guild.roles.resolve(role);
+        if (!resolvedRole) {
+          return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
+        }
+        resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = this._roles.filter(role => !roleOrRoles.includes(role.id));
+      const newRoles = this._roles.filter(role => !resolvedRoles.includes(role));
       return this.set(newRoles, reason);
     } else {
-      const roleID = this.guild.roles.resolveID(roleOrRoles);
-      if (roleID === null) {
-        throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
+      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      if (roleOrRoles === null) {
+        return Promise.reject(
+          new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes'),
+        );
       }
 
       await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].delete({ reason });
