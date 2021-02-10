@@ -648,7 +648,7 @@ class WebSocketShard extends EventEmitter {
   _send(data) {
     if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
       this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
-      this.destroy({ close: 4000 });
+      this.destroy({ closeCode: 4000 });
       return;
     }
 
