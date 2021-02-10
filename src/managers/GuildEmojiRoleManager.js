@@ -51,11 +51,10 @@ class GuildEmojiRoleManager {
    * @returns {Promise<GuildEmoji>}
    */
   add(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
-    if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles]);
+    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
     const resolvedRoles = [];
-    for (const role of roleOrRoles) {
+    for (const role of roleOrRoles.values()) {
       const resolvedRole = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
         return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
@@ -73,19 +72,18 @@ class GuildEmojiRoleManager {
    * @returns {Promise<GuildEmoji>}
    */
   remove(roleOrRoles) {
-    if (roleOrRoles instanceof Collection) return this.remove(roleOrRoles.keyArray());
-    if (!Array.isArray(roleOrRoles)) return this.remove([roleOrRoles]);
+    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
-    const resolvedIDs = [];
-    for (const role of roleOrRoles) {
-      const resolvedID = this.guild.roles.resolveID(role);
-      if (!resolvedID) {
+    const resolvedRoles = [];
+    for (const role of roleOrRoles.values()) {
+      const resolvedRole = this.guild.roles.resolveID(role);
+      if (!resolvedRole) {
         return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role));
       }
-      resolvedIDs.push(resolvedID);
+      resolvedRoles.push(resolvedRole);
     }
 
-    const newRoles = this._roles.keyArray().filter(role => !resolvedIDs.includes(role));
+    const newRoles = this._roles.keyArray().filter(role => !resolvedRoles.includes(role));
     return this.set(newRoles);
   }
 
