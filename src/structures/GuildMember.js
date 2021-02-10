@@ -85,7 +85,7 @@ class GuildMember extends Base {
 
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
-    if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
+    if (data.premium_since) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
     if ('roles' in data) this._roles = data.roles;
     this.pending = data.pending ?? false;
   }
