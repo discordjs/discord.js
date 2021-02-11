@@ -283,7 +283,7 @@ class GuildMember extends Base {
    * @returns {Promise<GuildMember>}
    */
   edit(data, reason) {
-    return this.guild.members.edit(this, data, reason).then(() => this);
+    return this.guild.members.edit(this, data, reason);
   }
 
   /**
