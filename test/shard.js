@@ -6,17 +6,13 @@ const Discord = require('../src');
 const client = new Discord.Client({
   shards: process.argv[2],
   shardCount: process.argv[3],
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client.on('message', msg => {
   if (msg.content.startsWith('?eval') && msg.author.id === '66564597481480192') {
     try {
-      const com = eval(
-        msg.content
-          .split(' ')
-          .slice(1)
-          .join(' '),
-      );
+      const com = eval(msg.content.split(' ').slice(1).join(' '));
       msg.channel.send(com, { code: true });
     } catch (e) {
       msg.channel.send(e, { code: true });
