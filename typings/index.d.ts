@@ -3191,7 +3191,7 @@ declare module 'discord.js' {
 
   interface ReplyOptions {
     messageReference: MessageResolvable;
-    failIfNotExists: boolean;
+    failIfNotExists?: boolean;
   }
 
   interface ResolvedOverwriteOptions {
