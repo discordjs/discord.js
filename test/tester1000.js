@@ -8,6 +8,7 @@ const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Discord.Client({
   shardCount: 2,
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client.on('debug', log);

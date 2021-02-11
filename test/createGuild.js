@@ -2,9 +2,11 @@
 
 const assert = require('assert');
 const { token } = require('./auth');
-const { Client } = require('../src');
+const { Client, Intents } = require('../src');
 
-const client = new Client();
+const client = new Client({
+  intents: Intents.NON_PRIVILEGED,
+});
 
 client.on('ready', async () => {
   try {

@@ -105,7 +105,7 @@ class RequestHandler {
       this.limit = limit ? Number(limit) : Infinity;
       this.remaining = remaining ? Number(remaining) : 1;
       this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
-      this.retryAfter = retryAfter ? Number(retryAfter) : -1;
+      this.retryAfter = retryAfter ? Number(retryAfter) * 1000 : -1;
 
       // https://github.com/discordapp/discord-api-docs/issues/182
       if (request.route.includes('reactions')) {
