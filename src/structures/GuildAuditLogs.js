@@ -3,7 +3,7 @@
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
-const { OverwriteTypes, PartialTypes } = require('../util/Constants');
+const { PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Snowflake = require('../util/Snowflake');
 const Util = require('../util/Util');
@@ -384,19 +384,16 @@ class GuildAuditLogsEntry {
       case Actions.CHANNEL_OVERWRITE_CREATE:
       case Actions.CHANNEL_OVERWRITE_UPDATE:
       case Actions.CHANNEL_OVERWRITE_DELETE:
-        switch (Number(data.options.type)) {
-          case OverwriteTypes.role:
+        switch (data.options.type) {
+          case 'member':
+            this.extra = guild.members.cache.get(data.options.id) || { id: data.options.id, type: 'member' };
+            break;
+
+          case 'role':
             this.extra = guild.roles.cache.get(data.options.id) || {
               id: data.options.id,
               name: data.options.role_name,
-              type: OverwriteTypes[OverwriteTypes.role],
-            };
-            break;
-
-          case OverwriteTypes.member:
-            this.extra = guild.members.cache.get(data.options.id) || {
-              id: data.options.id,
-              type: OverwriteTypes[OverwriteTypes.member],
+              type: 'role',
             };
             break;
 

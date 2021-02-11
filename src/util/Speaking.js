@@ -17,12 +17,6 @@ class Speaking extends BitField {}
  */
 
 /**
- * Bitfield of the packed bits
- * @type {number}
- * @name Speaking#bitfield
- */
-
-/**
  * Numeric speaking flags. All available properties:
  * * `SPEAKING`
  * * `SOUNDSHARE`

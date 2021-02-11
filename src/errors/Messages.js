@@ -5,7 +5,6 @@ const { register } = require('./DJSError');
 const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
   CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
-  CLIENT_MISSING_INTENTS: 'Valid intents must be provided for the Client.',
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
@@ -90,7 +89,6 @@ const Messages = {
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
-  INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 

@@ -7,9 +7,7 @@ const fetch = require('node-fetch');
 const { owner, token } = require('./auth.js');
 const Discord = require('../src');
 
-const client = new Discord.Client({
-  intents: Discord.Intents.NON_PRIVILEGED,
-});
+const client = new Discord.Client();
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());

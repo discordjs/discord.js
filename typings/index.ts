@@ -1,10 +1,8 @@
 /// <reference path="index.d.ts" />
 
-import { Client, Intents, Message, MessageAttachment, MessageEmbed } from 'discord.js';
+import { Client, Message, MessageAttachment, MessageEmbed } from 'discord.js';
 
-const client: Client = new Client({
-  intents: Intents.NON_PRIVILEGED,
-});
+const client: Client = new Client();
 
 client.on('ready', () => {
   console.log(`Client is logged in as ${client.user!.tag} and ready!`);

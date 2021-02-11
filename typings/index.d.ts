@@ -9,11 +9,6 @@ declare enum ChannelType {
   unknown = 7,
 }
 
-declare enum OverwriteTypes {
-  role = 0,
-  member = 1,
-}
-
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
@@ -52,7 +47,7 @@ declare module 'discord.js' {
 
   export class ActivityFlags extends BitField<ActivityFlagsString> {
     public static FLAGS: Record<ActivityFlagsString, number>;
-    public static resolve(bit?: BitFieldResolvable<ActivityFlagsString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<ActivityFlagsString>): number;
   }
 
   export class APIMessage {
@@ -123,7 +118,7 @@ declare module 'discord.js' {
   }
 
   export class BaseClient extends EventEmitter {
-    constructor(options?: ClientOptions | WebhookClientOptions);
+    constructor(options?: ClientOptions);
     private _timeouts: Set<NodeJS.Timeout>;
     private _intervals: Set<NodeJS.Timeout>;
     private _immediates: Set<NodeJS.Immediate>;
@@ -132,7 +127,7 @@ declare module 'discord.js' {
     private decrementMaxListeners(): void;
     private incrementMaxListeners(): void;
 
-    public options: ClientOptions | WebhookClientOptions;
+    public options: ClientOptions;
     public clearInterval(interval: NodeJS.Timeout): void;
     public clearTimeout(timeout: NodeJS.Timeout): void;
     public clearImmediate(timeout: NodeJS.Immediate): void;
@@ -160,23 +155,23 @@ declare module 'discord.js' {
     public broadcast: VoiceBroadcast;
   }
 
-  export class BitField<S extends string, N extends number | bigint = number> {
-    constructor(bits?: BitFieldResolvable<S, N>);
-    public bitfield: N;
-    public add(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
-    public any(bit: BitFieldResolvable<S, N>): boolean;
-    public equals(bit: BitFieldResolvable<S, N>): boolean;
-    public freeze(): Readonly<BitField<S, N>>;
-    public has(bit: BitFieldResolvable<S, N>): boolean;
-    public missing(bits: BitFieldResolvable<S, N>, ...hasParam: readonly unknown[]): S[];
-    public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
+  export class BitField<S extends string> {
+    constructor(bits?: BitFieldResolvable<S>);
+    public bitfield: number;
+    public add(...bits: BitFieldResolvable<S>[]): BitField<S>;
+    public any(bit: BitFieldResolvable<S>): boolean;
+    public equals(bit: BitFieldResolvable<S>): boolean;
+    public freeze(): Readonly<BitField<S>>;
+    public has(bit: BitFieldResolvable<S>): boolean;
+    public missing(bits: BitFieldResolvable<S>, ...hasParam: readonly unknown[]): S[];
+    public remove(...bits: BitFieldResolvable<S>[]): BitField<S>;
     public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
     public toArray(...hasParam: readonly unknown[]): S[];
     public toJSON(): number;
     public valueOf(): number;
     public [Symbol.iterator](): IterableIterator<S>;
     public static FLAGS: object;
-    public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
+    public static resolve(bit?: BitFieldResolvable<any>): number;
   }
 
   export class CategoryChannel extends GuildChannel {
@@ -198,15 +193,14 @@ declare module 'discord.js' {
   }
 
   export class Client extends BaseClient {
-    constructor(options: ClientOptions);
+    constructor(options?: ClientOptions);
     private actions: object;
     private _eval(script: string): any;
-    private _validateOptions(options: ClientOptions): void;
+    private _validateOptions(options?: ClientOptions): void;
 
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
-    public options: ClientOptions;
     public readyAt: Date | null;
     public readonly readyTimestamp: number | null;
     public shard: ShardClientUtil | null;
@@ -264,14 +258,13 @@ declare module 'discord.js' {
   export class ClientUser extends User {
     public mfaEnabled: boolean;
     public verified: boolean;
-    public edit(data: ClientUserEditData): Promise<this>;
-    public setActivity(options?: ActivityOptions): Presence;
-    public setActivity(name: string, options?: ActivityOptions): Presence;
+    public setActivity(options?: ActivityOptions): Promise<Presence>;
+    public setActivity(name: string, options?: ActivityOptions): Promise<Presence>;
     public setAFK(afk: boolean): Promise<Presence>;
-    public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<this>;
-    public setPresence(data: PresenceData): Presence;
-    public setStatus(status: PresenceStatusData, shardID?: number | number[]): Presence;
-    public setUsername(username: string): Promise<this>;
+    public setAvatar(avatar: BufferResolvable | Base64Resolvable): Promise<ClientUser>;
+    public setPresence(data: PresenceData): Promise<Presence>;
+    public setStatus(status: PresenceStatusData, shardID?: number | number[]): Promise<Presence>;
+    public setUsername(username: string): Promise<ClientUser>;
   }
 
   export class ClientVoiceManager {
@@ -520,11 +513,9 @@ declare module 'discord.js' {
       SMALL: 1;
       BIG: 2;
     };
-    InviteScopes: InviteScope[];
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
     ActivityTypes: ActivityType[];
-    OverwriteTypes: OverwriteTypes;
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
     DefaultMessageNotifications: DefaultMessageNotifications[];
     VerificationLevels: VerificationLevel[];
@@ -596,6 +587,9 @@ declare module 'discord.js' {
     public deleted: boolean;
     public description: string | null;
     public discoverySplash: string | null;
+    public embedChannel: GuildChannel | null;
+    public embedChannelID: Snowflake | null;
+    public embedEnabled: boolean;
     public emojis: GuildEmojiManager;
     public explicitContentFilter: ExplicitContentFilterLevel;
     public features: GuildFeatures[];
@@ -651,7 +645,8 @@ declare module 'discord.js' {
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
     public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
-    public fetchIntegrations(): Promise<Collection<string, Integration>>;
+    public fetchEmbed(): Promise<GuildWidget>;
+    public fetchIntegrations(options?: FetchIntegrationsOptions): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
@@ -671,6 +666,7 @@ declare module 'discord.js' {
       reason?: string,
     ): Promise<Guild>;
     public setDiscoverySplash(discoverySplash: Base64Resolvable | null, reason?: string): Promise<Guild>;
+    public setEmbed(embed: GuildWidgetData, reason?: string): Promise<Guild>;
     public setExplicitContentFilter(
       explicitContentFilter: ExplicitContentFilterLevel | number,
       reason?: string,
@@ -933,7 +929,7 @@ declare module 'discord.js' {
     public static PRIVILEGED: number;
     public static ALL: number;
     public static NON_PRIVILEGED: number;
-    public static resolve(bit?: BitFieldResolvable<IntentsString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<IntentsString>): number;
   }
 
   export class Invite extends Base {
@@ -1108,7 +1104,7 @@ declare module 'discord.js' {
 
   export class MessageFlags extends BitField<MessageFlagsString> {
     public static FLAGS: Record<MessageFlagsString, number>;
-    public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<MessageFlagsString>): number;
   }
 
   export class MessageMentions {
@@ -1202,17 +1198,17 @@ declare module 'discord.js' {
     public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwriteData;
   }
 
-  export class Permissions extends BitField<PermissionString, bigint> {
+  export class Permissions extends BitField<PermissionString> {
     public any(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
     public has(permission: PermissionResolvable, checkAdmin?: boolean): boolean;
-    public missing(bits: BitFieldResolvable<PermissionString, bigint>, checkAdmin?: boolean): PermissionString[];
+    public missing(bits: BitFieldResolvable<PermissionString>, checkAdmin?: boolean): PermissionString[];
     public serialize(checkAdmin?: boolean): Record<PermissionString, boolean>;
     public toArray(checkAdmin?: boolean): PermissionString[];
 
-    public static ALL: bigint;
-    public static DEFAULT: bigint;
+    public static ALL: number;
+    public static DEFAULT: number;
     public static FLAGS: PermissionFlags;
-    public static resolve(permission?: PermissionResolvable): bigint;
+    public static resolve(permission?: PermissionResolvable): number;
   }
 
   export class Presence {
@@ -1423,7 +1419,7 @@ declare module 'discord.js' {
 
   export class Speaking extends BitField<SpeakingString> {
     public static FLAGS: Record<SpeakingString, number>;
-    public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<SpeakingString>): number;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -1481,7 +1477,7 @@ declare module 'discord.js' {
 
   export class SystemChannelFlags extends BitField<SystemChannelFlagsString> {
     public static FLAGS: Record<SystemChannelFlagsString, number>;
-    public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<SystemChannelFlagsString>): number;
   }
 
   export class Team extends Base {
@@ -1561,7 +1557,7 @@ declare module 'discord.js' {
 
   export class UserFlags extends BitField<UserFlagsString> {
     public static FLAGS: Record<UserFlagsString, number>;
-    public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
+    public static resolve(bit?: BitFieldResolvable<UserFlagsString>): number;
   }
 
   export class Util {
@@ -1668,7 +1664,7 @@ declare module 'discord.js' {
     public voiceManager: ClientVoiceManager;
     public disconnect(): void;
     public play(input: VoiceBroadcast | Readable | string, options?: StreamOptions): StreamDispatcher;
-    public setSpeaking(value: BitFieldResolvable<SpeakingString, number>): void;
+    public setSpeaking(value: BitFieldResolvable<SpeakingString>): void;
 
     public on(event: 'authenticated' | 'closing' | 'newSession' | 'ready' | 'reconnecting', listener: () => void): this;
     public on(event: 'debug', listener: (message: string) => void): this;
@@ -1769,9 +1765,8 @@ declare module 'discord.js' {
   }
 
   export class WebhookClient extends WebhookMixin(BaseClient) {
-    constructor(id: string, token: string, options?: WebhookClientOptions);
+    constructor(id: string, token: string, options?: ClientOptions);
     public client: this;
-    public options: WebhookClientOptions;
     public token: string;
   }
 
@@ -2180,7 +2175,6 @@ declare module 'discord.js' {
     UNKNOWN_GUILD_TEMPLATE: 10057;
     BOT_PROHIBITED_ENDPOINT: 20001;
     BOT_ONLY_ENDPOINT: 20002;
-    ANNOUNCEMENT_EDIT_LIMIT_EXCEEDED: 20022;
     CHANNEL_HIT_WRITE_RATELIMIT: 20028;
     MAXIMUM_GUILDS: 30001;
     MAXIMUM_FRIENDS: 30002;
@@ -2347,17 +2341,17 @@ declare module 'discord.js' {
 
   type Base64String = string;
 
-  type BitFieldResolvable<T extends string, N extends number | bigint> =
-    | RecursiveReadonlyArray<T | N | Readonly<BitField<T, N>>>
+  type BitFieldResolvable<T extends string> =
+    | RecursiveReadonlyArray<T | number | Readonly<BitField<T>>>
     | T
-    | N
-    | Readonly<BitField<T, N>>;
+    | number
+    | Readonly<BitField<T>>;
 
   type BufferResolvable = Buffer | string;
 
   interface ChannelCreationOverwrites {
-    allow?: PermissionResolvable;
-    deny?: PermissionResolvable;
+    allow?: PermissionResolvable | number;
+    deny?: PermissionResolvable | number;
     id: RoleResolvable | UserResolvable;
   }
 
@@ -2390,8 +2384,8 @@ declare module 'discord.js' {
   type ChannelResolvable = Channel | Snowflake;
 
   interface ClientEvents {
-    channelCreate: [channel: GuildChannel];
-    channelDelete: [channel: DMChannel | GuildChannel];
+    channelCreate: [channel: Channel];
+    channelDelete: [channel: Channel | PartialDMChannel];
     channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
@@ -2460,7 +2454,6 @@ declare module 'discord.js' {
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
-    intents: BitFieldResolvable<IntentsString, number>;
     ws?: WebSocketOptions;
     http?: HTTPOptions;
   }
@@ -2471,11 +2464,6 @@ declare module 'discord.js' {
     web?: ClientPresenceStatus;
     mobile?: ClientPresenceStatus;
     desktop?: ClientPresenceStatus;
-  }
-
-  interface ClientUserEditData {
-    username?: string;
-    avatar?: BufferResolvable | Base64Resolvable;
   }
 
   interface CloseEvent {
@@ -2867,7 +2855,6 @@ declare module 'discord.js' {
     permissions?: PermissionResolvable;
     guild?: GuildResolvable;
     disableGuildSelect?: boolean;
-    additionalScopes?: InviteScope[];
   }
 
   interface InviteOptions {
@@ -2879,19 +2866,6 @@ declare module 'discord.js' {
   }
 
   type InviteResolvable = string;
-
-  type InviteScope =
-    | 'applications.builds.read'
-    | 'applications.commands'
-    | 'applications.entitlements'
-    | 'applications.store.update'
-    | 'connections'
-    | 'email'
-    | 'identity'
-    | 'guilds'
-    | 'guilds.join'
-    | 'gdm.join'
-    | 'webhook.incoming';
 
   type GuildTemplateResolvable = string;
 
@@ -2913,7 +2887,7 @@ declare module 'discord.js' {
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions | null;
     code?: string | boolean;
-    flags?: BitFieldResolvable<MessageFlagsString, number>;
+    flags?: BitFieldResolvable<MessageFlagsString>;
     allowedMentions?: MessageMentionOptions;
   }
 
@@ -3041,13 +3015,13 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> {}
+  interface PermissionFlags extends Record<PermissionString, number> {}
 
   interface PermissionObject extends Record<PermissionString, boolean> {}
 
   interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
 
-  type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
+  type PermissionResolvable = BitFieldResolvable<PermissionString>;
 
   type PermissionString =
     | 'CREATE_INSTANT_INVITE'
@@ -3235,9 +3209,9 @@ declare module 'discord.js' {
 
   interface RawOverwriteData {
     id: Snowflake;
-    allow: string;
-    deny: string;
-    type: number;
+    allow: number;
+    deny: number;
+    type: OverwriteType;
   }
 
   interface ReactionCollectorOptions extends CollectorOptions {
@@ -3304,7 +3278,7 @@ declare module 'discord.js' {
 
   type SystemChannelFlagsString = 'WELCOME_MESSAGE_DISABLED' | 'BOOST_MESSAGE_DISABLED';
 
-  type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
+  type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString>;
 
   type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY'>;
 
@@ -3338,11 +3312,6 @@ declare module 'discord.js' {
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
   type VoiceStatus = number;
-
-  type WebhookClientOptions = Pick<
-    ClientOptions,
-    'allowedMentions' | 'restTimeOffset' | 'restRequestTimeout' | 'retryLimit' | 'http'
-  >;
 
   interface WebhookEditData {
     name?: string;
@@ -3378,6 +3347,7 @@ declare module 'discord.js' {
   interface WebSocketOptions {
     large_threshold?: number;
     compress?: boolean;
+    intents?: BitFieldResolvable<IntentsString> | number;
     properties?: WebSocketProperties;
   }
 

@@ -63,7 +63,7 @@ class Role extends Base {
      * The permissions of the role
      * @type {Readonly<Permissions>}
      */
-    this.permissions = new Permissions(BigInt(data.permissions)).freeze();
+    this.permissions = new Permissions(data.permissions).freeze();
 
     /**
      * Whether or not the role is managed by an external service
@@ -301,7 +301,7 @@ class Role extends Base {
    *   .catch(console.error);
    * @example
    * // Remove all permissions from a role
-   * role.setPermissions(0n)
+   * role.setPermissions(0)
    *   .then(updated => console.log(`Updated permissions to ${updated.permissions.bitfield}`))
    *   .catch(console.error);
    */

@@ -245,7 +245,7 @@ class User extends Base {
         recipient_id: this.id,
       },
     });
-    return this.client.channels.add(data);
+    return this.client.actions.ChannelCreate.handle(data).channel;
   }
 
   /**
@@ -255,9 +255,8 @@ class User extends Base {
   async deleteDM() {
     const { dmChannel } = this;
     if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
-    await this.client.api.channels(dmChannel.id).delete();
-    this.client.channels.remove(dmChannel.id);
-    return dmChannel;
+    const data = await this.client.api.channels(dmChannel.id).delete();
+    return this.client.actions.ChannelDelete.handle(data).channel;
   }
 
   /**

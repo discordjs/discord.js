@@ -9,9 +9,7 @@ const Discord = require('../src');
 
 console.time('magic');
 
-const client = new Discord.Client({
-	intents: Discord.Intents.NON_PRIVILEGED
-});
+const client = new Discord.Client();
 
 client
   .login(token)
