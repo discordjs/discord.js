@@ -5,6 +5,7 @@ const { TypeError } = require('../errors');
 const PermissionOverwrites = require('../structures/PermissionOverwrites');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
+const { OverwriteTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for guild channel permission overwrites and stores their cache.
@@ -71,7 +72,7 @@ class PermissionOverwriteManager extends BaseManager {
     userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
-    const type = userOrRole instanceof Role ? 'role' : 'member';
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     const existing = this.cache.get(userOrRole.id);
@@ -106,7 +107,7 @@ class PermissionOverwriteManager extends BaseManager {
     userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
-    const type = userOrRole instanceof Role ? 'role' : 'member';
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     await this.client.api
