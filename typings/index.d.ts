@@ -3036,7 +3036,7 @@ declare module 'discord.js' {
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
-  type PermissionOverwriteResolvable = Snowflake | PermissionOverwrites;
+  type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
 
   type PermissionString =
     | 'CREATE_INSTANT_INVITE'
