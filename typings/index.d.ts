@@ -3481,7 +3481,9 @@ declare module 'discord.js' {
     failIfNotExists?: boolean;
   }
 
-  interface ReplyMessageOptions extends Omit<MessageOptions, 'replyTo'> {}
+  interface ReplyMessageOptions extends Omit<MessageOptions, 'reply'> {
+    failIfNotExists?: boolean;
+  }
 
   interface ResolvedOverwriteOptions {
     allow: Permissions;

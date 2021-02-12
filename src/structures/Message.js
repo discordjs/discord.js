@@ -619,6 +619,8 @@ class Message extends Base {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
+   * @property {boolean} [failIfNotExists=true] Whether to error if the referenced message
+   * does not exist (creates a standard message in this case when false)
    */
 
   /**
@@ -634,7 +636,7 @@ class Message extends Base {
         : APIMessage.transformOptions(content, options, {
             reply: {
               messageReference: this,
-              failIfNotExists: options?.reply?.failIfNotExists ?? content?.reply?.failIfNotExists ?? true,
+              failIfNotExists: options?.failIfNotExists ?? content?.failIfNotExists ?? true,
             },
           }),
     );
