@@ -44,8 +44,8 @@ module.exports = {
   ReactionManager: require('./managers/ReactionManager'),
   ReactionUserManager: require('./managers/ReactionUserManager'),
   MessageManager: require('./managers/MessageManager'),
-  PresenceManager: require('./managers/PresenceManager'),
   PermissionOverwriteManager: require('./managers/PermissionOverwriteManager'),
+  PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
   UserManager: require('./managers/UserManager'),
 
