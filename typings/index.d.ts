@@ -3062,12 +3062,7 @@ declare module 'discord.js' {
   interface PresenceData {
     status?: PresenceStatusData;
     afk?: boolean;
-    activity?: {
-      name?: string;
-      type?: ActivityType | number;
-      url?: string;
-    };
-    shardID?: number | number[];
+    activities?: ActivityOptions[];
   }
 
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
