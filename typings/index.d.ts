@@ -1175,14 +1175,14 @@ declare module 'discord.js' {
     public iconURL(options?: ImageURLOptions): string | null;
   }
 
-  export class PermissionOverwrites {
-    constructor(guildChannel: GuildChannel, data?: object);
+  export class PermissionOverwrites extends Base {
+    constructor(client: Client, data: object, channel: GuildChannel);
     public allow: Readonly<Permissions>;
     public readonly channel: GuildChannel;
     public deny: Readonly<Permissions>;
     public id: Snowflake;
     public type: OverwriteType;
-    public update(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
+    public edit(options: PermissionOverwriteOption, reason?: string): Promise<PermissionOverwrites>;
     public delete(reason?: string): Promise<PermissionOverwrites>;
     public toJSON(): object;
     public static resolveOverwriteOptions(
@@ -1998,6 +1998,28 @@ declare module 'discord.js' {
 
   export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
+  }
+
+  export class PermissionOverwriteManager extends BaseManager<Snowflake, PermissionOverwrites, PermissionOverwriteResolvable> {
+    constructor(client: Client, iterable?: Iterable<any>);
+    public set(
+      overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
+      reason?: string,
+    ): Promise<GuildChannel>;
+    public edit(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOption,
+      reason?: string,
+    ): Promise<GuildChannel>;
+    public create(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOption,
+      reason?: string,
+    ): Promise<GuildChannel>;
+    public delete(
+      userOrRole: RoleResolvable | UserResolvable,
+      reason?: string,
+    ): Promise<GuildChannel>;
   }
 
   export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
@@ -3013,6 +3035,8 @@ declare module 'discord.js' {
   interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
+
+  type PermissionOverwriteResolvable = Snowflake | PermissionOverwrites;
 
   type PermissionString =
     | 'CREATE_INSTANT_INVITE'
