@@ -40,6 +40,7 @@ export const {
   ReactionUserManager,
   MessageManager,
   PresenceManager,
+  PermisssionOverwriteManager,
   RoleManager,
   UserManager,
   discordSort,
