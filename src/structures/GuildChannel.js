@@ -3,11 +3,10 @@
 const Channel = require('./Channel');
 const Invite = require('./Invite');
 const PermissionOverwrites = require('./PermissionOverwrites');
-const Role = require('./Role');
-const { Error, TypeError } = require('../errors');
+const { Error } = require('../errors');
+const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const Collection = require('../util/Collection');
 const { ChannelTypes } = require('../util/Constants');
-const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -58,13 +57,13 @@ class GuildChannel extends Channel {
     this.parentID = data.parent_id || null;
 
     /**
-     * A map of permission overwrites in this channel for roles and users
-     * @type {Collection<Snowflake, PermissionOverwrites>}
+     * A manager of permission overwrites that belong to this channel
+     * @type {PermissionOverwriteManager}
      */
-    this.permissionOverwrites = new Collection();
+    this.permissionOverwrites = new PermissionOverwriteManager(this);
     if (data.permission_overwrites) {
       for (const overwrite of data.permission_overwrites) {
-        this.permissionOverwrites.set(overwrite.id, new PermissionOverwrites(this, overwrite));
+        this.permissionOverwrites.add(overwrite);
       }
     }
   }
@@ -189,91 +188,6 @@ class GuildChannel extends Channel {
       .remove(roleOverwrites ? roleOverwrites.deny : 0n)
       .add(roleOverwrites ? roleOverwrites.allow : 0n)
       .freeze();
-  }
-
-  /**
-   * Replaces the permission overwrites in this channel.
-   * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} overwrites
-   * Permission overwrites the channel gets updated with
-   * @param {string} [reason] Reason for updating the channel overwrites
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * channel.overwritePermissions([
-   *   {
-   *      id: message.author.id,
-   *      deny: [Permissions.FLAGS.VIEW_CHANNEL],
-   *   },
-   * ], 'Needed to change permissions');
-   */
-  async overwritePermissions(overwrites, reason) {
-    if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
-    }
-    await this.edit({ permissionOverwrites: overwrites, reason });
-    return this;
-  }
-
-  /**
-   * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // Update or Create permission overwrites for a message author
-   * message.channel.updateOverwrite(message.author, {
-   *   SEND_MESSAGES: false
-   * })
-   *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
-   *   .catch(console.error);
-   */
-  async updateOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const existing = this.permissionOverwrites.get(userOrRole.id);
-    if (existing) {
-      await existing.update(options, reason);
-    } else {
-      await this.createOverwrite(userOrRole, options, reason);
-    }
-    return this;
-  }
-
-  /**
-   * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
-   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
-   * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
-   * @returns {Promise<GuildChannel>}
-   * @example
-   * // Create or Replace permission overwrites for a message author
-   * message.channel.createOverwrite(message.author, {
-   *   SEND_MESSAGES: false
-   * })
-   *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
-   *   .catch(console.error);
-   */
-  createOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
-    const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
-
-    return this.client.api
-      .channels(this.id)
-      .permissions(userOrRole.id)
-      .put({
-        data: {
-          id: userOrRole.id,
-          type,
-          allow,
-          deny,
-        },
-        reason,
-      })
-      .then(() => this);
   }
 
   /**
