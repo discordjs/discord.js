@@ -1996,10 +1996,6 @@ declare module 'discord.js' {
     public set(key: any): any;
   }
 
-  export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
-    constructor(client: Client, iterable?: Iterable<any>);
-  }
-
   export class PermissionOverwriteManager extends BaseManager<Snowflake, PermissionOverwrites, PermissionOverwriteResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public set(
@@ -2020,6 +2016,10 @@ declare module 'discord.js' {
       userOrRole: RoleResolvable | UserResolvable,
       reason?: string,
     ): Promise<GuildChannel>;
+  }
+
+  export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
+    constructor(client: Client, iterable?: Iterable<any>);
   }
 
   export class ReactionManager extends BaseManager<string | Snowflake, MessageReaction, MessageReactionResolvable> {
