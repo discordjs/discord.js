@@ -63,7 +63,7 @@ class BaseManager {
   }
 
   /**
-   * Resolves a data entry to a instance ID.
+   * Resolves a data entry to an instance ID.
    * @param {string|Object} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */

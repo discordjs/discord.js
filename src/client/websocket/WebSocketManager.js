@@ -391,25 +391,10 @@ class WebSocketManager extends EventEmitter {
    * Checks whether the client is ready to be marked as ready.
    * @private
    */
-  async checkShardsReady() {
+  checkShardsReady() {
     if (this.status === Status.READY) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
       return;
-    }
-
-    this.status = Status.NEARLY;
-
-    if (this.client.options.fetchAllMembers) {
-      try {
-        const promises = this.client.guilds.cache.map(guild => {
-          if (guild.available) return guild.members.fetch();
-          // Return empty promise if guild is unavailable
-          return Promise.resolve();
-        });
-        await Promise.all(promises);
-      } catch (err) {
-        this.debug(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
-      }
     }
 
     this.triggerClientReady();
