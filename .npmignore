@@ -13,6 +13,7 @@ deploy/
 .tmp/
 .vscode/
 docs/
+.husky/
 
 # NPM ignore
 .eslintrc.json
