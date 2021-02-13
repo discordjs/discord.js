@@ -197,8 +197,8 @@ class Role extends Base {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (typeof data.permissions !== 'undefined') data.permissions = Permissions.resolve(data.permissions);
-    else data.permissions = this.permissions.bitfield;
+    if (typeof data.permissions !== 'undefined') data.permissions = new Permissions(data.permissions);
+    else data.permissions = this.permissions;
     if (typeof data.position !== 'undefined') {
       await Util.setPosition(
         this,
