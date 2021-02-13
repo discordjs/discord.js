@@ -272,7 +272,7 @@ class GuildMemberManager extends BaseManager {
     if (user instanceof GuildMember) return user;
     const _user = this.client.users.cache.get(id);
     if (_user) {
-      return this.resolve(_user) || _user;
+      return this.resolve(_user) ?? _user;
     }
     return id;
   }
