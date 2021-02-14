@@ -18,6 +18,12 @@ class SystemChannelFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name SystemChannelFlags#bitfield
+ */
+
+/**
  * Data that can be resolved to give a sytem channel flag bitfield. This can be:
  * * A string (see {@link SystemChannelFlags.FLAGS})
  * * A sytem channel flag

@@ -9,6 +9,7 @@ const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 const client = new Client({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES],
   shardCount: 2,
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client.on('debug', log);
