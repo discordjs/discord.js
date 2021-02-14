@@ -2,9 +2,9 @@
 
 const assert = require('assert');
 const { token } = require('./auth');
-const { Client } = require('../src');
+const { Client, Intents } = require('../src');
 
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 client.on('ready', async () => {
   try {
