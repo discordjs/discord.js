@@ -4,6 +4,7 @@ const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
+const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
@@ -210,13 +211,6 @@ class Guild extends Base {
     this.systemChannelID = data.system_channel_id;
 
     /**
-     * Whether embedded images are enabled on this guild
-     * @type {boolean}
-     * @deprecated
-     */
-    this.embedEnabled = data.embed_enabled;
-
-    /**
      * The type of premium tier:
      * * 0: NONE
      * * 1: TIER_1
@@ -253,15 +247,6 @@ class Guild extends Base {
        * @type {?string}
        */
       this.widgetChannelID = data.widget_channel_id;
-    }
-
-    if (typeof data.embed_channel_id !== 'undefined') {
-      /**
-       * The embed channel ID, if enabled
-       * @type {?string}
-       * @deprecated
-       */
-      this.embedChannelID = data.embed_channel_id;
     }
 
     /**
@@ -585,16 +570,6 @@ class Guild extends Base {
   }
 
   /**
-   * Embed channel for this guild
-   * @type {?TextChannel}
-   * @readonly
-   * @deprecated
-   */
-  get embedChannel() {
-    return this.client.channels.cache.get(this.embedChannelID) || null;
-  }
-
-  /**
    * Rules channel for this guild
    * @type {?TextChannel}
    * @readonly
@@ -624,27 +599,6 @@ class Guild extends Base {
         ? this.members.add({ user: { id: this.client.user.id } }, true)
         : null)
     );
-  }
-
-  /**
-   * The voice state for the client user of this guild, if any
-   * @type {?VoiceState}
-   * @readonly
-   */
-  get voice() {
-    return this.voiceStates.cache.get(this.client.user.id);
-  }
-
-  /**
-   * Returns the GuildMember form of a User object, if the user is present in the guild.
-   * @param {UserResolvable} user The user that you want to obtain the GuildMember of
-   * @returns {?GuildMember}
-   * @example
-   * // Get the guild member of a user
-   * const member = guild.member(message.author);
-   */
-  member(user) {
-    return this.members.resolve(user);
   }
 
   /**
@@ -708,8 +662,6 @@ class Guild extends Base {
   /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
-   * @param {Object} [options] Options for fetching integrations
-   * @param {boolean} [options.includeApplications] Whether to include bot and Oauth2 webhook integrations
    * @returns {Promise<Collection<string, Integration>>}
    * @example
    * // Fetch integrations
@@ -717,19 +669,25 @@ class Guild extends Base {
    *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
    *   .catch(console.error);
    */
-  fetchIntegrations({ includeApplications = false } = {}) {
+  async fetchIntegrations() {
+    const data = await this.client.api.guilds(this.id).integrations.get();
+    return data.reduce(
+      (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection(),
+    );
+  }
+
+  /**
+   * Fetches a collection of templates from this guild.
+   * Resolves with a collection mapping templates by their codes.
+   * @returns {Promise<Collection<string, GuildTemplate>>}
+   */
+  fetchTemplates() {
     return this.client.api
       .guilds(this.id)
-      .integrations.get({
-        query: {
-          include_applications: includeApplications,
-        },
-      })
-      .then(data =>
-        data.reduce(
-          (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),
-          new Collection(),
-        ),
+      .templates.get()
+      .then(templates =>
+        templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
       );
   }
 
@@ -751,6 +709,19 @@ class Guild extends Base {
       .guilds(this.id)
       .integrations.post({ data, reason })
       .then(() => this);
+  }
+
+  /**
+   * Creates a template for the guild.
+   * @param {string} name The name for the template
+   * @param {string} [description] The description for the template
+   * @returns {Promise<GuildTemplate>}
+   */
+  createTemplate(name, description) {
+    return this.client.api
+      .guilds(this.id)
+      .templates.post({ data: { name, description } })
+      .then(data => new GuildTemplate(this.client, data));
   }
 
   /**
@@ -889,20 +860,6 @@ class Guild extends Base {
    */
 
   /**
-   * Fetches the guild embed.
-   * @returns {Promise<GuildWidget>}
-   * @deprecated
-   * @example
-   * // Fetches the guild embed
-   * guild.fetchEmbed()
-   *   .then(embed => console.log(`The embed is ${embed.enabled ? 'enabled' : 'disabled'}`))
-   *   .catch(console.error);
-   */
-  fetchEmbed() {
-    return this.fetchWidget();
-  }
-
-  /**
    * Fetches the guild widget.
    * @returns {Promise<GuildWidget>}
    * @example
@@ -913,8 +870,8 @@ class Guild extends Base {
    */
   async fetchWidget() {
     const data = await this.client.api.guilds(this.id).widget.get();
-    this.widgetEnabled = this.embedEnabled = data.enabled;
-    this.widgetChannelID = this.embedChannelID = data.channel_id;
+    this.widgetEnabled = data.enabled;
+    this.widgetChannelID = data.channel_id;
     return {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -965,29 +922,25 @@ class Guild extends Base {
    * @param {boolean} [options.deaf] Whether the member should be deafened (requires `DEAFEN_MEMBERS`)
    * @returns {Promise<GuildMember>}
    */
-  addMember(user, options) {
+  async addMember(user, options) {
     user = this.client.users.resolveID(user);
-    if (!user) return Promise.reject(new TypeError('INVALID_TYPE', 'user', 'UserResolvable'));
-    if (this.members.cache.has(user)) return Promise.resolve(this.members.cache.get(user));
+    if (!user) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
+    if (this.members.cache.has(user)) return this.members.cache.get(user);
     options.access_token = options.accessToken;
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
         role = this.roles.resolve(role);
         if (!role) {
-          return Promise.reject(
-            new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
-          );
+          throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
         roles.push(role.id);
       }
       options.roles = roles;
     }
-    return this.client.api
-      .guilds(this.id)
-      .members(user)
-      .put({ data: options })
-      .then(data => this.members.add(data));
+    const data = await this.client.api.guilds(this.id).members(user).put({ data: options });
+    // Data is an empty buffer if the member is already part of the guild.
+    return data instanceof Buffer ? this.members.fetch(user) : this.members.add(data);
   }
 
   /**
@@ -1364,7 +1317,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    * @example
    * guild.setRolePositions([{ role: roleID, position: updatedRoleIndex }])
-   *  .then(guild => console.log(`Role permissions updated for ${guild}`))
+   *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
   setRolePositions(rolePositions) {
@@ -1387,17 +1340,6 @@ class Guild extends Base {
             roles: rolePositions,
           }).guild,
       );
-  }
-
-  /**
-   * Edits the guild's embed.
-   * @param {GuildWidgetData} embed The embed for the guild
-   * @param {string} [reason] Reason for changing the guild's embed
-   * @returns {Promise<Guild>}
-   * @deprecated
-   */
-  setEmbed(embed, reason) {
-    return this.setWidget(embed, reason);
   }
 
   /**
@@ -1461,7 +1403,7 @@ class Guild extends Base {
    * @returns {boolean}
    */
   equals(guild) {
-    let equal =
+    return (
       guild &&
       guild instanceof this.constructor &&
       this.id === guild.id &&
@@ -1475,20 +1417,10 @@ class Guild extends Base {
       this.icon === guild.icon &&
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
-      this.embedEnabled === guild.embedEnabled &&
       (this.features === guild.features ||
         (this.features.length === guild.features.length &&
-          this.features.every((feat, i) => feat === guild.features[i])));
-
-    if (equal) {
-      if (this.embedChannel) {
-        if (!guild.embedChannel || this.embedChannel.id !== guild.embedChannel.id) equal = false;
-      } else if (guild.embedChannel) {
-        equal = false;
-      }
-    }
-
-    return equal;
+          this.features.every((feat, i) => feat === guild.features[i])))
+    );
   }
 
   /**
@@ -1519,7 +1451,7 @@ class Guild extends Base {
 
   /**
    * Creates a collection of this guild's roles, sorted by their position and IDs.
-   * @returns {Collection<Role>}
+   * @returns {Collection<Snowflake, Role>}
    * @private
    */
   _sortedRoles() {
@@ -1529,7 +1461,7 @@ class Guild extends Base {
   /**
    * Creates a collection of this guild's or a specific category's channels, sorted by their position and IDs.
    * @param {GuildChannel} [channel] Category to get the channels of
-   * @returns {Collection<GuildChannel>}
+   * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
   _sortedChannels(channel) {
@@ -1545,10 +1477,6 @@ class Guild extends Base {
     );
   }
 }
-
-Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
-
-Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
 
 Guild.prototype.fetchVanityCode = deprecate(
   Guild.prototype.fetchVanityCode,

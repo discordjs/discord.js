@@ -7,7 +7,9 @@ const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
 const Discord = require('../src');
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  intents: Discord.Intents.NON_PRIVILEGED,
+});
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());
@@ -32,7 +34,6 @@ const tests = [
 
   (m, hook) => hook.send(fill('x'), { split: true }),
   (m, hook) => hook.send(fill('1'), { code: 'js', split: true }),
-  (m, hook) => hook.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   (m, hook) => hook.send(fill('xyz '), { split: { char: ' ' } }),
 
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
@@ -96,7 +97,6 @@ const tests = [
   async (m, hook) => hook.send({ files: [await read(fileA)] }),
   async (m, hook) =>
     hook.send(fill('x'), {
-      reply: m.author,
       code: 'js',
       split: true,
       embeds: [embed().setImage('attachment://zero.png')],
@@ -108,7 +108,6 @@ const tests = [
   (m, hook) => hook.send({ files: [{ attachment: readStream(fileA) }] }),
   async (m, hook) =>
     hook.send(fill('xyz '), {
-      reply: m.author,
       code: 'js',
       split: { char: ' ', prepend: 'hello! ', append: '!!!' },
       embeds: [embed().setImage('attachment://zero.png')],

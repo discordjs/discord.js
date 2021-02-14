@@ -4,7 +4,7 @@ These questions are some of the most frequently asked.
 
 ## No matter what, I get `SyntaxError: Block-scoped declarations (let, const, function, class) not yet supported outside strict mode`‽
 
-Update to Node.js 12.0.0 or newer.
+Update to Node.js 14.0.0 or newer.
 
 ## How do I get voice working?
 

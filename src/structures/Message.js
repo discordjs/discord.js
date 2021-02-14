@@ -11,7 +11,7 @@ const Sticker = require('./Sticker');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
-const { MessageTypes } = require('../util/Constants');
+const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/Snowflake');
@@ -63,7 +63,7 @@ class Message extends Base {
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
        * @type {?boolean}
        */
-      this.system = data.type !== 0;
+      this.system = SystemMessageTypes.includes(this.type);
     } else if (typeof this.type !== 'string') {
       this.system = null;
       this.type = null;
@@ -197,13 +197,6 @@ class Message extends Base {
         }
       : null;
 
-    /**
-     * The previous versions of the message, sorted with the most recent first
-     * @type {Message[]}
-     * @private
-     */
-    this._edits = [];
-
     if (this.member && data.member) {
       this.member._patch(data.member);
     } else if (data.member && this.guild && this.author) {
@@ -217,11 +210,11 @@ class Message extends Base {
     this.flags = new MessageFlags(data.flags).freeze();
 
     /**
-     * Reference data sent in a crossposted message.
+     * Reference data sent in a crossposted message or inline reply.
      * @typedef {Object} MessageReference
-     * @property {string} channelID ID of the channel the message was crossposted from
-     * @property {?string} guildID ID of the guild the message was crossposted from
-     * @property {?string} messageID ID of the message that was crossposted
+     * @property {string} channelID ID of the channel the message was referenced
+     * @property {?string} guildID ID of the guild the message was referenced
+     * @property {?string} messageID ID of the message that was referenced
      */
 
     /**
@@ -235,6 +228,10 @@ class Message extends Base {
           messageID: data.message_reference.message_id,
         }
       : null;
+
+    if (data.referenced_message) {
+      this.channel.messages.add(data.referenced_message);
+    }
   }
 
   /**
@@ -254,11 +251,6 @@ class Message extends Base {
    */
   patch(data) {
     const clone = this._clone();
-    const { messageEditHistoryMaxSize } = this.client.options;
-    if (messageEditHistoryMaxSize !== 0) {
-      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
-      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
-    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -296,7 +288,7 @@ class Message extends Base {
    * @readonly
    */
   get member() {
-    return this.guild ? this.guild.member(this.author) || null : null;
+    return this.guild ? this.guild.members.resolve(this.author) || null : null;
   }
 
   /**
@@ -392,18 +384,6 @@ class Message extends Base {
   }
 
   /**
-   * An array of cached versions of the message, including the current version
-   * Sorted from latest (first) to oldest (last)
-   * @type {Message[]}
-   * @readonly
-   */
-  get edits() {
-    const copy = this._edits.slice();
-    copy.unshift(this);
-    return copy;
-  }
-
-  /**
    * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
@@ -418,10 +398,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return (
+    return Boolean(
       !this.deleted &&
-      (this.author.id === this.client.user.id ||
-        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        (this.author.id === this.client.user.id ||
+          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
     );
   }
 
@@ -435,6 +415,18 @@ class Message extends Base {
       this.type === 'DEFAULT' &&
       (!this.guild || this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false))
     );
+  }
+
+  /**
+   * The Message this crosspost/reply/pin-add references, if cached
+   * @type {?Message}
+   * @readonly
+   */
+  get referencedMessage() {
+    if (!this.reference) return null;
+    const referenceChannel = this.client.channels.resolve(this.reference.channelID);
+    if (!referenceChannel) return null;
+    return referenceChannel.messages.resolve(this.reference.messageID);
   }
 
   /**
@@ -461,6 +453,7 @@ class Message extends Base {
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    */
 
   /**
@@ -575,46 +568,32 @@ class Message extends Base {
 
   /**
    * Deletes the message.
-   * @param {Object} [options] Options
-   * @param {number} [options.timeout=0] How long to wait to delete the message in milliseconds
-   * @param {string} [options.reason] Reason for deleting this message, if it does not belong to the client user
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
-   * message.delete({ timeout: 5000 })
-   *   .then(msg => console.log(`Deleted message from ${msg.author.username} after 5 seconds`))
+   * message.delete()
+   *   .then(msg => console.log(`Deleted message from ${msg.author.username}`))
    *   .catch(console.error);
    */
-  delete(options = {}) {
-    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
-    const { timeout = 0, reason } = options;
-    if (timeout <= 0) {
-      return this.channel.messages.delete(this.id, reason).then(() => this);
-    } else {
-      return new Promise(resolve => {
-        this.client.setTimeout(() => {
-          resolve(this.delete({ reason }));
-        }, timeout);
-      });
-    }
+  async delete() {
+    await this.channel.messages.delete(this.id);
+    return this;
   }
 
   /**
-   * Replies to the message.
+   * Send an inline reply to this message.
    * @param {StringResolvable|APIMessage} [content=''] The content for the message
-   * @param {MessageOptions|MessageAdditions} [options={}] The options to provide
+   * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
+   * @param {MessageResolvable} [options.replyTo=this] The message to reply to
    * @returns {Promise<Message|Message[]>}
-   * @example
-   * // Reply to a message
-   * message.reply('Hey, I\'m a reply!')
-   *   .then(() => console.log(`Sent a reply to ${message.author.username}`))
-   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
       content instanceof APIMessage
         ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+        : APIMessage.transformOptions(content, options, {
+            replyTo: this,
+          }),
     );
   }
 
@@ -637,7 +616,7 @@ class Message extends Base {
   }
 
   /**
-   * Suppresses or unsuppresses embeds on a message
+   * Suppresses or unsuppresses embeds on a message.
    * @param {boolean} [suppress=true] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */

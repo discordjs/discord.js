@@ -2,7 +2,6 @@
 
 const { Presence } = require('./Presence');
 const { TypeError } = require('../errors');
-const Collection = require('../util/Collection');
 const { ActivityTypes, OPCodes } = require('../util/Constants');
 
 class ClientPresence extends Presence {
@@ -11,11 +10,11 @@ class ClientPresence extends Presence {
    * @param {Object} [data={}] The data for the client presence
    */
   constructor(client, data = {}) {
-    super(client, Object.assign(data, { status: 'online', user: { id: null } }));
+    super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));
   }
 
-  async set(presence) {
-    const packet = await this._parse(presence);
+  set(presence) {
+    const packet = this._parse(presence);
     this.patch(packet);
     if (typeof presence.shardID === 'undefined') {
       this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
@@ -29,58 +28,33 @@ class ClientPresence extends Presence {
     return this;
   }
 
-  async _parse({ status, since, afk, activity }) {
-    const applicationID = activity && (activity.application ? activity.application.id || activity.application : null);
-    let assets = new Collection();
-    if (activity) {
-      if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', 'name', 'string');
-      if (!activity.type) activity.type = 0;
-      if (activity.assets && applicationID) {
-        try {
-          const a = await this.client.api.oauth2.applications(applicationID).assets.get();
-          for (const asset of a) assets.set(asset.name, asset.id);
-        } catch {} // eslint-disable-line no-empty
-      }
-    }
-
-    const packet = {
-      afk: afk != null ? afk : false, // eslint-disable-line eqeqeq
-      since: since != null ? since : null, // eslint-disable-line eqeqeq
+  _parse({ status, since, afk, activities }) {
+    const data = {
+      activities: [],
+      afk: typeof afk === 'boolean' ? afk : false,
+      since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
       status: status || this.status,
-      game: activity
-        ? {
-            type: activity.type,
-            name: activity.name,
-            url: activity.url,
-            details: activity.details || undefined,
-            state: activity.state || undefined,
-            assets: activity.assets
-              ? {
-                  large_text: activity.assets.largeText || undefined,
-                  small_text: activity.assets.smallText || undefined,
-                  large_image: assets.get(activity.assets.largeImage) || activity.assets.largeImage,
-                  small_image: assets.get(activity.assets.smallImage) || activity.assets.smallImage,
-                }
-              : undefined,
-            timestamps: activity.timestamps || undefined,
-            party: activity.party || undefined,
-            application_id: applicationID || undefined,
-            secrets: activity.secrets || undefined,
-            instance: activity.instance || undefined,
-          }
-        : null,
     };
+    if (activities === null) {
+      data.activities = null;
+      return data;
+    }
+    if (activities && activities.length) {
+      for (const [i, activity] of activities.entries()) {
+        if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
+        if (!activity.type) activity.type = 0;
 
-    if ((status || afk || since) && !activity) {
-      packet.game = this.activities[0] || null;
+        data.activities.push({
+          type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+          name: activity.name,
+          url: activity.url,
+        });
+      }
+    } else if ((status || afk || since) && this.activities.length) {
+      data.activities.push(...this.activities);
     }
 
-    if (packet.game) {
-      packet.game.type =
-        typeof packet.game.type === 'number' ? packet.game.type : ActivityTypes.indexOf(packet.game.type);
-    }
-
-    return packet;
+    return data;
   }
 }
 

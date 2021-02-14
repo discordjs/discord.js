@@ -20,4 +20,3 @@ deploy/deploy_key.pub
 .idea/
 docs/docs.json
 typings/index.js
-webpack/

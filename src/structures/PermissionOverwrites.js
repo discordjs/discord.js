@@ -2,8 +2,8 @@
 
 const Role = require('./Role');
 const { TypeError } = require('../errors');
+const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Util = require('../util/Util');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -29,29 +29,22 @@ class PermissionOverwrites {
     this.id = data.id;
 
     /**
-     * The type of a permission overwrite. It can be one of:
-     * * member
-     * * role
-     * @typedef {string} OverwriteType
-     */
-
-    /**
      * The type of this overwrite
      * @type {OverwriteType}
      */
-    this.type = data.type;
+    this.type = OverwriteTypes[data.type];
 
     /**
      * The permissions that are denied for the user or role.
      * @type {Readonly<Permissions>}
      */
-    this.deny = new Permissions(data.deny).freeze();
+    this.deny = new Permissions(BigInt(data.deny)).freeze();
 
     /**
      * The permissions that are allowed for the user or role.
      * @type {Readonly<Permissions>}
      */
-    this.allow = new Permissions(data.allow).freeze();
+    this.allow = new Permissions(BigInt(data.allow)).freeze();
   }
 
   /**
@@ -67,16 +60,22 @@ class PermissionOverwrites {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  update(options, reason) {
+  async update(options, reason) {
     const { allow, deny } = this.constructor.resolveOverwriteOptions(options, this);
 
-    return this.channel.client.api
+    await this.channel.client.api
       .channels(this.channel.id)
-      .permissions[this.id].put({
-        data: { id: this.id, type: this.type, allow: allow.bitfield, deny: deny.bitfield },
+      .permissions(this.id)
+      .put({
+        data: {
+          id: this.id,
+          type: OverwriteTypes[this.type],
+          allow,
+          deny,
+        },
         reason,
-      })
-      .then(() => this);
+      });
+    return this;
   }
 
   /**
@@ -84,12 +83,18 @@ class PermissionOverwrites {
    * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */
-  delete(reason) {
-    return this.channel.client.api.channels[this.channel.id].permissions[this.id].delete({ reason }).then(() => this);
+  async delete(reason) {
+    await this.channel.client.api.channels(this.channel.id).permissions(this.id).delete({ reason });
+    return this;
   }
 
   toJSON() {
-    return Util.flatten(this);
+    return {
+      id: this.id,
+      type: OverwriteTypes[this.type],
+      allow: this.allow,
+      deny: this.deny,
+    };
   }
 
   /**
@@ -142,9 +147,9 @@ class PermissionOverwrites {
    * The raw data for a permission overwrite
    * @typedef {Object} RawOverwriteData
    * @property {Snowflake} id The id of the overwrite
-   * @property {number} allow The permissions to allow
-   * @property {number} deny The permissions to deny
-   * @property {OverwriteType} type The type of this OverwriteData
+   * @property {string} allow The permissions to allow
+   * @property {string} deny The permissions to deny
+   * @property {number} type The type of this OverwriteData
    */
 
   /**
@@ -164,24 +169,29 @@ class PermissionOverwrites {
   /**
    * Resolves an overwrite into {@link RawOverwriteData}.
    * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
-   * @param {Guild} guild The guild to resolve from
+   * @param {Guild} [guild] The guild to resolve from
    * @returns {RawOverwriteData}
    */
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();
-    if (typeof overwrite.id === 'string' && ['role', 'member'].includes(overwrite.type)) {
-      return { ...overwrite, allow: Permissions.resolve(overwrite.allow), deny: Permissions.resolve(overwrite.deny) };
+    if (typeof overwrite.id === 'string' && overwrite.type in OverwriteTypes) {
+      return {
+        id: overwrite.id,
+        type: OverwriteTypes[overwrite.type],
+        allow: Permissions.resolve(overwrite.allow).toString(),
+        deny: Permissions.resolve(overwrite.deny).toString(),
+      };
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-    const type = userOrRole instanceof Role ? 'role' : 'member';
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
 
     return {
       id: userOrRole.id,
       type,
-      allow: Permissions.resolve(overwrite.allow),
-      deny: Permissions.resolve(overwrite.deny),
+      allow: Permissions.resolve(overwrite.allow).toString(),
+      deny: Permissions.resolve(overwrite.deny).toString(),
     };
   }
 }

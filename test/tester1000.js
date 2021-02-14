@@ -8,6 +8,7 @@ const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
 
 const client = new Discord.Client({
   shardCount: 2,
+  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client.on('debug', log);
@@ -31,16 +32,13 @@ const commands = {
     }
     message.channel.send(res, { code: 'js' });
   },
-  ping: message => message.reply('pong'),
+  ping: message => message.channel.send('pong'),
 };
 
 client.on('message', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  message.content = message.content
-    .replace(prefix, '')
-    .trim()
-    .split(' ');
+  message.content = message.content.replace(prefix, '').trim().split(' ');
   const command = message.content.shift();
   message.content = message.content.join(' ');
 

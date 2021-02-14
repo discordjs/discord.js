@@ -2,7 +2,6 @@
 
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const { browser } = require('../util/Constants');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -95,7 +94,7 @@ class VoiceState extends Base {
    * @readonly
    */
   get connection() {
-    if (browser || this.id !== this.client.user.id) return null;
+    if (this.id !== this.client.user.id) return null;
     return this.client.voice.connections.get(this.guild.id) || null;
   }
 

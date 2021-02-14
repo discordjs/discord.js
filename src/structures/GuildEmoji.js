@@ -49,7 +49,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
@@ -150,6 +150,7 @@ class GuildEmoji extends BaseGuildEmoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
+        other.available === this.available &&
         other.requiresColons === this.requiresColons &&
         other.roles.cache.size === this.roles.cache.size &&
         other.roles.cache.every(role => this.roles.cache.has(role.id))

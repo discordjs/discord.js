@@ -28,7 +28,6 @@ class User extends Base {
     this.id = data.id;
 
     this.system = null;
-    this.locale = null;
     this.flags = null;
 
     this._patch(data);
@@ -79,14 +78,6 @@ class User extends Base {
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
-    }
-
-    if ('locale' in data) {
-      /**
-       * The locale of the user's client (ISO 639-1)
-       * @type {?string}
-       */
-      this.locale = data.locale;
     }
 
     if ('public_flags' in data) {
@@ -254,7 +245,7 @@ class User extends Base {
         recipient_id: this.id,
       },
     });
-    return this.client.actions.ChannelCreate.handle(data).channel;
+    return this.client.channels.add(data);
   }
 
   /**
@@ -264,8 +255,9 @@ class User extends Base {
   async deleteDM() {
     const { dmChannel } = this;
     if (!dmChannel) throw new Error('USER_NO_DMCHANNEL');
-    const data = await this.client.api.channels(dmChannel.id).delete();
-    return this.client.actions.ChannelDelete.handle(data).channel;
+    await this.client.api.channels(dmChannel.id).delete();
+    this.client.channels.remove(dmChannel.id);
+    return dmChannel;
   }
 
   /**
@@ -287,7 +279,7 @@ class User extends Base {
 
   /**
    * Fetches this user's flags.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<UserFlags>}
    */
   async fetchFlags(force = false) {
@@ -299,7 +291,7 @@ class User extends Base {
 
   /**
    * Fetches this user.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the AP
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
   fetch(force = false) {

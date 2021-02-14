@@ -7,7 +7,9 @@ const fetch = require('node-fetch');
 const { owner, token } = require('./auth.js');
 const Discord = require('../src');
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  intents: Discord.Intents.NON_PRIVILEGED,
+});
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());
@@ -32,7 +34,6 @@ const tests = [
 
   m => m.channel.send(fill('x'), { split: true }),
   m => m.channel.send(fill('1'), { code: 'js', split: true }),
-  m => m.channel.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   m => m.channel.send(fill('xyz '), { split: { char: ' ' } }),
 
   m => m.channel.send('x', { embed: { description: 'a' } }),
@@ -99,7 +100,6 @@ const tests = [
   async m => m.channel.send({ files: [await read(fileA)] }),
   async m =>
     m.channel.send(fill('x'), {
-      reply: m.author,
       code: 'js',
       split: true,
       embed: embed().setImage('attachment://zero.png'),
@@ -111,7 +111,6 @@ const tests = [
   m => m.channel.send({ files: [{ attachment: readStream(fileA) }] }),
   async m =>
     m.channel.send(fill('xyz '), {
-      reply: m.author,
       code: 'js',
       split: { char: ' ', prepend: 'hello! ', append: '!!!' },
       embed: embed().setImage('attachment://zero.png'),
