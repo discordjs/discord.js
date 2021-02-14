@@ -2124,6 +2124,12 @@ declare module 'discord.js' {
 
   type ActivityFlagsString = 'INSTANCE' | 'JOIN' | 'SPECTATE' | 'JOIN_REQUEST' | 'SYNC' | 'PLAY';
 
+  interface ActivitiesOptions {
+    name?: string;
+    url?: string;
+    type?: ActivityType | number;
+  }
+
   interface ActivityOptions {
     name?: string;
     url?: string;
@@ -3062,11 +3068,7 @@ declare module 'discord.js' {
   interface PresenceData {
     status?: PresenceStatusData;
     afk?: boolean;
-    activities?: {
-      name?: string;
-      type?: ActivityType | number;
-      url?: string;
-    }[];
+    activities?: ActivitiesOptions[];
     shardID?: number | number[];
   }
 
