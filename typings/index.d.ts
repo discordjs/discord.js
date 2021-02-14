@@ -2753,7 +2753,9 @@ declare module 'discord.js' {
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
-    | 'WELCOME_SCREEN_ENABLED';
+    | 'WELCOME_SCREEN_ENABLED'
+    | 'MEMBER_VERIFICATION_GATE_ENABLED'
+    | 'PREVIEW_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string | null;
