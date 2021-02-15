@@ -9,6 +9,12 @@ declare enum ChannelType {
   unknown = 7,
 }
 
+declare enum StickerFormatTypes {
+  PNG = 1,
+  APNG = 2,
+  LOTTIE = 3,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -3267,8 +3273,6 @@ declare module 'discord.js' {
     public tags: string[];
     public url: string;
   }
-
-  type StickerFormatTypes = 'PNG' | 'APNG' | 'LOTTIE';
 
   interface StreamOptions {
     type?: StreamType;

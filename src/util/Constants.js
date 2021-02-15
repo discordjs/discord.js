@@ -718,13 +718,7 @@ exports.WebhookTypes = [
  * * LOTTIE
  * @typedef {string} StickerFormatTypes
  */
-exports.StickerFormatTypes = [
-  // They start at 1
-  null,
-  'PNG',
-  'APNG',
-  'LOTTIE',
-];
+exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
 
 /**
  * An overwrite type:
