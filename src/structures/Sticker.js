@@ -58,16 +58,6 @@ class Sticker extends Base {
      * @type {string[]}
      */
     this.tags = sticker.tags?.split(', ') ?? [];
-
-    /**
-     * A link to the sticker
-     * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
-     * Lottie json files must be converted in order to be displayed in Discord.</info>
-     * @type {string}
-     */
-    this.url = `${client.options.http.cdn}/stickers/${this.id}/${this.asset}.${
-      this.format === 'LOTTIE' ? 'json' : 'png'
-    }`;
   }
 
   /**
@@ -86,6 +76,18 @@ class Sticker extends Base {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * A link to the sticker
+   * <info>If the sticker's format is LOTTIE, it returns the URL of the Lottie json file.
+   * Lottie json files must be converted in order to be displayed in Discord.</info>
+   * @type {string}
+   */
+  get url() {
+    return `${this.client.options.http.cdn}/stickers/${this.id}/${this.asset}.${
+      this.format === 'LOTTIE' ? 'json' : 'png'
+    }`;
   }
 }
 
