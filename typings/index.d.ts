@@ -2124,11 +2124,7 @@ declare module 'discord.js' {
 
   type ActivityFlagsString = 'INSTANCE' | 'JOIN' | 'SPECTATE' | 'JOIN_REQUEST' | 'SYNC' | 'PLAY';
 
-  interface ActivitiesOptions {
-    name?: string;
-    url?: string;
-    type?: ActivityType | number;
-  }
+  type ActivitiesOptions = Omit<ActivityOptions, 'shardID'>;
 
   interface ActivityOptions {
     name?: string;
