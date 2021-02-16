@@ -3271,7 +3271,7 @@ declare module 'discord.js' {
     public packID: Snowflake;
     public previewAsset: string | null;
     public tags: string[];
-    public url: string;
+    public readonly url: string;
   }
 
   interface StreamOptions {
