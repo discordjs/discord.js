@@ -574,6 +574,11 @@ class Message extends Base {
    * @param {MessageOptions|MessageAdditions} [options] The additional options to provide
    * @param {MessageResolvable} [options.replyTo=this] The message to reply to
    * @returns {Promise<Message|Message[]>}
+   * @example
+   * // Reply to a message
+   * message.reply('This is a reply!')
+   *   .then(msg => console.log(`Replied to message "${msg.content}"`))
+   *   .catch(console.error);
    */
   reply(content, options) {
     return this.channel.send(
