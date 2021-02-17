@@ -577,7 +577,7 @@ class Message extends Base {
    * @example
    * // Reply to a message
    * message.reply('This is a reply!')
-   *   .then(console.log(`Replied to message "${message.content}"`))
+   *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
   reply(content, options) {
