@@ -15,6 +15,12 @@ class UserFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name UserFlags#bitfield
+ */
+
+/**
  * Numeric user flags. All available properties:
  * * `DISCORD_EMPLOYEE`
  * * `PARTNERED_SERVER_OWNER`

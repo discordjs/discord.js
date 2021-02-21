@@ -16,6 +16,12 @@ class MessageFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name MessageFlags#bitfield
+ */
+
+/**
  * Numeric message flags. All available properties:
  * * `CROSSPOSTED`
  * * `IS_CROSSPOST`
