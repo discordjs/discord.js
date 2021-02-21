@@ -47,6 +47,7 @@ Ignore any warnings about unmet peer dependencies, as they're all optional.
 Without voice support: `npm install discord.js`  
 With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
 With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+Latest (git required): `npm install discordjs/discord.js`
 
 ### Audio engines
 
