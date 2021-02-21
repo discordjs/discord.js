@@ -2,6 +2,7 @@
 
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
+const ApplicationFlags = require('../util/ApplicationFlags');
 
 /**
  * Represents a Client OAuth2 Application.
@@ -16,9 +17,9 @@ class ClientApplication extends Application {
     if ('flags' in data) {
       /**
        * The flags this application has
-       * @type {number}
+       * @type {ApplicationFlags}
        */
-      this.flags = data.flags;
+      this.flags = new ApplicationFlags(data.flags);
     }
 
     if ('cover_image' in data) {

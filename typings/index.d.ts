@@ -115,6 +115,11 @@ declare module 'discord.js' {
     public toString(): string | null;
   }
 
+  export class ApplicationFlags extends BitField<ApplicationFlagsString> {
+    public static FLAGS: Record<ApplicationFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
+  }
+
   export class Base {
     constructor(client: Client);
     public readonly client: Client;
@@ -257,7 +262,7 @@ declare module 'discord.js' {
     public botPublic?: boolean;
     public botRequireCodeGrant?: boolean;
     public cover?: string;
-    public flags: number;
+    public flags: Readonly<ApplicationFlags>;
     public owner?: User | Team;
     public readonly partial: boolean;
     public rpcOrigins: string[];
@@ -2307,6 +2312,17 @@ declare module 'discord.js' {
     id: Snowflake;
     type: 'BIG' | 'SMALL';
   }
+
+  type ApplicationFlagsString =
+    | 'MANAGED_EMOJI'
+    | 'GROUP_DM_CREATE'
+    | 'RPC_HAS_CONNECTED'
+    | 'GATEWAY_PRESENCE'
+    | 'FATEWAY_PRESENCE_LIMITED'
+    | 'GATEWAY_GUILD_MEMBERS'
+    | 'GATEWAY_GUILD_MEMBERS_LIMITED'
+    | 'VERIFICATION_PENDING_GUILD_LIMIT'
+    | 'EMBEDDED';
 
   interface AuditLogChange {
     key: string;
