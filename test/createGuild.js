@@ -24,10 +24,10 @@ client.on('ready', async () => {
     assert.strictEqual(guild.afkTimeout, 60);
     assert.strictEqual(guild.systemChannel.name, 'system-channel');
     await guild.delete();
-    client.destroy();
   } catch (error) {
     console.error(error);
-  }
+  } finally {
+    client.destroy();
 });
 
 client.login(token).catch(console.error);
