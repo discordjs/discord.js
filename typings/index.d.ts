@@ -437,7 +437,7 @@ declare module 'discord.js' {
     };
     Colors: {
       DEFAULT: 0x000000;
-      WHITE: 0xffffff;
+      WHITE: 0xfefefe;
       AQUA: 0x1abc9c;
       GREEN: 0x2ecc71;
       BLUE: 0x3498db;
