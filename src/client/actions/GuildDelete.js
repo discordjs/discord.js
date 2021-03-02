@@ -18,7 +18,7 @@ class GuildDeleteAction extends Action {
         if (channel.type === 'text') channel.stopTyping(true);
       }
 
-      if (data.unavailable) {
+      if (data.unavailable || !guild.available) {
         // Guild is unavailable
         guild.available = false;
 
