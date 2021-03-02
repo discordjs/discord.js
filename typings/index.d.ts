@@ -638,7 +638,7 @@ declare module 'discord.js' {
     public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
     public delete(): Promise<Guild>;
     public discoverySplashURL(options?: ImageURLOptions): string | null;
-	public displayIcon(options?: ImageURLOptions): string;
+    public displayIcon(options?: ImageURLOptions): string;
     public edit(data: GuildEditData, reason?: string): Promise<Guild>;
     public equals(guild: Guild): boolean;
     public fetch(): Promise<Guild>;
