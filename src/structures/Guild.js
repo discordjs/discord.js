@@ -525,6 +525,16 @@ class Guild extends Base {
   }
 
   /**
+   * The URL to this guild's icon if it has one.
+   * Otherwise the guild's acronym will be returned.
+   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @returns {?string}
+   */
+  displayIcon(options) {
+    return this.iconURL(options) ?? this.nameAcronym;
+  }
+
+  /**
    * The URL to this guild's invite splash image.
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string}
