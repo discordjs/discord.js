@@ -28,6 +28,7 @@ client.on('ready', async () => {
     console.error(error);
   } finally {
     client.destroy();
+  }
 });
 
 client.login(token).catch(console.error);
