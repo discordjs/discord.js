@@ -529,6 +529,15 @@ class Util {
   }
 
   /**
+   * Completely removes all mentions
+   * @param {string} str The string to thoroughly sanitize
+   * @returns {string}
+   */
+  static annihilateMentions(str) {
+    return str.replace(/<@[&!#]?\d{18}>/g, '');
+  }
+
+  /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
    * @param {Message} message The message object to reference
