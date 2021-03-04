@@ -1112,7 +1112,7 @@ declare module 'discord.js' {
     private readonly _content: string;
     private _members: Collection<Snowflake, GuildMember> | null;
 
-    public readonly channels: Collection<Snowflake, TextChannel>;
+    public readonly channels: Collection<Snowflake, GuildChannel>;
     public readonly client: Client;
     public everyone: boolean;
     public readonly guild: Guild;
