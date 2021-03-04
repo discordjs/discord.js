@@ -133,15 +133,14 @@ class TextChannel extends GuildChannel {
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       avatar = await DataResolver.resolveImage(avatar);
     }
-    return this.client.api.channels[this.id].webhooks
-      .post({
-        data: {
-          name,
-          avatar,
-        },
-        reason,
-      })
-      .then(data => new Webhook(this.client, data));
+    var data = await this.client.api.channels[this.id].webhooks.post({
+      data: {
+        name,
+        avatar,
+      },
+      reason,
+    });
+    return new Webhook(this.client, data);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
