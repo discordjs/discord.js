@@ -147,7 +147,7 @@ class MessageMentions {
   /**
    * Any channels that were mentioned
    * <info>Order as they appear first in the message content</info>
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, Channel>}
    * @readonly
    */
   get channels() {
