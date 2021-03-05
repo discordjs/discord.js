@@ -2046,7 +2046,7 @@ declare module 'discord.js' {
     readonly lastMessage: Message | null;
     send(
       content: StringResolvable | APIMessage | MessageOptions | MessageAdditions,
-      options: MessageOptions | MessageAdditions
+      options: MessageOptions | MessageAdditions,
     ): Promise<Message | Message[]>;
   }
 
