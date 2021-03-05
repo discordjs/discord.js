@@ -57,7 +57,7 @@ class TextBasedChannel {
    * @property {string} [nonce=''] The nonce for the message
    * @property {string} [content=''] The content for the message
    * @property {MessageEmbed|Object} [embed] An embed for the message
-   * (see [here](https://discordapp.com/developers/docs/resources/channel#embed-object) for more details)
+   * (see [here](https://discord.com/developers/docs/resources/channel#embed-object) for more details)
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {DisableMentionType} [disableMentions=this.client.options.disableMentions] Whether or not all mentions or
    * everyone/here mentions should be sanitized to prevent unexpected mentions
@@ -312,7 +312,7 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages that are newer than two weeks.
-   * @param {Collection<Snowflake, Message>|Message[]|Snowflake[]|number} messages
+   * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Collection<Snowflake, Message>>} Deleted messages
@@ -330,10 +330,7 @@ class TextBasedChannel {
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {
-        await this.client.api
-          .channels(this.id)
-          .messages(messageIDs[0])
-          .delete();
+        await this.client.api.channels(this.id).messages(messageIDs[0]).delete();
         const message = this.client.actions.MessageDelete.getMessage(
           {
             message_id: messageIDs[0],

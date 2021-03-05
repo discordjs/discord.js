@@ -13,6 +13,7 @@ const Collection = require('../util/Collection');
 const { MessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/Snowflake');
 const Util = require('../util/Util');
 
 /**
@@ -23,14 +24,14 @@ class Message extends Base {
   /**
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the message
-   * @param {TextChannel|DMChannel} channel The channel the message was sent in
+   * @param {TextChannel|DMChannel|NewsChannel} channel The channel the message was sent in
    */
   constructor(client, data, channel) {
     super(client);
 
     /**
      * The channel that the message was sent in
-     * @type {TextChannel|DMChannel}
+     * @type {TextChannel|DMChannel|NewsChannel}
      */
     this.channel = channel;
 
@@ -50,35 +51,62 @@ class Message extends Base {
      */
     this.id = data.id;
 
-    /**
-     * The type of the message
-     * @type {MessageType}
-     */
-    this.type = MessageTypes[data.type];
+    if ('type' in data) {
+      /**
+       * The type of the message
+       * @type {?MessageType}
+       */
+      this.type = MessageTypes[data.type];
 
-    /**
-     * The content of the message
-     * @type {string}
-     */
-    this.content = data.content;
+      /**
+       * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+       * @type {?boolean}
+       */
+      this.system = data.type !== 0;
+    } else if (typeof this.type !== 'string') {
+      this.system = null;
+      this.type = null;
+    }
 
-    /**
-     * The author of the message
-     * @type {?User}
-     */
-    this.author = data.author ? this.client.users.add(data.author, !data.webhook_id) : null;
+    if ('content' in data) {
+      /**
+       * The content of the message
+       * @type {?string}
+       */
+      this.content = data.content;
+    } else if (typeof this.content !== 'string') {
+      this.content = null;
+    }
 
-    /**
-     * Whether or not this message is pinned
-     * @type {boolean}
-     */
-    this.pinned = data.pinned;
+    if ('author' in data) {
+      /**
+       * The author of the message
+       * @type {?User}
+       */
+      this.author = this.client.users.add(data.author, !data.webhook_id);
+    } else if (!this.author) {
+      this.author = null;
+    }
 
-    /**
-     * Whether or not the message was Text-To-Speech
-     * @type {boolean}
-     */
-    this.tts = data.tts;
+    if ('pinned' in data) {
+      /**
+       * Whether or not this message is pinned
+       * @type {?boolean}
+       */
+      this.pinned = Boolean(data.pinned);
+    } else if (typeof this.pinned !== 'boolean') {
+      this.pinned = null;
+    }
+
+    if ('tts' in data) {
+      /**
+       * Whether or not the message was Text-To-Speech
+       * @type {?boolean}
+       */
+      this.tts = data.tts;
+    } else if (typeof this.tts !== 'boolean') {
+      this.tts = null;
+    }
 
     /**
      * A random number or string used for checking message delivery
@@ -86,13 +114,7 @@ class Message extends Base {
      * lost if re-fetched</warn>
      * @type {?string}
      */
-    this.nonce = data.nonce;
-
-    /**
-     * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
-     * @type {boolean}
-     */
-    this.system = data.type !== 0;
+    this.nonce = 'nonce' in data ? data.nonce : null;
 
     /**
      * A list of embeds in the message - e.g. YouTube Player
@@ -115,13 +137,13 @@ class Message extends Base {
      * The timestamp the message was sent at
      * @type {number}
      */
-    this.createdTimestamp = new Date(data.timestamp).getTime();
+    this.createdTimestamp = SnowflakeUtil.deconstruct(this.id).timestamp;
 
     /**
      * The timestamp the message was last edited at (if applicable)
      * @type {?number}
      */
-    this.editedTimestamp = data.edited_timestamp ? new Date(data.edited_timestamp).getTime() : null;
+    this.editedTimestamp = 'edited_timestamp' in data ? new Date(data.edited_timestamp).getTime() : null;
 
     /**
      * A manager of the reactions belonging to this message
@@ -213,13 +235,18 @@ class Message extends Base {
   }
 
   /**
-   * Updates the message.
+   * Updates the message and returns the old message.
    * @param {Object} data Raw Discord message update data
+   * @returns {Message}
    * @private
    */
   patch(data) {
     const clone = this._clone();
-    this._edits.unshift(clone);
+    const { messageEditHistoryMaxSize } = this.client.options;
+    if (messageEditHistoryMaxSize !== 0) {
+      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
+      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
+    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -246,6 +273,8 @@ class Message extends Base {
     );
 
     this.flags = new MessageFlags('flags' in data ? data.flags : 0).freeze();
+
+    return clone;
   }
 
   /**
@@ -291,7 +320,7 @@ class Message extends Base {
    * @readonly
    */
   get url() {
-    return `https://discordapp.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
+    return `https://discord.com/channels/${this.guild ? this.guild.id : '@me'}/${this.channel.id}/${this.id}`;
   }
 
   /**
@@ -397,10 +426,27 @@ class Message extends Base {
   }
 
   /**
+   * Whether the message is crosspostable by the client user
+   * @type {boolean}
+   * @readonly
+   */
+  get crosspostable() {
+    return (
+      this.channel.type === 'news' &&
+      !this.flags.has(MessageFlags.FLAGS.CROSSPOSTED) &&
+      this.type === 'DEFAULT' &&
+      this.channel.viewable &&
+      this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.SEND_MESSAGES) &&
+      (this.author.id === this.client.user.id ||
+        this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES))
+    );
+  }
+
+  /**
    * Options that can be passed into editMessage.
    * @typedef {Object} MessageEditOptions
    * @property {string} [content] Content to be edited
-   * @property {Object} [embed] An embed to be added/edited
+   * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    */
@@ -427,26 +473,56 @@ class Message extends Base {
   }
 
   /**
-   * Pins this message to the channel's pinned messages.
+   * Publishes a message in an announcement channel to all channels following it.
    * @returns {Promise<Message>}
+   * @example
+   * // Crosspost a message
+   * if (message.channel.type === 'news') {
+   *   message.crosspost()
+   *     .then(() => console.log('Crossposted message'))
+   *     .catch(console.error);
+   * }
    */
-  pin() {
+  async crosspost() {
+    await this.client.api.channels(this.channel.id).messages(this.id).crosspost.post();
+    return this;
+  }
+
+  /**
+   * Pins this message to the channel's pinned messages.
+   * @param {Object} [options] Options for pinning
+   * @param {string} [options.reason] Reason for pinning
+   * @returns {Promise<Message>}
+   * @example
+   * // Pin a message with a reason
+   * message.pin({ reason: 'important' })
+   *   .then(console.log)
+   *   .catch(console.error)
+   */
+  pin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .put()
+      .put(options)
       .then(() => this);
   }
 
   /**
    * Unpins this message from the channel's pinned messages.
+   * @param {Object} [options] Options for unpinning
+   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
+   * @example
+   * // Unpin a message with a reason
+   * message.unpin({ reason: 'no longer relevant' })
+   *   .then(console.log)
+   *   .catch(console.error)
    */
-  unpin() {
+  unpin(options) {
     return this.client.api
       .channels(this.channel.id)
       .pins(this.id)
-      .delete()
+      .delete(options)
       .then(() => this);
   }
 
@@ -498,7 +574,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   delete(options = {}) {
-    if (typeof options !== 'object') throw new TypeError('INVALID_TYPE', 'options', 'object', true);
+    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
     const { timeout = 0, reason } = options;
     if (timeout <= 0) {
       return this.channel.messages.delete(this.id, reason).then(() => this);
@@ -532,10 +608,11 @@ class Message extends Base {
 
   /**
    * Fetch this message.
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
-  fetch() {
-    return this.channel.messages.fetch(this.id, true);
+  fetch(force = false) {
+    return this.channel.messages.fetch(this.id, true, force);
   }
 
   /**

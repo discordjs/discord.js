@@ -15,11 +15,13 @@ class APIRequest {
     this.method = method;
     this.route = options.route;
     this.options = options;
+    this.retries = 0;
 
     let queryString = '';
     if (options.query) {
-      // Filter out undefined query options
-      const query = Object.entries(options.query).filter(([, value]) => value !== null && typeof value !== 'undefined');
+      const query = Object.entries(options.query)
+        .filter(([, value]) => ![null, 'null', 'undefined'].includes(value) && typeof value !== 'undefined')
+        .flatMap(([key, value]) => (Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]));
       queryString = new URLSearchParams(query).toString();
     }
     this.path = `${path}${queryString && `?${queryString}`}`;

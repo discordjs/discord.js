@@ -165,7 +165,7 @@ class VoiceConnection extends EventEmitter {
 
   /**
    * The voice state of this connection
-   * @type {VoiceState}
+   * @type {?VoiceState}
    */
   get voice() {
     return this.channel.guild.voice;
@@ -203,8 +203,8 @@ class VoiceConnection extends EventEmitter {
    * Set the token and endpoint required to connect to the voice servers.
    * @param {string} token The voice token
    * @param {string} endpoint The voice endpoint
-   * @private
    * @returns {void}
+   * @private
    */
   setTokenAndEndpoint(token, endpoint) {
     this.emit('debug', `Token "${token}" and endpoint "${endpoint}"`);
@@ -473,7 +473,11 @@ class VoiceConnection extends EventEmitter {
   }
 
   onStartSpeaking({ user_id, ssrc, speaking }) {
-    this.ssrcMap.set(+ssrc, { userID: user_id, speaking: speaking });
+    this.ssrcMap.set(+ssrc, {
+      ...(this.ssrcMap.get(+ssrc) || {}),
+      userID: user_id,
+      speaking: speaking,
+    });
   }
 
   /**

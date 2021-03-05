@@ -44,7 +44,7 @@ class Shard extends EventEmitter {
 
     /**
      * Arguments for the shard's process executable (only when {@link ShardingManager#mode} is `process`)
-     * @type {?string[]}
+     * @type {string[]}
      */
     this.execArgv = manager.execArgv;
 
@@ -78,12 +78,6 @@ class Shard extends EventEmitter {
     this.worker = null;
 
     /**
-     * Parent port of the worker threads (if {@link ShardingManager#mode} is `worker`)
-     * @type {?number}
-     */
-    this.parentPort = null;
-
-    /**
      * Ongoing promises for calls to {@link Shard#eval}, mapped by the `script` they were called with
      * @type {Map<string, Promise>}
      * @private
@@ -103,13 +97,6 @@ class Shard extends EventEmitter {
      * @private
      */
     this._exitListener = this._handleExit.bind(this, undefined);
-
-    /**
-     * Timeout for worker threads (if {@link ShardingManager#mode} is `worker`)
-     * @type {?number}
-     * @private
-     */
-    this.timeout = manager.timeout;
   }
 
   /**
@@ -130,24 +117,15 @@ class Shard extends EventEmitter {
           execArgv: this.execArgv,
         })
         .on('message', this._handleMessage.bind(this))
-        .on('exit', this._exitListener)
-        .on('disconnect', this._handleDisconnect.bind(this, { parentProcessDisconnect: true }));
+        .on('exit', this._exitListener);
     } else if (this.manager.mode === 'worker') {
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);
-
-      this.parentPort = require('worker_threads').parentPort;
-
-      if (this.parentPort) {
-        this.setInterval(() => {
-          this.parentPort = require('worker_threads').parentPort;
-          if (!this.parentPort) {
-            this._handleDisconnect({ parentThreadDisconnect: true });
-          }
-        }, this.timeout);
-      }
     }
+
+    this._evals.clear();
+    this._fetches.clear();
 
     /**
      * Emitted upon the creation of the shard's child process/worker.
@@ -163,7 +141,6 @@ class Shard extends EventEmitter {
         this.off('ready', onReady);
         this.off('disconnect', onDisconnect);
         this.off('death', onDeath);
-        this.off('parentDeath', onParentDeath);
       };
 
       const onReady = () => {
@@ -181,11 +158,6 @@ class Shard extends EventEmitter {
         reject(new Error('SHARDING_READY_DIED', this.id));
       };
 
-      const onParentDeath = () => {
-        cleanup();
-        reject(new Error('SHARDING_READY_PARENT_DIED', this.id));
-      };
-
       const onTimeout = () => {
         cleanup();
         reject(new Error('SHARDING_READY_TIMEOUT', this.id));
@@ -195,7 +167,6 @@ class Shard extends EventEmitter {
       this.once('ready', onReady);
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
-      this.once('parentDeath', onParentDeath);
     });
     return this.process || this.worker;
   }
@@ -257,6 +228,10 @@ class Shard extends EventEmitter {
    *   .catch(console.error);
    */
   fetchClientValue(prop) {
+    // Shard is dead (maybe respawning), don't cache anything and error immediately
+    if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
+
+    // Cached promise from previous call
     if (this._fetches.has(prop)) return this._fetches.get(prop);
 
     const promise = new Promise((resolve, reject) => {
@@ -287,6 +262,10 @@ class Shard extends EventEmitter {
    * @returns {Promise<*>} Result of the script execution
    */
   eval(script) {
+    // Shard is dead (maybe respawning), don't cache anything and error immediately
+    if (!this.process && !this.worker) return Promise.reject(new Error('SHARDING_NO_CHILD_EXISTS', this.id));
+
+    // Cached promise from previous call
     if (this._evals.has(script)) return this._evals.get(script);
 
     const promise = new Promise((resolve, reject) => {
@@ -355,18 +334,20 @@ class Shard extends EventEmitter {
 
       // Shard is requesting a property fetch
       if (message._sFetchProp) {
-        this.manager.fetchClientValues(message._sFetchProp).then(
-          results => this.send({ _sFetchProp: message._sFetchProp, _result: results }),
-          err => this.send({ _sFetchProp: message._sFetchProp, _error: Util.makePlainError(err) }),
+        const resp = { _sFetchProp: message._sFetchProp, _sFetchPropShard: message._sFetchPropShard };
+        this.manager.fetchClientValues(message._sFetchProp, message._sFetchPropShard).then(
+          results => this.send({ ...resp, _result: results }),
+          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
         );
         return;
       }
 
       // Shard is requesting an eval broadcast
       if (message._sEval) {
-        this.manager.broadcastEval(message._sEval).then(
-          results => this.send({ _sEval: message._sEval, _result: results }),
-          err => this.send({ _sEval: message._sEval, _error: Util.makePlainError(err) }),
+        const resp = { _sEval: message._sEval, _sEvalShard: message._sEvalShard };
+        this.manager.broadcastEval(message._sEval, message._sEvalShard).then(
+          results => this.send({ ...resp, _result: results }),
+          err => this.send({ ...resp, _error: Util.makePlainError(err) }),
         );
         return;
       }
@@ -409,38 +390,6 @@ class Shard extends EventEmitter {
     this._fetches.clear();
 
     if (respawn) this.spawn().catch(err => this.emit('error', err));
-  }
-
-  /**
-   * Handles the disconnect event from the parent process.
-   * @param {*} message Message received
-   * @private
-   */
-  _handleDisconnect(message) {
-    /**
-     * Emmited upon the shard's parent process exiting.
-     * @event Shard#parentDeath
-     * @param {ChildProcess} process Child process that exited.
-     * This event is internal and should not be emitted manually.
-     * You can listen to this event if you wish.
-     */
-    if (message) {
-      if (this.process) {
-        // Checks if the process is not connected to the parent process, and that the PID is 1.
-        if (message.parentProcessDisconnect && this.process.ppid === 1) {
-          this.emit('parentDeath', this.process);
-          // This will kill the child process/worker, as there is no parent process.
-          this.kill();
-        }
-      }
-
-      if (this.worker) {
-        if (message.parentThreadDisconnect && !this.parentPort) {
-          this.emit('parentDeath', this.worker);
-          this.kill();
-        }
-      }
-    }
   }
 }
 

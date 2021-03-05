@@ -17,6 +17,7 @@ const Util = require('../util/Util');
  * - {@link NewsChannel}
  * - {@link StoreChannel}
  * @extends {Channel}
+ * @abstract
  */
 class GuildChannel extends Channel {
   /**
@@ -52,7 +53,7 @@ class GuildChannel extends Channel {
      * The ID of the category parent of this channel
      * @type {?Snowflake}
      */
-    this.parentID = data.parent_id;
+    this.parentID = data.parent_id || null;
 
     /**
      * A map of permission overwrites in this channel for roles and users
@@ -227,7 +228,7 @@ class GuildChannel extends Channel {
    */
   updateOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
+    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const existing = this.permissionOverwrites.get(userOrRole.id);
     if (existing) return existing.update(options, reason).then(() => this);
@@ -250,7 +251,7 @@ class GuildChannel extends Channel {
    */
   createOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role', true));
+    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const type = userOrRole instanceof Role ? 'role' : 'member';
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
@@ -298,7 +299,7 @@ class GuildChannel extends Channel {
    * @property {boolean} [nsfw] Whether the channel is NSFW
    * @property {number} [bitrate] The bitrate of the voice channel
    * @property {number} [userLimit] The user limit of the voice channel
-   * @property {Snowflake} [parentID] The parent ID of the channel
+   * @property {?Snowflake} [parentID] The parent ID of the channel
    * @property {boolean} [lockPermissions]
    * Lock the permissions of the channel to what the parent's permissions are
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
@@ -334,8 +335,22 @@ class GuildChannel extends Channel {
       });
     }
 
-    const permission_overwrites =
-      data.permissionOverwrites && data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites;
+
+    if (data.permissionOverwrites) {
+      permission_overwrites = data.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    }
+
+    if (data.lockPermissions) {
+      if (data.parentID) {
+        const newParent = this.guild.channels.resolve(data.parentID);
+        if (newParent && newParent.type === 'category') {
+          permission_overwrites = newParent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+        }
+      } else if (this.parent) {
+        permission_overwrites = this.parent.permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+      }
+    }
 
     const newData = await this.client.api.channels(this.id).patch({
       data: {
@@ -398,7 +413,7 @@ class GuildChannel extends Channel {
 
   /**
    * Sets a new topic for the guild channel.
-   * @param {string} topic The new topic for the guild channel
+   * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<GuildChannel>}
    * @example
@@ -499,7 +514,7 @@ class GuildChannel extends Channel {
    * @param {boolean} [options.nsfw=this.nsfw] Whether the new channel is nsfw (only text)
    * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
-   * @param {number} [options.rateLimitPerUser=ThisType.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
    * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}

@@ -81,22 +81,24 @@ class GenericAction {
   }
 
   getMember(data, guild) {
-    const id = data.user.id;
-    return this.getPayload(
-      {
-        user: {
-          id,
-        },
-      },
-      guild.members,
-      id,
-      PartialTypes.GUILD_MEMBER,
-    );
+    return this.getPayload(data, guild.members, data.user.id, PartialTypes.GUILD_MEMBER);
   }
 
   getUser(data) {
     const id = data.user_id;
     return data.user || this.getPayload({ id }, this.client.users, id, PartialTypes.USER);
+  }
+
+  getUserFromMember(data) {
+    if (data.guild_id && data.member && data.member.user) {
+      const guild = this.client.guilds.cache.get(data.guild_id);
+      if (guild) {
+        return guild.members.add(data.member).user;
+      } else {
+        return this.client.users.add(data.member.user);
+      }
+    }
+    return this.getUser(data);
   }
 }
 

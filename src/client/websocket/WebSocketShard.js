@@ -56,10 +56,10 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The current session ID of the shard
-     * @type {string}
+     * @type {?string}
      * @private
      */
-    this.sessionID = undefined;
+    this.sessionID = null;
 
     /**
      * The previous heartbeat ping of the shard
@@ -83,6 +83,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * Contains the rate limit queue and metadata
+     * @name WebSocketShard#ratelimit
      * @type {Object}
      * @private
      */
@@ -98,6 +99,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The WebSocket connection for the current shard
+     * @name WebSocketShard#connection
      * @type {?WebSocket}
      * @private
      */
@@ -110,6 +112,7 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The compression to use
+     * @name WebSocketShard#inflate
      * @type {?Inflate}
      * @private
      */
@@ -117,13 +120,15 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * The HELLO timeout
-     * @type {?NodeJS.Timer}
+     * @name WebSocketShard#helloTimeout
+     * @type {?NodeJS.Timeout}
      * @private
      */
-    Object.defineProperty(this, 'helloTimeout', { value: undefined, writable: true });
+    Object.defineProperty(this, 'helloTimeout', { value: null, writable: true });
 
     /**
      * If the manager attached its event handlers on the shard
+     * @name WebSocketShard#eventsAttached
      * @type {boolean}
      * @private
      */
@@ -131,20 +136,23 @@ class WebSocketShard extends EventEmitter {
 
     /**
      * A set of guild IDs this shard expects to receive
+     * @name WebSocketShard#expectedGuilds
      * @type {?Set<string>}
      * @private
      */
-    Object.defineProperty(this, 'expectedGuilds', { value: undefined, writable: true });
+    Object.defineProperty(this, 'expectedGuilds', { value: null, writable: true });
 
     /**
      * The ready timeout
-     * @type {?NodeJS.Timer}
+     * @name WebSocketShard#readyTimeout
+     * @type {?NodeJS.Timeout}
      * @private
      */
-    Object.defineProperty(this, 'readyTimeout', { value: undefined, writable: true });
+    Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
 
     /**
      * Time when the WebSocket connection was opened
+     * @name WebSocketShard#connectedAt
      * @type {number}
      * @private
      */
@@ -420,7 +428,7 @@ class WebSocketShard extends EventEmitter {
         // Reset the sequence
         this.sequence = -1;
         // Reset the session ID as it's invalid
-        this.sessionID = undefined;
+        this.sessionID = null;
         // Set the status to reconnecting
         this.status = Status.RECONNECTING;
         // Finally, emit the INVALID_SESSION event
@@ -449,7 +457,7 @@ class WebSocketShard extends EventEmitter {
     // Step 0. Clear the ready timeout, if it exists
     if (this.readyTimeout) {
       this.manager.client.clearTimeout(this.readyTimeout);
-      this.readyTimeout = undefined;
+      this.readyTimeout = null;
     }
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
@@ -472,7 +480,7 @@ class WebSocketShard extends EventEmitter {
       this.debug(`Shard did not receive any more guild packets in 15 seconds.
   Unavailable guild count: ${this.expectedGuilds.size}`);
 
-      this.readyTimeout = undefined;
+      this.readyTimeout = null;
 
       this.status = Status.READY;
 
@@ -490,7 +498,7 @@ class WebSocketShard extends EventEmitter {
       if (this.helloTimeout) {
         this.debug('Clearing the HELLO timeout.');
         this.manager.client.clearTimeout(this.helloTimeout);
-        this.helloTimeout = undefined;
+        this.helloTimeout = null;
       }
       return;
     }
@@ -511,7 +519,7 @@ class WebSocketShard extends EventEmitter {
       if (this.heartbeatInterval) {
         this.debug('Clearing the heartbeat interval.');
         this.manager.client.clearInterval(this.heartbeatInterval);
-        this.heartbeatInterval = undefined;
+        this.heartbeatInterval = null;
       }
       return;
     }
@@ -623,7 +631,7 @@ class WebSocketShard extends EventEmitter {
   /**
    * Adds a packet to the queue to be sent to the gateway.
    * <warn>If you use this method, make sure you understand that you need to provide
-   * a full [Payload](https://discordapp.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
+   * a full [Payload](https://discord.com/developers/docs/topics/gateway#commands-and-events-gateway-commands).
    * Do not use this method if you don't know what you're doing.</warn>
    * @param {Object} data The full packet to send
    * @param {boolean} [important=false] If this packet should be added first in queue
@@ -726,7 +734,7 @@ class WebSocketShard extends EventEmitter {
     // Step 5: Reset the sequence and session ID if requested
     if (reset) {
       this.sequence = -1;
-      this.sessionID = undefined;
+      this.sessionID = null;
     }
 
     // Step 6: reset the ratelimit data

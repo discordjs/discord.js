@@ -1,5 +1,6 @@
 'use strict';
 
+const AsyncQueue = require('./AsyncQueue');
 const DiscordAPIError = require('./DiscordAPIError');
 const HTTPError = require('./HTTPError');
 const {
@@ -25,26 +26,20 @@ function calculateReset(reset, serverDate) {
 class RequestHandler {
   constructor(manager) {
     this.manager = manager;
-    this.busy = false;
-    this.queue = [];
+    this.queue = new AsyncQueue();
     this.reset = -1;
     this.remaining = -1;
     this.limit = -1;
     this.retryAfter = -1;
   }
 
-  push(request) {
-    if (this.busy) {
-      this.queue.push(request);
-      return this.run();
-    } else {
-      return this.execute(request);
+  async push(request) {
+    await this.queue.wait();
+    try {
+      return await this.execute(request);
+    } finally {
+      this.queue.shift();
     }
-  }
-
-  run() {
-    if (this.queue.length === 0) return Promise.resolve();
-    return this.execute(this.queue.shift());
   }
 
   get limited() {
@@ -52,19 +47,10 @@ class RequestHandler {
   }
 
   get _inactive() {
-    return this.queue.length === 0 && !this.limited && this.busy !== true;
+    return this.queue.remaining === 0 && !this.limited;
   }
 
-  async execute(item) {
-    // Insert item back to the beginning if currently busy
-    if (this.busy) {
-      this.queue.unshift(item);
-      return null;
-    }
-
-    this.busy = true;
-    const { reject, request, resolve } = item;
-
+  async execute(request) {
     // After calculations and requests have been done, pre-emptively stop further requests
     if (this.limited) {
       const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
@@ -102,9 +88,13 @@ class RequestHandler {
     try {
       res = await request.make();
     } catch (error) {
-      // NodeFetch error expected for all "operational" errors, such as 500 status code
-      this.busy = false;
-      return reject(new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path));
+      // Retry the specified number of times for request abortions
+      if (request.retries === this.manager.client.options.retryLimit) {
+        throw new HTTPError(error.message, error.constructor.name, error.status, request.method, request.path);
+      }
+
+      request.retries++;
+      return this.execute(request);
     }
 
     if (res && res.headers) {
@@ -120,7 +110,7 @@ class RequestHandler {
       this.retryAfter = retryAfter ? Number(retryAfter) : -1;
 
       // https://github.com/discordapp/discord-api-docs/issues/182
-      if (item.request.route.includes('reactions')) {
+      if (request.route.includes('reactions')) {
         this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
       }
 
@@ -137,43 +127,46 @@ class RequestHandler {
       }
     }
 
-    // Finished handling headers, safe to unlock manager
-    this.busy = false;
-
+    // Handle 2xx and 3xx responses
     if (res.ok) {
-      const success = await parseResponse(res);
       // Nothing wrong with the request, proceed with the next one
-      resolve(success);
-      return this.run();
-    } else if (res.status === 429) {
-      // A ratelimit was hit - this should never happen
-      this.queue.unshift(item);
-      this.manager.client.emit('debug', `429 hit on route ${item.request.route}`);
-      await Util.delayFor(this.retryAfter);
-      return this.run();
-    } else if (res.status >= 500 && res.status < 600) {
-      // Retry the specified number of times for possible serverside issues
-      if (item.retries === this.manager.client.options.retryLimit) {
-        return reject(
-          new HTTPError(res.statusText, res.constructor.name, res.status, item.request.method, request.path),
-        );
-      } else {
-        item.retries++;
-        this.queue.unshift(item);
-        return this.run();
-      }
-    } else {
-      // Handle possible malformed requests
-      try {
-        const data = await parseResponse(res);
-        if (res.status >= 400 && res.status < 500) {
-          return reject(new DiscordAPIError(request.path, data, request.method, res.status));
-        }
-        return null;
-      } catch (err) {
-        return reject(new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path));
-      }
+      return parseResponse(res);
     }
+
+    // Handle 4xx responses
+    if (res.status >= 400 && res.status < 500) {
+      // Handle ratelimited requests
+      if (res.status === 429) {
+        // A ratelimit was hit - this should never happen
+        this.manager.client.emit('debug', `429 hit on route ${request.route}`);
+        await Util.delayFor(this.retryAfter);
+        return this.execute(request);
+      }
+
+      // Handle possible malformed requests
+      let data;
+      try {
+        data = await parseResponse(res);
+      } catch (err) {
+        throw new HTTPError(err.message, err.constructor.name, err.status, request.method, request.path);
+      }
+
+      throw new DiscordAPIError(request.path, data, request.method, res.status);
+    }
+
+    // Handle 5xx responses
+    if (res.status >= 500 && res.status < 600) {
+      // Retry the specified number of times for possible serverside issues
+      if (request.retries === this.manager.client.options.retryLimit) {
+        throw new HTTPError(res.statusText, res.constructor.name, res.status, request.method, request.path);
+      }
+
+      request.retries++;
+      return this.execute(request);
+    }
+
+    // Fallback in the rare case a status code outside the range 200..=599 is returned
+    return null;
   }
 }
 

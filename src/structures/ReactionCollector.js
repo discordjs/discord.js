@@ -49,7 +49,7 @@ class ReactionCollector extends Collector {
     this._handleGuildDeletion = this._handleGuildDeletion.bind(this);
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
-    if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() + 1);
+    this.client.incrementMaxListeners();
     this.client.on(Events.MESSAGE_REACTION_ADD, this.handleCollect);
     this.client.on(Events.MESSAGE_REACTION_REMOVE, this.handleDispose);
     this.client.on(Events.MESSAGE_REACTION_REMOVE_ALL, this.empty);
@@ -64,7 +64,7 @@ class ReactionCollector extends Collector {
       this.client.removeListener(Events.MESSAGE_DELETE, this._handleMessageDeletion);
       this.client.removeListener(Events.CHANNEL_DELETE, this._handleChannelDeletion);
       this.client.removeListener(Events.GUILD_DELETE, this._handleGuildDeletion);
-      if (this.client.getMaxListeners() !== 0) this.client.setMaxListeners(this.client.getMaxListeners() - 1);
+      this.client.decrementMaxListeners();
     });
 
     this.on('collect', (reaction, user) => {
@@ -103,7 +103,7 @@ class ReactionCollector extends Collector {
    */
   dispose(reaction, user) {
     /**
-     * Emitted whenever a reaction is disposed of.
+     * Emitted when the reaction had all the users removed and the `dispose` option is set to true.
      * @event ReactionCollector#dispose
      * @param {MessageReaction} reaction The reaction that was disposed of
      * @param {User} user The user that removed the reaction
@@ -111,9 +111,7 @@ class ReactionCollector extends Collector {
     if (reaction.message.id !== this.message.id) return null;
 
     /**
-     * Emitted whenever a reaction is removed from a message. Will emit on all reaction removals,
-     * as opposed to {@link Collector#dispose} which will only be emitted when the entire reaction
-     * is removed.
+     * Emitted when the reaction had one user removed and the `dispose` option is set to true.
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      * @param {User} user The user that removed the reaction

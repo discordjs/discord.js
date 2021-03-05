@@ -9,7 +9,7 @@ const Util = require('../../util/Util');
  * @typedef {Function} CollectorFilter
  * @param {...*} args Any arguments received by the listener
  * @param {Collection} collection The items collected by this collector
- * @returns {boolean}
+ * @returns {boolean|Promise<boolean>}
  */
 
 /**
@@ -86,10 +86,10 @@ class Collector extends EventEmitter {
    * @param {...*} args The arguments emitted by the listener
    * @emits Collector#collect
    */
-  handleCollect(...args) {
+  async handleCollect(...args) {
     const collect = this.collect(...args);
 
-    if (collect && this.filter(...args, this.collected)) {
+    if (collect && (await this.filter(...args, this.collected))) {
       this.collected.set(collect, args[0]);
 
       /**

@@ -8,6 +8,7 @@ const GuildMember = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const Role = require('../structures/Role');
 const {
+  ChannelTypes,
   Events,
   VerificationLevels,
   DefaultMessageNotifications,
@@ -129,6 +130,8 @@ class GuildManager extends BaseManager {
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {string} name The name of the guild
    * @param {Object} [options] Options for the creating
+   * @param {number} [options.afkChannelID] The ID of the AFK channel
+   * @param {number} [options.afkTimeout] The AFK timeout in seconds
    * @param {PartialChannelData[]} [options.channels] The channels for this guild
    * @param {DefaultMessageNotifications} [options.defaultMessageNotifications] The default message notifications
    * for the guild
@@ -137,18 +140,22 @@ class GuildManager extends BaseManager {
    * @param {string} [options.region] The region for the server, defaults to the closest one available
    * @param {PartialRoleData[]} [options.roles] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
+   * @param {number} [options.systemChannelID] The ID of the system channel
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
   async create(
     name,
     {
+      afkChannelID,
+      afkTimeout,
       channels = [],
       defaultMessageNotifications,
       explicitContentFilter,
       icon = null,
       region,
       roles = [],
+      systemChannelID,
       verificationLevel,
     } = {},
   ) {
@@ -163,6 +170,7 @@ class GuildManager extends BaseManager {
       explicitContentFilter = ExplicitContentFilterLevels.indexOf(explicitContentFilter);
     }
     for (const channel of channels) {
+      if (channel.type) channel.type = ChannelTypes[channel.type.toUpperCase()];
       channel.parent_id = channel.parentID;
       delete channel.parentID;
       if (!channel.permissionOverwrites) continue;
@@ -187,8 +195,11 @@ class GuildManager extends BaseManager {
             verification_level: verificationLevel,
             default_message_notifications: defaultMessageNotifications,
             explicit_content_filter: explicitContentFilter,
-            channels,
             roles,
+            channels,
+            afk_channel_id: afkChannelID,
+            afk_timeout: afkTimeout,
+            system_channel_id: systemChannelID,
           },
         })
         .then(data => {
@@ -196,20 +207,45 @@ class GuildManager extends BaseManager {
 
           const handleGuild = guild => {
             if (guild.id === data.id) {
-              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
               this.client.clearTimeout(timeout);
+              this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+              this.client.decrementMaxListeners();
               resolve(guild);
             }
           };
+          this.client.incrementMaxListeners();
           this.client.on(Events.GUILD_CREATE, handleGuild);
 
           const timeout = this.client.setTimeout(() => {
             this.client.removeListener(Events.GUILD_CREATE, handleGuild);
+            this.client.decrementMaxListeners();
             resolve(this.client.guilds.add(data));
           }, 10000);
           return undefined;
         }, reject),
     );
+  }
+
+  /**
+   * Obtains a guild from Discord, or the guild cache if it's already available.
+   * @param {Snowflake} id ID of the guild
+   * @param {boolean} [cache=true] Whether to cache the new guild object if it isn't already
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
+   * @returns {Promise<Guild>}
+   * @example
+   * // Fetch a guild by its id
+   * client.guilds.fetch('222078108977594368')
+   *   .then(guild => console.log(guild.name))
+   *   .catch(console.error);
+   */
+  async fetch(id, cache = true, force = false) {
+    if (!force) {
+      const existing = this.cache.get(id);
+      if (existing) return existing;
+    }
+
+    const data = await this.client.api.guilds(id).get({ query: { with_counts: true } });
+    return this.add(data, cache);
   }
 }
 

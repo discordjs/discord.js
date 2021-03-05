@@ -29,12 +29,6 @@ class MessageReaction {
     this.message = message;
 
     /**
-     * Whether the client has given this reaction
-     * @type {boolean}
-     */
-    this.me = data.me;
-
-    /**
      * A manager of the users that have given this reaction
      * @type {ReactionUserManager}
      */
@@ -46,13 +40,20 @@ class MessageReaction {
   }
 
   _patch(data) {
-    /**
-     * The number of people that have given the same reaction
-     * @type {?number}
-     * @name MessageReaction#count
-     */
     // eslint-disable-next-line eqeqeq
-    if (this.count == undefined) this.count = data.count;
+    if (this.count == undefined) {
+      /**
+       * The number of people that have given the same reaction
+       * @type {?number}
+       */
+      this.count = data.count;
+    }
+
+    /**
+     * Whether the client has given this reaction
+     * @type {boolean}
+     */
+    this.me = data.me;
   }
 
   /**

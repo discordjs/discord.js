@@ -20,9 +20,7 @@ const Util = require('../util/Util');
 class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
-   * "worker" to use workers. The "worker" mode relies on the experimental
-   * [Worker threads](https://nodejs.org/api/worker_threads.html) functionality that is present in Node v10.5.0 or
-   * newer. Node must be started with the `--experimental-worker` flag to expose it.
+   * "worker" to use [Worker threads](https://nodejs.org/api/worker_threads.html).
    * @typedef {Object} ShardingManagerMode
    */
 
@@ -38,7 +36,6 @@ class ShardingManager extends EventEmitter {
    * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
    * (only available when using the `process` mode)
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
-   * @param {number} [options.timeout] Timeout for worker threads that have disconnected before closing
    */
   constructor(file, options = {}) {
     super();
@@ -50,7 +47,6 @@ class ShardingManager extends EventEmitter {
         shardArgs: [],
         execArgv: [],
         token: process.env.DISCORD_TOKEN,
-        timeout: 30000,
       },
       options,
     );
@@ -132,12 +128,6 @@ class ShardingManager extends EventEmitter {
      * @type {?string}
      */
     this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
-
-    /**
-     * Timeout before worker threads are closed due to a disconnect from the parent thread (in milliseconds).
-     * @type {number}
-     */
-    this.timeout = options.timeout ? options.timeout : 30000;
 
     /**
      * A collection of shards that this manager has spawned
@@ -232,30 +222,48 @@ class ShardingManager extends EventEmitter {
   }
 
   /**
-   * Evaluates a script on all shards, in the context of the {@link Client}s.
+   * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    * @param {string} script JavaScript to run on each shard
-   * @returns {Promise<Array<*>>} Results of the script execution
+   * @param {number} [shard] Shard to run on, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>} Results of the script execution
    */
-  broadcastEval(script) {
-    const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.eval(script));
-    return Promise.all(promises);
+  broadcastEval(script, shard) {
+    return this._performOnShards('eval', [script], shard);
   }
 
   /**
-   * Fetches a client property value of each shard.
+   * Fetches a client property value of each shard, or a given shard.
    * @param {string} prop Name of the client property to get, using periods for nesting
-   * @returns {Promise<Array<*>>}
+   * @param {number} [shard] Shard to fetch property from, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>}
    * @example
    * manager.fetchClientValues('guilds.cache.size')
    *   .then(results => console.log(`${results.reduce((prev, val) => prev + val, 0)} total guilds`))
    *   .catch(console.error);
    */
-  fetchClientValues(prop) {
+  fetchClientValues(prop, shard) {
+    return this._performOnShards('fetchClientValue', [prop], shard);
+  }
+
+  /**
+   * Runs a method with given arguments on all shards, or a given shard.
+   * @param {string} method Method name to run on each shard
+   * @param {Array<*>} args Arguments to pass through to the method call
+   * @param {number} [shard] Shard to run on, all if undefined
+   * @returns {Promise<*>|Promise<Array<*>>} Results of the method execution
+   * @private
+   */
+  _performOnShards(method, args, shard) {
     if (this.shards.size === 0) return Promise.reject(new Error('SHARDING_NO_SHARDS'));
     if (this.shards.size !== this.shardList.length) return Promise.reject(new Error('SHARDING_IN_PROCESS'));
+
+    if (typeof shard === 'number') {
+      if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
+      return Promise.reject(new Error('SHARDING_SHARD_NOT_FOUND', shard));
+    }
+
     const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.fetchClientValue(prop));
+    for (const sh of this.shards.values()) promises.push(sh[method](...args));
     return Promise.all(promises);
   }
 
