@@ -2045,17 +2045,9 @@ declare module 'discord.js' {
     lastMessageID: Snowflake | null;
     readonly lastMessage: Message | null;
     send(
-      content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    send(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
-    send(content: StringResolvable, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
-    send(content: StringResolvable, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    send(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
-    send(
-      content: StringResolvable | APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-      options: MessageOptions & { split?: true | false } | SplitOptions | MessageAdditions,
-      ): Promise<Message | Message[]>;
+      content: StringResolvable | APIMessage | MessageOptions | MessageAdditions,
+      options: MessageOptions | MessageAdditions
+    ): Promise<Message | Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
