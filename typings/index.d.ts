@@ -2052,6 +2052,11 @@ declare module 'discord.js' {
     send(content: StringResolvable, options: (MessageOptions & { split?: false }) | MessageAdditions): Promise<Message>;
     send(content: StringResolvable, options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
     send(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
+    send(
+      (content: (StringResolable | APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+      options: (MessageOptions & {split? false}) | MessageAdditions | MessageOptions & {split: true | SplitOptions}
+      | options: (MessageOptions & {split: (true) | SplitOptions}) | MessageOptions | APIMessage | MessageAdditions,
+    ): Promise<Message | Message[]>;
   }
 
   interface TextBasedChannelFields extends PartialTextBasedChannelFields {
