@@ -598,11 +598,11 @@ class Message extends Base {
    *   .then(() => console.log(`Sent a reply to ${message.author.username}`))
    *   .catch(console.error);
    */
-  reply(content, options) {
+   reply(content, options) {
     return this.channel.send(
       content instanceof APIMessage
         ? content
-        : APIMessage.transformOptions(content, options, { reply: this.member || this.author }),
+        : APIMessage.transformOptions(content, options, { message_reference: { message_id: this.id } }),
     );
   }
 

@@ -197,6 +197,13 @@ class APIMessage {
         allowedMentions = { users: [id] };
       }
     }
+    if (typeof this.options.mention === "boolean") {
+      if(typeof allowedMentions === "object") {
+        allowedMentions["replied_user"] = this.options.mention
+      } else {
+        allowedMentions = { replied_user: this.options.mention }
+      }
+    }
 
     this.data = {
       content,

@@ -170,6 +170,8 @@ class TextBasedChannel {
     }
 
     const { data, files } = await apiMessage.resolveFiles();
+    data.message_reference = content.message_reference
+    if(!content.message_reference) data.message_reference = null;
     return this.client.api.channels[this.id].messages
       .post({ data, files })
       .then(d => this.client.actions.MessageCreate.handle(d).message);
