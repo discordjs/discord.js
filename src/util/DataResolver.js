@@ -5,6 +5,8 @@ const path = require('path');
 const stream = require('stream');
 const fetch = require('node-fetch');
 const { Error: DiscordError, TypeError } = require('../errors');
+const GuildTemplate = require('../structures/GuildTemplate');
+const Invite = require('../structures/Invite');
 
 /**
  * The DataResolver identifies different objects and tries to resolve a specific piece of information from them.
@@ -46,7 +48,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveInviteCode(data) {
-    return this.resolveCode(data, /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/([\w-]{2,255})/i);
+    return this.resolveCode(data, Invite.INVITES_PATTERN);
   }
 
   /**
@@ -55,7 +57,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveGuildTemplateCode(data) {
-    return this.resolveCode(data, /discord(?:app)?\.(?:com\/template|new)\/([\w-]{2,255})/i);
+    return this.resolveCode(data, GuildTemplate.GUILD_TEMPLATES_PATTERN);
   }
 
   /**

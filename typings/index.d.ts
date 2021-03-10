@@ -877,6 +877,7 @@ declare module 'discord.js' {
     public delete(): Promise<GuildTemplate>;
     public edit(options?: { name?: string; description?: string }): Promise<GuildTemplate>;
     public sync(): Promise<GuildTemplate>;
+    public static GUILD_TEMPLATES_PATTERN: RegExp;
   }
 
   export class GuildPreviewEmoji extends BaseGuildEmoji {
@@ -949,6 +950,7 @@ declare module 'discord.js' {
     public delete(reason?: string): Promise<Invite>;
     public toJSON(): object;
     public toString(): string;
+    public static INVITES_PATTERN: RegExp;
   }
 
   export class Message extends Base {
