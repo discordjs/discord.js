@@ -13,10 +13,10 @@ const DataResolver = require('../util/DataResolver');
  * @extends {GuildChannel}
  */
 class NewsChannel extends GuildChannel {
- /**
-  * @param {Guild} guild The guild the news channel is part of
-  * @param {Object} data The data for the news channel
-  */
+  /**
+   * @param {Guild} guild The guild the news channel is part of
+   * @param {Object} data The data for the news channel
+   */
   constructor(guild, data) {
     super(guild, data);
     /**
