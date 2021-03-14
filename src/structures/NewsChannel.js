@@ -3,10 +3,10 @@
 const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const { Error } = require('../errors');
 const MessageManager = require('../managers/MessageManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
-const { Error } = require('../errors');
 
 /**
  * Represents a guild news channel on Discord.
