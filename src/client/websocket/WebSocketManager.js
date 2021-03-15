@@ -93,16 +93,6 @@ class WebSocketManager extends EventEmitter {
      * @private
      */
     this.reconnecting = false;
-
-    /**
-     * The current session limit of the client
-     * @private
-     * @type {?Object}
-     * @property {number} total Total number of identifies available
-     * @property {number} remaining Number of identifies remaining
-     * @property {number} reset_after Number of milliseconds after which the limit resets
-     */
-    this.sessionStartLimit = null;
   }
 
   /**
@@ -138,8 +128,6 @@ class WebSocketManager extends EventEmitter {
     } = await this.client.api.gateway.bot.get().catch(error => {
       throw error.httpStatus === 401 ? invalidToken : error;
     });
-
-    this.sessionStartLimit = sessionStartLimit;
 
     const { total, remaining } = sessionStartLimit;
 

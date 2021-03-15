@@ -1767,7 +1767,6 @@ declare module 'discord.js' {
     private packetQueue: object[];
     private destroyed: boolean;
     private reconnecting: boolean;
-    private sessionStartLimit: { total: number; remaining: number; reset_after: number } | null;
 
     public readonly client: Client;
     public gateway: string | null;
