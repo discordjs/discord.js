@@ -95,13 +95,17 @@ class ClientUser extends Structures.get('User') {
    * @typedef {Object} PresenceData
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [activity] Activity the user is playing
-   * @property {string} [activity.name] Name of the activity
-   * @property {ActivityType|number} [activity.type] Type of the activity
+   * @property {ActivityOptions[]} [activities] the activities for the user
    * @property {string} [activity.url] Twitch / YouTube stream URL
    * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
-
+  /**
+   * The activity that will show on discord.
+   * @param {Object} ActivityOptions
+   * @property {string} [name] Name of the activity
+   * @property {ActivityType|number} [type] Type of the activity
+   * @property {string} [url] Twitch / YouTube stream URL
+   */
   /**
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
