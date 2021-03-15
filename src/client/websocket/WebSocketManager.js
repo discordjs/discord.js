@@ -167,7 +167,10 @@ class WebSocketManager extends EventEmitter {
 
     await this._handleSessionLimit(remaining, reset_after);
 
-    return this.createShards();
+    for (let i = 0; i <= this.sessionStartLimit?.max_concurrency; i++) {
+     this.createShards();
+    }
+    return
   }
 
   /**
@@ -269,7 +272,10 @@ class WebSocketManager extends EventEmitter {
       this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
       await Util.delayFor(5000);
       await this._handleSessionLimit();
-      return this.createShards();
+      for (let i = 0; i <= this.sessionStartLimit?.max_concurrency; i++) {
+     this.createShards();
+      }
+    return
     }
 
     return true;
