@@ -3062,11 +3062,11 @@ declare module 'discord.js' {
   interface PresenceData {
     status?: PresenceStatusData;
     afk?: boolean;
-    activity?: {
+    activities?: {
       name?: string;
       type?: ActivityType | number;
       url?: string;
-    };
+    }[];
     shardID?: number | number[];
   }
 
