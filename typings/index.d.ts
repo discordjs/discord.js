@@ -3062,14 +3062,15 @@ declare module 'discord.js' {
   interface PresenceData {
     status?: PresenceStatusData;
     afk?: boolean;
-    activities?: {
-      name?: string;
-      type?: ActivityType | number;
-      url?: string;
-    }[];
+    activities?: ActivityOptions[];
     shardID?: number | number[];
   }
 
+  interface ActivityOptions {
+    name?: string;
+    type?: ActivityType | number;
+    url?: string;
+  }
   type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
   type Partialize<T, O extends string> = {
