@@ -29,7 +29,7 @@ class UserFlags extends BitField {}
  * * `SYSTEM`
  * * `BUGHUNTER_LEVEL_2`
  * * `VERIFIED_BOT`
- * * `EARLY_VERIFIED_BOT_DEVELOPER`
+ * * `EARLY_VERIFIED_DEVELOPER`
  * * `VERIFIED_DEVELOPER` **(deprecated)**
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
