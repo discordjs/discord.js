@@ -2611,10 +2611,6 @@ declare module 'discord.js' {
     cache: boolean;
   }
 
-  interface FetchIntegrationsOptions {
-    includeApplications?: boolean;
-  }
-
   interface FetchMemberOptions {
     user: UserResolvable;
     cache?: boolean;
