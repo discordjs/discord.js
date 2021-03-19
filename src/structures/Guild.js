@@ -1163,7 +1163,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon) }, reason);
   }
 
   /**
@@ -1193,7 +1193,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash) }, reason);
   }
 
   /**
@@ -1208,7 +1208,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async setDiscoverySplash(discoverySplash, reason) {
-    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash), reason });
+    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash) }, reason);
   }
 
   /**
@@ -1222,7 +1222,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setBanner(banner, reason) {
-    return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+    return this.edit({ banner: await DataResolver.resolveImage(banner) }, reason);
   }
 
   /**
