@@ -3325,7 +3325,7 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'allowedMentions'>;
+  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
 
   type WebhookMessageOptions = Omit<MessageOptions, 'embed'> & { embeds?: (MessageEmbed | object)[] };
 

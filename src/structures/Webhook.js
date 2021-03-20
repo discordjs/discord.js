@@ -98,6 +98,7 @@ class Webhook {
    * @typedef {Object} WebhookEditMessageOptions
    * @property {MessageEmbed[]|Object[]} [embeds] See {@link WebhookMessageOptions#embeds}
    * @property {StringResolvable} [content] See {@link WebhookMessageOptions#content}
+   * @property {FileOptions[]|string[]} [files] See {@link WebhookMessageOptions#files}
    * @property {MessageMentionOptions} [allowedMentions] See {@link WebhookMessageOptions#allowedMentions}
    */
 
@@ -234,11 +235,13 @@ class Webhook {
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
    */
   async editMessage(message, content, options) {
-    const { data } = content.resolveData?.() ?? APIMessage.create(this, content, options).resolveData();
+    const { data, files } = await (
+      content.resolveData?.() ?? APIMessage.create(this, content, options).resolveData()
+    ).resolveFiles();
     const d = await this.client.api
       .webhooks(this.id, this.token)
       .messages(typeof message === 'string' ? message : message.id)
-      .patch({ data });
+      .patch({ data, files });
 
     const messageManager = this.client.channels?.cache.get(d.channel_id)?.messages;
     if (!messageManager) return d;
