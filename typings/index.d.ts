@@ -195,6 +195,7 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Channel>;
     public isText(): this is TextChannel | DMChannel | NewsChannel;
     public toString(): string;
+    public send(message: string): string
   }
 
   export class Client extends BaseClient {
