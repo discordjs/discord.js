@@ -1893,7 +1893,7 @@ declare module 'discord.js' {
 
   export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResolvable> {
     constructor(client: Client, iterable: Iterable<any>);
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Channel>;
+    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Channel | null>;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
