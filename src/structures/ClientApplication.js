@@ -59,7 +59,7 @@ class ClientApplication extends Application {
    * @readonly
    */
   get partial() {
-    return !('name' in this);
+    return !this.name;
   }
 
   /**
