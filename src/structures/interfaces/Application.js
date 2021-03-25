@@ -23,29 +23,23 @@ class Application extends Base {
      */
     this.id = data.id;
 
-    if ('name' in data) {
-      /**
-       * The name of the app
-       * @type {string}
-       */
-      this.name = data.name;
-    }
+    /**
+     * The name of the app
+     * @type {?string}
+     */
+    this.name = data.name ?? this.name ?? null;
 
-    if ('description' in data) {
-      /**
-       * The app's description
-       * @type {string}
-       */
-      this.description = data.description;
-    }
+    /**
+     * The app's description
+     * @type {?string}
+     */
+    this.description = data.description ?? this.description ?? null;
 
-    if ('icon' in data) {
-      /**
-       * The app's icon hash
-       * @type {?string}
-       */
-      this.icon = data.icon;
-    }
+    /**
+     * The app's icon hash
+     * @type {?string}
+     */
+    this.icon = data.icon ?? this.icon ?? null;
   }
 
   /**
@@ -120,7 +114,7 @@ class Application extends Base {
    * console.log(`Application name: ${application}`);
    */
   toString() {
-    return this.name ?? null;
+    return this.name;
   }
 
   toJSON() {
