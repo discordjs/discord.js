@@ -6,7 +6,7 @@ const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 
 /**
- * Manages API methods for Guilds bans and stores their cache.
+ * Manages API methods for GuildBans and stores their cache.
  * @extends {BaseManager}
  */
 class GuildBanManager extends BaseManager {
