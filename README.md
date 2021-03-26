@@ -21,11 +21,11 @@
 
 - [About](#about)
 - [Installation](#installation)
-  - [Audio engines](#audio-engines)
-  - [Optional packages](#optional-packages)
+- [Audio engines](#audio-engines)
+- [Optional packages](#optional-packages)
 - [Example Usage](#example-usage)
 - [Links](#links)
-  - [Extensions](#extensions)
+- [Extensions](#extensions)
 - [Contributing](#contributing)
 - [Help](#help)
 
@@ -59,10 +59,11 @@ For production bots, using @discordjs/opus should be considered a necessity, esp
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
 - [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
 - One of the following packages can be installed for faster voice packet encryption and decryption:
-  - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
-  - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
+- [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
+- [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
 - [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
+
 
 ## Example usage
 
@@ -83,17 +84,36 @@ client.on('message', msg => {
 client.login('token');
 ```
 
+
+
+```js
+module.exports = {
+	name: 'ping',
+	description: 'Ping!',
+	execute(message, args) {
+		message.channel.send('Pong.');
+	},
+};
+```
+
+Such structures also can be made with the help of **[Command handling](https://discordjs.guide/command-handling/)**
+
+
+--------------------
+
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 - [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html), including updated and removed items in the library.
+- See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html), including updated and removed items in the library.
 - [Discord.js Discord server](https://discord.gg/bRCvFy9)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)
 - [NPM](https://www.npmjs.com/package/discord.js)
 - [Related libraries](https://discordapi.com/unofficial/libs.html)
+
+--------------------
 
 ### Extensions
 
@@ -103,7 +123,7 @@ client.login('token');
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR ( pull request ).
 
 ## Help
 
