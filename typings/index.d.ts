@@ -734,7 +734,7 @@ declare module 'discord.js' {
     public toJSON(): object;
   }
 
-  export class GuildBan {
+  export class GuildBan extends Base {
     constructor(client: Client, data: object, guild: Guild);
     public guild: Guild;
     public user: User;
