@@ -378,11 +378,11 @@ class GuildMember extends Base {
    * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789012345678>!
+   * // Logs: Hello from <@!123456789012345678>!
    * console.log(`Hello from ${member}!`);
    */
   toString() {
-    return `<@${this.nickname ? '!' : ''}${this.user.id}>`;
+    return `<@!${this.user.id}>`;
   }
 
   toJSON() {

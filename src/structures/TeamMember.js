@@ -54,7 +54,7 @@ class TeamMember extends Base {
    * TeamMember object.
    * @returns {string}
    * @example
-   * // Logs: Team Member's mention: <@123456789012345678>
+   * // Logs: Team Member's mention: <@!123456789012345678>
    * console.log(`Team Member's mention: ${teamMember}`);
    */
   toString() {

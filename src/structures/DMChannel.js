@@ -73,7 +73,7 @@ class DMChannel extends Channel {
    * DMChannel object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789012345678>!
+   * // Logs: Hello from <@!123456789012345678>!
    * console.log(`Hello from ${channel}!`);
    */
   toString() {

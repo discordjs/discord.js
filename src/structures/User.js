@@ -302,11 +302,11 @@ class User extends Base {
    * When concatenated with a string, this automatically returns the user's mention instead of the User object.
    * @returns {string}
    * @example
-   * // Logs: Hello from <@123456789012345678>!
+   * // Logs: Hello from <@!123456789012345678>!
    * console.log(`Hello from ${user}!`);
    */
   toString() {
-    return `<@${this.id}>`;
+    return `<@!${this.id}>`;
   }
 
   toJSON(...props) {
