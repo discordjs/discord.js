@@ -293,6 +293,7 @@ declare module 'discord.js' {
     public readonly client: Client;
     public collected: Collection<K, V>;
     public ended: boolean;
+    public abstract endReason: string | null;
     public filter: CollectorFilter;
     public readonly next: Promise<V>;
     public options: CollectorOptions;
@@ -307,7 +308,6 @@ declare module 'discord.js' {
     protected listener: (...args: any[]) => void;
     public abstract collect(...args: any[]): K;
     public abstract dispose(...args: any[]): K;
-    public abstract endReason(): void;
 
     public on(event: 'collect' | 'dispose', listener: (...args: any[]) => void): this;
     public on(event: 'end', listener: (collected: Collection<K, V>, reason: string) => void): this;
@@ -1046,12 +1046,12 @@ declare module 'discord.js' {
     private _handleGuildDeletion(guild: Guild): void;
 
     public channel: Channel;
+    public readonly endReason: string | null;
     public options: MessageCollectorOptions;
     public received: number;
 
     public collect(message: Message): Snowflake;
     public dispose(message: Message): Snowflake;
-    public endReason(): string;
   }
 
   export class MessageEmbed {
@@ -1223,6 +1223,7 @@ declare module 'discord.js' {
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
 
+    public readonly endReason: string | null;
     public message: Message;
     public options: ReactionCollectorOptions;
     public total: number;
@@ -1233,7 +1234,6 @@ declare module 'discord.js' {
     public collect(reaction: MessageReaction): Snowflake | string;
     public dispose(reaction: MessageReaction, user: User): Snowflake | string;
     public empty(): void;
-    public endReason(): string | null;
 
     public on(event: 'collect' | 'dispose' | 'remove', listener: (reaction: MessageReaction, user: User) => void): this;
     public on(
