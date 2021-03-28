@@ -146,6 +146,7 @@ class RequestHandler {
       return this.execute(request);
     }
 
+    let sublimitTimeout;
     if (res && res.headers) {
       const serverDate = res.headers.get('date');
       const limit = res.headers.get('x-ratelimit-limit');
@@ -174,7 +175,7 @@ class RequestHandler {
            * route-wide rate limit. Don't update remaining or reset to avoid rate limiting the whole
            * endpoint, just set a reset time on the request itself to avoid retrying too soon.
            */
-          res.sublimit = retryAfter;
+          sublimitTimeout = retryAfter;
         }
       }
     }
@@ -217,11 +218,10 @@ class RequestHandler {
       // Handle ratelimited requests
       if (res.status === 429) {
         // A ratelimit was hit - this should never happen
-        this.manager.client.emit('debug', `429 hit on route ${request.route}${res.sublimit ? ' for sublimit' : ''}`);
+        this.manager.client.emit('debug', `429 hit on route ${request.route}${sublimitTimeout ? ' for sublimit' : ''}`);
         // If caused by a sublimit, wait it out here so other requests on the route can be handled
-        if (res.sublimit) {
-          await Util.delayFor(res.sublimit);
-          delete res.sublimit;
+        if (sublimitTimeout) {
+          await Util.delayFor(sublimitTimeout);
         }
         return this.execute(request);
       }
