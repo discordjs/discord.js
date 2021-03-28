@@ -181,7 +181,7 @@ class Guild extends Base {
      */
 
     /**
-     * An array of guild features partnered guilds have enabled
+     * An array of guild features available to the guild
      * @type {Features[]}
      */
     this.features = data.features;
