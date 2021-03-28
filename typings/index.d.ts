@@ -1186,7 +1186,7 @@ declare module 'discord.js' {
     public delete(reason?: string): Promise<PermissionOverwrites>;
     public toJSON(): object;
     public static resolveOverwriteOptions(
-      options: ResolvedOverwriteOptions,
+      options: PermissionOverwriteOption,
       initialPermissions: { allow?: PermissionResolvable; deny?: PermissionResolvable },
     ): ResolvedOverwriteOptions;
     public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwriteData;
