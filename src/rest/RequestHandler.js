@@ -79,11 +79,11 @@ class RequestHandler {
      * Potentially loop until this task can run if e.g. the global rate limit is hit twice
      */
     while (this.limited) {
-      let isGlobal, limit, timeout, delayPromise;
+      const isGlobal = this.globalLimited;
+      let limit, timeout, delayPromise;
 
-      if (this.globalLimited) {
+      if (isGlobal) {
         // Set the variables based on the global rate limit
-        isGlobal = true;
         limit = this.manager.globalLimit;
         timeout = this.manager.globalReset + this.manager.client.options.restTimeOffset - Date.now();
         // If this is the first task to reach the global timeout, set the global delay
@@ -94,7 +94,6 @@ class RequestHandler {
         delayPromise = this.manager.globalDelay;
       } else {
         // Set the variables based on the route-specific rate limit
-        isGlobal = false;
         limit = this.limit;
         timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();
         delayPromise = Util.delayFor(timeout);
@@ -114,7 +113,7 @@ class RequestHandler {
          */
         this.manager.client.emit(RATE_LIMIT, {
           timeout,
-          limit: limit,
+          limit,
           method: request.method,
           path: request.path,
           route: request.route,
@@ -162,7 +161,7 @@ class RequestHandler {
       }
 
       // Handle retryAfter, which means we have actually hit a rate limit
-      var retryAfter = res.headers.get('retry-after');
+      let retryAfter = res.headers.get('retry-after');
       retryAfter = retryAfter ? Number(retryAfter) * 1000 : -1;
       if (retryAfter > 0) {
         // If the global ratelimit header is set, that means we hit the global rate limit
@@ -195,7 +194,7 @@ class RequestHandler {
       if (emitInvalid) {
         /**
          * Emitted periodically when the process sends invalid messages to let users avoid the
-         * 10k invalid messages in 10 minutes threshold that causes a ban
+         * 10k invalid requests in 10 minutes threshold that causes a ban
          * @event Client#invalidRequestWarning
          * @param {number} invalidRequestWarningInfo.count Number of invalid requests that have been made in the window
          * @param {number} invalidRequestWarningInfo.remainingTime Time in ms remaining before the count resets
