@@ -209,7 +209,7 @@ class GuildChannel extends Channel {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
       throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    await this.edit({ permissionOverwrites: overwrites, reason });
+    await this.edit({ permissionOverwrites: overwrites }, reason);
     return this;
   }
 
