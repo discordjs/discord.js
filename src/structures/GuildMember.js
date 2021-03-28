@@ -211,7 +211,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The overall set of permissions for this member, taking only roles into account
+   * The overall set of permissions for this member, taking only roles and owner status into account
    * @type {Readonly<Permissions>}
    * @readonly
    */
