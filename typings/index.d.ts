@@ -988,10 +988,13 @@ declare module 'discord.js' {
     public reference: MessageReference | null;
     public readonly referencedMessage: Message | null;
     public awaitReactions(
-      filter: CollectorFilter,
+      filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collector<Snowflake, MessageReaction>]>,
       options?: AwaitReactionsOptions,
     ): Promise<Collection<Snowflake, MessageReaction>>;
-    public createReactionCollector(filter: CollectorFilter, options?: ReactionCollectorOptions): ReactionCollector;
+    public createReactionCollector(
+      filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collection<Snowflake, MessageReaction>]>,
+      options?: ReactionCollectorOptions,
+    ): ReactionCollector;
     public delete(): Promise<Message>;
     public edit(
       content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
@@ -1041,7 +1044,11 @@ declare module 'discord.js' {
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
-    constructor(channel: TextChannel | DMChannel, filter: CollectorFilter, options?: MessageCollectorOptions);
+    constructor(
+      channel: TextChannel | DMChannel,
+      filter: CollectorFilter<[...ClientEvents['message'], Collector<Snowflake, Message>]>,
+      options?: MessageCollectorOptions,
+    );
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
 
@@ -1218,7 +1225,11 @@ declare module 'discord.js' {
   }
 
   export class ReactionCollector extends Collector<Snowflake, MessageReaction> {
-    constructor(message: Message, filter: CollectorFilter, options?: ReactionCollectorOptions);
+    constructor(
+      message: Message,
+      filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collector<Snowflake, MessageReaction>]>,
+      options?: ReactionCollectorOptions,
+    );
     private _handleChannelDeletion(channel: GuildChannel): void;
     private _handleGuildDeletion(guild: Guild): void;
     private _handleMessageDeletion(message: Message): void;
@@ -2067,12 +2078,18 @@ declare module 'discord.js' {
     readonly lastPinAt: Date | null;
     typing: boolean;
     typingCount: number;
-    awaitMessages(filter: CollectorFilter, options?: AwaitMessagesOptions): Promise<Collection<Snowflake, Message>>;
+    awaitMessages(
+      filter: CollectorFilter<[...ClientEvents['message'], Collector<Snowflake, Message>]>,
+      options?: AwaitMessagesOptions,
+    ): Promise<Collection<Snowflake, Message>>;
     bulkDelete(
       messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
       filterOld?: boolean,
     ): Promise<Collection<Snowflake, Message>>;
-    createMessageCollector(filter: CollectorFilter, options?: MessageCollectorOptions): MessageCollector;
+    createMessageCollector(
+      filter: CollectorFilter<[...ClientEvents['message'], Collector<Snowflake, Message>]>,
+      options?: MessageCollectorOptions,
+    ): MessageCollector;
     startTyping(count?: number): Promise<void>;
     stopTyping(force?: boolean): void;
   }
@@ -2460,7 +2477,7 @@ declare module 'discord.js' {
     target: WebSocket;
   }
 
-  type CollectorFilter = (...args: any[]) => boolean | Promise<boolean>;
+  type CollectorFilter<T extends unknown[] = any[]> = (...args: T) => boolean | Promise<boolean>;
 
   interface CollectorOptions {
     time?: number;
