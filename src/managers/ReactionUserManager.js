@@ -25,7 +25,7 @@ class ReactionUserManager extends BaseManager {
    */
 
   /**
-   * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
+   * Fetches the users that gave this reaction. Resolves with a collection of users, mapped by their IDs.
    * @param {Object} [options] Options for fetching the users
    * @param {number} [options.limit=100] The maximum amount of users to fetch, defaults to 100
    * @param {Snowflake} [options.before] Limit fetching users to those with an id lower than the supplied id
