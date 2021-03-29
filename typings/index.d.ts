@@ -951,15 +951,15 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
-  export class Message extends Base {
-    constructor(client: Client, data: object, channel: TextChannel | DMChannel | NewsChannel);
+  export class Message<G extends boolean = boolean> extends Base {
+    constructor(client: Client, data: object, channel: G extends true ? TextChannel | NewsChannel : DMChannel);
     private patch(data: object): Message;
 
     public activity: MessageActivity | null;
     public application: ClientApplication | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
-    public channel: TextChannel | DMChannel | NewsChannel;
+    public channel: G extends true ? TextChannel | NewsChannel : DMChannel;
     public readonly cleanContent: string;
     public content: string;
     public readonly createdAt: Date;
@@ -970,9 +970,9 @@ declare module 'discord.js' {
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
     public embeds: MessageEmbed[];
-    public readonly guild: Guild | null;
+    public readonly guild: G extends true ? Guild : null;
     public id: Snowflake;
-    public readonly member: GuildMember | null;
+    public readonly member: G extends true ? GuildMember : null;
     public mentions: MessageMentions;
     public nonce: string | number | null;
     public readonly partial: false;
@@ -986,7 +986,7 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
-    public readonly referencedMessage: Message | null;
+    public readonly referencedMessage: Message<G> | null;
     public awaitReactions(
       filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collector<Snowflake, MessageReaction>]>,
       options?: AwaitReactionsOptions,
@@ -995,35 +995,35 @@ declare module 'discord.js' {
       filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collection<Snowflake, MessageReaction>]>,
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
-    public delete(): Promise<Message>;
+    public delete(): Promise<Message<G>>;
     public edit(
       content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message>;
-    public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message>;
+    ): Promise<Message<G>>;
+    public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message<G>>;
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
-    public crosspost(): Promise<Message>;
-    public fetch(force?: boolean): Promise<Message>;
-    public pin(options?: { reason?: string }): Promise<Message>;
+    public crosspost(): Promise<Message<G>>;
+    public fetch(force?: boolean): Promise<Message<G>>;
+    public pin(options?: { reason?: string }): Promise<Message<G>>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message | Message[]>;
+    ): Promise<Message<G>>;
+    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message<G>[]>;
+    public reply(options: MessageOptions | APIMessage): Promise<Message<G> | Message<G>[]>;
     public reply(
       content: StringResolvable,
       options: (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message>;
+    ): Promise<Message<G>>;
     public reply(
       content: StringResolvable,
       options: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message | Message[]>;
-    public suppressEmbeds(suppress?: boolean): Promise<Message>;
+    ): Promise<Message<G>[]>;
+    public reply(content: StringResolvable, options: MessageOptions): Promise<Message<G> | Message<G>[]>;
+    public suppressEmbeds(suppress?: boolean): Promise<Message<G>>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(options?: { reason?: string }): Promise<Message>;
+    public unpin(options?: { reason?: string }): Promise<Message<G>>;
   }
 
   export class MessageAttachment {
