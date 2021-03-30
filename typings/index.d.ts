@@ -2620,7 +2620,7 @@ declare module 'discord.js' {
 
   interface CommandInteractionOption {
     name: string;
-    type: InteractionType;
+    type: ApplicationCommandOptionType;
     value?: string | number | boolean;
     options?: CommandInteractionOption[];
     user?: User;
