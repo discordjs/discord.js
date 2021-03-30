@@ -262,6 +262,7 @@ exports.Events = {
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
+  INTERACTION_CREATE: 'interaction',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
@@ -334,6 +335,7 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
+ * * INTERACTION_CREATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
@@ -373,6 +375,7 @@ exports.WSEvents = keyMirror([
   'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
+  'INTERACTION_CREATE',
 ]);
 
 /**
@@ -716,6 +719,54 @@ exports.WebhookTypes = [
  * @typedef {string} OverwriteType
  */
 exports.OverwriteTypes = createEnum(['role', 'member']);
+
+/**
+ * The type of an application command option:
+ * * SUB_COMMAND
+ * * SUB_COMMAND_GROUP
+ * * STRING
+ * * INTEGER
+ * * BOOLEAN
+ * * USER
+ * * CHANNEL
+ * * ROLE
+ * @typedef {string} ApplicationCommandOptionType
+ */
+exports.ApplicationCommandOptionTypes = createEnum([
+  null,
+  'SUB_COMMAND',
+  'SUB_COMMAND_GROUP',
+  'STRING',
+  'INTEGER',
+  'BOOLEAN',
+  'USER',
+  'CHANNEL',
+  'ROLE',
+]);
+
+/**
+ * The type of a received interaction:
+ * * PING
+ * * APPLICATION_COMMAND
+ * @typedef {string} InteractionType
+ */
+exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND']);
+
+/**
+ * The type of a response to a received interaction:
+ * * PONG
+ * * CHANNEL_MESSAGE_WITH_SOURCE
+ * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+ * @typedef {string} InteractionResponseType
+ */
+exports.InteractionResponseTypes = createEnum([
+  null,
+  'PONG',
+  null,
+  null,
+  'CHANNEL_MESSAGE_WITH_SOURCE',
+  'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
+]);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

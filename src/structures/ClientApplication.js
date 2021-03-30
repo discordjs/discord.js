@@ -2,12 +2,23 @@
 
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
+const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 
 /**
  * Represents a Client OAuth2 Application.
  * @extends {Application}
  */
 class ClientApplication extends Application {
+  constructor(client, data) {
+    super(client, data);
+
+    /**
+     * The application command manager for this application
+     * @type {ApplicationCommandManager}
+     */
+    this.commands = new ApplicationCommandManager(this);
+  }
+
   _patch(data) {
     super._patch(data);
 

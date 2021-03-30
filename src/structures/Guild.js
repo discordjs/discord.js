@@ -10,6 +10,7 @@ const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
 const { Error, TypeError } = require('../errors');
+const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
@@ -42,6 +43,12 @@ class Guild extends Base {
    */
   constructor(client, data) {
     super(client);
+
+    /**
+     * A manager of the application commands belonging to this guild
+     * @type {GuildApplicationCommandManager}
+     */
+    this.commands = new GuildApplicationCommandManager(this);
 
     /**
      * A manager of the members belonging to this guild

@@ -28,3 +28,5 @@
       path: moderation.md
     - name: Webhook
       path: webhook.js
+    - name: Slash Commands
+      path: commands.md
