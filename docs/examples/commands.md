@@ -1,12 +1,10 @@
 # Slash Commands
 
-Here, you'll get to know how to create commands and listen to incoming interactions.
+In this example, you'll get to know how to create commands and listen to incoming interactions.
 
 ## Creating a Command
 
-First off, we need to create a command so that users can use it. In this example, we will create an `echo` command which simply returns what the user inputted.
-
-Note that global commands can take up to an hour to appear in the client, so if you want to test a new command, you should create it for one guild first.
+First off, we need to create a command so that users can use it. We will create an `echo` command which simply returns what the user inputted. Note that global commands can take up to an hour to appear in the client, so if you want to test a new command, you should create it for one guild first.
 
 ```js
 // The data for our command
@@ -30,9 +28,9 @@ client.once('ready', () => {
 });
 ```
 
-And that's it! As soon as your client gets ready, it will register our `echo` command.
+And that's it! As soon as your client gets ready, it will register the `echo` command.
 
-## Handling commands
+## Handling Commands
 
 Now let's implement a simple handler for it:
 
