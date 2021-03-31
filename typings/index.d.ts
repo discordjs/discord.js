@@ -373,7 +373,7 @@ declare module 'discord.js' {
       content: APIMessage | APIMessageContentResolvable | InteractionReplyOptions | MessageAdditions,
       options?: InteractionReplyOptions | MessageAdditions,
     ): Promise<void>;
-    private static transformOption(option: object, resolved: object): CommandInteractionOption;
+    private transformOption(option: object, resolved: object): CommandInteractionOption;
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';

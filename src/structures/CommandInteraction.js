@@ -30,7 +30,7 @@ class CommandInteraction extends Interaction {
      * The options passed to the command.
      * @type {CommandInteractionOption[]}
      */
-    this.options = data.data.options?.map(o => CommandInteraction.transformOption(o, data.data.resolved)) ?? [];
+    this.options = data.data.options?.map(o => this.transformOption(o, data.data.resolved)) ?? [];
 
     /**
      * An associated webhook client, can be used to create deferred replies
@@ -106,7 +106,7 @@ class CommandInteraction extends Interaction {
    * @returns {CommandInteractionOption}
    * @private
    */
-  static transformOption(option, resolved) {
+  transformOption(option, resolved) {
     const result = {
       name: option.name,
       type: ApplicationCommandOptionTypes[option.type],
@@ -117,7 +117,7 @@ class CommandInteraction extends Interaction {
     }
 
     if (option.options) {
-      result.options = option.options.map(o => CommandInteraction.transformOption(o, resolved));
+      result.options = option.options.map(o => this.transformOption(o, resolved));
     }
 
     if (option.type === ApplicationCommandOptionTypes.USER) {
