@@ -209,10 +209,7 @@ class VoiceState extends Base {
   }
 
   /**
-   * Request to speak in the channel, or cancel the request to speak.
-   * Only applicable for stage channels.
-   * @param {boolean} request If true, will request to speak. If false, will cancel the request.
-   * @returns {Promise<void>}
+   * Request to speak in the channel. Only applicable for stage channels.
    */
   async requestToSpeak() {
     const channel = this.channel;
@@ -237,6 +234,10 @@ class VoiceState extends Base {
       });
   }
 
+  /**
+   * Suppress/unsuppress the user.
+   * @param {boolean} suppressed - Whether or not the user should be suppressed.
+   */
   async setSuppressed(suppressed) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
 
@@ -253,7 +254,6 @@ class VoiceState extends Base {
     const hasMuteMembersPermission = member && member.permissions.has(Permissions.FLAGS.MUTE_MEMBERS);
 
     if (isMe) {
-      // Must have the MUTE_MEMBERS permission to unsuppress yourself
       if (!suppressed && !hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
       await this.client.api
         .guilds(this.guild.id)('voice-states')('@me')
