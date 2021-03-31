@@ -146,7 +146,7 @@ class ReactionCollector extends Collector {
     this.checkEnd();
   }
 
-  endReason() {
+  get endReason() {
     if (this.options.max && this.total >= this.options.max) return 'limit';
     if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
     if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
