@@ -9,6 +9,7 @@
  * * **`CategoryChannel`**
  * * **`NewsChannel`**
  * * **`StoreChannel`**
+ * * **`StageChannel`**
  * * **`GuildMember`**
  * * **`Guild`**
  * * **`Message`**
