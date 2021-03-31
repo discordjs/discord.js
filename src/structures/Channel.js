@@ -14,7 +14,6 @@ class Channel extends Base {
     super(client);
 
     const type = Object.keys(ChannelTypes).find(typeName => ChannelTypes[typeName] === data.type);
-    console.log(type);
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel

@@ -6,7 +6,7 @@ const auth = require('./auth.js');
 const { Client, Intents } = require('../src');
 
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_PRESENCES],
   partials: [],
 });
 
@@ -21,13 +21,6 @@ client.on('debug', console.log);
 client.on('error', console.log);
 
 process.on('unhandledRejection', console.log);
-
-client.on('ready', async () => {
-  const channel = client.channels.cache.get('826900536392810568');
-  console.log(channel.userLimit);
-  await channel.join();
-  console.log(channel.userLimit);
-});
 
 client.on('presenceUpdate', (a, b) => {
   if (b.userID !== '66564597481480192') return;

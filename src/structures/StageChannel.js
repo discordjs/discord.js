@@ -10,8 +10,8 @@ const Permissions = require('../util/Permissions');
  */
 class StageChannel extends GuildChannel {
   /**
-   * @param {*} guild The guild the store channel is part of
-   * @param {*} data The data for the store channel
+   * @param {*} guild The guild the stage channel is part of
+   * @param {*} data The data for the stage channel
    */
   constructor(guild, data) {
     super(guild, data);
@@ -111,7 +111,7 @@ class StageChannel extends GuildChannel {
 
   /**
    * Sets the RTC region of the channel.
-   * @param {?region} region The new region of the channel. Set to null to remove a specific region for the channel
+   * @param {?string} region The new region of the channel. Set to null to remove a specific region for the channel
    * @returns {Promise<StageChannel>}
    */
   setRTCRegion(region) {
