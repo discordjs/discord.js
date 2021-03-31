@@ -67,6 +67,17 @@ class VoiceState extends Base {
      * @type {?Snowflake}
      */
     this.channelID = data.channel_id || null;
+    /**
+     * Whether this member is suppressed from speaking. This property is specific to stage channels only.
+     * If true, it is equivalent to being in the audience. If false, it is equivalent to being a speaker.
+     * @type {boolean}
+     */
+    this.suppress = data.suppress;
+    /**
+     * The time at which the member requested to speak. This property is specific to stage channels only.
+     */
+    this.requestToSpeakTimestamp =
+      typeof data.request_to_speak_timestamp === 'string' ? new Date(data.request_to_speak_timestamp).getTime() : null;
     return this;
   }
 
