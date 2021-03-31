@@ -179,36 +179,6 @@ class VoiceState extends Base {
       : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
-  async moveToSpeakers() {
-    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
-    // You should only be allowed to do this if this is YOUR voice state AND:
-    //  - you're a stage manager
-    //  - or this is your voice state and requestToSpeakTimestamp is not null
-    await this.client.api
-      .guilds(this.guild.id)('voice-states')('@me')
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: false,
-          request_to_speak_timestamp: null,
-        },
-      });
-  }
-
-  async moveToAudience() {
-    // You should only be allowed to do this if you're a stage manager,
-    // or if this is YOUR voice state and you've been invited
-    await this.client.api
-      .guilds(this.guild.id)('voice-states')('@me')
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: true,
-          request_to_speak_timestamp: null,
-        },
-      });
-  }
-
   /**
    * Self-mutes/unmutes the bot for this voice state.
    * @param {boolean} mute Whether or not the bot should be self-muted
@@ -235,6 +205,79 @@ class VoiceState extends Base {
     this.selfDeaf = deaf;
     await this.connection.sendVoiceStateUpdate();
     return true;
+  }
+
+  /**
+   * Request to speak in the channel, or cancel the request to speak.
+   * Only applicable for stage channels.
+   * @param {boolean} request If true, will request to speak. If false, will cancel the request.
+   * @returns {Promise<void>}
+   */
+  async setRequestToSpeak(request) {
+    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    if (typeof request !== 'boolean') throw new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
+    if (!this.connection) throw new TypeError('VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL');
+
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          request_to_speak_timestamp: request ? new Date().toISOString() : null,
+        },
+      });
+  }
+
+  /**
+   * Invite the user to speak in the channel. Only applicable for stage channels.
+   */
+  async inviteToSpeak() {
+    // You should only be allowed to do this if you're a manager
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')(this.id)
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: false,
+          request_to_speak_timestamp: new Date().toISOString(),
+        },
+      });
+  }
+
+  /**
+   * Moves the user to the speakers group. Only applicable for stage channels.
+   */
+  async moveToSpeakers() {
+    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    // You should only be allowed to do this if this is YOUR voice state AND:
+    //  - you're a stage manager
+    //  - or this is your voice state and requestToSpeakTimestamp is not null
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: false,
+          request_to_speak_timestamp: null,
+        },
+      });
+  }
+
+  /**
+   * Moves the user to the audience. Only applicable for stage channels.
+   */
+  async moveToAudience() {
+    // You should only be allowed to do this if you're a stage manager,
+    // or if this is YOUR voice state and you've been invited
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: true,
+          request_to_speak_timestamp: null,
+        },
+      });
   }
 
   toJSON() {
