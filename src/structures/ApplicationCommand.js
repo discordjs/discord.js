@@ -44,7 +44,7 @@ class ApplicationCommand extends Base {
      * The options of this command
      * @type {ApplicationCommandOption[]}
      */
-    this.options = data.options?.map(this.constructor.transformOption) ?? [];
+    this.options = data.options?.map(ApplicationCommand.transformOption) ?? [];
   }
 
   /**
@@ -82,7 +82,7 @@ class ApplicationCommand extends Base {
     const raw = {};
     if (data.name) raw.name = data.name;
     if (data.description) raw.description = data.description;
-    if (data.options) raw.options = data.options.map(this.constructor.transformOption);
+    if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
 
     let path = this.client.api.applications(this.client.application.id);
     if (this.guild) {

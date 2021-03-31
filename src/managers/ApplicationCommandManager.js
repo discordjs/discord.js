@@ -70,7 +70,7 @@ class ApplicationCommandManager extends BaseManager {
     }
 
     const data = await path.commands.post({
-      data: this.constructor.transformCommand(command),
+      data: ApplicationCommandManager.transformCommand(command),
     });
     return this.add(data);
   }
@@ -87,7 +87,7 @@ class ApplicationCommandManager extends BaseManager {
     }
 
     const data = await path.commands.put({
-      data: commands.map(this.constructor.transformCommand),
+      data: commands.map(ApplicationCommandManager.transformCommand),
     });
     return data.reduce((coll, command) => coll.set(command.id, this.add(command)), new Collection());
   }

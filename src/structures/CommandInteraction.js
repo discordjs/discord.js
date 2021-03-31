@@ -30,7 +30,7 @@ class CommandInteraction extends Interaction {
      * The options passed to the command.
      * @type {CommandInteractionOption[]}
      */
-    this.options = data.data.options?.map(o => this.constructor.transformOption(o, data.data.resolved)) ?? [];
+    this.options = data.data.options?.map(o => CommandInteraction.transformOption(o, data.data.resolved)) ?? [];
 
     /**
      * An associated webhook client, can be used to create deferred replies
