@@ -1963,6 +1963,7 @@ declare module 'discord.js' {
     ApplicationCommandResolvable
   > {
     constructor(client: Client, iterable?: Iterable<any>);
+    private readonly commandPath: object;
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;

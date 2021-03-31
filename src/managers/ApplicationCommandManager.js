@@ -24,6 +24,17 @@ class ApplicationCommandManager extends BaseManager {
   }
 
   /**
+   * The APIRouter path to the commands
+   * @type {Object}
+   * @private
+   */
+  get commandPath() {
+    let path = this.client.api.applications(this.client.application.id);
+    if (this.guild) path = path.guilds(this.guild.id);
+    return path.commands;
+  }
+
+  /**
    * Data that resolves to give an ApplicationCommand object. This can be:
    * * An ApplicationCommand object
    * * A Snowflake
@@ -38,21 +49,16 @@ class ApplicationCommandManager extends BaseManager {
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    */
   async fetch(id, cache = true, force = false) {
-    let path = this.client.api.applications(this.client.application.id);
-    if (this.guild) {
-      path = path.guilds(this.guild.id);
-    }
-
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
         if (existing) return existing;
       }
-      const command = await path.commands(id).get();
+      const command = await this.commandPath(id).get();
       return this.add(command, cache);
     }
 
-    const data = await path.commands.get();
+    const data = await this.commandPath.get();
     return data.reduce((coll, command) => coll.set(command.id, this.add(command, cache)), new Collection());
   }
 
@@ -62,12 +68,7 @@ class ApplicationCommandManager extends BaseManager {
    * @returns {Promise<ApplicationCommand>}
    */
   async create(command) {
-    let path = this.client.api.applications(this.client.application.id);
-    if (this.guild) {
-      path = path.guilds(this.guild.id);
-    }
-
-    const data = await path.commands.post({
+    const data = await this.commandPath.post({
       data: ApplicationCommandManager.transformCommand(command),
     });
     return this.add(data);
@@ -79,12 +80,7 @@ class ApplicationCommandManager extends BaseManager {
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
    */
   async set(commands) {
-    let path = this.client.api.applications(this.client.application.id);
-    if (this.guild) {
-      path = path.guilds(this.guild.id);
-    }
-
-    const data = await path.commands.put({
+    const data = await this.commandPath.put({
       data: commands.map(ApplicationCommandManager.transformCommand),
     });
     return data.reduce((coll, command) => coll.set(command.id, this.add(command)), new Collection());

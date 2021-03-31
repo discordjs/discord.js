@@ -84,11 +84,8 @@ class ApplicationCommand extends Base {
     if (data.description) raw.description = data.description;
     if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
 
-    let path = this.client.api.applications(this.client.application.id);
-    if (this.guild) {
-      path = path.guilds(this.guild.id);
-    }
-    const patched = await path.commands(this.id).patch({ data: raw });
+    const path = (this.guild ?? this.client.application).commands.commandPath;
+    const patched = await path(this.id).patch({ data: raw });
 
     this._patch(patched);
     return this;
@@ -99,11 +96,8 @@ class ApplicationCommand extends Base {
    * @returns {ApplicationCommand}
    */
   async delete() {
-    let path = this.client.api.applications(this.client.application.id);
-    if (this.guild) {
-      path = path.guilds(this.guild.id);
-    }
-    await path.commands(this.id).delete();
+    const path = (this.guild ?? this.client.application).commands.commandPath;
+    await path(this.id).delete();
 
     if (this.guild) {
       this.guild.commands.cache.delete(this.id);
