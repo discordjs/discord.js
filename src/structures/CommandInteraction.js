@@ -123,11 +123,13 @@ class CommandInteraction extends Interaction {
 
     if (option.type === ApplicationCommandOptionTypes.USER) {
       const user = resolved.users[option.value];
-      const member = resolved.members[option.value];
-      if (member) member.user = user;
-
       result.user = this.client.users.add(user);
-      result.member = this.guild?.members.add(member) ?? null;
+
+      const member = resolved.members?.[option.value];
+      if (member) {
+        member.user = user;
+        result.member = this.guild?.members.add(member) ?? null;
+      }
     }
 
     if (option.type === ApplicationCommandOptionTypes.CHANNEL) {
