@@ -9,21 +9,6 @@ const Permissions = require('../util/Permissions');
  * @extends {GuildChannel}
  */
 class StageChannel extends GuildChannel {
-  /**
-   * @param {*} guild The guild the stage channel is part of
-   * @param {*} data The data for the stage channel
-   */
-  constructor(guild, data) {
-    super(guild, data);
-
-    /**
-     * If the guild considers this channel NSFW
-     * @type {boolean}
-     * @readonly
-     */
-    this.nsfw = Boolean(data.nsfw);
-  }
-
   _patch(data) {
     super._patch(data);
 
@@ -50,8 +35,6 @@ class StageChannel extends GuildChannel {
      * @type {number}
      */
     this.userLimit = data.user_limit;
-
-    if (typeof data.nsfw !== 'undefined') this.nsfw = Boolean(data.nsfw);
   }
 
   /**
