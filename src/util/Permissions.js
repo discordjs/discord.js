@@ -132,7 +132,7 @@ Permissions.DEFAULT = BigInt(104324673);
  * @type {bigint}
  */
 Permissions.STAGE_MODERATOR =
-  Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.MUTE_MEMBERS | Permissions.MOVE_MEMBERS;
+  Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.MUTE_MEMBERS | Permissions.FLAGS.MOVE_MEMBERS;
 
 Permissions.defaultBit = BigInt(0);
 
