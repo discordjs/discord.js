@@ -44,7 +44,8 @@ class CommandInteraction extends Interaction {
    * @type {?ApplicationCommand}
    */
   get command() {
-    return (this.guild ?? this.client.application).commands.cache.get(this.commandID) ?? null;
+    const id = this.commandID;
+    return this.guild?.commands.cache.get(id) ?? this.client.application.commands.cache.get(id) ?? null;
   }
 
   /**
