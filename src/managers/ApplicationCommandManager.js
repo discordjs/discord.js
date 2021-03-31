@@ -53,9 +53,7 @@ class ApplicationCommandManager extends BaseManager {
     }
 
     const data = await path.commands.get();
-    const commands = new Collection();
-    for (const command of data) commands.set(command.id, this.add(command, cache));
-    return commands;
+    return data.reduce((coll, command) => coll.set(command.id, this.add(command, cache)), new Collection());
   }
 
   /**
