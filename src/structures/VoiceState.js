@@ -63,7 +63,7 @@ class VoiceState extends Base {
      */
     this.streaming = data.self_stream || false;
     /**
-     * The ID of the voice channel that this member is in
+     * The ID of the voice channel or stage channel that this member is in
      * @type {?Snowflake}
      */
     this.channelID = data.channel_id || null;
@@ -81,7 +81,7 @@ class VoiceState extends Base {
 
   /**
    * The channel that the member is connected to
-   * @type {?VoiceChannel}
+   * @type {?VoiceChannel|StageChannel}
    * @readonly
    */
   get channel() {
@@ -118,7 +118,7 @@ class VoiceState extends Base {
 
   /**
    * Whether this member is currently speaking. A boolean if the information is available (aka
-   * the bot is connected to any voice channel in the guild), otherwise this is null
+   * the bot is connected to any voice channel or stage channel in the guild), otherwise this is null
    * @type {?boolean}
    * @readonly
    */
@@ -147,7 +147,7 @@ class VoiceState extends Base {
   }
 
   /**
-   * Kicks the member from the voice channel.
+   * Kicks the member from the channel.
    * @param {string} [reason] Reason for kicking member from the channel
    * @returns {Promise<GuildMember>}
    */
