@@ -32,8 +32,8 @@ class StageChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * Todo - unknown
-     * @type {?any}
+     * The RTC region for this stage channel. This region is automatically selected if null.
+     * @type {?string}
      */
     this.rtcRegion = data.rtc_region;
 
