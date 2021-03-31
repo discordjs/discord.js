@@ -146,6 +146,11 @@ class Channel extends Base {
             channel = new StoreChannel(guild, data);
             break;
           }
+          case ChannelTypes.STAGE: {
+            const StageChannel = Structures.get('StageChannel');
+            channel = new StageChannel(guild, data);
+            break;
+          }
         }
         if (channel) guild.channels.cache.set(channel.id, channel);
       }
