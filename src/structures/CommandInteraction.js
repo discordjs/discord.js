@@ -117,7 +117,7 @@ class CommandInteraction extends Interaction {
     }
 
     if (option.options) {
-      result.options = option.options.map(o => this.transformOption(o, resolved));
+      result.options = option.options.map(o => CommandInteraction.transformOption(o, resolved));
     }
 
     if (option.type === ApplicationCommandOptionTypes.USER) {

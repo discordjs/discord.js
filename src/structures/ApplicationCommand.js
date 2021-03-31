@@ -142,7 +142,7 @@ class ApplicationCommand extends Base {
     return {
       ...option,
       type: ApplicationCommandOptionTypes[option.type],
-      options: option.options?.map(this.transformOption),
+      options: option.options?.map(ApplicationCommand.transformOption),
     };
   }
 }
