@@ -43,6 +43,12 @@ class StageChannel extends GuildChannel {
      */
     this.bitrate = data.bitrate;
 
+    /**
+     * The maximum amount of users allowed in this channel.
+     * @type {number}
+     */
+    this.userLimit = data.user_limit;
+
     if (typeof data.nsfw !== 'undefined') this.nsfw = Boolean(data.nsfw);
   }
 
