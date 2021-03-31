@@ -143,10 +143,17 @@ class StageChannel extends GuildChannel {
     if (connection && connection.channel.id === this.id) connection.disconnect();
   }
 
-  setRequestToSpeak(request) {
-    if (typeof request !== 'boolean') return new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
-    if (!this.guild.me || this.guild.me.voice.channelID !== this.id) return false;
-    return this.client.api
+  /**
+   * Requests to speak in the stage channel, or cancels the request to speak.
+   * @param {boolean} request If true, will request to speak. If false, will cancel the request.
+   * @returns {Promise<void>}
+   */
+  async setRequestToSpeak(request) {
+    if (typeof request !== 'boolean') throw new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
+    if (!this.guild.me || this.guild.me.voice.channelID !== this.id) {
+      throw new TypeError('VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL');
+    }
+    await this.client.api
       .guilds(this.guild.id)('voice-states')('@me')
       .patch({
         data: {
