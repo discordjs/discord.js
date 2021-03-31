@@ -76,6 +76,7 @@ class VoiceState extends Base {
     this.suppress = data.suppress;
     /**
      * The time at which the member requested to speak. This property is specific to stage channels only.
+     * @type {?number}
      */
     this.requestToSpeakTimestamp =
       typeof data.request_to_speak_timestamp === 'string' ? new Date(data.request_to_speak_timestamp).getTime() : null;
