@@ -434,6 +434,7 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_DISQUALIFIED
  * * GUILD_DISCOVERY_REQUALIFIED
  * * REPLY
+ * * APPLICATION_COMMAND
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -457,6 +458,7 @@ exports.MessageTypes = [
   null,
   null,
   'REPLY',
+  'APPLICATION_COMMAND',
 ];
 
 /**

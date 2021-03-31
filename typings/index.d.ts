@@ -3152,7 +3152,8 @@ declare module 'discord.js' {
     | 'CHANNEL_FOLLOW_ADD'
     | 'GUILD_DISCOVERY_DISQUALIFIED'
     | 'GUILD_DISCOVERY_REQUALIFIED'
-    | 'REPLY';
+    | 'REPLY'
+    | 'APPLICATION_COMMAND';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
@@ -3437,7 +3438,7 @@ declare module 'discord.js' {
 
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
-  type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY'>;
+  type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
 
   type TargetUser = number;
 
