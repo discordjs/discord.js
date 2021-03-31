@@ -216,7 +216,9 @@ class VoiceState extends Base {
   async setRequestToSpeak(request) {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
     if (typeof request !== 'boolean') throw new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
-    if (!this.connection) throw new TypeError('VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL');
+    if (!this.connection) throw new Error('VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL');
+    const channel = this.channel;
+    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     await this.client.api
       .guilds(this.guild.id)('voice-states')('@me')
@@ -233,6 +235,8 @@ class VoiceState extends Base {
    */
   async inviteToSpeak() {
     // You should only be allowed to do this if you're a manager
+    const channel = this.channel;
+    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
     await this.client.api
       .guilds(this.guild.id)('voice-states')(this.id)
       .patch({
@@ -249,6 +253,8 @@ class VoiceState extends Base {
    */
   async moveToSpeakers() {
     if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    const channel = this.channel;
+    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
     // You should only be allowed to do this if this is YOUR voice state AND:
     //  - you're a stage manager
     //  - or this is your voice state and requestToSpeakTimestamp is not null
