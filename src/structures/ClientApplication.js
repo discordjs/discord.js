@@ -16,7 +16,7 @@ class ClientApplication extends Application {
      * The application command manager for this application
      * @type {ApplicationCommandManager}
      */
-    this.commands = new ApplicationCommandManager(this);
+    this.commands = new ApplicationCommandManager(this.client);
   }
 
   _patch(data) {
