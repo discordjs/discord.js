@@ -117,6 +117,30 @@ class StageChannel extends GuildChannel {
   setRTCRegion(region) {
     return this.edit({ rtcRegion: region });
   }
+
+  /**
+   * Attempts to join this stage channel.
+   * @returns {Promise<VoiceConnection>}
+   * @example
+   * // Join a stage channel
+   * stageChannel.join()
+   *   .then(connection => console.log('Connected!'))
+   *   .catch(console.error);
+   */
+  join() {
+    return this.client.voice.joinChannel(this);
+  }
+
+  /**
+   * Leaves this stage channel.
+   * @example
+   * // Leave a stage channel
+   * stageChannel.leave();
+   */
+  leave() {
+    const connection = this.client.voice.connections.get(this.guild.id);
+    if (connection && connection.channel.id === this.id) connection.disconnect();
+  }
 }
 
 module.exports = StageChannel;
