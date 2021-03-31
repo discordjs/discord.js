@@ -124,6 +124,15 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
+   * Sets the RTC region of the channel.
+   * @param {?region} region The new region of the channel. Set to null to remove a specific region for the channel
+   * @returns {Promise<VoiceChannel>}
+   */
+  setRTCRegion(region) {
+    return this.edit({ rtcRegion: region });
+  }
+
+  /**
    * Attempts to join this voice channel.
    * @returns {Promise<VoiceConnection>}
    * @example

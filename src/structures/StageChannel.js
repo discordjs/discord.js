@@ -45,6 +45,15 @@ class StageChannel extends GuildChannel {
 
     if (typeof data.nsfw !== 'undefined') this.nsfw = Boolean(data.nsfw);
   }
+
+  /**
+   * Sets the RTC region of the channel.
+   * @param {?region} region The new region of the channel. Set to null to remove a specific region for the channel
+   * @returns {Promise<StageChannel>}
+   */
+  setRTCRegion(region) {
+    return this.edit({ rtcRegion: region });
+  }
 }
 
 module.exports = StageChannel;
