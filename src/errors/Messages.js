@@ -58,6 +58,7 @@ const Messages = {
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
   VOICE_REQUEST_TO_SPEAK_INVALID_TYPE: 'request must be a boolean.',
   VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL: 'You must be in the stage channel to request to speak.',
+  VOICE_NOT_INVITED_TO_SPEAK: 'You have not been invited to speak.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',

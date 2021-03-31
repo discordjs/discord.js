@@ -179,6 +179,36 @@ class VoiceState extends Base {
       : Promise.reject(new Error('VOICE_STATE_UNCACHED_MEMBER'));
   }
 
+  async moveToSpeakers() {
+    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+    // You should only be allowed to do this if this is YOUR voice state AND:
+    //  - you're a stage manager
+    //  - or this is your voice state and requestToSpeakTimestamp is not null
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: false,
+          request_to_speak_timestamp: null,
+        },
+      });
+  }
+
+  async moveToAudience() {
+    // You should only be allowed to do this if you're a stage manager,
+    // or if this is YOUR voice state and you've been invited
+    await this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: true,
+          request_to_speak_timestamp: null,
+        },
+      });
+  }
+
   /**
    * Self-mutes/unmutes the bot for this voice state.
    * @param {boolean} mute Whether or not the bot should be self-muted
