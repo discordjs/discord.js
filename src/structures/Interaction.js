@@ -98,7 +98,7 @@ class Interaction extends Base {
    * @returns {boolean}
    */
   isCommand() {
-    return this.type === InteractionTypes.APPLICATION_COMMAND;
+    return InteractionTypes[this.type] === InteractionTypes.APPLICATION_COMMAND;
   }
 }
 
