@@ -127,6 +127,13 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  */
 Permissions.DEFAULT = BigInt(104324673);
 
+/**
+ * Bitfield representing the permissions required for moderators of stage channels
+ * @type {bigint}
+ */
+Permissions.STAGE_MODERATOR =
+  Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.MUTE_MEMBERS | Permissions.MOVE_MEMBERS;
+
 Permissions.defaultBit = BigInt(0);
 
 module.exports = Permissions;
