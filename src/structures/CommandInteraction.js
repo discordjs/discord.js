@@ -89,7 +89,7 @@ class CommandInteraction extends Interaction {
   /**
    * Represents an option of a received command interaction.
    * @property {string} name The name of the option
-   * @property {InteractionType} type The type of the interaction
+   * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {User} [user] The resolved user

@@ -26,6 +26,7 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * The APIRouter path to the commands
    * @type {Object}
+   * @readonly
    * @private
    */
   get commandPath() {
