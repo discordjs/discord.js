@@ -96,6 +96,7 @@ module.exports = {
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
   StoreChannel: require('./structures/StoreChannel'),
+  StageChannel: require('./structures/StageChannel'),
   Team: require('./structures/Team'),
   TeamMember: require('./structures/TeamMember'),
   TextChannel: require('./structures/TextChannel'),

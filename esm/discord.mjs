@@ -84,6 +84,7 @@ export const {
   RichPresenceAssets,
   Role,
   StoreChannel,
+  StageChannel,
   Team,
   TeamMember,
   TextChannel,
