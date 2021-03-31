@@ -1982,6 +1982,7 @@ declare module 'discord.js' {
 
   export class GuildApplicationCommandManager extends ApplicationCommandManager {
     constructor(guild: Guild, iterable?: Iterable<any>);
+    public guild: Guild;
   }
 
   export class GuildChannelManager extends BaseManager<Snowflake, GuildChannel, GuildChannelResolvable> {
