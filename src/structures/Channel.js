@@ -13,7 +13,8 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    const type = Object.keys(ChannelTypes)[data.type];
+    const type = Object.keys(ChannelTypes).find(typeName => ChannelTypes[typeName] === data.type);
+    console.log(type);
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -22,6 +23,7 @@ class Channel extends Base {
      * * `category` - a guild category channel
      * * `news` - a guild news channel
      * * `store` - a guild store channel
+     * * `stage` - a guild stage channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
