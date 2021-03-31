@@ -1,6 +1,7 @@
 'use strict';
 
 const GuildChannel = require('./GuildChannel');
+const { TypeError } = require('../errors');
 const Collection = require('../util/Collection');
 const Permissions = require('../util/Permissions');
 
@@ -140,6 +141,19 @@ class StageChannel extends GuildChannel {
   leave() {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection && connection.channel.id === this.id) connection.disconnect();
+  }
+
+  setRequestToSpeak(request) {
+    if (typeof request !== 'boolean') return new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
+    if (!this.guild.me || this.guild.me.voice.channelID !== this.id) return false;
+    return this.client.api
+      .guilds(this.guild.id)('voice-states')('@me')
+      .patch({
+        data: {
+          channel_id: this.id,
+          request_to_speak_timestamp: request ? new Date().toISOString() : null,
+        },
+      });
   }
 }
 

@@ -56,6 +56,7 @@ const Messages = {
   VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
+  VOICE_REQUEST_TO_SPEAK_INVALID_TYPE: 'request must be a boolean.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
