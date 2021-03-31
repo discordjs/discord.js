@@ -56,13 +56,15 @@ const Messages = {
   VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
-  VOICE_REQUEST_TO_SPEAK_INVALID_TYPE: 'request must be a boolean.',
-  VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL: 'You must be in the stage channel to request to speak.',
+  VOICE_NOT_IN_CHANNEL: 'You must be in the channel to to perform this action.',
   VOICE_NOT_INVITED_TO_SPEAK: 'You have not been invited to speak.',
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
+  VOICE_NEED_MUTE_MEMBERS: 'You need permission to mute members to do this.',
+  VOICE_NEED_REQUEST_TO_SPEAK: 'You need permission to request to speak.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
-  VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
+  VOICE_STATE_NOT_OWN:
+    'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
 
   UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',

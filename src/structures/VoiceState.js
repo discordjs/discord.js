@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
+const Permissions = require('../util/Permissions');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -213,77 +214,68 @@ class VoiceState extends Base {
    * @param {boolean} request If true, will request to speak. If false, will cancel the request.
    * @returns {Promise<void>}
    */
-  async setRequestToSpeak(request) {
-    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
-    if (typeof request !== 'boolean') throw new TypeError('VOICE_REQUEST_TO_SPEAK_INVALID_TYPE');
-    if (!this.connection) throw new Error('VOICE_REQUEST_TO_SPEAK_NOT_IN_CHANNEL');
+  async requestToSpeak() {
     const channel = this.channel;
     if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
+    const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
+    if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
+
+    if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
+
+    const member = this.member;
+    const hasRequestToSpeakPermission = member && member.permissions.has(Permissions.FLAGS.REQUEST_TO_SPEAK);
+
+    if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
     await this.client.api
       .guilds(this.guild.id)('voice-states')('@me')
       .patch({
         data: {
           channel_id: this.channelID,
-          request_to_speak_timestamp: request ? new Date().toISOString() : null,
-        },
-      });
-  }
-
-  /**
-   * Invite the user to speak in the channel. Only applicable for stage channels.
-   */
-  async inviteToSpeak() {
-    // You should only be allowed to do this if you're a manager
-    const channel = this.channel;
-    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
-    await this.client.api
-      .guilds(this.guild.id)('voice-states')(this.id)
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: false,
           request_to_speak_timestamp: new Date().toISOString(),
         },
       });
   }
 
-  /**
-   * Moves the user to the speakers group. Only applicable for stage channels.
-   */
-  async moveToSpeakers() {
-    if (this.id !== this.client.user.id) throw new Error('VOICE_STATE_NOT_OWN');
+  async setSuppressed(suppressed) {
+    if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
+
     const channel = this.channel;
     if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
-    // You should only be allowed to do this if this is YOUR voice state AND:
-    //  - you're a stage manager
-    //  - or this is your voice state and requestToSpeakTimestamp is not null
-    await this.client.api
-      .guilds(this.guild.id)('voice-states')('@me')
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: false,
-          request_to_speak_timestamp: null,
-        },
-      });
-  }
 
-  /**
-   * Moves the user to the audience. Only applicable for stage channels.
-   */
-  async moveToAudience() {
-    // You should only be allowed to do this if you're a stage manager,
-    // or if this is YOUR voice state and you've been invited
-    await this.client.api
-      .guilds(this.guild.id)('voice-states')('@me')
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: true,
-          request_to_speak_timestamp: null,
-        },
-      });
+    const member = this.member;
+    const isBot = member && member.user.bot;
+    const isMe = this.client.user.id === this.id;
+
+    const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
+    if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
+
+    const hasMuteMembersPermission = member && member.permissions.has(Permissions.FLAGS.MUTE_MEMBERS);
+
+    if (isMe) {
+      // Must have the MUTE_MEMBERS permission to unsuppress yourself
+      if (!suppressed && !hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
+      await this.client.api
+        .guilds(this.guild.id)('voice-states')('@me')
+        .patch({
+          data: {
+            channel_id: this.channelID,
+            suppress: suppressed,
+            request_to_speak_timestamp: suppressed ? null : undefined,
+          },
+        });
+    } else {
+      if (!hasMuteMembersPermission) throw Error('VOICE_NEED_MUTE_MEMBERS');
+      await this.client.api
+        .guilds(this.guild.id)('voice-states')(this.id)
+        .patch({
+          data: {
+            channel_id: this.channelID,
+            suppress: suppressed,
+            request_to_speak_timestamp: suppressed || isBot ? null : new Date().toISOString(),
+          },
+        });
+    }
   }
 
   toJSON() {
