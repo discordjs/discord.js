@@ -78,7 +78,7 @@ class VoiceState extends Base {
      * @type {?number}
      */
     this.requestToSpeakTimestamp =
-      typeof data.request_to_speak_timestamp === 'string' ? new Date(data.request_to_speak_timestamp).getTime() : null;
+      data.request_to_speak_timestamp ? new Date(data.request_to_speak_timestamp).getTime() : null;
     return this;
   }
 
