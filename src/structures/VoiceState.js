@@ -222,7 +222,7 @@ class VoiceState extends Base {
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
     const member = this.member;
-    const hasRequestToSpeakPermission = member && member.permissions.has(Permissions.FLAGS.REQUEST_TO_SPEAK);
+    const hasRequestToSpeakPermission = member && member.permissionsIn(channel).has(Permissions.FLAGS.REQUEST_TO_SPEAK);
 
     if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
     await this.client.api
@@ -252,7 +252,7 @@ class VoiceState extends Base {
     const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
     if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
 
-    const hasMuteMembersPermission = member && member.permissions.has(Permissions.FLAGS.MUTE_MEMBERS);
+    const hasMuteMembersPermission = member && member.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
 
     if (isMe) {
       if (!suppressed && !hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
