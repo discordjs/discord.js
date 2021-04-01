@@ -70,7 +70,6 @@ class VoiceState extends Base {
     this.channelID = data.channel_id || null;
     /**
      * Whether this member is suppressed from speaking. This property is specific to stage channels only.
-     * If true, the user is unable to speak.
      * @type {boolean}
      */
     this.suppress = data.suppress;
