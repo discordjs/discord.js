@@ -22,7 +22,7 @@ class MessageEmbed {
    * @property {string} [url] The URL of this embed
    * @property {Date|number} [timestamp] The timestamp of this embed
    * @property {ColorResolvable} [color] The color of this embed
-   * @property {EmbedFieldData} [fields] The fields of this embed
+   * @property {EmbedFieldData[]} [fields] The fields of this embed
    * @property {Array<FileOptions|string|MessageAttachment>} [files] The files of this embed
    * @property {Partial<MessageEmbedAuthor>} [author] The author of this embed
    * @property {Partial<MessageEmbedThumbnail>} [thumbnail] The thumbnail of this embed
