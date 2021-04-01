@@ -57,7 +57,6 @@ const Messages = {
   VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
-  VOICE_NOT_IN_CHANNEL: 'You must be in the channel to to perform this action.',
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
   VOICE_NEED_MUTE_MEMBERS: 'You need permission to mute members to do this.',
   VOICE_NEED_REQUEST_TO_SPEAK: 'You need permission to request to speak.',
