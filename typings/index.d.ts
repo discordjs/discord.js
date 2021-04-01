@@ -7,6 +7,7 @@ declare enum ChannelType {
   news = 5,
   store = 6,
   unknown = 7,
+  stage = 13,
 }
 
 declare enum OverwriteTypes {
@@ -288,7 +289,7 @@ declare module 'discord.js' {
     public connections: Collection<Snowflake, VoiceConnection>;
     public broadcasts: VoiceBroadcast[];
 
-    private joinChannel(channel: VoiceChannel): Promise<VoiceConnection>;
+    private joinChannel(channel: VoiceChannel | StageChannel): Promise<VoiceConnection>;
 
     public createBroadcast(): VoiceBroadcast;
   }
@@ -1210,6 +1211,7 @@ declare module 'discord.js' {
 
     public static ALL: bigint;
     public static DEFAULT: bigint;
+    public static STAGE_MODERATOR: bigint;
     public static FLAGS: PermissionFlags;
     public static resolve(permission?: PermissionResolvable): bigint;
   }
@@ -1425,6 +1427,23 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
   }
 
+  export class StageChannel extends GuildChannel {
+    public readonly members: Collection<Snowflake, GuildMember>;
+    public readonly editable: boolean;
+    public readonly full: boolean;
+    public readonly joinable: boolean;
+    public readonly speakable: boolean;
+    constructor(guild: Guild, data?: object);
+    public topic: string | null;
+    public rtcRegion: string | null;
+    public bitrate: number;
+    public userLimit: number;
+    public type: 'stage';
+    public join(): Promise<VoiceConnection>;
+    public leave(): void;
+    public setRTCRegion(region: string | null): Promise<StageChannel>;
+  }
+
   export class StoreChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public nsfw: boolean;
@@ -1623,6 +1642,8 @@ declare module 'discord.js' {
   export class VoiceChannel extends GuildChannel {
     constructor(guild: Guild, data?: object);
     public bitrate: number;
+    public rtcRegion: string | null;
+    public readonly members: Collection<Snowflake, GuildMember>;
     public readonly editable: boolean;
     public readonly full: boolean;
     public readonly joinable: boolean;
@@ -1633,6 +1654,7 @@ declare module 'discord.js' {
     public leave(): void;
     public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
     public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
+    public setRTCRegion(region: string | null): Promise<StageChannel>;
   }
 
   class VoiceConnection extends EventEmitter {
@@ -1654,9 +1676,9 @@ declare module 'discord.js' {
     private sendVoiceStateUpdate(options: object): Promise<Shard>;
     private setSessionID(sessionID: string): void;
     private setTokenAndEndpoint(token: string, endpoint: string): void;
-    private updateChannel(channel: VoiceChannel): void;
+    private updateChannel(channel: VoiceChannel | StageChannel): void;
 
-    public channel: VoiceChannel;
+    public channel: VoiceChannel | StageChannel;
     public readonly client: Client;
     public readonly dispatcher: StreamDispatcher | null;
     public player: object;
@@ -1714,7 +1736,7 @@ declare module 'discord.js' {
 
   export class VoiceState extends Base {
     constructor(guild: Guild, data: object);
-    public readonly channel: VoiceChannel | null;
+    public readonly channel: VoiceChannel | StageChannel | null;
     public channelID: Snowflake | null;
     public readonly connection: VoiceConnection | null;
     public readonly deaf: boolean | null;
@@ -1729,6 +1751,8 @@ declare module 'discord.js' {
     public sessionID: string | null;
     public streaming: boolean;
     public selfVideo: boolean;
+    public suppress: boolean;
+    public requestToSpeakTimestamp: number | null;
     public readonly speaking: boolean | null;
 
     public setDeaf(deaf: boolean, reason?: string): Promise<GuildMember>;
@@ -1737,6 +1761,8 @@ declare module 'discord.js' {
     public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
     public setSelfDeaf(deaf: boolean): Promise<boolean>;
     public setSelfMute(mute: boolean): Promise<boolean>;
+    public requestToSpeak(): Promise<void>;
+    public setSuppressed(suppressed: boolean): Promise<void>;
   }
 
   class VolumeInterface extends EventEmitter {
@@ -2368,6 +2394,7 @@ declare module 'discord.js' {
     rateLimitPerUser?: number;
     lockPermissions?: boolean;
     permissionOverwrites?: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>;
+    rtcRegion?: string | null;
   }
 
   interface ChannelLogsQueryOptions {
@@ -3062,7 +3089,8 @@ declare module 'discord.js' {
     | 'MANAGE_NICKNAMES'
     | 'MANAGE_ROLES'
     | 'MANAGE_WEBHOOKS'
-    | 'MANAGE_EMOJIS';
+    | 'MANAGE_EMOJIS'
+    | 'REQUEST_TO_SPEAK';
 
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
