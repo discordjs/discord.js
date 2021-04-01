@@ -3,11 +3,11 @@
 
 const ytdl = require('ytdl-core');
 const auth = require('./auth.js');
-const Discord = require('../src');
+const { Client, Intents } = require('../src');
 
-const client = new Discord.Client({
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_PRESENCES],
   partials: [],
-  intents: Discord.Intents.NON_PRIVILEGED,
 });
 
 client

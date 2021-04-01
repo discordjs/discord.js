@@ -209,7 +209,7 @@ class GuildChannel extends Channel {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
       throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    await this.edit({ permissionOverwrites: overwrites, reason });
+    await this.edit({ permissionOverwrites: overwrites }, reason);
     return this;
   }
 
@@ -367,7 +367,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        type: data.type ? ChannelTypes[data.type.toUpperCase()] : this.type,
+        type: ChannelTypes[data.type?.toUpperCase()],
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
