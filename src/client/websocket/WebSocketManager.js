@@ -93,6 +93,16 @@ class WebSocketManager extends EventEmitter {
      * @private
      */
     this.reconnecting = false;
+
+    /**
+     * The current session limit of the client
+     * @private
+     * @type {?Object}
+     * @property {number} total Total number of identifies available
+     * @property {number} remaining Number of identifies remaining
+     * @property {number} reset_after Number of milliseconds after which the limit resets
+     */
+    this.sessionStartLimit = null;
   }
 
   /**
@@ -129,7 +139,9 @@ class WebSocketManager extends EventEmitter {
       throw error.httpStatus === 401 ? invalidToken : error;
     });
 
-    const { total, remaining } = sessionStartLimit;
+    this.sessionStartLimit = sessionStartLimit;
+
+    const { total, remaining, reset_after } = sessionStartLimit;
 
     this.debug(`Fetched Gateway Information
     URL: ${gatewayURL}
@@ -152,6 +164,8 @@ class WebSocketManager extends EventEmitter {
     this.totalShards = shards.length;
     this.debug(`Spawning shards: ${shards.join(', ')}`);
     this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
+
+    await this._handleSessionLimit(remaining, reset_after);
 
     return this.createShards();
   }
@@ -212,7 +226,7 @@ class WebSocketManager extends EventEmitter {
 
         if (shard.sessionID) {
           this.debug(`Session ID is present, attempting an immediate reconnect...`, shard);
-          this.reconnect();
+          this.reconnect(true);
         } else {
           shard.destroy({ reset: true, emit: false, log: false });
           this.reconnect();
@@ -266,6 +280,7 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Handles reconnects for this manager.
+   * @param {boolean} [skipLimit=false] IF this reconnect should skip checking the session limit
    * @private
    * @returns {Promise<boolean>}
    */
