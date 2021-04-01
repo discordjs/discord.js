@@ -1761,7 +1761,7 @@ declare module 'discord.js' {
     public setChannel(channel: ChannelResolvable | null, reason?: string): Promise<GuildMember>;
     public setSelfDeaf(deaf: boolean): Promise<boolean>;
     public setSelfMute(mute: boolean): Promise<boolean>;
-    public requestToSpeak(): Promise<void>;
+    public setRequestToSpeak(request: boolean): Promise<void>;
     public setSuppressed(suppressed: boolean): Promise<void>;
   }
 
