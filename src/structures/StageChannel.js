@@ -96,6 +96,12 @@ class StageChannel extends GuildChannel {
    * Sets the RTC region of the channel.
    * @param {?string} region The new region of the channel. Set to null to remove a specific region for the channel
    * @returns {Promise<StageChannel>}
+   * @example
+   * // Set the RTC region to europe
+   * stageChannel.setRTCRegion('europe');
+   * @example
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * stageChannel.setRTCRegion(null);
    */
   setRTCRegion(region) {
     return this.edit({ rtcRegion: region });

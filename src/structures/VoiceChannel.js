@@ -127,6 +127,12 @@ class VoiceChannel extends GuildChannel {
    * Sets the RTC region of the channel.
    * @param {?region} region The new region of the channel. Set to null to remove a specific region for the channel
    * @returns {Promise<VoiceChannel>}
+   * @example
+   * // Set the RTC region to europe
+   * voiceChannel.setRTCRegion('europe');
+   * @example
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * voiceChannel.setRTCRegion(null);
    */
   setRTCRegion(region) {
     return this.edit({ rtcRegion: region });
