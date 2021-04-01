@@ -267,7 +267,8 @@ class VoiceState extends Base {
     const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
     if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
 
-    const hasMuteMembersPermission = member && member.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
+    const hasMuteMembersPermission =
+      channel.guild.me && channel.guild.me.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
 
     if (isMe) {
       if (!suppressed && !hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
