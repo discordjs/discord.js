@@ -210,17 +210,19 @@ class VoiceState extends Base {
   }
 
   /**
-   * Request to speak in the channel. Only applicable for stage channels and for the client's own voice state.
+   * Toggles the request to speak in the channel.
+   * Only applicable for stage channels and for the client's own voice state.
+   * @param {boolean} request Whether or not the client is requesting to become a speaker.
    * @example
    * // Making the client request to speak in a stage channel (raise its hand)
-   * guild.me.voice.requestToSpeak();
+   * guild.me.voice.setRequestToSpeak(true);
+   * @example
+   * // Making the client cancel a request to speak
+   * guild.me.voice.setRequestToSpeak(false);
    */
-  async requestToSpeak() {
+  async setRequestToSpeak(request) {
     const channel = this.channel;
     if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
-
-    const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
-    if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
@@ -228,12 +230,13 @@ class VoiceState extends Base {
     const hasRequestToSpeakPermission = member && member.permissionsIn(channel).has(Permissions.FLAGS.REQUEST_TO_SPEAK);
 
     if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
+
     await this.client.api
       .guilds(this.guild.id)('voice-states')('@me')
       .patch({
         data: {
           channel_id: this.channelID,
-          request_to_speak_timestamp: new Date().toISOString(),
+          request_to_speak_timestamp: request ? new Date().toISOString() : null,
         },
       });
   }
@@ -260,37 +263,19 @@ class VoiceState extends Base {
     const channel = this.channel;
     if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
-    const member = this.member;
-    const isBot = member && member.user.bot;
-    const isMe = this.client.user.id === this.id;
+    const target = this.client.user.id === this.id ? '@me' : this.id;
 
-    const selfInChannel = this.member && this.member.voice && this.member.voice.channelID === this.channelID;
-    if (!selfInChannel) throw new Error('VOICE_NOT_IN_CHANNEL');
+    const hasPermission =
+      (target === '@me' && suppressed) || channel.guild.me.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
 
-    const hasMuteMembersPermission =
-      channel.guild.me && channel.guild.me.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
+    if (!hasPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
 
-    if (isMe) {
-      if (!suppressed && !hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
-      await this.client.api
-        .guilds(this.guild.id)('voice-states')('@me')
-        .patch({
-          data: {
-            channel_id: this.channelID,
-            suppress: suppressed,
-            request_to_speak_timestamp: suppressed ? null : undefined,
-          },
-        });
-    } else {
-      if (!hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
-      await this.client.api.guilds(this.guild.id, 'voice-states', this.id).patch({
-        data: {
-          channel_id: this.channelID,
-          suppress: suppressed,
-          request_to_speak_timestamp: suppressed || isBot ? null : new Date().toISOString(),
-        },
-      });
-    }
+    await this.client.api.guilds(this.guild.id, 'voice-states', target).patch({
+      data: {
+        channel_id: this.channelID,
+        suppress: suppressed,
+      },
+    });
   }
 
   toJSON() {
