@@ -266,7 +266,7 @@ class VoiceState extends Base {
           },
         });
     } else {
-      if (!hasMuteMembersPermission) throw Error('VOICE_NEED_MUTE_MEMBERS');
+      if (!hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
       await this.client.api
         .guilds(this.guild.id)('voice-states')(this.id)
         .patch({
