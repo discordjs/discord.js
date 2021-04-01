@@ -428,9 +428,7 @@ class MessageEmbed {
    */
   static normalizeField(name, value, inline = false) {
     name = Util.resolveString(name);
-    if (!name) throw new RangeError('EMBED_FIELD_NAME');
     value = Util.resolveString(value);
-    if (!value) throw new RangeError('EMBED_FIELD_VALUE');
     return { name, value, inline };
   }
 
