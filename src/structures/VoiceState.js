@@ -210,7 +210,10 @@ class VoiceState extends Base {
   }
 
   /**
-   * Request to speak in the channel. Only applicable for stage channels.
+   * Request to speak in the channel. Only applicable for stage channels and for the client's own voice state.
+   * @example
+   * // Making the client request to speak in a stage channel (raise its hand)
+   * guild.me.voice.requestToSpeak();
    */
   async requestToSpeak() {
     const channel = this.channel;
@@ -236,8 +239,20 @@ class VoiceState extends Base {
   }
 
   /**
-   * Suppress/unsuppress the user.
+   * Suppress/unsuppress the user. Only applicable for stage channels.
    * @param {boolean} suppressed - Whether or not the user should be suppressed.
+   * @example
+   * // Making the client a speaker
+   * guild.me.voice.setSuppressed(false);
+   * @example
+   * // Making the client an audience member
+   * guild.me.voice.setSuppressed(true);
+   * @example
+   * // Inviting another user to speak
+   * voiceState.setSuppressed(false);
+   * @example
+   * // Moving another user to the audience, or cancelling their invite to speak
+   * voiceState.setSuppressed(true);
    */
   async setSuppressed(suppressed) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
