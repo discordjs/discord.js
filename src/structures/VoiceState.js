@@ -268,7 +268,7 @@ class VoiceState extends Base {
     } else {
       if (!hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
       await this.client.api
-        .guilds(this.guild.id)('voice-states')(this.id)
+        .guilds(this.guild.id, 'voice-states', this.id)
         .patch({
           data: {
             channel_id: this.channelID,
