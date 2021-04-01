@@ -11,7 +11,24 @@ class MessageEmbed {
    * @name MessageEmbed
    * @kind constructor
    * @memberof MessageEmbed
-   * @param {MessageEmbed|Object} [data={}] MessageEmbed to clone or raw embed data
+   * @param {MessageEmbed|MessageEmbedOptions} [data={}] MessageEmbed to clone or raw embed data
+   */
+
+  /**
+   * Represents the possible options for a MessageEmbed
+   * @typedef {Object} MessageEmbedOptions
+   * @property {string} [title] The title of this embed
+   * @property {string} [description] The description of this embed
+   * @property {string} [url] The URL of this embed
+   * @property {Date|number} [timestamp] The timestamp of this embed
+   * @property {ColorResolvable} [color] The color of this embed
+   * @property {EmbedFieldData} [fields] The fields of this embed
+   * @property {Array<FileOptions|string|MessageAttachment>} [files] The files of this embed
+   * @property {Partial<MessageEmbedAuthor>} [author] The author of this embed
+   * @property {Partial<MessageEmbedThumbnail>} [thumbnail] The thumbnail of this embed
+   * @property {Partial<MessageEmbedImage>} [image] The image of this embed
+   * @property {Partial<MessageEmbedVideo>} [video] The video of this embed
+   * @property {Partial<MessageEmbedFooter>} [footer] The footer of this embed
    */
 
   constructor(data = {}, skipValidation = false) {
