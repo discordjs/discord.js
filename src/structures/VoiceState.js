@@ -267,15 +267,13 @@ class VoiceState extends Base {
         });
     } else {
       if (!hasMuteMembersPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
-      await this.client.api
-        .guilds(this.guild.id, 'voice-states', this.id)
-        .patch({
-          data: {
-            channel_id: this.channelID,
-            suppress: suppressed,
-            request_to_speak_timestamp: suppressed || isBot ? null : new Date().toISOString(),
-          },
-        });
+      await this.client.api.guilds(this.guild.id, 'voice-states', this.id).patch({
+        data: {
+          channel_id: this.channelID,
+          suppress: suppressed,
+          request_to_speak_timestamp: suppressed || isBot ? null : new Date().toISOString(),
+        },
+      });
     }
   }
 
