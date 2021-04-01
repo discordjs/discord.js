@@ -3084,7 +3084,7 @@ declare module 'discord.js' {
     id: UserResolvable | RoleResolvable;
   }
 
-  type PremiumTier = number;
+  type PremiumTier = 0 | 1 | 2 | 3;
 
   interface PresenceData {
     status?: PresenceStatusData;
