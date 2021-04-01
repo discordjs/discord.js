@@ -22,8 +22,8 @@ The example below reacts to a message and joins the sender's voice channel, catc
 as it allows us to obtain a `VoiceConnection` that we can start to stream audio with.
 
 ```js
-const Discord = require('discord.js');
-const client = new Discord.Client();
+const { Client, Intents } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 client.login('token here');
 
