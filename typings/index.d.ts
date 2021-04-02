@@ -525,6 +525,15 @@ declare module 'discord.js' {
       CATEGORY: 4;
       NEWS: 5;
       STORE: 6;
+      STAGE: 13;
+      0: 'TEXT';
+      1: 'DM';
+      2: 'VOICE';
+      3: 'GROUP';
+      4: 'CATEGORY';
+      5: 'NEWS';
+      6: 'STORE';
+      13: 'STAGE';
     };
     ClientApplicationAssetTypes: {
       SMALL: 1;

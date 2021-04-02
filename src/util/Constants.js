@@ -488,6 +488,10 @@ exports.ChannelTypes = {
   STAGE: 13,
 };
 
+for (const [key, value] of Object.entries(exports.ChannelTypes)) {
+  exports.ChannelTypes[value] = key;
+}
+
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
   BIG: 2,
