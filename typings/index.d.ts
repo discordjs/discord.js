@@ -138,11 +138,6 @@ declare module 'discord.js' {
     public toString(): string | null;
   }
 
-  export class ApplicationFlags extends BitField<ApplicationFlagsString> {
-    public static FLAGS: Record<ApplicationFlagsString, number>;
-    public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
-  }
-
   export class ApplicationCommand extends Base {
     constructor(client: Client, data: object, guild?: Guild);
     public readonly createdAt: Date;
@@ -156,6 +151,11 @@ declare module 'discord.js' {
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public delete(): Promise<ApplicationCommand>;
     private static transformOption(option: ApplicationCommandOption): object;
+  }
+
+  export class ApplicationFlags extends BitField<ApplicationFlagsString> {
+    public static FLAGS: Record<ApplicationFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
   }
 
   export class Base {
