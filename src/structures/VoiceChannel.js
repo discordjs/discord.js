@@ -24,7 +24,7 @@ class VoiceChannel extends GuildChannel {
     this.userLimit = data.user_limit;
 
     /**
-     * The RTC region for this voice channel. This region is automatically selected if null.
+     * The RTC region for this voice channel. This region is automatically selected if `null`.
      * @type {?string}
      */
     this.rtcRegion = data.rtc_region;
