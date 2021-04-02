@@ -87,8 +87,6 @@ class StageChannel extends GuildChannel {
   get joinable() {
     if (!this.viewable) return false;
     if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) return false;
-    // Todo: unsure if the following statement works for stage channels
-    // if (this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)) return false;
     return true;
   }
 
