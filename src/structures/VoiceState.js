@@ -231,14 +231,12 @@ class VoiceState extends Base {
 
     if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
 
-    await this.client.api
-      .guilds(this.guild.id, 'voice-states', '@me')
-      .patch({
-        data: {
-          channel_id: this.channelID,
-          request_to_speak_timestamp: request ? new Date().toISOString() : null,
-        },
-      });
+    await this.client.api.guilds(this.guild.id, 'voice-states', '@me').patch({
+      data: {
+        channel_id: this.channelID,
+        request_to_speak_timestamp: request ? new Date().toISOString() : null,
+      },
+    });
   }
 
   /**
