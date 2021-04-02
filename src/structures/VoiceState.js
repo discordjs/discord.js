@@ -227,12 +227,12 @@ class VoiceState extends Base {
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
     const member = this.member;
-    const hasRequestToSpeakPermission = member && member.permissionsIn(channel).has(Permissions.FLAGS.REQUEST_TO_SPEAK);
+    const hasRequestToSpeakPermission = member?.permissionsIn(channel).has(Permissions.FLAGS.REQUEST_TO_SPEAK);
 
     if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
 
     await this.client.api
-      .guilds(this.guild.id)('voice-states')('@me')
+      .guilds(this.guild.id, 'voice-states', '@me')
       .patch({
         data: {
           channel_id: this.channelID,
@@ -261,7 +261,7 @@ class VoiceState extends Base {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
 
     const channel = this.channel;
-    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (channel?.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
 
