@@ -222,7 +222,7 @@ class VoiceState extends Base {
    */
   async setRequestToSpeak(request) {
     const channel = this.channel;
-    if (!channel || channel.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
+    if (channel?.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
