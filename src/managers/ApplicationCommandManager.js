@@ -1,6 +1,7 @@
 'use strict';
 
 const BaseManager = require('./BaseManager');
+const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
 const Collection = require('../util/Collection');
 
@@ -85,6 +86,37 @@ class ApplicationCommandManager extends BaseManager {
       data: commands.map(ApplicationCommandManager.transformCommand),
     });
     return data.reduce((coll, command) => coll.set(command.id, this.add(command)), new Collection());
+  }
+
+  /**
+   * Edits an application command.
+   * @param {ApplicationCommandResolvable} command The command to edit
+   * @param {ApplicationCommandData} data The data to update the command with
+   * @returns {ApplicationCommand}
+   */
+  async edit(command, data) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    const raw = {};
+    if (data.name) raw.name = data.name;
+    if (data.description) raw.description = data.description;
+    if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
+
+    const patched = await this.commandPath(id).patch({ data: raw });
+    return this.add(patched);
+  }
+
+  /**
+   * Deletes an application command.
+   * @param {ApplicationCommandResolvable} command The command to delete
+   */
+  async delete(command) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    await this.commandPath(id).delete();
+    this.cache.delete(id);
   }
 
   /**

@@ -149,6 +149,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number;
     public description: string;
     public guild: Guild | null;
+    public readonly manager: ApplicationCommandManager;
     public id: Snowflake;
     public name: string;
     public options: ApplicationCommandOption[];
@@ -1974,6 +1975,8 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
     private readonly commandPath: object;
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
+    public delete(command: ApplicationCommandResolvable): Promise<void>;
+    public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;

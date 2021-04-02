@@ -66,6 +66,14 @@ class ApplicationCommand extends Base {
   }
 
   /**
+   * The manager that this command belongs to
+   * @type {ApplicationCommandManager}
+   */
+  get manager() {
+    return this.guild?.commands ?? this.client.application.commands;
+  }
+
+  /**
    * Data for creating or editing an application command.
    * @property {string} name The name of the command
    * @property {string} description The description of the command
@@ -78,17 +86,8 @@ class ApplicationCommand extends Base {
    * @param {ApplicationCommandData} data The data to update the command with
    * @returns {ApplicationCommand}
    */
-  async edit(data) {
-    const raw = {};
-    if (data.name) raw.name = data.name;
-    if (data.description) raw.description = data.description;
-    if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
-
-    const path = (this.guild ?? this.client.application).commands.commandPath;
-    const patched = await path(this.id).patch({ data: raw });
-
-    this._patch(patched);
-    return this;
+  edit(data) {
+    return this.manager.edit(this, data);
   }
 
   /**
@@ -96,15 +95,7 @@ class ApplicationCommand extends Base {
    * @returns {ApplicationCommand}
    */
   async delete() {
-    const path = (this.guild ?? this.client.application).commands.commandPath;
-    await path(this.id).delete();
-
-    if (this.guild) {
-      this.guild.commands.cache.delete(this.id);
-    } else {
-      this.client.application.commands.cache.delete(this.id);
-    }
-
+    await this.manager.delete(this);
     return this;
   }
 
