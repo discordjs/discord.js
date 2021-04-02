@@ -131,7 +131,7 @@ class VoiceState extends Base {
 
   /**
    * Whether this member is currently speaking. A boolean if the information is available (aka
-   * the bot is connected to any voice channel or stage channel in the guild), otherwise this is null
+   * the bot is connected to any voice channel or stage channel in the guild), otherwise this is `null`
    * @type {?boolean}
    * @readonly
    */

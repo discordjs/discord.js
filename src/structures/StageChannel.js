@@ -19,7 +19,7 @@ class StageChannel extends GuildChannel {
     this.topic = data.topic;
 
     /**
-     * The RTC region for this stage channel. This region is automatically selected if null.
+     * The RTC region for this stage channel. This region is automatically selected if `null`.
      * @type {?string}
      */
     this.rtcRegion = data.rtc_region;
@@ -94,7 +94,7 @@ class StageChannel extends GuildChannel {
 
   /**
    * Sets the RTC region of the channel.
-   * @param {?string} region The new region of the channel. Set to null to remove a specific region for the channel
+   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
    * @returns {Promise<StageChannel>}
    * @example
    * // Set the RTC region to europe
