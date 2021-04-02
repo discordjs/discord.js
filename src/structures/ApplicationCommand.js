@@ -70,7 +70,7 @@ class ApplicationCommand extends Base {
    * @type {ApplicationCommandManager}
    */
   get manager() {
-    return this.guild?.commands ?? this.client.application.commands;
+    return (this.guild ?? this.client.application).commands;
   }
 
   /**
