@@ -592,9 +592,9 @@ declare module 'discord.js' {
     DefaultMessageNotifications: DefaultMessageNotifications[];
     VerificationLevels: VerificationLevel[];
     MembershipStates: 'INVITED' | 'ACCEPTED';
-    ApplicationCommandOptionTypes: ApplicationCommandOptionTypes;
-    InteractionTypes: InteractionTypes;
-    InteractionResponseTypes: InteractionResponseTypes;
+    ApplicationCommandOptionTypes: typeof ApplicationCommandOptionTypes;
+    InteractionTypes: typeof InteractionTypes;
+    InteractionResponseTypes: typeof InteractionResponseTypes;
   };
 
   export class DataResolver {
