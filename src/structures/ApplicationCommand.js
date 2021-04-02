@@ -68,6 +68,7 @@ class ApplicationCommand extends Base {
   /**
    * The manager that this command belongs to
    * @type {ApplicationCommandManager}
+   * @readonly
    */
   get manager() {
     return (this.guild ?? this.client.application).commands;
