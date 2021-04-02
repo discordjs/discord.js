@@ -1428,12 +1428,12 @@ declare module 'discord.js' {
   }
 
   export class StageChannel extends GuildChannel {
+    constructor(guild: Guild, data?: object);
     public readonly members: Collection<Snowflake, GuildMember>;
     public readonly editable: boolean;
     public readonly full: boolean;
     public readonly joinable: boolean;
     public readonly speakable: boolean;
-    constructor(guild: Guild, data?: object);
     public topic: string | null;
     public rtcRegion: string | null;
     public bitrate: number;
