@@ -77,6 +77,7 @@ export const {
   MessageMentions,
   MessageReaction,
   NewsChannel,
+  PartialGuild,
   PermissionOverwrites,
   Presence,
   ClientPresence,

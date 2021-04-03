@@ -89,6 +89,7 @@ module.exports = {
   MessageMentions: require('./structures/MessageMentions'),
   MessageReaction: require('./structures/MessageReaction'),
   NewsChannel: require('./structures/NewsChannel'),
+  PartialGuild: require('./structures/PartialGuild'),
   PermissionOverwrites: require('./structures/PermissionOverwrites'),
   Presence: require('./structures/Presence').Presence,
   ClientPresence: require('./structures/ClientPresence'),

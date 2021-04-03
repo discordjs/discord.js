@@ -1183,6 +1183,23 @@ declare module 'discord.js' {
     public iconURL(options?: ImageURLOptions): string | null;
   }
 
+  export class PartialGuild extends Base {
+    public readonly createdAt: Date;
+    public readonly createdTimestamp: number;
+    public features: GuildFeatures[];
+    public icon: string | null;
+    public id: Snowflake;
+    public name: string;
+    public readonly nameAcronym: string;
+    public owner: boolean;
+    public readonly partnered: boolean;
+    public permissions: Readonly<Permissions>;
+    public readonly verified: boolean;
+    public fetch(): Promise<Guild>;
+    public iconURL(options?: ImageURLOptions & { dynamic?: boolean }): string | null;
+    public toString(): string;
+  }
+
   export class PermissionOverwrites {
     constructor(guildChannel: GuildChannel, data?: object);
     public allow: Readonly<Permissions>;
@@ -1972,7 +1989,8 @@ declare module 'discord.js' {
   export class GuildManager extends BaseManager<Snowflake, Guild, GuildResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public create(name: string, options?: GuildCreateOptions): Promise<Guild>;
-    public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<Guild>;
+    public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
+    public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, PartialGuild>>;
   }
 
   export class GuildMemberManager extends BaseManager<Snowflake, GuildMember, GuildMemberResolvable> {
@@ -2633,6 +2651,18 @@ declare module 'discord.js' {
     VoiceState: typeof VoiceState;
     Role: typeof Role;
     User: typeof User;
+  }
+
+  interface FetchGuildOptions {
+    guild: GuildResolvable;
+    cache?: boolean;
+    force?: boolean;
+  }
+
+  interface FetchGuildsOptions {
+    before?: Snowflake;
+    after?: Snowflake;
+    limit?: number;
   }
 
   interface FetchMemberOptions {
