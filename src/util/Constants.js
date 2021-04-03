@@ -435,6 +435,7 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_REQUALIFIED
  * * REPLY
  * * APPLICATION_COMMAND
+ * * LOADING
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -459,15 +460,20 @@ exports.MessageTypes = [
   null,
   'REPLY',
   'APPLICATION_COMMAND',
+  'LOADING',
 ];
 
 /**
  * The types of messages that are `System`. The available types are `MessageTypes` excluding:
  * * DEFAULT
  * * REPLY
+ * * APPLICATION_COMMAND
+ * * LOADING
  * @typedef {string} SystemMessageType
  */
-exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !== 'DEFAULT' && type !== 'REPLY');
+exports.SystemMessageTypes = exports.MessageTypes.filter(
+  type => type && type !== 'DEFAULT' && type !== 'REPLY' && type !== 'APPLICATION_COMMAND' && type !== 'LOADING',
+);
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
