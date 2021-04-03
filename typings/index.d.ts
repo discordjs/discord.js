@@ -3145,7 +3145,8 @@ declare module 'discord.js' {
     | 'SUPPRESS_EMBEDS'
     | 'SOURCE_MESSAGE_DELETED'
     | 'URGENT'
-    | 'EPHEMERAL';
+    | 'EPHEMERAL'
+    | 'LOADING';
 
   interface MessageMentionOptions {
     parse?: MessageMentionTypes[];
@@ -3197,8 +3198,7 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_DISQUALIFIED'
     | 'GUILD_DISCOVERY_REQUALIFIED'
     | 'REPLY'
-    | 'APPLICATION_COMMAND'
-    | 'LOADING';
+    | 'APPLICATION_COMMAND';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
@@ -3483,7 +3483,7 @@ declare module 'discord.js' {
 
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
-  type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND' | 'LOADING'>;
+  type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
 
   type TargetUser = number;
 
