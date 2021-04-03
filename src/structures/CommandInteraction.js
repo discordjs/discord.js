@@ -94,9 +94,9 @@ class CommandInteraction extends Interaction {
    * @property {string|number|boolean} [value] The value of the option
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a subcommand (group)
    * @property {User} [user] The resolved user
-   * @property {?GuildMember} [member] The resolved member
-   * @property {?GuildChannel} [channel] The resolved channel
-   * @property {?Role} [role] The resolved role
+   * @property {GuildMember} [member] The resolved member
+   * @property {GuildChannel} [channel] The resolved channel
+   * @property {Role} [role] The resolved role
    * @typedef {Object} CommandInteractionOption
    */
 
@@ -128,7 +128,7 @@ class CommandInteraction extends Interaction {
       const member = resolved.members?.[option.value];
       if (member) {
         member.user = user;
-        result.member = this.guild?.members.add(member) ?? null;
+        result.member = this.guild.members.add(member);
       }
     }
 
@@ -139,7 +139,7 @@ class CommandInteraction extends Interaction {
 
     if (option.type === ApplicationCommandOptionTypes.ROLE) {
       const role = resolved.roles[option.value];
-      result.role = this.guild?.roles.add(role) ?? null;
+      result.role = this.guild.roles.add(role);
     }
 
     return result;

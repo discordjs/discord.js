@@ -2652,9 +2652,9 @@ declare module 'discord.js' {
     value?: string | number | boolean;
     options?: CommandInteractionOption[];
     user?: User;
-    member?: GuildMember | null;
-    channel?: GuildChannel | null;
-    role?: Role | null;
+    member?: GuildMember;
+    channel?: GuildChannel;
+    role?: Role;
   }
 
   interface CrosspostedChannel {
