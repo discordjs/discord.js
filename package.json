@@ -110,7 +110,10 @@
           "refactor",
           "revert",
           "style",
-          "test"
+          "test",
+          "types",
+          "workflow",
+          "wip"
         ]
       ]
     }
