@@ -104,15 +104,20 @@ declare module 'discord.js' {
     constructor(client: Client, data: object);
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
-    public description: string;
-    public icon: string;
+    public description: string | null;
+    public icon: string | null;
     public id: Snowflake;
-    public name: string;
-    public coverImage(options?: ImageURLOptions): string;
+    public name: string | null;
+    public coverImage(options?: ImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
-    public iconURL(options?: ImageURLOptions): string;
+    public iconURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
-    public toString(): string;
+    public toString(): string | null;
+  }
+
+  export class ApplicationFlags extends BitField<ApplicationFlagsString> {
+    public static FLAGS: Record<ApplicationFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
   }
 
   export class Base {
@@ -203,6 +208,7 @@ declare module 'discord.js' {
     private _eval(script: string): any;
     private _validateOptions(options: ClientOptions): void;
 
+    public application: ClientApplication | null;
     public channels: ChannelManager;
     public readonly emojis: BaseGuildEmojiManager;
     public guilds: GuildManager;
@@ -217,13 +223,12 @@ declare module 'discord.js' {
     public voice: ClientVoiceManager;
     public ws: WebSocketManager;
     public destroy(): void;
-    public fetchApplication(): Promise<ClientApplication>;
     public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
     public fetchInvite(invite: InviteResolvable): Promise<Invite>;
     public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
-    public generateInvite(options?: InviteGenerationOptions): Promise<string>;
+    public generateInvite(options?: InviteGenerationOptions): string;
     public login(token?: string): Promise<string>;
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
@@ -257,8 +262,11 @@ declare module 'discord.js' {
     public botPublic: boolean | null;
     public botRequireCodeGrant: boolean | null;
     public cover: string | null;
+    public flags: Readonly<ApplicationFlags>;
     public owner: User | Team | null;
+    public readonly partial: boolean;
     public rpcOrigins: string[];
+    public fetch(): Promise<ClientApplication>;
   }
 
   export class ClientUser extends User {
@@ -368,6 +376,7 @@ declare module 'discord.js' {
     };
     Events: {
       RATE_LIMIT: 'rateLimit';
+      INVALID_REQUEST_WARNING: 'invalidRequestWarning';
       CLIENT_READY: 'ready';
       RESUMED: 'resumed';
       GUILD_CREATE: 'guildCreate';
@@ -409,7 +418,6 @@ declare module 'discord.js' {
       VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
-      DISCONNECT: 'disconnect';
       RECONNECTING: 'reconnecting';
       ERROR: 'error';
       WARN: 'warn';
@@ -654,8 +662,7 @@ declare module 'discord.js' {
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
-    public fetchVanityCode(): Promise<string>;
-    public fetchVanityData(): Promise<{ code: string; uses: number }>;
+    public fetchVanityData(): Promise<Vanity>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public fetchWidget(): Promise<GuildWidget>;
@@ -1774,6 +1781,34 @@ declare module 'discord.js' {
     public client: this;
     public options: WebhookClientOptions;
     public token: string;
+    public editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      options?: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
+    public editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      options: WebhookMessageOptions | APIMessage,
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions,
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2104,7 +2139,17 @@ declare module 'discord.js' {
     readonly createdTimestamp: number;
     readonly url: string;
     delete(reason?: string): Promise<void>;
+    deleteMessage(message: MessageResolvable): Promise<void>;
     edit(options: WebhookEditData): Promise<Webhook>;
+    editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      options?: WebhookEditMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse>;
+    editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | WebhookRawMessageResponse>;
@@ -2316,6 +2361,17 @@ declare module 'discord.js' {
     type: 'BIG' | 'SMALL';
   }
 
+  type ApplicationFlagsString =
+    | 'MANAGED_EMOJI'
+    | 'GROUP_DM_CREATE'
+    | 'RPC_HAS_CONNECTED'
+    | 'GATEWAY_PRESENCE'
+    | 'FATEWAY_PRESENCE_LIMITED'
+    | 'GATEWAY_GUILD_MEMBERS'
+    | 'GATEWAY_GUILD_MEMBERS_LIMITED'
+    | 'VERIFICATION_PENDING_GUILD_LIMIT'
+    | 'EMBEDDED';
+
   interface AuditLogChange {
     key: string;
     old?: any;
@@ -2388,7 +2444,6 @@ declare module 'discord.js' {
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
     warn: [message: string];
-    disconnect: [closeEvent: any, status: number];
     emojiCreate: [emoji: GuildEmoji];
     emojiDelete: [emoji: GuildEmoji];
     emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
@@ -2422,6 +2477,7 @@ declare module 'discord.js' {
     messageUpdate: [oldMessage: PartialDataTypes<T>['message'], newMessage: PartialDataTypes<T>['message']];
     presenceUpdate: [oldPresence: Presence | undefined, newPresence: Presence];
     rateLimit: [rateLimitData: RateLimitData];
+    invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
     ready: [];
     invalidated: [];
     roleCreate: [role: Role];
@@ -2446,9 +2502,11 @@ declare module 'discord.js' {
     messageSweepInterval?: number;
     allowedMentions?: MessageMentionOptions;
     partials?: T[];
+    invalidRequestWarningInterval?: number;
     restWsBridgeTimeout?: number;
     restTimeOffset?: number;
     restRequestTimeout?: number;
+    restGlobalRateLimit?: number;
     restSweepInterval?: number;
     retryLimit?: number;
     presence?: PresenceData;
@@ -3214,6 +3272,12 @@ declare module 'discord.js' {
     method: string;
     path: string;
     route: string;
+    global: boolean;
+  }
+
+  interface InvalidRequestWarningData {
+    count: number;
+    remainingTime: number;
   }
 
   interface RawOverwriteData {
@@ -3318,6 +3382,11 @@ declare module 'discord.js' {
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
+  interface Vanity {
+    code: string | null;
+    uses: number | null;
+  }
+
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
   type VoiceStatus = number;
@@ -3334,17 +3403,9 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  interface WebhookMessageOptions {
-    username?: string;
-    avatarURL?: string;
-    tts?: boolean;
-    nonce?: string;
-    embeds?: (MessageEmbed | object)[];
-    allowedMentions?: MessageMentionOptions;
-    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-    code?: string | boolean;
-    split?: boolean | SplitOptions;
-  }
+  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
+
+  type WebhookMessageOptions = Omit<MessageOptions, 'embed'> & { embeds?: (MessageEmbed | object)[] };
 
   type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
     author: {
