@@ -371,7 +371,7 @@ declare module 'discord.js' {
     public webhook: WebhookClient;
     public defer(ephemeral?: boolean): Promise<void>;
     public reply(
-      content: APIMessage | APIMessageContentResolvable | InteractionReplyOptions | MessageAdditions,
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
       options?: InteractionReplyOptions | MessageAdditions,
     ): Promise<void>;
     private transformOption(option: object, resolved: object): CommandInteractionOption;

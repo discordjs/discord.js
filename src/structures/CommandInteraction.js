@@ -72,7 +72,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Creates a reply to this interaction.
-   * @param {StringResolvable|APIMessage} content The content for the reply
+   * @param {string|APIMessage} content The content for the reply
    * @param {InteractionReplyOptions|MessageAdditions} [options] Additional options for the reply
    */
   async reply(content, options) {
