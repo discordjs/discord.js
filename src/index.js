@@ -13,6 +13,7 @@ module.exports = {
 
   // Utilities
   ActivityFlags: require('./util/ActivityFlags'),
+  ApplicationFlags: require('./util/ApplicationFlags'),
   BitField: require('./util/BitField'),
   Collection: require('./util/Collection'),
   Constants: require('./util/Constants'),
