@@ -10,6 +10,7 @@ export const {
   ShardingManager,
   WebhookClient,
   ActivityFlags,
+  ApplicationFlags,
   BitField,
   Collection,
   Constants,
