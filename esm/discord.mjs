@@ -69,6 +69,7 @@ export const {
   GuildPreview,
   GuildTemplate,
   Integration,
+  IntegrationApplication,
   Invite,
   Message,
   MessageAttachment,
