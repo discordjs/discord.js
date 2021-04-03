@@ -435,7 +435,6 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_REQUALIFIED
  * * REPLY
  * * APPLICATION_COMMAND
- * * LOADING
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -460,7 +459,6 @@ exports.MessageTypes = [
   null,
   'REPLY',
   'APPLICATION_COMMAND',
-  'LOADING',
 ];
 
 /**
@@ -468,11 +466,10 @@ exports.MessageTypes = [
  * * DEFAULT
  * * REPLY
  * * APPLICATION_COMMAND
- * * LOADING
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && type !== 'DEFAULT' && type !== 'REPLY' && type !== 'APPLICATION_COMMAND' && type !== 'LOADING',
+  type => type && type !== 'DEFAULT' && type !== 'REPLY' && type !== 'APPLICATION_COMMAND',
 );
 
 /**
