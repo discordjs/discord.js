@@ -289,7 +289,7 @@ class GuildChannel extends Channel {
   /**
    * A collection of cached members of this channel, mapped by their ID.
    * Members that can view this channel, if the channel is text based.
-   * Members in the channel, if a voice channel.
+   * Members in the channel, if the channel is voice based.
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
