@@ -1005,7 +1005,7 @@ declare module 'discord.js' {
     public member: GuildMember | null;
     public readonly token: string;
     public type: InteractionType;
-    public user: User | null;
+    public user: User;
     public isCommand(): this is CommandInteraction;
   }
 

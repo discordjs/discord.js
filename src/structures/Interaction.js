@@ -45,10 +45,10 @@ class Interaction extends Base {
     this.guildID = data.guild_id ?? null;
 
     /**
-     * If this interaction was sent in a DM, the user which sent it
-     * @type {?User}
+     * The user which sent this interaction
+     * @type {User}
      */
-    this.user = data.user ? this.client.users.add(data.user) : null;
+    this.user = this.client.users.add(data.user ?? data.member.user);
 
     /**
      * If this interaction was sent in a guild, the member which sent it
