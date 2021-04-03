@@ -5,10 +5,12 @@
  */
 
 // Import the discord.js module
-const Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Discord.Client();
+// Note: you __MUST__ have the GUILD_MEMBERS intent toggled on the dashboard
+// see https://discordjs.guide/popular-topics/intents.html for more
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -28,5 +30,5 @@ client.on('guildMemberAdd', member => {
   channel.send(`Welcome to the server, ${member}`);
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');

@@ -5,6 +5,8 @@ const { register } = require('./DJSError');
 const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
   CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
+  CLIENT_MISSING_INTENTS: 'Valid intents must be provided for the Client.',
+  CLIENT_NOT_READY: action => `The client needs to be logged in to ${action}.`,
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
@@ -13,7 +15,7 @@ const Messages = {
   WS_CONNECTION_EXISTS: 'There is already an existing WebSocket connection.',
   WS_NOT_OPEN: (data = 'data') => `Websocket not open to send ${data}`,
 
-  BITFIELD_INVALID: 'Invalid bitfield flag or number.',
+  BITFIELD_INVALID: bit => `Invalid bitfield flag or number: ${bit}.`,
 
   SHARDING_INVALID: 'Invalid shard settings were provided.',
   SHARDING_REQUIRED: 'This session would have handled too many guilds - Sharding is required.',
@@ -21,11 +23,16 @@ const Messages = {
   DISALLOWED_INTENTS: 'Privileged intent provided is not enabled or whitelisted.',
   SHARDING_NO_SHARDS: 'No shards have been spawned.',
   SHARDING_IN_PROCESS: 'Shards are still being spawned.',
+  SHARDING_SHARD_NOT_FOUND: id => `Shard ${id} could not be found.`,
   SHARDING_ALREADY_SPAWNED: count => `Already spawned ${count} shards.`,
   SHARDING_PROCESS_EXISTS: id => `Shard ${id} already has an active process.`,
+  SHARDING_WORKER_EXISTS: id => `Shard ${id} already has an active worker.`,
   SHARDING_READY_TIMEOUT: id => `Shard ${id}'s Client took too long to become ready.`,
   SHARDING_READY_DISCONNECTED: id => `Shard ${id}'s Client disconnected before becoming ready.`,
   SHARDING_READY_DIED: id => `Shard ${id}'s process exited before its Client became ready.`,
+  SHARDING_NO_CHILD_EXISTS: id => `Shard ${id} has no active process or worker.`,
+  SHARDING_SHARD_MISCALCULATION: (shard, guild, count) =>
+    `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
@@ -45,7 +52,6 @@ const Messages = {
   VOICE_TOKEN_ABSENT: 'Token not provided from voice server packet.',
   VOICE_SESSION_ABSENT: 'Session ID not supplied.',
   VOICE_INVALID_ENDPOINT: 'Invalid endpoint received.',
-  VOICE_NO_BROWSER: 'Voice connections are not available in browsers.',
   VOICE_CONNECTION_ATTEMPTS_EXCEEDED: attempts => `Too many connection attempts (${attempts}).`,
   VOICE_JOIN_SOCKET_CLOSED: 'Tried to send join packet, but the WebSocket is not open.',
   VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
@@ -66,7 +72,7 @@ const Messages = {
   IMAGE_SIZE: size => `Invalid image size: ${size}`,
 
   MESSAGE_BULK_DELETE_TYPE: 'The messages must be an Array, Collection, or number.',
-  MESSAGE_NONCE_TYPE: 'Message nonce must fit in an unsigned 64-bit integer.',
+  MESSAGE_NONCE_TYPE: 'Message nonce must be an integer or a string.',
 
   TYPING_COUNT: 'Count must be at least 1',
 
@@ -85,6 +91,7 @@ const Messages = {
   GUILD_UNCACHED_ME: 'The client user as a member of this guild is uncached.',
 
   INVALID_TYPE: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
+  INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
 

@@ -33,6 +33,7 @@ module.exports = {
   version: require('../package.json').version,
 
   // Managers
+  BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
   ChannelManager: require('./managers/ChannelManager'),
   GuildChannelManager: require('./managers/GuildChannelManager'),
   GuildEmojiManager: require('./managers/GuildEmojiManager'),
@@ -56,6 +57,7 @@ module.exports = {
   splitMessage: Util.splitMessage,
 
   // Structures
+  Application: require('./structures/interfaces/Application'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
@@ -76,6 +78,7 @@ module.exports = {
   GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
   GuildPreview: require('./structures/GuildPreview'),
+  GuildTemplate: require('./structures/GuildTemplate'),
   Integration: require('./structures/Integration'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),

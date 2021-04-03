@@ -5,10 +5,10 @@
  */
 
 // Import the discord.js module
-const Discord = require('discord.js');
+const { Client, Intents } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -23,9 +23,9 @@ client.on('message', message => {
   // If the message is "what is my avatar"
   if (message.content === 'what is my avatar') {
     // Send the user's avatar URL
-    message.reply(message.author.displayAvatarURL());
+    message.channel.send(message.author.displayAvatarURL());
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');

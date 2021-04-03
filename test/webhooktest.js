@@ -5,9 +5,9 @@ const path = require('path');
 const util = require('util');
 const fetch = require('node-fetch');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-const Discord = require('../src');
+const { Client, Intents, MessageAttachment, MessageEmbed, WebhookClient } = require('../src');
 
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());
@@ -19,8 +19,8 @@ const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
 const fileA = path.join(__dirname, 'blobReach.png');
 
-const embed = () => new Discord.MessageEmbed();
-const attach = (attachment, name) => new Discord.MessageAttachment(attachment, name);
+const embed = () => new MessageEmbed();
+const attach = (attachment, name) => new MessageAttachment(attachment, name);
 
 const tests = [
   (m, hook) => hook.send('x'),
@@ -32,7 +32,6 @@ const tests = [
 
   (m, hook) => hook.send(fill('x'), { split: true }),
   (m, hook) => hook.send(fill('1'), { code: 'js', split: true }),
-  (m, hook) => hook.send(fill('x'), { reply: m.author, code: 'js', split: true }),
   (m, hook) => hook.send(fill('xyz '), { split: { char: ' ' } }),
 
   (m, hook) => hook.send({ embeds: [{ description: 'a' }] }),
@@ -96,7 +95,6 @@ const tests = [
   async (m, hook) => hook.send({ files: [await read(fileA)] }),
   async (m, hook) =>
     hook.send(fill('x'), {
-      reply: m.author,
       code: 'js',
       split: true,
       embeds: [embed().setImage('attachment://zero.png')],
@@ -108,7 +106,6 @@ const tests = [
   (m, hook) => hook.send({ files: [{ attachment: readStream(fileA) }] }),
   async (m, hook) =>
     hook.send(fill('xyz '), {
-      reply: m.author,
       code: 'js',
       split: { char: ' ', prepend: 'hello! ', append: '!!!' },
       embeds: [embed().setImage('attachment://zero.png')],
@@ -122,7 +119,7 @@ client.on('message', async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   const hooks = [
-    { type: 'WebhookClient', hook: new Discord.WebhookClient(webhookChannel, webhookToken) },
+    { type: 'WebhookClient', hook: new WebhookClient(webhookChannel, webhookToken) },
     { type: 'TextChannel#fetchWebhooks', hook: await message.channel.fetchWebhooks().then(x => x.first()) },
     { type: 'Guild#fetchWebhooks', hook: await message.guild.fetchWebhooks().then(x => x.first()) },
   ];

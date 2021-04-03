@@ -11,13 +11,19 @@ const Permissions = require('../util/Permissions');
  */
 class GuildEmoji extends BaseGuildEmoji {
   /**
-   * @name GuildEmoji
-   * @kind constructor
-   * @memberof GuildEmoji
    * @param {Client} client The instantiating client
    * @param {Object} data The data for the guild emoji
    * @param {Guild} guild The guild the guild emoji is part of
    */
+  constructor(client, data, guild) {
+    super(client, data, guild);
+
+    /**
+     * The user who created this emoji
+     * @type {?User}
+     */
+    this.author = null;
+  }
 
   /**
    * The guild this emoji is part of
@@ -31,6 +37,11 @@ class GuildEmoji extends BaseGuildEmoji {
     return clone;
   }
 
+  _patch(data) {
+    super._patch(data);
+    if (typeof data.user !== 'undefined') this.author = this.client.users.add(data.user);
+  }
+
   /**
    * Whether the emoji is deletable by the client user
    * @type {boolean}
@@ -38,7 +49,7 @@ class GuildEmoji extends BaseGuildEmoji {
    */
   get deletable() {
     if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
-    return !this.managed && this.guild.me.hasPermission(Permissions.FLAGS.MANAGE_EMOJIS);
+    return !this.managed && this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS);
   }
 
   /**
@@ -54,20 +65,18 @@ class GuildEmoji extends BaseGuildEmoji {
    * Fetches the author for this emoji
    * @returns {Promise<User>}
    */
-  fetchAuthor() {
+  async fetchAuthor() {
     if (this.managed) {
-      return Promise.reject(new Error('EMOJI_MANAGED'));
+      throw new Error('EMOJI_MANAGED');
     } else {
-      if (!this.guild.me) return Promise.reject(new Error('GUILD_UNCACHED_ME'));
+      if (!this.guild.me) throw new Error('GUILD_UNCACHED_ME');
       if (!this.guild.me.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS)) {
-        return Promise.reject(new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild));
+        throw new Error('MISSING_MANAGE_EMOJIS_PERMISSION', this.guild);
       }
     }
-    return this.client.api
-      .guilds(this.guild.id)
-      .emojis(this.id)
-      .get()
-      .then(emoji => this.client.users.add(emoji.user));
+    const data = await this.client.api.guilds(this.guild.id).emojis(this.id).get();
+    this._patch(data);
+    return this.author;
   }
 
   /**
@@ -141,6 +150,7 @@ class GuildEmoji extends BaseGuildEmoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
+        other.available === this.available &&
         other.requiresColons === this.requiresColons &&
         other.roles.cache.size === this.roles.cache.size &&
         other.roles.cache.every(role => this.roles.cache.has(role.id))

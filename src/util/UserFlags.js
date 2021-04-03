@@ -15,9 +15,15 @@ class UserFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name UserFlags#bitfield
+ */
+
+/**
  * Numeric user flags. All available properties:
  * * `DISCORD_EMPLOYEE`
- * * `DISCORD_PARTNER`
+ * * `PARTNERED_SERVER_OWNER`
  * * `HYPESQUAD_EVENTS`
  * * `BUGHUNTER_LEVEL_1`
  * * `HOUSE_BRAVERY`
@@ -28,13 +34,13 @@ class UserFlags extends BitField {}
  * * `SYSTEM`
  * * `BUGHUNTER_LEVEL_2`
  * * `VERIFIED_BOT`
- * * `VERIFIED_DEVELOPER`
+ * * `EARLY_VERIFIED_BOT_DEVELOPER`
  * @type {Object}
  * @see {@link https://discord.com/developers/docs/resources/user#user-object-user-flags}
  */
 UserFlags.FLAGS = {
   DISCORD_EMPLOYEE: 1 << 0,
-  DISCORD_PARTNER: 1 << 1,
+  PARTNERED_SERVER_OWNER: 1 << 1,
   HYPESQUAD_EVENTS: 1 << 2,
   BUGHUNTER_LEVEL_1: 1 << 3,
   HOUSE_BRAVERY: 1 << 6,
@@ -45,7 +51,7 @@ UserFlags.FLAGS = {
   SYSTEM: 1 << 12,
   BUGHUNTER_LEVEL_2: 1 << 14,
   VERIFIED_BOT: 1 << 16,
-  VERIFIED_DEVELOPER: 1 << 17,
+  EARLY_VERIFIED_BOT_DEVELOPER: 1 << 17,
 };
 
 module.exports = UserFlags;

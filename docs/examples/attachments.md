@@ -10,10 +10,10 @@ The following examples use [MessageAttachment](/#/docs/main/master/class/Message
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -33,7 +33,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -45,10 +45,10 @@ But what if you want to send an attachment with a message content? Fear not, for
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -68,7 +68,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
@@ -82,10 +82,10 @@ Sending a local file isn't hard either! We'll be using [MessageAttachment](/#/do
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -105,13 +105,13 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
 The results are the same as the URL examples:
 
-![Image showing result](/static/attachment-example1.png)
+![Image showing result](/static/attachment-example2.png)
 
 But what if you have a buffer from an image? Or a text document? Well, it's the same as sending a local file or a URL!
 
@@ -120,13 +120,13 @@ You can use any buffer you want, and send it. Just make sure to overwrite the fi
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Import the native fs module
 const fs = require('fs');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -154,7 +154,7 @@ client.on('message', message => {
   }
 });
 
-// Log our bot in using the token from https://discord.com/developers/applications/me
+// Log our bot in using the token from https://discord.com/developers/applications
 client.login('your token here');
 ```
 
