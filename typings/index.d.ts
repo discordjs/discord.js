@@ -418,7 +418,6 @@ declare module 'discord.js' {
       VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
-      DISCONNECT: 'disconnect';
       RECONNECTING: 'reconnecting';
       ERROR: 'error';
       WARN: 'warn';
@@ -2391,7 +2390,6 @@ declare module 'discord.js' {
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
     warn: [message: string];
-    disconnect: [closeEvent: any, status: number];
     emojiCreate: [emoji: GuildEmoji];
     emojiDelete: [emoji: GuildEmoji];
     emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
