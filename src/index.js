@@ -85,6 +85,7 @@ module.exports = {
   GuildPreview: require('./structures/GuildPreview'),
   GuildTemplate: require('./structures/GuildTemplate'),
   Integration: require('./structures/Integration'),
+  IntegrationApplication: require('./structures/IntegrationApplication'),
   Interaction: require('./structures/Interaction'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),

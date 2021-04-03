@@ -73,6 +73,7 @@ export const {
   GuildPreview,
   GuildTemplate,
   Integration,
+  IntegrationApplication,
   Interaction,
   Invite,
   Message,
