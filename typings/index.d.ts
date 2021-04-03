@@ -370,9 +370,14 @@ declare module 'discord.js' {
     public options: CommandInteractionOption[];
     public webhook: WebhookClient;
     public defer(ephemeral?: boolean): Promise<void>;
+    public deleteReply(): Promise<void>;
+    public editReply(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      options?: WebhookEditMessageOptions,
+    ): Promise<Message | null>;
     public reply(
       content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
-      options?: InteractionReplyOptions | MessageAdditions,
+      options?: InteractionReplyOptions,
     ): Promise<void>;
     private transformOption(option: object, resolved: object): CommandInteractionOption;
   }

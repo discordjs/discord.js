@@ -51,6 +51,7 @@ class CommandInteraction extends Interaction {
   /**
    * Defers the reply to this interaction.
    * @param {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @returns {Promise<void>}
    */
   async defer(ephemeral) {
     await this.client.api.interactions(this.id, this.token).callback.post({
@@ -72,8 +73,9 @@ class CommandInteraction extends Interaction {
 
   /**
    * Creates a reply to this interaction.
-   * @param {string|APIMessage} content The content for the reply
-   * @param {InteractionReplyOptions|MessageAdditions} [options] Additional options for the reply
+   * @param {string|APIMessage|MessageAdditions} content The content for the reply
+   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @returns {Promise<void>}
    */
   async reply(content, options) {
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
@@ -85,6 +87,25 @@ class CommandInteraction extends Interaction {
         data,
       },
     });
+  }
+
+  /**
+   * Edits the initial reply to this interaction.
+   * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
+   * @param {WebhookEditMessageOptions} [options] The options to provide
+   * @returns {Promise<?Message>}
+   */
+  async editReply(content, options) {
+    const raw = await this.webhook.editMessage('@original', content, options);
+    return this.channel?.messages.add(raw) ?? null;
+  }
+
+  /**
+   * Deletes the initial reply to this interaction.
+   * @returns {Promise<void>}
+   */
+  async deleteReply() {
+    await this.webhook.deleteMessage('@original');
   }
 
   /**
