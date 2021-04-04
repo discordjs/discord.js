@@ -595,7 +595,7 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
-    if (this.type === 'voice') {
+    if (this.type === 'voice' || this.type === 'stage') {
       if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
         return false;
       }
