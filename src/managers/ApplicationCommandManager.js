@@ -110,6 +110,7 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Deletes an application command.
    * @param {ApplicationCommandResolvable} command The command to delete
+   * @returns {Promise<void>}
    */
   async delete(command) {
     const id = this.resolveID(command);
