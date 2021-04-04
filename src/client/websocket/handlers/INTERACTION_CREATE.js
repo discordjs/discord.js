@@ -15,5 +15,5 @@ module.exports = (client, { d: data }) => {
     return client.emit(Events.INTERACTION_CREATE, interaction);
   }
 
-  return client.emit('debug', `[INTERACTION] Received interaction with unknown type: ${data.type}`);
+  return client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
 };
