@@ -26,11 +26,11 @@ class CommandInteraction extends Interaction {
      */
     this.commandName = data.data.name;
 
-	/**
-	 * Whether the reply to this interaction has been deferred
-	 * @type {boolean}
-	 */
-	this.deferred = false;
+    /**
+     * Whether the reply to this interaction has been deferred
+     * @type {boolean}
+     */
+    this.deferred = false;
 
     /**
      * The options passed to the command.
