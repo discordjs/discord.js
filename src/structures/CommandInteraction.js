@@ -79,13 +79,14 @@ class CommandInteraction extends Interaction {
    */
   async reply(content, options) {
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
-    const { data } = await apiMessage.resolveData().resolveFiles();
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
 
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.CHANNEL_MESSAGE_WITH_SOURCE,
         data,
       },
+      files,
     });
   }
 
