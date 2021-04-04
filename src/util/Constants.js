@@ -477,17 +477,6 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !=
  */
 exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS', 'COMPETING'];
 
-exports.ChannelTypes = {
-  TEXT: 0,
-  DM: 1,
-  VOICE: 2,
-  GROUP: 3,
-  CATEGORY: 4,
-  NEWS: 5,
-  STORE: 6,
-  STAGE: 13,
-};
-
 exports.ChannelTypes = createEnum([
   'TEXT',
   'DM',
