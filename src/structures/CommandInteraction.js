@@ -26,6 +26,12 @@ class CommandInteraction extends Interaction {
      */
     this.commandName = data.data.name;
 
+	/**
+	 * Whether the reply to this interaction has been deferred
+	 * @type {boolean}
+	 */
+	this.deferred = false;
+
     /**
      * The options passed to the command.
      * @type {CommandInteractionOption[]}
@@ -33,9 +39,7 @@ class CommandInteraction extends Interaction {
     this.options = data.data.options?.map(o => this.transformOption(o, data.data.resolved)) ?? [];
 
     /**
-     * Whether this interaction has been deferred or already replied to. If this is false, you can use
-     * {@link CommandInteraction#reply} or {@link CommandInteraction#defer}, otherwise you need to use either
-     * {@link CommandInteraction#editReply} or {@link CommandInteraction#webhook#send}
+     * Whether this interaction has already been replied to
      * @type {boolean}
      */
     this.replied = false;
@@ -70,7 +74,7 @@ class CommandInteraction extends Interaction {
         },
       },
     });
-    this.replied = true;
+    this.deferred = true;
   }
 
   /**

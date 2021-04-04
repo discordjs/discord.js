@@ -367,6 +367,7 @@ declare module 'discord.js' {
     public readonly command: ApplicationCommand | null;
     public commandID: string;
     public commandName: string;
+    public deferred: boolean;
     public options: CommandInteractionOption[];
     public replied: boolean;
     public webhook: WebhookClient;
