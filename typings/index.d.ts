@@ -368,6 +368,7 @@ declare module 'discord.js' {
     public commandID: string;
     public commandName: string;
     public options: CommandInteractionOption[];
+    public replied: boolean;
     public webhook: WebhookClient;
     public defer(ephemeral?: boolean): Promise<void>;
     public deleteReply(): Promise<void>;
