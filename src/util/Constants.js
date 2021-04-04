@@ -488,9 +488,19 @@ exports.ChannelTypes = {
   STAGE: 13,
 };
 
-for (const [key, value] of Object.entries(exports.ChannelTypes)) {
-  exports.ChannelTypes[value] = key;
-}
+exports.ChannelTypes = createEnum([
+  'TEXT',
+  'DM',
+  'VOICE',
+  'GROUP',
+  'CATEGORY',
+  'NEWS',
+  // 6
+  'STORE',
+  ...Array(6).fill(null),
+  // 13
+  'STAGE',
+]);
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
