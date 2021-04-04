@@ -3381,7 +3381,11 @@ declare module 'discord.js' {
 
   type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
 
-  type WebhookMessageOptions = Omit<MessageOptions, 'embed'> & { embeds?: (MessageEmbed | object)[] };
+  type WebhookMessageOptions = Omit<MessageOptions, 'embed' | 'replyTo'> & {
+    username?: string;
+    avatarURL?: string;
+    embeds?: (MessageEmbed | object)[];
+  };
 
   type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
     author: {
