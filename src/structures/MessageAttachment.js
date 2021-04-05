@@ -84,7 +84,7 @@ class MessageAttachment {
      * This media type of this attachment
      * @type {?string}
      */
-    this.contentType = typeof data.content_type !== 'undefined' ? data.content_type : null;
+    this.contentType = data.content_type ?? null;
   }
 
   /**
