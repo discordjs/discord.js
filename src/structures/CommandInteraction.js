@@ -105,6 +105,15 @@ class CommandInteraction extends Interaction {
   }
 
   /**
+   * Fetches the initial reply to this interaction.
+   * @returns {Promise<?Message>}
+   */
+  async fetchReply() {
+    const raw = await this.client.api.webhooks(this.client.application.id, this.token).messages('@original').get();
+    return this.channel?.messages.add(raw) ?? null;
+  }
+
+  /**
    * Edits the initial reply to this interaction.
    * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
    * @param {WebhookEditMessageOptions} [options] The options to provide

@@ -377,6 +377,7 @@ declare module 'discord.js' {
       content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<Message | null>;
+    public fetchReply(): Promise<Message | null>;
     public reply(
       content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
       options?: InteractionReplyOptions,
