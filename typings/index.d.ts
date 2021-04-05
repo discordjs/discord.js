@@ -1037,6 +1037,7 @@ declare module 'discord.js' {
     public height: number | null;
     public id: Snowflake;
     public name: string | null;
+    public contentType: string | null;
     public proxyURL: string;
     public size: number;
     public readonly spoiler: boolean;
