@@ -3045,7 +3045,10 @@ declare module 'discord.js' {
     | 'CHANNEL_FOLLOW_ADD'
     | 'GUILD_DISCOVERY_DISQUALIFIED'
     | 'GUILD_DISCOVERY_REQUALIFIED'
-    | 'REPLY';
+    | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
+    | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
+    | 'REPLY'
+    | 'APPLICATION_COMMAND';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
