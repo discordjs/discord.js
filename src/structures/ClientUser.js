@@ -108,9 +108,7 @@ class ClientUser extends Structures.get('User') {
    * @returns {Presence}
    * @example
    * // Set the client user's presence
-   * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' })
-   *   .then(console.log)
-   *   .catch(console.error);
+   * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
    */
   setPresence(data) {
     return this.client.presence.set(data);
