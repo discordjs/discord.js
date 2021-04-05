@@ -3047,8 +3047,7 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_REQUALIFIED'
     | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
-    | 'REPLY'
-    | 'APPLICATION_COMMAND';
+    | 'REPLY';
 
   interface OverwriteData {
     allow?: PermissionResolvable;
