@@ -454,7 +454,6 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
   null,
   'REPLY',
-  'APPLICATION_COMMAND',
 ];
 
 /**
