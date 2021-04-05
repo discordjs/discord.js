@@ -659,7 +659,7 @@ declare module 'discord.js' {
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
-    public fetchOwner(): Promise<GuildMember>;
+    public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
     public fetchVanityData(): Promise<Vanity>;
