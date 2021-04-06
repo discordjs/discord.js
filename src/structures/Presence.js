@@ -227,6 +227,19 @@ class Activity {
      * @type {number}
      */
     this.createdTimestamp = new Date(data.created_at).getTime();
+
+    /**
+     * An object containing information about an activities buttons.
+     * @typedef {Object} ActivityButton
+     * @property {string} label
+     * @property {string} url
+     */
+
+    /**
+     * Array of button data for this activity
+     * @type {ActivityButton[]} buttons
+     */
+    this.buttons = data.buttons ?? [];
   }
 
   /**

@@ -25,6 +25,7 @@ declare module 'discord.js' {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
     public assets: RichPresenceAssets | null;
+    public buttons: ActivityButton[];
     public readonly createdAt: Date;
     public createdTimestamp: number;
     public details: string | null;
@@ -2118,6 +2119,11 @@ declare module 'discord.js' {
   //#region Typedefs
 
   type ActivityFlagsString = 'INSTANCE' | 'JOIN' | 'SPECTATE' | 'JOIN_REQUEST' | 'SYNC' | 'PLAY';
+
+  interface ActivityButton {
+    label: string;
+    url: string;
+  }
 
   interface ActivityOptions {
     name?: string;
