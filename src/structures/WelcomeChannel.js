@@ -4,8 +4,8 @@ const Base = require('./Base');
 const Emoji = require('./Emoji');
 
 class WelcomeChannel extends Base {
-  constructor(client, guild, data) {
-    super(client);
+  constructor(guild, data) {
+    super(guild.client);
     this.guild = guild;
 
     this._patch(data);

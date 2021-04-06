@@ -5,8 +5,8 @@ const Base = require('./Base');
 const WelcomeChannel = require('./WelcomeChannel');
 
 class WelcomeScreen extends Base {
-  constructor(client, guild, data) {
-    super(client);
+  constructor(guild, data) {
+    super(guild.client);
     this.guild = guild;
 
     this._patch(data);
@@ -30,7 +30,7 @@ class WelcomeScreen extends Base {
     }
 
     for (const channel of data.welcome_channels) {
-      const welcomeChannel = new WelcomeChannel(this.client, this.guild, channel);
+      const welcomeChannel = new WelcomeChannel(this.guild, channel);
       this.welcomeChannels.set(welcomeChannel.channelID, welcomeChannel);
     }
   }
