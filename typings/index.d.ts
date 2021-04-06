@@ -817,6 +817,7 @@ declare module 'discord.js' {
     public verificationLevel: VerificationLevel;
     public readonly voiceAdapterCreator: DiscordGatewayAdapterCreator;
     public readonly voiceStates: VoiceStateManager;
+    public welcomeScreen: WelcomeScreen | null;
     public readonly widgetChannel: TextChannel | null;
     public widgetChannelID: Snowflake | null;
     public widgetEnabled: boolean | null;
@@ -837,6 +838,7 @@ declare module 'discord.js' {
     public fetchVanityData(): Promise<Vanity>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+    public fetchWelcomeScreen(): Promise<WelcomeScreen>;
     public fetchWidget(): Promise<GuildWidget>;
     public leave(): Promise<Guild>;
     public setAFKChannel(afkChannel: ChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -2094,6 +2096,20 @@ declare module 'discord.js' {
     public channelID?: Snowflake;
     public avatarURL: string;
     public activity?: WidgetActivity;
+  }
+
+  export class WelcomeChannel extends Base {
+    public channelID: Snowflake;
+    public guild: Guild;
+    public description: string;
+    public readonly channel: TextChannel | NewsChannel | null;
+    public readonly emoji: GuildEmoji | Emoji;
+  }
+
+  export class WelcomeScreen extends Base {
+    public guild: Guild;
+    public description: string | null;
+    public welcomeChannels: Collection<Snowflake, WelcomeChannel>;
   }
 
   //#endregion
