@@ -20,7 +20,7 @@ class WelcomeChannel extends Base {
   }
 
   get channel() {
-    return this.client.guilds.add({ id: this.channelID }, null, false);
+    return this.client.channels.add({ id: this.channelID }, null, false);
   }
 
   get emoji() {
