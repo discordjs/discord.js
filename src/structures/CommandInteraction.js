@@ -109,7 +109,8 @@ class CommandInteraction extends Interaction {
    * @returns {Promise<?Message>}
    */
   async fetchReply() {
-    const raw = await this.client.api.webhooks(this.client.application.id, this.token).messages('@original').get();
+    const applicationID = this.client.application.id;
+    const raw = await this.client.api.webhooks(applicationID, this.token).messages('@original').patch({ data: {} });
     return this.channel?.messages.add(raw) ?? null;
   }
 
