@@ -30,17 +30,22 @@ declare module 'discord.js' {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
     public assets: RichPresenceAssets | null;
+    public buttons: string[];
     public readonly createdAt: Date;
     public createdTimestamp: number;
     public details: string | null;
     public emoji: Emoji | null;
     public flags: Readonly<ActivityFlags>;
+    public id: string;
     public name: string;
     public party: {
       id: string | null;
       size: [number, number];
     } | null;
+    public platform: ActivityPlatform | null;
+    public sessionID: string | null;
     public state: string | null;
+    public syncID: string | null;
     public timestamps: {
       start: Date | null;
       end: Date | null;
@@ -2169,6 +2174,8 @@ declare module 'discord.js' {
     type?: ActivityType | number;
     shardID?: number | readonly number[];
   }
+
+  type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
   type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 
