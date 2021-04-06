@@ -50,7 +50,7 @@ class MessageReaction {
     }
 
     /**
-     * Whether the client has given this reaction
+     * Whether the client has already given this reaction
      * @type {boolean}
      */
     this.me = data.me;
