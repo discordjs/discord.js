@@ -595,11 +595,13 @@ class Guild extends BaseGuild {
       );
   }
 
-  fetchWelcomeScreen() {
-    return this.client.api
-      .guilds(this.id)
-      ['welcome-screen'].get()
-      .then(data => new WelcomeScreen(this, data));
+  /**
+   * Fetches the welcome screen for this guild.
+   * @returns {Promise<WelcomeScreen>}
+   */
+  async fetchWelcomeScreen() {
+    const data = await this.client.api.guilds(this.id, 'welcome-screen').get();
+    return new WelcomeScreen(this, data);
   }
 
   /**

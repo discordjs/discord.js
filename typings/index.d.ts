@@ -2099,6 +2099,7 @@ declare module 'discord.js' {
   }
 
   export class WelcomeChannel extends Base {
+    private _emojis: object;
     public channelID: Snowflake;
     public guild: Guild;
     public description: string;

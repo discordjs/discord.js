@@ -1,15 +1,17 @@
 'use strict';
 
-const { default: Collection } = require('@discordjs/collection');
+const Collection = require('../util/Collection');
 const Base = require('./Base');
 const WelcomeChannel = require('./WelcomeChannel');
 
 /**
  * Represents a welcome screen.
+ * @extends {Base}
  */
 class WelcomeScreen extends Base {
   constructor(guild, data) {
     super(guild.client);
+
     /**
      * The guild for this welcome screen
      * @type {Guild}

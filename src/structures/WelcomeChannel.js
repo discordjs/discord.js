@@ -5,10 +5,12 @@ const Emoji = require('./Emoji');
 
 /**
  * Represents a channel link in a guild's welcome screen.
+ * @extends {Base}
  */
 class WelcomeChannel extends Base {
   constructor(guild, data) {
     super(guild.client);
+
     /**
      * The guild for this welcome channel
      * @type {Guild}
@@ -30,6 +32,12 @@ class WelcomeChannel extends Base {
      * @type {string}
      */
     this.description = data.description;
+
+    /**
+     * The raw emoji data
+     * @type {Object}
+     * @private
+     */
     this._emoji = {
       name: data.emoji_name,
       id: data.emoji_id,
