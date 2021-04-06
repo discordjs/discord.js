@@ -338,7 +338,7 @@ class Guild extends BaseGuild {
     }
 
     if (typeof data.welcome_screen !== 'undefined') {
-      this.welcomeScreen = new WelcomeScreen(guild, data.welcome_screen)
+      this.welcomeScreen = new WelcomeScreen(this, data.welcome_screen);
     }
 
     /**

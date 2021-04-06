@@ -14,24 +14,20 @@ class WelcomeChannel extends Base {
   _patch(data) {
     if (!data) return;
     this.description = data.description;
-    this._data = data;
+    this._emoji = {
+      name: data.emoji_name,
+      id: data.emoji_id,
+    };
 
     this.channelID = data.channel_id;
   }
 
   get channel() {
-    return this.client.channels.add({ id: this.channelID }, null, false);
+    return this.client.channels.resolve(this.channelID);
   }
 
   get emoji() {
-    const { emoji_id, emoji_name } = this._data;
-    return (
-      this.client.emojis.resolve(emoji_id) ??
-      new Emoji(this.client, {
-        name: emoji_name,
-        id: emoji_id,
-      })
-    );
+    return this.client.emojis.resolve(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 }
 
