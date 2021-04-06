@@ -229,12 +229,7 @@ class GuildChannel extends Channel {
    *   .catch(console.error);
    */
   async updateOverwrite(userOrRole, options, reason, type) {
-    let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
-    if (!type) {
-      userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-      userOrRoleID = userOrRole.id;
-    }
+    const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
 
     const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
