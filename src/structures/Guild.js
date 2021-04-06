@@ -7,6 +7,7 @@ const GuildTemplate = require('./GuildTemplate');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
 const Webhook = require('./Webhook');
+const WelcomeScreen = require('./WelcomeScreen');
 const { Error, TypeError } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
@@ -582,6 +583,13 @@ class Guild extends BaseGuild {
       .then(templates =>
         templates.reduce((col, data) => col.set(data.code, new GuildTemplate(this.client, data)), new Collection()),
       );
+  }
+
+  fetchWelcomeScreen() {
+    return this.client.api
+      .guilds(this.id)
+      ['welcome-screen'].get()
+      .then(data => new WelcomeScreen(this.client, this, data));
   }
 
   /**
