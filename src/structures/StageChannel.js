@@ -4,7 +4,7 @@ const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
 
 /**
  * Represents a guild stage channel on Discord.
- * @extends {GuildChannel}
+ * @extends {BaseGuildVoiceChannel}
  */
 class StageChannel extends BaseGuildVoiceChannel {
   _patch(data) {

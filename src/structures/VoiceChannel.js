@@ -5,7 +5,7 @@ const Permissions = require('../util/Permissions');
 
 /**
  * Represents a guild voice channel on Discord.
- * @extends {GuildChannel}
+ * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   /**

@@ -541,7 +541,7 @@ declare module 'discord.js' {
       CLIENT_CONNECT: 12;
       CLIENT_DISCONNECT: 13;
     };
-    ChannelTypes: ChannelTypes;
+    ChannelTypes: typeof ChannelTypes;
     ClientApplicationAssetTypes: {
       SMALL: 1;
       BIG: 2;
@@ -1445,6 +1445,7 @@ declare module 'discord.js' {
 
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
+    public type: 'stage';
   }
 
   export class StoreChannel extends GuildChannel {

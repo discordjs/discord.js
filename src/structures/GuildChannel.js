@@ -318,7 +318,7 @@ class GuildChannel extends Channel {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
    * @property {number} [rateLimitPerUser] The ratelimit per user for the channel in seconds
-   * @property {string} [rtcRegion] The RTC region of the channel
+   * @property {?string} [rtcRegion] The RTC region of the channel
    */
 
   /**
