@@ -1,59 +1,13 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
+const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
 const Permissions = require('../util/Permissions');
 
 /**
  * Represents a guild voice channel on Discord.
  * @extends {GuildChannel}
  */
-class VoiceChannel extends GuildChannel {
-  _patch(data) {
-    super._patch(data);
-    /**
-     * The bitrate of this voice channel
-     * @type {number}
-     */
-    this.bitrate = data.bitrate;
-
-    /**
-     * The maximum amount of users allowed in this channel - 0 means unlimited.
-     * @type {number}
-     */
-    this.userLimit = data.user_limit;
-
-    /**
-     * The RTC region for this voice channel. This region is automatically selected if `null`.
-     * @type {?string}
-     */
-    this.rtcRegion = data.rtc_region;
-  }
-
-  /**
-   * The members in this voice channel
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const coll = new Collection();
-    for (const state of this.guild.voiceStates.cache.values()) {
-      if (state.channelID === this.id && state.member) {
-        coll.set(state.id, state.member);
-      }
-    }
-    return coll;
-  }
-
-  /**
-   * Checks if the voice channel is full
-   * @type {boolean}
-   * @readonly
-   */
-  get full() {
-    return this.userLimit > 0 && this.members.size >= this.userLimit;
-  }
-
+class VoiceChannel extends BaseGuildVoiceChannel {
   /**
    * Whether the channel is deletable by the client user
    * @type {boolean}
@@ -136,30 +90,6 @@ class VoiceChannel extends GuildChannel {
    */
   setRTCRegion(region) {
     return this.edit({ rtcRegion: region });
-  }
-
-  /**
-   * Attempts to join this voice channel.
-   * @returns {Promise<VoiceConnection>}
-   * @example
-   * // Join a voice channel
-   * voiceChannel.join()
-   *   .then(connection => console.log('Connected!'))
-   *   .catch(console.error);
-   */
-  join() {
-    return this.client.voice.joinChannel(this);
-  }
-
-  /**
-   * Leaves this voice channel.
-   * @example
-   * // Leave a voice channel
-   * voiceChannel.leave();
-   */
-  leave() {
-    const connection = this.client.voice.connections.get(this.guild.id);
-    if (connection && connection.channel.id === this.id) connection.disconnect();
   }
 }
 
