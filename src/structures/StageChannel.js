@@ -23,10 +23,10 @@ class StageChannel extends BaseGuildVoiceChannel {
    * @returns {Promise<StageChannel>}
    * @example
    * // Set the RTC region to europe
-   * voice-basedChannel.setRTCRegion('europe');
+   * stageChannel.setRTCRegion('europe');
    * @example
    * // Remove a fixed region for this channel - let Discord decide automatically
-   * voice-basedChannel.setRTCRegion(null);
+   * stageChannel.setRTCRegion(null);
    */
   setRTCRegion(region) {
     return this.edit({ rtcRegion: region });

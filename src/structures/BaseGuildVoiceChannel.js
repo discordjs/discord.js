@@ -71,7 +71,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @returns {Promise<VoiceConnection>}
    * @example
    * // Join a voice-based channel
-   * voice-basedChannel.join()
+   * channel.join()
    *   .then(connection => console.log('Connected!'))
    *   .catch(console.error);
    */
@@ -83,7 +83,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * Leaves this voice-based channel.
    * @example
    * // Leave a voice-based channel
-   * voice-basedChannel.leave();
+   * channel.leave();
    */
   leave() {
     const connection = this.client.voice.connections.get(this.guild.id);
