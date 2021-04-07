@@ -758,6 +758,14 @@ exports.ApplicationCommandOptionTypes = createEnum([
 ]);
 
 /**
+ * The type of an `ApplicationCommandPermissions` object:
+ * * ROLE
+ * * USER
+ * @typedef {string} ApplicationCommandPermissionType
+ */
+exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
+
+/**
  * The type of a received interaction:
  * * PING
  * * APPLICATION_COMMAND

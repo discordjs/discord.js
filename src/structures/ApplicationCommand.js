@@ -45,6 +45,12 @@ class ApplicationCommand extends Base {
      * @type {ApplicationCommandOption[]}
      */
     this.options = data.options?.map(ApplicationCommand.transformOption) ?? [];
+
+    /**
+     * Whether the command is enabled by default when the app is added to a guild
+     * @type {boolean}
+     */
+    this.defaultPermission = data.default_permission;
   }
 
   /**
@@ -79,6 +85,7 @@ class ApplicationCommand extends Base {
    * @property {string} name The name of the command
    * @property {string} description The description of the command
    * @property {ApplicationCommandOption[]} [options] Options for the command
+   * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
    * @typedef {Object} ApplicationCommandData
    */
 
@@ -97,6 +104,31 @@ class ApplicationCommand extends Base {
    */
   delete() {
     return this.manager.delete(this);
+  }
+
+  /**
+   * The object returned when fetching permissions for an application command.
+   * @property {Snowflake} id The ID of the role or user
+   * @property {ApplicationCommandPermissionType} type Whether this permission if for a role or a user
+   * @property {boolean} permission Whether the role or user has the permission to use this command
+   * @typedef {object} ApplicationCommandPermissions
+   */
+
+  /**
+   * Fetches the permissions for this command.
+   * @returns {Promise<ApplicationCommandPermissions[]>}
+   */
+  fetchPermissions() {
+    return this.manager.fetchPermissions(this);
+  }
+
+  /**
+   * Edits the permissions for this command.
+   * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
+   * @returns {Promise<ApplicationCommand>}
+   */
+  editPermissions(permissions) {
+    return this.manager.editPermissions(this, permissions);
   }
 
   /**

@@ -4,6 +4,7 @@ const BaseManager = require('./BaseManager');
 const { TypeError } = require('../errors');
 const ApplicationCommand = require('../structures/ApplicationCommand');
 const Collection = require('../util/Collection');
+const { ApplicationCommandPermissionTypes } = require('../util/Constants');
 
 /**
  * Manages API methods for application commands and stores their cache.
@@ -124,6 +125,43 @@ class ApplicationCommandManager extends BaseManager {
   }
 
   /**
+   * Fetches the permissions for one or multiple commands.
+   * @param {ApplicationCommandResolvable} [command] The command to get the permissions from
+   * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
+   */
+  async fetchPermissions(command) {
+    if (command) {
+      const id = this.resolveID(command);
+      if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+      const data = await this.commandPath(id).permissions.get();
+      return data.permissions.map(ApplicationCommandManager.transformPermissions);
+    }
+
+    const commands = await this.commandPath.permissions.get();
+    return commands.reduce(
+      (coll, data) => coll.set(data.id, data.permissions.map(ApplicationCommandManager.transformPermissions)),
+      new Collection(),
+    );
+  }
+
+  /**
+   * Edits the permissions for a command.
+   * @param {ApplicationCommandResolvable} command The command to edit the permissions for
+   * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
+   * @returns {Promise<?ApplicationCommand>}
+   */
+  async editPermissions(command, permissions) {
+    const id = this.resolveID(command);
+    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+
+    await this.commandPath(id).permissions.put({
+      data: { permissions: permissions.map(ApplicationCommandManager.transformPermissions) },
+    });
+    return this.cache.get(id) ?? null;
+  }
+
+  /**
    * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
    * @param {ApplicationCommandData} command The command to transform
    * @returns {Object}
@@ -133,6 +171,20 @@ class ApplicationCommandManager extends BaseManager {
     return {
       ...command,
       options: command.options?.map(ApplicationCommand.transformOption),
+      default_permission: command.defaultPermission,
+    };
+  }
+
+  /**
+   * Transforms an {@link ApplicationCommandPermissions} object into something that can be used with the API.
+   * @param {ApplicationCommandPermissions} permissions The permissions to transform
+   * @returns {Object}
+   * @private
+   */
+  static transformPermissions(permissions) {
+    return {
+      ...permissions,
+      type: ApplicationCommandPermissionTypes[permissions.type],
     };
   }
 }
