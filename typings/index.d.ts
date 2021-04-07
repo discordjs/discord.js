@@ -162,6 +162,18 @@ declare module 'discord.js' {
     public requiresColons: boolean | null;
   }
 
+  export class BaseGuildVoiceChannel extends GuildChannel {
+    constructor(guild: Guild, data?: object);
+    public readonly members: Collection<Snowflake, GuildMember>;
+    public readonly full: boolean;
+    public readonly joinable: boolean;
+    public rtcRegion: string | null;
+    public bitrate: number;
+    public userLimit: number;
+    public join(): Promise<VoiceConnection>;
+    public leave(): void;
+  }
+
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
     public broadcast: VoiceBroadcast;
   }
@@ -1430,20 +1442,8 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<SpeakingString, number>): number;
   }
 
-  export class StageChannel extends GuildChannel {
-    constructor(guild: Guild, data?: object);
-    public readonly members: Collection<Snowflake, GuildMember>;
-    public readonly editable: boolean;
-    public readonly full: boolean;
-    public readonly joinable: boolean;
-    public readonly speakable: boolean;
+  export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
-    public rtcRegion: string | null;
-    public bitrate: number;
-    public userLimit: number;
-    public type: 'stage';
-    public join(): Promise<VoiceConnection>;
-    public leave(): void;
     public setRTCRegion(region: string | null): Promise<StageChannel>;
   }
 
@@ -1642,19 +1642,10 @@ declare module 'discord.js' {
     public once(event: string, listener: (...args: any[]) => void): this;
   }
 
-  export class VoiceChannel extends GuildChannel {
-    constructor(guild: Guild, data?: object);
-    public bitrate: number;
-    public rtcRegion: string | null;
-    public readonly members: Collection<Snowflake, GuildMember>;
+  export class VoiceChannel extends BaseGuildVoiceChannel {
     public readonly editable: boolean;
-    public readonly full: boolean;
-    public readonly joinable: boolean;
     public readonly speakable: boolean;
     public type: 'voice';
-    public userLimit: number;
-    public join(): Promise<VoiceConnection>;
-    public leave(): void;
     public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
     public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
     public setRTCRegion(region: string | null): Promise<StageChannel>;
