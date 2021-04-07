@@ -19,6 +19,7 @@ class StageChannel extends BaseGuildVoiceChannel {
 
   /**
    * Sets the RTC region of the channel.
+   * @name StageChannel#setRTCRegion
    * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
    * @returns {Promise<StageChannel>}
    * @example
@@ -28,9 +29,6 @@ class StageChannel extends BaseGuildVoiceChannel {
    * // Remove a fixed region for this channel - let Discord decide automatically
    * stageChannel.setRTCRegion(null);
    */
-  setRTCRegion(region) {
-    return this.edit({ rtcRegion: region });
-  }
 }
 
 module.exports = StageChannel;

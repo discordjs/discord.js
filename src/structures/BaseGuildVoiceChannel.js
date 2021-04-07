@@ -89,6 +89,21 @@ class BaseGuildVoiceChannel extends GuildChannel {
     const connection = this.client.voice.connections.get(this.guild.id);
     if (connection?.channel.id === this.id) connection.disconnect();
   }
+
+  /**
+   * Sets the RTC region of the channel.
+   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @returns {Promise<BaseGuildVoiceChannel>}
+   * @example
+   * // Set the RTC region to europe
+   * channel.setRTCRegion('europe');
+   * @example
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * channel.setRTCRegion(null);
+   */
+  setRTCRegion(region) {
+    return this.edit({ rtcRegion: region });
+  }
 }
 
 module.exports = BaseGuildVoiceChannel;

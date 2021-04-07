@@ -172,6 +172,7 @@ declare module 'discord.js' {
     public userLimit: number;
     public join(): Promise<VoiceConnection>;
     public leave(): void;
+    public setRTCRegion(region: string | null): Promise<BaseGuildVoiceChannel>;
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
