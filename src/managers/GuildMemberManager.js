@@ -144,13 +144,9 @@ class GuildMemberManager extends BaseManager {
    * @property {boolean} [options.cache=true] Whether or not to cache the fetched member(s)
    * @returns {Promise<Collection<Snowflake, GuildMember>>}
    */
-  search({ query, limit = 1, cache = true } = {}) {
-    return this.client.api
-      .guilds(this.guild.id)
-      .members.search.get({ query: { query, limit } })
-      .then(members =>
-        members.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection()),
-      );
+  async search({ query, limit = 1, cache = true } = {}) {
+    const data = await this.client.api.guilds(this.guild.id).members.search.get({ query: { query, limit } });
+    return data.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection());
   }
 
   /**
