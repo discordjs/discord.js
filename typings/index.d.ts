@@ -148,8 +148,8 @@ declare module 'discord.js' {
     public id: Snowflake;
     public name: string;
     public options: ApplicationCommandOption[];
-    public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public delete(): Promise<ApplicationCommand>;
+    public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     private static transformOption(option: ApplicationCommandOption): object;
   }
 
