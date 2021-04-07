@@ -2,7 +2,6 @@
 
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
-const Permissions = require('../util/Permissions');
 
 /**
  * Represents the voice state for a Guild Member.
@@ -226,11 +225,6 @@ class VoiceState extends Base {
 
     if (this.client.user.id !== this.id) throw new Error('VOICE_STATE_NOT_OWN');
 
-    const member = this.member;
-    const hasRequestToSpeakPermission = member?.permissionsIn(channel).has(Permissions.FLAGS.REQUEST_TO_SPEAK);
-
-    if (!hasRequestToSpeakPermission) throw new Error('VOICE_NEED_REQUEST_TO_SPEAK');
-
     await this.client.api.guilds(this.guild.id, 'voice-states', '@me').patch({
       data: {
         channel_id: this.channelID,
@@ -262,11 +256,6 @@ class VoiceState extends Base {
     if (channel?.type !== 'stage') throw new Error('VOICE_NOT_STAGE_CHANNEL');
 
     const target = this.client.user.id === this.id ? '@me' : this.id;
-
-    const hasPermission =
-      (target === '@me' && suppressed) || channel.guild.me.permissionsIn(channel).has(Permissions.FLAGS.MUTE_MEMBERS);
-
-    if (!hasPermission) throw new Error('VOICE_NEED_MUTE_MEMBERS');
 
     await this.client.api.guilds(this.guild.id, 'voice-states', target).patch({
       data: {

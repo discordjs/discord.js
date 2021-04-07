@@ -58,8 +58,6 @@ const Messages = {
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
   VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
-  VOICE_NEED_MUTE_MEMBERS: 'You need permission to mute members to do this.',
-  VOICE_NEED_REQUEST_TO_SPEAK: 'You need permission to request to speak.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
   VOICE_STATE_NOT_OWN:
