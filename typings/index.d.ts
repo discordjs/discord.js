@@ -30,17 +30,22 @@ declare module 'discord.js' {
     constructor(presence: Presence, data?: object);
     public applicationID: Snowflake | null;
     public assets: RichPresenceAssets | null;
+    public buttons: string[];
     public readonly createdAt: Date;
     public createdTimestamp: number;
     public details: string | null;
     public emoji: Emoji | null;
     public flags: Readonly<ActivityFlags>;
+    public id: string;
     public name: string;
     public party: {
       id: string | null;
       size: [number, number];
     } | null;
+    public platform: ActivityPlatform | null;
+    public sessionID: string | null;
     public state: string | null;
+    public syncID: string | null;
     public timestamps: {
       start: Date | null;
       end: Date | null;
@@ -418,7 +423,6 @@ declare module 'discord.js' {
       VOICE_BROADCAST_UNSUBSCRIBE: 'unsubscribe';
       TYPING_START: 'typingStart';
       WEBHOOKS_UPDATE: 'webhookUpdate';
-      DISCONNECT: 'disconnect';
       RECONNECTING: 'reconnecting';
       ERROR: 'error';
       WARN: 'warn';
@@ -663,8 +667,7 @@ declare module 'discord.js' {
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
-    public fetchVanityCode(): Promise<string>;
-    public fetchVanityData(): Promise<{ code: string; uses: number }>;
+    public fetchVanityData(): Promise<Vanity>;
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
     public fetchWidget(): Promise<GuildWidget>;
@@ -1772,6 +1775,34 @@ declare module 'discord.js' {
     public client: this;
     public options: WebhookClientOptions;
     public token: string;
+    public editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      options?: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
+    public editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      options: WebhookMessageOptions | APIMessage,
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
+    ): Promise<WebhookRawMessageResponse>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions & { split: true | SplitOptions },
+    ): Promise<WebhookRawMessageResponse[]>;
+    public send(
+      content: StringResolvable,
+      options: WebhookMessageOptions,
+    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2096,7 +2127,17 @@ declare module 'discord.js' {
     readonly createdTimestamp: number;
     readonly url: string;
     delete(reason?: string): Promise<void>;
+    deleteMessage(message: MessageResolvable): Promise<void>;
     edit(options: WebhookEditData): Promise<Webhook>;
+    editMessage(
+      message: MessageResolvable,
+      content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
+      options?: WebhookEditMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse>;
+    editMessage(
+      message: MessageResolvable,
+      options: WebhookEditMessageOptions,
+    ): Promise<Message | WebhookRawMessageResponse>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | WebhookRawMessageResponse>;
@@ -2133,6 +2174,8 @@ declare module 'discord.js' {
     type?: ActivityType | number;
     shardID?: number | readonly number[];
   }
+
+  type ActivityPlatform = 'desktop' | 'samsung' | 'xbox';
 
   type ActivityType = 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING' | 'CUSTOM_STATUS' | 'COMPETING';
 
@@ -2391,7 +2434,6 @@ declare module 'discord.js' {
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
     warn: [message: string];
-    disconnect: [closeEvent: any, status: number];
     emojiCreate: [emoji: GuildEmoji];
     emojiDelete: [emoji: GuildEmoji];
     emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
@@ -3323,6 +3365,11 @@ declare module 'discord.js' {
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
+  interface Vanity {
+    code: string | null;
+    uses: number | null;
+  }
+
   type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
 
   type VoiceStatus = number;
@@ -3339,17 +3386,13 @@ declare module 'discord.js' {
     reason?: string;
   }
 
-  interface WebhookMessageOptions {
+  type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
+
+  type WebhookMessageOptions = Omit<MessageOptions, 'embed' | 'replyTo'> & {
     username?: string;
     avatarURL?: string;
-    tts?: boolean;
-    nonce?: string;
     embeds?: (MessageEmbed | object)[];
-    allowedMentions?: MessageMentionOptions;
-    files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
-    code?: string | boolean;
-    split?: boolean | SplitOptions;
-  }
+  };
 
   type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
     author: {
