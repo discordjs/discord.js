@@ -92,7 +92,7 @@ class ApplicationCommandManager extends BaseManager {
    * Edits an application command.
    * @param {ApplicationCommandResolvable} command The command to edit
    * @param {ApplicationCommandData} data The data to update the command with
-   * @returns {ApplicationCommand}
+   * @returns {Promise<ApplicationCommand>}
    */
   async edit(command, data) {
     const id = this.resolveID(command);
@@ -110,14 +110,17 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Deletes an application command.
    * @param {ApplicationCommandResolvable} command The command to delete
-   * @returns {Promise<void>}
+   * @returns {Promise<?ApplicationCommand>}
    */
   async delete(command) {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
     await this.commandPath(id).delete();
+
+    const cached = this.cache.get(id);
     this.cache.delete(id);
+    return cached ?? null;
   }
 
   /**

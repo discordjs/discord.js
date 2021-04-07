@@ -2009,7 +2009,7 @@ declare module 'discord.js' {
     constructor(client: Client, iterable?: Iterable<any>);
     private readonly commandPath: object;
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
-    public delete(command: ApplicationCommandResolvable): Promise<void>;
+    public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;

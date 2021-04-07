@@ -85,7 +85,7 @@ class ApplicationCommand extends Base {
   /**
    * Edits this application command.
    * @param {ApplicationCommandData} data The data to update the command with
-   * @returns {ApplicationCommand}
+   * @returns {Promise<ApplicationCommand>}
    */
   edit(data) {
     return this.manager.edit(this, data);
@@ -93,11 +93,10 @@ class ApplicationCommand extends Base {
 
   /**
    * Deletes this command.
-   * @returns {ApplicationCommand}
+   * @returns {Promise<ApplicationCommand>}
    */
-  async delete() {
-    await this.manager.delete(this);
-    return this;
+  delete() {
+    return this.manager.delete(this);
   }
 
   /**
