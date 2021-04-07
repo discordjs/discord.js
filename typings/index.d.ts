@@ -172,7 +172,7 @@ declare module 'discord.js' {
     public userLimit: number;
     public join(): Promise<VoiceConnection>;
     public leave(): void;
-    public setRTCRegion(region: string | null): Promise<BaseGuildVoiceChannel>;
+    public setRTCRegion(region: string | null): Promise<this>;
   }
 
   class BroadcastDispatcher extends VolumeMixin(StreamDispatcher) {
@@ -1445,7 +1445,6 @@ declare module 'discord.js' {
 
   export class StageChannel extends BaseGuildVoiceChannel {
     public topic: string | null;
-    public setRTCRegion(region: string | null): Promise<StageChannel>;
   }
 
   export class StoreChannel extends GuildChannel {
@@ -1649,7 +1648,6 @@ declare module 'discord.js' {
     public type: 'voice';
     public setBitrate(bitrate: number, reason?: string): Promise<VoiceChannel>;
     public setUserLimit(userLimit: number, reason?: string): Promise<VoiceChannel>;
-    public setRTCRegion(region: string | null): Promise<StageChannel>;
   }
 
   class VoiceConnection extends EventEmitter {
