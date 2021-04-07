@@ -3,7 +3,7 @@
 const BitField = require('./BitField');
 
 /**
- * Data structure that makes it easy to interact with an {@link Message#flags} bitfield.
+ * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
  * @extends {BitField}
  */
 class MessageFlags extends BitField {}
@@ -16,6 +16,12 @@ class MessageFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name MessageFlags#bitfield
+ */
+
+/**
  * Numeric message flags. All available properties:
  * * `CROSSPOSTED`
  * * `IS_CROSSPOST`
@@ -23,7 +29,7 @@ class MessageFlags extends BitField {}
  * * `SOURCE_MESSAGE_DELETED`
  * * `URGENT`
  * @type {Object}
- * @see {@link https://discordapp.com/developers/docs/resources/channel#message-object-message-flags}
+ * @see {@link https://discord.com/developers/docs/resources/channel#message-object-message-flags}
  */
 MessageFlags.FLAGS = {
   CROSSPOSTED: 1 << 0,

@@ -5,18 +5,34 @@
 const request = require('superagent');
 const ytdl = require('ytdl-core');
 const { token, song } = require('./auth.js');
-const Discord = require('../src');
+const { Client, Intents } = require('../src');
 
 console.time('magic');
 
-const client = new Discord.Client({ fetchAllMembers: true });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MEMBERS] });
 
 client
   .login(token)
   .then(() => console.log('logged in'))
   .catch(console.error);
 
-client.on('ready', () => {
+// Fetch all members in a new guild
+client.on('guildCreate', guild => guild.members.fetch()
+    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)));
+
+// Fetch all members in a newly available guild
+client.on('guildUpdate', (oldGuild, newGuild) => !oldGuild.available && newGuild.available ? guild.members.fetch()
+    .catch(err => console.log(`Failed to fetch all members: ${err}\n${err.stack}`)) : Promise.resolve());
+
+client.on('ready', async () => {
+  // Fetch all members for initially available guilds
+  try {
+    const promises = client.guilds.cache.map(guild => guild.available ? guild.members.fetch() : Promise.resolve());
+    await Promise.all(promises);
+  } catch (err) {
+    console.log(`Failed to fetch all members before ready! ${err}\n${err.stack}`);
+  }
+
   console.log(`ready with ${client.users.cache.size} users`);
   console.timeEnd('magic');
 });
@@ -116,7 +132,8 @@ client.on('message', message => {
 
     if (message.content.startsWith('kick')) {
       message.guild
-        .member(message.mentions.users.first())
+        .members
+        .resolve(message.mentions.users.first())
         .kick()
         .then(member => {
           console.log(member);
@@ -134,7 +151,7 @@ client.on('message', message => {
       }
       message.channel.send('last one...').then(m => {
         const diff = Date.now() - start;
-        m.reply(`Each message took ${diff / 21}ms to send`);
+        m.channel.send(`Each message took ${diff / 21}ms to send`);
       });
     }
 
@@ -205,7 +222,7 @@ client.on('message', msg => {
       .join()
       .then(conn => {
         con = conn;
-        msg.reply('done');
+        msg.channel.send('done');
         const s = ytdl(song, { filter: 'audioonly' }, { passes: 3 });
         s.on('error', e => console.log(`e w stream 2 ${e}`));
         disp = conn.playStream(s);

@@ -1,14 +1,15 @@
 'use strict';
 
 const Action = require('./Action');
-const VoiceState = require('../../structures/VoiceState');
 const { Events } = require('../../util/Constants');
+const Structures = require('../../util/Structures');
 
 class VoiceStateUpdate extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
+      const VoiceState = Structures.get('VoiceState');
       // Update the state
       const oldState = guild.voiceStates.cache.has(data.user_id)
         ? guild.voiceStates.cache.get(data.user_id)._clone()

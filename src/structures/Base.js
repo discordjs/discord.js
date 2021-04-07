@@ -4,6 +4,7 @@ const Util = require('../util/Util');
 
 /**
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models).
+ * @abstract
  */
 class Base {
   constructor(client) {

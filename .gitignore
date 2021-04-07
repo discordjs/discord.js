@@ -1,7 +1,6 @@
 # Packages
 node_modules/
 yarn.lock
-package-lock.json
 
 # Log files
 logs/
@@ -21,4 +20,3 @@ deploy/deploy_key.pub
 .idea/
 docs/docs.json
 typings/index.js
-webpack/

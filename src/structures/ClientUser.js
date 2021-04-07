@@ -46,16 +46,18 @@ class ClientUser extends Structures.get('User') {
     return this.client.presence;
   }
 
-  edit(data) {
-    return this.client.api
-      .users('@me')
-      .patch({ data })
-      .then(newData => {
-        this.client.token = newData.token;
-        const { updated } = this.client.actions.UserUpdate.handle(newData);
-        if (updated) return updated;
-        return this;
-      });
+  /**
+   * Edits the logged in client.
+   * @param {Object} data The new data
+   * @param {string} [data.username] The new username
+   * @param {BufferResolvable|Base64Resolvable} [data.avatar] The new avatar
+   */
+  async edit(data) {
+    const newData = await this.client.api.users('@me').patch({ data });
+    this.client.token = newData.token;
+    const { updated } = this.client.actions.UserUpdate.handle(newData);
+    if (updated) return updated;
+    return this;
   }
 
   /**
@@ -94,18 +96,16 @@ class ClientUser extends Structures.get('User') {
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {Object} [activity] Activity the user is playing
-   * @property {Object|string} [activity.application] An application object or application id
-   * @property {string} [activity.application.id] The id of the application
    * @property {string} [activity.name] Name of the activity
    * @property {ActivityType|number} [activity.type] Type of the activity
-   * @property {string} [activity.url] Stream url
+   * @property {string} [activity.url] Twitch / YouTube stream URL
    * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
 
   /**
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
-   * @returns {Promise<Presence>}
+   * @returns {Presence}
    * @example
    * // Set the client user's presence
    * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' })
@@ -129,7 +129,7 @@ class ClientUser extends Structures.get('User') {
    * Sets the status of the client user.
    * @param {PresenceStatusData} status Status to change to
    * @param {?number|number[]} [shardID] Shard ID(s) to have the activity set on
-   * @returns {Promise<Presence>}
+   * @returns {Presence}
    * @example
    * // Set the client user's status
    * client.user.setStatus('idle')
@@ -141,19 +141,19 @@ class ClientUser extends Structures.get('User') {
   }
 
   /**
-   * Options for setting an activity
+   * Options for setting an activity.
    * @typedef ActivityOptions
    * @type {Object}
-   * @property {string} [url] Twitch stream URL
+   * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType|number} [type] Type of the activity
-   * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
+   * @property {number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
 
   /**
    * Sets the activity the client user is playing.
    * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
    * @param {ActivityOptions} [options] Options for setting the activity
-   * @returns {Promise<Presence>}
+   * @returns {Presence}
    * @example
    * // Set the client user's activity
    * client.user.setActivity('discord.js', { type: 'WATCHING' })
@@ -161,19 +161,20 @@ class ClientUser extends Structures.get('User') {
    *   .catch(console.error);
    */
   setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activity: null, shardID: options.shardID });
+    if (!name) return this.setPresence({ activities: null, shardID: options.shardID });
 
     const activity = Object.assign({}, options, typeof name === 'object' ? name : { name });
-    return this.setPresence({ activity, shardID: activity.shardID });
+    return this.setPresence({ activities: [activity], shardID: activity.shardID });
   }
 
   /**
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} afk Whether or not the user is AFK
-   * @returns {Promise<Presence>}
+   * @param {number|number[]} [shardID] Shard Id(s) to have the AFK flag set on
+   * @returns {Presence}
    */
-  setAFK(afk) {
-    return this.setPresence({ afk });
+  setAFK(afk, shardID) {
+    return this.setPresence({ afk, shardID });
   }
 }
 
