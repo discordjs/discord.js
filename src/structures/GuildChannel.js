@@ -214,11 +214,18 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Extra information about the overwrite
+   * @typedef {Object} ExtraOverwriteInfo
+   * @property {string} [reason] Reason for creating/editing this overwrite
+   * @property {string} [type] The type of overwrite, either `member` or `role`. Use this to bypass automatic
+   * resolution of type that results in an error for uncached structure
+   */
+
+  /**
    * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
-   * @param {string} [type] The type of overwrite: `member` or `role`
+   * @param {ExtraOverwriteInfo} [extraInfo] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Update or Create permission overwrites for a message author
@@ -228,14 +235,14 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async updateOverwrite(userOrRole, options, reason, type) {
+  async updateOverwrite(userOrRole, options, extraInfo) {
     const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
-
+    let { reason } = extraInfo;
     const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
       await existing.update(options, reason);
     } else {
-      await this.createOverwrite(userOrRole, options, reason, type);
+      await this.createOverwrite(userOrRole, options, extraInfo);
     }
     return this;
   }
@@ -244,8 +251,7 @@ class GuildChannel extends Channel {
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
-   * @param {string} [type] The type of overwrite: `member` or `role`
+   * @param {ExtraOverwriteInfo} [extraInfo] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create or Replace permission overwrites for a message author
@@ -255,8 +261,9 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  createOverwrite(userOrRole, options, reason, type) {
+  createOverwrite(userOrRole, options, extraInfo) {
     let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    let { type, reason } = extraInfo;
     if (!type) {
       userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
