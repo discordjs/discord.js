@@ -183,7 +183,7 @@ class PermissionOverwrites {
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
-    const type = userOrRole && userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
 
     return {
       id: userOrRole?.id ?? overwrite.id,
