@@ -1,7 +1,6 @@
 'use strict';
 
 const Role = require('./Role');
-const { TypeError } = require('../errors');
 const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
@@ -184,11 +183,10 @@ class PermissionOverwrites {
     }
 
     const userOrRole = guild.roles.resolve(overwrite.id) || guild.client.users.resolve(overwrite.id);
-    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+    const type = userOrRole && userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
 
     return {
-      id: userOrRole.id,
+      id: userOrRole?.id ?? overwrite.id,
       type,
       allow: Permissions.resolve(overwrite.allow).toString(),
       deny: Permissions.resolve(overwrite.deny).toString(),
