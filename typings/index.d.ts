@@ -327,6 +327,17 @@ declare module 'discord.js' {
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
 
+  enum ChannelTypes {
+    TEXT = 0,
+    DM = 1,
+    VOICE = 2,
+    GROUP = 3,
+    CATEGORY = 4,
+    NEWS = 5,
+    STORE = 6,
+    STAGE = 13,
+  }
+
   export const Constants: {
     Package: {
       name: string;
@@ -517,24 +528,7 @@ declare module 'discord.js' {
       CLIENT_CONNECT: 12;
       CLIENT_DISCONNECT: 13;
     };
-    ChannelTypes: {
-      TEXT: 0;
-      DM: 1;
-      VOICE: 2;
-      GROUP: 3;
-      CATEGORY: 4;
-      NEWS: 5;
-      STORE: 6;
-      STAGE: 13;
-      0: 'TEXT';
-      1: 'DM';
-      2: 'VOICE';
-      3: 'GROUP';
-      4: 'CATEGORY';
-      5: 'NEWS';
-      6: 'STORE';
-      13: 'STAGE';
-    };
+    ChannelTypes: ChannelTypes;
     ClientApplicationAssetTypes: {
       SMALL: 1;
       BIG: 2;
