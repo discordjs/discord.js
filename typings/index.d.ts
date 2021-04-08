@@ -202,8 +202,8 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
-  export class Client<T extends PartialTypes = PartialTypes> extends BaseClient {
-    constructor(options: ClientOptions<T>);
+  export class Client<Partials extends PartialTypes = PartialTypes> extends BaseClient {
+    constructor(options: ClientOptions<Partials>);
     private actions: object;
     private _eval(script: string): any;
     private _validateOptions(options: ClientOptions): void;
@@ -233,29 +233,38 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on<K extends keyof ClientEvents<T>>(event: K, listener: (...args: ClientEvents<T>[K]) => void): this;
+    public on<K extends keyof ClientEvents<Partials>>(
+      event: K,
+      listener: (...args: ClientEvents<Partials>[K]) => void,
+    ): this;
     public on<S extends string | symbol>(
-      event: Exclude<S, keyof ClientEvents<T>>,
+      event: Exclude<S, keyof ClientEvents<Partials>>,
       listener: (...args: any[]) => void,
     ): this;
 
-    public once<K extends keyof ClientEvents<T>>(event: K, listener: (...args: ClientEvents<T>[K]) => void): this;
+    public once<K extends keyof ClientEvents<Partials>>(
+      event: K,
+      listener: (...args: ClientEvents<Partials>[K]) => void,
+    ): this;
     public once<S extends string | symbol>(
-      event: Exclude<S, keyof ClientEvents<T>>,
+      event: Exclude<S, keyof ClientEvents<Partials>>,
       listener: (...args: any[]) => void,
     ): this;
 
-    public emit<K extends keyof ClientEvents<T>>(event: K, ...args: ClientEvents<T>[K]): boolean;
-    public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents<T>>, ...args: any[]): boolean;
+    public emit<K extends keyof ClientEvents<Partials>>(event: K, ...args: ClientEvents<Partials>[K]): boolean;
+    public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents<Partials>>, ...args: any[]): boolean;
 
-    public off<K extends keyof ClientEvents<T>>(event: K, listener: (...args: ClientEvents<T>[K]) => void): this;
+    public off<K extends keyof ClientEvents<Partials>>(
+      event: K,
+      listener: (...args: ClientEvents<Partials>[K]) => void,
+    ): this;
     public off<S extends string | symbol>(
-      event: Exclude<S, keyof ClientEvents<T>>,
+      event: Exclude<S, keyof ClientEvents<Partials>>,
       listener: (...args: any[]) => void,
     ): this;
 
-    public removeAllListeners<K extends keyof ClientEvents<T>>(event?: K): this;
-    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents<T>>): this;
+    public removeAllListeners<K extends keyof ClientEvents<Partials>>(event?: K): this;
+    public removeAllListeners<S extends string | symbol>(event?: Exclude<S, keyof ClientEvents<Partials>>): this;
   }
 
   export class ClientApplication extends Application {
@@ -958,15 +967,19 @@ declare module 'discord.js' {
     public toString(): string;
   }
 
-  export class Message<G extends boolean = boolean> extends Base {
-    constructor(client: Client, data: object, channel: G extends true ? TextChannel | NewsChannel : DMChannel);
+  export class Message<SentInGuild extends boolean = boolean> extends Base {
+    constructor(
+      client: Client,
+      data: object,
+      channel: SentInGuild extends true ? TextChannel | NewsChannel : DMChannel,
+    );
     private patch(data: object): Message;
 
     public activity: MessageActivity | null;
     public application: ClientApplication | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
-    public channel: G extends true ? TextChannel | NewsChannel : DMChannel;
+    public channel: SentInGuild extends true ? TextChannel | NewsChannel : DMChannel;
     public readonly cleanContent: string;
     public content: string;
     public readonly createdAt: Date;
@@ -977,9 +990,9 @@ declare module 'discord.js' {
     public readonly editedAt: Date | null;
     public editedTimestamp: number | null;
     public embeds: MessageEmbed[];
-    public readonly guild: G extends true ? Guild : null;
+    public readonly guild: SentInGuild extends true ? Guild : null;
     public id: Snowflake;
-    public readonly member: G extends true ? GuildMember : null;
+    public readonly member: SentInGuild extends true ? GuildMember : null;
     public mentions: MessageMentions;
     public nonce: string | number | null;
     public readonly partial: false;
@@ -993,7 +1006,7 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
-    public readonly referencedMessage: Message<G> | null;
+    public readonly referencedMessage: Message<SentInGuild> | null;
     public awaitReactions(
       filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collector<Snowflake, MessageReaction>]>,
       options?: AwaitReactionsOptions,
@@ -1002,35 +1015,38 @@ declare module 'discord.js' {
       filter: CollectorFilter<[...ClientEvents['messageReactionAdd'], Collection<Snowflake, MessageReaction>]>,
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
-    public delete(): Promise<Message<G>>;
+    public delete(): Promise<Message<SentInGuild>>;
     public edit(
       content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message<G>>;
-    public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message<G>>;
+    ): Promise<Message<SentInGuild>>;
+    public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message<SentInGuild>>;
     public equals(message: Message, rawData: object): boolean;
     public fetchWebhook(): Promise<Webhook>;
-    public crosspost(): Promise<Message<G>>;
-    public fetch(force?: boolean): Promise<Message<G>>;
-    public pin(options?: { reason?: string }): Promise<Message<G>>;
+    public crosspost(): Promise<Message<SentInGuild>>;
+    public fetch(force?: boolean): Promise<Message<SentInGuild>>;
+    public pin(options?: { reason?: string }): Promise<Message<SentInGuild>>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message<G>>;
-    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message<G>[]>;
-    public reply(options: MessageOptions | APIMessage): Promise<Message<G> | Message<G>[]>;
+    ): Promise<Message<SentInGuild>>;
+    public reply(options: MessageOptions & { split: true | SplitOptions }): Promise<Message<SentInGuild>[]>;
+    public reply(options: MessageOptions | APIMessage): Promise<Message<SentInGuild> | Message<SentInGuild>[]>;
     public reply(
       content: StringResolvable,
       options: (MessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message<G>>;
+    ): Promise<Message<SentInGuild>>;
     public reply(
       content: StringResolvable,
       options: MessageOptions & { split: true | SplitOptions },
-    ): Promise<Message<G>[]>;
-    public reply(content: StringResolvable, options: MessageOptions): Promise<Message<G> | Message<G>[]>;
-    public suppressEmbeds(suppress?: boolean): Promise<Message<G>>;
+    ): Promise<Message<SentInGuild>[]>;
+    public reply(
+      content: StringResolvable,
+      options: MessageOptions,
+    ): Promise<Message<SentInGuild> | Message<SentInGuild>[]>;
+    public suppressEmbeds(suppress?: boolean): Promise<Message<SentInGuild>>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(options?: { reason?: string }): Promise<Message<G>>;
+    public unpin(options?: { reason?: string }): Promise<Message<SentInGuild>>;
   }
 
   export class MessageAttachment {
@@ -2437,10 +2453,10 @@ declare module 'discord.js' {
 
   type ChannelResolvable = Channel | Snowflake;
 
-  interface ClientEvents<T extends PartialTypes = PartialTypes> {
+  interface ClientEvents<Partials extends PartialTypes = PartialTypes> {
     channelCreate: [channel: GuildChannel];
     channelDelete: [channel: DMChannel | GuildChannel];
-    channelPinsUpdate: [channel: PartialDataTypes<T>['channel'], date: Date];
+    channelPinsUpdate: [channel: PartialDataType<Partials>['channel'], date: Date];
     channelUpdate: [oldChannel: Channel, newChannel: Channel];
     debug: [message: string];
     warn: [message: string];
@@ -2455,26 +2471,26 @@ declare module 'discord.js' {
     guildUnavailable: [guild: Guild];
     guildIntegrationsUpdate: [guild: Guild];
     guildMemberAdd: [member: GuildMember];
-    guildMemberAvailable: [member: PartialDataTypes<T>['guildMember']];
-    guildMemberRemove: [member: PartialDataTypes<T>['guildMember']];
+    guildMemberAvailable: [member: PartialDataType<Partials>['guildMember']];
+    guildMemberRemove: [member: PartialDataType<Partials>['guildMember']];
     guildMembersChunk: [
       members: Collection<Snowflake, GuildMember>,
       guild: Guild,
       data: { count: number; index: number; nonce: string | undefined },
     ];
-    guildMemberSpeaking: [member: PartialDataTypes<T>['guildMember'], speaking: Readonly<Speaking>];
-    guildMemberUpdate: [oldMember: PartialDataTypes<T>['guildMember'], newMember: GuildMember];
+    guildMemberSpeaking: [member: PartialDataType<Partials>['guildMember'], speaking: Readonly<Speaking>];
+    guildMemberUpdate: [oldMember: PartialDataType<Partials>['guildMember'], newMember: GuildMember];
     guildUpdate: [oldGuild: Guild, newGuild: Guild];
     inviteCreate: [invite: Invite];
     inviteDelete: [invite: Invite];
     message: [message: Message];
-    messageDelete: [message: PartialDataTypes<T>['message']];
-    messageReactionRemoveAll: [message: PartialDataTypes<T>['message']];
+    messageDelete: [message: PartialDataType<Partials>['message']];
+    messageReactionRemoveAll: [message: PartialDataType<Partials>['message']];
     messageReactionRemoveEmoji: [reaction: MessageReaction];
-    messageDeleteBulk: [messages: Collection<Snowflake, PartialDataTypes<T>['message']>];
-    messageReactionAdd: [message: MessageReaction, user: PartialDataTypes<T>['user']];
-    messageReactionRemove: [reaction: MessageReaction, user: PartialDataTypes<T>['user']];
-    messageUpdate: [oldMessage: PartialDataTypes<T>['message'], newMessage: PartialDataTypes<T>['message']];
+    messageDeleteBulk: [messages: Collection<Snowflake, PartialDataType<Partials>['message']>];
+    messageReactionAdd: [message: MessageReaction, user: PartialDataType<Partials>['user']];
+    messageReactionRemove: [reaction: MessageReaction, user: PartialDataType<Partials>['user']];
+    messageUpdate: [oldMessage: PartialDataType<Partials>['message'], newMessage: PartialDataType<Partials>['message']];
     presenceUpdate: [oldPresence: Presence | undefined, newPresence: Presence];
     rateLimit: [rateLimitData: RateLimitData];
     invalidRequestWarning: [invalidRequestWarningData: InvalidRequestWarningData];
@@ -2483,8 +2499,8 @@ declare module 'discord.js' {
     roleCreate: [role: Role];
     roleDelete: [role: Role];
     roleUpdate: [oldRole: Role, newRole: Role];
-    typingStart: [channel: PartialDataTypes<T>['channel'], user: PartialDataTypes<T>['user']];
-    userUpdate: [oldUser: PartialDataTypes<T>['user'], newUser: User];
+    typingStart: [channel: PartialDataType<Partials>['channel'], user: PartialDataType<Partials>['user']];
+    userUpdate: [oldUser: PartialDataType<Partials>['user'], newUser: User];
     voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
     webhookUpdate: [channel: TextChannel];
     shardDisconnect: [closeEvent: CloseEvent, shardID: number];
@@ -2494,14 +2510,14 @@ declare module 'discord.js' {
     shardResume: [shardID: number, replayedEvents: number];
   }
 
-  interface ClientOptions<T extends PartialTypes = PartialTypes> {
+  interface ClientOptions<Partials extends PartialTypes = PartialTypes> {
     shards?: number | number[] | 'auto';
     shardCount?: number;
     messageCacheMaxSize?: number;
     messageCacheLifetime?: number;
     messageSweepInterval?: number;
     allowedMentions?: MessageMentionOptions;
-    partials?: T[];
+    partials?: Partials[];
     invalidRequestWarningInterval?: number;
     restWsBridgeTimeout?: number;
     restTimeOffset?: number;
@@ -3247,11 +3263,11 @@ declare module 'discord.js' {
 
   type PartialTypes = 'USER' | 'CHANNEL' | 'GUILD_MEMBER' | 'MESSAGE' | 'REACTION';
 
-  interface PartialDataTypes<T extends PartialTypes> {
-    user: T extends 'USER' ? User | PartialUser : User;
-    channel: T extends 'CHANNEL' ? Channel | PartialDMChannel : Channel;
-    guildMember: T extends 'GUILD_MEMBER' ? GuildMember | PartialGuildMember : GuildMember;
-    message: T extends 'MESSAGE' ? Message | PartialMessage : PartialMessage;
+  interface PartialDataType<Partials extends PartialTypes> {
+    user: Partials extends 'USER' ? User | PartialUser : User;
+    channel: Partials extends 'CHANNEL' ? Channel | PartialDMChannel : Channel;
+    guildMember: Partials extends 'GUILD_MEMBER' ? GuildMember | PartialGuildMember : GuildMember;
+    message: Partials extends 'MESSAGE' ? Message | PartialMessage : PartialMessage;
   }
 
   interface PartialUser extends Omit<Partialize<User, 'bot' | 'flags' | 'system' | 'tag' | 'username'>, 'deleted'> {
