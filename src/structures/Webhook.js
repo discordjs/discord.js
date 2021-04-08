@@ -67,15 +67,15 @@ class Webhook {
 
     /**
      * The owner of the webhook
-     * @type {?User|Object}
+     * @type {?User}
      */
-    this.owner = data.user ? this.client.users?.add(data.user, false) ?? data.user ?? null : null;
+    this.owner = data.user ? this.client.users?.add(data.user, true) : null;
 
     /**
      * The source guild of the webhook
      * @type {?Guild}
      */
-    this.sourceGuild = data.source_guild ? this.client.guilds?.add(data.source_guild, false) ?? null : null;
+    this.sourceGuild = data.source_guild ? this.client.guilds?.add(data.source_guild, false) : null;
 
     /**
      * The source channel of the webhook
