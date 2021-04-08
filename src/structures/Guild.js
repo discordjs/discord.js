@@ -926,7 +926,6 @@ class Guild extends Base {
 
   /**
    * The data for editing a guild.
-   * <info>Only the `COMMUNITY` feature can be modified</info>
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
