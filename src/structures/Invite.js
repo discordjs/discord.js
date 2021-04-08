@@ -74,7 +74,7 @@ class Invite extends Base {
      * The target user for this invite
      * @type {?User}
      */
-    this.targetUser = data.target_user ? this.client.users.add(data.target_user) : null;
+    this.targetUser = data.target_user_id ? this.client.users.add(data.target_user_id) : null;
 
     /**
      * The type of the target user:
