@@ -1255,11 +1255,14 @@ class Guild extends Base {
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
-   * @property {number} position New position for the channel
+   * @property {number} [position] New position for the channel
+   * @property {ChannelResolvable} [parent] Parent channel for this channel
+   * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
    */
 
   /**
    * Batch-updates the guild's channels' positions.
+   * <info>Only one channel's parent can be changed at a time</info>
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
@@ -1271,6 +1274,8 @@ class Guild extends Base {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
+      lock_permissions: r.lockPermissions,
+      parent_id: this.channels.resolveID(r.parent),
     }));
 
     return this.client.api
