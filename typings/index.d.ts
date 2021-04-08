@@ -1766,6 +1766,8 @@ declare module 'discord.js' {
     public guildID: Snowflake;
     public name: string;
     public owner: User | object | null;
+    public sourceGuild: Guild | null;
+    public sourceChannel: Channel | object | null;
     public token: string | null;
     public type: WebhookTypes;
   }
