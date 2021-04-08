@@ -926,6 +926,7 @@ class Guild extends Base {
 
   /**
    * The data for editing a guild.
+   * <info>Only the `COMMUNITY` feature can be modified</info>
    * @typedef {Object} GuildEditData
    * @property {string} [name] The name of the guild
    * @property {string} [region] The region of the guild
@@ -944,6 +945,8 @@ class Guild extends Base {
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
+   * @property {string} [description] The discovery description of the guild
+   * @property {Features[]} [features] The features of the guild
    */
 
   /**
@@ -1002,6 +1005,12 @@ class Guild extends Base {
     }
     if (typeof data.publicUpdatesChannel !== 'undefined') {
       _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (typeof data.features !== 'undefined') {
+      _data.features = data.features;
+    }
+    if (typeof data.description !== 'undefined') {
+      _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api
