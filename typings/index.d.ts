@@ -3118,14 +3118,16 @@ declare module 'discord.js' {
 
   type PremiumTier = number;
 
+  interface PresenceDataActivity {
+    name?: string;
+    type?: ActivityType | number;
+    url?: string;
+  }
+
   interface PresenceData {
     status?: PresenceStatusData;
     afk?: boolean;
-    activity?: {
-      name?: string;
-      type?: ActivityType | number;
-      url?: string;
-    };
+    activities?: PresenceDataActivity[];
     shardID?: number | number[];
   }
 
