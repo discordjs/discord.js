@@ -39,8 +39,9 @@ class SystemChannelFlags extends BitField {}
  * @type {Object}
  */
 SystemChannelFlags.FLAGS = {
-  WELCOME_MESSAGE_DISABLED: 1 << 0,
-  BOOST_MESSAGE_DISABLED: 1 << 1,
+  SUPPRESS_JOIN_NOTIFICATIONS: 1 << 0,
+  SUPPRESS_PREMIUM_SUBSCRIPTIONS: 1 << 1,
+  SUPPRESS_GUILD_REMINDER_NOTIFICATIONS: 1 << 2,
 };
 
 module.exports = SystemChannelFlags;
