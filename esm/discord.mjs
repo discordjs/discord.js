@@ -22,7 +22,6 @@ export const {
   Intents,
   Permissions,
   Speaking,
-  Snowflake,
   SnowflakeUtil,
   Structures,
   SystemChannelFlags,
