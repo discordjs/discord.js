@@ -67,9 +67,9 @@ class Webhook {
 
     /**
      * The owner of the webhook
-     * @type {?User}
+     * @type {?User|Object}
      */
-    this.owner = data.user ? this.client.users?.add(data.user, true) : null;
+    this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
 
     /**
      * The source guild of the webhook
