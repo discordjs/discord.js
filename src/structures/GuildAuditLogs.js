@@ -5,7 +5,7 @@ const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
 const { OverwriteTypes, PartialTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -489,7 +489,7 @@ class GuildAuditLogsEntry {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**

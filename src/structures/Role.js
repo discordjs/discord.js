@@ -3,7 +3,7 @@
 const Base = require('./Base');
 const { Error, TypeError } = require('../errors');
 const Permissions = require('../util/Permissions');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -110,7 +110,7 @@ class Role extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
