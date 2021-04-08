@@ -2786,6 +2786,8 @@ declare module 'discord.js' {
     rulesChannel?: ChannelResolvable;
     publicUpdatesChannel?: ChannelResolvable;
     preferredLocale?: string;
+    description?: string;
+    features?: GuildFeatures[];
   }
 
   interface GuildEmojiCreateOptions {
