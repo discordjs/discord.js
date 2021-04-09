@@ -2424,9 +2424,9 @@ declare module 'discord.js' {
 
   interface ChannelPosition {
     channel: ChannelResolvable;
-    position?: number;
-    parent?: ChannelResolvable;
     lockPermissions?: boolean;
+    parent?: ChannelResolvable;
+    position?: number;
   }
 
   type ChannelResolvable = Channel | Snowflake;
