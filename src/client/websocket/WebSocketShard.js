@@ -20,7 +20,7 @@ try {
 class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
     super();
-    WebSocketShard.setMaxListeners(0)
+    EventEmitter.setMaxListeners(0)
     /**
      * The WebSocketManager of the shard
      * @type {WebSocketManager}
