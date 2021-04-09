@@ -3104,7 +3104,9 @@ declare module 'discord.js' {
     | 'MANAGE_NICKNAMES'
     | 'MANAGE_ROLES'
     | 'MANAGE_WEBHOOKS'
-    | 'MANAGE_EMOJIS';
+    | 'MANAGE_EMOJIS'
+    | 'USE_SLASH_COMMANDS'
+    | 'REQUEST_TO_SPEAK';
 
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
