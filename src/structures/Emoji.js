@@ -18,9 +18,9 @@ class Emoji extends Base {
 
     /**
      * The name of this emoji
-     * @type {string}
+     * @type {?string}
      */
-    this.name = emoji.name;
+    this.name = emoji.name ?? null;
 
     /**
      * The ID of this emoji
