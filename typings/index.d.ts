@@ -2760,8 +2760,8 @@ declare module 'discord.js' {
     region?: string;
     roles?: PartialRoleData[];
     systemChannelID?: number;
-    verificationLevel?: VerificationLevel | number;
     systemChannelFlags?: SystemChannelFlagsResolvable;
+    verificationLevel?: VerificationLevel | number;
   }
 
   interface GuildWidget {
