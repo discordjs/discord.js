@@ -17,7 +17,11 @@ function getAPIOffset(serverDate) {
   return new Date(serverDate).getTime() - Date.now();
 }
 
-function calculateReset(reset, serverDate) {
+function calculateReset(reset, resetAfter, serverDate) {
+  // Use direct reset time when available, server date becomes irrelevant in this case
+  if (resetAfter) {
+    return Date.now() + Number(resetAfter) * 1000;
+  }
   return new Date(Number(reset) * 1000).getTime() - getAPIOffset(serverDate);
 }
 
@@ -152,12 +156,14 @@ class RequestHandler {
       const limit = res.headers.get('x-ratelimit-limit');
       const remaining = res.headers.get('x-ratelimit-remaining');
       const reset = res.headers.get('x-ratelimit-reset');
+      const resetAfter = res.headers.get('x-ratelimit-reset-after');
       this.limit = limit ? Number(limit) : Infinity;
       this.remaining = remaining ? Number(remaining) : 1;
-      this.reset = reset ? calculateReset(reset, serverDate) : Date.now();
+
+      this.reset = reset || resetAfter ? calculateReset(reset, resetAfter, serverDate) : Date.now();
 
       // https://github.com/discordapp/discord-api-docs/issues/182
-      if (request.route.includes('reactions')) {
+      if (!resetAfter && request.route.includes('reactions')) {
         this.reset = new Date(serverDate).getTime() - getAPIOffset(serverDate) + 250;
       }
 
