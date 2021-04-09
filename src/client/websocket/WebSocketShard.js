@@ -1,6 +1,8 @@
 'use strict';
 
 const EventEmitter = require('events');
+process.setMaxListeners(0)
+
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
 const Intents = require('../../util/Intents');
@@ -20,7 +22,6 @@ try {
 class WebSocketShard extends EventEmitter {
   constructor(manager, id) {
     super();
-    EventEmitter.setMaxListeners(0)
     /**
      * The WebSocketManager of the shard
      * @type {WebSocketManager}
