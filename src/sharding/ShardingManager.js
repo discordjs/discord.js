@@ -281,7 +281,7 @@ class ShardingManager extends EventEmitter {
   async respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout } = {}) {
     let s = 0;
     for (const shard of this.shards.values()) {
-      const promises = [shard.respawn({respawnDelay, timeout})];
+      const promises = [shard.respawn({ respawnDelay, timeout })];
       if (++s < this.shards.size && shardDelay > 0) promises.push(Util.delayFor(shardDelay));
       await Promise.all(promises); // eslint-disable-line no-await-in-loop
     }
