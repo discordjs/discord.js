@@ -249,7 +249,7 @@ class GuildManager extends BaseManager {
    * @param {GuildResolvable|FetchGuildOptions|FetchGuildsOptions} [options] ID of the guild or options
    * @returns {Promise<Guild|Collection<Snowflake, PartialGuild>>}
    */
-  async fetch(options) {
+  async fetch(options = {}) {
     const id = this.resolveID(options) ?? this.resolveID(options.guild);
 
     if (id) {
