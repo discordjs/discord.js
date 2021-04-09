@@ -167,7 +167,7 @@ class ShardingManager extends EventEmitter {
    * @param {number} [options.timeout=30000] The amount in milliseconds to wait until the {@link Client} has become
    * @returns {Promise<Collection<number, Shard>>}
    */
-  async spawn({ amount = this.totalShards, delay = 5500, timeout } = {}) {
+  async spawn({ amount = this.totalShards, delay = 5500, timeout = 30000 } = {}) {
     // Obtain/verify the number of shards to spawn
     if (amount === 'auto') {
       amount = await Util.fetchRecommendedShards(this.token);
@@ -278,7 +278,7 @@ class ShardingManager extends EventEmitter {
    * continuing to another. (-1 or Infinity for no wait)
    * @returns {Promise<Collection<string, Shard>>}
    */
-  async respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout } = {}) {
+  async respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout = 30000 } = {}) {
     let s = 0;
     for (const shard of this.shards.values()) {
       const promises = [shard.respawn({ respawnDelay, timeout })];
