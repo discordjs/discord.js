@@ -73,9 +73,11 @@ class Webhook {
 
     /**
      * The source guild of the webhook
-     * @type {?Guild}
+     * @type {?Guild|Object}
      */
-    this.sourceGuild = data.source_guild ? this.client.guilds?.add(data.source_guild, false) : null;
+    this.sourceGuild = data.source_guild
+      ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
+      : null;
 
     /**
      * The source channel of the webhook
