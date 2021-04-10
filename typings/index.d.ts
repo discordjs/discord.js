@@ -750,8 +750,8 @@ declare module 'discord.js' {
   }
 
   export class Emoji extends Base {
-    constructor(client: Client, emoji: unknown);
-    public animated: boolean;
+    constructor(client: Client, emoji: object);
+    public animated: boolean | null;
     public readonly createdAt: Date | null;
     public readonly createdTimestamp: number | null;
     public deleted: boolean;
