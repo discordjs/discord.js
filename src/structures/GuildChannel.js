@@ -473,6 +473,13 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Data that can be resolved to an Application. This can be:
+   * * A Application
+   * * A Snowflake
+   * @typedef {Application|Snowflake} ApplicationResolvable
+   */
+
+  /**
    * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
@@ -480,6 +487,9 @@ class GuildChannel extends Channel {
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
+   * @param {ApplicationResolvable} [options.targetApplication] The target application for the invite
+   * @param {UserResolvable} [options.targetUser] The target user for the invite
+   * @param {TargetType} [options.targetType] The type of the target for this invite
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
    * @example
@@ -488,7 +498,16 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
+  createInvite({
+    temporary = false,
+    maxAge = 86400,
+    maxUses = 0,
+    unique,
+    targetUser,
+    targetApplication,
+    targetType,
+    reason,
+  } = {}) {
     return this.client.api
       .channels(this.id)
       .invites.post({
@@ -497,6 +516,9 @@ class GuildChannel extends Channel {
           max_age: maxAge,
           max_uses: maxUses,
           unique,
+          target_user_id: this.client.users.resolveID(targetUser),
+          target_application_id: targetApplication,
+          target_type: targetType,
         },
         reason,
       })

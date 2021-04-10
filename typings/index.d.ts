@@ -177,6 +177,7 @@ declare module 'discord.js' {
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
+  type ApplicationResolvable = Application | Snowflake;
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
     public static FLAGS: Record<ApplicationFlagsString, number>;
@@ -1034,6 +1035,12 @@ declare module 'discord.js' {
 
   export class IntegrationApplication extends Application {
     public bot: User | null;
+    public termsOfServiceURL: string | null;
+    public privacyPolicyURL: string | null;
+    public rpcOrigins: string[];
+    public summary: string | null;
+    public hook: boolean | null;
+    public cover: string | null;
   }
 
   export class Intents extends BitField<IntentsString> {
@@ -1077,8 +1084,9 @@ declare module 'discord.js' {
     public maxUses: number | null;
     public memberCount: number;
     public presenceCount: number;
+    public targetApplication: IntegrationApplication | null;
     public targetUser: User | null;
-    public targetUserType: TargetUser | null;
+    public targetType: TargetType | null;
     public temporary: boolean | null;
     public readonly url: string;
     public uses: number | null;
@@ -3091,6 +3099,9 @@ declare module 'discord.js' {
     maxUses?: number;
     unique?: boolean;
     reason?: string;
+    targetApplication?: ApplicationResolvable;
+    targetUser?: UserResolvable;
+    targetType?: TargetType;
   }
 
   type InviteResolvable = string;
@@ -3560,7 +3571,7 @@ declare module 'discord.js' {
 
   type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
 
-  type TargetUser = number;
+  type TargetType = number;
 
   interface TypingData {
     user: User | PartialUser;

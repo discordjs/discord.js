@@ -1,6 +1,7 @@
 'use strict';
 
 const Base = require('./Base');
+const IntegrationApplication = require('./IntegrationApplication');
 const { Endpoints } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 
@@ -71,22 +72,29 @@ class Invite extends Base {
     this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
 
     /**
-     * The target user for this invite
+     * The target user of this invite
      * @type {?User}
      */
     this.targetUser = data.target_user ? this.client.users.add(data.target_user) : null;
 
     /**
-     * The type of the target user:
+     * The target application of this invite
+     * @type {?IntegrationApplication}
+     */
+    this.targetApplication = data.target_application ? new IntegrationApplication(data.target_application) : null;
+
+    /**
+     * The type of the invite target:
      * * 1: STREAM
-     * @typedef {number} TargetUser
+     * * 2: EMBEDDED_APPLICATION
+     * @typedef {number} TargetType
      */
 
     /**
-     * The target user type
-     * @type {?TargetUser}
+     * The target type
+     * @type {?TargetType}
      */
-    this.targetUserType = typeof data.target_user_type === 'number' ? data.target_user_type : null;
+    this.targetType = typeof data.target_type === 'number' ? data.target_type : null;
 
     /**
      * The channel the invite is for
