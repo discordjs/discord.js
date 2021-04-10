@@ -961,20 +961,18 @@ class Guild extends BaseGuild {
    * })
    */
   editWelcomeScreen({ enabled, description, welcomeChannels } = {}) {
-    const welcome_channels =
-      welcomeChannels?.map(data => {
-        const channel_id = this.channels.resolveID(data.channel);
-        const emoji = this.emojis.resolve(data.emoji);
-        return {
-          emoji_id: emoji?.id ?? null,
-          emoji_name: emoji?.name ?? emoji,
-          channel_id,
-        };
-      }) ?? undefined;
+    const welcome_channels = welcomeChannels?.map(data => {
+      const emoji = this.emojis.resolve(data.emoji);
+      return {
+        emoji_id: emoji?.id ?? null,
+        emoji_name: emoji?.name ?? emoji,
+        channel_id: this.channels.resolveID(data.channel),
+      };
+    });
 
     return this.client.api
-      .guilds(this.id)
-      ['welcome-screen'].patch({
+      .guilds(this.id, 'welcome-screen')
+      .patch({
         data: {
           welcome_channels,
           description,

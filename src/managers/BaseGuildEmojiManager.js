@@ -37,7 +37,7 @@ class BaseGuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return super.resolve(emoji.id);
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
-      if (res && res.name.length) {
+      if (res?.name.length) {
         return super.resolve(res.id);
       }
     }
@@ -53,7 +53,7 @@ class BaseGuildEmojiManager extends BaseManager {
     if (emoji instanceof ReactionEmoji) return emoji.id;
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
-      if (res && res.name.length) {
+      if (res?.name.length) {
         return super.resolveID(res.id);
       }
     }
