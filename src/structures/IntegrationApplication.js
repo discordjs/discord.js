@@ -49,7 +49,8 @@ class IntegrationApplication extends Application {
     this.hook = data.hook ?? this.hook ?? null;
 
     /**
-     * The application's
+     * The hash of the application's cover image
+     * @type {?string}
      */
     this.cover = data.cover_image ?? this.cover ?? null;
   }

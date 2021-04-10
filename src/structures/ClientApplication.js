@@ -30,7 +30,7 @@ class ClientApplication extends Application {
     this.flags = 'flags' in data ? new ApplicationFlags(data.flags) : this.flags;
 
     /**
-     * The app's cover image
+     * The hash of the application's cover image
      * @type {?string}
      */
     this.cover = data.cover_image ?? this.cover ?? null;
