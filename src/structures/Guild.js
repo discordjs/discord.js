@@ -929,6 +929,62 @@ class Guild extends BaseGuild {
   }
 
   /**
+   * Welcome channel data
+   * @typedef {Object} WelcomeChannelData
+   * @property {string} description The description to show for this welcome channel
+   * @property {GuildChannelResolvable} channel The channel to link for this welcome channel
+   * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
+   */
+
+  /**
+   * Welcome screen edit data
+   * @typedef {Object} WelcomeScreenEditData
+   * @property {boolean} [enabled] Whether the welcome screen is enabled
+   * @property {string} [description] The description for the welcome screen
+   * @property {WelcomeChannelData[]} [welcomeChannels] The welcome channel data for the welcome screen
+   */
+
+  /**
+   * Updates the guild's welcome screen
+   * @param {WelcomeScreenEditData} [data] Data to edit the welcome screen with
+   * @returns {Promise<WelcomeScreen>}
+   * @example
+   * guild.editWelcomeScreen({
+   *   description: 'Hello World',
+   *   enabled: true,
+   *   welcomeChannels: [
+   *     {
+   *       description: 'foobar',
+   *       channel: '222197033908436994',
+   *     }
+   *   ],
+   * })
+   */
+  editWelcomeScreen({ enabled, description, welcomeChannels } = {}) {
+    const welcome_channels =
+      welcomeChannels?.map(data => {
+        const channel_id = this.channels.resolveID(data.channel);
+        const emoji = this.emojis.resolve(data.emoji);
+        return {
+          emoji_id: emoji?.id ?? null,
+          emoji_name: emoji?.name ?? emoji,
+          channel_id,
+        };
+      }) ?? undefined;
+
+    return this.client.api
+      .guilds(this.id)
+      ['welcome-screen'].patch({
+        data: {
+          welcome_channels,
+          description,
+          enabled,
+        },
+      })
+      .then(data => new WelcomeScreen(this, data));
+  }
+
+  /**
    * Edits the level of the explicit content filter.
    * @param {ExplicitContentFilterLevel|number} explicitContentFilter The new level of the explicit content filter
    * @param {string} [reason] Reason for changing the level of the guild's explicit content filter
