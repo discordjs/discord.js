@@ -34,9 +34,9 @@ class SystemChannelFlags extends BitField {}
 
 /**
  * Numeric system channel flags. All available properties:
- * * `SUPPRESS_JOIN_NOTIFICATIONS`
- * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS`
- * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS`
+ * * `SUPPRESS_JOIN_NOTIFICATIONS` (Suppress member join notifications)
+ * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS` (Suppress server boost notifications)
+ * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS` (Suppress server setup tips)
  * @type {Object}
  */
 SystemChannelFlags.FLAGS = {
