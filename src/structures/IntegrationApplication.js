@@ -53,6 +53,12 @@ class IntegrationApplication extends Application {
      * @type {?string}
      */
     this.cover = data.cover_image ?? this.cover ?? null;
+
+    /**
+     * The verification key of the application
+     * @type {?string}
+     */
+    this.verifyKey = data.verify_key ?? this.verifyKey ?? null;
   }
 }
 

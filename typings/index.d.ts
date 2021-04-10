@@ -1041,6 +1041,7 @@ declare module 'discord.js' {
     public summary: string | null;
     public hook: boolean | null;
     public cover: string | null;
+    public verifyKey: string | null;
   }
 
   export class Intents extends BitField<IntentsString> {
