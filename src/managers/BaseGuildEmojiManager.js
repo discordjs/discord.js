@@ -30,21 +30,33 @@ class BaseGuildEmojiManager extends BaseManager {
 
   /**
    * Resolves an EmojiResolvable to an Emoji object.
-   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
+   * @param {EmojiIdentifierResolvable} emoji The Emoji resolvable to identify
    * @returns {?GuildEmoji}
    */
   resolve(emoji) {
     if (emoji instanceof ReactionEmoji) return super.resolve(emoji.id);
+    if (typeof emoji === 'string') {
+      const res = parseEmoji(emoji);
+      if (res && res.name.length) {
+        return super.resolve(res.id);
+      }
+    }
     return super.resolve(emoji);
   }
 
   /**
    * Resolves an EmojiResolvable to an Emoji ID string.
-   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
+   * @param {EmojiIdentifierResolvable} emoji The Emoji resolvable to identify
    * @returns {?Snowflake}
    */
   resolveID(emoji) {
     if (emoji instanceof ReactionEmoji) return emoji.id;
+    if (typeof emoji === 'string') {
+      const res = parseEmoji(emoji);
+      if (res && res.name.length) {
+        return super.resolveID(res.id);
+      }
+    }
     return super.resolveID(emoji);
   }
 

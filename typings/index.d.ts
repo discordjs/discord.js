@@ -2196,7 +2196,7 @@ declare module 'discord.js' {
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): unknown;
   }
 
-  export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
+  export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiIdentifierResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
   }
