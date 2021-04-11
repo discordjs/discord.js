@@ -83,7 +83,7 @@ class GuildEmojiRoleManager {
       resolvedRoles.push(resolvedRole);
     }
 
-    const newRoles = this._roles.keyArray().filter(role => !resolvedRoles.includes(role));
+    const newRoles = this._roles.keyArray().filter(role => !resolvedRoles.includes(role.id));
     return this.set(newRoles);
   }
 

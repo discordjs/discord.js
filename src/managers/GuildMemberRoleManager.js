@@ -102,7 +102,7 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolve(role);
+        const resolvedRole = this.guild.roles.resolveID(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
@@ -110,15 +110,15 @@ class GuildMemberRoleManager {
       const newRoles = [...new Set(resolvedRoles.concat(...this._roles.values()))];
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snowflake or Array or Collection of Roles or Snowflakes');
       }
 
-      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].put({ reason });
+      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles].put({ reason });
 
       const clone = this.member._clone();
-      clone._roles = [...this._roles.keys(), roleID];
+      clone._roles = [...this._roles.keys(), roleOrRoles];
       return clone;
     }
   }
@@ -133,23 +133,23 @@ class GuildMemberRoleManager {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
       const resolvedRoles = [];
       for (const role of roleOrRoles.values()) {
-        const resolvedRole = this.guild.roles.resolve(role);
+        const resolvedRole = this.guild.roles.resolveID(role);
         if (!resolvedRole) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'roles', role);
         resolvedRoles.push(resolvedRole);
       }
 
-      const newRoles = this._roles.filter(role => !resolvedRoles.includes(role));
+      const newRoles = this._roles.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolve(roleOrRoles);
+      roleOrRoles = this.guild.roles.resolveID(roleOrRoles);
       if (roleOrRoles === null) {
         throw new TypeError('INVALID_TYPE', 'roles', 'Role, Snwoflake or Array or Collection of Roles or Snowflakes');
       }
 
-      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleID].delete({ reason });
+      await this.client.api.guilds[this.guild.id].members[this.member.id].roles[roleOrRoles].delete({ reason });
 
       const clone = this.member._clone();
-      const newRoles = this._roles.filter(role => role.id !== roleID);
+      const newRoles = this._roles.filter(role => role.id !== roleOrRoles);
       clone._roles = [...newRoles.keys()];
       return clone;
     }

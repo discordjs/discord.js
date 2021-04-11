@@ -927,9 +927,9 @@ class Guild extends Base {
       }
       const resolvedRoles = [];
       for (const role of options.roles.values()) {
-        const resolvedRole = this.roles.resolve(role);
+        const resolvedRole = this.roles.resolveID(role);
         if (!role) throw new TypeError('INVALID_ELEMENT', 'Array or Collection', 'options.roles', role);
-        resolvedRoles.push(resolvedRole.id);
+        resolvedRoles.push(resolvedRole);
       }
       options.roles = resolvedRoles;
     }
