@@ -81,7 +81,9 @@ class Invite extends Base {
      * The target application of this invite
      * @type {?IntegrationApplication}
      */
-    this.targetApplication = data.target_application ? new IntegrationApplication(data.target_application) : null;
+    this.targetApplication = data.target_application
+      ? new IntegrationApplication(this.client, data.target_application)
+      : null;
 
     /**
      * The type of the invite target:

@@ -517,7 +517,7 @@ class GuildChannel extends Channel {
           max_uses: maxUses,
           unique,
           target_user_id: this.client.users.resolveID(targetUser),
-          target_application_id: targetApplication.id ?? targetApplication,
+          target_application_id: targetApplication?.applicationID ?? targetApplication,
           target_type: targetType,
         },
         reason,
