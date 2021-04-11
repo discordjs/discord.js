@@ -135,9 +135,7 @@ class ClientUser extends Structures.get('User') {
    * @returns {Presence}
    * @example
    * // Set the client user's status
-   * client.user.setStatus('idle')
-   *   .then(console.log)
-   *   .catch(console.error);
+   * client.user.setStatus('idle');
    */
   setStatus(status, shardID) {
     return this.setPresence({ status, shardID });
@@ -160,9 +158,7 @@ class ClientUser extends Structures.get('User') {
    * @returns {Presence}
    * @example
    * // Set the client user's activity
-   * client.user.setActivity('discord.js', { type: 'WATCHING' })
-   *   .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
-   *   .catch(console.error);
+   * client.user.setActivity('discord.js', { type: 'WATCHING' });
    */
   setActivity(name, options = {}) {
     if (!name) return this.setPresence({ activities: null, shardID: options.shardID });

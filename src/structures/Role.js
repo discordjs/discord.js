@@ -197,8 +197,6 @@ class Role extends Base {
    *   .catch(console.error);
    */
   async edit(data, reason) {
-    if (typeof data.permissions !== 'undefined') data.permissions = Permissions.resolve(data.permissions);
-    else data.permissions = this.permissions.bitfield;
     if (typeof data.position !== 'undefined') {
       await Util.setPosition(
         this,
@@ -220,7 +218,7 @@ class Role extends Base {
           name: data.name || this.name,
           color: data.color !== null ? Util.resolveColor(data.color || this.color) : null,
           hoist: typeof data.hoist !== 'undefined' ? data.hoist : this.hoist,
-          permissions: data.permissions,
+          permissions: typeof data.permissions !== 'undefined' ? new Permissions(data.permissions) : this.permissions,
           mentionable: typeof data.mentionable !== 'undefined' ? data.mentionable : this.mentionable,
         },
         reason,

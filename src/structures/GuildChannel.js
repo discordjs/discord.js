@@ -209,7 +209,7 @@ class GuildChannel extends Channel {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
       throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    await this.edit({ permissionOverwrites: overwrites, reason });
+    await this.edit({ permissionOverwrites: overwrites }, reason);
     return this;
   }
 
@@ -287,7 +287,9 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID
+   * A collection of cached members of this channel, mapped by their ID.
+   * Members that can view this channel, if the channel is text based.
+   * Members in the channel, if the channel is voice based.
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -367,7 +369,7 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
-        type: data.type ? ChannelTypes[data.type.toUpperCase()] : this.type,
+        type: ChannelTypes[data.type?.toUpperCase()],
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
