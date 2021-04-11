@@ -53,6 +53,7 @@ export const {
   Activity,
   APIMessage,
   BaseGuildEmoji,
+  BaseGuildVoiceChannel,
   CategoryChannel,
   Channel,
   ClientApplication,

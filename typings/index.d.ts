@@ -10,6 +10,17 @@ declare enum ChannelType {
   stage = 13,
 }
 
+declare enum ChannelTypes {
+  TEXT = 0,
+  DM = 1,
+  VOICE = 2,
+  GROUP = 3,
+  CATEGORY = 4,
+  NEWS = 5,
+  STORE = 6,
+  STAGE = 13,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -339,17 +350,6 @@ declare module 'discord.js' {
   }
 
   type AllowedImageFormat = 'webp' | 'png' | 'jpg' | 'jpeg' | 'gif';
-
-  enum ChannelTypes {
-    TEXT = 0,
-    DM = 1,
-    VOICE = 2,
-    GROUP = 3,
-    CATEGORY = 4,
-    NEWS = 5,
-    STORE = 6,
-    STAGE = 13,
-  }
 
   export const Constants: {
     Package: {
