@@ -1252,11 +1252,18 @@ class Guild extends Base {
   }
 
   /**
+   * Data that can be resolved to give a Category Channel object. This can be:
+   * * A CategoryChannel object
+   * * A Snowflake
+   * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
+   */
+
+  /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
    * @property {number} [position] New position for the channel
-   * @property {ChannelResolvable} [parent] Parent channel for this channel
+   * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
    * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
    */
 
