@@ -177,7 +177,8 @@ declare module 'discord.js' {
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
-  type ApplicationResolvable = Application | Snowflake;
+
+  type ApplicationResolvable = Application | Activity | Snowflake;
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
     public static FLAGS: Record<ApplicationFlagsString, number>;

@@ -475,6 +475,7 @@ class GuildChannel extends Channel {
   /**
    * Data that can be resolved to an Application. This can be:
    * * An Application
+   * * An Activity with associated Application
    * * A Snowflake
    * @typedef {Application|Snowflake} ApplicationResolvable
    */
@@ -517,7 +518,7 @@ class GuildChannel extends Channel {
           max_uses: maxUses,
           unique,
           target_user_id: this.client.users.resolveID(targetUser),
-          target_application_id: targetApplication?.applicationID ?? targetApplication,
+          target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
           target_type: targetType,
         },
         reason,
