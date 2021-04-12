@@ -474,7 +474,7 @@ class GuildChannel extends Channel {
 
   /**
    * Data that can be resolved to an Application. This can be:
-   * * A Application
+   * * An Application
    * * A Snowflake
    * @typedef {Application|Snowflake} ApplicationResolvable
    */
