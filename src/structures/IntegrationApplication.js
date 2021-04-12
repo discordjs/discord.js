@@ -40,10 +40,8 @@ class IntegrationApplication extends Application {
      */
     this.summary = data.summary ?? this.summary ?? null;
 
-    // TODO: What does #hook indicate?
-
     /**
-     * Unknown
+     * Whether the application has been associated with a webhook
      * @type {?boolean}
      */
     this.hook = data.hook ?? this.hook ?? null;
