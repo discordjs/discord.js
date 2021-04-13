@@ -43,14 +43,14 @@ class BaseManager {
 
   add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.cache.get(id || data.id);
-    if (existing && existing.entry._patch && cache) existing.entry._patch(data);
+    if (existing?.entry._patch && cache) existing.entry._patch(data);
     if (existing) {
-      existing.lastHit = new Date();
+      existing.lastHit = Date.now();
       return existing.entry;
     }
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.cache.set(id || entry.id, { entry, lastHit: new Date() });
+    if (cache) this.cache.set(id || entry.id, { entry, lastHit: Date.now() });
     return entry;
   }
 
@@ -81,8 +81,8 @@ class BaseManager {
    * @param {number} lifetime The maximum duration (in milliseconds) stale data should live.
    */
   poll(lifetime) {
-    const now = new Date();
-    this.cache.sweep(data => now - data.lastHit.getTime() > lifetime);
+    const now = Date.now();
+    this.cache.sweep(data => now - data.lastHit > lifetime);
   }
 
   valueOf() {

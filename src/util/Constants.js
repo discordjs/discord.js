@@ -4,6 +4,24 @@ const Package = (exports.Package = require('../../package.json'));
 const { Error, RangeError } = require('../errors');
 
 /**
+ * Lifetimes for the cached data. When some data goes stale (unused) for longer than the lifetime provided,
+ * the data will be removed from the cache.
+ * @typedef {Object} Lifetimes
+ * @property {number} [user] The lifetime, in milliseconds, of the cached user data.
+ * @property {number} [channel] The lifetime, in milliseconds, of the cached channel data.
+ * @property {number} [guild] The lifetime, in milliseconds, of the cached guild data.
+ * @property {number} [emoji] The lifetime, in milliseconds, of the cached emoji data.
+ */
+
+/**
+ * Options for cache polling and cache data lifetimes.
+ * @typedef {Object} CacheDataOptions
+ * @property {number} pollInterval The amount of time between each poll to the cache. When the caches get
+ * polled it will remove all the expired data from its caches.
+ * @property {number|Lifetimes} dataLifetime The lifetime/s, in milliseconds, of the cached data.
+ */
+
+/**
  * Options for a client.
  * @typedef {Object} ClientOptions
  * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
@@ -18,6 +36,7 @@ const { Error, RangeError } = require('../errors');
  * sweepable (in seconds, 0 for forever)
  * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
  * the message cache lifetime (in seconds, 0 for never)
+ * @property {CacheDataOptions} [cacheData] Control the cache poll rates and cached data lifetimes
  * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
  * @property {number} [invalidRequestWarningInterval=0] The number of invalid REST requests (those that return
  * 401, 403, or 429) in a 10 minute window between emitted warnings (0 for no warnings). That is, if set to 500,

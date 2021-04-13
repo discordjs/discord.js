@@ -2491,16 +2491,18 @@ declare module 'discord.js' {
     emoji?: number;
   }
 
+  interface CacheDataOptions {
+    pollInterval: number;
+    dataLifetime: number | Lifetimes;
+  }
+
   interface ClientOptions {
     shards?: number | number[] | 'auto';
     shardCount?: number;
     messageCacheMaxSize?: number;
     messageCacheLifetime?: number;
     messageSweepInterval?: number;
-    cacheData?: {
-      pollInterval: number;
-      dataLifetime: number | Lifetimes;
-    };
+    cacheData?: CacheDataOptions;
     allowedMentions?: MessageMentionOptions;
     invalidRequestWarningInterval?: number;
     partials?: PartialTypes[];

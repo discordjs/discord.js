@@ -167,7 +167,7 @@ class Client extends BaseClient {
       this.setInterval(this.sweepMessages.bind(this), this.options.messageSweepInterval * 1000);
     }
 
-    if (this.options.cacheData !== undefined) {
+    if (typeof this.options.cacheData !== 'undefined') {
       let lifetimes = this.options.cacheData.dataLifetime;
       if (typeof lifetimes === 'number') {
         lifetimes = {
@@ -368,7 +368,6 @@ class Client extends BaseClient {
    * Removes all the stale data in the caches older than the provided lifetimes.
    * @param {Lifetimes} lifetime Data that has been stale for longer than
    * this will be removed.
-   * @returns {number} -1 if the lifetime is invalid and 1 on success
    * @example
    * // Remove all the stale cached user data older than 1800 seconds
    * client.sweepCaches({ user: 1800 * 1000 }); // x 1000 to convert to seconds
@@ -379,22 +378,22 @@ class Client extends BaseClient {
     }
 
     const { user, channel, guild, emoji } = lifetime;
-    if (user !== undefined && (typeof user !== 'number' || isNaN(user))) {
+    if (typeof user !== 'undefined' && (typeof user !== 'number' || isNaN(user))) {
       throw new TypeError('INVALID_TYPE', 'lifetime.user', 'number or undefined');
     }
-    if (channel !== undefined && (typeof channel !== 'number' || isNaN(channel))) {
+    if (typeof channel !== 'undefined' && (typeof channel !== 'number' || isNaN(channel))) {
       throw new TypeError('INVALID_TYPE', 'lifetime.channel', 'number or undefined');
     }
-    if (guild !== undefined && (typeof guild !== 'number' || isNaN(guild))) {
+    if (typeof guild !== 'undefined' && (typeof guild !== 'number' || isNaN(guild))) {
       throw new TypeError('INVALID_TYPE', 'lifetime.guild', 'number or undefined');
     }
-    if (emoji !== undefined && (typeof emoji !== 'number' || isNaN(emoji))) {
+    if (typeof emoji !== 'undefined' && (typeof emoji !== 'number' || isNaN(emoji))) {
       throw new TypeError('INVALID_TYPE', 'lifetime.emoji', 'number or undefined');
     }
 
     this.emit(Events.DEBUG, 'Cache sweep initiated, polling all the caches');
 
-    if (user !== undefined) {
+    if (typeof user !== 'undefined') {
       if (user <= 0) {
         this.emit(Events.DEBUG, "Didn't sweep user cache - lifetime is unlimited");
       } else {
@@ -402,7 +401,7 @@ class Client extends BaseClient {
       }
     }
 
-    if (channel !== undefined) {
+    if (typeof channel !== 'undefined') {
       if (channel <= 0) {
         this.emit(Events.DEBUG, "Didn't sweep channel cache - lifetime is unlimited");
       } else {
@@ -410,7 +409,7 @@ class Client extends BaseClient {
       }
     }
 
-    if (guild !== undefined) {
+    if (typeof guild !== 'undefined') {
       if (guild <= 0) {
         this.emit(Events.DEBUG, "Didn't sweep guild cache - lifetime is unlimited");
       } else {
@@ -418,7 +417,7 @@ class Client extends BaseClient {
       }
     }
 
-    if (emoji !== undefined) {
+    if (typeof emoji !== 'undefined') {
       if (emoji <= 0) {
         this.emit(Events.DEBUG, "Didn't sweep emoji cache - lifetime is unlimited");
       } else {
@@ -427,7 +426,6 @@ class Client extends BaseClient {
     }
 
     this.emit(Events.DEBUG, `Swept all the stale data older than ${lifetime / 1000} seconds`);
-    return 1;
   }
 
   /**
@@ -571,44 +569,32 @@ class Client extends BaseClient {
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
-    if (options.cacheData !== undefined) {
+    if (typeof x !== 'undefined') {
       if (typeof options.cacheData !== 'object') {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData', 'an object or undefined');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData', 'an object or undefined');
       }
       if (typeof options.cacheData.pollInterval !== 'number' || isNaN(options.cacheData.pollInterval)) {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.pollInterval', 'a number');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.pollInterval', 'a number');
       }
       if (typeof options.cacheData.dataLifetime === 'number') {
         if (isNaN(options.cacheData.dataLifetime)) {
-          throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime', 'a number or Lifetimes object');
+          throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime', 'a number or Lifetimes object');
         }
       } else if (typeof options.cacheData.dataLifetime === 'object') {
-        if (
-          options.cacheData.dataLifetime.user !== undefined &&
-          typeof options.cacheData.dataLifetime.user !== 'number'
-        ) {
-          throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime.user', 'a number or undefined');
+        if (!['number', 'undefined'].includes(typeof options.cacheData.dataLifetime.user)) {
+          throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime.user', 'a number or undefined');
         }
-        if (
-          options.cacheData.dataLifetime.channel !== undefined &&
-          typeof options.cacheData.dataLifetime.channel !== 'number'
-        ) {
-          throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime.channel', 'a number or undefined');
+        if (!['number', 'undefined'].includes(typeof options.cacheData.dataLifetime.channel)) {
+          throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime.channel', 'a number or undefined');
         }
-        if (
-          options.cacheData.dataLifetime.guild !== undefined &&
-          typeof options.cacheData.dataLifetime.guild !== 'number'
-        ) {
-          throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime.guild', 'a number or undefined');
+        if (!['number', 'undefined'].includes(typeof options.cacheData.dataLifetime.guild)) {
+          throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime.guild', 'a number or undefined');
         }
-        if (
-          options.cacheData.dataLifetime.emoji !== undefined &&
-          typeof options.cacheData.dataLifetime.emoji !== 'number'
-        ) {
-          throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime.emoji', 'a number or undefined');
+        if (!['number', 'undefined'].includes(typeof options.cacheData.dataLifetime.emoji)) {
+          throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime.emoji', 'a number or undefined');
         }
       } else {
-        throw new TypeError('CLIENT_INVALID_OPTION', 'The cacheData.dataLifetime', 'a number or Lifetimes object');
+        throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData.dataLifetime', 'a number or Lifetimes object');
       }
     }
   }
