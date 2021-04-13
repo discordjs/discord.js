@@ -1,10 +1,13 @@
 'use strict';
 
-const CommandInteraction = require('../../../structures/CommandInteraction');
 const { Events, InteractionTypes } = require('../../../util/Constants');
+let Structures;
 
 module.exports = (client, { d: data }) => {
   if (data.type === InteractionTypes.APPLICATION_COMMAND) {
+    if (!Structures) Structures = require('../../../util/Structures');
+    const CommandInteraction = Structures.get('CommandInteraction');
+
     const interaction = new CommandInteraction(client, data);
 
     /**

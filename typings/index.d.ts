@@ -2796,6 +2796,7 @@ declare module 'discord.js' {
     VoiceState: typeof VoiceState;
     Role: typeof Role;
     User: typeof User;
+    CommandInteraction: typeof CommandInteraction;
   }
 
   interface FetchMemberOptions {

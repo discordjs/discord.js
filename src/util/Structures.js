@@ -18,6 +18,7 @@
  * * **`VoiceState`**
  * * **`Role`**
  * * **`User`**
+ * * **`CommandInteraction`**
  * @typedef {string} ExtendableStructure
  */
 
@@ -107,6 +108,7 @@ const structures = {
   VoiceState: require('../structures/VoiceState'),
   Role: require('../structures/Role'),
   User: require('../structures/User'),
+  CommandInteraction: require('../structures/CommandInteraction'),
 };
 
 module.exports = Structures;
