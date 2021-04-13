@@ -103,6 +103,7 @@ class ApplicationCommandManager extends BaseManager {
     if (data.name) raw.name = data.name;
     if (data.description) raw.description = data.description;
     if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
+    if (data.defaultPermission) raw.default_permission = data.defaultPermission;
 
     const patched = await this.commandPath(id).patch({ data: raw });
     return this.add(patched);

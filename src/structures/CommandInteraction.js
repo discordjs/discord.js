@@ -48,7 +48,7 @@ class CommandInteraction extends Interaction {
      * An associated webhook client, can be used to create deferred replies
      * @type {WebhookClient}
      */
-    this.webhook = new WebhookClient(data.application_id, data.token);
+    this.webhook = new WebhookClient(data.application_id, data.token, this.client.options);
   }
 
   /**
