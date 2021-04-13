@@ -123,12 +123,12 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Edits the permissions for this command.
+   * Sets the permissions for this command.
    * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommand>}
    */
-  editPermissions(permissions) {
-    return this.manager.editPermissions(this, permissions);
+  setPermissions(permissions) {
+    return this.manager.setPermissions(this, permissions);
   }
 
   /**

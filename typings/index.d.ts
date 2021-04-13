@@ -156,8 +156,8 @@ declare module 'discord.js' {
     public options: ApplicationCommandOption[];
     public delete(): Promise<ApplicationCommand>;
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public editPermissions(permissions: ApplicationCommandPermissions[]): Promise<ApplicationCommand>;
     public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(permissions: ApplicationCommandPermissions[]): Promise<ApplicationCommand>;
     private static transformOption(option: ApplicationCommandOption): object;
   }
 
@@ -2020,15 +2020,15 @@ declare module 'discord.js' {
     public create(command: ApplicationCommandData): Promise<ApplicationCommand>;
     public delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null>;
     public edit(command: ApplicationCommandResolvable, data: ApplicationCommandData): Promise<ApplicationCommand>;
-    public editPermissions(
-      command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissions[],
-    ): Promise<ApplicationCommand | null>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<ApplicationCommand>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, ApplicationCommand>>;
     public fetchPermissions(): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     public fetchPermissions(command: ApplicationCommandResolvable): Promise<ApplicationCommandPermissions[]>;
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
+    public setPermissions(
+      command: ApplicationCommandResolvable,
+      permissions: ApplicationCommandPermissions[],
+    ): Promise<ApplicationCommand | null>;
     private static transformCommand(command: ApplicationCommandData): object;
     private static transformPermissions(permissions: ApplicationCommandPermissions): object;
   }

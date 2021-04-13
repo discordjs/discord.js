@@ -147,12 +147,12 @@ class ApplicationCommandManager extends BaseManager {
   }
 
   /**
-   * Edits the permissions for a command.
+   * Sets the permissions for a command.
    * @param {ApplicationCommandResolvable} command The command to edit the permissions for
    * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
    * @returns {Promise<?ApplicationCommand>}
    */
-  async editPermissions(command, permissions) {
+  async setPermissions(command, permissions) {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
