@@ -44,7 +44,7 @@ class ApplicationCommand extends Base {
      * The options of this command
      * @type {ApplicationCommandOption[]}
      */
-    this.options = data.options?.map(ApplicationCommand.transformOption) ?? [];
+    this.options = data.options?.map(o => ApplicationCommand.transformOption(o, true)) ?? [];
 
     /**
      * Whether the command is enabled by default when the app is added to a guild
@@ -84,9 +84,20 @@ class ApplicationCommand extends Base {
    * Data for creating or editing an application command.
    * @property {string} name The name of the command
    * @property {string} description The description of the command
-   * @property {ApplicationCommandOption[]} [options] Options for the command
+   * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
    * @typedef {Object} ApplicationCommandData
+   */
+
+  /**
+   * An option for an application command or subcommand.
+   * @typedef {Object} ApplicationCommandOptionData
+   * @property {ApplicationCommandOptionType|number} type The type of the option
+   * @property {string} name The name of the option
+   * @property {string} description The description of the option
+   * @property {boolean} [required] Whether the option is required
+   * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
+   * @property {ApplicationCommandOptionData[]} [options] Additional options if this option is a subcommand (group)
    */
 
   /**
@@ -109,6 +120,14 @@ class ApplicationCommand extends Base {
   /**
    * The object returned when fetching permissions for an application command.
    * @property {Snowflake} id The ID of the role or user
+   * @property {ApplicationCommandPermissionType|number} type Whether this permission if for a role or a user
+   * @property {boolean} permission Whether the role or user has the permission to use this command
+   * @typedef {object} ApplicationCommandPermissionData
+   */
+
+  /**
+   * The object returned when fetching permissions for an application command.
+   * @property {Snowflake} id The ID of the role or user
    * @property {ApplicationCommandPermissionType} type Whether this permission if for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
    * @typedef {object} ApplicationCommandPermissions
@@ -124,7 +143,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Sets the permissions for this command.
-   * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
+   * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommand>}
    */
   setPermissions(permissions) {
@@ -150,15 +169,16 @@ class ApplicationCommand extends Base {
    */
 
   /**
-   * Transforms an {@link ApplicationCommandOption} object into something that can be used with the API.
-   * @param {ApplicationCommandOption} option The option to transform
+   * Transforms an {@link ApplicationCommandOptionData} object into something that can be used with the API.
+   * @param {ApplicationCommandOptionData} option The option to transform
+   * @param {boolean} [received] Whether this option has been received from Discord
    * @returns {Object}
    * @private
    */
-  static transformOption(option) {
+  static transformOption(option, received) {
     return {
       ...option,
-      type: ApplicationCommandOptionTypes[option.type],
+      type: option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       options: option.options?.map(ApplicationCommand.transformOption),
     };
   }

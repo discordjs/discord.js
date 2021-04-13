@@ -157,8 +157,8 @@ declare module 'discord.js' {
     public delete(): Promise<ApplicationCommand>;
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(permissions: ApplicationCommandPermissions[]): Promise<ApplicationCommand>;
-    private static transformOption(option: ApplicationCommandOption): object;
+    public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommand>;
+    private static transformOption(option: ApplicationCommandOptionData): object;
   }
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
@@ -2027,10 +2027,10 @@ declare module 'discord.js' {
     public set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>>;
     public setPermissions(
       command: ApplicationCommandResolvable,
-      permissions: ApplicationCommandPermissions[],
+      permissions: ApplicationCommandPermissionData[],
     ): Promise<ApplicationCommand | null>;
     private static transformCommand(command: ApplicationCommandData): object;
-    private static transformPermissions(permissions: ApplicationCommandPermissions): object;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData): object;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
@@ -2470,13 +2470,17 @@ declare module 'discord.js' {
     defaultPermission?: boolean;
   }
 
-  interface ApplicationCommandOption {
-    type: ApplicationCommandOptionType;
+  interface ApplicationCommandOptionData {
+    type: ApplicationCommandOptionType | number;
     name: string;
     description: string;
     required?: boolean;
     choices?: ApplicationCommandOptionChoice[];
     options?: ApplicationCommandOption[];
+  }
+
+  interface ApplicationCommandOption extends ApplicationCommandOptionData {
+    type: ApplicationCommandOptionType;
   }
 
   interface ApplicationCommandOptionChoice {
@@ -2486,10 +2490,14 @@ declare module 'discord.js' {
 
   type ApplicationCommandOptionType = keyof typeof ApplicationCommandOptionTypes;
 
-  interface ApplicationCommandPermissions {
+  interface ApplicationCommandPermissionData {
     id: Snowflake;
-    type: ApplicationCommandPermissionType;
+    type: ApplicationCommandPermissionType | ApplicationCommandPermissionTypes;
     permission: boolean;
+  }
+
+  interface ApplicationCommandPermissions extends ApplicationCommandPermissionData {
+    type: ApplicationCommandPermissionType;
   }
 
   type ApplicationCommandPermissionType = keyof typeof ApplicationCommandPermissionTypes;

@@ -136,12 +136,16 @@ class ApplicationCommandManager extends BaseManager {
       if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
       const data = await this.commandPath(id).permissions.get();
-      return data.permissions.map(ApplicationCommandManager.transformPermissions);
+      return data.permissions.map(o => ApplicationCommandManager.transformPermissions(o, true));
     }
 
     const commands = await this.commandPath.permissions.get();
     return commands.reduce(
-      (coll, data) => coll.set(data.id, data.permissions.map(ApplicationCommandManager.transformPermissions)),
+      (coll, data) =>
+        coll.set(
+          data.id,
+          data.permissions.map(o => ApplicationCommandManager.transformPermissions(o, true)),
+        ),
       new Collection(),
     );
   }
@@ -177,15 +181,19 @@ class ApplicationCommandManager extends BaseManager {
   }
 
   /**
-   * Transforms an {@link ApplicationCommandPermissions} object into something that can be used with the API.
-   * @param {ApplicationCommandPermissions} permissions The permissions to transform
+   * Transforms an {@link ApplicationCommandPermissionData} object into something that can be used with the API.
+   * @param {ApplicationCommandPermissionData} permissions The permissions to transform
+   * @param {boolean} [received] Whether this permissions have been received from Discord
    * @returns {Object}
    * @private
    */
-  static transformPermissions(permissions) {
+  static transformPermissions(permissions, received) {
     return {
       ...permissions,
-      type: ApplicationCommandPermissionTypes[permissions.type],
+      type:
+        permissions.type === 'number' && !received
+          ? permissions.type
+          : ApplicationCommandPermissionTypes[permissions.type],
     };
   }
 }
