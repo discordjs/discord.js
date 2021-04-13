@@ -72,7 +72,7 @@ class ApplicationCommandManager extends BaseManager {
    */
   async create(command) {
     const data = await this.commandPath.post({
-      data: ApplicationCommandManager.transformCommand(command),
+      data: this.constructor.transformCommand(command),
     });
     return this.add(data);
   }
@@ -84,7 +84,7 @@ class ApplicationCommandManager extends BaseManager {
    */
   async set(commands) {
     const data = await this.commandPath.put({
-      data: commands.map(ApplicationCommandManager.transformCommand),
+      data: commands.map(c => this.constructor.transformCommand(c)),
     });
     return data.reduce((coll, command) => coll.set(command.id, this.add(command)), new Collection());
   }
@@ -136,7 +136,7 @@ class ApplicationCommandManager extends BaseManager {
       if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
       const data = await this.commandPath(id).permissions.get();
-      return data.permissions.map(o => ApplicationCommandManager.transformPermissions(o, true));
+      return data.permissions.map(o => this.constructor.transformPermissions(o, true));
     }
 
     const commands = await this.commandPath.permissions.get();
@@ -144,7 +144,7 @@ class ApplicationCommandManager extends BaseManager {
       (coll, data) =>
         coll.set(
           data.id,
-          data.permissions.map(o => ApplicationCommandManager.transformPermissions(o, true)),
+          data.permissions.map(o => this.constructor.transformPermissions(o, true)),
         ),
       new Collection(),
     );
@@ -161,7 +161,7 @@ class ApplicationCommandManager extends BaseManager {
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
     await this.commandPath(id).permissions.put({
-      data: { permissions: permissions.map(ApplicationCommandManager.transformPermissions) },
+      data: { permissions: permissions.map(p => this.constructor.transformPermissions(p)) },
     });
     return this.cache.get(id) ?? null;
   }

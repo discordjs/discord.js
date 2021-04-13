@@ -44,7 +44,7 @@ class ApplicationCommand extends Base {
      * The options of this command
      * @type {ApplicationCommandOption[]}
      */
-    this.options = data.options?.map(o => ApplicationCommand.transformOption(o, true)) ?? [];
+    this.options = data.options?.map(o => this.constructor.transformOption(o, true)) ?? [];
 
     /**
      * Whether the command is enabled by default when the app is added to a guild
@@ -179,7 +179,7 @@ class ApplicationCommand extends Base {
     return {
       ...option,
       type: option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
-      options: option.options?.map(ApplicationCommand.transformOption),
+      options: option.options?.map(o => this.transformOption(o)),
     };
   }
 }
