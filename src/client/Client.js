@@ -569,7 +569,7 @@ class Client extends BaseClient {
     if (typeof options.retryLimit !== 'number' || isNaN(options.retryLimit)) {
       throw new TypeError('CLIENT_INVALID_OPTION', 'retryLimit', 'a number');
     }
-    if (typeof x !== 'undefined') {
+    if (typeof options.cacheData !== 'undefined') {
       if (typeof options.cacheData !== 'object') {
         throw new TypeError('CLIENT_INVALID_OPTION', 'cacheData', 'an object or undefined');
       }
