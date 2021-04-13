@@ -2471,7 +2471,7 @@ declare module 'discord.js' {
   }
 
   interface ApplicationCommandOptionData {
-    type: ApplicationCommandOptionType | number;
+    type: ApplicationCommandOptionType | ApplicationCommandOptionTypes;
     name: string;
     description: string;
     required?: boolean;
