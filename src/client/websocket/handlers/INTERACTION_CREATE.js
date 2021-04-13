@@ -5,6 +5,8 @@ let Structures;
 
 module.exports = (client, { d: data }) => {
   if (data.type === InteractionTypes.APPLICATION_COMMAND) {
+    if (data.guild_id && !client.guilds.cache.has(data.guild_id)) return;
+
     if (!Structures) Structures = require('../../../util/Structures');
     const CommandInteraction = Structures.get('CommandInteraction');
 
@@ -15,8 +17,9 @@ module.exports = (client, { d: data }) => {
      * @event Client#interaction
      * @param {Interaction} interaction The interaction which was created
      */
-    return client.emit(Events.INTERACTION_CREATE, interaction);
+    client.emit(Events.INTERACTION_CREATE, interaction);
+    return;
   }
 
-  return client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
+  client.emit(Events.DEBUG, `[INTERACTION] Received interaction with unknown type: ${data.type}`);
 };
