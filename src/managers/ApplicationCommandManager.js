@@ -183,7 +183,7 @@ class ApplicationCommandManager extends BaseManager {
   /**
    * Transforms an {@link ApplicationCommandPermissionData} object into something that can be used with the API.
    * @param {ApplicationCommandPermissionData} permissions The permissions to transform
-   * @param {boolean} [received] Whether this permissions have been received from Discord
+   * @param {boolean} [received] Whether these permissions have been received from Discord
    * @returns {Object}
    * @private
    */
