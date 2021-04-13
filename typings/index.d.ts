@@ -2484,12 +2484,23 @@ declare module 'discord.js' {
     shardResume: [shardID: number, replayedEvents: number];
   }
 
+  interface Lifetimes {
+    user?: number;
+    channel?: number;
+    guild?: number;
+    emoji?: number;
+  }
+
   interface ClientOptions {
     shards?: number | number[] | 'auto';
     shardCount?: number;
     messageCacheMaxSize?: number;
     messageCacheLifetime?: number;
     messageSweepInterval?: number;
+    cacheData?: {
+      pollInterval: number;
+      dataLifetime: number | Lifetimes;
+    };
     allowedMentions?: MessageMentionOptions;
     invalidRequestWarningInterval?: number;
     partials?: PartialTypes[];
