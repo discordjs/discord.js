@@ -425,7 +425,7 @@ class Client extends BaseClient {
       }
     }
 
-    this.emit(Events.DEBUG, `Swept all the stale data older than ${lifetime / 1000} seconds`);
+    this.emit(Events.DEBUG, `Swept all the stale data from the caches`);
   }
 
   /**
