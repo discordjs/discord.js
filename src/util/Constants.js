@@ -469,7 +469,7 @@ exports.MessageTypes = [
  * @typedef {string} SystemMessageType
  */
 exports.SystemMessageTypes = exports.MessageTypes.filter(
-  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND'].includes(type)
+  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND'].includes(type),
 );
 
 /**
