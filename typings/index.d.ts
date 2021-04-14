@@ -1061,6 +1061,7 @@ declare module 'discord.js' {
     constructor(attachment: BufferResolvable | Stream, name?: string, data?: object);
 
     public attachment: BufferResolvable | Stream;
+    public contentType: string | null;
     public height: number | null;
     public id: Snowflake;
     public name: string | null;
