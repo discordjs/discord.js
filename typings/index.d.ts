@@ -1335,7 +1335,7 @@ declare module 'discord.js' {
     public process: ChildProcess | null;
     public ready: boolean;
     public worker: Worker | null;
-    public parentPort: parentPort | null;
+    public parentPort: typeof parentPort | null;
     public pid: number | null;
     public ppid: number | null;
     public eval(script: string): Promise<any>;
