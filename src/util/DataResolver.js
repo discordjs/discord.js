@@ -38,8 +38,7 @@ class DataResolver {
    * @returns {string}
    */
   static resolveCode(data, regex) {
-    const match = regex.exec(data);
-    return match ? match[1] || data : data;
+    return data.matchAll(regex).next().value?.[1] ?? data;
   }
 
   /**
