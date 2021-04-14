@@ -1368,7 +1368,7 @@ declare module 'discord.js' {
     public readonly count: number;
     public readonly ids: number[];
     public mode: ShardingManagerMode;
-    public parentPort: parentPort | null;
+    public parentPort: typeof parentPort | null;
     public broadcastEval(script: string): Promise<any[]>;
     public broadcastEval(script: string, shard: number): Promise<any>;
     public broadcastEval<T>(fn: (client: Client) => T): Promise<T[]>;
