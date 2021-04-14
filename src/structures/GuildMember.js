@@ -285,11 +285,12 @@ class GuildMember extends Base {
    */
   async edit(data, reason) {
     if (data.channel) {
-      data.channel = this.guild.channels.resolve(data.channel);
-      if (!data.channel || data.channel.type !== 'voice') {
+      const voiceChannelID = this.guild.channels.resolveID(data.channel);
+      const voiceChannel = this.guild.channels.cache.get(voiceChannelID);
+      if (!voiceChannelID || (voiceChannel && voiceChannel?.type !== 'voice')) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
-      data.channel_id = data.channel.id;
+      data.channel_id = voiceChannelID;
       data.channel = undefined;
     } else if (data.channel === null) {
       data.channel_id = null;
