@@ -63,7 +63,7 @@ class VoiceState extends Base {
      */
     this.streaming = data.self_stream || false;
     /**
-     * The ID of the voice channel or stage channel that this member is in
+     * The ID of the voice or stage channel that this member is in
      * @type {?Snowflake}
      */
     this.channelID = data.channel_id || null;
