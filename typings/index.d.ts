@@ -158,7 +158,7 @@ declare module 'discord.js' {
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommand>;
-    private static transformOption(option: ApplicationCommandOptionData): object;
+    private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
@@ -2030,7 +2030,7 @@ declare module 'discord.js' {
       permissions: ApplicationCommandPermissionData[],
     ): Promise<ApplicationCommand | null>;
     private static transformCommand(command: ApplicationCommandData): object;
-    private static transformPermissions(permissions: ApplicationCommandPermissionData): object;
+    private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
 
   export class BaseGuildEmojiManager extends BaseManager<Snowflake, GuildEmoji, EmojiResolvable> {
