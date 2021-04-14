@@ -1325,7 +1325,7 @@ declare module 'discord.js' {
     private _fetches: Map<string, Promise<any>>;
     private _handleExit(respawn?: boolean): void;
     private _handleMessage(message: any): void;
-    private _handleDisconnect(message: any): void;
+    private _handleDisconnect(message: Record<'parentThreadDisconnect' | 'parentProcessDisconnect', boolean>): void;
 
     public args: string[];
     public execArgv: string[];
