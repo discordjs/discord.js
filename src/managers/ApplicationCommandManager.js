@@ -102,7 +102,7 @@ class ApplicationCommandManager extends BaseManager {
     const raw = {};
     if (data.name) raw.name = data.name;
     if (data.description) raw.description = data.description;
-    if (data.options) raw.options = data.options.map(ApplicationCommand.transformOption);
+    if (data.options) raw.options = data.options.map(o => ApplicationCommand.transformOption(o));
     if (data.defaultPermission) raw.default_permission = data.defaultPermission;
 
     const patched = await this.commandPath(id).patch({ data: raw });
@@ -175,7 +175,7 @@ class ApplicationCommandManager extends BaseManager {
   static transformCommand(command) {
     return {
       ...command,
-      options: command.options?.map(ApplicationCommand.transformOption),
+      options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission,
     };
   }
