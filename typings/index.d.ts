@@ -1815,6 +1815,7 @@ declare module 'discord.js' {
       options?: WebhookEditMessageOptions,
     ): Promise<RawMessage>;
     public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
+    public fetchMessage(message: Snowflake, cache?: boolean): Promise<RawMessage>;
     public send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<RawMessage>;
@@ -2162,6 +2163,7 @@ declare module 'discord.js' {
       options?: WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
     editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    fetchMessage(message: Snowflake, cache?: boolean): Promise<Message | RawMessage>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | RawMessage>;
