@@ -68,14 +68,37 @@ class Shard extends EventEmitter {
     /**
      * Process of the shard (if {@link ShardingManager#mode} is `process`)
      * @type {?ChildProcess}
+     * @readonly
      */
     this.process = null;
 
     /**
      * Worker of the shard (if {@link ShardingManager#mode} is `worker`)
      * @type {?Worker}
+     * @readonly
      */
     this.worker = null;
+
+    /**
+     * Parent port of the worker threads (if {@link ShardingManager#mode} is `worker`)
+     * @type {?MessagePort}
+     * @readonly
+     */
+    this.parentPort = null;
+
+    /**
+     * Process ID of the child process (if {@link ShardingManager#mode} is `process`)
+     * @type {?number}
+     * @readonly
+     */
+    this.pid = null;
+
+    /**
+     * Parent process ID of the child process (if {@link ShardingManager#mode} is `process`)
+     * @type {?number}
+     * @readonly
+     */
+    this.ppid = null;
 
     /**
      * Ongoing promises for calls to {@link Shard#eval}, mapped by the `script` they were called with
@@ -99,6 +122,8 @@ class Shard extends EventEmitter {
     this._exitListener = this._handleExit.bind(this, undefined);
   }
 
+
+
   /**
    * Forks a child process or creates a worker thread for the shard.
    * <warn>You should not need to call this manually.</warn>
@@ -117,11 +142,25 @@ class Shard extends EventEmitter {
           execArgv: this.execArgv,
         })
         .on('message', this._handleMessage.bind(this))
-        .on('exit', this._exitListener);
+        .on('exit', this._exitListener)
+        .on('disconnect', this._handleDisconnect.bind(this, { parentProcessDisconnect: true }));
+
+      this.pid = this.process.pid;
+      this.ppid = this.process.ppid;
     } else if (this.manager.mode === 'worker') {
+      this.parentPort = require('worker_threads').parentPort;
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);
+
+      if (this.worker) {
+        setInterval(() => {
+          this.parentPort = require('worker_threads').parentPort;
+          if (!this.parentPort) {
+            this._handleDisconnect({ ParentThreadDisconnect: true });
+          }
+        }, this.manager.timeout);
+      }
     }
 
     this._evals.clear();
@@ -141,6 +180,7 @@ class Shard extends EventEmitter {
         this.off('ready', onReady);
         this.off('disconnect', onDisconnect);
         this.off('death', onDeath);
+        this.off('parentDeath', onParentDeath);
       };
 
       const onReady = () => {
@@ -158,6 +198,11 @@ class Shard extends EventEmitter {
         reject(new Error('SHARDING_READY_DIED', this.id));
       };
 
+      const onParentDeath = () => {
+        cleanup();
+        reject(new Error('SHARDING_READY_PARENT_DIED', this.id));
+      }
+
       const onTimeout = () => {
         cleanup();
         reject(new Error('SHARDING_READY_TIMEOUT', this.id));
@@ -167,6 +212,7 @@ class Shard extends EventEmitter {
       this.once('ready', onReady);
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
+      this.once('parentDeath', onParentDeath);
     });
     return this.process || this.worker;
   }
@@ -390,6 +436,29 @@ class Shard extends EventEmitter {
     this._fetches.clear();
 
     if (respawn) this.spawn().catch(err => this.emit('error', err));
+  }
+
+  _handleDisconnect(message) {
+    /**
+     * Emitted upon the shard's heartbeat to the process returning no response (parent death).
+     * @event Shard#parentDeath
+     * @param {ChildProcess|Worker} process Child process/worker that exited
+     */
+    if (!message) return;
+
+    if (this.process) {
+      if (message.parentProcessDisconnect && this.process.ppid === 1) {
+        this.emit('parentDeath', this.process);
+        this.kill();
+      }
+    }
+
+    if (this.worker) {
+      if (message.ParentThreadDisconnect && !this.parentPort) {
+        this.emit('parentDeath', this.worker);
+        this.kill();
+      }
+    }
   }
 }
 

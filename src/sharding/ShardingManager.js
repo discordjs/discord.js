@@ -36,6 +36,7 @@ class ShardingManager extends EventEmitter {
    * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
    * (only available when using the `process` mode)
    * @param {string} [options.token] Token to use for automatic shard count and passing to shards
+   * @param {number} [options.timeout=30000] Interval between heartbeat pings to the master process (in milliseconds).
    */
   constructor(file, options = {}) {
     super();
@@ -47,6 +48,7 @@ class ShardingManager extends EventEmitter {
         shardArgs: [],
         execArgv: [],
         token: process.env.DISCORD_TOKEN,
+        timeout: 30000,
       },
       options,
     );
