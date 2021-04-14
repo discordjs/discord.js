@@ -1,6 +1,6 @@
 'use strict';
 
-const Collection = require('../util/Collection');
+const Cache = require('../util/Cache');
 let Structures;
 
 /**
@@ -8,7 +8,7 @@ let Structures;
  * @abstract
  */
 class BaseManager {
-  constructor(client, iterable, holds, cacheType = Collection, ...cacheOptions) {
+  constructor(client, iterable, holds, cacheType = Cache, ...cacheOptions) {
     if (!Structures) Structures = require('../util/Structures');
     /**
      * The data structure belonging to this manager
@@ -43,14 +43,11 @@ class BaseManager {
 
   add(data, cache = true, { id, extras = [] } = {}) {
     const existing = this.cache.get(id || data.id);
-    if (existing?.entry._patch && cache) existing.entry._patch(data);
-    if (existing) {
-      existing.lastHit = Date.now();
-      return existing.entry;
-    }
+    if (existing && existing._patch && cache) existing._patch(data);
+    if (existing) return existing;
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.cache.set(id || entry.id, { entry, lastHit: Date.now() });
+    if (cache) this.cache.set(id || entry.id, entry);
     return entry;
   }
 
@@ -81,8 +78,7 @@ class BaseManager {
    * @param {number} lifetime The maximum duration (in milliseconds) stale data should live.
    */
   poll(lifetime) {
-    const now = Date.now();
-    this.cache.sweep(data => now - data.lastHit > lifetime);
+    this.cache.poll(lifetime);
   }
 
   valueOf() {
