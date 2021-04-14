@@ -122,8 +122,6 @@ class Shard extends EventEmitter {
     this._exitListener = this._handleExit.bind(this, undefined);
   }
 
-
-
   /**
    * Forks a child process or creates a worker thread for the shard.
    * <warn>You should not need to call this manually.</warn>
@@ -201,7 +199,7 @@ class Shard extends EventEmitter {
       const onParentDeath = () => {
         cleanup();
         reject(new Error('SHARDING_READY_PARENT_DIED', this.id));
-      }
+      };
 
       const onTimeout = () => {
         cleanup();
