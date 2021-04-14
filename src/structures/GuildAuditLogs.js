@@ -319,11 +319,13 @@ class GuildAuditLogsEntry {
 
     /**
      * The user that executed this entry
-     * @type {User}
+     * @type {?User}
      */
-    this.executor = guild.client.options.partials.includes(PartialTypes.USER)
-      ? guild.client.users.add({ id: data.user_id })
-      : guild.client.users.cache.get(data.user_id);
+    this.executor = data.user_id
+      ? guild.client.options.partials.includes(PartialTypes.USER)
+        ? guild.client.users.add({ id: data.user_id })
+        : guild.client.users.cache.get(data.user_id)
+      : null;
 
     /**
      * An entry in the audit log representing a specific change.

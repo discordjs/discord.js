@@ -744,7 +744,7 @@ declare module 'discord.js' {
     public changes: AuditLogChange[] | null;
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
-    public executor: User;
+    public executor: User | null;
     public extra: object | Role | GuildMember | null;
     public id: Snowflake;
     public reason: string | null;
