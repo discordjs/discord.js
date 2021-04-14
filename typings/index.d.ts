@@ -1324,6 +1324,7 @@ declare module 'discord.js' {
     private _fetches: Map<string, Promise<any>>;
     private _handleExit(respawn?: boolean): void;
     private _handleMessage(message: any): void;
+    private _handleDisconnect(message: any): void;
 
     public args: string[];
     public execArgv: string[];
@@ -1333,6 +1334,9 @@ declare module 'discord.js' {
     public process: ChildProcess | null;
     public ready: boolean;
     public worker: any | null;
+    public parentPort: any | null;
+    public pid: number | null;
+    public ppid: number | null;
     public eval(script: string): Promise<any>;
     public eval<T>(fn: (client: Client) => T): Promise<T[]>;
     public fetchClientValue(prop: string): Promise<any>;
@@ -1341,13 +1345,13 @@ declare module 'discord.js' {
     public send(message: any): Promise<Shard>;
     public spawn(spawnTimeout?: number): Promise<ChildProcess>;
 
-    public on(event: 'spawn' | 'death', listener: (child: ChildProcess) => void): this;
+    public on(event: 'spawn' | 'death' | 'parentDeath', listener: (child: ChildProcess) => void): this;
     public on(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => void): this;
     public on(event: 'error', listener: (error: Error) => void): this;
     public on(event: 'message', listener: (message: any) => void): this;
     public on(event: string, listener: (...args: any[]) => void): this;
 
-    public once(event: 'spawn' | 'death', listener: (child: ChildProcess) => void): this;
+    public once(event: 'spawn' | 'death' | 'parentDeath', listener: (child: ChildProcess) => void): this;
     public once(event: 'disconnect' | 'ready' | 'reconnecting', listener: () => void): this;
     public once(event: 'error', listener: (error: Error) => void): this;
     public once(event: 'message', listener: (message: any) => void): this;
@@ -1388,6 +1392,7 @@ declare module 'discord.js' {
         shardArgs?: string[];
         token?: string;
         execArgv?: string[];
+        timeout?: number;
       },
     );
     private _performOnShards(method: string, args: any[]): Promise<any[]>;
@@ -1398,6 +1403,7 @@ declare module 'discord.js' {
     public shardArgs: string[];
     public shards: Collection<number, Shard>;
     public token: string | null;
+    public timeout: number | null;
     public totalShards: number | 'auto';
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string): Promise<any[]>;
