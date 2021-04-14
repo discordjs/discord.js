@@ -1971,10 +1971,12 @@ declare module 'discord.js' {
     public create(name: string, options: GuildCreateChannelOptions & { type: 'voice' }): Promise<VoiceChannel>;
     public create(name: string, options: GuildCreateChannelOptions & { type: 'category' }): Promise<CategoryChannel>;
     public create(name: string, options?: GuildCreateChannelOptions & { type?: 'text' }): Promise<TextChannel>;
+    public create(name: string, options: GuildCreateChannelOptions & { type: 'news' }): Promise<NewsChannel>;
+    public create(name: string, options: GuildCreateChannelOptions & { type: 'store' }): Promise<StoreChannel>;
     public create(
       name: string,
       options: GuildCreateChannelOptions,
-    ): Promise<TextChannel | VoiceChannel | CategoryChannel>;
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel>;
   }
 
   export class GuildEmojiManager extends BaseGuildEmojiManager {
