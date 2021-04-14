@@ -5,8 +5,6 @@ let Structures;
 
 module.exports = (client, { d: data }) => {
   if (data.type === InteractionTypes.APPLICATION_COMMAND) {
-    if (data.guild_id && !client.guilds.cache.has(data.guild_id)) return;
-
     if (!Structures) Structures = require('../../../util/Structures');
     const CommandInteraction = Structures.get('CommandInteraction');
 

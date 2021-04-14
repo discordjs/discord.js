@@ -170,19 +170,19 @@ class CommandInteraction extends Interaction {
       const user = resolved.users[option.value];
       result.user = this.client.users.add(user);
 
-      const member = resolved.members?.[option.value];
-      if (member) {
+      if (this.guild) {
+        const member = resolved.members[option.value];
         member.user = user;
         result.member = this.guild.members.add(member);
       }
     }
 
-    if (option.type === ApplicationCommandOptionTypes.CHANNEL) {
+    if (option.type === ApplicationCommandOptionTypes.CHANNEL && this.guild) {
       const channel = resolved.channels[option.value];
       result.channel = this.client.channels.add(channel, this.guild);
     }
 
-    if (option.type === ApplicationCommandOptionTypes.ROLE) {
+    if (option.type === ApplicationCommandOptionTypes.ROLE && this.guild) {
       const role = resolved.roles[option.value];
       result.role = this.guild.roles.add(role);
     }
