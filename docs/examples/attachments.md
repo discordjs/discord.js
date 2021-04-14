@@ -10,10 +10,10 @@ The following examples use [MessageAttachment](/#/docs/main/master/class/Message
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -45,10 +45,10 @@ But what if you want to send an attachment with a message content? Fear not, for
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -82,10 +82,10 @@ Sending a local file isn't hard either! We'll be using [MessageAttachment](/#/do
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
@@ -120,13 +120,13 @@ You can use any buffer you want, and send it. Just make sure to overwrite the fi
 
 ```js
 // Extract the required classes from the discord.js module
-const { Client, MessageAttachment } = require('discord.js');
+const { Client, Intents, MessageAttachment } = require('discord.js');
 
 // Import the native fs module
 const fs = require('fs');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information

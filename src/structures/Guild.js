@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -181,7 +180,7 @@ class Guild extends Base {
      */
 
     /**
-     * An array of guild features partnered guilds have enabled
+     * An array of guild features available to the guild
      * @type {Features[]}
      */
     this.features = data.features;
@@ -335,14 +334,12 @@ class Guild extends Base {
      */
     this.vanityURLCode = data.vanity_url_code;
 
-    /* eslint-disable max-len */
     /**
      * The use count of the vanity URL code of the guild, if any
      * <info>You will need to fetch this parameter using {@link Guild#fetchVanityData} if you want to receive it</info>
      * @type {?number}
      */
     this.vanityURLUses = null;
-    /* eslint-enable max-len */
 
     /**
      * The description of the guild, if any
@@ -765,23 +762,6 @@ class Guild extends Base {
   }
 
   /**
-   * Fetches the vanity url invite code to this guild.
-   * Resolves with a string matching the vanity url invite code, not the full url.
-   * @returns {Promise<string>}
-   * @deprecated
-   * @example
-   * // Fetch invites
-   * guild.fetchVanityCode()
-   *   .then(code => {
-   *     console.log(`Vanity URL: https://discord.gg/${code}`);
-   *   })
-   *   .catch(console.error);
-   */
-  fetchVanityCode() {
-    return this.fetchVanityData().then(vanity => vanity.code);
-  }
-
-  /**
    * An object containing information about a guild's vanity invite.
    * @typedef {Object} Vanity
    * @property {?string} code Vanity invite code
@@ -805,6 +785,7 @@ class Guild extends Base {
       throw new Error('VANITY_URL');
     }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();
+    this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
 
     return data;
@@ -1163,7 +1144,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon) }, reason);
   }
 
   /**
@@ -1193,7 +1174,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash) }, reason);
   }
 
   /**
@@ -1208,7 +1189,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async setDiscoverySplash(discoverySplash, reason) {
-    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash), reason });
+    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash) }, reason);
   }
 
   /**
@@ -1222,7 +1203,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setBanner(banner, reason) {
-    return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+    return this.edit({ banner: await DataResolver.resolveImage(banner) }, reason);
   }
 
   /**
@@ -1477,10 +1458,5 @@ class Guild extends Base {
     );
   }
 }
-
-Guild.prototype.fetchVanityCode = deprecate(
-  Guild.prototype.fetchVanityCode,
-  'Guild#fetchVanityCode: Use fetchVanityData() instead',
-);
 
 module.exports = Guild;
