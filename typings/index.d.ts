@@ -2010,8 +2010,9 @@ declare module 'discord.js' {
     public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
-  export class GuildMemberRoleManager extends OverridableManager<Snowflake, Role, RoleResolvable> {
+  export class GuildMemberRoleManager {
     constructor(member: GuildMember);
+    public readonly cache: Collection<Snowflake, Role>;
     public readonly hoist: Role | null;
     public readonly color: Role | null;
     public readonly highest: Role;
@@ -2044,12 +2045,6 @@ declare module 'discord.js' {
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public delete(message: MessageResolvable): Promise<void>;
-  }
-
-  // Hacky workaround because changing the signature of an overridden method errors
-  class OverridableManager<V, K, R = any> extends BaseManager<V, K, R> {
-    public add(data: any, cache: any): any;
-    public set(key: any): any;
   }
 
   export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
