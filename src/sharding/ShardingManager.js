@@ -132,6 +132,13 @@ class ShardingManager extends EventEmitter {
     this.token = options.token ? options.token.replace(/^Bot\s*/i, '') : null;
 
     /**
+     * The interval between heartbeats to the master thread (only when {@link ShardingManager#mode} is `worker`)
+     * 30 seconds is recommend.
+     * @type {number}
+     */
+    this.timeout = options.token ?? 30000;
+
+    /**
      * A collection of shards that this manager has spawned
      * @type {Collection<number, Shard>}
      */
