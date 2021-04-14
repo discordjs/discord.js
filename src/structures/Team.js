@@ -3,7 +3,7 @@
 const Base = require('./Base');
 const TeamMember = require('./TeamMember');
 const Collection = require('../util/Collection');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a Client OAuth2 Application Team.
@@ -67,7 +67,7 @@ class Team extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**

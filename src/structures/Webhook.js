@@ -4,7 +4,7 @@ const APIMessage = require('./APIMessage');
 const Channel = require('./Channel');
 const { WebhookTypes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a webhook.
@@ -281,7 +281,7 @@ class Webhook {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**

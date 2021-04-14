@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents any channel on Discord.
@@ -51,7 +51,7 @@ class Channel extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
