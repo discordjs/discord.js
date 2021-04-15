@@ -170,15 +170,15 @@ class Guild extends Base {
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
+     * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
      * * PARTNERED
+     * * PREVIEW_ENABLED
      * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
      * * VIP_REGIONS
      * * WELCOME_SCREEN_ENABLED
-     * * MEMBER_VERIFICATION_GATE_ENABLED
-     * * PREVIEW_ENABLED
      * @typedef {string} Features
      */
 
