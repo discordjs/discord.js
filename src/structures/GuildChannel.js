@@ -235,9 +235,9 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async updateOverwrite(userOrRole, options, extraInfo) {
+  async updateOverwrite(userOrRole, options, extraInfo = {}) {
     const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
-    let { reason } = extraInfo;
+    const { reason } = extraInfo;
     const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
       await existing.update(options, reason);
@@ -261,7 +261,7 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  createOverwrite(userOrRole, options, extraInfo) {
+  createOverwrite(userOrRole, options, extraInfo = {}) {
     let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
     let { type, reason } = extraInfo;
     if (!type) {

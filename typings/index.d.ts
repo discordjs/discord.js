@@ -766,7 +766,7 @@ declare module 'discord.js' {
     public createOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOption,
-      reason?: string,
+      extraInfo?: ExtraOverwriteInfo,
     ): Promise<this>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
@@ -788,7 +788,7 @@ declare module 'discord.js' {
     public updateOverwrite(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOption,
-      reason?: string,
+      extraInfo?: ExtraOverwriteInfo,
     ): Promise<this>;
     public isText(): this is TextChannel | NewsChannel;
   }
@@ -2632,6 +2632,11 @@ declare module 'discord.js' {
     VoiceState: typeof VoiceState;
     Role: typeof Role;
     User: typeof User;
+  }
+
+  interface ExtraOverwriteInfo {
+    reason?: string;
+    type?: number;
   }
 
   interface FetchMemberOptions {
