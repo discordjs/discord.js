@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents a partial guild, received when using {@link GuildManager#fetch} to fetch multiple guilds.
