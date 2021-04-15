@@ -3269,7 +3269,6 @@ declare module 'discord.js' {
     public id: Snowflake;
     public name: string;
     public packID: Snowflake;
-    public previewAsset: string | null;
     public tags: string[];
     public readonly url: string;
   }
