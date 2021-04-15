@@ -45,8 +45,8 @@ class VoiceConnection extends EventEmitter {
     this.voiceManager = voiceManager;
 
     /**
-     * The voice channel this connection is currently serving
-     * @type {VoiceChannel}
+     * The voice channel or stage channel this connection is currently serving
+     * @type {VoiceChannel|StageChannel}
      */
     this.channel = channel;
 
@@ -306,8 +306,8 @@ class VoiceConnection extends EventEmitter {
   }
 
   /**
-   * Move to a different voice channel in the same guild.
-   * @param {VoiceChannel} channel The channel to move to
+   * Move to a different voice channel or stage channel in the same guild.
+   * @param {VoiceChannel|StageChannel} channel The channel to move to
    * @private
    */
   updateChannel(channel) {

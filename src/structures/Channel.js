@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const { ChannelTypes } = require('../util/Constants');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents any channel on Discord.
@@ -13,7 +13,7 @@ class Channel extends Base {
   constructor(client, data) {
     super(client);
 
-    const type = Object.keys(ChannelTypes)[data.type];
+    const type = ChannelTypes[data.type];
     /**
      * The type of the channel, either:
      * * `dm` - a DM channel
@@ -22,6 +22,7 @@ class Channel extends Base {
      * * `category` - a guild category channel
      * * `news` - a guild news channel
      * * `store` - a guild store channel
+     * * `stage` - a guild stage channel
      * * `unknown` - a generic channel of unknown type, could be Channel or GuildChannel
      * @type {string}
      */
@@ -50,7 +51,7 @@ class Channel extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -144,6 +145,11 @@ class Channel extends Base {
           case ChannelTypes.STORE: {
             const StoreChannel = Structures.get('StoreChannel');
             channel = new StoreChannel(guild, data);
+            break;
+          }
+          case ChannelTypes.STAGE: {
+            const StageChannel = Structures.get('StageChannel');
+            channel = new StageChannel(guild, data);
             break;
           }
         }

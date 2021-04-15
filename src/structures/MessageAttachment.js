@@ -79,6 +79,12 @@ class MessageAttachment {
      * @type {?number}
      */
     this.width = typeof data.width !== 'undefined' ? data.width : null;
+
+    /**
+     * This media type of this attachment
+     * @type {?string}
+     */
+    this.contentType = data.content_type ?? null;
   }
 
   /**

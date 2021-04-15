@@ -5,7 +5,7 @@ const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -137,6 +137,19 @@ class GuildMemberManager extends BaseManager {
   }
 
   /**
+   * Search for members in the guild based on a query.
+   * @param {Object} options Search options
+   * @property {string} options.query Filter members whose username or nickname start with this query
+   * @property {number} [options.limit=1] Maximum number of members to search
+   * @property {boolean} [options.cache=true] Whether or not to cache the fetched member(s)
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
+   */
+  async search({ query, limit = 1, cache = true } = {}) {
+    const data = await this.client.api.guilds(this.guild.id).members.search.get({ query: { query, limit } });
+    return data.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection());
+  }
+
+  /**
    * Prunes members from the guild based on how long they have been inactive.
    * <info>It's recommended to set options.count to `false` for large guilds.</info>
    * @param {Object} [options] Prune options
@@ -198,7 +211,7 @@ class GuildMemberManager extends BaseManager {
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot

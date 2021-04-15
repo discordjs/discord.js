@@ -6,6 +6,7 @@ const Messages = {
   CLIENT_INVALID_OPTION: (prop, must) => `The ${prop} option must be ${must}`,
   CLIENT_INVALID_PROVIDED_SHARDS: 'None of the provided shards were valid.',
   CLIENT_MISSING_INTENTS: 'Valid intents must be provided for the Client.',
+  CLIENT_NOT_READY: action => `The client needs to be logged in to ${action}.`,
 
   TOKEN_INVALID: 'An invalid token was provided.',
   TOKEN_MISSING: 'Request to use token, but token was unavailable to the client.',
@@ -56,9 +57,11 @@ const Messages = {
   VOICE_PLAY_INTERFACE_NO_BROADCAST: 'A broadcast cannot be played in this context.',
   VOICE_PLAY_INTERFACE_BAD_TYPE: 'Unknown stream type',
   VOICE_PRISM_DEMUXERS_NEED_STREAM: 'To play a webm/ogg stream, you need to pass a ReadableStream.',
+  VOICE_NOT_STAGE_CHANNEL: 'You are only allowed to do this in stage channels.',
 
   VOICE_STATE_UNCACHED_MEMBER: 'The member of this voice state is uncached.',
-  VOICE_STATE_NOT_OWN: 'You cannot self-deafen/mute on VoiceStates that do not belong to the ClientUser.',
+  VOICE_STATE_NOT_OWN:
+    'You cannot self-deafen/mute/request to speak on VoiceStates that do not belong to the ClientUser.',
   VOICE_STATE_INVALID_TYPE: name => `${name} must be a boolean.`,
 
   UDP_SEND_FAIL: 'Tried to send a UDP packet, but there is no socket available.',
