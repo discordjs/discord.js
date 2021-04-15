@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const { ApplicationCommandOptionTypes } = require('../util/Constants');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Represents an application command.
