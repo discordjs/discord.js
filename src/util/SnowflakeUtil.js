@@ -1,6 +1,6 @@
 'use strict';
 
-const Util = require('../util/Util');
+const Util = require('./Util');
 
 // Discord epoch (2015-01-01T00:00:00.000Z)
 const EPOCH = 1420070400000;
@@ -64,20 +64,16 @@ class SnowflakeUtil {
    */
   static deconstruct(snowflake) {
     const BINARY = Util.idToBinary(snowflake).toString(2).padStart(64, '0');
-    const res = {
+    return {
       timestamp: parseInt(BINARY.substring(0, 42), 2) + EPOCH,
+      get date() {
+        return new Date(this.timestamp);
+      },
       workerID: parseInt(BINARY.substring(42, 47), 2),
       processID: parseInt(BINARY.substring(47, 52), 2),
       increment: parseInt(BINARY.substring(52, 64), 2),
       binary: BINARY,
     };
-    Object.defineProperty(res, 'date', {
-      get: function get() {
-        return new Date(this.timestamp);
-      },
-      enumerable: true,
-    });
-    return res;
   }
 
   /**
