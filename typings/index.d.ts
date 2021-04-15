@@ -2747,15 +2747,15 @@ declare module 'discord.js' {
     | 'DISCOVERABLE'
     | 'FEATURABLE'
     | 'INVITE_SPLASH'
+    | 'MEMBER_VERIFICATION_GATE_ENABLED'
     | 'NEWS'
     | 'PARTNERED'
+    | 'PREVIEW_ENABLED'
     | 'RELAY_ENABLED'
     | 'VANITY_URL'
     | 'VERIFIED'
     | 'VIP_REGIONS'
-    | 'WELCOME_SCREEN_ENABLED'
-    | 'MEMBER_VERIFICATION_GATE_ENABLED'
-    | 'PREVIEW_ENABLED';
+    | 'WELCOME_SCREEN_ENABLED';
 
   interface GuildMemberEditData {
     nick?: string | null;
