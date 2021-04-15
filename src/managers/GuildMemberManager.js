@@ -5,7 +5,7 @@ const { Error, TypeError, RangeError } = require('../errors');
 const GuildMember = require('../structures/GuildMember');
 const Collection = require('../util/Collection');
 const { Events, OPCodes } = require('../util/Constants');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -134,6 +134,19 @@ class GuildMemberManager extends BaseManager {
       if (!options.limit && !options.withPresences) return this._fetchSingle(options);
     }
     return this._fetchMany(options);
+  }
+
+  /**
+   * Search for members in the guild based on a query.
+   * @param {Object} options Search options
+   * @property {string} options.query Filter members whose username or nickname start with this query
+   * @property {number} [options.limit=1] Maximum number of members to search
+   * @property {boolean} [options.cache=true] Whether or not to cache the fetched member(s)
+   * @returns {Promise<Collection<Snowflake, GuildMember>>}
+   */
+  async search({ query, limit = 1, cache = true } = {}) {
+    const data = await this.client.api.guilds(this.guild.id).members.search.get({ query: { query, limit } });
+    return data.reduce((col, member) => col.set(member.user.id, this.add(member, cache)), new Collection());
   }
 
   /**

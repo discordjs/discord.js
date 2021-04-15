@@ -51,13 +51,13 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
     if (roles) {
       data.roles = [];
       for (let role of roles instanceof Collection ? roles.values() : roles) {
-        role = this.guild.roles.resolve(role);
-        if (!role) {
+        const roleID = this.guild.roles.resolveID(role);
+        if (!roleID) {
           return Promise.reject(
             new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true),
           );
         }
-        data.roles.push(role.id);
+        data.roles.push(roleID);
       }
     }
 

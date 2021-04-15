@@ -25,7 +25,7 @@ const {
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
@@ -176,8 +176,10 @@ class Guild extends Base {
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
+     * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
      * * PARTNERED
+     * * PREVIEW_ENABLED
      * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
@@ -451,7 +453,7 @@ class Guild extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -918,11 +920,11 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.roles.resolve(role);
-        if (!role) {
+        let roleID = this.roles.resolveID(role);
+        if (!roleID) {
           throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
-        roles.push(role.id);
+        roles.push(roleID);
       }
       options.roles = roles;
     }
