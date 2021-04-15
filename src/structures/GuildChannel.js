@@ -217,8 +217,8 @@ class GuildChannel extends Channel {
    * Extra information about the overwrite
    * @typedef {Object} ExtraOverwriteInfo
    * @property {string} [reason] Reason for creating/editing this overwrite
-   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass automatic
-   * resolution of type that results in an error for uncached structure
+   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
+   * automatic resolution of type that results in an error for uncached structure
    */
 
   /**
