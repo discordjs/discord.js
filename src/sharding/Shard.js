@@ -2,9 +2,9 @@
 
 const EventEmitter = require('events');
 const path = require('path');
+const workerThreads = require('worker_threads');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
-const workerThreads = require('worker_threads');
 let childProcess = null;
 let Worker = null;
 
