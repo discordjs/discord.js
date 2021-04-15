@@ -4,6 +4,7 @@ const EventEmitter = require('events');
 const path = require('path');
 const { Error } = require('../errors');
 const Util = require('../util/Util');
+const workerThreads = require('worker_threads');
 let childProcess = null;
 let Worker = null;
 
@@ -22,7 +23,7 @@ class Shard extends EventEmitter {
     super();
 
     if (manager.mode === 'process') childProcess = require('child_process');
-    else if (manager.mode === 'worker') Worker = require('worker_threads').Worker;
+    else if (manager.mode === 'worker') Worker = workerThreads.Worker;
 
     /**
      * Manager that created the shard
@@ -146,19 +147,17 @@ class Shard extends EventEmitter {
       this.pid = this.process.pid;
       this.ppid = this.process.ppid;
     } else if (this.manager.mode === 'worker') {
-      this.parentPort = require('worker_threads').parentPort;
       this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
         .on('message', this._handleMessage.bind(this))
         .on('exit', this._exitListener);
 
-      if (this.worker) {
-        setInterval(() => {
-          this.parentPort = require('worker_threads').parentPort;
-          if (!this.parentPort) {
-            this._handleDisconnect({ parentThreadDisconnect: true });
-          }
-        }, this.manager.timeout);
-      }
+      this.parentPort = workerThreads.parentPort;
+
+      setInterval(() => {
+        if (!this.parentPort) {
+          this._handleDisconnect({ parentThreadDisconnect: true });
+        }
+      }, this.manager.timeout);
     }
 
     this._evals.clear();
