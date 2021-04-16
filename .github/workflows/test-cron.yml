@@ -93,5 +93,5 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run TSLint
+      - name: Run Unit Tests
         run: npm run test:jest
