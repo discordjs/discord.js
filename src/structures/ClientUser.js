@@ -91,14 +91,19 @@ class ClientUser extends Structures.get('User') {
   }
 
   /**
+   * Options for setting activities
+   * @typedef {Object} ActivitiesOptions
+   * @property {string} [name] Name of the activity
+   * @property {ActivityType|number} [type] Type of the activity
+   * @property {string} [url] Twitch / YouTube stream URL
+   */
+
+  /**
    * Data resembling a raw Discord presence.
    * @typedef {Object} PresenceData
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
-   * @property {Object} [activity] Activity the user is playing
-   * @property {string} [activity.name] Name of the activity
-   * @property {ActivityType|number} [activity.type] Type of the activity
-   * @property {string} [activity.url] Twitch / YouTube stream URL
+   * @property {ActivitiesOptions[]} [activities] Activity the user is playing
    * @property {?number|number[]} [shardID] Shard Id(s) to have the activity set on
    */
 
@@ -108,7 +113,7 @@ class ClientUser extends Structures.get('User') {
    * @returns {Presence}
    * @example
    * // Set the client user's presence
-   * client.user.setPresence({ activity: { name: 'with discord.js' }, status: 'idle' });
+   * client.user.setPresence({ activities: [{ name: 'with discord.js' }], status: 'idle' });
    */
   setPresence(data) {
     return this.client.presence.set(data);
@@ -140,6 +145,7 @@ class ClientUser extends Structures.get('User') {
    * Options for setting an activity.
    * @typedef ActivityOptions
    * @type {Object}
+   * @property {string} [name] Name of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType|number} [type] Type of the activity
    * @property {number|number[]} [shardID] Shard Id(s) to have the activity set on

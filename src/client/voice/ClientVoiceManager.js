@@ -67,8 +67,8 @@ class ClientVoiceManager {
   }
 
   /**
-   * Sets up a request to join a voice channel.
-   * @param {VoiceChannel} channel The voice channel to join
+   * Sets up a request to join a voice or stage channel.
+   * @param {VoiceChannel|StageChannel} channel The channel to join
    * @returns {Promise<VoiceConnection>}
    * @private
    */
