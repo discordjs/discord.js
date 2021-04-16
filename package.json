@@ -15,7 +15,7 @@
     "./esm": "./esm/discord.mjs"
   },
   "scripts": {
-    "test": "npm run lint && npm run docs:test && npm run lint:typings",
+    "test": "npm run lint && npm run docs:test && npm run lint:typings && jest",
     "test:typescript": "tsc",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml",
@@ -67,6 +67,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "husky": "^4.3.0",
     "jest": "^26.6.0",
+    "jest-circus": "^26.6.3",
     "json-filter-loader": "^1.0.0",
     "lint-staged": "^10.4.2",
     "prettier": "^2.1.2",
