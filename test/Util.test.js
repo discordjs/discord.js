@@ -235,7 +235,7 @@ describe('Util unit tests', () => {
     const promise = Util.delayFor(100).then(spy);
     jest.runAllTimers();
     await promise;
-    
+
     expect(spy).toHaveBeenCalled();
   });
 });
