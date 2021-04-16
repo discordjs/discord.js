@@ -1,9 +1,5 @@
 /* eslint-disable strict */
 const { Permissions } = require('../src');
-// You see, i understand this is supposed to be tests
-// for bitfields specifically but bitfields are abstract
-// and require more implementation before they can be used
-// so we're gonna use Permissions, okay? okay.
 
 describe('Bitfield unit tests', () => {
   test('Bitfield#any', () => {
