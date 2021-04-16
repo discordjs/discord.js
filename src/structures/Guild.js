@@ -528,17 +528,20 @@ class Guild extends Base {
   }
 
   /**
-   * The owner of the guild
-   * @type {?GuildMember}
-   * @readonly
+   * Options used to fetch the owner of guild.
+   * @typedef {Object} FetchOwnerOptions
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
-  get owner() {
-    return (
-      this.members.cache.get(this.ownerID) ||
-      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
-        ? this.members.add({ user: { id: this.ownerID } }, true)
-        : null)
-    );
+
+  /**
+   * Fetches the owner of the guild
+   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.members.fetch({ ...options, user: this.ownerID });
   }
 
   /**
