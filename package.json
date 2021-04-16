@@ -15,7 +15,8 @@
     "./esm": "./esm/discord.mjs"
   },
   "scripts": {
-    "test": "npm run lint && npm run docs:test && npm run lint:typings && jest",
+    "test": "npm run lint && npm run docs:test && npm run lint:typings && npm run test:jest",
+    "test:jest": "jest",
     "test:typescript": "tsc",
     "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json",
     "docs:test": "docgen --source src --custom docs/index.yml",
