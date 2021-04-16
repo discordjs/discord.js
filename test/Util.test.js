@@ -229,10 +229,13 @@ describe('Util unit tests', () => {
   });
 
   test('Util#delayFor', async () => {
-    const start = Date.now();
-    await Util.delayFor(100);
-    const stop = Date.now();
-    // Allow small margin of error for event loop
-    expect(stop - start - 100).toBeLessThanOrEqual(5);
+    jest.useFakeTimers();
+    const spy = jest.fn();
+
+    const promise = Util.delayFor(100).then(spy);
+    jest.runAllTimers();
+    await promise;
+    
+    expect(spy).toHaveBeenCalled();
   });
 });
