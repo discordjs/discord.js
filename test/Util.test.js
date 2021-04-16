@@ -1,3 +1,4 @@
+/* eslint-disable strict */
 const { Util, Collection } = require('../src');
 
 describe('Util unit tests', () => {
@@ -210,22 +211,28 @@ describe('Util unit tests', () => {
   });
 
   test('Util#idToBinary', () => {
-    expect(Util.idToBinary('492374435274162177')).toStrictEqual('11011010101010000111111000010101111000000000000000000000001');
+    expect(Util.idToBinary('492374435274162177')).toStrictEqual(
+      '11011010101010000111111000010101111000000000000000000000001',
+    );
   });
 
   test('Util#binaryToIDn', () => {
-    expect(Util.binaryToID('11011010101010000111111000010101111000000000000000000000001')).toStrictEqual('492374435274162177');
+    expect(Util.binaryToID('11011010101010000111111000010101111000000000000000000000001')).toStrictEqual(
+      '492374435274162177',
+    );
   });
 
   test('Util#removeMentions', () => {
-    expect(Util.removeMentions('<@​!492374435274162177> @​everyone')).toStrictEqual('<@​\u200b!492374435274162177> @​\u200beveryone')
+    expect(Util.removeMentions('<@​!492374435274162177> @​everyone')).toStrictEqual(
+      '<@​\u200b!492374435274162177> @​\u200beveryone',
+    );
   });
 
   test('Util#delayFor', async () => {
     const start = Date.now();
     await Util.delayFor(100);
     const stop = Date.now();
-    // allow small margin of error for event loop
+    // Allow small margin of error for event loop
     expect(stop - start - 100).toBeLessThanOrEqual(5);
   });
 });
