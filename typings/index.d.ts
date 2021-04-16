@@ -641,7 +641,6 @@ declare module 'discord.js' {
     public mfaLevel: number;
     public name: string;
     public readonly nameAcronym: string;
-    public readonly owner: GuildMember | null;
     public ownerID: Snowflake;
     public readonly partnered: boolean;
     public preferredLocale: string;
@@ -682,6 +681,7 @@ declare module 'discord.js' {
     public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
+    public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
     public fetchPreview(): Promise<GuildPreview>;
     public fetchTemplates(): Promise<Collection<GuildTemplate['code'], GuildTemplate>>;
     public fetchVanityData(): Promise<Vanity>;
@@ -2696,6 +2696,8 @@ declare module 'discord.js' {
     attachment: BufferResolvable | Stream;
     name?: string;
   }
+
+  type FetchOwnerOptions = Omit<FetchMemberOptions, 'user'>;
 
   type GuildAuditLogsAction = keyof GuildAuditLogsActions;
 
