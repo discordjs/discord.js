@@ -158,11 +158,11 @@ class CommandInteraction extends Interaction {
       type: ApplicationCommandOptionTypes[option.type],
     };
 
-    if (option.value) {
+    if ('value' in option) {
       result.value = option.value;
     }
 
-    if (option.options) {
+    if ('options' in option) {
       result.options = option.options.map(o => this.transformOption(o, resolved));
     }
 
@@ -171,9 +171,8 @@ class CommandInteraction extends Interaction {
       result.user = this.client.users.add(user);
 
       if (this.guild) {
-        const member = resolved.members[option.value];
-        member.user = user;
-        result.member = this.guild.members.add(member);
+        const member = resolved.members?.[option.value];
+        if (member) result.member = this.guild.members.add({ user, ...member });
       }
     }
 
