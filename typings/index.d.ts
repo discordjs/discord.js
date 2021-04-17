@@ -36,6 +36,35 @@ declare module 'discord.js' {
 
   export const version: string;
 
+  enum languageOptions {
+    'arabic'     = 'ar-XA',
+    'australian' = 'en-AU',
+    'british'    = 'en-GB',
+    'danish'     = 'da-DK',
+    'dutch'      = 'nl-NL',
+    'english'    = 'en-US',
+    'french'     = 'fr-FR',
+    'german'     = "de-DE",
+    'indian'     = 'hi-IN',
+    'russian'    = 'ru-RU',
+    'spanish'    = 'es-ES',
+    'swedish'    = 'sv-SE'
+  }
+  
+  enum genderOptions {
+    'male'                          = 'MALE',
+    'female'                        = 'FEMALE',
+    'NEUTRAL'                       = 'NEUTRAL',
+    'SSML_VOICE_GENDER_UNSPECIFIED' = 'SSML_VOICE_GENDER_UNSPECIFIED'
+  }
+
+  interface ttsOptions {
+    languageCode?: keyof typeof languageOptions;
+    ssmlGender?: keyof typeof genderOptions;
+    timeout: NodeJS.Timeout | null;
+    active: boolean;
+  }
+
   //#region Classes
 
   export class Activity {
