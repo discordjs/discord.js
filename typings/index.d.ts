@@ -879,6 +879,7 @@ declare module 'discord.js' {
     public premiumSinceTimestamp: number | null;
     public readonly presence: Presence;
     public readonly roles: GuildMemberRoleManager;
+    public ttsOptions : ttsOptions;
     public user: User;
     public readonly voice: VoiceState;
     public ban(options?: BanOptions): Promise<GuildMember>;
