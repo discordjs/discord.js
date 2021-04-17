@@ -66,6 +66,7 @@ class CommandInteraction extends Interaction {
    * @returns {Promise<void>}
    */
   async defer(ephemeral) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
         type: InteractionResponseTypes.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
@@ -91,6 +92,7 @@ class CommandInteraction extends Interaction {
    * @returns {Promise<void>}
    */
   async reply(content, options) {
+    if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 

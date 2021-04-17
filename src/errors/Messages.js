@@ -110,6 +110,8 @@ const Messages = {
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
+
+  INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
