@@ -18,30 +18,17 @@ class WelcomeScreen extends Base {
      */
     this.guild = guild;
 
-    this._patch(data);
-  }
-
-  /**
-   * Builds the welcome screen with the provided data.
-   * @param {*} data The raw data of the welcome screen
-   * @private
-   */
-  _patch(data) {
-    if (!data) return;
-
     /**
      * The description of this welcome screen
      * @type {?string}
      */
     this.description = data.description ?? null;
 
-    if (!this.welcomeChannels) {
-      /**
-       * Collection of welcome channels belonging to this welcome screen
-       * @type {Collection<Snowflake, WelcomeChannel>}
-       */
-      this.welcomeChannels = new Collection();
-    }
+    /**
+     * Collection of welcome channels belonging to this welcome screen
+     * @type {Collection<Snowflake, WelcomeChannel>}
+     */
+    this.welcomeChannels = new Collection();
 
     for (const channel of data.welcome_channels) {
       const welcomeChannel = new WelcomeChannel(this.guild, channel);
