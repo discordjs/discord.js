@@ -20,7 +20,7 @@ class IntegrationApplication extends Application {
      * The url of the app's terms of service
      * @type {?string}
      */
-    this.termsOfServiceURL = data.terms_of_service_url ?? this.terms_of_service_url ?? null;
+    this.termsOfServiceURL = data.terms_of_service_url ?? this.termsOfServiceURL ?? null;
 
     /**
      * The url of the app's privacy policy
