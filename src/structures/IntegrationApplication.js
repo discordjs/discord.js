@@ -41,7 +41,7 @@ class IntegrationApplication extends Application {
     this.summary = data.summary ?? this.summary ?? null;
 
     /**
-     * Whether the application has been associated with a webhook
+     * Whether the application can be default hooked by the client
      * @type {?boolean}
      */
     this.hook = data.hook ?? this.hook ?? null;
