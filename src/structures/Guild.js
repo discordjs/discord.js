@@ -101,6 +101,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
+
+    if ('nsfw' in data) {
+      /**
+       * Whether the guild is designated as not safe for work
+       * @type {boolean}
+       */
+      this.nsfw = data.nsfw;
+    }
   }
 
   /**
