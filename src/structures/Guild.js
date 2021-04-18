@@ -102,12 +102,12 @@ class Guild extends Base {
      */
     this.shardID = data.shardID;
 
-    if ('nsfw' in data || typeof this.nsfw !== 'boolean') {
+    if ('nsfw' in data) {
       /**
        * Whether the guild is designated as not safe for work
        * @type {boolean}
        */
-      this.nsfw = Boolean(data.nsfw);
+      this.nsfw = data.nsfw;
     }
   }
 
