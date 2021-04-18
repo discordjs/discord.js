@@ -3,6 +3,7 @@
 const APIMessage = require('./APIMessage');
 const Interaction = require('./Interaction');
 const WebhookClient = require('../client/WebhookClient');
+const { Error } = require('../errors');
 const { ApplicationCommandOptionTypes, InteractionResponseTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 
