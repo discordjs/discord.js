@@ -72,13 +72,13 @@ class Invite extends Base {
     this.inviter = data.inviter ? this.client.users.add(data.inviter) : null;
 
     /**
-     * The target user of this invite
+     * The user whose stream to display for this voice channel stream invite
      * @type {?User}
      */
     this.targetUser = data.target_user ? this.client.users.add(data.target_user) : null;
 
     /**
-     * The target application of this invite
+     * The embedded application to open for this voice channel embedded application invite
      * @type {?IntegrationApplication}
      */
     this.targetApplication = data.target_application
