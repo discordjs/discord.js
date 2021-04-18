@@ -17,16 +17,6 @@ class WelcomeChannel extends Base {
      */
     this.guild = guild;
 
-    this._patch(data);
-  }
-
-  /**
-   * Builds the welcome channel with the provided data.
-   * @param {*} data The raw data of this welcome channel
-   * @private
-   */
-  _patch(data) {
-    if (!data) return;
     /**
      * The description of this welcome channel
      * @type {string}
