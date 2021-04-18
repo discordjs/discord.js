@@ -53,7 +53,7 @@ class IntegrationApplication extends Application {
     this.cover = data.cover_image ?? this.cover ?? null;
 
     /**
-     * The hex-encoded key for verification in interactions and the GameSDK's GetTicket
+     * The hex-encoded key for verification in interactions and the GameSDK's GetTicket
      * @type {?string}
      */
     this.verifyKey = data.verify_key ?? this.verifyKey ?? null;
