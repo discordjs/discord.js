@@ -29,7 +29,7 @@ declare enum OverwriteTypes {
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
-  import { APIMessage as RawMessage, APIOverwrite as RawOverwrite } from 'discord-api-types';
+  import { APIMessage as RawMessage, APIOverwrite as RawOverwrite } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
