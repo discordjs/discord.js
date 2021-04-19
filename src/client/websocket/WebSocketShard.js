@@ -265,7 +265,8 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onOpen() {
-    this.debug(`[CONNECTED] ${(this.connection ? this.connection.url : "CONNECTION URL NOT FOUND")} in ${Date.now() - this.connectedAt}ms`);
+    const connectionurl = this.connection ? this.connection.url : 'CONNECTION URL NOT FOUND';
+    this.debug(`[CONNECTED] ${connectionurl} in ${Date.now() - this.connectedAt}ms`);
     this.status = Status.NEARLY;
   }
 
