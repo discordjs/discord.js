@@ -2,9 +2,9 @@
 
 const assert = require('assert');
 const { token } = require('./auth');
-const { Client } = require('../src');
+const { Client, Intents } = require('../src');
 
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 client.on('ready', async () => {
   try {
@@ -22,9 +22,10 @@ client.on('ready', async () => {
     assert.strictEqual(guild.afkTimeout, 60);
     assert.strictEqual(guild.systemChannel.name, 'system-channel');
     await guild.delete();
-    client.destroy();
   } catch (error) {
     console.error(error);
+  } finally {
+    client.destroy();
   }
 });
 

@@ -64,6 +64,12 @@ class GuildMember extends Base {
      */
     this.nickname = null;
 
+    /**
+     * Whether this member has yet to pass the guild's membership gate
+     * @type {boolean}
+     */
+    this.pending = false;
+
     this._roles = [];
     if (data) this._patch(data);
   }
@@ -79,8 +85,11 @@ class GuildMember extends Base {
 
     if ('nick' in data) this.nickname = data.nick;
     if ('joined_at' in data) this.joinedTimestamp = new Date(data.joined_at).getTime();
-    if ('premium_since' in data) this.premiumSinceTimestamp = new Date(data.premium_since).getTime();
+    if ('premium_since' in data) {
+      this.premiumSinceTimestamp = data.premium_since === null ? null : new Date(data.premium_since).getTime();
+    }
     if ('roles' in data) this._roles = data.roles;
+    this.pending = data.pending ?? false;
   }
 
   _clone() {
@@ -204,7 +213,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The overall set of permissions for this member, taking only roles into account
+   * The overall set of permissions for this member, taking only roles and owner status into account
    * @type {Readonly<Permissions>}
    * @readonly
    */
@@ -258,20 +267,6 @@ class GuildMember extends Base {
   }
 
   /**
-   * Checks if any of this member's roles have a permission.
-   * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {Object} [options] Options
-   * @param {boolean} [options.checkAdmin=true] Whether to allow the administrator permission to override
-   * @param {boolean} [options.checkOwner=true] Whether to allow being the guild's owner to override
-   * @returns {boolean}
-   */
-  hasPermission(permission, { checkAdmin = true, checkOwner = true } = {}) {
-    if (checkOwner && this.user.id === this.guild.ownerID) return true;
-    const permissions = new Permissions(this.roles.cache.map(role => role.permissions));
-    return permissions.has(permission, checkAdmin);
-  }
-
-  /**
    * The data for editing a guild member.
    * @typedef {Object} GuildMemberEditData
    * @property {?string} [nick] The nickname to set for the member
@@ -290,11 +285,12 @@ class GuildMember extends Base {
    */
   async edit(data, reason) {
     if (data.channel) {
-      data.channel = this.guild.channels.resolve(data.channel);
-      if (!data.channel || data.channel.type !== 'voice') {
+      const voiceChannelID = this.guild.channels.resolveID(data.channel);
+      const voiceChannel = this.guild.channels.cache.get(voiceChannelID);
+      if (!voiceChannelID || (voiceChannel && voiceChannel?.type !== 'voice')) {
         throw new Error('GUILD_VOICE_CHANNEL_RESOLVE');
       }
-      data.channel_id = data.channel.id;
+      data.channel_id = voiceChannelID;
       data.channel = undefined;
     } else if (data.channel === null) {
       data.channel_id = null;
@@ -359,7 +355,7 @@ class GuildMember extends Base {
   /**
    * Bans this guild member.
    * @param {Object} [options] Options for the ban
-   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7
+   * @param {number} [options.days=0] Number of days of messages to delete, must be between 0 and 7, inclusive
    * @param {string} [options.reason] Reason for banning
    * @returns {Promise<GuildMember>}
    * @example

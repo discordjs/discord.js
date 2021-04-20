@@ -2,7 +2,7 @@
   "name": "discord.js",
   "version": "12.5.0",
   "description": "A powerful library for interacting with the Discord API",
-  "main": "./src/index",
+  "main": "./src/index.js",
   "types": "./typings/index.d.ts",
   "exports": {
     ".": [
@@ -50,7 +50,6 @@
     "abort-controller": "^3.0.0",
     "node-fetch": "^2.6.1",
     "prism-media": "^1.2.2",
-    "setimmediate": "^1.0.5",
     "tweetnacl": "^1.0.3",
     "ws": "^7.3.1"
   },
@@ -111,7 +110,10 @@
           "refactor",
           "revert",
           "style",
-          "test"
+          "test",
+          "types",
+          "workflow",
+          "wip"
         ]
       ]
     }

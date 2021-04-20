@@ -56,13 +56,19 @@ class ClientVoiceManager {
       this.connections.delete(guild_id);
       return;
     }
-    connection.channel = this.client.channels.cache.get(channel_id);
-    connection.setSessionID(session_id);
+    const channel = this.client.channels.cache.get(channel_id);
+    if (channel) {
+      connection.channel = channel;
+      connection.setSessionID(session_id);
+    } else {
+      this.client.emit('debug', `[VOICE] disconnecting from guild ${guild_id} as channel ${channel_id} is uncached`);
+      connection.disconnect();
+    }
   }
 
   /**
-   * Sets up a request to join a voice channel.
-   * @param {VoiceChannel} channel The voice channel to join
+   * Sets up a request to join a voice or stage channel.
+   * @param {VoiceChannel|StageChannel} channel The channel to join
    * @returns {Promise<VoiceConnection>}
    * @private
    */

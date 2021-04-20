@@ -25,6 +25,6 @@ Update to Node.js 14.0.0 or newer.
 - **Windows:** Run `npm install --global --production windows-build-tools` in an admin command prompt or PowerShell.
   Then, running `npm install @discordjs/opus` in your bot's directory should successfully build it. Woo!
 
-Other questions can be found at the [official Discord.js guide](https://discordjs.guide/popular-topics/common-questions.html)
+Other questions can be found at the [official Discord.js guide](https://discordjs.guide/popular-topics/faq.html)
 If you have issues not listed here or on the guide, feel free to ask in the [official Discord.js server](https://discord.gg/bRCvFy9).
 Always make sure to read the [documentation](https://discord.js.org/#/docs/main/stable/general/welcome).
