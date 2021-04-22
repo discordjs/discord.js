@@ -136,7 +136,7 @@ class ApplicationCommandManager extends BaseManager {
       if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
       const data = await this.commandPath(id).permissions.get();
-      return data.permissions.map(o => this.constructor.transformPermissions(o, true));
+      return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
     }
 
     const data = await this.commandPath.permissions.get();
@@ -171,7 +171,7 @@ class ApplicationCommandManager extends BaseManager {
       const data = await this.commandPath(id).permissions.put({
         data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
       });
-      return data.map(perm => this.constructor.transformPermissions(perm, true));
+      return data.permissions.map(perm => this.constructor.transformPermissions(perm, true));
     }
 
     const data = await this.commandPath.permissions.put({
