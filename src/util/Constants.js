@@ -740,7 +740,7 @@ exports.WebhookTypes = [
 exports.OverwriteTypes = createEnum(['role', 'member']);
 
 /**
- * The type of an application command option:
+ * The type of an {@link ApplicationCommandOption} object:
  * * SUB_COMMAND
  * * SUB_COMMAND_GROUP
  * * STRING
@@ -764,7 +764,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
 ]);
 
 /**
- * The type of an `ApplicationCommandPermissions` object:
+ * The type of an {@link ApplicationCommandPermissions} object:
  * * ROLE
  * * USER
  * @typedef {string} ApplicationCommandPermissionType
@@ -772,7 +772,7 @@ exports.ApplicationCommandOptionTypes = createEnum([
 exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 
 /**
- * The type of a received interaction:
+ * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
  * @typedef {string} InteractionType
@@ -780,7 +780,7 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
 exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND']);
 
 /**
- * The type of a response to a received interaction:
+ * The type of an interaction response:
  * * PONG
  * * CHANNEL_MESSAGE_WITH_SOURCE
  * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
