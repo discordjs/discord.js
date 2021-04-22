@@ -1033,6 +1033,7 @@ declare module 'discord.js' {
 
   export class Interaction extends Base {
     constructor(client: Client, data: object);
+    public applicationID: Snowflake;
     public readonly channel: Channel | null;
     public channelID: Snowflake | null;
     public readonly createdAt: Date;
@@ -1044,6 +1045,7 @@ declare module 'discord.js' {
     public readonly token: string;
     public type: InteractionType;
     public user: User;
+    public version: number;
     public isCommand(): this is CommandInteraction;
   }
 

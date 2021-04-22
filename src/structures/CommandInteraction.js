@@ -49,7 +49,7 @@ class CommandInteraction extends Interaction {
      * An associated webhook client, can be used to create deferred replies
      * @type {WebhookClient}
      */
-    this.webhook = new WebhookClient(data.application_id, data.token, this.client.options);
+    this.webhook = new WebhookClient(this.applicationID, this.token, this.client.options);
   }
 
   /**
@@ -111,7 +111,7 @@ class CommandInteraction extends Interaction {
    * @returns {Promise<?Message>}
    */
   async fetchReply() {
-    const raw = await this.client.api.webhooks(this.client.application.id, this.token).messages('@original').get();
+    const raw = await this.client.api.webhooks(this.applicationID, this.token).messages('@original').get();
     return this.channel?.messages.add(raw) ?? null;
   }
 

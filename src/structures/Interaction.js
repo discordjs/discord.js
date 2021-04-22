@@ -33,6 +33,12 @@ class Interaction extends Base {
     Object.defineProperty(this, 'token', { value: data.token });
 
     /**
+     * The ID of the application
+     * @type {Snowflake}
+     */
+    this.applicationID = data.application_id;
+
+    /**
      * The ID of the channel this interaction was sent in
      * @type {?Snowflake}
      */
@@ -55,6 +61,12 @@ class Interaction extends Base {
      * @type {?GuildMember}
      */
     this.member = data.member ? this.guild?.members.add(data.member) ?? null : null;
+
+    /**
+     * The version
+     * @type {number}
+     */
+    this.version = data.version;
   }
 
   /**
