@@ -42,7 +42,7 @@
   "bugs": {
     "url": "https://github.com/discordjs/discord.js/issues"
   },
-  "homepage": "https://github.com/discordjs/discord.js#readme",
+  "homepage": "https://discord.js.org",
   "runkitExampleFilename": "./docs/examples/ping.js",
   "dependencies": {
     "@discordjs/collection": "^0.1.6",
