@@ -215,7 +215,7 @@ class ApplicationCommandManager extends BaseManager {
     return {
       ...permissions,
       type:
-        permissions.type === 'number' && !received
+        typeof permissions.type === 'number' && !received
           ? permissions.type
           : ApplicationCommandPermissionTypes[permissions.type],
     };

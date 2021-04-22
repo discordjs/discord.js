@@ -178,7 +178,7 @@ class ApplicationCommand extends Base {
   static transformOption(option, received) {
     return {
       ...option,
-      type: option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
+      type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       options: option.options?.map(o => this.transformOption(o)),
     };
   }
