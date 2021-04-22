@@ -174,7 +174,7 @@ declare module 'discord.js' {
     public delete(): Promise<ApplicationCommand>;
     public edit(data: ApplicationCommandData): Promise<ApplicationCommand>;
     public fetchPermissions(): Promise<ApplicationCommandPermissions[]>;
-    public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommand>;
+    public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
 
@@ -2064,7 +2064,10 @@ declare module 'discord.js' {
     public setPermissions(
       command: ApplicationCommandResolvable,
       permissions: ApplicationCommandPermissionData[],
-    ): Promise<ApplicationCommand | null>;
+    ): Promise<ApplicationCommandPermissions[]>;
+    public setPermissions(
+      permissions: GuildApplicationCommandPermissionData[],
+    ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
     private static transformCommand(command: ApplicationCommandData): object;
     private static transformPermissions(permissions: ApplicationCommandPermissionData, received?: boolean): object;
   }
@@ -2868,6 +2871,11 @@ declare module 'discord.js' {
   interface FileOptions {
     attachment: BufferResolvable | Stream;
     name?: string;
+  }
+
+  interface GuildApplicationCommandPermissionData {
+    id: Snowflake;
+    permissions: ApplicationCommandPermissionData[];
   }
 
   type GuildAuditLogsAction = keyof GuildAuditLogsActions;

@@ -144,7 +144,7 @@ class ApplicationCommand extends Base {
   /**
    * Sets the permissions for this command.
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
-   * @returns {Promise<ApplicationCommand>}
+   * @returns {Promise<ApplicationCommandPermissions[]>}
    */
   setPermissions(permissions) {
     return this.manager.setPermissions(this, permissions);

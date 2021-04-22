@@ -139,31 +139,55 @@ class ApplicationCommandManager extends BaseManager {
       return data.permissions.map(o => this.constructor.transformPermissions(o, true));
     }
 
-    const commands = await this.commandPath.permissions.get();
-    return commands.reduce(
-      (coll, data) =>
+    const data = await this.commandPath.permissions.get();
+    return data.reduce(
+      (coll, perm) =>
         coll.set(
-          data.id,
-          data.permissions.map(o => this.constructor.transformPermissions(o, true)),
+          perm.id,
+          perm.permissions.map(p => this.constructor.transformPermissions(p, true)),
         ),
       new Collection(),
     );
   }
 
   /**
+   * Data used for overwriting the permissions for all application commands in a guild.
+   * @typedef {object} GuildApplicationCommandPermissionData
+   * @prop {Snowflake} command The ID of the command
+   * @prop {ApplicationCommandPermissionData[]} permissions The permissions for this command
+   */
+
+  /**
    * Sets the permissions for a command.
-   * @param {ApplicationCommandResolvable} command The command to edit the permissions for
-   * @param {ApplicationCommandPermissions[]} permissions The new permissions for the command
-   * @returns {Promise<?ApplicationCommand>}
+   * @param {ApplicationCommandResolvable|GuildApplicationCommandPermissionData[]} command The command to edit the
+   * permissions for, or an array of guild application command permissions to set the permissions of all commands
+   * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
+   * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    */
   async setPermissions(command, permissions) {
     const id = this.resolveID(command);
-    if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    await this.commandPath(id).permissions.put({
-      data: { permissions: permissions.map(p => this.constructor.transformPermissions(p)) },
+    if (id) {
+      const data = await this.commandPath(id).permissions.put({
+        data: { permissions: permissions.map(perm => this.constructor.transformPermissions(perm)) },
+      });
+      return data.map(perm => this.constructor.transformPermissions(perm, true));
+    }
+
+    const data = await this.commandPath.permissions.put({
+      data: command.map(perm => ({
+        ...perm,
+        permissions: perm.permissions.map(p => this.constructor.transformPermissions(p)),
+      })),
     });
-    return this.cache.get(id) ?? null;
+    return data.reduce(
+      (coll, perm) =>
+        coll.set(
+          perm.id,
+          perm.permissions.map(p => this.constructor.transformPermissions(p, true)),
+        ),
+      new Collection(),
+    );
   }
 
   /**
