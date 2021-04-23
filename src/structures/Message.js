@@ -77,6 +77,13 @@ class Message extends Base {
     } else if (typeof this.content !== 'string') {
       this.content = null;
     }
+    
+     // Stickers added by raksix
+    if('stickers' in data){
+      this.stickers = data.stickers
+    } else if (!this.stickers) {
+      this.stickers = null;
+    }
 
     if ('author' in data) {
       /**
