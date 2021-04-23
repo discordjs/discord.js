@@ -2282,14 +2282,17 @@ declare module 'discord.js' {
     readonly createdTimestamp: number;
     readonly url: string;
     delete(reason?: string): Promise<void>;
-    deleteMessage(message: MessageResolvable): Promise<void>;
+    deleteMessage(message: MessageResolvable | '@original'): Promise<void>;
     edit(options: WebhookEditData): Promise<Webhook>;
     editMessage(
-      message: MessageResolvable,
+      message: MessageResolvable | '@original',
       content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
     ): Promise<Message | RawMessage>;
-    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    editMessage(
+      message: MessageResolvable | '@original',
+      options: WebhookEditMessageOptions,
+    ): Promise<Message | RawMessage>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message | RawMessage>;

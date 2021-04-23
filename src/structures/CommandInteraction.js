@@ -117,6 +117,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Edits the initial reply to this interaction.
+   * @see WebhookClient#editMessage
    * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
    * @param {WebhookEditMessageOptions} [options] The options to provide
    * @returns {Promise<Message|Object>}
@@ -128,6 +129,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Deletes the initial reply to this interaction.
+   * @see WebhookClient#deleteMessage
    * @returns {Promise<void>}
    */
   async deleteReply() {
