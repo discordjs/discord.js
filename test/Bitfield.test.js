@@ -12,7 +12,7 @@ describe('Bitfield unit tests', () => {
     const bf = new Permissions([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.VIEW_CHANNEL]);
     // Redundant?
     expect(
-      bf.equals(new Permissions([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.VIEW_CHANNEL]).bitfield),
+      bf.equals(bf.bitfield),
     ).toStrictEqual(true);
     expect(bf.equals(Permissions.FLAGS.ADMINISTRATOR)).toStrictEqual(false);
   });
