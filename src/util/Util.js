@@ -531,33 +531,33 @@ class Util {
   /**
    * The content to have all mentions replaced by the equivalent text.
    * @param {string} str The string to be converted
-   * @param {Message} message The message object to reference
+   * @param {Channel} channel The channel the string was sent in
    * @returns {string}
    */
-  static cleanContent(str, message) {
+  static cleanContent(str, channel) {
     str = str
       .replace(/<@!?[0-9]+>/g, input => {
         const id = input.replace(/<|!|>|@/g, '');
-        if (message.channel.type === 'dm') {
-          const user = message.client.users.cache.get(id);
+        if (channel.type === 'dm') {
+          const user = channel.client.users.cache.get(id);
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
 
-        const member = message.channel.guild.members.cache.get(id);
+        const member = channel.guild.members.cache.get(id);
         if (member) {
           return Util.removeMentions(`@${member.displayName}`);
         } else {
-          const user = message.client.users.cache.get(id);
+          const user = channel.client.users.cache.get(id);
           return user ? Util.removeMentions(`@${user.username}`) : input;
         }
       })
       .replace(/<#[0-9]+>/g, input => {
-        const channel = message.client.channels.cache.get(input.replace(/<|#|>/g, ''));
-        return channel ? `#${channel.name}` : input;
+        const mentionedChannel = channel.client.channels.cache.get(input.replace(/<|#|>/g, ''));
+        return mentionedChannel ? `#${mentionedChannel.name}` : input;
       })
       .replace(/<@&[0-9]+>/g, input => {
-        if (message.channel.type === 'dm') return input;
-        const role = message.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
+        if (channel.type === 'dm') return input;
+        const role = channel.guild.roles.cache.get(input.replace(/<|@|>|&/g, ''));
         return role ? `@${role.name}` : input;
       });
     return str;
