@@ -28,7 +28,7 @@ client.once('ready', () => {
 });
 ```
 
-And that's it! As soon as your client gets ready, it will register the `echo` command.
+And that's it! As soon as your client is ready, it will register the `echo` command.
 
 ## Handling Commands
 
