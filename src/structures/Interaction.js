@@ -58,9 +58,9 @@ class Interaction extends Base {
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?GuildMember}
+     * @type {?GuildMember|Object}
      */
-    this.member = data.member ? this.guild?.members.add(data.member) ?? null : null;
+    this.member = data.member ? this.guild?.members.add(data.member) ?? data.member : null;
 
     /**
      * The version

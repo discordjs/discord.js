@@ -56,7 +56,11 @@ declare enum OverwriteTypes {
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
-  import { APIMessage as RawMessage, APIOverwrite as RawOverwrite } from 'discord-api-types/v8';
+  import {
+    APIGuildMember as RawGuildMember,
+    APIMessage as RawMessage,
+    APIOverwrite as RawOverwrite,
+  } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
@@ -415,8 +419,8 @@ declare module 'discord.js' {
     public editReply(
       content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
-    ): Promise<Message | null>;
-    public fetchReply(): Promise<Message | null>;
+    ): Promise<Message | RawMessage>;
+    public fetchReply(): Promise<Message | RawMessage>;
     public reply(
       content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
       options?: InteractionReplyOptions,
@@ -1043,7 +1047,7 @@ declare module 'discord.js' {
     public readonly guild: Guild | null;
     public guildID: Snowflake | null;
     public id: Snowflake;
-    public member: GuildMember | null;
+    public member: GuildMember | RawGuildMember | null;
     public readonly token: string;
     public type: InteractionType;
     public user: User;
