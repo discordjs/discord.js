@@ -199,8 +199,7 @@ class ShardClientUtil {
    */
   _respond(type, message) {
     this.send(message).catch(err => {
-      let error = {err}
-      error.message = `Error when sending ${type} response to master process: ${err.message}`;
+      let error = new Error(`Error when sending ${type} response to master process: ${err.message}`);
       /**
        * Emitted when the client encounters an error.
        * @event Client#error
