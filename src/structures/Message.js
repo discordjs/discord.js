@@ -13,7 +13,7 @@ const Collection = require('../util/Collection');
 const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -323,7 +323,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this) : null;
+    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
   }
 
   /**

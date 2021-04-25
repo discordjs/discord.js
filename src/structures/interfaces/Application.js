@@ -1,7 +1,7 @@
 'use strict';
 
 const { ClientApplicationAssetTypes, Endpoints } = require('../../util/Constants');
-const Snowflake = require('../../util/Snowflake');
+const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Base = require('../Base');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
@@ -48,7 +48,7 @@ class Application extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
