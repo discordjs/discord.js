@@ -1,7 +1,7 @@
 'use strict';
 
 const EventEmitter = require('events');
-process.setMaxListeners(0)
+process.setMaxListeners(0);
 
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
@@ -266,7 +266,7 @@ class WebSocketShard extends EventEmitter {
    * @private
    */
   onOpen() {
-    //this.debug(`[CONNECTED] ${this.connection.url} in ${Date.now() - this.connectedAt}ms`);
+    // This.debug(`[CONNECTED] ${this.connection.url} in ${Date.now() - this.connectedAt}ms`);
     this.status = Status.NEARLY;
   }
 

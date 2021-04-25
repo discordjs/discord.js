@@ -110,7 +110,7 @@ class WebSocketManager extends EventEmitter {
    * @type {number}
    * @readonly
    */
-  get ping () {
+  get ping() {
     const sum = this.shards.reduce((a, b) => a + b.ping, 0);
     return sum / this.shards.size;
   }
@@ -121,7 +121,7 @@ class WebSocketManager extends EventEmitter {
    * @param {?WebSocketShard} [shard] The shard that emitted this message, if any
    * @private
    */
-  debug (message, shard) {
+  debug(message, shard) {
     this.client.emit(Events.DEBUG, `[WS => ${shard ? `Shard ${shard.id}` : 'Manager'}] ${message}`);
   }
 
@@ -129,7 +129,7 @@ class WebSocketManager extends EventEmitter {
    * Connects this manager to the gateway.
    * @private
    */
-  async connect () {
+  async connect() {
     const invalidToken = new DJSError(WSCodes[4004]);
     const {
       url: gatewayURL,
@@ -175,7 +175,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {Promise<boolean>}
    * @private
    */
-  async createShards () {
+  async createShards() {
     // If we don't have any shards to handle, return
     if (!this.shardQueue.size) return false;
 
@@ -267,12 +267,12 @@ class WebSocketManager extends EventEmitter {
     // If we have more shards, add a 5s delay
     if (this.shardQueue.size) {
       this.debug(`Shard Queue Size: ${this.shardQueue.size}; continuing in 5 seconds...`);
-      // await Util.delayFor(5000);
+      // Await Util.delayFor(5000);
       // await this._handleSessionLimit();
       for (let i = 0; i <= this.sessionStartLimit.max_concurrency; i++) {
         this.createShards();
       }
-      return
+      return;
     }
 
     return true;
@@ -284,11 +284,11 @@ class WebSocketManager extends EventEmitter {
    * @private
    * @returns {Promise<boolean>}
    */
-  async reconnect (skipLimit = false) {
+  async reconnect(skipLimit = false) {
     if (this.reconnecting || this.status !== Status.READY) return false;
     this.reconnecting = true;
     try {
-      // if (!skipLimit) await this._handleSessionLimit();
+      // If (!skipLimit) await this._handleSessionLimit();
       await this.createShards();
     } catch (error) {
       this.debug(`Couldn't reconnect or fetch information about the gateway. ${error}`);
@@ -323,7 +323,7 @@ class WebSocketManager extends EventEmitter {
    * @param {Object} packet The packet to send
    * @private
    */
-  broadcast (packet) {
+  broadcast(packet) {
     for (const shard of this.shards.values()) shard.send(packet);
   }
 
@@ -331,7 +331,7 @@ class WebSocketManager extends EventEmitter {
    * Destroys this manager and all its shards.
    * @private
    */
-  destroy () {
+  destroy() {
     if (this.destroyed) return;
     this.debug(`Manager was destroyed. Called by:\n${new Error('MANAGER_DESTROYED').stack}`);
     this.destroyed = true;
@@ -345,7 +345,7 @@ class WebSocketManager extends EventEmitter {
    * @param {number} [resetAfter] The amount of time in which the identify counter resets
    * @private
    */
-  async _handleSessionLimit (remaining, resetAfter) {
+  async _handleSessionLimit(remaining, resetAfter) {
     if (typeof remaining === 'undefined' && typeof resetAfter === 'undefined') {
       const { session_start_limit } = await this.client.api.gateway.bot.get();
       this.sessionStartLimit = session_start_limit;
@@ -368,7 +368,7 @@ class WebSocketManager extends EventEmitter {
    * @returns {boolean}
    * @private
    */
-  handlePacket (packet, shard) {
+  handlePacket(packet, shard) {
     if (packet && this.status !== Status.READY) {
       if (!BeforeReadyWhitelist.includes(packet.t)) {
         this.packetQueue.push({ packet, shard });
@@ -394,7 +394,7 @@ class WebSocketManager extends EventEmitter {
    * Checks whether the client is ready to be marked as ready.
    * @private
    */
-  async checkShardsReady () {
+  async checkShardsReady() {
     if (this.status === Status.READY) return;
     if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.READY)) {
       return;
@@ -422,7 +422,7 @@ class WebSocketManager extends EventEmitter {
    * Causes the client to be marked as ready and emits the ready event.
    * @private
    */
-  triggerClientReady () {
+  triggerClientReady() {
     this.status = Status.READY;
 
     this.client.readyAt = new Date();
