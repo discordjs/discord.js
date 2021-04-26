@@ -103,7 +103,7 @@ class CommandInteraction extends Interaction {
    * @example
    * // Reply to the interaction with an embed
    * const embed = new MessageEmbed().setDescription('Pong!');
-   * 
+   *
    * interaction.reply(embed)
    *   .then(console.log)
    *   .catch(console.error);
