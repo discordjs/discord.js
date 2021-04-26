@@ -65,6 +65,16 @@ class CommandInteraction extends Interaction {
    * Defers the reply to this interaction.
    * @param {boolean} [ephemeral] Whether the reply should be ephemeral
    * @returns {Promise<void>}
+   * @example
+   * // Defer the reply to this interaction
+   * interaction.defer()
+   *   .then(console.log)
+   *   .catch(console.error)
+   * @example
+   * // Defer to send an ephemeral reply later
+   * interaction.defer(true)
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async defer(ephemeral) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
@@ -90,6 +100,18 @@ class CommandInteraction extends Interaction {
    * @param {string|APIMessage|MessageAdditions} content The content for the reply
    * @param {InteractionReplyOptions} [options] Additional options for the reply
    * @returns {Promise<void>}
+   * @example
+   * // Reply to the interaction with an embed
+   * const embed = new MessageEmbed().setDescription('Pong!');
+   * 
+   * interaction.reply(embed)
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create an ephemeral reply
+   * interaction.reply('Pong!', { ephemeral: true })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async reply(content, options) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
@@ -109,6 +131,11 @@ class CommandInteraction extends Interaction {
   /**
    * Fetches the initial reply to this interaction.
    * @returns {Promise<Message|Object>}
+   * @example
+   * // Fetch the reply to this interaction
+   * interaction.fetchReply()
+   *   .then(reply => console.log(`Replied with ${reply.content}`))
+   *   .catch(console.error);
    */
   async fetchReply() {
     const raw = await this.client.api.webhooks(this.applicationID, this.token).messages('@original').get();
@@ -121,6 +148,11 @@ class CommandInteraction extends Interaction {
    * @param {string|APIMessage|MessageEmbed|MessageEmbed[]} content The new content for the message
    * @param {WebhookEditMessageOptions} [options] The options to provide
    * @returns {Promise<Message|Object>}
+   * @example
+   * // Edit the reply to this interaction
+   * interaction.editReply('New content')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async editReply(content, options) {
     const raw = await this.webhook.editMessage('@original', content, options);
@@ -131,6 +163,11 @@ class CommandInteraction extends Interaction {
    * Deletes the initial reply to this interaction.
    * @see Webhook#deleteMessage
    * @returns {Promise<void>}
+   * @example
+   * // Delete the reply to this interaction
+   * interaction.deleteReply()
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async deleteReply() {
     await this.webhook.deleteMessage('@original');

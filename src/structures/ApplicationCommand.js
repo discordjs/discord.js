@@ -104,6 +104,13 @@ class ApplicationCommand extends Base {
    * Edits this application command.
    * @param {ApplicationCommandData} data The data to update the command with
    * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit the description of this command
+   * command.edit({
+   *   description: 'New description',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   edit(data) {
     return this.manager.edit(this, data);
@@ -112,6 +119,11 @@ class ApplicationCommand extends Base {
   /**
    * Deletes this command.
    * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Delete this command
+   * command.delete()
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   delete() {
     return this.manager.delete(this);
@@ -136,6 +148,11 @@ class ApplicationCommand extends Base {
   /**
    * Fetches the permissions for this command.
    * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Fetch permissions for this command
+   * command.fetchPermissions()
+   *   .then(perms => console.log(`Fetched permissions for ${perms.length} users`))
+   *   .catch(console.error);
    */
   fetchPermissions() {
     return this.manager.fetchPermissions(this);
@@ -145,6 +162,17 @@ class ApplicationCommand extends Base {
    * Sets the permissions for this command.
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommandPermissions[]>}
+   * @example
+   * // Set the permissions for this command
+   * command.setPermissions([
+   *   {
+   *     id: '876543210987654321',
+   *     type: 'USER',
+   *     permission: false,
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   setPermissions(permissions) {
     return this.manager.setPermissions(this, permissions);

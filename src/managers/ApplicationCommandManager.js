@@ -50,6 +50,16 @@ class ApplicationCommandManager extends BaseManager {
    * @param {boolean} [cache=true] Whether to cache the new application commands if they weren't already
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
+   * @example
+   * // Fetch a single command
+   * client.application.commands.fetch('123456789012345678')
+   *   .then(command => console.log(`Fetched command ${command.name}`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch all commands
+   * guild.commands.fetch()
+   *   .then(commands => console.log(`Fetched ${commands.size} commands`))
+   *   .catch(console.error);
    */
   async fetch(id, cache = true, force = false) {
     if (id) {
@@ -69,6 +79,14 @@ class ApplicationCommandManager extends BaseManager {
    * Creates an application command.
    * @param {ApplicationCommandData} command The command
    * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Create a new command
+   * client.application.commands.create({
+   *   name: 'test',
+   *   description: 'A test command',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async create(command) {
     const data = await this.commandPath.post({
@@ -81,6 +99,21 @@ class ApplicationCommandManager extends BaseManager {
    * Sets all the commands for this application or guild.
    * @param {ApplicationCommandData[]} commands The commands
    * @returns {Promise<Collection<Snowflake, ApplicationCommand>>}
+   * @example
+   * // Set all commands to just this one
+   * client.application.commands.set([
+   *   {
+   *     name: 'test',
+   *     description: 'A test command',
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Remove all commands
+   * guild.commands.set([])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async set(commands) {
     const data = await this.commandPath.put({
@@ -94,6 +127,13 @@ class ApplicationCommandManager extends BaseManager {
    * @param {ApplicationCommandResolvable} command The command to edit
    * @param {ApplicationCommandData} data The data to update the command with
    * @returns {Promise<ApplicationCommand>}
+   * @example
+   * // Edit an existing command
+   * client.application.commands.edit('123456789012345678', {
+   *   description: 'New description',
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async edit(command, data) {
     const id = this.resolveID(command);
@@ -113,6 +153,11 @@ class ApplicationCommandManager extends BaseManager {
    * Deletes an application command.
    * @param {ApplicationCommandResolvable} command The command to delete
    * @returns {Promise<?ApplicationCommand>}
+   * @example
+   * // Delete a command
+   * guild.commands.delete('123456789012345678')
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async delete(command) {
     const id = this.resolveID(command);
@@ -129,6 +174,16 @@ class ApplicationCommandManager extends BaseManager {
    * Fetches the permissions for one or multiple commands.
    * @param {ApplicationCommandResolvable} [command] The command to get the permissions from
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
+   * @example
+   * // Fetch permissions for one command
+   * guild.commands.fetchPermissions('123456789012345678')
+   *   .then(perms => console.log(`Fetched permissions for ${perms.length} users`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch permissions for all commands
+   * client.application.commands.fetchPermissions()
+   *   .then(perms => console.log(`Fetched permissions for ${perms.size} commands`))
+   *   .catch(console.error);
    */
   async fetchPermissions(command) {
     if (command) {
@@ -163,6 +218,31 @@ class ApplicationCommandManager extends BaseManager {
    * permissions for, or an array of guild application command permissions to set the permissions of all commands
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
+   * @example
+   * // Set the permissions for one command
+   * client.commands.setPermissions('123456789012345678', [
+   *   {
+   *     id: '876543210987654321',
+   *     type: 'USER',
+   *     permission: false,
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Set the permissions for all commands
+   * guild.commands.setPermissions([
+   *   {
+   *     id: '123456789012345678',
+   *     permissions: [{
+   *       id: '876543210987654321',
+   *       type: 'USER',
+   *       permission: false,
+   *     }],
+   *   },
+   * ])
+   *   .then(console.log)
+   *   .catch(console.error);
    */
   async setPermissions(command, permissions) {
     const id = this.resolveID(command);
