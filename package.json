@@ -72,7 +72,6 @@
     "lint-staged": "^10.4.2",
     "prettier": "^2.1.2",
     "tslint": "^6.1.3",
-    "typescript": "^4.1.3"
     "typescript": "^4.2.4"
   },
   "engines": {
