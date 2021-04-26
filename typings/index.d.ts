@@ -29,6 +29,7 @@ declare enum OverwriteTypes {
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
+  import { APIMessage as RawMessage, APIOverwrite as RawOverwrite } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
   import { Readable, Stream, Writable } from 'stream';
@@ -996,6 +997,7 @@ declare module 'discord.js' {
     public content: string;
     public readonly createdAt: Date;
     public createdTimestamp: number;
+    public readonly crosspostable: boolean;
     public readonly deletable: boolean;
     public deleted: boolean;
     public readonly editable: boolean;
@@ -1229,7 +1231,7 @@ declare module 'discord.js' {
       options: PermissionOverwriteOption,
       initialPermissions: { allow?: PermissionResolvable; deny?: PermissionResolvable },
     ): ResolvedOverwriteOptions;
-    public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwriteData;
+    public static resolve(overwrite: OverwriteResolvable, guild: Guild): RawOverwrite;
   }
 
   export class Permissions extends BitField<PermissionString, bigint> {
@@ -1811,30 +1813,22 @@ declare module 'discord.js' {
       message: MessageResolvable,
       content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
-    ): Promise<WebhookRawMessageResponse>;
-    public editMessage(
-      message: MessageResolvable,
-      options: WebhookEditMessageOptions,
-    ): Promise<WebhookRawMessageResponse>;
+    ): Promise<RawMessage>;
+    public editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<RawMessage>;
     public send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<WebhookRawMessageResponse>;
-    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<WebhookRawMessageResponse[]>;
-    public send(
-      options: WebhookMessageOptions | APIMessage,
-    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
+    ): Promise<RawMessage>;
+    public send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<RawMessage[]>;
+    public send(options: WebhookMessageOptions | APIMessage): Promise<RawMessage | RawMessage[]>;
     public send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<WebhookRawMessageResponse>;
+    ): Promise<RawMessage>;
     public send(
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<WebhookRawMessageResponse[]>;
-    public send(
-      content: StringResolvable,
-      options: WebhookMessageOptions,
-    ): Promise<WebhookRawMessageResponse | WebhookRawMessageResponse[]>;
+    ): Promise<RawMessage[]>;
+    public send(content: StringResolvable, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
@@ -2166,32 +2160,25 @@ declare module 'discord.js' {
       message: MessageResolvable,
       content: APIMessageContentResolvable | APIMessage | MessageEmbed | MessageEmbed[],
       options?: WebhookEditMessageOptions,
-    ): Promise<Message | WebhookRawMessageResponse>;
-    editMessage(
-      message: MessageResolvable,
-      options: WebhookEditMessageOptions,
-    ): Promise<Message | WebhookRawMessageResponse>;
+    ): Promise<Message | RawMessage>;
+    editMessage(message: MessageResolvable, options: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     send(
       content: APIMessageContentResolvable | (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | WebhookRawMessageResponse>;
-    send(
-      options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<(Message | WebhookRawMessageResponse)[]>;
-    send(
-      options: WebhookMessageOptions | APIMessage,
-    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
+    ): Promise<Message | RawMessage>;
+    send(options: WebhookMessageOptions & { split: true | SplitOptions }): Promise<(Message | RawMessage)[]>;
+    send(options: WebhookMessageOptions | APIMessage): Promise<Message | RawMessage | (Message | RawMessage)[]>;
     send(
       content: StringResolvable,
       options: (WebhookMessageOptions & { split?: false }) | MessageAdditions,
-    ): Promise<Message | WebhookRawMessageResponse>;
+    ): Promise<Message | RawMessage>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions & { split: true | SplitOptions },
-    ): Promise<(Message | WebhookRawMessageResponse)[]>;
+    ): Promise<(Message | RawMessage)[]>;
     send(
       content: StringResolvable,
       options: WebhookMessageOptions,
-    ): Promise<Message | WebhookRawMessageResponse | (Message | WebhookRawMessageResponse)[]>;
+    ): Promise<Message | RawMessage | (Message | RawMessage)[]>;
     sendSlackMessage(body: object): Promise<boolean>;
   }
 
@@ -2290,95 +2277,6 @@ declare module 'discord.js' {
   }
 
   type APIMessageContentResolvable = string | number | boolean | bigint | symbol | readonly StringResolvable[];
-
-  interface APIRawMessage {
-    id: Snowflake;
-    type: number;
-    content: string;
-    channel_id: Snowflake;
-    author: {
-      bot?: true;
-      id: Snowflake;
-      username: string;
-      avatar: string | null;
-      discriminator: string;
-    };
-    attachments: {
-      id: Snowflake;
-      filename: string;
-      size: number;
-      url: string;
-      proxy_url: string;
-      height: number | null;
-      width: number | null;
-    }[];
-    embeds: {
-      title?: string;
-      type?: 'rich' | 'image' | 'video' | 'gifv' | 'article' | 'link';
-      description?: string;
-      url?: string;
-      timestamp?: string;
-      color?: number;
-      footer?: {
-        text: string;
-        icon_url?: string;
-        proxy_icon_url?: string;
-      };
-      image?: {
-        url?: string;
-        proxy_url?: string;
-        height?: number;
-        width?: number;
-      };
-      thumbnail?: {
-        url?: string;
-        proxy_url?: string;
-        height?: number;
-        width?: number;
-      };
-      video?: {
-        url?: string;
-        height?: number;
-        width?: number;
-      };
-      provider?: { name?: string; url?: string };
-      author?: {
-        name?: string;
-        url?: string;
-        icon_url?: string;
-        proxy_icon_url?: string;
-      };
-      fields?: {
-        name: string;
-        value: string;
-        inline?: boolean;
-      }[];
-    }[];
-    mentions: {
-      id: Snowflake;
-      username: string;
-      discriminator: string;
-      avatar: string | null;
-      bot?: true;
-      public_flags?: number;
-      member?: {
-        nick: string | null;
-        roles: Snowflake[];
-        joined_at: string;
-        premium_since?: string | null;
-        deaf: boolean;
-        mute: boolean;
-      };
-    }[];
-    mention_roles: Snowflake[];
-    pinned: boolean;
-    mention_everyone: boolean;
-    tts: boolean;
-    timestamp: string;
-    edited_timestamp: string | null;
-    flags: number;
-    webhook_id: Snowflake;
-  }
 
   interface ApplicationAsset {
     name: string;
@@ -3308,13 +3206,6 @@ declare module 'discord.js' {
     remainingTime: number;
   }
 
-  interface RawOverwriteData {
-    id: Snowflake;
-    allow: string;
-    deny: string;
-    type: number;
-  }
-
   interface ReactionCollectorOptions extends CollectorOptions {
     max?: number;
     maxEmojis?: number;
@@ -3406,7 +3297,6 @@ declare module 'discord.js' {
     | 'HOUSE_BALANCE'
     | 'EARLY_SUPPORTER'
     | 'TEAM_USER'
-    | 'SYSTEM'
     | 'BUGHUNTER_LEVEL_2'
     | 'VERIFIED_BOT'
     | 'EARLY_VERIFIED_BOT_DEVELOPER';
@@ -3440,16 +3330,6 @@ declare module 'discord.js' {
     username?: string;
     avatarURL?: string;
     embeds?: (MessageEmbed | object)[];
-  };
-
-  type WebhookRawMessageResponse = Omit<APIRawMessage, 'author'> & {
-    author: {
-      bot: true;
-      id: Snowflake;
-      username: string;
-      avatar: string | null;
-      discriminator: '0000';
-    };
   };
 
   type WebhookTypes = 'Incoming' | 'Channel Follower';
