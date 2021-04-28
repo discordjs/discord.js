@@ -3247,7 +3247,7 @@ declare module 'discord.js' {
 
   interface SplitOptions {
     maxLength?: number;
-    char?: string;
+    char?: string | string[];
     prepend?: string;
     append?: string;
   }

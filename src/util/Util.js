@@ -64,6 +64,7 @@ class Util {
   static splitMessage(text, { maxLength = 2000, char = '\n', prepend = '', append = '' } = {}) {
     text = Util.resolveString(text);
     if (text.length <= maxLength) return [text];
+    if (Array.isArray(char)) char = char.filter(splitChar => text.includes(splitChar))[0];
     const splitText = text.split(char);
     if (splitText.some(chunk => chunk.length > maxLength)) throw new RangeError('SPLIT_MAX_LEN');
     const messages = [];
