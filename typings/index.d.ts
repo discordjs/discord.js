@@ -986,6 +986,7 @@ declare module 'discord.js' {
     public readonly pinnable: boolean;
     public pinned: boolean;
     public reactions: ReactionManager;
+    public stickers: Collection<Snowflake, Sticker>
     public system: boolean;
     public tts: boolean;
     public type: MessageType;
