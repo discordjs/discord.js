@@ -26,6 +26,7 @@ module.exports = {
   SnowflakeUtil: require('./util/SnowflakeUtil'),
   Structures: require('./util/Structures'),
   SystemChannelFlags: require('./util/SystemChannelFlags'),
+  ThreadMemberFlags: require('./util/ThreadMemberFlags'),
   UserFlags: require('./util/UserFlags'),
   Util: require('./util/Util'),
   version: require('../package.json').version,
@@ -47,6 +48,8 @@ module.exports = {
   MessageManager: require('./managers/MessageManager'),
   PresenceManager: require('./managers/PresenceManager'),
   RoleManager: require('./managers/RoleManager'),
+  ThreadManager: require('./managers/ThreadManager'),
+  ThreadMemberManager: require('./managers/ThreadMemberManager'),
   UserManager: require('./managers/UserManager'),
 
   // Structures
@@ -109,6 +112,8 @@ module.exports = {
   Team: require('./structures/Team'),
   TeamMember: require('./structures/TeamMember'),
   TextChannel: require('./structures/TextChannel'),
+  ThreadChannel: require('./structures/ThreadChannel'),
+  ThreadMember: require('./structures/ThreadMember'),
   User: require('./structures/User'),
   VoiceChannel: require('./structures/VoiceChannel'),
   VoiceRegion: require('./structures/VoiceRegion'),

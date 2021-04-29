@@ -4,6 +4,7 @@ const GuildChannel = require('./GuildChannel');
 const Webhook = require('./Webhook');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const MessageManager = require('../managers/MessageManager');
+const ThreadManager = require('../managers/ThreadManager');
 const Collection = require('../util/Collection');
 const DataResolver = require('../util/DataResolver');
 
@@ -24,6 +25,12 @@ class TextChannel extends GuildChannel {
      * @type {MessageManager}
      */
     this.messages = new MessageManager(this);
+
+    /**
+     * A manager of the threads belonging to this channel
+     * @type {ThreadManager}
+     */
+    this.threads = new ThreadManager(this);
 
     /**
      * If the guild considers this channel NSFW

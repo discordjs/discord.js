@@ -92,6 +92,8 @@ class Webhook {
    * @typedef {BaseMessageOptions} WebhookMessageOptions
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
+   * @property {Snowflake} [threadID] The id of the thread in the channel to send to.
+   * <info>For interaction webhooks, this property is ignored</info>
    */
 
   /**
@@ -112,6 +114,11 @@ class Webhook {
    * @example
    * // Send a basic message
    * webhook.send('hello!')
+   *   .then(message => console.log(`Sent message: ${message.content}`))
+   *   .catch(console.error);
+   * @example
+   * // Send a basic message in a thread
+   * webhook.send('hello!', { threadID: '836856309672348295' })
    *   .then(message => console.log(`Sent message: ${message.content}`))
    *   .catch(console.error);
    * @example
@@ -169,7 +176,7 @@ class Webhook {
       .post({
         data,
         files,
-        query: { wait: true },
+        query: { thread_id: apiMessage.options.threadID, wait: true },
         auth: false,
       })
       .then(d => {

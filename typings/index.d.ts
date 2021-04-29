@@ -16,6 +16,9 @@ declare enum ChannelType {
   news = 5,
   store = 6,
   unknown = 7,
+  news_thread = 10,
+  public_thread = 11,
+  private_thread = 12,
   stage = 13,
 }
 
@@ -27,6 +30,9 @@ declare enum ChannelTypes {
   CATEGORY = 4,
   NEWS = 5,
   STORE = 6,
+  NEWS_THREAD = 10,
+  PUBLIC_THREAD = 11,
+  PRIVATE_THREAD = 12,
   STAGE = 13,
 }
 
@@ -371,7 +377,7 @@ declare module 'discord.js' {
   type CategoryChannelResolvable = Snowflake | CategoryChannel;
 
   export class Channel extends Base {
-    constructor(client: Client, data?: unknown);
+    constructor(client: Client, data?: unknown, immediatePatch?: boolean);
     public readonly createdAt: Date;
     public readonly createdTimestamp: number;
     public deleted: boolean;
@@ -379,7 +385,7 @@ declare module 'discord.js' {
     public type: keyof typeof ChannelType;
     public delete(reason?: string): Promise<Channel>;
     public fetch(force?: boolean): Promise<Channel>;
-    public isText(): this is TextChannel | DMChannel | NewsChannel;
+    public isText(): this is TextChannel | DMChannel | NewsChannel | ThreadChannel;
     public toString(): string;
   }
 
@@ -625,6 +631,12 @@ declare module 'discord.js' {
       MESSAGE_REACTION_REMOVE: 'messageReactionRemove';
       MESSAGE_REACTION_REMOVE_ALL: 'messageReactionRemoveAll';
       MESSAGE_REACTION_REMOVE_EMOJI: 'messageReactionRemoveEmoji';
+      THREAD_CREATE: 'threadCreate';
+      THREAD_DELETE: 'threadDelete';
+      THREAD_UPDATE: 'threadUpdate';
+      THREAD_LIST_SYNC: 'threadListSync';
+      THREAD_MEMBER_UPDATE: 'threadMemberUpdate';
+      THREAD_MEMBERS_UPDATE: 'threadMembersUpdate';
       USER_UPDATE: 'userUpdate';
       PRESENCE_UPDATE: 'presenceUpdate';
       VOICE_SERVER_UPDATE: 'voiceServerUpdate';
@@ -715,6 +727,7 @@ declare module 'discord.js' {
     };
     APIErrors: APIErrors;
     ChannelTypes: typeof ChannelTypes;
+    ThreadChannelTypes: ThreadChannelType[];
     ClientApplicationAssetTypes: {
       SMALL: 1;
       BIG: 2;
@@ -1222,14 +1235,14 @@ declare module 'discord.js' {
   }
 
   export class Message extends Base {
-    constructor(client: Client, data: unknown, channel: TextChannel | DMChannel | NewsChannel);
+    constructor(client: Client, data: unknown, channel: TextChannel | DMChannel | NewsChannel | ThreadChannel);
     private patch(data: unknown): Message;
 
     public activity: MessageActivity | null;
     public applicationID: Snowflake | null;
     public attachments: Collection<Snowflake, MessageAttachment>;
     public author: User;
-    public channel: TextChannel | DMChannel | NewsChannel;
+    public channel: TextChannel | DMChannel | NewsChannel | ThreadChannel;
     public readonly cleanContent: string;
     public components: MessageActionRow[];
     public content: string;
@@ -1255,6 +1268,7 @@ declare module 'discord.js' {
     public reactions: ReactionManager;
     public stickers: Collection<Snowflake, Sticker>;
     public system: boolean;
+    public thread: ThreadChannel;
     public tts: boolean;
     public type: MessageType;
     public readonly url: string;
@@ -1289,6 +1303,11 @@ declare module 'discord.js' {
     public removeAttachments(): Promise<Message>;
     public reply(options: string | APIMessage | (ReplyMessageOptions & { split?: false })): Promise<Message>;
     public reply(options: APIMessage | (ReplyMessageOptions & { split: true | SplitOptions })): Promise<Message[]>;
+    public startThread(
+      name: 'string',
+      autoArchiveDuration: ThreadAutoArchiveDuration,
+      reason?: string,
+    ): Promise<ThreadChannel>;
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): unknown;
     public toString(): string;
@@ -1515,6 +1534,7 @@ declare module 'discord.js' {
     constructor(guild: Guild, data?: unknown);
     public messages: MessageManager;
     public nsfw: boolean;
+    public threads: ThreadManager;
     public topic: string | null;
     public type: 'news';
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
@@ -1849,12 +1869,72 @@ declare module 'discord.js' {
     public nsfw: boolean;
     public type: 'text';
     public rateLimitPerUser: number;
+    public threads: ThreadManager;
     public topic: string | null;
     public createWebhook(name: string, options?: ChannelWebhookCreateOptions): Promise<Webhook>;
     public setNSFW(nsfw: boolean, reason?: string): Promise<TextChannel>;
     public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<TextChannel>;
     public setType(type: Pick<typeof ChannelType, 'text' | 'news'>, reason?: string): Promise<GuildChannel>;
     public fetchWebhooks(): Promise<Collection<Snowflake, Webhook>>;
+  }
+
+  export class ThreadChannel extends TextBasedChannel(Channel) {
+    constructor(guild: Guild, data?: object);
+    public archived: boolean;
+    public readonly archivedAt: Date;
+    public archiveTimestamp: number | null;
+    public autoArchiveDuration: ThreadAutoArchiveDuration;
+    public readonly deletable: boolean;
+    public readonly editable: boolean;
+    public guild: Guild;
+    public readonly guildMembers: Collection<Snowflake, GuildMember>;
+    public readonly joinable: boolean;
+    public locked: boolean;
+    public readonly manageable: boolean;
+    public memberCount: number | null;
+    public messageCount: number | null;
+    public messages: MessageManager;
+    public members: ThreadMemberManager;
+    public name: string;
+    public ownerID: Snowflake;
+    public readonly parent: TextChannel | NewsChannel | null;
+    public parentID: Snowflake;
+    public rateLimitPerUser: number;
+    public type: ThreadChannelType;
+    public readonly unarchivable: boolean;
+    public addMember(member: UserResolvable, reason?: string): Promise<Snowflake>;
+    public delete(reason?: string): Promise<ThreadChannel>;
+    public edit(data: ThreadEditData, reason?: string): Promise<ThreadChannel>;
+    public join(): Promise<ThreadChannel>;
+    public leave(): Promise<ThreadChannel>;
+    public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
+    public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
+    public setArchived(archived: boolean, reason?: string): Promise<ThreadChannel>;
+    public setAutoArchiveDuration(
+      autoArchiveDuration: ThreadAutoArchiveDuration,
+      reason?: string,
+    ): Promise<ThreadChannel>;
+    public setLocked(locked: boolean, reason?: string): Promise<ThreadChannel>;
+    public setName(name: string, reason?: string): Promise<ThreadChannel>;
+    public setRateLimitPerUser(rateLimitPerUser: number, reason?: string): Promise<ThreadChannel>;
+  }
+
+  export class ThreadMember extends Base {
+    constructor(thread: ThreadChannel, data?: object);
+    public flags: ThreadMemberFlags;
+    public readonly guildMember: GuildMember | null;
+    public id: Snowflake;
+    public readonly joinedAt: Date | null;
+    public joinedTimestamp: number | null;
+    public readonly manageable: boolean;
+    public thread: ThreadChannel;
+    public readonly user: User | null;
+    public kick(reason?: string): Promise<ThreadMember>;
+  }
+
+  export class ThreadMemberFlags extends BitField<ThreadMemberFlagsString> {
+    public static FLAGS: Record<ThreadMemberFlagsString, number>;
+    public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
   }
 
   export class User extends PartialTextBasedChannel(Base) {
@@ -2424,6 +2504,30 @@ declare module 'discord.js' {
     public delete(channel: StageChannel | Snowflake): Promise<void>;
   }
 
+  export class ThreadManager extends BaseManager<Snowflake, ThreadChannel, ThreadChannelResolvable> {
+    constructor(channel: TextChannel | NewsChannel, iterable?: Iterable<any>);
+    public channel: TextChannel | NewsChannel;
+    public create(
+      name: string,
+      autoArchiveDuration: ThreadAutoArchiveDuration,
+      options?: { startMessage?: MessageResolvable; reason?: string },
+    ): Promise<ThreadChannel>;
+    public fetch(options: ThreadChannelResolvable, cacheOptions?: BaseFetchOptions): Promise<ThreadChannel | null>;
+    public fetch(
+      options?: { archived?: FetchArchivedThreadOptions; active?: boolean },
+      cacheOptions?: { cache?: boolean },
+    ): Promise<FetchedThreads>;
+    public fetchArchived(options?: FetchArchivedThreadOptions, cache?: boolean): Promise<FetchedThreads>;
+    public fetchActive(cache?: boolean): Promise<FetchedThreads>;
+  }
+
+  export class ThreadMemberManager extends BaseManager<Snowflake, ThreadMember, ThreadMemberResolvable> {
+    constructor(thread: ThreadChannel, iterable?: Iterable<any>);
+    public thread: ThreadChannel;
+    public fetch(cache?: boolean): Promise<Collection<Snowflake, ThreadMember>>;
+    public kick(id: Snowflake, reason?: string): Promise<Snowflake>;
+  }
+
   export class UserManager extends BaseManager<Snowflake, User, UserResolvable> {
     constructor(client: Client, iterable?: Iterable<any>);
     public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<User>;
@@ -2637,6 +2741,9 @@ declare module 'discord.js' {
     PAYMENT_SOURCE_REQUIRED: 50070;
     CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074;
     INVALID_STICKER_SENT: 50081;
+    INVALID_THREAD_ARCHIVE_STATE: 50083;
+    INVALID_THREAD_NOTIFICATION_SETTINGS: 50084;
+    PARAMETER_EARLIER_THAN_CREATION: 50085;
     TWO_FACTOR_REQUIRED: 60003;
     NO_USERS_WITH_DISCORDTAG_EXIST: 80004;
     REACTION_BLOCKED: 90001;
@@ -2837,7 +2944,16 @@ declare module 'discord.js' {
     roleCreate: [role: Role];
     roleDelete: [role: Role];
     roleUpdate: [oldRole: Role, newRole: Role];
-    typingStart: [channel: TextChannel | NewsChannel | DMChannel | PartialDMChannel, user: User | PartialUser];
+    threadCreate: [thread: ThreadChannel];
+    threadDelete: [thread: ThreadChannel];
+    threadListSync: [threads: Collection<Snowflake, ThreadChannel>];
+    threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
+    threadMembersUpdate: [
+      oldMembers: Collection<Snowflake, ThreadMember>,
+      mewMembers: Collection<Snowflake, ThreadMember>,
+    ];
+    threadUpdate: [oldThread: ThreadChannel, newThread: ThreadChannel];
+    typingStart: [channel: Channel | PartialDMChannel, user: User | PartialUser];
     userUpdate: [oldUser: User | PartialUser, newUser: User];
     voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
     webhookUpdate: [channel: TextChannel];
@@ -2971,6 +3087,8 @@ declare module 'discord.js' {
     name: string;
   }
 
+  type DateResolvable = Date | number | string;
+
   interface DeconstructedSnowflake {
     timestamp: number;
     readonly date: Date;
@@ -3032,7 +3150,9 @@ declare module 'discord.js' {
     CategoryChannel: typeof CategoryChannel;
     NewsChannel: typeof NewsChannel;
     StoreChannel: typeof StoreChannel;
+    ThreadChannel: typeof ThreadChannel;
     GuildMember: typeof GuildMember;
+    ThreadMember: typeof ThreadMember;
     Guild: typeof Guild;
     Message: typeof Message;
     MessageReaction: typeof MessageReaction;
@@ -3064,6 +3184,18 @@ declare module 'discord.js' {
     before?: Snowflake;
     after?: Snowflake;
     limit?: number;
+  }
+
+  interface FetchArchivedThreadOptions {
+    type?: 'public' | 'private';
+    fetchAll?: boolean;
+    before?: ThreadChannelResolvable | DateResolvable;
+    limit?: number;
+  }
+
+  interface FetchedThreads {
+    threads: Collection<Snowflake, ThreadChannel>;
+    hasMore?: boolean;
   }
 
   interface FetchMemberOptions extends BaseFetchOptions {
@@ -3181,7 +3313,16 @@ declare module 'discord.js' {
     topic?: string;
     type?: Exclude<
       keyof typeof ChannelType | ChannelType,
-      'dm' | 'group' | 'unknown' | ChannelType.dm | ChannelType.group | ChannelType.unknown
+      | 'dm'
+      | 'group'
+      | 'unknown'
+      | 'public_thread'
+      | 'private_thread'
+      | ChannelType.dm
+      | ChannelType.group
+      | ChannelType.unknown
+      | ChannelType.public_thread
+      | ChannelType.private_thread
     >;
     nsfw?: boolean;
     parent?: ChannelResolvable;
@@ -3534,6 +3675,7 @@ declare module 'discord.js' {
     | 'SUPPRESS_EMBEDS'
     | 'SOURCE_MESSAGE_DELETED'
     | 'URGENT'
+    | 'HAS_THREAD'
     | 'EPHEMERAL'
     | 'LOADING';
 
@@ -3593,6 +3735,7 @@ declare module 'discord.js' {
     | InteractionWebhook
     | TextChannel
     | NewsChannel
+    | ThreadChannel
     | DMChannel
     | User
     | GuildMember
@@ -3619,8 +3762,11 @@ declare module 'discord.js' {
     | 'GUILD_DISCOVERY_REQUALIFIED'
     | 'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING'
     | 'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING'
+    | 'THREAD_CREATED'
     | 'REPLY'
-    | 'APPLICATION_COMMAND';
+    | 'APPLICATION_COMMAND'
+    | 'THREAD_STARTER_MESSAGE'
+    | 'GUILD_INVITE_REMINDER';
 
   type MFALevel = keyof typeof MFALevels;
 
@@ -3690,7 +3836,10 @@ declare module 'discord.js' {
     | 'MANAGE_WEBHOOKS'
     | 'MANAGE_EMOJIS'
     | 'USE_APPLICATION_COMMANDS'
-    | 'REQUEST_TO_SPEAK';
+    | 'REQUEST_TO_SPEAK'
+    | 'MANAGE_THREADS'
+    | 'USE_PUBLIC_THREADS'
+    | 'USE_PRIVATE_THREADS';
 
   interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
 
@@ -3968,6 +4117,24 @@ declare module 'discord.js' {
     privacyLevel?: PrivacyLevel | number;
   }
 
+  type ThreadAutoArchiveDuration = 60 | 1440 | 4320 | 10080;
+
+  type ThreadChannelResolvable = ThreadChannel | Snowflake;
+
+  type ThreadChannelType = 'news_thread' | 'public_thread' | 'private_thread';
+
+  interface ThreadEditData {
+    name?: string;
+    archived?: boolean;
+    autoArchiveDuration?: ThreadAutoArchiveDuration;
+    rateLimitPeruser?: number;
+    locked?: boolean;
+  }
+
+  type ThreadMemberFlagsString = '';
+
+  type ThreadMemberResolvable = ThreadMember | UserResolvable;
+
   type UserFlagsString =
     | 'DISCORD_EMPLOYEE'
     | 'PARTNERED_SERVER_OWNER'
@@ -3983,7 +4150,7 @@ declare module 'discord.js' {
     | 'EARLY_VERIFIED_BOT_DEVELOPER'
     | 'DISCORD_CERTIFIED_MODERATOR';
 
-  type UserResolvable = User | Snowflake | Message | GuildMember;
+  type UserResolvable = User | Snowflake | Message | GuildMember | ThreadMember;
 
   interface Vanity {
     code: string | null;
@@ -4011,6 +4178,7 @@ declare module 'discord.js' {
   interface WebhookMessageOptions extends Omit<MessageOptions, 'reply'> {
     username?: string;
     avatarURL?: string;
+    threadID?: Snowflake;
   }
 
   type WebhookType = keyof typeof WebhookTypes;

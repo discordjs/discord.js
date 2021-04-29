@@ -2,7 +2,7 @@
 
 const BaseManager = require('./BaseManager');
 const Channel = require('../structures/Channel');
-const { Events } = require('../util/Constants');
+const { Events, ThreadChannelTypes } = require('../util/Constants');
 
 /**
  * A manager of channels belonging to a client
@@ -24,6 +24,9 @@ class ChannelManager extends BaseManager {
     if (existing) {
       if (existing._patch && cache) existing._patch(data);
       if (guild) guild.channels?.add(existing);
+      if (ThreadChannelTypes.includes(existing.type) && typeof existing.parent?.threads !== 'undefined') {
+        existing.parent.threads.add(existing);
+      }
       return existing;
     }
 
@@ -42,6 +45,7 @@ class ChannelManager extends BaseManager {
   remove(id) {
     const channel = this.cache.get(id);
     channel?.guild?.channels.cache.delete(id);
+    channel?.parent?.threads?.cache.delete(id);
     this.cache.delete(id);
   }
 

@@ -10,7 +10,9 @@
  * * **`NewsChannel`**
  * * **`StoreChannel`**
  * * **`StageChannel`**
+ * * **`ThreadChannel`**
  * * **`GuildMember`**
+ * * **`ThreadMember`**
  * * **`Guild`**
  * * **`Message`**
  * * **`MessageReaction`**
@@ -103,7 +105,9 @@ const structures = {
   NewsChannel: require('../structures/NewsChannel'),
   StoreChannel: require('../structures/StoreChannel'),
   StageChannel: require('../structures/StageChannel'),
+  ThreadChannel: require('../structures/ThreadChannel'),
   GuildMember: require('../structures/GuildMember'),
+  ThreadMember: require('../structures/ThreadMember'),
   Guild: require('../structures/Guild'),
   Message: require('../structures/Message'),
   MessageReaction: require('../structures/MessageReaction'),

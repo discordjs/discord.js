@@ -338,6 +338,12 @@ class Guild extends AnonymousGuild {
       }
     }
 
+    if (data.threads) {
+      for (const rawThread of data.threads) {
+        this.client.channels.add(rawThread, this);
+      }
+    }
+
     if (data.roles) {
       this.roles.cache.clear();
       for (const role of data.roles) this.roles.add(role);

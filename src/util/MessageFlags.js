@@ -28,6 +28,7 @@ class MessageFlags extends BitField {}
  * * `SUPPRESS_EMBEDS`
  * * `SOURCE_MESSAGE_DELETED`
  * * `URGENT`
+ * * `HAS_THREAD`
  * * `EPHEMERAL`
  * * `LOADING`
  * @type {Object}
@@ -39,6 +40,7 @@ MessageFlags.FLAGS = {
   SUPPRESS_EMBEDS: 1 << 2,
   SOURCE_MESSAGE_DELETED: 1 << 3,
   URGENT: 1 << 4,
+  HAS_THREAD: 1 << 5,
   EPHEMERAL: 1 << 6,
   LOADING: 1 << 7,
 };
