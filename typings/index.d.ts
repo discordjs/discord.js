@@ -530,8 +530,8 @@ declare module 'discord.js' {
     MessageTypes: MessageType[];
     SystemMessageTypes: SystemMessageType[];
     ActivityTypes: ActivityType[];
-    StickerFormatTypes: StickerFormatTypes;
-    OverwriteTypes: OverwriteTypes;
+    StickerFormatTypes: typeof StickerFormatTypes;
+    OverwriteTypes: typeof OverwriteTypes;
     ExplicitContentFilterLevels: ExplicitContentFilterLevel[];
     DefaultMessageNotifications: DefaultMessageNotifications[];
     VerificationLevels: VerificationLevel[];
