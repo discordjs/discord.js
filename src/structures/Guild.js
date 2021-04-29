@@ -24,7 +24,7 @@ const {
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
@@ -101,6 +101,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
+
+    if ('nsfw' in data) {
+      /**
+       * Whether the guild is designated as not safe for work
+       * @type {boolean}
+       */
+      this.nsfw = data.nsfw;
+    }
   }
 
   /**
@@ -169,8 +177,10 @@ class Guild extends Base {
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
+     * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
      * * PARTNERED
+     * * PREVIEW_ENABLED
      * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
@@ -444,7 +454,7 @@ class Guild extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -526,17 +536,20 @@ class Guild extends Base {
   }
 
   /**
-   * The owner of the guild
-   * @type {?GuildMember}
-   * @readonly
+   * Options used to fetch the owner of guild.
+   * @typedef {Object} FetchOwnerOptions
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
-  get owner() {
-    return (
-      this.members.cache.get(this.ownerID) ||
-      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
-        ? this.members.add({ user: { id: this.ownerID } }, true)
-        : null)
-    );
+
+  /**
+   * Fetches the owner of the guild
+   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.members.fetch({ ...options, user: this.ownerID });
   }
 
   /**
@@ -911,11 +924,11 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.roles.resolve(role);
-        if (!role) {
+        let roleID = this.roles.resolveID(role);
+        if (!roleID) {
           throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
-        roles.push(role.id);
+        roles.push(roleID);
       }
       options.roles = roles;
     }
@@ -944,6 +957,8 @@ class Guild extends Base {
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
+   * @property {string} [description] The discovery description of the guild
+   * @property {Features[]} [features] The features of the guild
    */
 
   /**
@@ -1002,6 +1017,12 @@ class Guild extends Base {
     }
     if (typeof data.publicUpdatesChannel !== 'undefined') {
       _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (typeof data.features !== 'undefined') {
+      _data.features = data.features;
+    }
+    if (typeof data.description !== 'undefined') {
+      _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api

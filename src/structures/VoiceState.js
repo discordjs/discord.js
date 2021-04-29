@@ -218,6 +218,7 @@ class VoiceState extends Base {
    * @example
    * // Making the client cancel a request to speak
    * guild.me.voice.setRequestToSpeak(false);
+   * @returns {Promise<void>}
    */
   async setRequestToSpeak(request) {
     const channel = this.channel;
@@ -248,6 +249,7 @@ class VoiceState extends Base {
    * @example
    * // Moving another user to the audience, or cancelling their invite to speak
    * voiceState.setSuppressed(true);
+   * @returns {Promise<void>}
    */
   async setSuppressed(suppressed) {
     if (typeof suppressed !== 'boolean') throw new TypeError('VOICE_STATE_INVALID_TYPE', 'suppressed');
