@@ -1980,12 +1980,13 @@ declare module 'discord.js' {
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
     public edit(
-      ...args:
-        | [
-            message: MessageResolvable,
-            content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-          ]
-        | [message: MessageResolvable, content: StringResolvable, options: MessageEditOptions | MessageEmbed]
+      message: MessageResolvable,
+      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
+    ): Promise<Message>;
+    public edit(
+      message: MessageResolvable,
+      content: StringResolvable,
+      options: MessageEditOptions | MessageEmbed,
     ): Promise<Message>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
