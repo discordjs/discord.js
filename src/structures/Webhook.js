@@ -238,7 +238,7 @@ class Webhook {
 
   /**
    * Gets a message that was sent by this webhook.
-   * @param {Snowflake} message The ID of the message to fetch
+   * @param {Snowflake|'@original'} message The ID of the message to fetch
    * @param {boolean} [cache=true] Whether to cache the message
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned

@@ -130,6 +130,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Fetches the initial reply to this interaction.
+   * @see Webhook#fetchMessage
    * @returns {Promise<Message|Object>}
    * @example
    * // Fetch the reply to this interaction
@@ -138,7 +139,7 @@ class CommandInteraction extends Interaction {
    *   .catch(console.error);
    */
   async fetchReply() {
-    const raw = await this.client.api.webhooks(this.applicationID, this.token).messages('@original').get();
+    const raw = await this.webhook.fetchMessage('@original');
     return this.channel?.messages.add(raw) ?? raw;
   }
 
