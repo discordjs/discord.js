@@ -158,16 +158,17 @@ class ShardClientUtil {
 
   /**
    * Requests a respawn of all shards.
-   * @param {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
-   * @param {number} [respawnDelay=500] How long to wait between killing a shard's process/worker and restarting it
-   * (in milliseconds)
-   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait for a shard to become ready before
+   * @param {Object} [options] Options for respawning shards
+   * @param {number} [options.shardDelay=5000] How long to wait between shards (in milliseconds)
+   * @param {number} [options.respawnDelay=500] How long to wait between killing a shard's process/worker and
+   * restarting it (in milliseconds)
+   * @param {number} [options.timeout=30000] The amount in milliseconds to wait for a shard to become ready before
    * continuing to another. (-1 or Infinity for no wait)
    * @returns {Promise<void>} Resolves upon the message being sent
    * @see {@link ShardingManager#respawnAll}
    */
-  respawnAll(shardDelay = 5000, respawnDelay = 500, spawnTimeout = 30000) {
-    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, spawnTimeout } });
+  respawnAll({ shardDelay = 5000, respawnDelay = 500, timeout = 30000 } = {}) {
+    return this.send({ _sRespawnAll: { shardDelay, respawnDelay, timeout } });
   }
 
   /**
