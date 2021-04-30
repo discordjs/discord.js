@@ -220,6 +220,8 @@ declare module 'discord.js' {
     public type: 'category';
   }
 
+  type CategoryChannelResolvable = Snowflake | CategoryChannel;
+
   export class Channel extends Base {
     constructor(client: Client, data?: object);
     public readonly createdAt: Date;
@@ -2347,7 +2349,9 @@ declare module 'discord.js' {
 
   interface ChannelPosition {
     channel: ChannelResolvable;
-    position: number;
+    lockPermissions?: boolean;
+    parent?: CategoryChannelResolvable;
+    position?: number;
   }
 
   type ChannelResolvable = Channel | Snowflake;
