@@ -598,7 +598,7 @@ declare module 'discord.js' {
     public readonly createdTimestamp: number | null;
     public deleted: boolean;
     public id: Snowflake | null;
-    public name: string;
+    public name: string | null;
     public readonly identifier: string;
     public readonly url: string | null;
     public toJSON(): object;
