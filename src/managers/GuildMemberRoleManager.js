@@ -134,7 +134,7 @@ class GuildMemberRoleManager {
         throw new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true);
       }
 
-      const newRoles = this._roles.filter(role => !roleOrRoles.includes(role));
+      const newRoles = this._roles.filter(role => !roleOrRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
       const roleID = this.guild.roles.resolveID(roleOrRoles);
