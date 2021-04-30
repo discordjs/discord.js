@@ -543,16 +543,14 @@ class Message extends Base {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  react(emoji) {
-    return this.channel.messages.react(this.id, emoji).then(
-      () =>
-        this.client.actions.MessageReactionAdd.handle({
-          user: this.client.user,
-          channel: this.channel,
-          message: this,
-          emoji: Util.parseEmoji(emoji),
-        }).reaction,
-    );
+  async react(emoji) {
+    await this.channel.messages.react(this.id, emoji);
+    return this.client.actions.MessageReactionAdd.handle({
+      user: this.client.user,
+      channel: this.channel,
+      message: this,
+      emoji: Util.parseEmoji(emoji),
+    }).reaction;
   }
 
   /**
