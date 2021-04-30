@@ -2987,7 +2987,7 @@ declare module 'discord.js' {
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
-    removeAttachments?: boolean;
+    attachments?: MessageAttachment[];
   }
 
   interface MessageEmbedAuthor {

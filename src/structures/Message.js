@@ -442,7 +442,7 @@ class Message extends Base {
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
-   * @property {boolean} [removeAttachments] Whether the attachments of the message should be removed
+   * @property {MessageAttachment[]} [attachments] The new attachments of the message (can only be removed, not added)
    */
 
   /**
@@ -626,7 +626,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   removeAttachments() {
-    return this.edit({ removeAttachments: true });
+    return this.edit({ attachments: [] });
   }
 
   /**
