@@ -65,15 +65,25 @@ class Webhook {
      */
     this.channelID = data.channel_id;
 
-    if (data.user) {
-      /**
-       * The owner of the webhook
-       * @type {?User|Object}
-       */
-      this.owner = this.client.users ? this.client.users.cache.get(data.user.id) : data.user;
-    } else {
-      this.owner = null;
-    }
+    /**
+     * The owner of the webhook
+     * @type {?User|Object}
+     */
+    this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
+
+    /**
+     * The source guild of the webhook
+     * @type {?Guild|Object}
+     */
+    this.sourceGuild = data.source_guild
+      ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
+      : null;
+
+    /**
+     * The source channel of the webhook
+     * @type {?Channel|Object}
+     */
+    this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
   }
 
   /**
