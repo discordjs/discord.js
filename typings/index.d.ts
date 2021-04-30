@@ -1111,6 +1111,7 @@ declare module 'discord.js' {
     public embeds: MessageEmbed[];
     public readonly guild: Guild | null;
     public id: Snowflake;
+    public interaction: MessageInteraction | null;
     public readonly member: GuildMember | null;
     public mentions: MessageMentions;
     public nonce: string | number | null;
@@ -3174,6 +3175,13 @@ declare module 'discord.js' {
     | 'URGENT'
     | 'EPHEMERAL'
     | 'LOADING';
+
+  interface MessageInteraction {
+    id: Snowflake;
+    type: InteractionType;
+    commandName: string;
+    user: User;
+  }
 
   interface MessageMentionOptions {
     parse?: MessageMentionTypes[];
