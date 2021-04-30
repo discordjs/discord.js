@@ -22,7 +22,6 @@ class PresenceUpdateAction extends Action {
     if (!member && data.status !== 'offline') {
       member = guild.members.add({
         user,
-        roles: data.roles,
         deaf: false,
         mute: false,
       });

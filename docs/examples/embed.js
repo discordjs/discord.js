@@ -5,10 +5,10 @@
  */
 
 // Extract the required classes from the discord.js module
-const { Client, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 
 // Create an instance of a Discord client
-const client = new Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information

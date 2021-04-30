@@ -115,7 +115,7 @@ class RoleManager extends BaseManager {
   create(options = {}) {
     let { name, color, hoist, permissions, position, mentionable, reason } = options;
     if (color) color = resolveColor(color);
-    if (permissions) permissions = Permissions.resolve(permissions);
+    if (permissions) permissions = Permissions.resolve(permissions).toString();
 
     return this.client.api
       .guilds(this.guild.id)

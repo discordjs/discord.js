@@ -139,6 +139,14 @@ class Presence {
 }
 
 /**
+ * The platform of this activity:
+ * * **`desktop`**
+ * * **`samsung`** - playing on Samsung Galaxy
+ * * **`xbox`** - playing on Xbox Live
+ * @typedef {string} ActivityPlatform
+ */
+
+/**
  * Represents an activity that is part of a user's presence.
  */
 class Activity {
@@ -146,7 +154,13 @@ class Activity {
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
-     * The name of the activity being played
+     * The ID of the activity
+     * @type {string}
+     */
+    this.id = data.id;
+
+    /**
+     * The name of the activity
      * @type {string}
      */
     this.name = data.name;
@@ -195,6 +209,18 @@ class Activity {
       : null;
 
     /**
+     * The ID of the song on Spotify
+     * @type {?string}
+     */
+    this.syncID = data.sync_id ?? null;
+
+    /**
+     * The platform the game is being played on
+     * @type {?ActivityPlatform}
+     */
+    this.platform = data.platform ?? null;
+
+    /**
      * Party of the activity
      * @type {?Object}
      * @property {?string} id ID of the party
@@ -221,6 +247,18 @@ class Activity {
      * @type {?Emoji}
      */
     this.emoji = data.emoji ? new Emoji(presence.client, data.emoji) : null;
+
+    /**
+     * The ID of the game or Spotify session
+     * @type {?string}
+     */
+    this.sessionID = data.session_id ?? null;
+
+    /**
+     * The labels of the buttons of this rich presence
+     * @type {string[]}
+     */
+    this.buttons = data.buttons ?? [];
 
     /**
      * Creation date of the activity

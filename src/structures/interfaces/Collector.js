@@ -214,7 +214,7 @@ class Collector extends EventEmitter {
    * Checks whether the collector should end, and if so, ends it.
    */
   checkEnd() {
-    const reason = this.endReason();
+    const reason = this.endReason;
     if (reason) this.stop(reason);
   }
 
@@ -253,7 +253,7 @@ class Collector extends EventEmitter {
     return Util.flatten(this);
   }
 
-  /* eslint-disable no-empty-function, valid-jsdoc */
+  /* eslint-disable no-empty-function */
   /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
@@ -273,14 +273,14 @@ class Collector extends EventEmitter {
    * @abstract
    */
   dispose() {}
+  /* eslint-enable no-empty-function */
 
   /**
-   * The reason this collector has ended or will end with.
-   * @returns {?string} Reason to end the collector, if any
+   * The reason this collector has ended with, or null if it hasn't ended yet
+   * @name Collector#endReason
+   * @type {?string}
    * @abstract
    */
-  endReason() {}
-  /* eslint-enable no-empty-function, valid-jsdoc */
 }
 
 module.exports = Collector;
