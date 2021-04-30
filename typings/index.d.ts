@@ -3028,7 +3028,7 @@ declare module 'discord.js' {
     name: string;
   }
 
-  interface InteractionReplyOptions extends MessageOptions {
+  interface InteractionReplyOptions extends WebhookMessageOptions {
     ephemeral?: boolean;
   }
 
