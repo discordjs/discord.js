@@ -200,33 +200,20 @@ class CommandInteraction extends Interaction {
       type: ApplicationCommandOptionTypes[option.type],
     };
 
-    if ('value' in option) {
-      result.value = option.value;
-    }
+    if ('value' in option) result.value = option.value;
+    if ('options' in option) result.options = option.options.map(o => this.transformOption(o, resolved));
 
-    if ('options' in option) {
-      result.options = option.options.map(o => this.transformOption(o, resolved));
-    }
+    const user = resolved?.users?.[option.value];
+    if (user) result.user = this.client.users.add(user);
 
-    if (option.type === ApplicationCommandOptionTypes.USER) {
-      const user = resolved.users[option.value];
-      result.user = this.client.users.add(user);
+    const member = resolved?.members?.[option.value];
+    if (member && this.guild) result.member = this.guild.members.add({ user, ...member });
 
-      if (this.guild) {
-        const member = resolved.members?.[option.value];
-        if (member) result.member = this.guild.members.add({ user, ...member });
-      }
-    }
+    const channel = resolved?.channels?.[option.value];
+    if (channel && this.guild) result.channel = this.client.channels.add(channel, this.guild);
 
-    if (option.type === ApplicationCommandOptionTypes.CHANNEL && this.guild) {
-      const channel = resolved.channels[option.value];
-      result.channel = this.client.channels.add(channel, this.guild);
-    }
-
-    if (option.type === ApplicationCommandOptionTypes.ROLE && this.guild) {
-      const role = resolved.roles[option.value];
-      result.role = this.guild.roles.add(role);
-    }
+    const role = resolved?.roles?.[option.value];
+    if (role && this.guild) result.role = this.guild.roles.add(role);
 
     return result;
   }
