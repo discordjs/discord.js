@@ -2435,7 +2435,7 @@ declare module 'discord.js' {
   interface ApplicationCommandData {
     name: string;
     description: string;
-    options?: ApplicationCommandOption[];
+    options?: ApplicationCommandOptionData[];
     defaultPermission?: boolean;
   }
 
