@@ -41,9 +41,9 @@ class BitField {
    * @returns {boolean}
    */
   has(bit) {
-    if (typeof bit === 'undefined') return false;
     if (Array.isArray(bit)) return bit.every(p => this.has(p));
     bit = this.constructor.resolve(bit);
+    if (bit === this.constructor.defaultBit) return false;
     return (this.bitfield & bit) === bit;
   }
 
