@@ -255,6 +255,10 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   addField(name, value, inline) {
+    if(value == null) {
+       return this.addFields({ name, 'undefined', inline });
+    }
+    
     return this.addFields({ name, value, inline });
   }
 
