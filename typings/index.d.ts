@@ -1184,7 +1184,9 @@ declare module 'discord.js' {
       options?: ReactionCollectorOptions,
     ): ReactionCollector;
     public delete(): Promise<Message>;
-    public edit(content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage): Promise<Message>;
+    public edit(
+      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
+    ): Promise<Message>;
     public edit(content: string, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
