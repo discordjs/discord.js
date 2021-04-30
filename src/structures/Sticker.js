@@ -2,7 +2,7 @@
 
 const Base = require('./Base');
 const { StickerFormatTypes } = require('../util/Constants');
-const Snowflake = require('../util/Snowflake');
+const Snowflake = require('../util/SnowflakeUtil');
 
 /**
  * Represents a Sticker.
