@@ -2690,6 +2690,7 @@ declare module 'discord.js' {
     icon?: BufferResolvable | Base64Resolvable | null;
     region?: string;
     roles?: PartialRoleData[];
+    systemChannelFlags?: SystemChannelFlagsResolvable;
     systemChannelID?: number;
     verificationLevel?: VerificationLevel | number;
   }
