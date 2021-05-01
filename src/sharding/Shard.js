@@ -138,11 +138,11 @@ class Shard extends EventEmitter {
   /**
    * Forks a child process or creates a worker thread for the shard.
    * <warn>You should not need to call this manually.</warn>
-   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
+   * @param {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
    * before resolving. (-1 or Infinity for no wait)
    * @returns {Promise<ChildProcess|Worker>}
    */
-  async spawn(spawnTimeout = 30000) {
+  async spawn(timeout = 30000) {
     if (childProcess) throw new Error('SHARDING_PROCESS_EXISTS', this.id);
     if (workerThread) throw new Error('SHARDING_WORKER_EXISTS', this.id);
 
@@ -176,7 +176,7 @@ class Shard extends EventEmitter {
      */
     this.emit('spawn', childProcess || workerThread);
 
-    if (spawnTimeout === -1 || spawnTimeout === Infinity) return childProcess || workerThread;
+    if (timeout === -1 || timeout === Infinity) return childProcess || workerThread;
     await new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
@@ -211,7 +211,7 @@ class Shard extends EventEmitter {
         reject(new Error('SHARDING_READY_TIMEOUT', this.id));
       };
 
-      const spawnTimeoutTimer = setTimeout(onTimeout, spawnTimeout);
+      const spawnTimeoutTimer = setTimeout(onTimeout, timeout);
       this.once('ready', onReady);
       this.once('disconnect', onDisconnect);
       this.once('death', onDeath);
@@ -238,14 +238,14 @@ class Shard extends EventEmitter {
   /**
    * Kills and restarts the shard's process/worker.
    * @param {number} [delay=500] How long to wait between killing the process/worker and restarting it (in milliseconds)
-   * @param {number} [spawnTimeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
+   * @param {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
    * before resolving. (-1 or Infinity for no wait)
    * @returns {Promise<ChildProcess|Worker>}
    */
-  async respawn(delay = 500, spawnTimeout) {
+  async respawn(delay = 500, timeout) {
     this.kill();
     if (delay > 0) await Util.delayFor(delay);
-    return this.spawn(spawnTimeout);
+    return this.spawn(timeout);
   }
 
   /**
@@ -403,8 +403,8 @@ class Shard extends EventEmitter {
 
       // Shard is requesting a respawn of all shards
       if (message._sRespawnAll) {
-        const { shardDelay, respawnDelay, spawnTimeout } = message._sRespawnAll;
-        this.manager.respawnAll(shardDelay, respawnDelay, spawnTimeout).catch(() => {
+        const { shardDelay, respawnDelay, timeout } = message._sRespawnAll;
+        this.manager.respawnAll(shardDelay, respawnDelay, timeout).catch(() => {
           // Do nothing
         });
         return;
