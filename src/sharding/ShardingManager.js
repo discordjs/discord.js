@@ -3,6 +3,7 @@
 const EventEmitter = require('events');
 const fs = require('fs');
 const path = require('path');
+const process = require('process');
 const Shard = require('./Shard');
 const { Error, TypeError, RangeError } = require('../errors');
 const Collection = require('../util/Collection');
@@ -143,6 +144,13 @@ class ShardingManager extends EventEmitter {
      * @type {Collection<number, Shard>}
      */
     this.shards = new Collection();
+
+    /**
+     * The process the {@link ShardingManager} is on.
+     * @type {process}
+     * @private
+     */
+    this.process = process;
 
     process.env.SHARDING_MANAGER = true;
     process.env.SHARDING_MANAGER_MODE = this.mode;
