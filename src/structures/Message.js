@@ -245,7 +245,7 @@ class Message extends Base {
     if (data.interaction) {
       /**
        * Partial data of the interaction that this message is a reply to
-       * @type {MessageInteraction}
+       * @type {?MessageInteraction}
        */
       this.interaction = {
         id: data.interaction.id,
