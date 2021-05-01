@@ -1407,6 +1407,7 @@ declare module 'discord.js' {
     public token: string | null;
     public timeout: number;
     public totalShards: number | 'auto';
+    public shardList: number[] | 'auto';
     private process: process;
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string): Promise<any[]>;

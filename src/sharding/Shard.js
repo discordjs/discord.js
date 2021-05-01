@@ -245,7 +245,7 @@ class Shard extends EventEmitter {
    * before resolving. (-1 or Infinity for no wait)
    * @returns {Promise<ChildProcess|Worker>}
    */
-  async respawn({ delay = 500, timeout = 30000 }) {
+  async respawn({ delay = 500, timeout = 30000 } = {}) {
     this.kill();
     if (delay > 0) await Util.delayFor(delay);
     return this.spawn(timeout);
