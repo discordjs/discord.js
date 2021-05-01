@@ -1020,7 +1020,6 @@ declare module 'discord.js' {
     public webhookID: Snowflake | null;
     public flags: Readonly<MessageFlags>;
     public reference: MessageReference | null;
-    public readonly referencedMessage: Message | null;
     public awaitReactions(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
@@ -1035,6 +1034,7 @@ declare module 'discord.js' {
     ): Promise<Message>;
     public edit(content: StringResolvable, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: object): boolean;
+    public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
     public crosspost(): Promise<Message>;
     public fetch(force?: boolean): Promise<Message>;
