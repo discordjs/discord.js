@@ -64,9 +64,11 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
+    APIChannel as RawChannel,
     APIGuildMember as RawGuildMember,
     APIMessage as RawMessage,
     APIOverwrite as RawOverwrite,
+    APIRole as RawRole,
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
@@ -2702,9 +2704,9 @@ declare module 'discord.js' {
     value?: string | number | boolean;
     options?: CommandInteractionOption[];
     user?: User;
-    member?: GuildMember;
-    channel?: GuildChannel;
-    role?: Role;
+    member?: GuildMember | RawGuildMember;
+    channel?: GuildChannel | RawChannel;
+    role?: Role | RawRole;
   }
 
   interface CrosspostedChannel {
