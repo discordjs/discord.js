@@ -16,7 +16,7 @@ declare enum OverwriteTypes {
 
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
-  import process from 'process';
+  import 'process';
   import { ChildProcess } from 'child_process';
   import { Worker, parentPort } from 'worker_threads';
   import { EventEmitter } from 'events';
@@ -1408,7 +1408,7 @@ declare module 'discord.js' {
     public timeout: number;
     public totalShards: number | 'auto';
     public shardList: number[] | 'auto';
-    private process: process;
+    private process: typeof process;
     public broadcast(message: any): Promise<Shard[]>;
     public broadcastEval(script: string): Promise<any[]>;
     public broadcastEval(script: string, shard: number): Promise<any>;
