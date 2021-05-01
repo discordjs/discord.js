@@ -53,7 +53,7 @@ class GuildEmojiRoleManager {
   add(roleOrRoles) {
     if (roleOrRoles instanceof Collection) return this.add(roleOrRoles.keyArray());
     if (!Array.isArray(roleOrRoles)) return this.add([roleOrRoles]);
-    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolve(r));
+    roleOrRoles = roleOrRoles.map(r => this.guild.roles.resolveID(r));
 
     if (roleOrRoles.includes(null)) {
       return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array or Collection of Roles or Snowflakes', true));

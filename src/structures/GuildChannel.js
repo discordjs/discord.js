@@ -18,6 +18,7 @@ const Util = require('../util/Util');
  * - {@link CategoryChannel}
  * - {@link NewsChannel}
  * - {@link StoreChannel}
+ * - {@link StageChannel}
  * @extends {Channel}
  * @abstract
  */
@@ -319,6 +320,7 @@ class GuildChannel extends Channel {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
    * @property {number} [rateLimitPerUser] The ratelimit per user for the channel in seconds
+   * @property {?string} [rtcRegion] The RTC region of the channel
    */
 
   /**
@@ -374,6 +376,7 @@ class GuildChannel extends Channel {
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
         user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
+        rtc_region: typeof data.rtcRegion !== 'undefined' ? data.rtcRegion : this.rtcRegion,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
@@ -584,7 +587,11 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get deletable() {
-    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
+    return (
+      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) &&
+      this.guild.rulesChannelID !== this.id &&
+      this.guild.publicUpdatesChannelID !== this.id
+    );
   }
 
   /**
@@ -594,7 +601,7 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
-    if (this.type === 'voice') {
+    if (this.type === 'voice' || this.type === 'stage') {
       if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
         return false;
       }

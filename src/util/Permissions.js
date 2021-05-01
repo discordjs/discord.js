@@ -78,6 +78,7 @@ class Permissions extends BitField {
  * * `MANAGE_ROLES`
  * * `MANAGE_WEBHOOKS`
  * * `MANAGE_EMOJIS`
+ * * `REQUEST_TO_SPEAK`
  * @type {Object<string, bigint>}
  * @see {@link https://discord.com/developers/docs/topics/permissions}
  */
@@ -113,6 +114,7 @@ Permissions.FLAGS = {
   MANAGE_ROLES: 1n << 28n,
   MANAGE_WEBHOOKS: 1n << 29n,
   MANAGE_EMOJIS: 1n << 30n,
+  REQUEST_TO_SPEAK: 1n << 32n,
 };
 
 /**
@@ -126,6 +128,13 @@ Permissions.ALL = Object.values(Permissions.FLAGS).reduce((all, p) => all | p, 0
  * @type {bigint}
  */
 Permissions.DEFAULT = BigInt(104324673);
+
+/**
+ * Bitfield representing the permissions required for moderators of stage channels
+ * @type {bigint}
+ */
+Permissions.STAGE_MODERATOR =
+  Permissions.FLAGS.MANAGE_CHANNELS | Permissions.FLAGS.MUTE_MEMBERS | Permissions.FLAGS.MOVE_MEMBERS;
 
 Permissions.defaultBit = BigInt(0);
 

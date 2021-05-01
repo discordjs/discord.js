@@ -75,7 +75,7 @@ exports.DefaultOptions = {
   /**
    * HTTP options
    * @typedef {Object} HTTPOptions
-   * @property {number} [version=7] API version to use
+   * @property {number} [version=8] API version to use
    * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
@@ -110,6 +110,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
+
 /**
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
@@ -430,6 +431,8 @@ exports.InviteScopes = [
  * * CHANNEL_FOLLOW_ADD
  * * GUILD_DISCOVERY_DISQUALIFIED
  * * GUILD_DISCOVERY_REQUALIFIED
+ * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
+ * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
  * * REPLY
  * @typedef {string} MessageType
  */
@@ -450,8 +453,8 @@ exports.MessageTypes = [
   null,
   'GUILD_DISCOVERY_DISQUALIFIED',
   'GUILD_DISCOVERY_REQUALIFIED',
-  null,
-  null,
+  'GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING',
+  'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
   null,
   'REPLY',
 ];
@@ -477,15 +480,19 @@ exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !=
  */
 exports.ActivityTypes = ['PLAYING', 'STREAMING', 'LISTENING', 'WATCHING', 'CUSTOM_STATUS', 'COMPETING'];
 
-exports.ChannelTypes = {
-  TEXT: 0,
-  DM: 1,
-  VOICE: 2,
-  GROUP: 3,
-  CATEGORY: 4,
-  NEWS: 5,
-  STORE: 6,
-};
+exports.ChannelTypes = createEnum([
+  'TEXT',
+  'DM',
+  'VOICE',
+  'GROUP',
+  'CATEGORY',
+  'NEWS',
+  // 6
+  'STORE',
+  ...Array(6).fill(null),
+  // 13
+  'STAGE',
+]);
 
 exports.ClientApplicationAssetTypes = {
   SMALL: 1,
@@ -679,6 +686,7 @@ exports.APIErrors = {
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   INVALID_API_VERSION: 50041,
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
+  INVALID_STICKER_SENT: 50081,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,
 };
@@ -716,6 +724,15 @@ exports.WebhookTypes = [
   'Incoming',
   'Channel Follower',
 ];
+
+/**
+ * The value set for a sticker's type:
+ * * PNG
+ * * APNG
+ * * LOTTIE
+ * @typedef {string} StickerFormatTypes
+ */
+exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
 
 /**
  * An overwrite type:

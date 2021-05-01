@@ -7,13 +7,14 @@ const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
+const Sticker = require('./Sticker');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
 const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -130,6 +131,17 @@ class Message extends Base {
     if (data.attachments) {
       for (const attachment of data.attachments) {
         this.attachments.set(attachment.id, new MessageAttachment(attachment.url, attachment.filename, attachment));
+      }
+    }
+
+    /**
+     * A collection of stickers in the message
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = new Collection();
+    if (data.stickers) {
+      for (const sticker of data.stickers) {
+        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
       }
     }
 
@@ -323,7 +335,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this) : null;
+    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
   }
 
   /**

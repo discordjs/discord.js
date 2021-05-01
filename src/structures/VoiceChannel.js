@@ -1,53 +1,13 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
-const Collection = require('../util/Collection');
+const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
 const Permissions = require('../util/Permissions');
 
 /**
  * Represents a guild voice channel on Discord.
- * @extends {GuildChannel}
+ * @extends {BaseGuildVoiceChannel}
  */
-class VoiceChannel extends GuildChannel {
-  _patch(data) {
-    super._patch(data);
-    /**
-     * The bitrate of this voice channel
-     * @type {number}
-     */
-    this.bitrate = data.bitrate;
-
-    /**
-     * The maximum amount of users allowed in this channel - 0 means unlimited.
-     * @type {number}
-     */
-    this.userLimit = data.user_limit;
-  }
-
-  /**
-   * The members in this voice channel
-   * @type {Collection<Snowflake, GuildMember>}
-   * @readonly
-   */
-  get members() {
-    const coll = new Collection();
-    for (const state of this.guild.voiceStates.cache.values()) {
-      if (state.channelID === this.id && state.member) {
-        coll.set(state.id, state.member);
-      }
-    }
-    return coll;
-  }
-
-  /**
-   * Checks if the voice channel is full
-   * @type {boolean}
-   * @readonly
-   */
-  get full() {
-    return this.userLimit > 0 && this.members.size >= this.userLimit;
-  }
-
+class VoiceChannel extends BaseGuildVoiceChannel {
   /**
    * Whether the channel is deletable by the client user
    * @type {boolean}
@@ -72,8 +32,7 @@ class VoiceChannel extends GuildChannel {
    * @readonly
    */
   get joinable() {
-    if (!this.viewable) return false;
-    if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) return false;
+    if (!super.joinable) return false;
     if (this.full && !this.permissionsFor(this.client.user).has(Permissions.FLAGS.MOVE_MEMBERS, false)) return false;
     return true;
   }
@@ -118,28 +77,17 @@ class VoiceChannel extends GuildChannel {
   }
 
   /**
-   * Attempts to join this voice channel.
-   * @returns {Promise<VoiceConnection>}
+   * Sets the RTC region of the channel.
+   * @name VoiceChannel#setRTCRegion
+   * @param {?string} region The new region of the channel. Set to `null` to remove a specific region for the channel
+   * @returns {Promise<VoiceChannel>}
    * @example
-   * // Join a voice channel
-   * voiceChannel.join()
-   *   .then(connection => console.log('Connected!'))
-   *   .catch(console.error);
-   */
-  join() {
-    return this.client.voice.joinChannel(this);
-  }
-
-  /**
-   * Leaves this voice channel.
+   * // Set the RTC region to europe
+   * voiceChannel.setRTCRegion('europe');
    * @example
-   * // Leave a voice channel
-   * voiceChannel.leave();
+   * // Remove a fixed region for this channel - let Discord decide automatically
+   * voiceChannel.setRTCRegion(null);
    */
-  leave() {
-    const connection = this.client.voice.connections.get(this.guild.id);
-    if (connection && connection.channel.id === this.id) connection.disconnect();
-  }
 }
 
 module.exports = VoiceChannel;
