@@ -1377,16 +1377,6 @@ declare module 'discord.js' {
     public static shardIDForGuildID(guildID: Snowflake, shardCount: number): number;
   }
 
-  interface ShardingManagerOptions {
-    totalShards?: number | 'auto';
-    shardList?: number[] | 'auto';
-    mode?: ShardingManagerMode;
-    respawn?: boolean;
-    shardArgs?: string[];
-    token?: string;
-    execArgv?: string[];
-  }
-
   export class ShardingManager extends EventEmitter {
     constructor(file: string, options?: ShardingManagerOptions);
     private _performOnShards(method: string, args: any[]): Promise<any[]>;
@@ -3303,6 +3293,16 @@ declare module 'discord.js' {
   }
 
   type ShardingManagerMode = 'process' | 'worker';
+
+  interface ShardingManagerOptions {
+    totalShards?: number | 'auto';
+    shardList?: number[] | 'auto';
+    mode?: ShardingManagerMode;
+    respawn?: boolean;
+    shardArgs?: string[];
+    token?: string;
+    execArgv?: string[];
+  }
 
   type Snowflake = string;
 
