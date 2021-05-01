@@ -406,15 +406,15 @@ class Message extends Base {
   }
 
   /**
-   * The Message this crosspost/reply/pin-add references, if cached
-   * @type {?Message}
-   * @readonly
+   * Fetches the Message this crosspost/reply/pin-add references, if available to the client
+   * @returns {Promise<Message>}
    */
-  get referencedMessage() {
-    if (!this.reference) return null;
-    const referenceChannel = this.client.channels.resolve(this.reference.channelID);
-    if (!referenceChannel) return null;
-    return referenceChannel.messages.resolve(this.reference.messageID);
+  fetchReference() {
+    if (!this.reference) throw new Error('MESSAGE_REFERENCE_MISSING');
+    const { channelID, messageID } = this.reference;
+    const channel = this.client.channels.resolve(channelID);
+    if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
+    return channel.messages.fetch(messageID);
   }
 
   /**
