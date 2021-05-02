@@ -87,7 +87,7 @@ class MessageMentions {
 
     /**
      * Cached channels for {@link MessageMentions#channels}
-     * @type {?Collection<Snowflake, GuildChannel>}
+     * @type {?Collection<Snowflake, Channel>}
      * @private
      */
     this._channels = null;
@@ -147,7 +147,7 @@ class MessageMentions {
   /**
    * Any channels that were mentioned
    * <info>Order as they appear first in the message content</info>
-   * @type {Collection<Snowflake, GuildChannel>}
+   * @type {Collection<Snowflake, Channel>}
    * @readonly
    */
   get channels() {
@@ -164,7 +164,7 @@ class MessageMentions {
   /**
    * Checks if a user, guild member, role, or channel is mentioned.
    * Takes into account user mentions, role mentions, and @everyone/@here mentions.
-   * @param {UserResolvable|RoleResolvable|GuildChannelResolvable} data User/Role/Channel to check
+   * @param {UserResolvable|RoleResolvable|ChannelResolvable} data User/Role/Channel to check
    * @param {Object} [options] Options
    * @param {boolean} [options.ignoreDirect=false] - Whether to ignore direct mentions to the item
    * @param {boolean} [options.ignoreRoles=false] - Whether to ignore role mentions to a guild member

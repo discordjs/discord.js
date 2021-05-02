@@ -6,12 +6,7 @@ title: ''
 labels: 'type: enhancement'
 assignees: ''
 ---
-<!--
-If you need help with discord.js installation or usage, please go to the discord.js Discord server instead:
-  https://discord.gg/bRCvFy9
-This issue tracker is only for bug reports and enhancement suggestions.
-You likely won't receive any basic help here.
--->
+<!-- Use Discord for questions: https://discord.gg/bRCvFy9 -->
 
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Eg. I'm always frustrated when [...]

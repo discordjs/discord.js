@@ -18,6 +18,12 @@ class SystemChannelFlags extends BitField {}
  */
 
 /**
+ * Bitfield of the packed bits
+ * @type {number}
+ * @name SystemChannelFlags#bitfield
+ */
+
+/**
  * Data that can be resolved to give a sytem channel flag bitfield. This can be:
  * * A string (see {@link SystemChannelFlags.FLAGS})
  * * A sytem channel flag
@@ -28,13 +34,15 @@ class SystemChannelFlags extends BitField {}
 
 /**
  * Numeric system channel flags. All available properties:
- * * `WELCOME_MESSAGE_DISABLED`
- * * `BOOST_MESSAGE_DISABLED`
+ * * `SUPPRESS_JOIN_NOTIFICATIONS` (Suppress member join notifications)
+ * * `SUPPRESS_PREMIUM_SUBSCRIPTIONS` (Suppress server boost notifications)
+ * * `SUPPRESS_GUILD_REMINDER_NOTIFICATIONS` (Suppress server setup tips)
  * @type {Object}
  */
 SystemChannelFlags.FLAGS = {
-  WELCOME_MESSAGE_DISABLED: 1 << 0,
-  BOOST_MESSAGE_DISABLED: 1 << 1,
+  SUPPRESS_JOIN_NOTIFICATIONS: 1 << 0,
+  SUPPRESS_PREMIUM_SUBSCRIPTIONS: 1 << 1,
+  SUPPRESS_GUILD_REMINDER_NOTIFICATIONS: 1 << 2,
 };
 
 module.exports = SystemChannelFlags;

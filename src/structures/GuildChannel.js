@@ -6,6 +6,8 @@ const PermissionOverwrites = require('./PermissionOverwrites');
 const Role = require('./Role');
 const { Error, TypeError } = require('../errors');
 const Collection = require('../util/Collection');
+const { ChannelTypes } = require('../util/Constants');
+const { OverwriteTypes } = require('../util/Constants');
 const Permissions = require('../util/Permissions');
 const Util = require('../util/Util');
 
@@ -16,6 +18,7 @@ const Util = require('../util/Util');
  * - {@link CategoryChannel}
  * - {@link NewsChannel}
  * - {@link StoreChannel}
+ * - {@link StageChannel}
  * @extends {Channel}
  * @abstract
  */
@@ -160,12 +163,12 @@ class GuildChannel extends Channel {
     const overwrites = this.overwritesFor(member, true, roles);
 
     return permissions
-      .remove(overwrites.everyone ? overwrites.everyone.deny : 0)
-      .add(overwrites.everyone ? overwrites.everyone.allow : 0)
-      .remove(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.deny) : 0)
-      .add(overwrites.roles.length > 0 ? overwrites.roles.map(role => role.allow) : 0)
-      .remove(overwrites.member ? overwrites.member.deny : 0)
-      .add(overwrites.member ? overwrites.member.allow : 0)
+      .remove(overwrites.everyone ? overwrites.everyone.deny : 0n)
+      .add(overwrites.everyone ? overwrites.everyone.allow : 0n)
+      .remove(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.deny) : 0n)
+      .add(overwrites.roles.length > 0n ? overwrites.roles.map(role => role.allow) : 0n)
+      .remove(overwrites.member ? overwrites.member.deny : 0n)
+      .add(overwrites.member ? overwrites.member.allow : 0n)
       .freeze();
   }
 
@@ -182,10 +185,10 @@ class GuildChannel extends Channel {
     const roleOverwrites = this.permissionOverwrites.get(role.id);
 
     return role.permissions
-      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0)
-      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0)
-      .remove(roleOverwrites ? roleOverwrites.deny : 0)
-      .add(roleOverwrites ? roleOverwrites.allow : 0)
+      .remove(everyoneOverwrites ? everyoneOverwrites.deny : 0n)
+      .add(everyoneOverwrites ? everyoneOverwrites.allow : 0n)
+      .remove(roleOverwrites ? roleOverwrites.deny : 0n)
+      .add(roleOverwrites ? roleOverwrites.allow : 0n)
       .freeze();
   }
 
@@ -199,17 +202,16 @@ class GuildChannel extends Channel {
    * channel.overwritePermissions([
    *   {
    *      id: message.author.id,
-   *      deny: ['VIEW_CHANNEL'],
+   *      deny: [Permissions.FLAGS.VIEW_CHANNEL],
    *   },
    * ], 'Needed to change permissions');
    */
-  overwritePermissions(overwrites, reason) {
+  async overwritePermissions(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(
-        new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true),
-      );
+      throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    return this.edit({ permissionOverwrites: overwrites, reason }).then(() => this);
+    await this.edit({ permissionOverwrites: overwrites }, reason);
+    return this;
   }
 
   /**
@@ -226,13 +228,17 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  updateOverwrite(userOrRole, options, reason) {
+  async updateOverwrite(userOrRole, options, reason) {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
     if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
     const existing = this.permissionOverwrites.get(userOrRole.id);
-    if (existing) return existing.update(options, reason).then(() => this);
-    return this.createOverwrite(userOrRole, options, reason);
+    if (existing) {
+      await existing.update(options, reason);
+    } else {
+      await this.createOverwrite(userOrRole, options, reason);
+    }
+    return this;
   }
 
   /**
@@ -253,13 +259,19 @@ class GuildChannel extends Channel {
     userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
     if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
 
-    const type = userOrRole instanceof Role ? 'role' : 'member';
+    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     return this.client.api
       .channels(this.id)
-      .permissions[userOrRole.id].put({
-        data: { id: userOrRole.id, type, allow: allow.bitfield, deny: deny.bitfield },
+      .permissions(userOrRole.id)
+      .put({
+        data: {
+          id: userOrRole.id,
+          type,
+          allow,
+          deny,
+        },
         reason,
       })
       .then(() => this);
@@ -276,14 +288,16 @@ class GuildChannel extends Channel {
   }
 
   /**
-   * A collection of members that can see this channel, mapped by their ID
+   * A collection of cached members of this channel, mapped by their ID.
+   * Members that can view this channel, if the channel is text based.
+   * Members in the channel, if the channel is voice based.
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
   get members() {
     const members = new Collection();
     for (const member of this.guild.members.cache.values()) {
-      if (this.permissionsFor(member).has('VIEW_CHANNEL', false)) {
+      if (this.permissionsFor(member).has(Permissions.FLAGS.VIEW_CHANNEL, false)) {
         members.set(member.id, member);
       }
     }
@@ -294,6 +308,7 @@ class GuildChannel extends Channel {
    * The data for a guild channel.
    * @typedef {Object} ChannelData
    * @property {string} [name] The name of the channel
+   * @property {string} [type] The type of the the channel (only conversion between text and news is supported)
    * @property {number} [position] The position of the channel
    * @property {string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -305,6 +320,7 @@ class GuildChannel extends Channel {
    * @property {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} [permissionOverwrites]
    * Permission overwrites for the channel
    * @property {number} [rateLimitPerUser] The ratelimit per user for the channel in seconds
+   * @property {?string} [rtcRegion] The RTC region of the channel
    */
 
   /**
@@ -355,10 +371,12 @@ class GuildChannel extends Channel {
     const newData = await this.client.api.channels(this.id).patch({
       data: {
         name: (data.name || this.name).trim(),
+        type: ChannelTypes[data.type?.toUpperCase()],
         topic: data.topic,
         nsfw: data.nsfw,
         bitrate: data.bitrate || this.bitrate,
         user_limit: typeof data.userLimit !== 'undefined' ? data.userLimit : this.userLimit,
+        rtc_region: typeof data.rtcRegion !== 'undefined' ? data.rtcRegion : this.rtcRegion,
         parent_id: data.parentID,
         lock_permissions: data.lockPermissions,
         rate_limit_per_user: data.rateLimitPerUser,
@@ -367,9 +385,7 @@ class GuildChannel extends Channel {
       reason,
     });
 
-    const clone = this._clone();
-    clone._patch(newData);
-    return clone;
+    return this.client.actions.ChannelUpdate.handle(newData).updated;
   }
 
   /**
@@ -571,7 +587,11 @@ class GuildChannel extends Channel {
    * @readonly
    */
   get deletable() {
-    return this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false);
+    return (
+      this.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_CHANNELS, false) &&
+      this.guild.rulesChannelID !== this.id &&
+      this.guild.publicUpdatesChannelID !== this.id
+    );
   }
 
   /**
@@ -581,7 +601,7 @@ class GuildChannel extends Channel {
    */
   get manageable() {
     if (this.client.user.id === this.guild.ownerID) return true;
-    if (this.type === 'voice') {
+    if (this.type === 'voice' || this.type === 'stage') {
       if (!this.permissionsFor(this.client.user).has(Permissions.FLAGS.CONNECT, false)) {
         return false;
       }

@@ -3,8 +3,9 @@
 const Integration = require('./Integration');
 const Webhook = require('./Webhook');
 const Collection = require('../util/Collection');
-const { PartialTypes } = require('../util/Constants');
-const Snowflake = require('../util/Snowflake');
+const { OverwriteTypes, PartialTypes } = require('../util/Constants');
+const Permissions = require('../util/Permissions');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -318,11 +319,13 @@ class GuildAuditLogsEntry {
 
     /**
      * The user that executed this entry
-     * @type {User}
+     * @type {?User}
      */
-    this.executor = guild.client.options.partials.includes(PartialTypes.USER)
-      ? guild.client.users.add({ id: data.user_id })
-      : guild.client.users.cache.get(data.user_id);
+    this.executor = data.user_id
+      ? guild.client.options.partials.includes(PartialTypes.USER)
+        ? guild.client.users.add({ id: data.user_id })
+        : guild.client.users.cache.get(data.user_id)
+      : null;
 
     /**
      * An entry in the audit log representing a specific change.
@@ -383,16 +386,19 @@ class GuildAuditLogsEntry {
       case Actions.CHANNEL_OVERWRITE_CREATE:
       case Actions.CHANNEL_OVERWRITE_UPDATE:
       case Actions.CHANNEL_OVERWRITE_DELETE:
-        switch (data.options.type) {
-          case 'member':
-            this.extra = guild.members.cache.get(data.options.id) || { id: data.options.id, type: 'member' };
-            break;
-
-          case 'role':
+        switch (Number(data.options.type)) {
+          case OverwriteTypes.role:
             this.extra = guild.roles.cache.get(data.options.id) || {
               id: data.options.id,
               name: data.options.role_name,
-              type: 'role',
+              type: OverwriteTypes[OverwriteTypes.role],
+            };
+            break;
+
+          case OverwriteTypes.member:
+            this.extra = guild.members.cache.get(data.options.id) || {
+              id: data.options.id,
+              type: OverwriteTypes[OverwriteTypes.member],
             };
             break;
 
@@ -441,7 +447,7 @@ class GuildAuditLogsEntry {
         );
     } else if (targetType === Targets.INVITE) {
       this.target = guild.members.fetch(guild.client.user.id).then(me => {
-        if (me.permissions.has('MANAGE_GUILD')) {
+        if (me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
           const change = this.changes.find(c => c.key === 'code');
           return guild.fetchInvites().then(invites => {
             this.target = invites.find(i => i.code === (change.new || change.old));
@@ -485,7 +491,7 @@ class GuildAuditLogsEntry {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**

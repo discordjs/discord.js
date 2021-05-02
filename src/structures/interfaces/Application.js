@@ -1,7 +1,7 @@
 'use strict';
 
 const { ClientApplicationAssetTypes, Endpoints } = require('../../util/Constants');
-const Snowflake = require('../../util/Snowflake');
+const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Base = require('../Base');
 
 const AssetTypes = Object.keys(ClientApplicationAssetTypes);
@@ -25,21 +25,21 @@ class Application extends Base {
 
     /**
      * The name of the app
-     * @type {string}
+     * @type {?string}
      */
-    this.name = data.name;
+    this.name = data.name ?? this.name ?? null;
 
     /**
      * The app's description
-     * @type {string}
+     * @type {?string}
      */
-    this.description = data.description;
+    this.description = data.description ?? this.description ?? null;
 
     /**
      * The app's icon hash
-     * @type {string}
+     * @type {?string}
      */
-    this.icon = data.icon;
+    this.icon = data.icon ?? this.icon ?? null;
   }
 
   /**
@@ -48,7 +48,7 @@ class Application extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -108,7 +108,7 @@ class Application extends Base {
   /**
    * When concatenated with a string, this automatically returns the application's name instead of the
    * Oauth2Application object.
-   * @returns {string}
+   * @returns {?string}
    * @example
    * // Logs: Application name: My App
    * console.log(`Application name: ${application}`);

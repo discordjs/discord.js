@@ -3,6 +3,7 @@
 const EventEmitter = require('events');
 const WebSocket = require('../../WebSocket');
 const { Status, Events, ShardEvents, OPCodes, WSEvents } = require('../../util/Constants');
+const Intents = require('../../util/Intents');
 
 const STATUS_KEYS = Object.keys(Status);
 const CONNECTION_STATE = Object.keys(WebSocket.WebSocket);
@@ -594,6 +595,7 @@ class WebSocketShard extends EventEmitter {
     // Clone the identify payload and assign the token and shard info
     const d = {
       ...client.options.ws,
+      intents: Intents.resolve(client.options.intents),
       token: client.token,
       shard: [this.id, Number(client.options.shardCount)],
     };
@@ -648,7 +650,7 @@ class WebSocketShard extends EventEmitter {
   _send(data) {
     if (!this.connection || this.connection.readyState !== WebSocket.OPEN) {
       this.debug(`Tried to send packet '${JSON.stringify(data)}' but no WebSocket is available!`);
-      this.destroy({ close: 4000 });
+      this.destroy({ closeCode: 4000 });
       return;
     }
 
