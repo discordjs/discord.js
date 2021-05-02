@@ -409,12 +409,13 @@ class Message extends Base {
    * Fetches the Message this crosspost/reply/pin-add references, if available to the client
    * @returns {Promise<Message>}
    */
-  fetchReference() {
+  async fetchReference() {
     if (!this.reference) throw new Error('MESSAGE_REFERENCE_MISSING');
     const { channelID, messageID } = this.reference;
     const channel = this.client.channels.resolve(channelID);
     if (!channel) throw new Error('GUILD_CHANNEL_RESOLVE');
-    return channel.messages.fetch(messageID);
+    const message = await channel.messages.fetch(messageID);
+    return message;
   }
 
   /**
