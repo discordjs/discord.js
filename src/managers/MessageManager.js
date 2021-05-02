@@ -153,29 +153,25 @@ class MessageManager extends BaseManager {
   /**
    * Pins a message to the channel's pinned messages, even if it's not cached.
    * @param {MessageResolvable} message The message to pin
-   * @param {Object} [options] Options for pinning
-   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<void>}
    */
-  async pin(message, options) {
+  async pin(message) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).pins(message).put(options);
+    await this.client.api.channels(this.channel.id).pins(message).put();
   }
 
   /**
    * Unins a message from the channel's pinned messages, even if it's not cached.
    * @param {MessageResolvable} message The message to unpin
-   * @param {Object} [options] Options for unpinning
-   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<void>}
    */
-  async unpin(message, options) {
+  async unpin(message) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    await this.client.api.channels(this.channel.id).pins(message).delete(options);
+    await this.client.api.channels(this.channel.id).pins(message).delete();
   }
 
   /**
