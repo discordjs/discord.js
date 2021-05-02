@@ -488,32 +488,28 @@ class Message extends Base {
 
   /**
    * Pins this message to the channel's pinned messages.
-   * @param {Object} [options] Options for pinning
-   * @param {string} [options.reason] Reason for pinning
    * @returns {Promise<Message>}
    * @example
-   * // Pin a message with a reason
-   * message.pin({ reason: 'important' })
+   * // Pin a message
+   * message.pin()
    *   .then(console.log)
    *   .catch(console.error)
    */
-  pin(options) {
-    return this.channel.messages.pin(this.id, options).then(() => this);
+  pin() {
+    return this.channel.messages.pin(this.id).then(() => this);
   }
 
   /**
    * Unpins this message from the channel's pinned messages.
-   * @param {Object} [options] Options for unpinning
-   * @param {string} [options.reason] Reason for unpinning
    * @returns {Promise<Message>}
    * @example
-   * // Unpin a message with a reason
-   * message.unpin({ reason: 'no longer relevant' })
+   * // Unpin a message
+   * message.unpin()
    *   .then(console.log)
    *   .catch(console.error)
    */
-  unpin(options) {
-    return this.channel.messages.unpin(this.id, options).then(() => this);
+  unpin() {
+    return this.channel.messages.unpin(this.id).then(() => this);
   }
 
   /**
