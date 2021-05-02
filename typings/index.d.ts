@@ -1048,7 +1048,7 @@ declare module 'discord.js' {
     public fetchWebhook(): Promise<Webhook>;
     public crosspost(): Promise<Message>;
     public fetch(force?: boolean): Promise<Message>;
-    public pin(options?: { reason?: string }): Promise<Message>;
+    public pin(): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
     public reply(
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
@@ -1067,7 +1067,7 @@ declare module 'discord.js' {
     public suppressEmbeds(suppress?: boolean): Promise<Message>;
     public toJSON(): object;
     public toString(): string;
-    public unpin(options?: { reason?: string }): Promise<Message>;
+    public unpin(): Promise<Message>;
   }
 
   export class MessageAttachment {
@@ -1378,7 +1378,7 @@ declare module 'discord.js' {
     public eval<T>(fn: (client: Client) => T): Promise<T[]>;
     public fetchClientValue(prop: string): Promise<any>;
     public kill(): void;
-    public respawn(options?: { delay?: number, timeout?: number }): Promise<ChildProcess>;
+    public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
     public send(message: any): Promise<Shard>;
     public spawn(timeout?: number): Promise<ChildProcess>;
 
@@ -1411,7 +1411,7 @@ declare module 'discord.js' {
     public broadcastEval<T>(fn: (client: Client) => T, shard: number): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
-    public respawnAll(options?: { shardDelay?: number, respawnDelay?: number, timeout?: number }): Promise<void>;
+    public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
     public send(message: any): Promise<void>;
 
     public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
@@ -1448,11 +1448,15 @@ declare module 'discord.js' {
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: {
-      shardDelay?: number,
-      respawnDelay?: number,
-      timeout?: number,
+      shardDelay?: number;
+      respawnDelay?: number;
+      timeout?: number;
     }): Promise<Collection<number, Shard>>;
-    public spawn(options?: { amount?: number | 'auto', delay?: number, timeout?: number }): Promise<Collection<number, Shard>>;
+    public spawn(options?: {
+      amount?: number | 'auto';
+      delay?: number;
+      timeout?: number;
+    }): Promise<Collection<number, Shard>>;
 
     public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
@@ -2080,8 +2084,8 @@ declare module 'discord.js' {
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
-    public pin(message: MessageResolvable, options?: { reason?: string }): Promise<void>;
-    public unpin(message: MessageResolvable, options?: { reason?: string }): Promise<void>;
+    public pin(message: MessageResolvable): Promise<void>;
+    public unpin(message: MessageResolvable): Promise<void>;
   }
 
   export class PresenceManager extends BaseManager<Snowflake, Presence, PresenceResolvable> {
