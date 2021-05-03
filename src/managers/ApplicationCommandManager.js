@@ -256,7 +256,7 @@ class ApplicationCommandManager extends BaseManager {
 
     const data = await this.commandPath.permissions.put({
       data: command.map(perm => ({
-        ...perm,
+        id: perm.id,
         permissions: perm.permissions.map(p => this.constructor.transformPermissions(p)),
       })),
     });
@@ -278,7 +278,8 @@ class ApplicationCommandManager extends BaseManager {
    */
   static transformCommand(command) {
     return {
-      ...command,
+      name: command.name,
+      description: command.description,
       options: command.options?.map(o => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission,
     };
@@ -293,7 +294,8 @@ class ApplicationCommandManager extends BaseManager {
    */
   static transformPermissions(permissions, received) {
     return {
-      ...permissions,
+      id: permissions.id,
+      permission: permissions.permission,
       type:
         typeof permissions.type === 'number' && !received
           ? permissions.type
