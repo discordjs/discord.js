@@ -91,8 +91,8 @@ class CommandInteraction extends Interaction {
 
   /**
    * Options for a reply to an interaction.
-   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @typedef {WebhookMessageOptions} InteractionReplyOptions
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    */
 
   /**
@@ -176,6 +176,7 @@ class CommandInteraction extends Interaction {
 
   /**
    * Represents an option of a received command interaction.
+   * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {string|number|boolean} [value] The value of the option
@@ -184,7 +185,6 @@ class CommandInteraction extends Interaction {
    * @property {GuildMember|Object} [member] The resolved member
    * @property {GuildChannel|Object} [channel] The resolved channel
    * @property {Role|Object} [role] The resolved role
-   * @typedef {Object} CommandInteractionOption
    */
 
   /**

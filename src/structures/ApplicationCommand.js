@@ -82,11 +82,11 @@ class ApplicationCommand extends Base {
 
   /**
    * Data for creating or editing an application command.
+   * @typedef {Object} ApplicationCommandData
    * @property {string} name The name of the command
    * @property {string} description The description of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {boolean} [defaultPermission] Whether the command is enabled by default when the app is added to a guild
-   * @typedef {Object} ApplicationCommandData
    */
 
   /**
@@ -131,18 +131,18 @@ class ApplicationCommand extends Base {
 
   /**
    * The object returned when fetching permissions for an application command.
+   * @typedef {object} ApplicationCommandPermissionData
    * @property {Snowflake} id The ID of the role or user
    * @property {ApplicationCommandPermissionType|number} type Whether this permission if for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
-   * @typedef {object} ApplicationCommandPermissionData
    */
 
   /**
    * The object returned when fetching permissions for an application command.
+   * @typedef {object} ApplicationCommandPermissions
    * @property {Snowflake} id The ID of the role or user
    * @property {ApplicationCommandPermissionType} type Whether this permission if for a role or a user
    * @property {boolean} permission Whether the role or user has the permission to use this command
-   * @typedef {object} ApplicationCommandPermissions
    */
 
   /**
