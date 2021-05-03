@@ -64,8 +64,9 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
-    APIChannel as RawChannel,
-    APIGuildMember as RawGuildMember,
+    APIInteractionDataResolvedChannel as RawInteractionDataResolvedChannel,
+    APIInteractionDataResolvedGuildMember as RawInteractionDataResolvedGuildMember,
+    APIInteractionGuildMember as RawInteractionGuildMember,
     APIMessage as RawMessage,
     APIOverwrite as RawOverwrite,
     APIRole as RawRole,
@@ -1057,7 +1058,7 @@ declare module 'discord.js' {
     public readonly guild: Guild | null;
     public guildID: Snowflake | null;
     public id: Snowflake;
-    public member: GuildMember | RawGuildMember | null;
+    public member: GuildMember | RawInteractionGuildMember | null;
     public readonly token: string;
     public type: InteractionType;
     public user: User;
@@ -2704,8 +2705,8 @@ declare module 'discord.js' {
     value?: string | number | boolean;
     options?: CommandInteractionOption[];
     user?: User;
-    member?: GuildMember | RawGuildMember;
-    channel?: GuildChannel | RawChannel;
+    member?: GuildMember | RawInteractionDataResolvedGuildMember;
+    channel?: GuildChannel | RawInteractionDataResolvedChannel;
     role?: Role | RawRole;
   }
 

@@ -59,7 +59,7 @@
     "@types/node": "^12.12.6",
     "@types/ws": "^7.2.7",
     "cross-env": "^7.0.2",
-    "discord-api-types": "^0.18.0",
+    "discord-api-types": "^0.18.1",
     "discord.js-docgen": "git+https://github.com/discordjs/docgen.git",
     "dtslint": "^4.0.4",
     "eslint": "^7.11.0",
