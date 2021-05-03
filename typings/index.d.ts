@@ -3031,7 +3031,7 @@ declare module 'discord.js' {
     name: string;
   }
 
-  interface InteractionReplyOptions extends WebhookMessageOptions {
+  interface InteractionReplyOptions extends Omit<WebhookMessageOptions, 'username' | 'avatarURL'> {
     ephemeral?: boolean;
   }
 
@@ -3581,11 +3581,11 @@ declare module 'discord.js' {
 
   type WebhookEditMessageOptions = Pick<WebhookMessageOptions, 'content' | 'embeds' | 'files' | 'allowedMentions'>;
 
-  type WebhookMessageOptions = Omit<MessageOptions, 'embed' | 'replyTo'> & {
+  interface WebhookMessageOptions extends Omit<MessageOptions, 'embed' | 'replyTo'> {
     username?: string;
     avatarURL?: string;
     embeds?: (MessageEmbed | object)[];
-  };
+  }
 
   type WebhookTypes = 'Incoming' | 'Channel Follower';
 
