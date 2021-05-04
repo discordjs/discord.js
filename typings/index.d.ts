@@ -1378,7 +1378,7 @@ declare module 'discord.js' {
     public eval<T>(fn: (client: Client) => T): Promise<T[]>;
     public fetchClientValue(prop: string): Promise<any>;
     public kill(): void;
-    public respawn(options?: { delay?: number, timeout?: number }): Promise<ChildProcess>;
+    public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
     public send(message: any): Promise<Shard>;
     public spawn(timeout?: number): Promise<ChildProcess>;
 
@@ -1411,7 +1411,7 @@ declare module 'discord.js' {
     public broadcastEval<T>(fn: (client: Client) => T, shard: number): Promise<T>;
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
-    public respawnAll(options?: { shardDelay?: number, respawnDelay?: number, timeout?: number }): Promise<void>;
+    public respawnAll(options?: { shardDelay?: number; respawnDelay?: number; timeout?: number }): Promise<void>;
     public send(message: any): Promise<void>;
 
     public static singleton(client: Client, mode: ShardingManagerMode): ShardClientUtil;
@@ -1448,11 +1448,15 @@ declare module 'discord.js' {
     public fetchClientValues(prop: string): Promise<any[]>;
     public fetchClientValues(prop: string, shard: number): Promise<any>;
     public respawnAll(options?: {
-      shardDelay?: number,
-      respawnDelay?: number,
-      timeout?: number,
+      shardDelay?: number;
+      respawnDelay?: number;
+      timeout?: number;
     }): Promise<Collection<number, Shard>>;
-    public spawn(options?: { amount?: number | 'auto', delay?: number, timeout?: number }): Promise<Collection<number, Shard>>;
+    public spawn(options?: {
+      amount?: number | 'auto';
+      delay?: number;
+      timeout?: number;
+    }): Promise<Collection<number, Shard>>;
 
     public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
 
@@ -2810,6 +2814,7 @@ declare module 'discord.js' {
     cdn?: string;
     invite?: string;
     template?: string;
+    headers?: Record<string, string>;
   }
 
   type ImageSize = 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096;
