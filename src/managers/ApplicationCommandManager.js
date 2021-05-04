@@ -139,13 +139,7 @@ class ApplicationCommandManager extends BaseManager {
     const id = this.resolveID(command);
     if (!id) throw new TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
 
-    const raw = {};
-    if (data.name) raw.name = data.name;
-    if (data.description) raw.description = data.description;
-    if (data.options) raw.options = data.options.map(o => ApplicationCommand.transformOption(o));
-    if (data.defaultPermission) raw.default_permission = data.defaultPermission;
-
-    const patched = await this.commandPath(id).patch({ data: raw });
+    const patched = await this.commandPath(id).patch({ data: this.constructor.transformCommand(data) });
     return this.add(patched);
   }
 
