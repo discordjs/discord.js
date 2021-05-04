@@ -1,20 +1,3 @@
-declare enum ApplicationCommandOptionTypes {
-  SUB_COMMAND = 1,
-  SUB_COMMAND_GROUP = 2,
-  STRING = 3,
-  INTEGER = 4,
-  BOOLEAN = 5,
-  USER = 6,
-  CHANNEL = 7,
-  ROLE = 8,
-  MENTIONABLE = 9,
-}
-
-declare enum ApplicationCommandPermissionTypes {
-  ROLE = 1,
-  USER = 2,
-}
-
 declare enum ChannelType {
   text = 0,
   dm = 1,
@@ -64,6 +47,8 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
+    ApplicationCommandOptionType as ApplicationCommandOptionTypes,
+    ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
     APIInteractionDataResolvedChannel as RawInteractionDataResolvedChannel,
     APIInteractionDataResolvedGuildMember as RawInteractionDataResolvedGuildMember,
     APIInteractionGuildMember as RawInteractionGuildMember,
