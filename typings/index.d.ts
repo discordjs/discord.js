@@ -1984,7 +1984,7 @@ declare module 'discord.js' {
     public create(
       name: string,
       options: GuildCreateChannelOptions,
-    ): Promise<TextChannel | VoiceChannel | CategoryChannel>;
+    ): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel>;
     public fetch(id: Snowflake, cache?: boolean, force?: boolean): Promise<TextChannel | VoiceChannel | CategoryChannel | NewsChannel | StoreChannel | null>;
     public fetch(id?: Snowflake, cache?: boolean, force?: boolean): Promise<Collection<Snowflake, GuildChannel>>;
   }
