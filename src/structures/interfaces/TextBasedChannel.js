@@ -3,7 +3,7 @@
 /* eslint-disable import/order */
 const MessageCollector = require('../MessageCollector');
 const APIMessage = require('../APIMessage');
-const Snowflake = require('../../util/Snowflake');
+const SnowflakeUtil = require('../../util/SnowflakeUtil');
 const Collection = require('../../util/Collection');
 const { RangeError, TypeError } = require('../../errors');
 
@@ -317,7 +317,7 @@ class TextBasedChannel {
     if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIDs = messages instanceof Collection ? messages.keyArray() : messages.map(m => m.id || m);
       if (filterOld) {
-        messageIDs = messageIDs.filter(id => Date.now() - Snowflake.deconstruct(id).date.getTime() < 1209600000);
+        messageIDs = messageIDs.filter(id => Date.now() - SnowflakeUtil.deconstruct(id).timestamp < 1209600000);
       }
       if (messageIDs.length === 0) return new Collection();
       if (messageIDs.length === 1) {

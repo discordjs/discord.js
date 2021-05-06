@@ -16,6 +16,7 @@ const {
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
 const Permissions = require('../util/Permissions');
+const SystemChannelFlags = require('../util/SystemChannelFlags');
 const { resolveColor } = require('../util/Util');
 
 /**
@@ -53,7 +54,7 @@ class GuildManager extends BaseManager {
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
-   * @property {PermissionResolvable|number} [permissions] The permissions of the role
+   * @property {PermissionResolvable} [permissions] The permissions of the role
    * @property {boolean} [mentionable] Whether or not the role should be mentionable
    */
 
@@ -141,6 +142,7 @@ class GuildManager extends BaseManager {
    * @param {PartialRoleData[]} [options.roles] The roles for this guild,
    * the first element of this array is used to change properties of the guild's everyone role.
    * @param {number} [options.systemChannelID] The ID of the system channel
+   * @param {SystemChannelFlagsResolvable} [options.systemChannelFlags] The flags of the system channel
    * @param {VerificationLevel} [options.verificationLevel] The verification level for the guild
    * @returns {Promise<Guild>} The guild that was created
    */
@@ -156,6 +158,7 @@ class GuildManager extends BaseManager {
       region,
       roles = [],
       systemChannelID,
+      systemChannelFlags,
       verificationLevel,
     } = {},
   ) {
@@ -175,15 +178,15 @@ class GuildManager extends BaseManager {
       delete channel.parentID;
       if (!channel.permissionOverwrites) continue;
       for (const overwrite of channel.permissionOverwrites) {
-        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow);
-        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny);
+        if (overwrite.allow) overwrite.allow = Permissions.resolve(overwrite.allow).toString();
+        if (overwrite.deny) overwrite.deny = Permissions.resolve(overwrite.deny).toString();
       }
       channel.permission_overwrites = channel.permissionOverwrites;
       delete channel.permissionOverwrites;
     }
     for (const role of roles) {
       if (role.color) role.color = resolveColor(role.color);
-      if (role.permissions) role.permissions = Permissions.resolve(role.permissions);
+      if (role.permissions) role.permissions = Permissions.resolve(role.permissions).toString();
     }
     return new Promise((resolve, reject) =>
       this.client.api.guilds
@@ -200,6 +203,7 @@ class GuildManager extends BaseManager {
             afk_channel_id: afkChannelID,
             afk_timeout: afkTimeout,
             system_channel_id: systemChannelID,
+            system_channel_flags: SystemChannelFlags.resolve(systemChannelFlags),
           },
         })
         .then(data => {

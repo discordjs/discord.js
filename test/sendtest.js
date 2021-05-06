@@ -5,9 +5,9 @@ const path = require('path');
 const util = require('util');
 const fetch = require('node-fetch');
 const { owner, token } = require('./auth.js');
-const Discord = require('../src');
+const { Client, Intents, MessageAttachment, MessageEmbed } = require('../src');
 
-const client = new Discord.Client();
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 
 const fill = c => Array(4).fill(c.repeat(1000));
 const buffer = l => fetch(l).then(res => res.buffer());
@@ -19,8 +19,8 @@ const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
 const linkB = 'https://lolisafe.moe/9hSpedPh.png';
 const fileA = path.join(__dirname, 'blobReach.png');
 
-const embed = () => new Discord.MessageEmbed();
-const attach = (attachment, name) => new Discord.MessageAttachment(attachment, name);
+const embed = () => new MessageEmbed();
+const attach = (attachment, name) => new MessageAttachment(attachment, name);
 
 const tests = [
   m => m.channel.send('x'),

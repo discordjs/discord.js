@@ -7,13 +7,14 @@ const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
+const Sticker = require('./Sticker');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
 const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
-const SnowflakeUtil = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const Util = require('../util/Util');
 
 /**
@@ -134,6 +135,17 @@ class Message extends Base {
     }
 
     /**
+     * A collection of stickers in the message
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = new Collection();
+    if (data.stickers) {
+      for (const sticker of data.stickers) {
+        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
+      }
+    }
+
+    /**
      * The timestamp the message was sent at
      * @type {number}
      */
@@ -184,13 +196,6 @@ class Message extends Base {
           type: data.activity.type,
         }
       : null;
-
-    /**
-     * The previous versions of the message, sorted with the most recent first
-     * @type {Message[]}
-     * @private
-     */
-    this._edits = [];
 
     if (this.member && data.member) {
       this.member._patch(data.member);
@@ -246,11 +251,6 @@ class Message extends Base {
    */
   patch(data) {
     const clone = this._clone();
-    const { messageEditHistoryMaxSize } = this.client.options;
-    if (messageEditHistoryMaxSize !== 0) {
-      const editsLimit = messageEditHistoryMaxSize === -1 ? Infinity : messageEditHistoryMaxSize;
-      if (this._edits.unshift(clone) > editsLimit) this._edits.pop();
-    }
 
     if ('edited_timestamp' in data) this.editedTimestamp = new Date(data.edited_timestamp).getTime();
     if ('content' in data) this.content = data.content;
@@ -335,7 +335,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this) : null;
+    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
   }
 
   /**
@@ -384,18 +384,6 @@ class Message extends Base {
   }
 
   /**
-   * An array of cached versions of the message, including the current version
-   * Sorted from latest (first) to oldest (last)
-   * @type {Message[]}
-   * @readonly
-   */
-  get edits() {
-    const copy = this._edits.slice();
-    copy.unshift(this);
-    return copy;
-  }
-
-  /**
    * Whether the message is editable by the client user
    * @type {boolean}
    * @readonly
@@ -410,10 +398,10 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    return (
+    return Boolean(
       !this.deleted &&
-      (this.author.id === this.client.user.id ||
-        (this.guild && this.channel.permissionsFor(this.client.user).has(Permissions.FLAGS.MANAGE_MESSAGES, false)))
+        (this.author.id === this.client.user.id ||
+          this.channel.permissionsFor?.(this.client.user)?.has(Permissions.FLAGS.MANAGE_MESSAGES)),
     );
   }
 
@@ -465,6 +453,7 @@ class Message extends Base {
    * @property {MessageEmbed|Object} [embed] An embed to be added/edited
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
+   * @property {MessageFlags} [flags] Which flags to set for the message. Only `SUPPRESS_EMBEDS` can be edited.
    */
 
   /**
@@ -627,7 +616,7 @@ class Message extends Base {
   }
 
   /**
-   * Suppresses or unsuppresses embeds on a message
+   * Suppresses or unsuppresses embeds on a message.
    * @param {boolean} [suppress=true] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */

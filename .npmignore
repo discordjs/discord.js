@@ -19,7 +19,6 @@ docs/
 .gitattributes
 .gitignore
 .travis.yml
-webpack.config.js
 .github/
 test/
 tsconfig.json

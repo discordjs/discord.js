@@ -1,7 +1,7 @@
 # Seeking support?
 
-We're sorry, we only use this issue tracker for bugs in the library itself and feature requests for it. We are not able to provide general support or answser questions on the issue tracker.
+We only use this issue tracker for bug reports and feature request. We are not able to provide general support or answer questions in the form of GitHub issues.
 
-Should you want to ask such questions, please post in one of our support channels in our Discord server: https://discord.gg/bRCvFy9
+For general questions about discord.js installation and use please use the dedicated support channels in our Discord server: https://discord.gg/bRCvFy9
 
-Any issues that don't directly involve a bug in the library or a feature request will likely be closed and redirected to the Discord server.
+Any issues that don't directly involve a bug or a feature request will likely be closed and redirected.

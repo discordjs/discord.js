@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('util');
 const Base = require('./Base');
 const GuildAuditLogs = require('./GuildAuditLogs');
 const GuildPreview = require('./GuildPreview');
@@ -25,7 +24,7 @@ const {
   ExplicitContentFilterLevels,
 } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
-const Snowflake = require('../util/Snowflake');
+const SnowflakeUtil = require('../util/SnowflakeUtil');
 const SystemChannelFlags = require('../util/SystemChannelFlags');
 const Util = require('../util/Util');
 
@@ -102,6 +101,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
+
+    if ('nsfw' in data) {
+      /**
+       * Whether the guild is designated as not safe for work
+       * @type {boolean}
+       */
+      this.nsfw = data.nsfw;
+    }
   }
 
   /**
@@ -170,8 +177,10 @@ class Guild extends Base {
      * * DISCOVERABLE
      * * FEATURABLE
      * * INVITE_SPLASH
+     * * MEMBER_VERIFICATION_GATE_ENABLED
      * * NEWS
      * * PARTNERED
+     * * PREVIEW_ENABLED
      * * RELAY_ENABLED
      * * VANITY_URL
      * * VERIFIED
@@ -181,7 +190,7 @@ class Guild extends Base {
      */
 
     /**
-     * An array of guild features partnered guilds have enabled
+     * An array of guild features available to the guild
      * @type {Features[]}
      */
     this.features = data.features;
@@ -209,13 +218,6 @@ class Guild extends Base {
      * @type {?Snowflake}
      */
     this.systemChannelID = data.system_channel_id;
-
-    /**
-     * Whether embedded images are enabled on this guild
-     * @type {boolean}
-     * @deprecated
-     */
-    this.embedEnabled = data.embed_enabled;
 
     /**
      * The type of premium tier:
@@ -254,15 +256,6 @@ class Guild extends Base {
        * @type {?string}
        */
       this.widgetChannelID = data.widget_channel_id;
-    }
-
-    if (typeof data.embed_channel_id !== 'undefined') {
-      /**
-       * The embed channel ID, if enabled
-       * @type {?string}
-       * @deprecated
-       */
-      this.embedChannelID = data.embed_channel_id;
     }
 
     /**
@@ -351,14 +344,12 @@ class Guild extends Base {
      */
     this.vanityURLCode = data.vanity_url_code;
 
-    /* eslint-disable max-len */
     /**
      * The use count of the vanity URL code of the guild, if any
      * <info>You will need to fetch this parameter using {@link Guild#fetchVanityData} if you want to receive it</info>
      * @type {?number}
      */
     this.vanityURLUses = null;
-    /* eslint-enable max-len */
 
     /**
      * The description of the guild, if any
@@ -463,7 +454,7 @@ class Guild extends Base {
    * @readonly
    */
   get createdTimestamp() {
-    return Snowflake.deconstruct(this.id).timestamp;
+    return SnowflakeUtil.deconstruct(this.id).timestamp;
   }
 
   /**
@@ -545,17 +536,20 @@ class Guild extends Base {
   }
 
   /**
-   * The owner of the guild
-   * @type {?GuildMember}
-   * @readonly
+   * Options used to fetch the owner of guild.
+   * @typedef {Object} FetchOwnerOptions
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
-  get owner() {
-    return (
-      this.members.cache.get(this.ownerID) ||
-      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
-        ? this.members.add({ user: { id: this.ownerID } }, true)
-        : null)
-    );
+
+  /**
+   * Fetches the owner of the guild
+   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.members.fetch({ ...options, user: this.ownerID });
   }
 
   /**
@@ -583,16 +577,6 @@ class Guild extends Base {
    */
   get widgetChannel() {
     return this.client.channels.cache.get(this.widgetChannelID) || null;
-  }
-
-  /**
-   * Embed channel for this guild
-   * @type {?TextChannel}
-   * @readonly
-   * @deprecated
-   */
-  get embedChannel() {
-    return this.client.channels.cache.get(this.embedChannelID) || null;
   }
 
   /**
@@ -688,8 +672,6 @@ class Guild extends Base {
   /**
    * Fetches a collection of integrations to this guild.
    * Resolves with a collection mapping integrations by their ids.
-   * @param {Object} [options] Options for fetching integrations
-   * @param {boolean} [options.includeApplications] Whether to include bot and Oauth2 webhook integrations
    * @returns {Promise<Collection<string, Integration>>}
    * @example
    * // Fetch integrations
@@ -697,20 +679,12 @@ class Guild extends Base {
    *   .then(integrations => console.log(`Fetched ${integrations.size} integrations`))
    *   .catch(console.error);
    */
-  fetchIntegrations({ includeApplications = false } = {}) {
-    return this.client.api
-      .guilds(this.id)
-      .integrations.get({
-        query: {
-          include_applications: includeApplications,
-        },
-      })
-      .then(data =>
-        data.reduce(
-          (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),
-          new Collection(),
-        ),
-      );
+  async fetchIntegrations() {
+    const data = await this.client.api.guilds(this.id).integrations.get();
+    return data.reduce(
+      (collection, integration) => collection.set(integration.id, new Integration(this.client, integration, this)),
+      new Collection(),
+    );
   }
 
   /**
@@ -801,23 +775,6 @@ class Guild extends Base {
   }
 
   /**
-   * Fetches the vanity url invite code to this guild.
-   * Resolves with a string matching the vanity url invite code, not the full url.
-   * @returns {Promise<string>}
-   * @deprecated
-   * @example
-   * // Fetch invites
-   * guild.fetchVanityCode()
-   *   .then(code => {
-   *     console.log(`Vanity URL: https://discord.gg/${code}`);
-   *   })
-   *   .catch(console.error);
-   */
-  fetchVanityCode() {
-    return this.fetchVanityData().then(vanity => vanity.code);
-  }
-
-  /**
    * An object containing information about a guild's vanity invite.
    * @typedef {Object} Vanity
    * @property {?string} code Vanity invite code
@@ -841,6 +798,7 @@ class Guild extends Base {
       throw new Error('VANITY_URL');
     }
     const data = await this.client.api.guilds(this.id, 'vanity-url').get();
+    this.vanityURLCode = data.code;
     this.vanityURLUses = data.uses;
 
     return data;
@@ -896,20 +854,6 @@ class Guild extends Base {
    */
 
   /**
-   * Fetches the guild embed.
-   * @returns {Promise<GuildWidget>}
-   * @deprecated
-   * @example
-   * // Fetches the guild embed
-   * guild.fetchEmbed()
-   *   .then(embed => console.log(`The embed is ${embed.enabled ? 'enabled' : 'disabled'}`))
-   *   .catch(console.error);
-   */
-  fetchEmbed() {
-    return this.fetchWidget();
-  }
-
-  /**
    * Fetches the guild widget.
    * @returns {Promise<GuildWidget>}
    * @example
@@ -920,8 +864,8 @@ class Guild extends Base {
    */
   async fetchWidget() {
     const data = await this.client.api.guilds(this.id).widget.get();
-    this.widgetEnabled = this.embedEnabled = data.enabled;
-    this.widgetChannelID = this.embedChannelID = data.channel_id;
+    this.widgetEnabled = data.enabled;
+    this.widgetChannelID = data.channel_id;
     return {
       enabled: data.enabled,
       channel: data.channel_id ? this.channels.cache.get(data.channel_id) : null,
@@ -980,11 +924,11 @@ class Guild extends Base {
     if (options.roles) {
       const roles = [];
       for (let role of options.roles instanceof Collection ? options.roles.values() : options.roles) {
-        role = this.roles.resolve(role);
-        if (!role) {
+        let roleID = this.roles.resolveID(role);
+        if (!roleID) {
           throw new TypeError('INVALID_TYPE', 'options.roles', 'Array or Collection of Roles or Snowflakes', true);
         }
-        roles.push(role.id);
+        roles.push(roleID);
       }
       options.roles = roles;
     }
@@ -1013,6 +957,8 @@ class Guild extends Base {
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
+   * @property {string} [description] The discovery description of the guild
+   * @property {Features[]} [features] The features of the guild
    */
 
   /**
@@ -1071,6 +1017,12 @@ class Guild extends Base {
     }
     if (typeof data.publicUpdatesChannel !== 'undefined') {
       _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (typeof data.features !== 'undefined') {
+      _data.features = data.features;
+    }
+    if (typeof data.description !== 'undefined') {
+      _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api
@@ -1213,7 +1165,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setIcon(icon, reason) {
-    return this.edit({ icon: await DataResolver.resolveImage(icon), reason });
+    return this.edit({ icon: await DataResolver.resolveImage(icon) }, reason);
   }
 
   /**
@@ -1243,7 +1195,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setSplash(splash, reason) {
-    return this.edit({ splash: await DataResolver.resolveImage(splash), reason });
+    return this.edit({ splash: await DataResolver.resolveImage(splash) }, reason);
   }
 
   /**
@@ -1258,7 +1210,7 @@ class Guild extends Base {
    *   .catch(console.error);
    */
   async setDiscoverySplash(discoverySplash, reason) {
-    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash), reason });
+    return this.edit({ discoverySplash: await DataResolver.resolveImage(discoverySplash) }, reason);
   }
 
   /**
@@ -1272,7 +1224,7 @@ class Guild extends Base {
    *  .catch(console.error);
    */
   async setBanner(banner, reason) {
-    return this.edit({ banner: await DataResolver.resolveImage(banner), reason });
+    return this.edit({ banner: await DataResolver.resolveImage(banner) }, reason);
   }
 
   /**
@@ -1321,14 +1273,24 @@ class Guild extends Base {
   }
 
   /**
+   * Data that can be resolved to give a Category Channel object. This can be:
+   * * A CategoryChannel object
+   * * A Snowflake
+   * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
+   */
+
+  /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
-   * @property {number} position New position for the channel
+   * @property {number} [position] New position for the channel
+   * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
+   * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
    */
 
   /**
    * Batch-updates the guild's channels' positions.
+   * <info>Only one channel's parent can be changed at a time</info>
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
@@ -1340,6 +1302,8 @@ class Guild extends Base {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
+      lock_permissions: r.lockPermissions,
+      parent_id: this.channels.resolveID(r.parent),
     }));
 
     return this.client.api
@@ -1367,7 +1331,7 @@ class Guild extends Base {
    * @returns {Promise<Guild>}
    * @example
    * guild.setRolePositions([{ role: roleID, position: updatedRoleIndex }])
-   *  .then(guild => console.log(`Role permissions updated for ${guild}`))
+   *  .then(guild => console.log(`Role positions updated for ${guild}`))
    *  .catch(console.error);
    */
   setRolePositions(rolePositions) {
@@ -1390,17 +1354,6 @@ class Guild extends Base {
             roles: rolePositions,
           }).guild,
       );
-  }
-
-  /**
-   * Edits the guild's embed.
-   * @param {GuildWidgetData} embed The embed for the guild
-   * @param {string} [reason] Reason for changing the guild's embed
-   * @returns {Promise<Guild>}
-   * @deprecated
-   */
-  setEmbed(embed, reason) {
-    return this.setWidget(embed, reason);
   }
 
   /**
@@ -1464,7 +1417,7 @@ class Guild extends Base {
    * @returns {boolean}
    */
   equals(guild) {
-    let equal =
+    return (
       guild &&
       guild instanceof this.constructor &&
       this.id === guild.id &&
@@ -1478,20 +1431,10 @@ class Guild extends Base {
       this.icon === guild.icon &&
       this.ownerID === guild.ownerID &&
       this.verificationLevel === guild.verificationLevel &&
-      this.embedEnabled === guild.embedEnabled &&
       (this.features === guild.features ||
         (this.features.length === guild.features.length &&
-          this.features.every((feat, i) => feat === guild.features[i])));
-
-    if (equal) {
-      if (this.embedChannel) {
-        if (!guild.embedChannel || this.embedChannel.id !== guild.embedChannel.id) equal = false;
-      } else if (guild.embedChannel) {
-        equal = false;
-      }
-    }
-
-    return equal;
+          this.features.every((feat, i) => feat === guild.features[i])))
+    );
   }
 
   /**
@@ -1522,7 +1465,7 @@ class Guild extends Base {
 
   /**
    * Creates a collection of this guild's roles, sorted by their position and IDs.
-   * @returns {Collection<Role>}
+   * @returns {Collection<Snowflake, Role>}
    * @private
    */
   _sortedRoles() {
@@ -1532,7 +1475,7 @@ class Guild extends Base {
   /**
    * Creates a collection of this guild's or a specific category's channels, sorted by their position and IDs.
    * @param {GuildChannel} [channel] Category to get the channels of
-   * @returns {Collection<GuildChannel>}
+   * @returns {Collection<Snowflake, GuildChannel>}
    * @private
    */
   _sortedChannels(channel) {
@@ -1548,14 +1491,5 @@ class Guild extends Base {
     );
   }
 }
-
-Guild.prototype.setEmbed = deprecate(Guild.prototype.setEmbed, 'Guild#setEmbed: Use setWidget instead');
-
-Guild.prototype.fetchEmbed = deprecate(Guild.prototype.fetchEmbed, 'Guild#fetchEmbed: Use fetchWidget instead');
-
-Guild.prototype.fetchVanityCode = deprecate(
-  Guild.prototype.fetchVanityCode,
-  'Guild#fetchVanityCode: Use fetchVanityData() instead',
-);
 
 module.exports = Guild;
