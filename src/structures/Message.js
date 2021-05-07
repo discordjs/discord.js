@@ -7,10 +7,11 @@ const MessageAttachment = require('./MessageAttachment');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
+const Sticker = require('./Sticker');
 const { Error, TypeError } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const Collection = require('../util/Collection');
-const { MessageTypes, SystemMessageTypes } = require('../util/Constants');
+const { InteractionTypes, MessageTypes, SystemMessageTypes } = require('../util/Constants');
 const MessageFlags = require('../util/MessageFlags');
 const Permissions = require('../util/Permissions');
 const SnowflakeUtil = require('../util/SnowflakeUtil');
@@ -134,6 +135,17 @@ class Message extends Base {
     }
 
     /**
+     * A collection of stickers in the message
+     * @type {Collection<Snowflake, Sticker>}
+     */
+    this.stickers = new Collection();
+    if (data.stickers) {
+      for (const sticker of data.stickers) {
+        this.stickers.set(sticker.id, new Sticker(this.client, sticker));
+      }
+    }
+
+    /**
      * The timestamp the message was sent at
      * @type {number}
      */
@@ -219,6 +231,30 @@ class Message extends Base {
 
     if (data.referenced_message) {
       this.channel.messages.add(data.referenced_message);
+    }
+
+    /**
+     * Partial data of the interaction that a message is a reply to
+     * @typedef {object} MessageInteraction
+     * @property {Snowflake} id The ID of the interaction
+     * @property {InteractionType} type The type of the interaction
+     * @property {string} commandName The name of the interaction's application command
+     * @property {User} user The user that invoked the interaction
+     */
+
+    if (data.interaction) {
+      /**
+       * Partial data of the interaction that this message is a reply to
+       * @type {?MessageInteraction}
+       */
+      this.interaction = {
+        id: data.interaction.id,
+        type: InteractionTypes[data.interaction.type],
+        commandName: data.interaction.name,
+        user: this.client.users.add(data.interaction.user),
+      };
+    } else if (!this.interaction) {
+      this.interaction = null;
     }
   }
 
@@ -323,7 +359,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? Util.cleanContent(this.content, this) : null;
+    return this.content != null ? Util.cleanContent(this.content, this.channel) : null;
   }
 
   /**

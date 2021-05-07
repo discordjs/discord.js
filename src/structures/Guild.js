@@ -9,6 +9,7 @@ const Invite = require('./Invite');
 const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
 const { Error, TypeError } = require('../errors');
+const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
 const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
@@ -42,6 +43,12 @@ class Guild extends Base {
    */
   constructor(client, data) {
     super(client);
+
+    /**
+     * A manager of the application commands belonging to this guild
+     * @type {GuildApplicationCommandManager}
+     */
+    this.commands = new GuildApplicationCommandManager(this);
 
     /**
      * A manager of the members belonging to this guild
@@ -108,6 +115,14 @@ class Guild extends Base {
      * @type {number}
      */
     this.shardID = data.shardID;
+
+    if ('nsfw' in data) {
+      /**
+       * Whether the guild is designated as not safe for work
+       * @type {boolean}
+       */
+      this.nsfw = data.nsfw;
+    }
   }
 
   /**
@@ -535,17 +550,20 @@ class Guild extends Base {
   }
 
   /**
-   * The owner of the guild
-   * @type {?GuildMember}
-   * @readonly
+   * Options used to fetch the owner of guild.
+   * @typedef {Object} FetchOwnerOptions
+   * @property {boolean} [cache=true] Whether or not to cache the fetched member
+   * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */
-  get owner() {
-    return (
-      this.members.cache.get(this.ownerID) ||
-      (this.client.options.partials.includes(PartialTypes.GUILD_MEMBER)
-        ? this.members.add({ user: { id: this.ownerID } }, true)
-        : null)
-    );
+
+  /**
+   * Fetches the owner of the guild
+   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * @param {FetchOwnerOptions} [options] The options for fetching the member
+   * @returns {Promise<GuildMember>}
+   */
+  fetchOwner(options) {
+    return this.members.fetch({ ...options, user: this.ownerID });
   }
 
   /**
@@ -909,6 +927,8 @@ class Guild extends Base {
    * @property {ChannelResolvable} [rulesChannel] The rules channel of the guild
    * @property {ChannelResolvable} [publicUpdatesChannel] The community updates channel of the guild
    * @property {string} [preferredLocale] The preferred locale of the guild
+   * @property {string} [description] The discovery description of the guild
+   * @property {Features[]} [features] The features of the guild
    */
 
   /**
@@ -967,6 +987,12 @@ class Guild extends Base {
     }
     if (typeof data.publicUpdatesChannel !== 'undefined') {
       _data.public_updates_channel_id = this.client.channels.resolveID(data.publicUpdatesChannel);
+    }
+    if (typeof data.features !== 'undefined') {
+      _data.features = data.features;
+    }
+    if (typeof data.description !== 'undefined') {
+      _data.description = data.description;
     }
     if (data.preferredLocale) _data.preferred_locale = data.preferredLocale;
     return this.client.api
@@ -1217,14 +1243,24 @@ class Guild extends Base {
   }
 
   /**
+   * Data that can be resolved to give a Category Channel object. This can be:
+   * * A CategoryChannel object
+   * * A Snowflake
+   * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
+   */
+
+  /**
    * The data needed for updating a channel's position.
    * @typedef {Object} ChannelPosition
    * @property {ChannelResolvable} channel Channel to update
-   * @property {number} position New position for the channel
+   * @property {number} [position] New position for the channel
+   * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
+   * @property {boolean} [lockPermissions] If the overwrites should be locked to the parents overwrites
    */
 
   /**
    * Batch-updates the guild's channels' positions.
+   * <info>Only one channel's parent can be changed at a time</info>
    * @param {ChannelPosition[]} channelPositions Channel positions to update
    * @returns {Promise<Guild>}
    * @example
@@ -1236,6 +1272,8 @@ class Guild extends Base {
     const updatedChannels = channelPositions.map(r => ({
       id: this.client.channels.resolveID(r.channel),
       position: r.position,
+      lock_permissions: r.lockPermissions,
+      parent_id: this.channels.resolveID(r.parent),
     }));
 
     return this.client.api
