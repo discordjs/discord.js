@@ -228,6 +228,9 @@ exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
   CLIENT_READY: 'ready',
+  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
+  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
+  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -310,6 +313,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
+ * * APPLICATION_COMMAND_CREATE
+ * * APPLICATION_COMMAND_DELETE
+ * * APPLICATION_COMMAND_UPDATE
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -350,6 +356,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
 exports.WSEvents = keyMirror([
   'READY',
   'RESUMED',
+  'APPLICATION_COMMAND_CREATE',
+  'APPLICATION_COMMAND_DELETE',
+  'APPLICATION_COMMAND_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
