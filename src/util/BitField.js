@@ -43,7 +43,6 @@ class BitField {
   has(bit) {
     if (Array.isArray(bit)) return bit.every(p => this.has(p));
     bit = this.constructor.resolve(bit);
-    if (bit === this.constructor.defaultBit) return false;
     return (this.bitfield & bit) === bit;
   }
 
@@ -144,7 +143,6 @@ class BitField {
    */
   static resolve(bit) {
     const { defaultBit } = this;
-    if (typeof bit === 'undefined') return defaultBit;
     if (typeof defaultBit === typeof bit && bit >= defaultBit) return bit;
     if (bit instanceof BitField) return bit.bitfield;
     if (Array.isArray(bit)) return bit.map(p => this.resolve(p)).reduce((prev, p) => prev | p, defaultBit);
