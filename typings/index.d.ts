@@ -478,6 +478,9 @@ declare module 'discord.js' {
       INVALID_REQUEST_WARNING: 'invalidRequestWarning';
       CLIENT_READY: 'ready';
       RESUMED: 'resumed';
+      APPLICATION_COMMAND_CREATE: 'applicationCommandCreate';
+      APPLICATION_COMMAND_DELETE: 'applicationCommandDelete';
+      APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate';
       GUILD_CREATE: 'guildCreate';
       GUILD_DELETE: 'guildDelete';
       GUILD_UPDATE: 'guildUpdate';
@@ -2543,6 +2546,9 @@ declare module 'discord.js' {
   type ChannelResolvable = Channel | Snowflake;
 
   interface ClientEvents {
+    applicationCommandCreate: [command: ApplicationCommand];
+    applicationCommandDelete: [command: ApplicationCommand];
+    applicationCommandUpdate: [oldCommand: ApplicationCommand | null, newCommand: ApplicationCommand];
     channelCreate: [channel: GuildChannel];
     channelDelete: [channel: DMChannel | GuildChannel];
     channelPinsUpdate: [channel: Channel | PartialDMChannel, date: Date];
@@ -3589,6 +3595,9 @@ declare module 'discord.js' {
   type WSEventType =
     | 'READY'
     | 'RESUMED'
+    | 'APPLICATION_COMMAND_CREATE'
+    | 'APPLICATION_COMMAND_DELETE'
+    | 'APPLICATION_COMMAND_UPDATE'
     | 'GUILD_CREATE'
     | 'GUILD_DELETE'
     | 'GUILD_UPDATE'
