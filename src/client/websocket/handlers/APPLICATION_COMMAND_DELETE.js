@@ -13,7 +13,7 @@ module.exports = (client, { d: data }) => {
     guild.commands.cache.delete(data.id);
   } else {
     command = client.application.commands.cache.get(data) ?? new ApplicationCommand(client, data);
-    client.application.commands.delete(data.id);
+    client.application.commands.cache.delete(data.id);
   }
 
   /**
