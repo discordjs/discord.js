@@ -203,7 +203,7 @@ declare module 'discord.js' {
     public any(bit: BitFieldResolvable<S, N>): boolean;
     public equals(bit: BitFieldResolvable<S, N>): boolean;
     public freeze(): Readonly<BitField<S, N>>;
-    public has(bit: BitFieldResolvable<S, N>): boolean;
+    public has(bit: BitFieldResolvable<S, N>, ...hasParam: readonly unknown[]): boolean;
     public missing(bits: BitFieldResolvable<S, N>, ...hasParam: readonly unknown[]): S[];
     public remove(...bits: BitFieldResolvable<S, N>[]): BitField<S, N>;
     public serialize(...hasParam: readonly unknown[]): Record<S, boolean>;
