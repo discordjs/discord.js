@@ -1,6 +1,5 @@
 'use strict';
 
-const ApplicationCommand = require('../../../structures/ApplicationCommand');
 const { Events } = require('../../../util/Constants');
 
 module.exports = (client, { d: data }) => {
@@ -9,10 +8,10 @@ module.exports = (client, { d: data }) => {
   if (data.guild_id) {
     const guild = client.guilds.cache.get(data.guild_id);
     if (!guild) return;
-    command = guild.commands.cache.get(data.id) ?? new ApplicationCommand(client, data, guild);
+    command = guild.commands.add(data);
     guild.commands.cache.delete(data.id);
   } else {
-    command = client.application.commands.cache.get(data) ?? new ApplicationCommand(client, data);
+    command = client.application.commands.add(data);
     client.application.commands.cache.delete(data.id);
   }
 
