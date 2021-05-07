@@ -33,8 +33,10 @@ module.exports = {
   version: require('../package.json').version,
 
   // Managers
+  ApplicationCommandManager: require('./managers/ApplicationCommandManager'),
   BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
   ChannelManager: require('./managers/ChannelManager'),
+  GuildApplicationCommandManager: require('./managers/GuildApplicationCommandManager'),
   GuildChannelManager: require('./managers/GuildChannelManager'),
   GuildEmojiManager: require('./managers/GuildEmojiManager'),
   GuildEmojiRoleManager: require('./managers/GuildEmojiRoleManager'),
@@ -58,6 +60,7 @@ module.exports = {
 
   // Structures
   Application: require('./structures/interfaces/Application'),
+  ApplicationCommand: require('./structures/ApplicationCommand'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
@@ -71,6 +74,7 @@ module.exports = {
     return require('./structures/ClientUser');
   },
   Collector: require('./structures/interfaces/Collector'),
+  CommandInteraction: require('./structures/CommandInteraction'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
   Guild: require('./structures/Guild'),
@@ -82,6 +86,7 @@ module.exports = {
   GuildTemplate: require('./structures/GuildTemplate'),
   Integration: require('./structures/Integration'),
   IntegrationApplication: require('./structures/IntegrationApplication'),
+  Interaction: require('./structures/Interaction'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
   MessageAttachment: require('./structures/MessageAttachment'),

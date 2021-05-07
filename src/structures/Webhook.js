@@ -238,7 +238,7 @@ class Webhook {
 
   /**
    * Gets a message that was sent by this webhook.
-   * @param {Snowflake} message The ID of the message to fetch
+   * @param {Snowflake|'@original'} message The ID of the message to fetch
    * @param {boolean} [cache=true] Whether to cache the message
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
    * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
@@ -250,7 +250,7 @@ class Webhook {
 
   /**
    * Edits a message that was sent by this webhook.
-   * @param {MessageResolvable} message The message to edit
+   * @param {MessageResolvable|'@original'} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {WebhookEditMessageOptions|MessageEmbed|MessageEmbed[]} [options] The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
@@ -287,7 +287,7 @@ class Webhook {
 
   /**
    * Delete a message that was sent by this webhook.
-   * @param {MessageResolvable} message The message to delete
+   * @param {MessageResolvable|'@original'} message The message to delete
    * @returns {Promise<void>}
    */
   async deleteMessage(message) {
