@@ -19,7 +19,7 @@
 
 ## Table of contents
 
-- [About](#about)
+- [Abot](#about)
 - [Installation](#installation)
   - [Audio engines](#audio-engines)
   - [Optional packages](#optional-packages)
