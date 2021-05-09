@@ -29,24 +29,25 @@
 - [допринасящ](#contributing)
 - [Помощ](#help)
 
-## About
+## относно
 
-discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to easily interact with the
+discord.js е мощен модул, който ви позволява лесно да взаимодействате с:
 [Discord API](https://discord.com/developers/docs/intro).
 
-- Object-oriented
-- Predictable abstractions
-- Performant
-- 100% coverage of the Discord API
+- Обектно ориентиран
+- Предсказуеми абстракции
+- производителност
+- 100% покритие на Discord API
 
-## Installation
+## Инсталация
 
-**Node.js 14.0.0 or newer is required.**  
-Ignore any warnings about unmet peer dependencies, as they're all optional.
+** Изисква се Node.js 14.0.0 или по-нова. **
+Пренебрегвайте всякакви предупреждения за незадоволени връстници, тъй като всички те са по избор.
 
-Without voice support: `npm install discord.js`  
-With voice support ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
-With voice support ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
+
+Без гласова поддръжка: `npm install discord.js`  
+С гласова поддръжка ([@discordjs/opus](https://www.npmjs.com/package/@discordjs/opus)): `npm install discord.js @discordjs/opus`  
+С гласова поддръжка ([opusscript](https://www.npmjs.com/package/opusscript)): `npm install discord.js opusscript`
 
 ### Audio engines
 
