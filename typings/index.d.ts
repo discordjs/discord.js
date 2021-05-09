@@ -311,25 +311,25 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
     public on<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => void,
+      listener: (...args: any[]) => unknown,
     ): this;
 
-    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
     public once<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => void,
+      listener: (...args: any[]) => unknown,
     ): this;
 
     public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
     public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
 
-    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => void): this;
+    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
     public off<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => void,
+      listener: (...args: any[]) => unknown,
     ): this;
 
     public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
