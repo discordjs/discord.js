@@ -19,11 +19,11 @@
 
 ## Table of contents
 
-- [относно](#about)
-- [Инсталация](#installation)
+- [относно](#относно)
+- [Инсталация](#Инсталация)
   - [Audio engines](#audio-engines)
   - [Optional packages](#optional-packages)
-- [Пример за използване](#example-usage)
+- [Пример за използване](#Пример-за-използване)
 - [Links](#links)
   - [Разширения](#extensions)
 - [допринасящ](#contributing)
@@ -62,7 +62,7 @@ discord.js е мощен модул, който ви позволява лесн
 - Може да се инсталира един от следните пакети за по-бързо криптиране и декриптиране на гласов пакет:
   - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
   - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
-- [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
+- [bufferutil](https://www.npmjs.com/package/bufferutil) за много по-бърза връзка WebSocket (`npm install bufferutil`)
 - [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Пример за използване
@@ -87,26 +87,27 @@ client.login('token');
 ## Links
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - това все още е за стабилно  
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html),включително актуализирани и премахнати елементи в библиотеката. 
+- [Документация](https://discord.js.org/#/docs/main/master/general/welcome)
+- [гид](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - това все още е за стабилно  
+  See also the [гид] за актуализация](https://discordjs.guide/additional-info/changes-in-v12.html),включително актуализирани и премахнати елементи в библиотеката. 
 - [Discord.js Discord server](https://discord.gg/bRCvFy9)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)
 - [NPM](https://www.npmjs.com/package/discord.js)
-- [Related libraries](https://discordapi.com/unofficial/libs.html)
+- [Свързани библиотеки](https://discordapi.com/unofficial/libs.html)
 
-### Extensions
+### Разширения
 
 - [RPC](https://www.npmjs.com/package/discord-rpc) ([source](https://github.com/discordjs/RPC))
 
-## Contributing
+## допринасящ
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
+Преди да създадете проблем, моля, уверете се, че той все още не е докладван / предложен и проверете отново
+
 [documentation](https://discord.js.org/#/docs).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+Виж [ръководството за принос](https://github.com/discordjs/discord.js/blob/master/.github/CONTRIBUTING.md) if you'd like to submit a PR.
 
-## Help
+## Помощ
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+Ако не разбирате нещо от документацията, имате проблеми или просто се нуждаете от нежно
+бутайте в правилната посока, моля не се колебайте да се присъедините към нашия официален [Discord.js Server](https://discord.gg/bRCvFy9).
