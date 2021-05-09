@@ -43,6 +43,8 @@ declare enum StickerFormatTypes {
   LOTTIE = 3,
 }
 
+type Awaited<T> = T | Promise<T>;
+
 declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
@@ -311,25 +313,25 @@ declare module 'discord.js' {
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
-    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
+    public on<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
     public on<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => unknown,
+      listener: (...args: any[]) => Awaited<void>,
     ): this;
 
-    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
+    public once<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
     public once<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => unknown,
+      listener: (...args: any[]) => Awaited<void>,
     ): this;
 
     public emit<K extends keyof ClientEvents>(event: K, ...args: ClientEvents[K]): boolean;
     public emit<S extends string | symbol>(event: Exclude<S, keyof ClientEvents>, ...args: any[]): boolean;
 
-    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => unknown): this;
+    public off<K extends keyof ClientEvents>(event: K, listener: (...args: ClientEvents[K]) => Awaited<void>): this;
     public off<S extends string | symbol>(
       event: Exclude<S, keyof ClientEvents>,
-      listener: (...args: any[]) => unknown,
+      listener: (...args: any[]) => Awaited<void>,
     ): this;
 
     public removeAllListeners<K extends keyof ClientEvents>(event?: K): this;
