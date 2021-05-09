@@ -214,7 +214,7 @@ class ApplicationCommandManager extends BaseManager {
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
    * // Set the permissions for one command
-   * client.commands.setPermissions('123456789012345678', [
+   * client.application.commands.setPermissions('123456789012345678', [
    *   {
    *     id: '876543210987654321',
    *     type: 'USER',
