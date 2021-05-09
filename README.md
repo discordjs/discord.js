@@ -51,21 +51,21 @@ discord.js е мощен модул, който ви позволява лесн
 
 ### Audio engines
 
-The preferred audio engine is @discordjs/opus, as it performs significantly better than opusscript. When both are available, discord.js will automatically choose @discordjs/opus.
-Using opusscript is only recommended for development environments where @discordjs/opus is tough to get working.
-For production bots, using @discordjs/opus should be considered a necessity, especially if they're going to be running on multiple servers.
+Предпочитаният звуков механизъм е @ discordjs / opus, тъй като се представя значително по-добре от opusscript. Когато и двете са налични, discord.js автоматично ще избере @ discordjs / opus.
+Използването на opusscript се препоръчва само за среди за разработка, където @ discordjs / opus е трудно да се работи.
+За производствените ботове използването на @ discordjs / opus трябва да се счита за необходимост, особено ако те ще работят на 
 
 ### Optional packages
 
-- [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
-- [erlpack](https://github.com/discord/erlpack) for significantly faster WebSocket data (de)serialisation (`npm install discord/erlpack`)
-- One of the following packages can be installed for faster voice packet encryption and decryption:
+- [zlib-sync](https://www.npmjs.com/package/zlib-sync) за WebSocket компресия на данни и инфлация (`npm install zlib-sync`)
+- [erlpack](https://github.com/discord/erlpack) за значително по-бърза сериализация на данни WebSocket (`npm install discord/erlpack`)
+- Може да се инсталира един от следните пакети за по-бързо криптиране и декриптиране на гласов пакет:
   - [sodium](https://www.npmjs.com/package/sodium) (`npm install sodium`)
   - [libsodium.js](https://www.npmjs.com/package/libsodium-wrappers) (`npm install libsodium-wrappers`)
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
 - [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
-## Example usage
+## Пример за използване
 
 ```js
 const { Client, Intents } = require('discord.js');
@@ -88,8 +88,8 @@ client.login('token');
 
 - [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
 - [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html), including updated and removed items in the library.
+- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - това все още е за стабилно  
+  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html),включително актуализирани и премахнати елементи в библиотеката. 
 - [Discord.js Discord server](https://discord.gg/bRCvFy9)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)
