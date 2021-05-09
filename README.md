@@ -19,15 +19,15 @@
 
 ## Table of contents
 
-- [Abot](#about)
-- [Installation](#installation)
+- [относно](#about)
+- [Инсталация](#installation)
   - [Audio engines](#audio-engines)
   - [Optional packages](#optional-packages)
-- [Example Usage](#example-usage)
+- [Пример за използване](#example-usage)
 - [Links](#links)
-  - [Extensions](#extensions)
-- [Contributing](#contributing)
-- [Help](#help)
+  - [Разширения](#extensions)
+- [допринасящ](#contributing)
+- [Помощ](#help)
 
 ## About
 
