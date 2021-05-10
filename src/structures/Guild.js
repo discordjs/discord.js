@@ -10,6 +10,7 @@ const VoiceRegion = require('./VoiceRegion');
 const Webhook = require('./Webhook');
 const { Error, TypeError } = require('../errors');
 const GuildApplicationCommandManager = require('../managers/GuildApplicationCommandManager');
+const GuildBanManager = require('../managers/GuildBanManager');
 const GuildChannelManager = require('../managers/GuildChannelManager');
 const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
@@ -60,6 +61,12 @@ class Guild extends Base {
      * @type {GuildChannelManager}
      */
     this.channels = new GuildChannelManager(this);
+
+    /**
+     * A manager of the bans belonging to this guild
+     * @type {GuildBanManager}
+     */
+    this.bans = new GuildBanManager(this);
 
     /**
      * A manager of the roles belonging to this guild
@@ -630,50 +637,6 @@ class Guild extends Base {
         this._patch(data);
         return this;
       });
-  }
-
-  /**
-   * An object containing information about a guild member's ban.
-   * @typedef {Object} BanInfo
-   * @property {User} user User that was banned
-   * @property {?string} reason Reason the user was banned
-   */
-
-  /**
-   * Fetches information on a banned user from this guild.
-   * @param {UserResolvable} user The User to fetch the ban info of
-   * @returns {Promise<BanInfo>}
-   */
-  fetchBan(user) {
-    const id = this.client.users.resolveID(user);
-    if (!id) throw new Error('FETCH_BAN_RESOLVE_ID');
-    return this.client.api
-      .guilds(this.id)
-      .bans(id)
-      .get()
-      .then(ban => ({
-        reason: ban.reason,
-        user: this.client.users.add(ban.user),
-      }));
-  }
-
-  /**
-   * Fetches a collection of banned users in this guild.
-   * @returns {Promise<Collection<Snowflake, BanInfo>>}
-   */
-  fetchBans() {
-    return this.client.api
-      .guilds(this.id)
-      .bans.get()
-      .then(bans =>
-        bans.reduce((collection, ban) => {
-          collection.set(ban.user.id, {
-            reason: ban.reason,
-            user: this.client.users.add(ban.user),
-          });
-          return collection;
-        }, new Collection()),
-      );
   }
 
   /**

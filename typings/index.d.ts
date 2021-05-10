@@ -696,6 +696,7 @@ declare module 'discord.js' {
     public approximatePresenceCount: number | null;
     public available: boolean;
     public banner: string | null;
+    public bans: GuildBanManager;
     public channels: GuildChannelManager;
     public commands: GuildApplicationCommandManager;
     public readonly createdAt: Date;
@@ -757,8 +758,6 @@ declare module 'discord.js' {
     public equals(guild: Guild): boolean;
     public fetch(): Promise<Guild>;
     public fetchAuditLogs(options?: GuildAuditLogsFetchOptions): Promise<GuildAuditLogs>;
-    public fetchBan(user: UserResolvable): Promise<{ user: User; reason: string }>;
-    public fetchBans(): Promise<Collection<Snowflake, { user: User; reason: string }>>;
     public fetchIntegrations(): Promise<Collection<string, Integration>>;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public fetchOwner(options?: FetchOwnerOptions): Promise<GuildMember>;
@@ -842,6 +841,15 @@ declare module 'discord.js' {
       | null;
     public targetType: GuildAuditLogsTarget;
     public toJSON(): object;
+  }
+
+  export class GuildBan extends Base {
+    constructor(client: Client, data: object, guild: Guild);
+    public guild: Guild;
+    public user: User;
+    public readonly partial: boolean;
+    public reason?: string | null;
+    public fetch(force?: boolean): Promise<GuildBan>;
   }
 
   export class GuildChannel extends Channel {
@@ -2158,6 +2166,15 @@ declare module 'discord.js' {
     public unban(user: UserResolvable, reason?: string): Promise<User>;
   }
 
+  export class GuildBanManager extends BaseManager<Snowflake, GuildBan, GuildBanResolvable> {
+    constructor(guild: Guild, iterable?: Iterable<any>);
+    public guild: Guild;
+    public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+    public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
+    public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
+    public remove(user: UserResolvable, reason?: string): Promise<User>;
+  }
+
   export class GuildMemberRoleManager {
     constructor(member: GuildMember);
     public readonly cache: Collection<Snowflake, Role>;
@@ -2560,8 +2577,8 @@ declare module 'discord.js' {
     emojiDelete: [emoji: GuildEmoji];
     emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
     error: [error: Error];
-    guildBanAdd: [guild: Guild, user: User];
-    guildBanRemove: [guild: Guild, user: User];
+    guildBanAdd: [ban: GuildBan];
+    guildBanRemove: [ban: GuildBan];
     guildCreate: [guild: Guild];
     guildDelete: [guild: Guild];
     guildUnavailable: [guild: Guild];
@@ -2776,6 +2793,16 @@ declare module 'discord.js' {
     CommandInteraction: typeof CommandInteraction;
   }
 
+  interface FetchBanOptions {
+    user: UserResolvable;
+    cache?: boolean;
+    force?: boolean;
+  }
+
+  interface FetchBansOptions {
+    cache: boolean;
+  }
+
   interface FetchMemberOptions {
     user: UserResolvable;
     cache?: boolean;
@@ -2869,6 +2896,8 @@ declare module 'discord.js' {
     INTEGRATION?: string;
     UNKNOWN?: string;
   }
+
+  type GuildBanResolvable = GuildBan | UserResolvable;
 
   type GuildChannelResolvable = Snowflake | GuildChannel;
 
