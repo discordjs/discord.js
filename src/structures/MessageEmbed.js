@@ -1,6 +1,5 @@
 'use strict';
 
-const { RangeError } = require('../errors');
 const Util = require('../util/Util');
 
 /**
