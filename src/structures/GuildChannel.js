@@ -215,7 +215,7 @@ class GuildChannel extends Channel {
 
   /**
    * Extra information about the overwrite
-   * @typedef {Object} ExtraOverwriteInfo
+   * @typedef {Object} GuildChannelOverwriteOptions
    * @property {string} [reason] Reason for creating/editing this overwrite
    * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
    * automatic resolution of type that results in an error for uncached structure
@@ -225,7 +225,7 @@ class GuildChannel extends Channel {
    * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {ExtraOverwriteInfo} [extraInfo] The extra information for the update
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Update or Create permission overwrites for a message author
