@@ -176,7 +176,7 @@ class GuildMemberManager extends BaseManager {
    *    .catch(console.error);
    */
   prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
+    if (typeof days !== 'number') return Promise.reject(new TypeError('PRUNE_DAYS_TYPE'));
 
     const query = { days };
     const resolvedRoles = [];
@@ -184,7 +184,7 @@ class GuildMemberManager extends BaseManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
+        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role));
       }
       resolvedRoles.push(resolvedRole);
     }
