@@ -1781,7 +1781,7 @@ declare module 'discord.js' {
     public static moveElementInArray(array: any[], element: any, newIndex: number, offset?: boolean): number;
     public static parseEmoji(text: string): { animated: boolean; name: string; id: string | null } | null;
     public static resolveColor(color: ColorResolvable): number;
-    public static verifyString(data: string, error?: Error, allowEmpty?: boolean): string;
+    public static verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
     public static setPosition<T extends Channel | Role>(
       item: T,
       position: number,
