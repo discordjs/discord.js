@@ -42,7 +42,6 @@ class ShardingManager extends EventEmitter {
    * @param {string} file Path to your shard script file
    * @param {ShardingManagerOptions} [options] Options for the sharding manager
    */
-
   constructor(file, options = {}) {
     super();
     options = Util.mergeDefault(
