@@ -35,7 +35,7 @@ class ShardingManager extends EventEmitter {
    * (only available when mode is set to 'process')
    * @property {string} [execArgv=[]] Arguments to pass to the shard script executable when spawning
    * (only available when mode is set to 'process')
-   * @property {string} [token] Token to use for automatical shard count and passing to shards
+   * @property {string} [token] Token to use for automatic shard count and passing to shards
    */
 
   /**
