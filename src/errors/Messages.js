@@ -37,9 +37,6 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
-
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
