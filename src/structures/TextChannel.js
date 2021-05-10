@@ -68,6 +68,7 @@ class TextChannel extends GuildChannel {
 
   /**
    * Sets the rate limit per user for this channel.
+   * <warn>It is not currently possible to set the rate limit per user on a `NewsChannel`.</warn>
    * @param {number} rateLimitPerUser The new ratelimit in seconds
    * @param {string} [reason] Reason for changing the channel's ratelimits
    * @returns {Promise<TextChannel>}
