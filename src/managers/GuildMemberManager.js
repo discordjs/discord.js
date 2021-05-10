@@ -153,13 +153,13 @@ class GuildMemberManager extends BaseManager {
   /**
    * Edits a member of the guild.
    * <info>The user must be a member of the guild</info>
-   * @param {UserResolvable} member The member to edit
+   * @param {UserResolvable} user The member to edit
    * @param {GuildMemberEditData} data The data to edit the member with
    * @param {string} [reason] Reason for editing this user
    * @returns {Promise<GuildMember>}
    */
-  async edit(member, data, reason) {
-    const id = this.client.users.resolveID(member);
+  async edit(user, data, reason) {
+    const id = this.client.users.resolveID(user);
     if (!id) throw new TypeError('INVALID_TYPE', 'user', 'UserResolvable');
 
     // Clone the data object for immutability
