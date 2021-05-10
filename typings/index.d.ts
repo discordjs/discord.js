@@ -129,7 +129,7 @@ declare module 'discord.js' {
 
     public static create(
       target: MessageTarget,
-      content: string,
+      content: string | null,
       options?: undefined,
       extra?: MessageOptions | WebhookMessageOptions,
     ): APIMessage;
@@ -1187,7 +1187,7 @@ declare module 'discord.js' {
     public edit(
       content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
     ): Promise<Message>;
-    public edit(content: string, options: MessageEditOptions | MessageEmbed): Promise<Message>;
+    public edit(content: string | null, options: MessageEditOptions | MessageEmbed): Promise<Message>;
     public equals(message: Message, rawData: unknown): boolean;
     public fetchReference(): Promise<Message>;
     public fetchWebhook(): Promise<Webhook>;
@@ -1985,10 +1985,7 @@ declare module 'discord.js' {
       content: string,
       options: WebhookMessageOptions & { split: true | SplitOptions },
     ): Promise<RawMessage[]>;
-    public send(
-      content: string,
-      options: WebhookMessageOptions,
-    ): Promise<RawMessage | RawMessage[]>;
+    public send(content: string, options: WebhookMessageOptions): Promise<RawMessage | RawMessage[]>;
   }
 
   export class WebSocketManager extends EventEmitter {
