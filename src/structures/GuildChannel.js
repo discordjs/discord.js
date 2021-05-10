@@ -235,14 +235,14 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async updateOverwrite(userOrRole, options, extraInfo = {}) {
+  async updateOverwrite(userOrRole, options, overwriteOptions = {}) {
     const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
-    const { reason } = extraInfo;
+    const { reason } = overwriteOptions;
     const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
       await existing.update(options, reason);
     } else {
-      await this.createOverwrite(userOrRole, options, extraInfo);
+      await this.createOverwrite(userOrRole, options, overwriteOptions);
     }
     return this;
   }
@@ -251,7 +251,7 @@ class GuildChannel extends Channel {
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {ExtraOverwriteInfo} [extraInfo] The extra information for the update
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create or Replace permission overwrites for a message author
@@ -261,9 +261,9 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  createOverwrite(userOrRole, options, extraInfo = {}) {
+  createOverwrite(userOrRole, options, overwriteOptions = {}) {
     let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
-    let { type, reason } = extraInfo;
+    let { type, reason } = overwriteOptions;
     if (typeof type !== 'number') {
       userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
       if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
