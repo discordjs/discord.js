@@ -2067,15 +2067,7 @@ declare module 'discord.js' {
     public cache: Collection<Snowflake, Message>;
     public crosspost(message: MessageResolvable): Promise<Message>;
     public delete(message: MessageResolvable): Promise<void>;
-    public edit(
-      message: MessageResolvable,
-      content: APIMessageContentResolvable | MessageEditOptions | MessageEmbed | APIMessage,
-    ): Promise<Message>;
-    public edit(
-      message: MessageResolvable,
-      content: StringResolvable,
-      options: MessageEditOptions | MessageEmbed,
-    ): Promise<Message>;
+    public edit(message: MessageResolvable, options: MessageEditOptions): Promise<Message>;
     public fetch(message: Snowflake, cache?: boolean, force?: boolean): Promise<Message>;
     public fetch(
       options?: ChannelLogsQueryOptions,

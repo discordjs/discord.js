@@ -468,7 +468,11 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    return this.channel.messages.edit(this.id, content, options);
+    if (!options && typeof content === 'object' && !Array.isArray(content)) {
+      options = content;
+      content = undefined;
+    }
+    return this.channel.messages.edit(this.id, { content, ...options });
   }
 
   /**
