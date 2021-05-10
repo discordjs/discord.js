@@ -3211,14 +3211,14 @@ declare module 'discord.js' {
   }
 
   interface MessageEmbedAuthor {
-    name: string;
+    name?: string;
     url?: string;
     iconURL?: string;
     proxyIconURL?: string;
   }
 
   interface MessageEmbedFooter {
-    text: string;
+    text?: string;
     iconURL?: string;
     proxyIconURL?: string;
   }
