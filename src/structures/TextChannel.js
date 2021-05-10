@@ -53,6 +53,7 @@ class TextChannel extends GuildChannel {
 
     /**
      * The ratelimit per user for this channel in seconds
+     * <warn>It is not currently possible to set a rate limit per user on a `NewsChannel`.</warn>
      * @type {number}
      */
     this.rateLimitPerUser = data.rate_limit_per_user || 0;
