@@ -353,7 +353,7 @@ class Util {
    * @param {boolean} [allowEmpty=true] Wether an empty string should be allowed
    * @returns {string}
    */
-  static verifyString(data, error = new Error(), allowEmpty = true) {
+  static verifyString(data, error = new Error(`Expected a string, got ${data} instead`), allowEmpty = true) {
     if (typeof data !== 'string') throw error;
     if (!allowEmpty && data.length === 0) throw error;
     return data;
