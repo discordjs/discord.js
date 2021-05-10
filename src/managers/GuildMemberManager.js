@@ -218,7 +218,7 @@ class GuildMemberManager extends BaseManager {
    *    .catch(console.error);
    */
   prune({ days = 7, dry = false, count: compute_prune_count = true, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new TypeError('PRUNE_DAYS_TYPE');
+    if (typeof days !== 'number') return Promise.reject(new TypeError('PRUNE_DAYS_TYPE'));
 
     const query = { days };
     const resolvedRoles = [];
@@ -226,7 +226,7 @@ class GuildMemberManager extends BaseManager {
     for (const role of roles) {
       const resolvedRole = this.guild.roles.resolveID(role);
       if (!resolvedRole) {
-        return Promise.reject(new TypeError('INVALID_TYPE', 'roles', 'Array of Roles or Snowflakes', true));
+        return Promise.reject(new TypeError('INVALID_ELEMENT', 'Array', 'options.roles', role));
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -281,21 +281,15 @@ class GuildMemberManager extends BaseManager {
    * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
    * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
    * be resolved, the user ID will be the result.
+   * Internally calls the GuildBanManager#create method.
    * @example
    * // Ban a user by ID (or with a user/guild member object)
    * guild.members.ban('84484653687267328')
-   *   .then(user => console.log(`Banned ${user.username || user.id || user} from ${guild.name}`))
+   *   .then(user => console.log(`Banned ${user.username ?? user.id ?? user} from ${guild.name}`))
    *   .catch(console.error);
    */
-  async ban(user, options = { days: 0 }) {
-    if (typeof options !== 'object') return Promise.reject(new TypeError('INVALID_TYPE', 'options', 'object', true));
-    if (options.days) options.delete_message_days = options.days;
-    const id = this.client.users.resolveID(user);
-    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID', true));
-
-    await this.client.api.guilds(this.guild.id).bans[id].put({ data: options });
-
-    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
+  ban(user, options = { days: 0 }) {
+    return this.guild.bans.create(user, options);
   }
 
   /**
@@ -303,17 +297,15 @@ class GuildMemberManager extends BaseManager {
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
    * @returns {Promise<User>}
+   * Internally calls the GuildBanManager#remove method.
    * @example
    * // Unban a user by ID (or with a user/guild member object)
    * guild.members.unban('84484653687267328')
    *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
    *   .catch(console.error);
    */
-  async unban(user, reason) {
-    const id = this.client.users.resolveID(user);
-    if (!id) return Promise.reject(new Error('BAN_RESOLVE_ID'));
-    await this.client.api.guilds(this.guild.id).bans[id].delete({ reason });
-    return this.client.users.resolve(user);
+  unban(user, reason) {
+    return this.guild.bans.remove(user, reason);
   }
 
   _fetchSingle({ user, cache, force = false }) {

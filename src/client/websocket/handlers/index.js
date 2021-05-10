@@ -5,9 +5,7 @@ const { WSEvents } = require('../../../util/Constants');
 const handlers = {};
 
 for (const name of Object.keys(WSEvents)) {
-  try {
-    handlers[name] = require(`./${name}.js`);
-  } catch {} // eslint-disable-line no-empty
+  handlers[name] = require(`./${name}.js`);
 }
 
 module.exports = handlers;
