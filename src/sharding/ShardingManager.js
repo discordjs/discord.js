@@ -19,23 +19,28 @@ const Util = require('../util/Util');
  */
 class ShardingManager extends EventEmitter {
   /**
-   * The mode to spawn shards with for a {@link ShardingManager}: either "process" to use child processes, or
+   * The mode to spawn shards with for a {@link ShardingManager}. Either "process" to use child processes, or
    * "worker" to use [Worker threads](https://nodejs.org/api/worker_threads.html).
-   * @typedef {Object} ShardingManagerMode
+   * @typedef {string} ShardingManagerMode
+   */
+
+  /**
+   * The options to spawn shards with for a {@link ShardingManager},
+   * @typedef {Object} ShardingManagerOptions
+   * @property {string|number} [totalShards='auto'] Number of total shards of all shard managers or "auto"
+   * @property {string|number[]} [shardList='auto'] List of shards to spawn or "auto"
+   * @property {ShardingManagerMode} [mode='process'] Which mode to use for shards
+   * @property {boolean} [respawn=true] Whether shards should automatically respawn upon exiting
+   * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
+   * (only available when mode is set to 'process')
+   * @property {string} [execArgv=[]] Arguments to pass to the shard script executable when spawning
+   * (only available when mode is set to 'process')
+   * @property {string} [token] Token to use for automatic shard count and passing to shards
    */
 
   /**
    * @param {string} file Path to your shard script file
-   * @param {Object} [options] Options for the sharding manager
-   * @param {string|number} [options.totalShards='auto'] Number of total shards of all shard managers or "auto"
-   * @param {string|number[]} [options.shardList='auto'] List of shards to spawn or "auto"
-   * @param {ShardingManagerMode} [options.mode='process'] Which mode to use for shards
-   * @param {boolean} [options.respawn=true] Whether shards should automatically respawn upon exiting
-   * @param {string[]} [options.shardArgs=[]] Arguments to pass to the shard script when spawning
-   * (only available when using the `process` mode)
-   * @param {string[]} [options.execArgv=[]] Arguments to pass to the shard script executable when spawning
-   * (only available when using the `process` mode)
-   * @param {string} [options.token] Token to use for automatic shard count and passing to shards
+   * @param {ShardingManagerOptions} [options] Options for the sharding manager
    */
   constructor(file, options = {}) {
     super();
