@@ -80,6 +80,7 @@ exports.DefaultOptions = {
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
    * @property {string} [template='https://discord.new'] Base url of templates
+   * @property {Object} [headers] Additional headers to send for all API requests
    */
   http: {
     version: 8,
