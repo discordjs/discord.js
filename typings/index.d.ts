@@ -32,6 +32,11 @@ declare enum InteractionTypes {
   APPLICATION_COMMAND = 2,
 }
 
+declare enum InviteTargetType {
+  STREAM = 1,
+  EMBEDDED_APPLICATION = 2,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -1088,7 +1093,7 @@ declare module 'discord.js' {
     public presenceCount: number;
     public targetApplication: IntegrationApplication | null;
     public targetUser: User | null;
-    public targetType: TargetType | null;
+    public targetType: InviteTargetType | null;
     public temporary: boolean | null;
     public readonly url: string;
     public uses: number | null;
@@ -3103,7 +3108,7 @@ declare module 'discord.js' {
     reason?: string;
     targetApplication?: ApplicationResolvable;
     targetUser?: UserResolvable;
-    targetType?: TargetType;
+    targetType?: InviteTargetType;
   }
 
   type InviteResolvable = string;
@@ -3572,8 +3577,6 @@ declare module 'discord.js' {
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
   type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
-
-  type TargetType = number;
 
   interface TypingData {
     user: User | PartialUser;
