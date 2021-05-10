@@ -779,7 +779,7 @@ declare module 'discord.js' {
     public name: string;
     public readonly parent: CategoryChannel | null;
     public parentID: Snowflake | null;
-    public permissionOverwrites: Collection<Snowflake, PermissionOverwrites>;
+    public permissionOverwrites: PermissionOverwriteManager;
     public readonly permissionsLocked: boolean | null;
     public readonly position: number;
     public rawPosition: number;
@@ -787,19 +787,10 @@ declare module 'discord.js' {
     public readonly viewable: boolean;
     public clone(options?: GuildChannelCloneOptions): Promise<this>;
     public createInvite(options?: InviteOptions): Promise<Invite>;
-    public createOverwrite(
-      userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
-      reason?: string,
-    ): Promise<this>;
     public edit(data: ChannelData, reason?: string): Promise<this>;
     public equals(channel: GuildChannel): boolean;
     public fetchInvites(): Promise<Collection<string, Invite>>;
     public lockPermissions(): Promise<this>;
-    public overwritePermissions(
-      overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
-      reason?: string,
-    ): Promise<this>;
     public permissionsFor(memberOrRole: GuildMember | Role): Readonly<Permissions>;
     public permissionsFor(memberOrRole: GuildMemberResolvable | RoleResolvable): Readonly<Permissions> | null;
     public setName(name: string, reason?: string): Promise<this>;
@@ -809,11 +800,6 @@ declare module 'discord.js' {
     ): Promise<this>;
     public setPosition(position: number, options?: { relative?: boolean; reason?: string }): Promise<this>;
     public setTopic(topic: string | null, reason?: string): Promise<this>;
-    public updateOverwrite(
-      userOrRole: RoleResolvable | UserResolvable,
-      options: PermissionOverwriteOption,
-      reason?: string,
-    ): Promise<this>;
     public isText(): this is TextChannel | NewsChannel;
   }
 
@@ -2056,12 +2042,6 @@ declare module 'discord.js' {
     ): Promise<Collection<Snowflake, Message>>;
     public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message>>;
     public delete(message: MessageResolvable): Promise<void>;
-  }
-
-  // Hacky workaround because changing the signature of an overridden method errors
-  class OverridableManager<V, K, R = any> extends BaseManager<V, K, R> {
-    public add(data: any, cache: any): any;
-    public set(key: any): any;
   }
 
   export class PermissionOverwriteManager extends BaseManager<Snowflake, PermissionOverwrites, PermissionOverwriteResolvable> {
