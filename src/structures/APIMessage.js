@@ -196,6 +196,7 @@ class APIMessage {
         typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,
       message_reference,
+      attachments: this.options.attachments,
     };
     return this;
   }

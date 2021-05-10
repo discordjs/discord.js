@@ -1138,6 +1138,7 @@ declare module 'discord.js' {
     public fetch(force?: boolean): Promise<Message>;
     public pin(options?: { reason?: string }): Promise<Message>;
     public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
+    public removeAttachments(): Promise<Message>;
     public reply(
       content: APIMessageContentResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
     ): Promise<Message>;
@@ -3099,6 +3100,7 @@ declare module 'discord.js' {
     code?: string | boolean;
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
+    attachments?: MessageAttachment[];
   }
 
   interface MessageEmbedAuthor {
