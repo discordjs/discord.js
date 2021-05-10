@@ -6,7 +6,7 @@ const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
 const GuildMember = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
-const PartialGuild = require('../structures/PartialGuild');
+const OAuth2Guild = require('../structures/OAuth2Guild');
 const Role = require('../structures/Role');
 const Collection = require('../util/Collection');
 const {
@@ -251,7 +251,7 @@ class GuildManager extends BaseManager {
   /**
    * Obtains one or multiple guilds from Discord, or the guild cache if it's already available.
    * @param {GuildResolvable|FetchGuildOptions|FetchGuildsOptions} [options] ID of the guild or options
-   * @returns {Promise<Guild|Collection<Snowflake, PartialGuild>>}
+   * @returns {Promise<Guild|Collection<Snowflake, OAuth2Guild>>}
    */
   async fetch(options = {}) {
     const id = this.resolveID(options) ?? this.resolveID(options.guild);
@@ -267,7 +267,7 @@ class GuildManager extends BaseManager {
     }
 
     const data = await this.client.api.users('@me').guilds.get({ query: options });
-    return data.reduce((coll, guild) => coll.set(guild.id, new PartialGuild(this.client, guild)), new Collection());
+    return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
   }
 }
 
