@@ -335,8 +335,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setDescription(description) {
-    description = Util.verifyString(description, new RangeError('EMBED_DESCRIPTION'));
-    this.description = description;
+    this.description = Util.verifyString(description, new RangeError('EMBED_DESCRIPTION'));
     return this;
   }
 
@@ -347,8 +346,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setFooter(text, iconURL) {
-    text = Util.verifyString(text, new RangeError('EMBED_FOOTER_TEXT'));
-    this.footer = { text, iconURL };
+    this.footer = { text: Util.verifyString(text, new RangeError('EMBED_FOOTER_TEXT')), iconURL };
     return this;
   }
 
@@ -389,8 +387,7 @@ class MessageEmbed {
    * @returns {MessageEmbed}
    */
   setTitle(title) {
-    title = Util.verifyString(title, new RangeError('EMBED_TITLE'));
-    this.title = title;
+    this.title = Util.verifyString(title, new RangeError('EMBED_TITLE'));
     return this;
   }
 
@@ -443,9 +440,11 @@ class MessageEmbed {
    * @returns {EmbedField}
    */
   static normalizeField(name, value, inline = false) {
-    name = Util.verifyString(name, new RangeError('EMBED_FIELD_NAME'), false);
-    value = Util.verifyString(value, new RangeError('EMBED_FIELD_VALUE'), false);
-    return { name, value, inline };
+    return {
+      name: Util.verifyString(name, new RangeError('EMBED_FIELD_NAME'), false),
+      value: Util.verifyString(value, new RangeError('EMBED_FIELD_VALUE'), false),
+      inline,
+    };
   }
 
   /**
