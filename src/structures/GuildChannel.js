@@ -488,9 +488,9 @@ class GuildChannel extends Channel {
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
-   * @param {ApplicationResolvable} [options.targetApplication] The user whose stream to display for this invite,
+   * @param {UserResolvable} [options.targetUser] The user whose stream to display for this invite,
    * required if `targetType` is 1, the user must be streaming in the channel
-   * @param {UserResolvable} [options.targetUser] The embedded application to open for this invite,
+   * @param {ApplicationResolvable} [options.targetApplication] The embedded application to open for this invite,
    * required if `targetType` is 2, the application must have the `EMBEDDED` flag
    * @param {TargetType} [options.targetType] The type of the target for this voice channel invite
    * @param {string} [options.reason] Reason for creating this
