@@ -33,7 +33,7 @@ class APIRequest {
         ? this.client.options.http.api
         : `${this.client.options.http.api}/v${this.client.options.http.version}`;
     const url = API + this.path;
-    let headers = {};
+    let headers = { ...this.client.options.http.headers };
 
     if (this.options.auth !== false) headers.Authorization = this.rest.getAuth();
     if (this.options.reason) headers['X-Audit-Log-Reason'] = encodeURIComponent(this.options.reason);

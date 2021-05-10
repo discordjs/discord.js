@@ -5,7 +5,7 @@
   </p>
   <br />
   <p>
-    <a href="https://discord.gg/bRCvFy9"><img src="https://img.shields.io/discord/222078108977594368?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
+    <a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=7289da&logo=discord&logoColor=white" alt="Discord server" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="NPM version" /></a>
     <a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="NPM downloads" /></a>
     <a href="https://travis-ci.org/discordjs/discord.js"><img src="https://travis-ci.org/discordjs/discord.js.svg" alt="Build status" /></a>
@@ -19,7 +19,7 @@
 
 # Welcome!
 
-Welcome to the discord.js v12 documentation.
+Welcome to the discord.js v13 documentation.
 
 ## About
 
@@ -81,7 +81,7 @@ client.login('token');
 - [Documentation](https://discord.js.org/#/docs/main/master/general/welcome)
 - [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide)) - this is still for stable  
   See also the WIP [Update Guide](https://discordjs.guide/additional-info/changes-in-v12.html) also including updated and removed items in the library.
-- [Discord.js Discord server](https://discord.gg/bRCvFy9)
+- [Discord.js Discord server](https://discord.gg/djs)
 - [Discord API Discord server](https://discord.gg/discord-api)
 - [GitHub](https://github.com/discordjs/discord.js)
 - [NPM](https://www.npmjs.com/package/discord.js)
@@ -100,4 +100,4 @@ See [the contribution guide](https://github.com/discordjs/discord.js/blob/master
 ## Help
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/bRCvFy9).
+nudge in the right direction, please don't hesitate to join our official [Discord.js Server](https://discord.gg/djs).

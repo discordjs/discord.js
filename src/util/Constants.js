@@ -75,11 +75,12 @@ exports.DefaultOptions = {
   /**
    * HTTP options
    * @typedef {Object} HTTPOptions
-   * @property {number} [version=7] API version to use
+   * @property {number} [version=8] API version to use
    * @property {string} [api='https://discord.com/api'] Base url of the API
    * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
    * @property {string} [invite='https://discord.gg'] Base url of invites
    * @property {string} [template='https://discord.new'] Base url of templates
+   * @property {Object} [headers] Additional headers to send for all API requests
    */
   http: {
     version: 8,
@@ -110,6 +111,7 @@ function makeImageUrl(root, { format = 'webp', size } = {}) {
   if (size && !AllowedImageSizes.includes(size)) throw new RangeError('IMAGE_SIZE', size);
   return `${root}.${format}${size ? `?size=${size}` : ''}`;
 }
+
 /**
  * Options for Image URLs.
  * @typedef {Object} ImageURLOptions
@@ -227,6 +229,9 @@ exports.Events = {
   RATE_LIMIT: 'rateLimit',
   INVALID_REQUEST_WARNING: 'invalidRequestWarning',
   CLIENT_READY: 'ready',
+  APPLICATION_COMMAND_CREATE: 'applicationCommandCreate',
+  APPLICATION_COMMAND_DELETE: 'applicationCommandDelete',
+  APPLICATION_COMMAND_UPDATE: 'applicationCommandUpdate',
   GUILD_CREATE: 'guildCreate',
   GUILD_DELETE: 'guildDelete',
   GUILD_UPDATE: 'guildUpdate',
@@ -270,6 +275,7 @@ exports.Events = {
   TYPING_START: 'typingStart',
   TYPING_STOP: 'typingStop',
   WEBHOOKS_UPDATE: 'webhookUpdate',
+  INTERACTION_CREATE: 'interaction',
   ERROR: 'error',
   WARN: 'warn',
   DEBUG: 'debug',
@@ -308,6 +314,9 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
  * * READY
  * * RESUMED
+ * * APPLICATION_COMMAND_CREATE
+ * * APPLICATION_COMMAND_DELETE
+ * * APPLICATION_COMMAND_UPDATE
  * * GUILD_CREATE
  * * GUILD_DELETE
  * * GUILD_UPDATE
@@ -342,11 +351,15 @@ exports.PartialTypes = keyMirror(['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE', 
  * * VOICE_STATE_UPDATE
  * * VOICE_SERVER_UPDATE
  * * WEBHOOKS_UPDATE
+ * * INTERACTION_CREATE
  * @typedef {string} WSEventType
  */
 exports.WSEvents = keyMirror([
   'READY',
   'RESUMED',
+  'APPLICATION_COMMAND_CREATE',
+  'APPLICATION_COMMAND_DELETE',
+  'APPLICATION_COMMAND_UPDATE',
   'GUILD_CREATE',
   'GUILD_DELETE',
   'GUILD_UPDATE',
@@ -381,6 +394,7 @@ exports.WSEvents = keyMirror([
   'VOICE_STATE_UPDATE',
   'VOICE_SERVER_UPDATE',
   'WEBHOOKS_UPDATE',
+  'INTERACTION_CREATE',
 ]);
 
 /**
@@ -433,6 +447,7 @@ exports.InviteScopes = [
  * * GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING
  * * GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING
  * * REPLY
+ * * APPLICATION_COMMAND
  * @typedef {string} MessageType
  */
 exports.MessageTypes = [
@@ -456,15 +471,19 @@ exports.MessageTypes = [
   'GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING',
   null,
   'REPLY',
+  'APPLICATION_COMMAND',
 ];
 
 /**
  * The types of messages that are `System`. The available types are `MessageTypes` excluding:
  * * DEFAULT
  * * REPLY
+ * * APPLICATION_COMMAND
  * @typedef {string} SystemMessageType
  */
-exports.SystemMessageTypes = exports.MessageTypes.filter(type => type && type !== 'DEFAULT' && type !== 'REPLY');
+exports.SystemMessageTypes = exports.MessageTypes.filter(
+  type => type && !['DEFAULT', 'REPLY', 'APPLICATION_COMMAND'].includes(type),
+);
 
 /**
  * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
@@ -685,6 +704,7 @@ exports.APIErrors = {
   INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT: 50036,
   INVALID_API_VERSION: 50041,
   CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL: 50074,
+  INVALID_STICKER_SENT: 50081,
   REACTION_BLOCKED: 90001,
   RESOURCE_OVERLOADED: 130000,
 };
@@ -724,12 +744,79 @@ exports.WebhookTypes = [
 ];
 
 /**
+ * The value set for a sticker's type:
+ * * PNG
+ * * APNG
+ * * LOTTIE
+ * @typedef {string} StickerFormatTypes
+ */
+exports.StickerFormatTypes = createEnum([null, 'PNG', 'APNG', 'LOTTIE']);
+
+/**
  * An overwrite type:
  * * role
  * * member
  * @typedef {string} OverwriteType
  */
 exports.OverwriteTypes = createEnum(['role', 'member']);
+
+/**
+ * The type of an {@link ApplicationCommandOption} object:
+ * * SUB_COMMAND
+ * * SUB_COMMAND_GROUP
+ * * STRING
+ * * INTEGER
+ * * BOOLEAN
+ * * USER
+ * * CHANNEL
+ * * ROLE
+ * * MENTIONABLE
+ * @typedef {string} ApplicationCommandOptionType
+ */
+exports.ApplicationCommandOptionTypes = createEnum([
+  null,
+  'SUB_COMMAND',
+  'SUB_COMMAND_GROUP',
+  'STRING',
+  'INTEGER',
+  'BOOLEAN',
+  'USER',
+  'CHANNEL',
+  'ROLE',
+  'MENTIONABLE',
+]);
+
+/**
+ * The type of an {@link ApplicationCommandPermissions} object:
+ * * ROLE
+ * * USER
+ * @typedef {string} ApplicationCommandPermissionType
+ */
+exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
+
+/**
+ * The type of an {@link Interaction} object:
+ * * PING
+ * * APPLICATION_COMMAND
+ * @typedef {string} InteractionType
+ */
+exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND']);
+
+/**
+ * The type of an interaction response:
+ * * PONG
+ * * CHANNEL_MESSAGE_WITH_SOURCE
+ * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+ * @typedef {string} InteractionResponseType
+ */
+exports.InteractionResponseTypes = createEnum([
+  null,
+  'PONG',
+  null,
+  null,
+  'CHANNEL_MESSAGE_WITH_SOURCE',
+  'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
+]);
 
 function keyMirror(arr) {
   let tmp = Object.create(null);

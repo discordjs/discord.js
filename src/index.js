@@ -33,8 +33,11 @@ module.exports = {
   version: require('../package.json').version,
 
   // Managers
+  ApplicationCommandManager: require('./managers/ApplicationCommandManager'),
   BaseGuildEmojiManager: require('./managers/BaseGuildEmojiManager'),
   ChannelManager: require('./managers/ChannelManager'),
+  GuildApplicationCommandManager: require('./managers/GuildApplicationCommandManager'),
+  GuildBanManager: require('./managers/GuildBanManager'),
   GuildChannelManager: require('./managers/GuildChannelManager'),
   GuildEmojiManager: require('./managers/GuildEmojiManager'),
   GuildEmojiRoleManager: require('./managers/GuildEmojiRoleManager'),
@@ -58,6 +61,7 @@ module.exports = {
 
   // Structures
   Application: require('./structures/interfaces/Application'),
+  ApplicationCommand: require('./structures/ApplicationCommand'),
   Base: require('./structures/Base'),
   Activity: require('./structures/Presence').Activity,
   APIMessage: require('./structures/APIMessage'),
@@ -71,10 +75,12 @@ module.exports = {
     return require('./structures/ClientUser');
   },
   Collector: require('./structures/interfaces/Collector'),
+  CommandInteraction: require('./structures/CommandInteraction'),
   DMChannel: require('./structures/DMChannel'),
   Emoji: require('./structures/Emoji'),
   Guild: require('./structures/Guild'),
   GuildAuditLogs: require('./structures/GuildAuditLogs'),
+  GuildBan: require('./structures/GuildBan'),
   GuildChannel: require('./structures/GuildChannel'),
   GuildEmoji: require('./structures/GuildEmoji'),
   GuildMember: require('./structures/GuildMember'),
@@ -82,6 +88,7 @@ module.exports = {
   GuildTemplate: require('./structures/GuildTemplate'),
   Integration: require('./structures/Integration'),
   IntegrationApplication: require('./structures/IntegrationApplication'),
+  Interaction: require('./structures/Interaction'),
   Invite: require('./structures/Invite'),
   Message: require('./structures/Message'),
   MessageAttachment: require('./structures/MessageAttachment'),
@@ -98,6 +105,7 @@ module.exports = {
   ReactionEmoji: require('./structures/ReactionEmoji'),
   RichPresenceAssets: require('./structures/Presence').RichPresenceAssets,
   Role: require('./structures/Role'),
+  Sticker: require('./structures/Sticker'),
   StoreChannel: require('./structures/StoreChannel'),
   StageChannel: require('./structures/StageChannel'),
   Team: require('./structures/Team'),
