@@ -148,6 +148,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Fetches the permissions for this command.
+   * <warn>This is only available for guild application commands.</warn>
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Fetch permissions for this command
@@ -162,6 +163,7 @@ class ApplicationCommand extends Base {
 
   /**
    * Sets the permissions for this command.
+   * <warn>This is only available for guild application commands.</warn>
    * @param {ApplicationCommandPermissionData[]} permissions The new permissions for the command
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
