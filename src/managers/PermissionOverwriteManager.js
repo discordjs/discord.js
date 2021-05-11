@@ -135,7 +135,7 @@ class PermissionOverwriteManager extends BaseManager {
    * @returns {GuildChannel}
    */
   async delete(userOrRole, reason) {
-    userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
+    userOrRole = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
     if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
 
     await this.client.api.channels(this.channel.id).permissions(userOrRole.id).delete({ reason });
