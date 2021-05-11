@@ -75,7 +75,7 @@ class Application extends Base {
    * @param {ImageURLOptions} [options={}] Options for the Image URL
    * @returns {?string} URL to the cover image
    */
-  coverImage({ format, size } = {}) {
+  coverURL({ format, size } = {}) {
     if (!this.cover) return null;
     return Endpoints.CDN(this.client.options.http.cdn).AppIcon(this.id, this.cover, { format, size });
   }

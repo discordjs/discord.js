@@ -32,6 +32,11 @@ declare enum InteractionTypes {
   APPLICATION_COMMAND = 2,
 }
 
+declare enum InviteTargetType {
+  STREAM = 1,
+  EMBEDDED_APPLICATION = 2,
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -153,7 +158,7 @@ declare module 'discord.js' {
     public icon: string | null;
     public id: Snowflake;
     public name: string | null;
-    public coverImage(options?: ImageURLOptions): string | null;
+    public coverURL(options?: ImageURLOptions): string | null;
     public fetchAssets(): Promise<ApplicationAsset[]>;
     public iconURL(options?: ImageURLOptions): string | null;
     public toJSON(): object;
@@ -177,6 +182,8 @@ declare module 'discord.js' {
     public setPermissions(permissions: ApplicationCommandPermissionData[]): Promise<ApplicationCommandPermissions[]>;
     private static transformOption(option: ApplicationCommandOptionData, received?: boolean): object;
   }
+
+  type ApplicationResolvable = Application | Activity | Snowflake;
 
   export class ApplicationFlags extends BitField<ApplicationFlagsString> {
     public static FLAGS: Record<ApplicationFlagsString, number>;
@@ -1034,6 +1041,13 @@ declare module 'discord.js' {
 
   export class IntegrationApplication extends Application {
     public bot: User | null;
+    public termsOfServiceURL: string | null;
+    public privacyPolicyURL: string | null;
+    public rpcOrigins: string[];
+    public summary: string | null;
+    public hook: boolean | null;
+    public cover: string | null;
+    public verifyKey: string | null;
   }
 
   export class Intents extends BitField<IntentsString> {
@@ -1077,8 +1091,9 @@ declare module 'discord.js' {
     public maxUses: number | null;
     public memberCount: number;
     public presenceCount: number;
+    public targetApplication: IntegrationApplication | null;
     public targetUser: User | null;
-    public targetUserType: TargetUser | null;
+    public targetType: InviteTargetType | null;
     public temporary: boolean | null;
     public readonly url: string;
     public uses: number | null;
@@ -3093,6 +3108,9 @@ declare module 'discord.js' {
     maxUses?: number;
     unique?: boolean;
     reason?: string;
+    targetApplication?: ApplicationResolvable;
+    targetUser?: UserResolvable;
+    targetType?: InviteTargetType;
   }
 
   type InviteResolvable = string;
@@ -3575,8 +3593,6 @@ declare module 'discord.js' {
   type SystemChannelFlagsResolvable = BitFieldResolvable<SystemChannelFlagsString, number>;
 
   type SystemMessageType = Exclude<MessageType, 'DEFAULT' | 'REPLY' | 'APPLICATION_COMMAND'>;
-
-  type TargetUser = number;
 
   interface TypingData {
     user: User | PartialUser;
