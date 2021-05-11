@@ -78,9 +78,7 @@ class PermissionOverwriteManager extends BaseManager {
       type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     }
 
-    const { allow, deny } = existing
-      ? PermissionOverwrites.resolveOverwriteOptions(options)
-      : PermissionOverwrites.resolveOverwriteOptions(options, existing);
+    const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options, existing);
 
     await this.client.api
       .channels(this.channel.id)
