@@ -2699,7 +2699,7 @@ declare module 'discord.js' {
   interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
     name?: string;
   }
-  
+
   interface GuildChannelOverwriteOptions {
     reason?: string;
     type?: number;
