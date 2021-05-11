@@ -2050,15 +2050,21 @@ declare module 'discord.js' {
       overwrites: readonly OverwriteResolvable[] | Collection<Snowflake, OverwriteResolvable>,
       reason?: string,
     ): Promise<GuildChannel>;
-    public edit(
+    public upsert(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOption,
-      reason?: string,
+      overwriteOptions?: GuildChannelOverwriteOptions,
+      existing?: PermissionOverwrites,
     ): Promise<GuildChannel>;
     public create(
       userOrRole: RoleResolvable | UserResolvable,
       options: PermissionOverwriteOption,
-      reason?: string,
+      overwriteOptions?: GuildChannelOverwriteOptions,
+    ): Promise<GuildChannel>;
+    public edit(
+      userOrRole: RoleResolvable | UserResolvable,
+      options: PermissionOverwriteOption,
+      overwriteOptions?: GuildChannelOverwriteOptions,
     ): Promise<GuildChannel>;
     public delete(
       userOrRole: RoleResolvable | UserResolvable,
@@ -2692,6 +2698,11 @@ declare module 'discord.js' {
 
   interface GuildChannelCloneOptions extends GuildCreateChannelOptions {
     name?: string;
+  }
+  
+  interface GuildChannelOverwriteOptions {
+    reason?: string;
+    type?: number;
   }
 
   interface GuildCreateOptions {
