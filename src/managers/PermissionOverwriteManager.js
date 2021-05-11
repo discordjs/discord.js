@@ -125,8 +125,7 @@ class PermissionOverwriteManager extends BaseManager {
   edit(userOrRole, options, overwriteOptions) {
     userOrRole = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
     const existing = this.cache.get(userOrRole);
-    if (existing) return this.upsert(userOrRole, options, overwriteOptions, existing);
-    return this.create(userOrRole, options, overwriteOptions);
+    return this.upsert(userOrRole, options, overwriteOptions, existing);
   }
 
   /**
