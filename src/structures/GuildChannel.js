@@ -215,10 +215,18 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Extra information about the overwrite
+   * @typedef {Object} GuildChannelOverwriteOptions
+   * @property {string} [reason] Reason for creating/editing this overwrite
+   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
+   * automatic resolution of type that results in an error for uncached structure
+   */
+
+  /**
    * Updates permission overwrites for a user or role in this channel, or creates an entry if not already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Update or Create permission overwrites for a message author
@@ -228,15 +236,14 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  async updateOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const existing = this.permissionOverwrites.get(userOrRole.id);
+  async updateOverwrite(userOrRole, options, overwriteOptions = {}) {
+    const userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    const { reason } = overwriteOptions;
+    const existing = this.permissionOverwrites.get(userOrRoleID);
     if (existing) {
       await existing.update(options, reason);
     } else {
-      await this.createOverwrite(userOrRole, options, reason);
+      await this.createOverwrite(userOrRole, options, overwriteOptions);
     }
     return this;
   }
@@ -245,7 +252,7 @@ class GuildChannel extends Channel {
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create or Replace permission overwrites for a message author
@@ -255,19 +262,23 @@ class GuildChannel extends Channel {
    *   .then(channel => console.log(channel.permissionOverwrites.get(message.author.id)))
    *   .catch(console.error);
    */
-  createOverwrite(userOrRole, options, reason) {
-    userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
-    if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
-
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+  createOverwrite(userOrRole, options, overwriteOptions = {}) {
+    let userOrRoleID = this.guild.roles.resolveID(userOrRole) || this.client.users.resolveID(userOrRole);
+    let { type, reason } = overwriteOptions;
+    if (typeof type !== 'number') {
+      userOrRole = this.guild.roles.resolve(userOrRole) || this.client.users.resolve(userOrRole);
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+      userOrRoleID = userOrRole.id;
+      type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
+    }
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
 
     return this.client.api
       .channels(this.id)
-      .permissions(userOrRole.id)
+      .permissions(userOrRoleID)
       .put({
         data: {
-          id: userOrRole.id,
+          id: userOrRoleID,
           type,
           allow,
           deny,
