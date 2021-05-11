@@ -117,14 +117,14 @@ class MessageManager extends BaseManager {
   /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
-   * @param {MessageEditOptions} [options] The options to provide
+   * @param {MessageEditOptions|APIMessage} [options] The options to provide
    * @returns {Promise<Message>}
    */
   async edit(message, options) {
     message = this.resolveID(message);
     if (!message) throw new TypeError('INVALID_TYPE', 'message', 'MessageResolvable');
 
-    const { data } = APIMessage.create(this, options).resolveData();
+    const { data } = (options instanceof APIMessage ? options : APIMessage.create(this, options)).resolveData();
     const d = await this.client.api.channels[this.channel.id].messages[message].patch({ data });
 
     if (this.cache.has(message)) {
