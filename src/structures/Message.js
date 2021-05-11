@@ -555,6 +555,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
+    emoji = this.client.emojis.resolveIdentifier(emoji);
     await this.channel.messages.react(this.id, emoji);
     return this.client.actions.MessageReactionAdd.handle({
       user: this.client.user,
