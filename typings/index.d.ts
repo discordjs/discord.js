@@ -2145,10 +2145,12 @@ declare module 'discord.js' {
     constructor(guild: Guild, iterable?: Iterable<any>);
     public guild: Guild;
     public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+    public edit(user: UserResolvable, data: GuildMemberEditData, reason?: string): Promise<void>;
     public fetch(
       options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
     ): Promise<GuildMember>;
     public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
+    public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
     public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
     public prune(options?: GuildPruneMembersOptions): Promise<number>;
     public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
