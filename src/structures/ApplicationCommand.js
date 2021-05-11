@@ -157,7 +157,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   fetchPermissions() {
-    if (!this.guild) throw new Error('GLOBAL_COMMAND');
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     return this.manager.fetchPermissions(this);
   }
 
@@ -179,7 +179,7 @@ class ApplicationCommand extends Base {
    *   .catch(console.error);
    */
   setPermissions(permissions) {
-    if (!this.guild) throw new Error('GLOBAL_COMMAND');
+    if (!this.guild) throw new Error('GLOBAL_COMMAND_PERMISSIONS');
     return this.manager.setPermissions(this, permissions);
   }
 
