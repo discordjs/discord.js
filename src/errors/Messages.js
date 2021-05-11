@@ -112,6 +112,8 @@ const Messages = {
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
 
+  GLOBAL_COMMAND: 'This method cannot be used on global application commands.',
+
   INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };
 
