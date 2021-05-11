@@ -46,54 +46,57 @@ class PermissionOverwriteManager extends BaseManager {
    *   },
    * ], 'Needed to change permissions');
    */
-  async set(overwrites, reason) {
+  set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
       throw new TypeError('INVALID_TYPE', 'overwrites', 'Array or Collection of Permission Overwrites', true);
     }
-    await this.channel.edit({ permissionOverwrites: overwrites, reason });
-    return this.channel;
+    return this.channel.edit({ permissionOverwrites: overwrites, reason });
   }
 
   /**
-   * Edits permission overwrites for a user or role in this channel, or creates an entry if not already present.
+   * Extra information about the overwrite
+   * @typedef {Object} GuildChannelOverwriteOptions
+   * @property {string} [reason] Reason for creating/editing this overwrite
+   * @property {number} [type] The type of overwrite, either `0` for a role or `1` for a member. Use this to bypass
+   * automatic resolution of type that results in an error for uncached structure
+   */
+
+  /**
+   * Creates or edits permission overwrites for a user or role in this channel.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
+   * @param {PermissionOverwrites} [existing] The existing overwrites to merge with this update
    * @returns {Promise<GuildChannel>}
-   * @example
-   * // Edit or Create permission overwrites for a message author
-   * message.channel.permissionOverwrites.edit(message.author, {
-   *   SEND_MESSAGES: false
-   * })
-   *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
-   *   .catch(console.error);
    */
-  async edit(userOrRole, options, reason) {
-    userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
-
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
-    const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
-
-    const existing = this.cache.get(userOrRole.id);
-    if (existing) {
-      await this.client.api
-        .channels(this.channel.id)
-        .permissions(userOrRole.id)
-        .put({
-          data: { id: userOrRole.id, type, allow, deny },
-          reason,
-        });
-      return this.channel;
+  async upsert(userOrRole, options, overwriteOptions = {}, existing) {
+    let userOrRoleID = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
+    let { type, reason } = overwriteOptions;
+    if (typeof type !== 'number') {
+      userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
+      if (!userOrRole) return Promise.reject(new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role'));
+      type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
     }
-    return this.create(userOrRole, options, reason);
+
+    const { allow, deny } = existing
+      ? PermissionOverwrites.resolveOverwriteOptions(options)
+      : PermissionOverwrites.resolveOverwriteOptions(options, existing);
+
+    await this.client.api
+      .channels(this.channel.id)
+      .permissions(userOrRoleID)
+      .put({
+        data: { id: userOrRoleID, type, allow, deny },
+        reason,
+      });
+    return this.channel;
   }
 
   /**
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
-   * @param {string} [reason] Reason for creating/editing this overwrite
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
    * @returns {Promise<GuildChannel>}
    * @example
    * // Create or Replace permission overwrites for a message author
@@ -103,21 +106,29 @@ class PermissionOverwriteManager extends BaseManager {
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);
    */
-  async create(userOrRole, options, reason) {
-    userOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-    if (!userOrRole) throw new TypeError('INVALID_TYPE', 'parameter', 'User nor a Role');
+  create(userOrRole, options, overwriteOptions) {
+    return this.upsert(userOrRole, options, overwriteOptions);
+  }
 
-    const type = userOrRole instanceof Role ? OverwriteTypes.role : OverwriteTypes.member;
-    const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options);
-
-    await this.client.api
-      .channels(this.channel.id)
-      .permissions(userOrRole.id)
-      .put({
-        data: { id: userOrRole.id, type, allow, deny },
-        reason,
-      });
-    return this.channel;
+  /**
+   * Edits permission overwrites for a user or role in this channel, or creates an entry if not already present.
+   * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
+   * @param {PermissionOverwriteOptions} options The options for the update
+   * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
+   * @returns {Promise<GuildChannel>}
+   * @example
+   * // Edit or Create permission overwrites for a message author
+   * message.channel.permissionOverwrites.edit(message.author, {
+   *   SEND_MESSAGES: false
+   * })
+   *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
+   *   .catch(console.error);
+   */
+  edit(userOrRole, options, overwriteOptions) {
+    userOrRole = this.channel.guild.roles.resolveID(userOrRole) ?? this.client.users.resolveID(userOrRole);
+    const existing = this.cache.get(userOrRole);
+    if (existing) return this.upsert(userOrRole, options, overwriteOptions, existing);
+    return this.create(userOrRole, options, overwriteOptions);
   }
 
   /**
