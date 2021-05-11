@@ -63,7 +63,7 @@ class GuildChannelManager extends BaseManager {
    * @param {string} name The name of the new channel
    * @param {Object} [options] Options
    * @param {string} [options.type='text'] The type of the new channel, either `text`, `voice`, `category`, `news`,
-   * or `store`
+   * `store`, or `stage`
    * @param {string} [options.topic] The topic for the new channel
    * @param {boolean} [options.nsfw] Whether the new channel is nsfw
    * @param {number} [options.bitrate] Bitrate of the new channel in bits (only voice)
