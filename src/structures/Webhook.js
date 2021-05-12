@@ -65,15 +65,25 @@ class Webhook {
      */
     this.channelID = data.channel_id;
 
-    if (data.user) {
-      /**
-       * The owner of the webhook
-       * @type {?User|Object}
-       */
-      this.owner = this.client.users ? this.client.users.cache.get(data.user.id) : data.user;
-    } else {
-      this.owner = null;
-    }
+    /**
+     * The owner of the webhook
+     * @type {?User|Object}
+     */
+    this.owner = data.user ? this.client.users?.add(data.user) ?? data.user : null;
+
+    /**
+     * The source guild of the webhook
+     * @type {?Guild|Object}
+     */
+    this.sourceGuild = data.source_guild
+      ? this.client.guilds?.add(data.source_guild, false) ?? data.source_guild
+      : null;
+
+    /**
+     * The source channel of the webhook
+     * @type {?Channel|Object}
+     */
+    this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel ?? null;
   }
 
   /**
@@ -227,8 +237,20 @@ class Webhook {
   }
 
   /**
+   * Gets a message that was sent by this webhook.
+   * @param {Snowflake|'@original'} message The ID of the message to fetch
+   * @param {boolean} [cache=true] Whether to cache the message
+   * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
+   * {@link WebhookClient} or if the channel is uncached, otherwise a {@link Message} will be returned
+   */
+  async fetchMessage(message, cache = true) {
+    const data = await this.client.api.webhooks(this.id, this.token).messages(message).get();
+    return this.client.channels?.cache.get(data.channel_id)?.messages.add(data, cache) ?? data;
+  }
+
+  /**
    * Edits a message that was sent by this webhook.
-   * @param {MessageResolvable} message The message to edit
+   * @param {MessageResolvable|'@original'} message The message to edit
    * @param {StringResolvable|APIMessage} [content] The new content for the message
    * @param {WebhookEditMessageOptions|MessageEmbed|MessageEmbed[]} [options] The options to provide
    * @returns {Promise<Message|Object>} Returns the raw message data if the webhook was instantiated as a
@@ -265,7 +287,7 @@ class Webhook {
 
   /**
    * Delete a message that was sent by this webhook.
-   * @param {MessageResolvable} message The message to delete
+   * @param {MessageResolvable|'@original'} message The message to delete
    * @returns {Promise<void>}
    */
   async deleteMessage(message) {
@@ -316,6 +338,7 @@ class Webhook {
     for (const prop of [
       'send',
       'sendSlackMessage',
+      'fetchMessage',
       'edit',
       'editMessage',
       'delete',

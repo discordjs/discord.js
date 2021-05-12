@@ -74,6 +74,16 @@ class APIMessage {
   }
 
   /**
+   * Whether or not the target is an interaction
+   * @type {boolean}
+   * @readonly
+   */
+  get isInteraction() {
+    const Interaction = require('./Interaction');
+    return this.target instanceof Interaction;
+  }
+
+  /**
    * Makes the content of this message.
    * @returns {?(string|string[])}
    */
@@ -129,7 +139,7 @@ class APIMessage {
     }
 
     const embedLikes = [];
-    if (this.isWebhook) {
+    if (this.isInteraction || this.isWebhook) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -149,6 +159,8 @@ class APIMessage {
     if (this.isMessage) {
       // eslint-disable-next-line eqeqeq
       flags = this.options.flags != null ? new MessageFlags(this.options.flags).bitfield : this.target.flags.bitfield;
+    } else if (this.isInteraction && this.options.ephemeral) {
+      flags = MessageFlags.FLAGS.EPHEMERAL;
     }
 
     let allowedMentions =
@@ -163,12 +175,15 @@ class APIMessage {
     }
 
     let message_reference;
-    if (typeof this.options.replyTo !== 'undefined') {
+    if (typeof this.options.reply === 'object') {
       const message_id = this.isMessage
-        ? this.target.channel.messages.resolveID(this.options.replyTo)
-        : this.target.messages.resolveID(this.options.replyTo);
+        ? this.target.channel.messages.resolveID(this.options.reply.messageReference)
+        : this.target.messages.resolveID(this.options.reply.messageReference);
       if (message_id) {
-        message_reference = { message_id };
+        message_reference = {
+          message_id,
+          fail_if_not_exists: this.options.reply.failIfNotExists ?? true,
+        };
       }
     }
 
@@ -184,6 +199,7 @@ class APIMessage {
         typeof content === 'undefined' && typeof message_reference === 'undefined' ? undefined : allowedMentions,
       flags,
       message_reference,
+      attachments: this.options.attachments,
     };
     return this;
   }
@@ -196,7 +212,7 @@ class APIMessage {
     if (this.files) return this;
 
     const embedLikes = [];
-    if (this.isWebhook) {
+    if (this.isInteraction || this.isWebhook) {
       if (this.options.embeds) {
         embedLikes.push(...this.options.embeds);
       }
@@ -348,10 +364,11 @@ class APIMessage {
    * @returns {MessageOptions|WebhookMessageOptions}
    */
   static create(target, content, options, extra = {}) {
+    const Interaction = require('./Interaction');
     const Webhook = require('./Webhook');
     const WebhookClient = require('../client/WebhookClient');
 
-    const isWebhook = target instanceof Webhook || target instanceof WebhookClient;
+    const isWebhook = target instanceof Interaction || target instanceof Webhook || target instanceof WebhookClient;
     const transformed = this.transformOptions(content, options, extra, isWebhook);
     return new this(target, transformed);
   }

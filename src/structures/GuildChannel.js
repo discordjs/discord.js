@@ -387,6 +387,14 @@ class GuildChannel extends Channel {
   }
 
   /**
+   * Data that can be resolved to an Application. This can be:
+   * * An Application
+   * * An Activity with associated Application
+   * * A Snowflake
+   * @typedef {Application|Snowflake} ApplicationResolvable
+   */
+
+  /**
    * Creates an invite to this guild channel.
    * @param {Object} [options={}] Options for the invite
    * @param {boolean} [options.temporary=false] Whether members that joined via the invite should be automatically
@@ -394,6 +402,11 @@ class GuildChannel extends Channel {
    * @param {number} [options.maxAge=86400] How long the invite should last (in seconds, 0 for forever)
    * @param {number} [options.maxUses=0] Maximum number of uses
    * @param {boolean} [options.unique=false] Create a unique invite, or use an existing one with similar settings
+   * @param {UserResolvable} [options.targetUser] The user whose stream to display for this invite,
+   * required if `targetType` is 1, the user must be streaming in the channel
+   * @param {ApplicationResolvable} [options.targetApplication] The embedded application to open for this invite,
+   * required if `targetType` is 2, the application must have the `EMBEDDED` flag
+   * @param {InviteTargetType} [options.targetType] The type of the target for this voice channel invite
    * @param {string} [options.reason] Reason for creating this
    * @returns {Promise<Invite>}
    * @example
@@ -402,7 +415,16 @@ class GuildChannel extends Channel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite({ temporary = false, maxAge = 86400, maxUses = 0, unique, reason } = {}) {
+  createInvite({
+    temporary = false,
+    maxAge = 86400,
+    maxUses = 0,
+    unique,
+    targetUser,
+    targetApplication,
+    targetType,
+    reason,
+  } = {}) {
     return this.client.api
       .channels(this.id)
       .invites.post({
@@ -411,6 +433,9 @@ class GuildChannel extends Channel {
           max_age: maxAge,
           max_uses: maxUses,
           unique,
+          target_user_id: this.client.users.resolveID(targetUser),
+          target_application_id: targetApplication?.id ?? targetApplication?.applicationID ?? targetApplication,
+          target_type: targetType,
         },
         reason,
       })
@@ -445,6 +470,7 @@ class GuildChannel extends Channel {
    * @param {number} [options.bitrate=this.bitrate] Bitrate of the new channel in bits (only voice)
    * @param {number} [options.userLimit=this.userLimit] Maximum amount of users allowed in the new channel (only voice)
    * @param {number} [options.rateLimitPerUser=this.rateLimitPerUser] Ratelimit per user for the new channel (only text)
+   * @param {number} [options.position=this.position] Position of the new channel
    * @param {ChannelResolvable} [options.parent=this.parent] Parent of the new channel
    * @param {string} [options.reason] Reason for cloning this channel
    * @returns {Promise<GuildChannel>}
@@ -461,6 +487,7 @@ class GuildChannel extends Channel {
         bitrate: this.bitrate,
         userLimit: this.userLimit,
         rateLimitPerUser: this.rateLimitPerUser,
+        position: this.position,
         reason: null,
       },
       options,

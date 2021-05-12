@@ -37,9 +37,6 @@ const Messages = {
   COLOR_RANGE: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
   COLOR_CONVERT: 'Unable to convert color to a number.',
 
-  EMBED_FIELD_NAME: 'MessageEmbed field names may not be empty.',
-  EMBED_FIELD_VALUE: 'MessageEmbed field values may not be empty.',
-
   FILE_NOT_FOUND: file => `File could not be found: ${file}`,
 
   USER_NO_DMCHANNEL: 'No DM Channel exists!',
@@ -96,6 +93,7 @@ const Messages = {
   INVALID_ELEMENT: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
   WEBHOOK_MESSAGE: 'The message was not sent by a webhook.',
+  MESSAGE_REFERENCE_MISSING: 'The message does not reference another message',
 
   EMOJI_TYPE: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   EMOJI_MANAGED: 'Emoji is managed and has no Author.',
@@ -110,6 +108,8 @@ const Messages = {
   FETCH_GROUP_DM_CHANNEL: "Bots don't have access to Group DM Channels and cannot fetch them",
 
   MEMBER_FETCH_NONCE_LENGTH: 'Nonce length must not exceed 32 characters.',
+
+  INTERACTION_ALREADY_REPLIED: 'This interaction has already been deferred or replied to.',
 };
 
 for (const [name, message] of Object.entries(Messages)) register(name, message);
