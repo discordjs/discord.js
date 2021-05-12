@@ -210,7 +210,7 @@ class ApplicationCommand extends Base {
       description: option.description,
       required: option.required,
       choices: option.choices,
-      options: option.options?.map(o => this.transformOption(o)),
+      options: option.options?.map(o => this.transformOption(o, received)),
     };
   }
 }
