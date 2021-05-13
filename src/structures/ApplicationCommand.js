@@ -204,7 +204,7 @@ class ApplicationCommand extends Base {
    * @private
    */
   static transformOption(option, received) {
-    return {
+    const transformOption = {
       type: typeof option.type === 'number' && !received ? option.type : ApplicationCommandOptionTypes[option.type],
       name: option.name,
       description: option.description,
@@ -212,6 +212,12 @@ class ApplicationCommand extends Base {
       choices: option.choices,
       options: option.options?.map(o => this.transformOption(o)),
     };
+
+    for (const prop in transformOption) {
+      if (transformOption[prop] === undefined) delete transformOption[prop];
+    }
+
+    return transformOption;
   }
 }
 
