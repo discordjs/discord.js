@@ -63,6 +63,17 @@ class Widget extends Base {
      */
     this.presenceCount = data.presence_count;
   }
+
+  /**
+   * Update the Widget.
+   * @returns {Promise<Widget>}
+   */
+  async fetch() {
+    const data = await this.client.api.guilds(this.id, 'widget.json').get();
+    if (data.code) throw new Error('WIDGET_DISABLED');
+    this._patch(data);
+    return this;
+  }
 }
 
 module.exports = Widget;
