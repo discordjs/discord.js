@@ -2029,6 +2029,19 @@ declare module 'discord.js' {
     public once(event: string, listener: (...args: any[]) => void): this;
   }
 
+  export class Widget extends Base {
+    constructor(client: Client, data: object);
+    private _patch(data: object): void;
+    public enabled: boolean;
+    public code?: number;
+    public message?: string;
+    public id?: string;
+    public instant_invite?: string | null;
+    public channels?: Collection<string, WidgetChannel>;
+    public members?: Collection<string, WidgetMember>;
+    public presence_count?: number;
+  }
+
   //#endregion
 
   //#region Collections
@@ -3659,6 +3672,30 @@ declare module 'discord.js' {
     $os?: string;
     $browser?: string;
     $device?: string;
+  }
+
+  interface WidgetMember {
+    id: string;
+    username: string;
+    discriminator: string;
+    avatar: null;
+    status: PresenceStatus;
+    deaf?: boolean;
+    mute?: boolean;
+    self_deaf?: boolean;
+    self_mute?: boolean;
+    suppress?: boolean;
+    channel_id?: string;
+    avatar_url: string;
+    activity?: {
+      name: string;
+    };
+  }
+
+  interface WidgetChannel {
+    id: string;
+    name: string;
+    position: number;
   }
 
   type WSEventType =

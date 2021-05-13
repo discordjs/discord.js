@@ -15,6 +15,7 @@ const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
+const Widget = require('../structures/Widget');
 const Collection = require('../util/Collection');
 const { Events, DefaultOptions, InviteScopes } = require('../util/Constants');
 const DataResolver = require('../util/DataResolver');
@@ -363,6 +364,20 @@ class Client extends BaseClient {
       .guilds(id)
       .preview.get()
       .then(data => new GuildPreview(this, data));
+  }
+
+  /**
+   * Obtains the widget of a guild from Discord, available for all guilds.
+   * @param {GuildResolvable} guild The guild to fetch the widget for
+   * @returns {Promise<Widget>}
+   */
+  fetchWidget(guild) {
+    const id = this.guilds.resolveID(guild);
+    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
+    return this.api
+      .guilds(id, 'widget.json')
+      .get()
+      .then(data => new Widget(this, data));
   }
 
   /**
