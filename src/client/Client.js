@@ -375,6 +375,7 @@ class Client extends BaseClient {
     const id = this.guilds.resolveID(guild);
     if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable'));
     const data = await this.api.guilds(id, 'widget.json').get();
+    if (data.code) return Promise.reject(new Error('WIDGET_DISABLED'));
     return new Widget(this, data);
   }
 

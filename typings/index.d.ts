@@ -2032,14 +2032,11 @@ declare module 'discord.js' {
   export class Widget extends Base {
     constructor(client: Client, data: object);
     private _patch(data: object): void;
-    public enabled: boolean;
-    public code?: number;
-    public message?: string;
-    public id?: string;
-    public instant_invite?: string | null;
-    public channels?: Collection<string, WidgetChannel>;
-    public members?: Collection<string, WidgetMember>;
-    public presence_count?: number;
+    public id: string;
+    public instant_invite: string | null;
+    public channels: Collection<string, WidgetChannel>;
+    public members: Collection<string, WidgetMember>;
+    public presence_count: number;
   }
 
   //#endregion

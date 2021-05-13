@@ -22,71 +22,46 @@ class Widget extends Base {
    */
   _patch(data) {
     /**
-     * When a widget is disable, data will always send a code. When it's enable, data doesn't have a code.
+     * The id of the guild.
+     * @type {string}
      */
-    if ('code' in data) {
-      /**
-       * The code provide with the data.
-       * @type {?number}
-       */
-      this.code = data.code;
+    this.id = data.id;
 
-      /**
-       * The error message.
-       * @type {?string}
-       */
-      this.message = data.message;
+    /**
+     * The name of the guild.
+     * @type {string}
+     */
+    this.name = data.name;
 
-      /**
-       * Check if the guild has the widget enabled or not.
-       * @type {boolean}
-       */
-      this.enabled = false;
-    } else {
-      /**
-       * The id of the guild.
-       * @type {?string}
-       */
-      this.id = data.id;
+    /**
+     * The invite of the guild.
+     * @type {string | null}
+     */
+    this.instant_invite = data.instant_invite;
 
-      /**
-       * The name of the guild.
-       * @type {?string}
-       */
-      this.name = data.name;
-
-      /**
-       * The invite of the guild.
-       * @type {?string | ?null}
-       */
-      this.instant_invite = data.instant_invite;
-
-      /**
-       * The list of channels in the guild.
-       * @type {Collection<string, WidgetChannel>}
-       */
-      this.channels = new Collection();
-      for (const channel of data.channels) {
-        this.channels.set(channel.id, channel);
-      }
-
-      /**
-       * The list of members in the guild.
-       * @type {Collection<string, WidgetMember>}
-       */
-      this.members = new Collection();
-      for (const member of data.members) {
-        this.members.set(member.id, member);
-      }
-
-      /**
-       * The number of the members online.
-       * @type {?number}
-       */
-      this.presence_count = data.presence_count;
-
-      this.enabled = true;
+    /**
+     * The list of channels in the guild.
+     * @type {Collection<string, WidgetChannel>}
+     */
+    this.channels = new Collection();
+    for (const channel of data.channels) {
+      this.channels.set(channel.id, channel);
     }
+
+    /**
+     * The list of members in the guild.
+     * @type {Collection<string, WidgetMember>}
+     */
+    this.members = new Collection();
+    for (const member of data.members) {
+      this.members.set(member.id, member);
+    }
+
+    /**
+     * The number of the members online.
+     * @type {number}
+     */
+    this.presence_count = data.presence_count;
   }
 }
 
