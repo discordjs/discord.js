@@ -9,7 +9,7 @@ const Collection = require('../util/Collection');
 class Widget extends Base {
   /**
    * @param {Client} client - The instantiating client
-   * @param {Object} data - The raw data;
+   * @param {Object} data - The raw data
    */
   constructor(client, data) {
     super(client);
@@ -35,9 +35,9 @@ class Widget extends Base {
 
     /**
      * The invite of the guild.
-     * @type {string | null}
+     * @type {?string}
      */
-    this.instant_invite = data.instant_invite;
+    this.instantInvite = data.instant_invite;
 
     /**
      * The list of channels in the guild.
@@ -61,7 +61,7 @@ class Widget extends Base {
      * The number of the members online.
      * @type {number}
      */
-    this.presence_count = data.presence_count;
+    this.presenceCount = data.presence_count;
   }
 }
 

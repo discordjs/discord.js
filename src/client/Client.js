@@ -367,7 +367,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the widget of a guild from Discord, available for all guilds.
+   * Obtains the widget of a guild from Discord, available for guilds with the widget enabled.
    * @param {GuildResolvable} guild The guild to fetch the widget for
    * @returns {Promise<Widget>}
    */
