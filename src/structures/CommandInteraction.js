@@ -198,9 +198,7 @@ class CommandInteraction extends Interaction {
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
     await this.client.api.webhooks(this.applicationID, this.token).post({
-      data: {
-        data,
-      },
+      data,
       files,
     });
   }
