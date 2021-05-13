@@ -373,9 +373,9 @@ class Client extends BaseClient {
    */
   async fetchWidget(guild) {
     const id = this.guilds.resolveID(guild);
-    if (!id) return Promise.reject(new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable'));
+    if (!id) throw new TypeError('INVALID_TYPE', 'guild', 'GuildResolvable');
     const data = await this.api.guilds(id, 'widget.json').get();
-    if (data.code) return Promise.reject(new Error('WIDGET_DISABLED'));
+    if (data.code) throw new Error('WIDGET_DISABLED');
     return new Widget(this, data);
   }
 
