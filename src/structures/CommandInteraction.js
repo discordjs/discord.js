@@ -188,6 +188,24 @@ class CommandInteraction extends Interaction {
    */
 
   /**
+   * Send a followup message to this interaction.
+   * @param {string|APIMessage|MessageAdditions} content The content for the reply
+   * @param {InteractionReplyOptions} [options] Additional options for the reply
+   * @returns {Promise<void>}
+   */
+  async followup(content, options) {
+    const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
+    const { data, files } = await apiMessage.resolveData().resolveFiles();
+
+    await this.client.api.webhooks(this.applicationID, this.token).post({
+      data: {
+        data,
+      },
+      files,
+    });
+  }
+
+  /**
    * Transforms an option received from the API.
    * @param {Object} option The received option
    * @param {Object} resolved The resolved interaction data
