@@ -188,12 +188,12 @@ class CommandInteraction extends Interaction {
    */
 
   /**
-   * Send a followup message to this interaction.
+   * Send a follow-up message to this interaction.
    * @param {string|APIMessage|MessageAdditions} content The content for the reply
    * @param {InteractionReplyOptions} [options] Additional options for the reply
    * @returns {Promise<Message|Object>}
    */
-  async followup(content, options) {
+  async followUp(content, options) {
     const apiMessage = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     const { data, files } = await apiMessage.resolveData().resolveFiles();
 
