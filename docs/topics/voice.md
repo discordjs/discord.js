@@ -6,7 +6,7 @@ In discord.js, you can use voice by connecting to a `VoiceChannel` to obtain a `
 
 To get started, make sure you have:
 
-- FFmpeg - `npm install ffmpeg-static`
+- FFmpeg - `npm install FFmpeg-static`
 - an opus encoder, choose one from below:
   - `npm install @discordjs/opus` (better performance)
   - `npm install opusscript`
@@ -45,8 +45,7 @@ client.on('message', async message => {
 
 ## Streaming to a Voice Channel
 
-In the previous example, we looked at how to join a voice channel in order to obtain a `VoiceConnection`. Now that we
-have obtained a voice connection, we can start streaming audio to it.
+In the previous example, we looked at how to join a voice channel to obtain a VoiceConnection. Now that we have obtained a voice connection, we can start streaming audio to it.
 
 ### Introduction to playing on voice connections
 
@@ -111,7 +110,7 @@ Make sure to consult the documentation for a full list of what you can play - th
 
 ## Voice Broadcasts
 
-A voice broadcast is very useful for "radio" bots, that play the same audio across multiple channels. It means audio is only transcoded once, and is much better on performance.
+A voice broadcast is very useful for "radio" bots, that play the same audio across multiple channels. It means audio is only transcoded once and is much better on performance.
 
 ```js
 const broadcast = client.voice.createBroadcast();
