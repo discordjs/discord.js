@@ -421,7 +421,7 @@ declare module 'discord.js' {
     public defer(ephemeral?: boolean): Promise<void>;
     public deleteReply(): Promise<void>;
     public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+      content: string | APIMessage | WebhookEditMessageOptions | MessageAdditions,
     ): Promise<Message | RawMessage>;
     public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
     public fetchReply(): Promise<Message | RawMessage>;
