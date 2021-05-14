@@ -526,6 +526,7 @@ exports.Colors = {
   YELLOW: 0xfee75c,
   PURPLE: 0x9b59b6,
   LUMINOUS_VIVID_PINK: 0xe91e63,
+  FUCHSIA: 0xeb459e,
   GOLD: 0xf1c40f,
   ORANGE: 0xe67e22,
   RED: 0xed4245,
