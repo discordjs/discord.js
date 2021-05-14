@@ -91,8 +91,9 @@ class CommandInteraction extends Interaction {
 
   /**
    * Options for a reply to an interaction.
-   * @typedef {WebhookMessageOptions} InteractionReplyOptions
+   * @typedef {BaseMessageOptions} InteractionReplyOptions
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @property {MessageEmbed[]|Object[]} [embeds] An array of embeds for the message
    */
 
   /**
