@@ -127,9 +127,10 @@ class WebSocketManager extends EventEmitter {
 
   /**
    * Connects this manager to the gateway.
+   * @param {string|string[]} sessionID IDs of previous session(s) to restore
    * @private
    */
-  async connect() {
+  async connect(sessionID) {
     const invalidToken = new DJSError(WSCodes[4004]);
     const {
       url: gatewayURL,
@@ -161,9 +162,11 @@ class WebSocketManager extends EventEmitter {
       shards = this.client.options.shards = Array.from({ length: recommendedShards }, (_, i) => i);
     }
 
+    const sessionIDs = !sessionID ? [] : Array.isArray(sessionID) ? sessionID : [sessionID];
+
     this.totalShards = shards.length;
     this.debug(`Spawning shards: ${shards.join(', ')}`);
-    this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id)));
+    this.shardQueue = new Set(shards.map(id => new WebSocketShard(this, id, sessionIDs[id])));
 
     await this._handleSessionLimit(remaining, reset_after);
 

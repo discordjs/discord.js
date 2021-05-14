@@ -19,7 +19,7 @@ if (!browser) {
  * Represents a Shard's WebSocket connection
  */
 class WebSocketShard extends EventEmitter {
-  constructor(manager, id) {
+  constructor(manager, id, sessionIDs) {
     super();
 
     /**
@@ -59,7 +59,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?string}
      * @private
      */
-    this.sessionID = null;
+    this.sessionID = sessionIDs;
 
     /**
      * The previous heartbeat ping of the shard
