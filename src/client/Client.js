@@ -201,7 +201,7 @@ class Client extends BaseClient {
    * @param {string|string[]} [sessionID] ID(s) of previous session(s) to restory
    * @returns {Promise<string>} Token of the account used
    * @example
-   * client.login('my token');
+   * client.login('my token', 'aaaaaaaaaa');
    */
   async login(token = this.token, sessionID) {
     if (!token || typeof token !== 'string') throw new Error('TOKEN_INVALID');

@@ -218,7 +218,7 @@ declare module 'discord.js' {
     public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
     public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
     public generateInvite(options?: InviteGenerationOptions | PermissionResolvable): Promise<string>;
-    public login(token?: string): Promise<string>;
+    public login(token?: string, sessionID?: string|string[]): Promise<string>;
     public sweepMessages(lifetime?: number): number;
     public toJSON(): object;
 
