@@ -19,7 +19,7 @@ if (!browser) {
  * Represents a Shard's WebSocket connection
  */
 class WebSocketShard extends EventEmitter {
-  constructor(manager, id, sessionIDs) {
+  constructor(manager, id, sessionID) {
     super();
 
     /**
