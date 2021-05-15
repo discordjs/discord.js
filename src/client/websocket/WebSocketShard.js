@@ -59,7 +59,7 @@ class WebSocketShard extends EventEmitter {
      * @type {?string}
      * @private
      */
-    this.sessionID = sessionIDs;
+    this.sessionID = sessionID ?? null;
 
     /**
      * The previous heartbeat ping of the shard
