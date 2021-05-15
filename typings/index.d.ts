@@ -2699,6 +2699,7 @@ declare module 'discord.js' {
     | 'YELLOW'
     | 'PURPLE'
     | 'LUMINOUS_VIVID_PINK'
+    | 'FUCHSIA'
     | 'GOLD'
     | 'ORANGE'
     | 'RED'
