@@ -62,8 +62,14 @@ class CommandInteraction extends Interaction {
   }
 
   /**
+   * Options for deferring the reply to a {@link CommandInteraction}.
+   * @typedef {InteractionDeferOptions}
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   */
+
+  /**
    * Defers the reply to this interaction.
-   * @param {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @param {InteractionDeferOptions} [options] Options for deferring the reply to this interaction
    * @returns {Promise<void>}
    * @example
    * // Defer the reply to this interaction
@@ -72,11 +78,11 @@ class CommandInteraction extends Interaction {
    *   .catch(console.error)
    * @example
    * // Defer to send an ephemeral reply later
-   * interaction.defer(true)
+   * interaction.defer({ ephemeral: true })
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async defer(ephemeral) {
+  async defer({ ephemeral } = {}) {
     if (this.deferred || this.replied) throw new Error('INTERACTION_ALREADY_REPLIED');
     await this.client.api.interactions(this.id, this.token).callback.post({
       data: {
