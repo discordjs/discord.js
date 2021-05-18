@@ -58,7 +58,7 @@ class TextBasedChannel {
    * @property {string} [content=''] The content for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
-   * @property {FileOptions[]|BufferResolvable[]} [files] Files to send with the message
+   * @property {FileOptions[]|BufferResolvable[]|MessageAttachment[]} [files] Files to send with the message
    * @property {string|boolean} [code] Language for optional codeblock formatting to apply
    * @property {boolean|SplitOptions} [split=false] Whether or not the message should be split into multiple messages if
    * it exceeds the character limit. If an object is provided, these are the options for splitting the message
