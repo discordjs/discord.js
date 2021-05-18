@@ -494,7 +494,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(content, options) {
-    options = content instanceof APIMessage ? content : APIMessage.create(this.channel, content, options);
+    options = content instanceof APIMessage ? content : APIMessage.create(this, content, options);
     return this.channel.messages.edit(this.id, options);
   }
 
