@@ -557,8 +557,8 @@ class Guild extends Base {
    */
 
   /**
-   * Fetches the owner of the guild
-   * If the member object isn't needed, use {@link Guild#ownerID} instead
+   * Fetches the owner of the guild.
+   * If the member object isn't needed, use {@link Guild#ownerID} instead.
    * @param {FetchOwnerOptions} [options] The options for fetching the member
    * @returns {Promise<GuildMember>}
    */
