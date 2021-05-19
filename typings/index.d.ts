@@ -3619,7 +3619,7 @@ declare module 'discord.js' {
     | 'BUGHUNTER_LEVEL_2'
     | 'VERIFIED_BOT'
     | 'EARLY_VERIFIED_BOT_DEVELOPER'
-    | 'CERTIFIED_MODERATOR';
+    | 'DISCORD_CERTIFIED_MODERATOR';
 
   type UserResolvable = User | Snowflake | Message | GuildMember;
 
