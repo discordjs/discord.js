@@ -1149,6 +1149,9 @@ declare module 'discord.js' {
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: AwaitReactionsOptions,
     ): Promise<Collection<Snowflake, MessageReaction>>;
+    public catchReactions(
+      filter: MessageReactionsCallback<[MessageReaction, User]>
+    ): void;
     public createReactionCollector(
       filter: CollectorFilter<[MessageReaction, User]>,
       options?: ReactionCollectorOptions,
@@ -2682,6 +2685,7 @@ declare module 'discord.js' {
   }
 
   type CollectorFilter<T extends any[]> = (...args: T) => boolean | Promise<boolean>;
+  type MessageReactionsCallback<T extends any[]> = (...args: T) => any | Promise<any>;
 
   interface CollectorOptions {
     time?: number;
