@@ -818,6 +818,14 @@ exports.InteractionResponseTypes = createEnum([
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
 ]);
 
+/**
+ * The type of a message component
+ * ACTION_ROW
+ * BUTTON
+ * @typedef {string} MessageComponentType
+ */
+exports.MessageComponentTypes = createEnum([null, 'ACTION_ROW', 'BUTTON']);
+
 function keyMirror(arr) {
   let tmp = Object.create(null);
   for (const value of arr) tmp[value] = value;
