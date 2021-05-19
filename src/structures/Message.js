@@ -407,6 +407,36 @@ class Message extends Base {
     });
   }
 
+  /** Listens to individual user reactions. In contrast to one-time callback by awaitReactions,
+   *  this provides a callback fired every time a new reaction is added to a message.
+   * 
+   *  @param {Function} callback
+   *  @example
+   *  // Attaches a reaction listener to a message
+   *  message.catchReactions((reaction, user)=>{
+   *    console.log(`${user.tag} reacted ${reaction.emoji.name}`);
+   *  });
+   */
+  catchReactions(callback) {
+
+    /** Since the filter is called twice for every reaction,
+    * a counter will be used to disregard odd indexes
+    * which represent a duplicate from the preceding even index
+    */
+    let index = 0;
+
+    // This utilizes awaitReactions and simplifies it into a single callback
+    this.awaitReactions(
+      // awaitReaction's filter function is called every time a reaction
+      // is checked for collection. This will be attached to the callback.
+      (reaction, user)=>{
+        if(index%2==0) callback(reaction, user);
+        index++;
+
+        return true;
+    }, {max: Infinity});
+  }
+
   /**
    * Whether the message is editable by the client user
    * @type {boolean}
