@@ -20,7 +20,7 @@ class MessageActionRow extends MessageComponent {
 
   /**
    * @typedef {Object} MessageActionRowOptions
-   * @property {(MessageComponent|MessageComponentOptions)[]} [components] The components to place in this ActionRow
+   * @property {MessageComponent[]|MessageComponentOptions[]} [components] The components to place in this ActionRow
    */
 
   /**
@@ -43,7 +43,7 @@ class MessageActionRow extends MessageComponent {
 
   /**
    * Adds components to the row (max 5).
-   * @param {...(MessageComponent|MessageComponentOptions)[]} components The components to add
+   * @param {...(MessageComponent[]|MessageComponentOptions[])} components The components to add
    * @returns {MessageEmbed}
    */
   addComponents(...components) {

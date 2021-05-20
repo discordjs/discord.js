@@ -9,7 +9,7 @@ class MessageButton extends BaseMessageComponent {
    * @property {string} [label] The text to be displayed on this button
    * @property {string} [customID] A unique string to be sent in the interaction when clicked
    * @property {MessageButtonStyle} [style] The style of this button
-   * @property {?} [emoji] ???
+   * @property {Emoji} [emoji] The emoji to be displayed to the left of the text
    * @property {string} [url] Optional URL for link-style buttons
    * @property {boolean} [disabled=false] Disables the button to prevent interactions
    */
