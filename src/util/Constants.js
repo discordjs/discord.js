@@ -799,15 +799,18 @@ exports.ApplicationCommandPermissionTypes = createEnum([null, 'ROLE', 'USER']);
  * The type of an {@link Interaction} object:
  * * PING
  * * APPLICATION_COMMAND
+ * * BUTTON
  * @typedef {string} InteractionType
  */
-exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND']);
+exports.InteractionTypes = createEnum([null, 'PING', 'APPLICATION_COMMAND', 'BUTTON']);
 
 /**
  * The type of an interaction response:
  * * PONG
  * * CHANNEL_MESSAGE_WITH_SOURCE
  * * DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
+ * * DEFERRED_MESSAGE_UPDATE
+ * * UPDATE_MESSAGE
  * @typedef {string} InteractionResponseType
  */
 exports.InteractionResponseTypes = createEnum([
@@ -817,6 +820,8 @@ exports.InteractionResponseTypes = createEnum([
   null,
   'CHANNEL_MESSAGE_WITH_SOURCE',
   'DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE',
+  'DEFERRED_MESSAGE_UPDATE',
+  'UPDATE_MESSAGE',
 ]);
 
 /**
