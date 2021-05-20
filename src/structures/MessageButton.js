@@ -56,6 +56,7 @@ class MessageButton extends MessageComponent {
 
     /**
      * Whether this button is currently disabled
+     * @type {?boolean}
      */
     this.disabled = data.disabled ?? false;
   }
