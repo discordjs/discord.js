@@ -20,12 +20,22 @@ class MessageActionRow extends MessageComponent {
     this.components = (data.components ?? []).map(MessageComponent.create);
   }
 
-  addButton(component) {
+  /**
+   * Adds a component to the row (max 5).
+   * @param {MessageComponentOptions} component The component to add
+   * @returns {MessageEmbed}
+   */
+  addComponent(component) {
     return this.addButtons({ ...component });
   }
 
-  addButtons(...components) {
-    this.components.push(...components);
+  /**
+   * Adds components to the row (max 5).
+   * @param {...MessageComponentOptions|MessageComponentOptions[]} components The components to add
+   * @returns {MessageEmbed}
+   */
+  addComponents(...components) {
+    this.components.push(...components.map(MessageComponent.create));
     return this;
   }
 }
