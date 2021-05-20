@@ -68,14 +68,15 @@ declare module 'discord.js' {
   import BaseCollection from '@discordjs/collection';
   import { ChildProcess } from 'child_process';
   import {
-    ApplicationCommandOptionType as ApplicationCommandOptionTypes,
-    ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
     APIInteractionDataResolvedChannel as RawInteractionDataResolvedChannel,
     APIInteractionDataResolvedGuildMember as RawInteractionDataResolvedGuildMember,
     APIInteractionGuildMember as RawInteractionGuildMember,
     APIMessage as RawMessage,
     APIOverwrite as RawOverwrite,
+    APIPartialEmoji,
     APIRole as RawRole,
+    ApplicationCommandOptionType as ApplicationCommandOptionTypes,
+    ApplicationCommandPermissionType as ApplicationCommandPermissionTypes,
   } from 'discord-api-types/v8';
   import { EventEmitter } from 'events';
   import { PathLike } from 'fs';
@@ -3222,7 +3223,7 @@ declare module 'discord.js' {
   interface MessageButtonOptions extends MessageComponentOptions {
     customID?: string;
     disabled?: boolean;
-    emoji?: unknown;
+    emoji?: APIPartialEmoji;
     label?: string;
     style?: MessageButtonStyle;
     url?: string;
