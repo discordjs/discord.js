@@ -1,6 +1,7 @@
 'use strict';
 
 const MessageAttachment = require('./MessageAttachment');
+const MessageComponent = require('./MessageComponent');
 const MessageEmbed = require('./MessageEmbed');
 const { RangeError } = require('../errors');
 const DataResolver = require('../util/DataResolver');
@@ -148,6 +149,11 @@ class APIMessage {
     }
     const embeds = embedLikes.map(e => new MessageEmbed(e).toJSON());
 
+    const components = [];
+    if (this.options.components) {
+      components.push(...this.options.components.map(MessageComponent.transform));
+    }
+
     let username;
     let avatarURL;
     if (this.isWebhook) {
@@ -193,6 +199,7 @@ class APIMessage {
       nonce,
       embed: this.options.embed === null ? null : embeds[0],
       embeds,
+      components,
       username,
       avatar_url: avatarURL,
       allowed_mentions:
