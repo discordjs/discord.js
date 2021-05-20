@@ -1093,6 +1093,7 @@ declare module 'discord.js' {
     public user: User;
     public version: number;
     public isCommand(): this is CommandInteraction;
+    public isButton(): this is MessageButtonInteraction;
   }
 
   export class Invite extends Base {
@@ -1206,7 +1207,8 @@ declare module 'discord.js' {
     constructor(data?: MessageActionRow | MessageActionRowOptions);
     public type: 'ACTION_ROW';
     public components: MessageComponent[];
-    public addButton(button: MessageButton | MessageButtonOptions): this;
+    public addComponent(component: MessageComponentOptions): this;
+    public addComponents(...components: MessageComponentOptions[] | MessageComponentOptions[][]): this;
   }
 
   export class MessageAttachment {
@@ -1242,6 +1244,28 @@ declare module 'discord.js' {
     public setLabel(label: string): this;
     public setStyle(style: MessageButtonStyle | number): this;
     public setURL(url: string): this;
+  }
+
+  export class MessageButtonInteraction extends Interaction {
+    public readonly command: ApplicationCommand | null;
+    public customID: string;
+    public deferred: boolean;
+    public message: Message | RawMessage;
+    public replied: boolean;
+    public webhook: WebhookClient;
+    public defer(ephemeral?: boolean): Promise<void>;
+    public deleteReply(): Promise<void>;
+    public editReply(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+    ): Promise<Message | RawMessage>;
+    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+    ): Promise<Message | RawMessage>;
+    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
+    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
@@ -3186,8 +3210,10 @@ declare module 'discord.js' {
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
   interface MessageActionRowOptions extends MessageComponentOptions {
-    components?: Array<MessageButton | MessageButtonOptions>;
+    type: 'ACTION_ROW';
+    components?: (MessageComponent | object)[];
   }
+
   interface MessageActivity {
     partyID: string;
     type: number;
@@ -3210,8 +3236,7 @@ declare module 'discord.js' {
   }
 
   interface MessageComponentOptions {
-    type: MessageComponentType | number;
-    components?: Array<MessageComponent | MessageComponentOptions>;
+    type?: MessageComponentType;
   }
 
   type MessageComponentType = keyof typeof MessageComponentTypes;
@@ -3316,7 +3341,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
-    components?: Array<MessageComponent | MessageComponentOptions>;
+    components?: (MessageComponent | object)[];
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
