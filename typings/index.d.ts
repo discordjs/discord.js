@@ -37,6 +37,19 @@ declare enum InviteTargetType {
   EMBEDDED_APPLICATION = 2,
 }
 
+declare enum MessageButtonStyles {
+  PRIMARY = 1,
+  SECONDARY = 2,
+  SUCCESS = 3,
+  DANGER = 4,
+  LINK = 5
+}
+
+declare enum MessageComponentTypes {
+  ACTION_ROW = 1,
+  BUTTON = 2
+}
+
 declare enum OverwriteTypes {
   role = 0,
   member = 1,
@@ -1117,6 +1130,7 @@ declare module 'discord.js' {
     public author: User;
     public channel: TextChannel | DMChannel | NewsChannel;
     public readonly cleanContent: string;
+    public components: MessageComponent[];
     public content: string;
     public readonly createdAt: Date;
     public createdTimestamp: number;
@@ -1186,6 +1200,13 @@ declare module 'discord.js' {
     public unpin(): Promise<Message>;
   }
 
+  export class MessageActionRow extends MessageComponent {
+    constructor(data?: MessageActionRow|MessageActionRowOptions);
+    public type: "ACTION_ROW";
+    public components: MessageComponent[];
+    public addButton(button: MessageButton|MessageButtonOptions): this;
+  }
+
   export class MessageAttachment {
     constructor(attachment: BufferResolvable | Stream, name?: string, data?: object);
 
@@ -1204,6 +1225,23 @@ declare module 'discord.js' {
     public toJSON(): object;
   }
 
+  export class MessageButton extends MessageComponent {
+    constructor(data?: MessageButton|MessageButtonOptions);
+    public customID: string | null;
+    public disabled: boolean;
+    public emoji: unknown | null;
+    public label: string | null;
+    public style: MessageButtonStyle | null;
+    public type: "BUTTON";
+    public url: string | null;
+    public setCustomID(customID: string): this;
+    public setDisabled(disabled: boolean): this;
+    public setEmoji(emoji: unknown): this;
+    public setLabel(label: string): this;
+    public setStyle(style: MessageButtonStyle | number): this;
+    public setUrl(url: string): this;
+  }
+
   export class MessageCollector extends Collector<Snowflake, Message> {
     constructor(
       channel: TextChannel | DMChannel,
@@ -1220,6 +1258,12 @@ declare module 'discord.js' {
 
     public collect(message: Message): Snowflake;
     public dispose(message: Message): Snowflake;
+  }
+
+  export class MessageComponent {
+    constructor(data?: MessageComponent | MessageComponentOptions);
+    public type: MessageComponentType | null;
+    public setType(type: MessageComponentType | number): this;
   }
 
   export class MessageEmbed {
@@ -3138,15 +3182,35 @@ declare module 'discord.js' {
 
   type MessageAdditions = MessageEmbed | MessageAttachment | (MessageEmbed | MessageAttachment)[];
 
+  interface MessageActionRowOptions extends MessageComponentOptions {
+    components?: Array<MessageButton|MessageButtonOptions>;
+  }
   interface MessageActivity {
     partyID: string;
     type: number;
   }
 
+  interface MessageButtonOptions extends MessageComponentOptions {
+    customID?: string;
+    disabled?: boolean;
+    emoji?: unknown;
+    label?: string;
+    style?: MessageButtonStyle;
+    url?: string;    
+  }
+
+  type MessageButtonStyle = keyof typeof MessageButtonStyles;
+
   interface MessageCollectorOptions extends CollectorOptions {
     max?: number;
     maxProcessed?: number;
   }
+
+  interface MessageComponentOptions {
+    type: MessageComponentType | number;
+  }
+
+  type MessageComponentType = keyof typeof MessageComponentTypes;
 
   interface MessageEditOptions {
     content?: StringResolvable;
@@ -3155,6 +3219,7 @@ declare module 'discord.js' {
     flags?: BitFieldResolvable<MessageFlagsString, number>;
     allowedMentions?: MessageMentionOptions;
     attachments?: MessageAttachment[];
+    components?: MessageComponent[];
   }
 
   interface MessageEmbedAuthor {
@@ -3247,6 +3312,7 @@ declare module 'discord.js' {
     nonce?: string | number;
     content?: StringResolvable;
     embed?: MessageEmbed | MessageEmbedOptions;
+    components?: Array<MessageComponent|MessageComponentOptions>;
     allowedMentions?: MessageMentionOptions;
     files?: (FileOptions | BufferResolvable | Stream | MessageAttachment)[];
     code?: string | boolean;
@@ -3298,11 +3364,11 @@ declare module 'discord.js' {
 
   type OverwriteType = 'member' | 'role';
 
-  interface PermissionFlags extends Record<PermissionString, bigint> {}
+  interface PermissionFlags extends Record<PermissionString, bigint> { }
 
-  interface PermissionObject extends Record<PermissionString, boolean> {}
+  interface PermissionObject extends Record<PermissionString, boolean> { }
 
-  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> {}
+  interface PermissionOverwriteOption extends Partial<Record<PermissionString, boolean | null>> { }
 
   type PermissionResolvable = BitFieldResolvable<PermissionString, bigint>;
 
@@ -3341,7 +3407,7 @@ declare module 'discord.js' {
     | 'USE_APPLICATION_COMMANDS'
     | 'REQUEST_TO_SPEAK';
 
-  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> {}
+  interface RecursiveArray<T> extends ReadonlyArray<T | RecursiveArray<T>> { }
 
   type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
 
@@ -3371,16 +3437,16 @@ declare module 'discord.js' {
     partial: true;
     fetch(): Promise<T>;
   } & {
-    [K in keyof Omit<
-      T,
-      'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
-    >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
-  };
+      [K in keyof Omit<
+        T,
+        'client' | 'createdAt' | 'createdTimestamp' | 'id' | 'partial' | 'fetch' | 'deleted' | O
+      >]: T[K] extends Function ? T[K] : T[K] | null; // tslint:disable-line:ban-types
+    };
 
   interface PartialDMChannel
     extends Partialize<
-      DMChannel,
-      'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
+    DMChannel,
+    'lastMessage' | 'lastMessageID' | 'messages' | 'recipient' | 'type' | 'typing' | 'typingCount'
     > {
     lastMessage: null;
     lastMessageID: undefined;
@@ -3407,18 +3473,18 @@ declare module 'discord.js' {
 
   interface PartialGuildMember
     extends Partialize<
-      GuildMember,
-      | 'bannable'
-      | 'displayColor'
-      | 'displayHexColor'
-      | 'displayName'
-      | 'guild'
-      | 'kickable'
-      | 'permissions'
-      | 'roles'
-      | 'manageable'
-      | 'presence'
-      | 'voice'
+    GuildMember,
+    | 'bannable'
+    | 'displayColor'
+    | 'displayHexColor'
+    | 'displayName'
+    | 'guild'
+    | 'kickable'
+    | 'permissions'
+    | 'roles'
+    | 'manageable'
+    | 'presence'
+    | 'voice'
     > {
     readonly bannable: boolean;
     readonly displayColor: number;
@@ -3437,17 +3503,17 @@ declare module 'discord.js' {
 
   interface PartialMessage
     extends Partialize<
-      Message,
-      | 'attachments'
-      | 'channel'
-      | 'deletable'
-      | 'crosspostable'
-      | 'editable'
-      | 'mentions'
-      | 'pinnable'
-      | 'url'
-      | 'flags'
-      | 'embeds'
+    Message,
+    | 'attachments'
+    | 'channel'
+    | 'deletable'
+    | 'crosspostable'
+    | 'editable'
+    | 'mentions'
+    | 'pinnable'
+    | 'url'
+    | 'flags'
+    | 'embeds'
     > {
     attachments: Message['attachments'];
     channel: Message['channel'];

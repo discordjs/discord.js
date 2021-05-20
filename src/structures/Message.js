@@ -4,6 +4,7 @@ const APIMessage = require('./APIMessage');
 const Base = require('./Base');
 const ClientApplication = require('./ClientApplication');
 const MessageAttachment = require('./MessageAttachment');
+const MessageComponent = require('./MessageComponent');
 const Embed = require('./MessageEmbed');
 const Mentions = require('./MessageMentions');
 const ReactionCollector = require('./ReactionCollector');
@@ -122,6 +123,12 @@ class Message extends Base {
      * @type {MessageEmbed[]}
      */
     this.embeds = (data.embeds || []).map(e => new Embed(e, true));
+
+    /**
+     * A list of component in the message e.g. ActionRows, Buttons
+     * @type {MessageComponent[]}
+     */
+    this.components = (data.components || []).map(MessageComponent.create);
 
     /**
      * A collection of attachments in the message - e.g. Pictures - mapped by their ID
@@ -282,6 +289,8 @@ class Message extends Base {
     if ('tts' in data) this.tts = data.tts;
     if ('embeds' in data) this.embeds = data.embeds.map(e => new Embed(e, true));
     else this.embeds = this.embeds.slice();
+    if ('components' in data) this.components = data.components.map(MessageComponent.create);
+    else this.components = this.components.slice();
 
     if ('attachments' in data) {
       this.attachments = new Collection();
