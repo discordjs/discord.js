@@ -1,14 +1,26 @@
 'use strict';
 
-const MessageComponent = require('./MessageComponent');
+const MessageComponent = require('./BaseMessageComponent');
 
 /**
  * Represents an ActionRow containing message components.
  */
 class MessageActionRow extends MessageComponent {
   /**
+   * @typedef {BaseMessageComponentOptions|MessageActionRowOptions|MessageButtonOptions} MessageComponentOptions
+   */
+
+  /**
+   * @typedef {BaseMessageComponent|MessageActionRow|MessageButton} MessageComponent
+   */
+
+  /**
+   * @typedef {MessageComponentOptions|MessageComponent} MessageComponentResolvable
+   */
+
+  /**
    * @typedef {Object} MessageActionRowOptions
-   * @property {MessageComponent[]} [components] The components to place in this ActionRow
+   * @property {(MessageComponent|MessageComponentOptions)[]} [components] The components to place in this ActionRow
    */
 
   /**
@@ -22,7 +34,7 @@ class MessageActionRow extends MessageComponent {
 
   /**
    * Adds a component to the row (max 5).
-   * @param {MessageComponentOptions} component The component to add
+   * @param {MessageComponent|MessageComponentOptions} component The component to add
    * @returns {MessageEmbed}
    */
   addComponent(component) {
@@ -31,7 +43,7 @@ class MessageActionRow extends MessageComponent {
 
   /**
    * Adds components to the row (max 5).
-   * @param {...MessageComponentOptions|MessageComponentOptions[]} components The components to add
+   * @param {...(MessageComponent|MessageComponentOptions)[]} components The components to add
    * @returns {MessageEmbed}
    */
   addComponents(...components) {

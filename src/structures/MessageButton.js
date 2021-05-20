@@ -1,9 +1,9 @@
 'use strict';
 
-const MessageComponent = require('./MessageComponent');
+const BaseMessageComponent = require('./BaseMessageComponent');
 const { MessageButtonStyles } = require('../util/Constants.js');
 const Util = require('../util/Util');
-class MessageButton extends MessageComponent {
+class MessageButton extends BaseMessageComponent {
   /**
    * @typedef {Object} MessageButtonOptions
    * @property {string} [label] The text to be displayed on this button

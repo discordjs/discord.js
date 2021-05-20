@@ -5,14 +5,14 @@ const { MessageComponentTypes, MessageButtonStyles } = require('../util/Constant
 /**
  * Represents an interactive component of a Message. It should not be necessary to construct this directly.
  */
-class MessageComponent {
+class BaseMessageComponent {
   /**
-   * @typedef {Object} MessageComponentOptions
+   * @typedef {Object} BaseMessageComponentOptions
    * @property {MessageComponentType} type The type of this component
    */
 
   /**
-   * @param {MessageComponent|MessageComponentOptions} [data={}] The options for this MessageComponent
+   * @param {BaseMessageComponent|BaseMessageComponentOptions} [data={}] The options for this MessageComponent
    */
   constructor(data) {
     /**
@@ -25,7 +25,7 @@ class MessageComponent {
   /**
    * Sets the type of this component;
    * @param {MessageComponentType} type The type of this component
-   * @returns {MessageComponent}
+   * @returns {BaseMessageComponent}
    */
   setType(type) {
     this.type = type;
@@ -34,7 +34,11 @@ class MessageComponent {
 
   static create(data) {
     let component;
-    switch (data.type) {
+    let type = data.type;
+
+    if (typeof type === 'string') type = MessageComponentTypes[type];
+
+    switch (type) {
       case MessageComponentTypes.ACTION_ROW: {
         const MessageActionRow = require('./MessageActionRow');
         component = new MessageActionRow(data);
@@ -53,7 +57,7 @@ class MessageComponent {
     const { type, components, label, customID, style, emoji, url, disabled } = component;
 
     return {
-      components: components?.map(MessageComponent.transform),
+      components: components?.map(BaseMessageComponent.transform),
       custom_id: customID,
       disabled,
       emoji,
@@ -65,4 +69,4 @@ class MessageComponent {
   }
 }
 
-module.exports = MessageComponent;
+module.exports = BaseMessageComponent;
