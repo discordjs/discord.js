@@ -284,6 +284,27 @@ declare module 'discord.js' {
     public static resolve(bit?: BitFieldResolvable<any, number | bigint>): number | bigint;
   }
 
+  export class ButtonInteraction extends Interaction {
+    public customID: string;
+    public deferred: boolean;
+    public message: Message | RawMessage;
+    public replied: boolean;
+    public webhook: WebhookClient;
+    public defer(ephemeral?: boolean): Promise<void>;
+    public deleteReply(): Promise<void>;
+    public editReply(
+      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
+    ): Promise<Message | RawMessage>;
+    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
+    public fetchReply(): Promise<Message | RawMessage>;
+    public followUp(
+      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
+    ): Promise<Message | RawMessage>;
+    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
+    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
+    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
+  }
+
   export class CategoryChannel extends GuildChannel {
     public readonly children: Collection<Snowflake, GuildChannel>;
     public type: 'category';
@@ -1094,7 +1115,7 @@ declare module 'discord.js' {
     public user: User;
     public version: number;
     public isCommand(): this is CommandInteraction;
-    public isButton(): this is MessageButtonInteraction;
+    public isButton(): this is ButtonInteraction;
   }
 
   export class Invite extends Base {
@@ -1245,28 +1266,6 @@ declare module 'discord.js' {
     public setLabel(label: string): this;
     public setStyle(style: MessageButtonStyle | number): this;
     public setURL(url: string): this;
-  }
-
-  export class MessageButtonInteraction extends Interaction {
-    public readonly command: ApplicationCommand | null;
-    public customID: string;
-    public deferred: boolean;
-    public message: Message | RawMessage;
-    public replied: boolean;
-    public webhook: WebhookClient;
-    public defer(ephemeral?: boolean): Promise<void>;
-    public deleteReply(): Promise<void>;
-    public editReply(
-      content: string | APIMessage | WebhookEditMessageOptions | MessageEmbed | MessageEmbed[],
-    ): Promise<Message | RawMessage>;
-    public editReply(content: string, options?: WebhookEditMessageOptions): Promise<Message | RawMessage>;
-    public fetchReply(): Promise<Message | RawMessage>;
-    public followUp(
-      content: string | APIMessage | InteractionReplyOptions | MessageAdditions,
-    ): Promise<Message | RawMessage>;
-    public followUp(content: string, options?: InteractionReplyOptions): Promise<Message | RawMessage>;
-    public reply(content: string | APIMessage | InteractionReplyOptions | MessageAdditions): Promise<void>;
-    public reply(content: string, options?: InteractionReplyOptions): Promise<void>;
   }
 
   export class MessageCollector extends Collector<Snowflake, Message> {
