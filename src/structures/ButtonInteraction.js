@@ -10,7 +10,7 @@ const { InteractionResponseTypes } = require('../util/Constants');
  * Represents a message button interaction.
  * @extends {Interaction}
  */
-class MessageButtonInteraction extends Interaction {
+class ButtonInteraction extends Interaction {
   // eslint-disable-next-line no-useless-constructor
   constructor(client, data) {
     super(client, data);
@@ -161,4 +161,4 @@ class MessageButtonInteraction extends Interaction {
   }
 }
 
-module.exports = MessageButtonInteraction;
+module.exports = ButtonInteraction;
